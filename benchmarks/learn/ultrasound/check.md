@@ -116,3 +116,18 @@ Algorithm routing correctly assigns DAS beamforming, adaptive DMAS/CF, compresse
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| rl_20iter | 14.57 | 0.1559 | 0.05 | PASS |
+| rl_50iter | 14.12 | 0.1323 | 0.11 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

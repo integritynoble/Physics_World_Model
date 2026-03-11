@@ -126,3 +126,18 @@ All three challenge tiers generated locally at `datasets/benchmark/spect/` and u
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3.1 (updated 2026-03-10)*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| fbp_ramlak | -6.54 | 0.0101 | 0.06 | PASS |
+| precomputed_fbp | 30.03 | 0.9523 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

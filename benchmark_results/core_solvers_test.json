@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-03-10T19:34:18.440748",
+  "tier": "public",
+  "gpu_server": "local-gpu-server",
+  "modalities": {
+    "ct": {
+      "description": "X-ray Computed Tomography (Radon/Tomography)",
+      "sample": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 12.937403678894043,
+          "ssim": 0.09222528338432312,
+          "exec_time_sec": 0.49564266204833984,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mri": {
+      "description": "Magnetic Resonance Imaging (k-space)",
+      "sample": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 13.005370140075684,
+          "ssim": 0.00036706545506604016,
+          "exec_time_sec": 0.4301140308380127,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "pet": {
+      "description": "Positron Emission Tomography (Radon)",
+      "sample": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "metric_error"
+        }
+      }
+    },
+    "lightsheet": {
+      "description": "Lightsheet Microscopy (PSF deconvolution)",
+      "sample": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": -28.208219528198242,
+          "ssim": 4.046367848786758e-06,
+          "exec_time_sec": 0.007965087890625,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_modalities": 4,
+    "completed": 4,
+    "failed": 0,
+    "total_tests": 4,
+    "tests_passed": 3
+  }
+}

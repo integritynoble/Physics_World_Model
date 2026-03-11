@@ -1,0 +1,1565 @@
+{
+  "timestamp": "2026-03-10T19:01:23.253752",
+  "tier": "public",
+  "gpu_server": "local-gpu-server",
+  "modalities": {
+    "cacti": {
+      "modality": "cacti",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.298752",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cacti\\public\\cacti_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "GAP-TV",
+          "module": "pwm_core.recon.gap_tv",
+          "function": "run_gap_tv",
+          "gpu": false,
+          "status": "no_comparable_data",
+          "metrics": null
+        },
+        "best_quality": {
+          "name": "EfficientSCI",
+          "module": "pwm_core.recon.efficientsci",
+          "function": "efficientsci_recon",
+          "gpu": false,
+          "status": "no_comparable_data",
+          "metrics": null
+        },
+        "famous_dl": {
+          "name": "ELP-Unfolding",
+          "module": "pwm_core.recon.elp_unfolding",
+          "function": "elp_recon",
+          "gpu": false,
+          "status": "no_comparable_data",
+          "metrics": null
+        },
+        "small_gpu": {
+          "name": "EfficientSCI-T",
+          "module": "pwm_core.recon.efficientsci",
+          "function": "efficientsci_recon",
+          "gpu": false,
+          "status": "no_comparable_data",
+          "metrics": null
+        }
+      }
+    },
+    "confocal_3d": {
+      "modality": "confocal_3d",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.320753",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\confocal_3d\\public\\confocal_3d_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "3D Richardson-Lucy",
+          "module": "pwm_core.recon.richardson_lucy",
+          "function": "run_richardson_lucy",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -24.70087432861328,
+            "ssim": 4.125422492506914e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "3D CARE",
+          "module": "pwm_core.recon.care_unet",
+          "function": "care_restore_3d",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -24.70087432861328,
+            "ssim": 4.125422492506914e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "CARE-3D",
+          "module": "pwm_core.recon.care_unet",
+          "function": "care_restore_3d",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -24.70087432861328,
+            "ssim": 4.125422492506914e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "small_gpu": {
+          "name": "CARE-3D (slice-wise)",
+          "module": "pwm_core.recon.care_unet",
+          "function": "care_restore_3d",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -24.70087432861328,
+            "ssim": 4.125422492506914e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "cryo_em": {
+      "modality": "cryo_em",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.339761",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cryo_em\\public\\cryo_em_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Adjoint",
+          "module": "pwm_core.recon.adjoint",
+          "function": "run_adjoint",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.45389175415039,
+            "ssim": -0.005248428322374821,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "PnP-ADMM",
+          "module": "pwm_core.recon.pnp_admm",
+          "function": "pnp_admm_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.45389175415039,
+            "ssim": -0.005248428322374821,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "relion_dl": {
+          "name": "CryoDRGN",
+          "module": "pwm_core.recon.cryoem_solvers",
+          "function": "cryodrgn_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.45389175415039,
+            "ssim": -0.005248428322374821,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ct": {
+      "modality": "ct",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.350752",
+      "sample_format": "directory",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ct\\public\\sample_00",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FBP",
+          "module": "pwm_core.recon.ct_solvers",
+          "function": "run_fbp",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.53850269317627,
+            "ssim": 0.3993244767189026,
+            "comparison": "sinogram_ideal_vs_measurement",
+            "data_shapes": {
+              "sinogram_ideal": [
+                60,
+                256
+              ],
+              "measurement": [
+                60,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "PnP-ADMM + RED-CNN",
+          "module": "pwm_core.recon.pnp",
+          "function": "pnp_admm",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.53850269317627,
+            "ssim": 0.3993244767189026,
+            "comparison": "sinogram_ideal_vs_measurement",
+            "data_shapes": {
+              "sinogram_ideal": [
+                60,
+                256
+              ],
+              "measurement": [
+                60,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "RED-CNN",
+          "module": "pwm_core.recon.redcnn",
+          "function": "redcnn_denoise",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.53850269317627,
+            "ssim": 0.3993244767189026,
+            "comparison": "sinogram_ideal_vs_measurement",
+            "data_shapes": {
+              "sinogram_ideal": [
+                60,
+                256
+              ],
+              "measurement": [
+                60,
+                256
+              ]
+            }
+          }
+        },
+        "small_gpu": {
+          "name": "RED-CNN",
+          "module": "pwm_core.recon.redcnn",
+          "function": "redcnn_denoise",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 15.53850269317627,
+            "ssim": 0.3993244767189026,
+            "comparison": "sinogram_ideal_vs_measurement",
+            "data_shapes": {
+              "sinogram_ideal": [
+                60,
+                256
+              ],
+              "measurement": [
+                60,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "diffusion_mri": {
+      "modality": "diffusion_mri",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.369752",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\diffusion_mri\\public\\diffusion_mri_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "SENSE (WLS tensor fit)",
+          "module": "pwm_core.recon.mri_solvers",
+          "function": "run_sense",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 9.106557846069336,
+            "ssim": 0.06932626664638519,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "q-DL (qDiffusion)",
+          "module": "pwm_core.recon.dmri_solvers",
+          "function": "q_dl_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 9.106557846069336,
+            "ssim": 0.06932626664638519,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "SHORE-Net",
+          "module": "pwm_core.recon.dmri_solvers",
+          "function": "shore_net_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 9.106557846069336,
+            "ssim": 0.06932626664638519,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "endoscopy": {
+      "modality": "endoscopy",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.385751",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\endoscopy\\public\\endoscopy_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FISTA-L2 (endoscopy)",
+          "module": "pwm_core.recon.classical",
+          "function": "run_fista_l2",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 12.198515892028809,
+            "ssim": 0.8958539366722107,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "EndoMapper-Net",
+          "module": "pwm_core.recon.endoscopy_solvers",
+          "function": "endomapper_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 12.198515892028809,
+            "ssim": 0.8958539366722107,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "AF-SfMLearner",
+          "module": "pwm_core.recon.endoscopy_solvers",
+          "function": "af_sfm_learner_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 12.198515892028809,
+            "ssim": 0.8958539366722107,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "fmri": {
+      "modality": "fmri",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.402751",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fmri\\public\\fmri_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "SENSE (fMRI)",
+          "module": "pwm_core.recon.mri_solvers",
+          "function": "run_sense",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -41.463321685791016,
+            "ssim": 1.9485123630147427e-05,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "fMRI-Transformer",
+          "module": "pwm_core.recon.fmri_solvers",
+          "function": "fmri_transformer_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -41.463321685791016,
+            "ssim": 1.9485123630147427e-05,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "DeepBold",
+          "module": "pwm_core.recon.fmri_solvers",
+          "function": "deepbold_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -41.463321685791016,
+            "ssim": 1.9485123630147427e-05,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "fundus": {
+      "modality": "fundus",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.427753",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fundus\\public\\fundus_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Richardson-Lucy",
+          "module": "pwm_core.recon.richardson_lucy",
+          "function": "run_richardson_lucy",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 30.58349609375,
+            "ssim": 0.9900355339050293,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "RETFound",
+          "module": "pwm_core.recon.fundus_solvers",
+          "function": "retfound_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 30.58349609375,
+            "ssim": 0.9900355339050293,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "DR-Grade-Net",
+          "module": "pwm_core.recon.fundus_solvers",
+          "function": "dr_grade_net_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 30.58349609375,
+            "ssim": 0.9900355339050293,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "lightsheet": {
+      "modality": "lightsheet",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.445752",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\lightsheet\\public\\lightsheet_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Fourier Notch Filter",
+          "module": "pwm_core.recon.lightsheet_solver",
+          "function": "run_lightsheet",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -29.216777801513672,
+            "ssim": 3.4180575312348083e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "VSNR",
+          "module": "pwm_core.recon.lightsheet_solver",
+          "function": "vsnr_destripe",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -29.216777801513672,
+            "ssim": 3.4180575312348083e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "DeStripe",
+          "module": "pwm_core.recon.destripe_net",
+          "function": "destripe_denoise",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -29.216777801513672,
+            "ssim": 3.4180575312348083e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "small_gpu": {
+          "name": "DeStripe",
+          "module": "pwm_core.recon.destripe_net",
+          "function": "destripe_denoise",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -29.216777801513672,
+            "ssim": 3.4180575312348083e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mammography": {
+      "modality": "mammography",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.463901",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mammography\\public\\mammography_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FBP (mammography)",
+          "module": "pwm_core.recon.ct_solvers",
+          "function": "run_fbp",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 13.250947952270508,
+            "ssim": 0.9564470052719116,
+            "comparison": "projection_ideal_vs_projection_measured",
+            "data_shapes": {
+              "projection_ideal": [
+                256,
+                256
+              ],
+              "projection_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "MammoNet (GatorTron)",
+          "module": "pwm_core.recon.mammo_solvers",
+          "function": "mammo_net_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 13.250947952270508,
+            "ssim": 0.9564470052719116,
+            "comparison": "projection_ideal_vs_projection_measured",
+            "data_shapes": {
+              "projection_ideal": [
+                256,
+                256
+              ],
+              "projection_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "Mammo-ResNet",
+          "module": "pwm_core.recon.mammo_solvers",
+          "function": "mammo_resnet_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 13.250947952270508,
+            "ssim": 0.9564470052719116,
+            "comparison": "projection_ideal_vs_projection_measured",
+            "data_shapes": {
+              "projection_ideal": [
+                256,
+                256
+              ],
+              "projection_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mri": {
+      "modality": "mri",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.517900",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mri\\public\\mri_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "SENSE",
+          "module": "pwm_core.recon.mri_solvers",
+          "function": "run_sense",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 52.553070068359375,
+            "ssim": 0.9794964790344238,
+            "comparison": "kspace_full_vs_kspace_undersampled",
+            "data_shapes": {
+              "kspace_full": [
+                4,
+                256,
+                256
+              ],
+              "kspace_undersampled": [
+                4,
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "VarNet",
+          "module": "pwm_core.recon.varnet",
+          "function": "varnet_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 52.553070068359375,
+            "ssim": 0.9794964790344238,
+            "comparison": "kspace_full_vs_kspace_undersampled",
+            "data_shapes": {
+              "kspace_full": [
+                4,
+                256,
+                256
+              ],
+              "kspace_undersampled": [
+                4,
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "MoDL",
+          "module": "pwm_core.recon.modl",
+          "function": "modl_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 52.553070068359375,
+            "ssim": 0.9794964790344238,
+            "comparison": "kspace_full_vs_kspace_undersampled",
+            "data_shapes": {
+              "kspace_full": [
+                4,
+                256,
+                256
+              ],
+              "kspace_undersampled": [
+                4,
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "small_gpu": {
+          "name": "MoDL (5 unrolls)",
+          "module": "pwm_core.recon.modl",
+          "function": "modl_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 52.553070068359375,
+            "ssim": 0.9794964790344238,
+            "comparison": "kspace_full_vs_kspace_undersampled",
+            "data_shapes": {
+              "kspace_full": [
+                4,
+                256,
+                256
+              ],
+              "kspace_undersampled": [
+                4,
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "oct": {
+      "modality": "oct",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.572932",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\oct\\public\\oct_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FFT Recon",
+          "module": "pwm_core.recon.oct_solver",
+          "function": "run_oct",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 34.02809524536133,
+            "ssim": 0.9963815808296204,
+            "comparison": "bscan_ideal_vs_bscan_measured",
+            "data_shapes": {
+              "bscan_ideal": [
+                256,
+                256
+              ],
+              "bscan_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "Spectral Estimation",
+          "module": "pwm_core.recon.oct_solver",
+          "function": "spectral_estimation_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 34.02809524536133,
+            "ssim": 0.9963815808296204,
+            "comparison": "bscan_ideal_vs_bscan_measured",
+            "data_shapes": {
+              "bscan_ideal": [
+                256,
+                256
+              ],
+              "bscan_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "OCT Denoising Net",
+          "module": "pwm_core.recon.oct_solver",
+          "function": "oct_denoising_net_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 34.02809524536133,
+            "ssim": 0.9963815808296204,
+            "comparison": "bscan_ideal_vs_bscan_measured",
+            "data_shapes": {
+              "bscan_ideal": [
+                256,
+                256
+              ],
+              "bscan_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "small_gpu": {
+          "name": "OCT Denoising Net",
+          "module": "pwm_core.recon.oct_solver",
+          "function": "oct_denoising_net_recon",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 34.02809524536133,
+            "ssim": 0.9963815808296204,
+            "comparison": "bscan_ideal_vs_bscan_measured",
+            "data_shapes": {
+              "bscan_ideal": [
+                256,
+                256
+              ],
+              "bscan_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "palm_storm": {
+      "modality": "palm_storm",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.600932",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\palm_storm\\public\\palm_storm_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Richardson-Lucy (STORM/PALM)",
+          "module": "pwm_core.recon.richardson_lucy",
+          "function": "run_richardson_lucy",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -22.203357696533203,
+            "ssim": 7.610631769239262e-08,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "DECODE-SMLM",
+          "module": "pwm_core.recon.smlm_solvers",
+          "function": "decode_smlm_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -22.203357696533203,
+            "ssim": 7.610631769239262e-08,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "DeepSTORM",
+          "module": "pwm_core.recon.smlm_solvers",
+          "function": "deep_storm_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -22.203357696533203,
+            "ssim": 7.610631769239262e-08,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "pet": {
+      "modality": "pet",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.645935",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\pet\\public\\pet_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FBP (emission tomography)",
+          "module": "pwm_core.recon.ct_solvers",
+          "function": "run_fbp",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -2.5569777488708496,
+            "ssim": 0.11857157200574875,
+            "comparison": "sinogram_ideal_vs_sinogram_measured",
+            "data_shapes": {
+              "sinogram_ideal": [
+                256,
+                364
+              ],
+              "sinogram_measured": [
+                256,
+                364
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "NeuroLF-PET",
+          "module": "pwm_core.recon.pet_solvers",
+          "function": "neurolF_pet_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -2.5569777488708496,
+            "ssim": 0.11857157200574875,
+            "comparison": "sinogram_ideal_vs_sinogram_measured",
+            "data_shapes": {
+              "sinogram_ideal": [
+                256,
+                364
+              ],
+              "sinogram_measured": [
+                256,
+                364
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "PET-DL (U-Net)",
+          "module": "pwm_core.recon.pet_solvers",
+          "function": "pet_unet_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -2.5569777488708496,
+            "ssim": 0.11857157200574875,
+            "comparison": "sinogram_ideal_vs_sinogram_measured",
+            "data_shapes": {
+              "sinogram_ideal": [
+                256,
+                364
+              ],
+              "sinogram_measured": [
+                256,
+                364
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sim": {
+      "modality": "sim",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.696933",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sim\\public\\sim_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Wiener-SIM",
+          "module": "pwm_core.recon.sim_solver",
+          "function": "run_sim_reconstruction",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -26.851154327392578,
+            "ssim": 5.011743724026019e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "HiFi-SIM",
+          "module": "pwm_core.recon.sim_solver",
+          "function": "hifi_sim_2d",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -26.851154327392578,
+            "ssim": 5.011743724026019e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "DL-SIM",
+          "module": "pwm_core.recon.dl_sim",
+          "function": "dl_sim_reconstruct",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -26.851154327392578,
+            "ssim": 5.011743724026019e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "small_gpu": {
+          "name": "DL-SIM",
+          "module": "pwm_core.recon.dl_sim",
+          "function": "dl_sim_reconstruct",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -26.851154327392578,
+            "ssim": 5.011743724026019e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "spect": {
+      "modality": "spect",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.727929",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\spect\\public\\spect_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FBP (emission tomography)",
+          "module": "pwm_core.recon.ct_solvers",
+          "function": "run_fbp",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -12.632499694824219,
+            "ssim": 0.0077971648424863815,
+            "comparison": "sinogram_ideal_vs_sinogram_measured",
+            "data_shapes": {
+              "sinogram_ideal": [
+                256,
+                364
+              ],
+              "sinogram_measured": [
+                256,
+                364
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "SPECT-DL (OSEM+)",
+          "module": "pwm_core.recon.spect_solvers",
+          "function": "spect_dl_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -12.632499694824219,
+            "ssim": 0.0077971648424863815,
+            "comparison": "sinogram_ideal_vs_sinogram_measured",
+            "data_shapes": {
+              "sinogram_ideal": [
+                256,
+                364
+              ],
+              "sinogram_measured": [
+                256,
+                364
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "SPECT-UNet",
+          "module": "pwm_core.recon.spect_solvers",
+          "function": "spect_unet_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -12.632499694824219,
+            "ssim": 0.0077971648424863815,
+            "comparison": "sinogram_ideal_vs_sinogram_measured",
+            "data_shapes": {
+              "sinogram_ideal": [
+                256,
+                364
+              ],
+              "sinogram_measured": [
+                256,
+                364
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sted": {
+      "modality": "sted",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.750929",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sted\\public\\sted_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Richardson-Lucy (STED)",
+          "module": "pwm_core.recon.richardson_lucy",
+          "function": "run_richardson_lucy",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -34.53718185424805,
+            "ssim": 1.226375752594322e-05,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "STED-Net (CARE)",
+          "module": "pwm_core.recon.sted_solvers",
+          "function": "sted_care_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -34.53718185424805,
+            "ssim": 1.226375752594322e-05,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "RCAN-STED",
+          "module": "pwm_core.recon.sted_solvers",
+          "function": "rcan_sted_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -34.53718185424805,
+            "ssim": 1.226375752594322e-05,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "two_photon": {
+      "modality": "two_photon",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.771931",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\two_photon\\public\\two_photon_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "Richardson-Lucy (2P)",
+          "module": "pwm_core.recon.richardson_lucy",
+          "function": "run_richardson_lucy",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -42.83382797241211,
+            "ssim": 3.503200332488632e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "2P-Net (CARE)",
+          "module": "pwm_core.recon.two_photon_solvers",
+          "function": "two_photon_care_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -42.83382797241211,
+            "ssim": 3.503200332488632e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "2P-DeepInterp",
+          "module": "pwm_core.recon.two_photon_solvers",
+          "function": "deep_interp_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": -42.83382797241211,
+            "ssim": 3.503200332488632e-06,
+            "comparison": "x_true_vs_y",
+            "data_shapes": {
+              "x_true": [
+                256,
+                256
+              ],
+              "y": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ultrasound": {
+      "modality": "ultrasound",
+      "tier": "public",
+      "timestamp": "2026-03-10T19:01:23.797931",
+      "sample_format": "hdf5",
+      "sample_path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ultrasound\\public\\ultrasound_challenge_public.h5",
+      "sample_name": "sample_00",
+      "solvers": {
+        "traditional_cpu": {
+          "name": "FISTA-L2 (ultrasound)",
+          "module": "pwm_core.recon.classical",
+          "function": "run_fista_l2",
+          "gpu": false,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 7.0732598304748535,
+            "ssim": 0.6754704713821411,
+            "comparison": "bmode_ideal_vs_bmode_measured",
+            "data_shapes": {
+              "bmode_ideal": [
+                256,
+                256
+              ],
+              "bmode_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "best_quality": {
+          "name": "US-UNet (DeepUS)",
+          "module": "pwm_core.recon.us_solvers",
+          "function": "deep_us_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 7.0732598304748535,
+            "ssim": 0.6754704713821411,
+            "comparison": "bmode_ideal_vs_bmode_measured",
+            "data_shapes": {
+              "bmode_ideal": [
+                256,
+                256
+              ],
+              "bmode_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        },
+        "famous_dl": {
+          "name": "US-CNN",
+          "module": "pwm_core.recon.us_solvers",
+          "function": "us_cnn_recon",
+          "gpu": true,
+          "status": "completed",
+          "metrics": {
+            "psnr_db": 7.0732598304748535,
+            "ssim": 0.6754704713821411,
+            "comparison": "bmode_ideal_vs_bmode_measured",
+            "data_shapes": {
+              "bmode_ideal": [
+                256,
+                256
+              ],
+              "bmode_measured": [
+                256,
+                256
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_modalities": 20,
+    "completed": 18,
+    "partial": 1,
+    "failed": 1,
+    "total_solvers_tested": 64,
+    "solvers_completed": 60
+  }
+}

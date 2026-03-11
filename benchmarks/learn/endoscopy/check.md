@@ -113,3 +113,19 @@ Endoscopy tissue reflectance imaging is well-posed as a monocular inverse proble
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| rl_20iter | 11.75 | 0.8796 | 0.04 | PASS |
+| rl_50iter | 10.41 | 0.8225 | 0.12 | PASS |
+| precomputed_recon | 4.10 | 0.3912 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

@@ -137,3 +137,19 @@ Three tiers with different random seeds (0/10000/20000) ensure no data leakage b
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3 -- updated 2026-03-10*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| rl_20iter | 35.02 | 0.9965 | 0.04 | PASS |
+| rl_50iter | 35.93 | 0.9972 | 0.11 | PASS |
+| precomputed_wiener | 22.02 | 0.9248 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

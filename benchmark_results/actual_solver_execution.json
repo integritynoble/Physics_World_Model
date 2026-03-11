@@ -1,0 +1,324 @@
+{
+  "timestamp": "2026-03-10T19:25:13.763599",
+  "tier": "public",
+  "gpu_server": "local-gpu-server",
+  "modalities": {
+    "cacti": {
+      "config": "Coded Aperture Compressive Temporal Imaging (CACTI)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_gap_tv() missing 2 required position"
+        },
+        "best_quality": {
+          "status": "error: efficientsci_recon() missing 1 required "
+        },
+        "famous_dl": {
+          "status": "error: elp_recon() missing 1 required positiona"
+        },
+        "small_gpu": {
+          "status": "error: efficientsci_recon() missing 1 required "
+        }
+      }
+    },
+    "confocal_3d": {
+      "config": "Confocal 3D Z-Stack",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_richardson_lucy() missing 2 required"
+        },
+        "best_quality": {
+          "status": "error: not enough values to unpack (expected 3,"
+        },
+        "famous_dl": {
+          "status": "error: not enough values to unpack (expected 3,"
+        },
+        "small_gpu": {
+          "status": "error: not enough values to unpack (expected 3,"
+        }
+      }
+    },
+    "cryo_em": {
+      "config": "Cryo-EM Single Particle Analysis",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "import_error: No module named 'pwm_core.recon.adjoint'"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.pnp_admm"
+        },
+        "relion_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.cryoem_s"
+        }
+      }
+    },
+    "ct": {
+      "config": "X-ray Computed Tomography (CT)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_fbp() missing 1 required positional "
+        },
+        "best_quality": {
+          "status": "error: pnp_admm() missing 3 required positional"
+        },
+        "famous_dl": {
+          "status": "error: argument should be a str or an os.PathLi"
+        },
+        "small_gpu": {
+          "status": "error: argument should be a str or an os.PathLi"
+        }
+      }
+    },
+    "diffusion_mri": {
+      "config": "Diffusion MRI (DTI)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "function_not_found"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.dmri_sol"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.dmri_sol"
+        }
+      }
+    },
+    "endoscopy": {
+      "config": "Fiber Bundle Endoscopy",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "function_not_found"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.endoscop"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.endoscop"
+        }
+      }
+    },
+    "fmri": {
+      "config": "Functional MRI (BOLD fMRI)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "function_not_found"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.fmri_sol"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.fmri_sol"
+        }
+      }
+    },
+    "fundus": {
+      "config": "Fundus Camera",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_richardson_lucy() missing 2 required"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.fundus_s"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.fundus_s"
+        }
+      }
+    },
+    "lightsheet": {
+      "config": "Light-Sheet Fluorescence Microscopy (LSFM)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_lightsheet() missing 2 required posi"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": -29.123037338256836,
+          "ssim": 3.534639063218492e-06,
+          "exec_time_sec": 0.2372119426727295,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": -29.74551010131836,
+          "ssim": 2.8958290840819245e-06,
+          "exec_time_sec": 15.37214469909668,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": -29.841405868530273,
+          "ssim": 2.8992988063691882e-06,
+          "exec_time_sec": 9.58734655380249,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mammography": {
+      "config": "Mammography",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "execution_failed",
+          "exec_time": 0.0
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.mammo_so"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.mammo_so"
+        }
+      }
+    },
+    "mri": {
+      "config": "Magnetic Resonance Imaging (MRI)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "function_not_found"
+        },
+        "best_quality": {
+          "status": "error: The size of tensor a (65536) must match "
+        },
+        "famous_dl": {
+          "status": "error: Expected 3D (unbatched) or 4D (batched) "
+        },
+        "small_gpu": {
+          "status": "error: Expected 3D (unbatched) or 4D (batched) "
+        }
+      }
+    },
+    "oct": {
+      "config": "Optical Coherence Tomography (OCT)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_oct() missing 2 required positional "
+        },
+        "best_quality": {
+          "status": "error: spectral_estimation_recon() missing 2 re"
+        },
+        "famous_dl": {
+          "status": "error: oct_denoising_net_recon() missing 2 requ"
+        },
+        "small_gpu": {
+          "status": "error: oct_denoising_net_recon() missing 2 requ"
+        }
+      }
+    },
+    "palm_storm": {
+      "config": "PALM/STORM Single-Molecule Localization",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_richardson_lucy() missing 2 required"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.smlm_sol"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.smlm_sol"
+        }
+      }
+    },
+    "pet": {
+      "config": "Positron Emission Tomography (PET)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: The truth value of an array with more th"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.pet_solv"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.pet_solv"
+        }
+      }
+    },
+    "sim": {
+      "config": "Structured Illumination Microscopy (SIM)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_sim_reconstruction() missing 2 requi"
+        },
+        "best_quality": {
+          "status": "error: not enough values to unpack (expected 3,"
+        },
+        "famous_dl": {
+          "status": "error: Expected raw_images shape (9, H, W), got"
+        },
+        "small_gpu": {
+          "status": "error: Expected raw_images shape (9, H, W), got"
+        }
+      }
+    },
+    "spect": {
+      "config": "Single Photon Emission CT (SPECT)",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_fbp() missing 2 required positional "
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.spect_so"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.spect_so"
+        }
+      }
+    },
+    "sted": {
+      "config": "STED Microscopy",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_richardson_lucy() missing 2 required"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.sted_sol"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.sted_sol"
+        }
+      }
+    },
+    "two_photon": {
+      "config": "Two-Photon / Multiphoton Microscopy",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "error: run_richardson_lucy() missing 2 required"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.two_phot"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.two_phot"
+        }
+      }
+    },
+    "ultrasound": {
+      "config": "Ultrasound B-mode Imaging",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "function_not_found"
+        },
+        "best_quality": {
+          "status": "import_error: No module named 'pwm_core.recon.us_solve"
+        },
+        "famous_dl": {
+          "status": "import_error: No module named 'pwm_core.recon.us_solve"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_modalities": 19,
+    "completed": 0,
+    "partial": 19,
+    "failed": 0,
+    "total_solvers": 64,
+    "solvers_executed": 3
+  }
+}

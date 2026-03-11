@@ -1,0 +1,2933 @@
+{
+  "timestamp": "2026-03-11T05:45:34.594595",
+  "tier": "public",
+  "gpu_server": "local-gpu-server",
+  "modalities": {
+    "ct": {
+      "description": "X-ray CT (Radon FBP/SART)",
+      "sample": "sample_00",
+      "solvers": {
+        "fbp_ramlak": {
+          "status": "completed",
+          "psnr_db": 12.937403971100732,
+          "ssim": 0.09222529225187637,
+          "exec_time_sec": 0.26999855041503906,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "fbp_shepp_logan": {
+          "status": "completed",
+          "psnr_db": 13.77770941638551,
+          "ssim": 0.10533422769964931,
+          "exec_time_sec": 0.16121506690979004,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "sart_10iter": {
+          "status": "completed",
+          "psnr_db": 13.752569174025137,
+          "ssim": 0.2167558387142721,
+          "exec_time_sec": 53.89896774291992,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mri": {
+      "description": "MRI (k-space ZF/CS/SENSE)",
+      "sample": "sample_00",
+      "solvers": {
+        "zero_filled": {
+          "status": "completed",
+          "psnr_db": 13.005370056392753,
+          "ssim": 0.000367065431345122,
+          "exec_time_sec": 0.10699939727783203,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "cs_mri_wavelet": {
+          "status": "completed",
+          "psnr_db": 13.019412783121256,
+          "ssim": 0.0005570532210324011,
+          "exec_time_sec": 0.05499839782714844,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "sense": {
+          "status": "completed",
+          "psnr_db": 13.04920115970275,
+          "ssim": 0.0010087612511977193,
+          "exec_time_sec": 0.04400038719177246,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "pet": {
+      "description": "PET (Radon FBP)",
+      "sample": "sample_00",
+      "solvers": {
+        "fbp_ramlak": {
+          "status": "completed",
+          "psnr_db": 9.288778445631937,
+          "ssim": 0.1812941449889973,
+          "exec_time_sec": 0.08898425102233887,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "fbp_shepp_logan": {
+          "status": "completed",
+          "psnr_db": 11.85623513760204,
+          "ssim": 0.2680768664605546,
+          "exec_time_sec": 0.06999754905700684,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "precomputed_fbp": {
+          "status": "completed",
+          "psnr_db": 33.08506404719251,
+          "ssim": 0.9324829275308665,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "spect": {
+      "description": "SPECT (Radon FBP)",
+      "sample": "sample_00",
+      "solvers": {
+        "fbp_ramlak": {
+          "status": "completed",
+          "psnr_db": -6.5362632305118,
+          "ssim": 0.010055116976340752,
+          "exec_time_sec": 0.06448483467102051,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "precomputed_fbp": {
+          "status": "completed",
+          "psnr_db": 30.02787253064973,
+          "ssim": 0.9522700325686764,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "ultrasound": {
+      "description": "Ultrasound (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": 14.57397758158663,
+          "ssim": 0.15589105905663062,
+          "exec_time_sec": 0.04600167274475098,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_50iter": {
+          "status": "completed",
+          "psnr_db": 14.121701158938581,
+          "ssim": 0.13227097795809925,
+          "exec_time_sec": 0.10599708557128906,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "oct": {
+      "description": "OCT (B-scan baseline)",
+      "sample": "sample_00",
+      "solvers": {
+        "bscan_baseline": {
+          "status": "completed",
+          "psnr_db": 23.095582438856276,
+          "ssim": 0.9438669905612586,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "bscan_ideal_baseline": {
+          "status": "completed",
+          "psnr_db": 23.480812727168296,
+          "ssim": 0.9481826602077303,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mammography": {
+      "description": "Mammography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_recon": {
+          "status": "completed",
+          "psnr_db": 20.938427803958717,
+          "ssim": 0.8579508979353135,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "fundus": {
+      "description": "Fundus (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": 35.01681807990403,
+          "ssim": 0.9965186413687845,
+          "exec_time_sec": 0.03702998161315918,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_50iter": {
+          "status": "completed",
+          "psnr_db": 35.933355696887304,
+          "ssim": 0.9971903039772616,
+          "exec_time_sec": 0.10599756240844727,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "precomputed_wiener": {
+          "status": "completed",
+          "psnr_db": 22.02134569512479,
+          "ssim": 0.9247518879964355,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "endoscopy": {
+      "description": "Endoscopy (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": 11.753345886349582,
+          "ssim": 0.8796408180463167,
+          "exec_time_sec": 0.041001081466674805,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_50iter": {
+          "status": "completed",
+          "psnr_db": 10.405599527290068,
+          "ssim": 0.8225374194767172,
+          "exec_time_sec": 0.11599946022033691,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "precomputed_recon": {
+          "status": "completed",
+          "psnr_db": 4.102294764976947,
+          "ssim": 0.39119700509397287,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "fmri": {
+      "description": "fMRI (ZF-IFFT)",
+      "sample": "sample_00",
+      "solvers": {
+        "zero_filled": {
+          "status": "completed",
+          "psnr_db": 4.934202998003294,
+          "ssim": -0.5616626415404705,
+          "exec_time_sec": 0.001001596450805664,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "diffusion_mri": {
+      "description": "Diffusion MRI (ZF-IFFT)",
+      "sample": "sample_00",
+      "solvers": {
+        "zero_filled": {
+          "status": "completed",
+          "psnr_db": 11.306746096863012,
+          "ssim": 0.0002378011585592739,
+          "exec_time_sec": 0.0010008811950683594,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "cbct": {
+      "description": "CBCT (cone-beam CT FBP)",
+      "sample": "sample_00",
+      "solvers": {
+        "fbp_ramlak": {
+          "status": "completed",
+          "psnr_db": 14.926546733548719,
+          "ssim": 0.3496297515447885,
+          "exec_time_sec": 0.0782170295715332,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "fbp_shepp_logan": {
+          "status": "completed",
+          "psnr_db": 15.186315425883809,
+          "ssim": 0.359269803816129,
+          "exec_time_sec": 0.07111144065856934,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "asl_mri": {
+      "description": "ASL-MRI (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 2.6580336141048533,
+          "ssim": 0.06360293082235867,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mrs": {
+      "description": "MRS (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 1.8839657659222757,
+          "ssim": 0.06756008121066513,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mr_fingerprinting": {
+      "description": "MR Fingerprinting (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 1.8401990779997932,
+          "ssim": 0.06925507686982164,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mr_elastography": {
+      "description": "MR Elastography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 6.010122753592645,
+          "ssim": 0.09839759530123164,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "mra": {
+      "description": "MRA (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 12.104552560035035,
+          "ssim": 0.2673004057523916,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "swi": {
+      "description": "SWI (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 1.93688944664972,
+          "ssim": 0.06769789869301299,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "pet_ct": {
+      "description": "PET-CT (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 12.979102112836765,
+          "ssim": 0.06561281908433404,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "pet_mr": {
+      "description": "PET-MR (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 10.982444011464569,
+          "ssim": 0.01651610930799081,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "spect_ct": {
+      "description": "SPECT-CT (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 11.376801244026819,
+          "ssim": 0.02392343530617076,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "spectral_ct": {
+      "description": "Spectral CT (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 12.302682267743394,
+          "ssim": 0.11060569842544023,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "industrial_ct": {
+      "description": "Industrial CT (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.32736909144504,
+          "ssim": 0.4046260500779923,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "cryo_em": {
+      "description": "Cryo-EM (Wiener CTF)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_wiener": {
+          "status": "completed",
+          "psnr_db": 19.21416659100229,
+          "ssim": 0.030002761646683092,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_ctf_20iter": {
+          "status": "completed",
+          "psnr_db": 13.182112936697322,
+          "ssim": 0.4136145489236108,
+          "exec_time_sec": 0.22924542427062988,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "sem": {
+      "description": "SEM (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 15.748024149149426,
+          "ssim": 0.7926389367812356,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "tem": {
+      "description": "TEM (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 25.303889730154346,
+          "ssim": 0.9189901638595288,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "widefield": {
+      "description": "Widefield (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 24.98050648039458,
+          "ssim": 0.9091464835393525,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "confocal_3d": {
+      "description": "Confocal 3D (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 17.82944217740503,
+          "ssim": 0.05299803799479855,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": -26.42189932635125,
+          "ssim": 3.329797374379176e-06,
+          "exec_time_sec": 0.04151511192321777,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "lightsheet": {
+      "description": "Lightsheet (RL + destripe)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.027917184133965,
+          "ssim": 0.055276888597578476,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": -33.41054878263301,
+          "ssim": 5.075111112816595e-07,
+          "exec_time_sec": 0.04900050163269043,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "fourier_notch": {
+          "status": "completed",
+          "psnr_db": -28.208220643045653,
+          "ssim": 4.046367722438262e-06,
+          "exec_time_sec": 0.0019996166229248047,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "palm_storm": {
+      "description": "PALM/STORM (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 32.42483578333186,
+          "ssim": 0.6093945833700448,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": 32.42352121940429,
+          "ssim": 0.5903872565229928,
+          "exec_time_sec": 0.0429990291595459,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "sim": {
+      "description": "SIM (Wiener-SIM)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 21.58491676500691,
+          "ssim": 0.18629698028619723,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "wiener_sim": {
+          "status": "completed",
+          "psnr_db": 6.156497645729728,
+          "ssim": 0.017402243229524002,
+          "exec_time_sec": 0.2562131881713867,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "sted": {
+      "description": "STED (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 24.97651417704388,
+          "ssim": 0.8484374287540541,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": -38.33169845934657,
+          "ssim": 1.415231407765941e-06,
+          "exec_time_sec": 0.04199528694152832,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "two_photon": {
+      "description": "Two-photon (RL deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 33.757301427415406,
+          "ssim": 0.9866967907655719,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "rl_20iter": {
+          "status": "completed",
+          "psnr_db": -46.98321578941571,
+          "ssim": 1.2512076634830001e-06,
+          "exec_time_sec": 0.04200291633605957,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "eels": {
+      "description": "EELS (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 24.59267704569467,
+          "ssim": 0.9841516336740214,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "cacti": {
+      "description": "CACTI (coded aperture)",
+      "sample": "sample_00",
+      "solvers": {
+        "mask_division_baseline": {
+          "status": "completed",
+          "psnr_db": 7.010808898444944,
+          "ssim": 0.35543592122868756,
+          "exec_time_sec": 0.010003089904785156,
+          "result_shape": [
+            256,
+            256,
+            8
+          ]
+        },
+        "gap_tv": {
+          "status": "completed",
+          "psnr_db": 4.006367176276797,
+          "ssim": 0.12164963868012968,
+          "exec_time_sec": 0.4278876781463623,
+          "result_shape": [
+            256,
+            256,
+            8
+          ]
+        }
+      }
+    },
+    "holography": {
+      "description": "Holography (phase retrieval)",
+      "sample": "sample_00",
+      "solvers": {
+        "sqrt_intensity_amplitude": {
+          "status": "completed",
+          "psnr_db": -20.069429913078185,
+          "ssim": 0.00026676181519937335,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "ptychography": {
+      "description": "Ptychography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.97032956859026,
+          "ssim": 0.2840697758181307,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        },
+        "precomputed_phase_baseline": {
+          "status": "completed",
+          "psnr_db": 10.456209533521882,
+          "ssim": -0.005926966652826474,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "lensless": {
+      "description": "Lensless (Wiener deconv)",
+      "sample": "sample_00",
+      "solvers": {
+        "wiener_deconv": {
+          "status": "completed",
+          "psnr_db": 11.813345739967335,
+          "ssim": 0.0030742186369461942,
+          "exec_time_sec": 0.009555339813232422,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "gaussian_splatting": {
+      "description": "Gaussian Splatting (alpha-blend)",
+      "sample": "sample_00",
+      "solvers": {
+        "direct_render_baseline": {
+          "status": "completed",
+          "psnr_db": 0.0,
+          "ssim": 0.0,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256,
+            3
+          ]
+        }
+      }
+    },
+    "fpm": {
+      "description": "FPM (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 16.93586085844713,
+          "ssim": 0.794340735484399,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "odt": {
+      "description": "ODT (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 25.45725949812219,
+          "ssim": 0.9509347776411209,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "phase_retrieval": {
+      "description": "Phase Retrieval (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 12.507680641811394,
+          "ssim": -0.16696027661980214,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "sd_cassi": {
+      "description": "SD-CASSI (coded aperture)",
+      "sample": "sample_00",
+      "solvers": {
+        "spectral_shift_baseline": {
+          "status": "completed",
+          "psnr_db": -5.25962064159825,
+          "ssim": 0.009283576324687935,
+          "exec_time_sec": 0.00800466537475586,
+          "result_shape": [
+            256,
+            256,
+            28
+          ]
+        }
+      }
+    },
+    "spc_kronecker": {
+      "description": "SPC Kronecker (backprojection)",
+      "sample": "sample_00",
+      "solvers": {
+        "backprojection_baseline": {
+          "status": "completed",
+          "psnr_db": -19.335793280382447,
+          "ssim": -0.0007360671204685594,
+          "exec_time_sec": 0.0010027885437011719,
+          "result_shape": [
+            231,
+            231
+          ]
+        }
+      }
+    },
+    "sar": {
+      "description": "SAR (Lee filter baseline)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 17.308291676202934,
+          "ssim": 0.7045993514459153,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "insar": {
+      "description": "InSAR (phase unwrapping)",
+      "sample": "sample_00",
+      "solvers": {
+        "wrapped_phase_baseline": {
+          "status": "completed",
+          "psnr_db": 31.82601725491643,
+          "ssim": 0.9933033104252641,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "multispectral_sat": {
+      "description": "Multispectral Sat (pansharpening)",
+      "sample": "sample_00",
+      "solvers": {
+        "bicubic_upsample": {
+          "status": "completed",
+          "psnr_db": 10.792840672342638,
+          "ssim": 0.1001571361310646,
+          "exec_time_sec": 0.011003971099853516,
+          "result_shape": [
+            8,
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "photoacoustic": {
+      "description": "Photoacoustic (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 19.1144378875572,
+          "ssim": 0.2489816548922698,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "light_field": {
+      "description": "Light Field (shift-add)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 27.258427091306746,
+          "ssim": 0.9439010269033867,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "acoustic_emission": {
+      "description": "Acoustic Emission (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.209412305400885,
+          "ssim": 0.07407403903396118,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "acoustic_microscopy": {
+      "description": "Acoustic Microscopy (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 10.043346643454187,
+          "ssim": -0.03838335837190647,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "active_thermography": {
+      "description": "Active Thermography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 6.538901661230957,
+          "ssim": 0.18970217352394061,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "adaptive_optics": {
+      "description": "Adaptive Optics (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 100.0,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "afm": {
+      "description": "Afm (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 19.005450634822004,
+          "ssim": 0.8536910956659212,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "angiography": {
+      "description": "Angiography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 11.215241351905254,
+          "ssim": 0.04348315454935022,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "atom_probe": {
+      "description": "Atom Probe (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 40.227346837664456,
+          "ssim": 0.9878211045410842,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "bioluminescence_tomo": {
+      "description": "Bioluminescence Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 13.296728056178104,
+          "ssim": 0.3430735806765426,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "brachytherapy_img": {
+      "description": "Brachytherapy Img (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.47656145015287,
+          "ssim": 0.23744601492034423,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "brillouin": {
+      "description": "Brillouin (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 35.83961950732156,
+          "ssim": 0.9958938785265653,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "cars": {
+      "description": "Cars (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 14.188326871997996,
+          "ssim": 0.0040291203007212124,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "cathodoluminescence": {
+      "description": "Cathodoluminescence (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 28.870350943942245,
+          "ssim": 0.9771636782416234,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "cest_mri": {
+      "description": "Cest Mri (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 31.004454985839153,
+          "ssim": 0.9859163628100619,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ceus": {
+      "description": "Ceus (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 24.52595148804765,
+          "ssim": 0.9206115622598742,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "clem": {
+      "description": "Clem (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 16.99579929036323,
+          "ssim": 0.7296769516902292,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            2
+          ]
+        }
+      }
+    },
+    "coded_exposure": {
+      "description": "Coded Exposure (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 19.86375345744031,
+          "ssim": 0.8073443157724907,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "confocal_endomicroscopy": {
+      "description": "Confocal Endomicroscopy (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 34.03191895926324,
+          "ssim": 0.9926691547137342,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "confocal_livecell": {
+      "description": "Confocal Livecell (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 31.34129513199722,
+          "ssim": 0.9869580108954256,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "coronagraphy": {
+      "description": "Coronagraphy (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 25.170591000850298,
+          "ssim": 0.20283891870179246,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "cryo_et": {
+      "description": "Cryo Et (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 8.44093946524413,
+          "ssim": 0.20372292174383091,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "ct_fluorescence": {
+      "description": "Ct Fluorescence (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": -37.64339942893784,
+          "ssim": 0.00021514831933055358,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "cup": {
+      "description": "Cup (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": -2.3409983629834294,
+          "ssim": 0.12017286107658848,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            8
+          ]
+        }
+      }
+    },
+    "dark_field": {
+      "description": "Dark Field (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 25.114112710339747,
+          "ssim": 0.9780781497601863,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "desi": {
+      "description": "Desi (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 15.126994649310259,
+          "ssim": 0.31301763096537555,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            10
+          ]
+        }
+      }
+    },
+    "dexa": {
+      "description": "Dexa (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 9.525856122289515,
+          "ssim": 0.2549836475186295,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "dic": {
+      "description": "Dic (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 10.859326542915085,
+          "ssim": -0.3388098234972992,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "digital_breast_tomo": {
+      "description": "Digital Breast Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": -36.035727789709014,
+          "ssim": 0.0001239573390250492,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "dna_paint": {
+      "description": "Dna Paint (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 28.534167456119217,
+          "ssim": 0.3551931518269785,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ebsd": {
+      "description": "Ebsd (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 21.815826076881777,
+          "ssim": 0.9676907837885007,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "eddy_current": {
+      "description": "Eddy Current (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 4.793142348634091,
+          "ssim": -0.08105319175200337,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "edx_mapping": {
+      "description": "Edx Mapping (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 21.966223800154985,
+          "ssim": 0.9307392416094338,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            3
+          ]
+        }
+      }
+    },
+    "eht_imaging": {
+      "description": "Eht Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 11.292424140644226,
+          "ssim": 0.039352726345510264,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "elastography": {
+      "description": "Elastography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 5.69012482342933,
+          "ssim": 0.00906995383355033,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "electron_diffraction": {
+      "description": "Electron Diffraction (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 42.00870997710859,
+          "ssim": 0.9901071882180255,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "electron_holography": {
+      "description": "Electron Holography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 9.511759738030074,
+          "ssim": -0.04814639586029428,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "electron_tomography": {
+      "description": "Electron Tomography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 19.28274012374,
+          "ssim": 0.9418680583925323,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "entangled_photon": {
+      "description": "Entangled Photon (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 31.815913467990583,
+          "ssim": 0.9687679803866165,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "event_camera": {
+      "description": "Event Camera (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 7.297455637478576,
+          "ssim": 0.05740420788555329,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "expansion": {
+      "description": "Expansion (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 33.330260889672466,
+          "ssim": 0.9823233677833043,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "fib_sem": {
+      "description": "Fib Sem (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 28.112146659282846,
+          "ssim": 0.9862145588090605,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "flash_lidar": {
+      "description": "Flash Lidar (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 4.251161333995383,
+          "ssim": -0.6336779581260964,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "flim": {
+      "description": "Flim (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 30.73896606600354,
+          "ssim": 0.9901250824764158,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "fluoroscopy": {
+      "description": "Fluoroscopy (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 43.47893673403968,
+          "ssim": 0.9996951837294252,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ftir_imaging": {
+      "description": "Ftir Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 14.77838379951866,
+          "ssim": 0.805821669161232,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64,
+            10
+          ]
+        }
+      }
+    },
+    "fwi": {
+      "description": "Fwi (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 8.73386945410308,
+          "ssim": 0.012454176795730174,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ghost_imaging": {
+      "description": "Ghost Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 6.6318696567265265,
+          "ssim": 0.19473344490253816,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "gpr": {
+      "description": "Gpr (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 10.599914212811878,
+          "ssim": 0.005936323092899747,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "gravitational_wave": {
+      "description": "Gravitational Wave (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 100.0,
+          "ssim": 0.8665799226005546,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            1,
+            4096
+          ]
+        }
+      }
+    },
+    "hdr_imaging": {
+      "description": "Hdr Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 36.82181633907203,
+          "ssim": 0.8232394613627749,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "hyperspectral_remote": {
+      "description": "Hyperspectral Remote (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.14795409682707,
+          "ssim": 0.9767790086892757,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64,
+            20
+          ]
+        }
+      }
+    },
+    "impedance_tomo": {
+      "description": "Impedance Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 11.20409524822274,
+          "ssim": 0.3123782079316228,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "integral": {
+      "description": "Integral (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 40.01772076907841,
+          "ssim": 0.9989557902313388,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ism": {
+      "description": "Ism (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": -50.055408840714065,
+          "ssim": 8.958366041207635e-07,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ivus": {
+      "description": "Ivus (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 19.833237855981277,
+          "ssim": 0.8902302447551332,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "lattice_lightsheet": {
+      "description": "Lattice Lightsheet (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 21.32865025822892,
+          "ssim": 0.7758514938204188,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "libs": {
+      "description": "Libs (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 18.019727951815653,
+          "ssim": 0.5986816468147498,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            5
+          ]
+        }
+      }
+    },
+    "lidar": {
+      "description": "Lidar (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 32.55565313179782,
+          "ssim": 0.9955240020935174,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "lucky_imaging": {
+      "description": "Lucky Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.224493030963803,
+          "ssim": 0.9745748633445049,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "machine_vision": {
+      "description": "Machine Vision (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 26.48334787548969,
+          "ssim": 0.9622400165154195,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "magnetic_particle": {
+      "description": "Magnetic Particle (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 26.49478285797452,
+          "ssim": 0.9576312537152415,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "maldi_msi": {
+      "description": "Maldi Msi (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 26.30480998519056,
+          "ssim": 0.9418464754174302,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            5
+          ]
+        }
+      }
+    },
+    "matrix": {
+      "description": "Matrix (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 22.039008286601465,
+          "ssim": 0.6949216965771108,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "mfm": {
+      "description": "Mfm (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 34.328357853427775,
+          "ssim": 0.28705914745773575,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "minflux": {
+      "description": "Minflux (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.52151241891702,
+          "ssim": 0.4336484442039709,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "muon_tomo": {
+      "description": "Muon Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 5.170571567991801,
+          "ssim": -0.012752595469030521,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "nerf": {
+      "description": "Nerf (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 28.98732692512002,
+          "ssim": 0.9912815688137723,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            3
+          ]
+        }
+      }
+    },
+    "neutron_diffraction": {
+      "description": "Neutron Diffraction (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 8.549294257804464,
+          "ssim": 0.01157990990494998,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "neutron_tomo": {
+      "description": "Neutron Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": -5.656222195442334,
+          "ssim": 0.05026467406453109,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "nirs_brain": {
+      "description": "Nirs Brain (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 14.483889961522463,
+          "ssim": 0.8760657574062657,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "nsom": {
+      "description": "Nsom (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 19.634687240689274,
+          "ssim": 0.7327509708141897,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ocean_acoustic_tomo": {
+      "description": "Ocean Acoustic Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 5.622708339044987,
+          "ssim": 0.6714418220312314,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "ocean_color": {
+      "description": "Ocean Color (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 44.104943329202754,
+          "ssim": 0.9997797832668883,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            4
+          ]
+        }
+      }
+    },
+    "octa": {
+      "description": "Octa (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 16.78187022740087,
+          "ssim": 0.43261990485954505,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "panorama": {
+      "description": "Panorama (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 15.070518342874458,
+          "ssim": 0.6417924508196653,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            512
+          ]
+        }
+      }
+    },
+    "particle_calorimetry": {
+      "description": "Particle Calorimetry (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 36.19143690055017,
+          "ssim": 0.7914234798874491,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "passive_microwave": {
+      "description": "Passive Microwave (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 9.186164826771558,
+          "ssim": 0.5946184364841393,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "phase_contrast": {
+      "description": "Phase Contrast (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 45.55682791029868,
+          "ssim": 0.9991142733713925,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "photometric_stereo": {
+      "description": "Photometric Stereo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.00712954836809,
+          "ssim": 0.9582507392361365,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "polarization": {
+      "description": "Polarization (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 15.831247812753343,
+          "ssim": 0.6264645261842546,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "polsar": {
+      "description": "Polsar (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 3.45041210468887,
+          "ssim": -0.017474110433156387,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "portal_imaging": {
+      "description": "Portal Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 10.492217222992316,
+          "ssim": 0.40876369203715507,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "proton_radiography": {
+      "description": "Proton Radiography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 4.1127788983312135,
+          "ssim": -2.3406481335306713e-06,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "proton_therapy_img": {
+      "description": "Proton Therapy Img (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 17.845971272009812,
+          "ssim": 0.7117420820912451,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "pump_probe": {
+      "description": "Pump Probe (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 18.238507032029887,
+          "ssim": 0.7781366147941838,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            8
+          ]
+        }
+      }
+    },
+    "quantum_illumination": {
+      "description": "Quantum Illumination (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.217759950761018,
+          "ssim": 0.7859402863544432,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "radio_astronomy": {
+      "description": "Radio Astronomy (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 16.054398199579747,
+          "ssim": 0.28757552253684665,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "radio_interferometry": {
+      "description": "Radio Interferometry (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 23.24768680016504,
+          "ssim": 0.20289749916615119,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "raman_imaging": {
+      "description": "Raman Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 14.111813253788092,
+          "ssim": 0.21494300352176193,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            5
+          ]
+        }
+      }
+    },
+    "saxs": {
+      "description": "Saxs (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 8.417815272401402,
+          "ssim": 0.05420934041669299,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "seismic_tomo": {
+      "description": "Seismic Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 9.049640943641204,
+          "ssim": 0.509923548223913,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "shearography": {
+      "description": "Shearography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 8.01897874142875,
+          "ssim": -0.0010615979695528057,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "shg": {
+      "description": "Shg (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 23.03204150181397,
+          "ssim": 0.797355353763175,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "sims": {
+      "description": "Sims (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.499265466581956,
+          "ssim": 0.9749171584692603,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            3
+          ]
+        }
+      }
+    },
+    "solar_imaging": {
+      "description": "Solar Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 28.3668035579788,
+          "ssim": 0.9958260482920834,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            256,
+            256
+          ]
+        }
+      }
+    },
+    "sonar": {
+      "description": "Sonar (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 10.321504368055017,
+          "ssim": 0.5148617220824548,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "spinning_disk": {
+      "description": "Spinning Disk (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 30.610423283106158,
+          "ssim": 0.9835406048246477,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "srs": {
+      "description": "Srs (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.080936276618257,
+          "ssim": 0.9778980017334801,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            4
+          ]
+        }
+      }
+    },
+    "stem": {
+      "description": "Stem (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.967503793322177,
+          "ssim": 0.9276266361033197,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "stm": {
+      "description": "Stm (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 17.888758989227235,
+          "ssim": 0.8025176739407374,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "streak_camera": {
+      "description": "Streak Camera (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 14.292326345534281,
+          "ssim": 0.11143212801322744,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            64
+          ]
+        }
+      }
+    },
+    "structured_light": {
+      "description": "Structured Light (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 7.957772177784816,
+          "ssim": -0.02868708164958549,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "talbot_lau": {
+      "description": "Talbot Lau (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 6.583662591977484,
+          "ssim": 0.12056276838399625,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "terahertz": {
+      "description": "Terahertz (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 37.10174288824599,
+          "ssim": 0.9962728925270373,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "three_photon": {
+      "description": "Three Photon (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.80203398109768,
+          "ssim": 0.8418841644097307,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "tirf": {
+      "description": "Tirf (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 31.242221604684456,
+          "ssim": 0.6215947474550757,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "tof_camera": {
+      "description": "Tof Camera (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 41.99012961768957,
+          "ssim": 0.9994328916068641,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "ultrasonic_phased_array": {
+      "description": "Ultrasonic Phased Array (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 29.595661945094754,
+          "ssim": 0.689068239621471,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "us_mri": {
+      "description": "Us Mri (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 7.564928079517893,
+          "ssim": -0.06938096476532958,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "waxs": {
+      "description": "Waxs (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 20.62939513334912,
+          "ssim": 0.06938011147744268,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "weather_radar": {
+      "description": "Weather Radar (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 26.850028095774356,
+          "ssim": 0.9154726021701743,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "widefield_lowdose": {
+      "description": "Widefield Lowdose (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 18.844277385818433,
+          "ssim": 0.6755489778217713,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "xfel_sfx": {
+      "description": "Xfel Sfx (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 24.080317818854994,
+          "ssim": 0.9752646860253864,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "xray_crystallography": {
+      "description": "Xray Crystallography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 22.371901547189886,
+          "ssim": 0.0651069849808154,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "xray_ndt": {
+      "description": "Xray Ndt (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 16.71786630151408,
+          "ssim": 0.8429676342516338,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "xray_radiography": {
+      "description": "Xray Radiography (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 26.31356715753634,
+          "ssim": 0.9843864826730935,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128
+          ]
+        }
+      }
+    },
+    "xrf_imaging": {
+      "description": "Xrf Imaging (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 22.11375705143017,
+          "ssim": 0.9625758774337542,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            128,
+            128,
+            3
+          ]
+        }
+      }
+    },
+    "xrf_tomo": {
+      "description": "Xrf Tomo (precomputed)",
+      "sample": "sample_00",
+      "solvers": {
+        "precomputed_baseline": {
+          "status": "completed",
+          "psnr_db": 15.639221131455098,
+          "ssim": 0.8430939090928884,
+          "exec_time_sec": 0.0,
+          "result_shape": [
+            64,
+            64,
+            3
+          ]
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_modalities": 166,
+    "completed": 166,
+    "partial": 0,
+    "failed": 0,
+    "total_solvers": 190,
+    "solvers_passed": 190
+  }
+}

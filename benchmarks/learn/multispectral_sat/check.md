@@ -81,3 +81,17 @@ where y_MS is the observed multispectral radiance in band b, PSF_sat is the sate
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| bicubic_upsample | 10.79 | 0.1002 | 0.01 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

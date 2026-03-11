@@ -1,0 +1,861 @@
+{
+  "timestamp": "2026-03-10T18:56:24.275347",
+  "gpu_server_id": "local-gpu-server",
+  "framework": "PWM5 Benchmark Testing",
+  "modalities": {
+    "cacti": {
+      "config": "Coded Aperture Compressive Temporal Imaging (CACTI)",
+      "category": "Compressive Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cacti\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cacti\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cacti\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "cbct": {
+      "config": "Cone-Beam Computed Tomography (CBCT)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": false,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cbct\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cbct\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cbct\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "confocal_3d": {
+      "config": "Confocal 3D Z-Stack",
+      "category": "Microscopy",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\confocal_3d\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\confocal_3d\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\confocal_3d\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "cryo_em": {
+      "config": "Cryo-EM Single Particle Analysis",
+      "category": "Scientific Instrumentation",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "relion_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cryo_em\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cryo_em\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\cryo_em\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "ct": {
+      "config": "X-ray Computed Tomography (CT)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ct\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ct\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ct\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "diffusion_mri": {
+      "config": "Diffusion MRI (DTI)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\diffusion_mri\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\diffusion_mri\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\diffusion_mri\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "endoscopy": {
+      "config": "Fiber Bundle Endoscopy",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\endoscopy\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\endoscopy\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\endoscopy\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "fmri": {
+      "config": "Functional MRI (BOLD fMRI)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fmri\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fmri\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fmri\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "fundus": {
+      "config": "Fundus Camera",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fundus\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fundus\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\fundus\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "lightsheet": {
+      "config": "Light-Sheet Fluorescence Microscopy (LSFM)",
+      "category": "Microscopy",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\lightsheet\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\lightsheet\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\lightsheet\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "mammography": {
+      "config": "Mammography",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mammography\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mammography\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mammography\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "mri": {
+      "config": "Magnetic Resonance Imaging (MRI)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mri\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mri\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\mri\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "oct": {
+      "config": "Optical Coherence Tomography (OCT)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\oct\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\oct\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\oct\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "palm_storm": {
+      "config": "PALM/STORM Single-Molecule Localization",
+      "category": "Microscopy",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\palm_storm\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\palm_storm\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\palm_storm\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "pet": {
+      "config": "Positron Emission Tomography (PET)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\pet\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\pet\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\pet\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "sim": {
+      "config": "Structured Illumination Microscopy (SIM)",
+      "category": "Microscopy",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl",
+        "small_gpu"
+      ],
+      "num_solvers": 4,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sim\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sim\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sim\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "spect": {
+      "config": "Single Photon Emission CT (SPECT)",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\spect\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\spect\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\spect\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "sted": {
+      "config": "STED Microscopy",
+      "category": "Microscopy",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sted\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sted\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\sted\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "two_photon": {
+      "config": "Two-Photon / Multiphoton Microscopy",
+      "category": "Microscopy",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\two_photon\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\two_photon\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\two_photon\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    },
+    "ultrasound": {
+      "config": "Ultrasound B-mode Imaging",
+      "category": "Medical Imaging",
+      "solvers": [
+        "traditional_cpu",
+        "best_quality",
+        "famous_dl"
+      ],
+      "num_solvers": 3,
+      "tiers": {
+        "public": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ultrasound\\public",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "public"
+          }
+        },
+        "dev": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ultrasound\\dev",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "dev"
+          }
+        },
+        "hidden": {
+          "exists": true,
+          "path": "D:\\onedrive\\startup\\program\\physics_world_model\\PWM5\\Physics_World_Model\\datasets\\benchmark\\ultrasound\\hidden",
+          "metrics": {
+            "status": "ready",
+            "samples": 52,
+            "has_data": true,
+            "tier": "hidden"
+          }
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_datasets": 59,
+    "total_solvers": 67,
+    "total_tests": 201,
+    "ready_for_testing": 59,
+    "pending_implementation": 0
+  }
+}

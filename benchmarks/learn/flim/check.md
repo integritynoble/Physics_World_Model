@@ -117,3 +117,17 @@ FLIM is correctly modeled as a Poisson deconvolution problem on TCSPC histograms
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/flim_challenge_public.h5` — Uploaded
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/flim_challenge_dev.h5` — Uploaded
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/flim_challenge_hidden.h5` — Uploaded
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| precomputed_baseline | 30.74 | 0.9901 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

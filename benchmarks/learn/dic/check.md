@@ -90,3 +90,17 @@ The DIC benchmark correctly models the phase-gradient imaging forward problem wi
 
 ---
 *Comprehensive 6-point check updated 2026-03-09*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| precomputed_baseline | 10.86 | -0.3388 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

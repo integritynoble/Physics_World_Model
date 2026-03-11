@@ -1,88 +1,134 @@
-# Comprehensive 6-Point Check — Scanning Electron Microscopy
+# SEM Benchmark Dataset -- Generation Check
 
-**URL:** https://pwm.platformai.org/benchmark/sem
-**Check Date:** 2026-03-06
+**Generated:** 2026-03-11
 **Status:** PASS
 
 ---
 
-## 1. Physics & Forward Model
+## Dataset Summary
 
-**Modality:** Scanning Electron Microscopy (SEM)
+| Tier | Samples | Seed | HDF5 Size |
+|------|---------|------|-----------|
+| Public | 12 | 0 | 11 MB |
+| Dev | 20 | 10000 | 16 MB |
+| Hidden | 20 | 20000 | 16 MB |
 
-**Physical principle:** In SEM, a focused electron beam is raster-scanned across a sample surface; the primary electrons interact with atoms in the sample via elastic and inelastic scattering. Secondary electrons (SE, < 50 eV) emitted from the near-surface region (< 5 nm) provide topographic contrast, while backscattered electrons (BSE, > 50 eV) convey compositional (Z-contrast) information. The detected signal at each pixel position is a convolution of the incident electron probe function with the material response function, blurred by the interaction volume and detector geometry. Resolution enhancement (deconvolution) or super-resolution from multiple-tilt acquisitions is the primary inverse problem.
+Image size: 256x256, pixel size: 5 nm, FOV: 1.28 um x 1.28 um
 
-**Forward model:**
+---
+
+## Forward Model
+
 ```
-I(x, y) = ∫∫ PSF(x-x', y-y'; E_0, Z, ρ) · S(x', y') dx' dy' + n
-
-where:
-  I(x, y)     — detected SE/BSE signal intensity at scan position (x,y)
-  PSF(·)      — electron probe × interaction volume convolution kernel (varies with E_0, material Z, density ρ)
-  S(x', y')   — true sample surface/material property map (topography or composition)
-  E_0         — primary beam energy (1–30 kV)
-  Z, ρ        — atomic number and density of sample material
-  n           — Poisson counting noise + electronic noise
+y = Poisson(eta * (BSE_yield(Z,theta) * PSF(x) + SE_yield * edge_enhancement))
+    * detector_response + readout_noise
 ```
 
-**Inverse problem:** Recover the true surface/material property map S(x,y) from the measured SEM signal I(x,y) by deconvolving the effective PSF; alternatively, reconstruct super-resolved images from multiple low-dose SEM frames.
+**Physics components:**
+- **BSE yield:** Heinrich/Reuter empirical polynomial as function of atomic number Z
+- **SE yield:** Sternglass (1957) model, peaks at low beam energies
+- **PSF:** Probe size (Schottky FEG) + SE escape depth + spherical/chromatic aberrations from working distance
+- **Edge enhancement:** Sobel gradient magnitude for topographic contrast
+- **Detector response:** Everhart-Thornley cosine-law collection geometry
+- **Noise:** Poisson shot noise (mean count ~2500 at 50 pA) + Gaussian readout (sigma=3.0)
+- **Charging artifacts:** Low-frequency brightness shift + horizontal banding + pixel displacement
 
 ---
 
-## 2. Mismatch Parameters & Benchmark Structure
+## Mismatch Parameters
 
-**Spec notation:** P(focused electron beam, E_0) → F(SE/BSE emission from interaction volume) → D(Everhart-Thornley SE detector)
-
-**Key mismatch parameters:**
-- `beam_energy`: primary electron energy E_0; nominal 5 kV, perturbed to 10 kV (larger interaction volume, worse resolution)
-- `beam_current`: probe current controlling dose; nominal 100 pA, perturbed to 10 pA (shot-noise-limited)
-- `working_distance`: sample-to-objective lens distance affecting aberrations; nominal 5 mm, perturbed to 10 mm
-- `sample_charging`: insulating sample charging affecting PSF and image shift; nominal absent (conductive coating), perturbed to moderate charging
-
-**Dataset format:**
-- `x_true: (H, W)` — ground truth surface property map (topography height or BSE composition) at high spatial resolution (pixel = 1–5 nm)
-- `y: (H, W)` — acquired SEM image (SE or BSE signal), blurred by probe PSF and degraded by shot noise
+| Parameter | Public | Dev | Hidden |
+|-----------|--------|-----|--------|
+| beam_voltage_kV | 5-15 | 3-20 | 1-30 |
+| working_distance_mm | 3-8 | 2-12 | 1-15 |
+| detector_bias | 0.8-1.2 | 0.6-1.4 | 0.4-1.6 |
+| charging_artifact | 0-0.05 | 0-0.15 | 0-0.30 |
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard
+## Phantom Types
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| Richardson-Lucy deconvolution | Classical | Richardson, J. Opt. Soc. Am. 62, 55–59 (1972) | Iterative Poisson-noise-adapted deconvolution of SEM images using estimated PSF |
-| Wiener filter deconvolution | Classical | Wiener, Extrapolation, Interpolation, and Smoothing of Stationary Time Series (1949) | Frequency-domain deconvolution with Wiener regularization; fast and stable |
-| BM3D + deconvolution | Classical | Dabov et al., IEEE Trans. Image Proc. 16, 2080–2095 (2007) | Block-matching 3D denoising followed by deconvolution; state-of-art for additive noise |
-| SEM-DNN (super-resolution) | Deep Learning | Ede & Beanland, npj Computational Materials 7, 12 (2021) | CNN trained on paired low/high-dose SEM image stacks for dose-efficient imaging |
-| ESRGAN / Real-ESRGAN for SEM | Deep Learning | Wang et al., ECCV Workshop (2018) | Generative adversarial super-resolution adapted to SEM texture statistics |
-| Noise2Void / Noise2Self | Self-supervised DL | Krull et al., CVPR (2019); Batson & Royer, ICML (2019) | Self-supervised denoising requiring no clean SEM reference images |
+| Type | Count/Tier | Description | Z_primary |
+|------|-----------|-------------|-----------|
+| Semiconductor | 3 | Lines, contacts, vias, trenches (IC surface) | Si (14) |
+| Fracture | 3 | Multi-scale rough topography, crack features | Fe (26) |
+| Nanoparticles | 3 | High-Z particles (Au, Ag, Pt, Cu, Pb) on flat substrate | Si (14) |
+| Biological | 3 | Cell membranes, organelles, fibers (tissue cross-section) | O (8) |
 
 ---
 
-## 4. Literature & State of the Art (2024–2025)
+## CPU Baseline Results
 
-1. **Ede (2024)** "Adaptive SEM imaging with deep reinforcement learning for dose-efficient material characterization," *npj Computational Materials* — RL agent adaptively allocates electron dose for optimal information per unit dose.
-2. **Truong et al. (2024)** "Foundation model for electron microscopy images: from SEM to TEM," *Nature Methods* — large-scale ViT pretrained on 10M+ electron microscope images; fine-tuned on SEM segmentation and super-resolution.
-3. **Liu et al. (2025)** "Diffusion model for SEM noise removal and resolution enhancement," *Microscopy and Microanalysis* — score-based diffusion conditioned on acquisition parameters for universal SEM enhancement.
-4. **Madsen et al. (2024)** "Deep learning inversion of SEM-EDX maps for compositional imaging," *Ultramicroscopy* — joint SEM-EDX data fusion network for sub-nm compositional mapping.
+**Algorithm:** Gaussian denoising + Wiener deconvolution + edge-preserving adaptive smoothing
+
+| Tier | Mean PSNR (dB) | Mean SSIM | Min PSNR | Max PSNR |
+|------|---------------|-----------|----------|----------|
+| Public | 26.12 | 0.957 | 14.92 | 34.03 |
+| Dev | 27.04 | 0.970 | 14.91 | 34.46 |
+| Hidden | 26.82 | 0.968 | 19.46 | 36.77 |
+
+**Per-phantom-type breakdown (public tier):**
+
+| Type | PSNR Range (dB) | SSIM Range |
+|------|----------------|------------|
+| Semiconductor | 26.0-29.3 | 0.974-0.983 |
+| Fracture | 27.2-28.6 | 0.962-0.964 |
+| Nanoparticles | 31.1-34.0 | 0.992-0.993 |
+| Biological | 14.9-18.6 | 0.867-0.917 |
+
+**Note:** Biological phantoms score lower due to complex fine structure (organelles, membranes, fibers) that is challenging for simple denoising.
+
+---
+
+## HDF5 Structure
+
+```
+sample_XX/
+  x_true                  (256, 256) float32  -- Ground truth surface/material map [0, 1]
+  y                       (256, 256) float32  -- Measured SEM image (normalized) [0, 1]
+  H_ideal                 (256, 256) float32  -- Ideal system response (noiseless) [0, 1]
+  reconstruction_baseline (256, 256) float32  -- NLM+Wiener baseline reconstruction
+```
 
 ---
 
-## 5. Local Dataset & GCS Status
+## GCS Upload
 
-**GCS datasets:**
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/sem_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/sem_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/sem_challenge_hidden.h5`
-
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/sem/`.
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/sem/public/sem_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/sem/dev/sem_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/sem/hidden/sem_challenge_hidden.h5`
 
 ---
 
-## 6. Comprehensive Assessment
+## Gallery Images
 
-**Status:** PASS
-
-SEM imaging is well-grounded in the electron-matter interaction physics with a convolution forward model (probe PSF × surface response). Algorithm routing correctly spans classical deconvolution methods (Richardson-Lucy, Wiener), BM3D denoising, deep learning super-resolution (SEM-DNN, ESRGAN), and self-supervised approaches (Noise2Void). The four mismatch parameters (beam energy, beam current, working distance, sample charging) capture the dominant sources of PSF variation and noise in practical SEM experiments.
+4 scenes in `platform/pwm_platform/static/img/benchmark_gallery/sem/scene_0{0-3}/`:
+- `gt.png` -- ground truth
+- `measurement_I.png` -- measured SEM image (noisy)
+- `measurement_II.png` -- ideal system response
+- `recon_I.png` -- baseline reconstruction
+- `recon_II.png` -- |GT - recon| difference
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+
+## Verification Checks
+
+1. **Tier separation:** Each tier uses different seeds (0, 10000, 20000) with different phantom variants and augmentation parameters. No shared phantoms across tiers.
+2. **Forward model physics:** BSE yield follows Heinrich empirical polynomial; SE yield follows Sternglass model; PSF based on Schottky FEG probe diameter.
+3. **Baseline quality:** Mean PSNR ~22-28 dB across tiers (target range achieved).
+4. **Data integrity:** All HDF5 files load correctly with expected shapes and dtypes.
+5. **GCS upload:** All three tier HDF5 files uploaded to `gs://pwm-benchmark-datasets/datasets/Benchmark/sem/`.
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| precomputed_baseline | 15.75 | 0.7926 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

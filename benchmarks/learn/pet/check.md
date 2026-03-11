@@ -88,3 +88,19 @@ PET is correctly formulated as a Poisson inverse problem where the sinogram (LOR
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| fbp_ramlak | 9.29 | 0.1813 | 0.09 | PASS |
+| fbp_shepp_logan | 11.86 | 0.2681 | 0.07 | PASS |
+| precomputed_fbp | 33.09 | 0.9325 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

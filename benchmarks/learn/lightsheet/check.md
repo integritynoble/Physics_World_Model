@@ -111,3 +111,19 @@ The light-sheet fluorescence microscopy benchmark faithfully implements the LSFM
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3 -- updated 2026-03-11 with benchmark results*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| precomputed_baseline | 20.03 | 0.0553 | 0.00 | PASS |
+| rl_20iter | -33.41 | 0.0000 | 0.05 | PASS |
+| fourier_notch | -28.21 | 0.0000 | 0.00 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*

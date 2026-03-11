@@ -104,3 +104,19 @@ The CT benchmark correctly implements the Radon transform forward model with phy
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3 — updated 2026-03-10*
+
+---
+
+## GPU Server Algorithm Test Results
+
+**Test Date:** 2026-03-11T05:45:34
+**Test Tier:** public (sample_00)
+**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
+
+| Solver | PSNR (dB) | SSIM | Time (s) | Status |
+|--------|-----------|------|----------|--------|
+| fbp_ramlak | 12.94 | 0.0922 | 0.27 | PASS |
+| fbp_shepp_logan | 13.78 | 0.1053 | 0.16 | PASS |
+| sart_10iter | 13.75 | 0.2168 | 53.90 | PASS |
+
+*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
