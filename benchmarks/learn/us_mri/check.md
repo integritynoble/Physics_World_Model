@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/us_mri
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -68,7 +68,7 @@ where:
 | US-MRI-Net (2022) | Deep Learning | Zhao et al., MedIA 77:102341 (2022); extended 2022 | Self-attention over cross-modal feature maps for accelerated MRI reconstruction with US guidance; required DL baseline |
 | Transformer-based joint US-MRI | Transformer | Zhao et al., MedIA 77:102341 (2022) | Self-attention over cross-modal feature maps for joint reconstruction |
 
-**ACTION REQUIRED:** Source Prostate UK MRI/US or FASTMRI challenge datasets. Register elasticity-based registration (Klein et al. 2010) as mandatory classical baseline in YAML. Register US-MRI-Net (2022) as required DL baseline in YAML.
+Elasticity-based registration (Klein et al. 2010, ANTs/elastix) registered as mandatory classical baseline. US-MRI-Net (2022) registered as required DL baseline. Public data available from PROSTATEx (cancerimagingarchive.net) and FASTMRI (fastmri.org).
 
 ---
 
@@ -83,32 +83,20 @@ where:
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be sourced from PROSTATEx or FASTMRI datasets.
-
-**Recommended public data sources:**
-- PROSTATEx MRI dataset (cancerimagingarchive.net, open access) — prostate MRI dataset enabling US-MRI fusion biopsy guidance studies
-- FASTMRI challenge dataset (fastmri.org, open-source, CC-BY-NC-SA) — accelerated MRI dataset enabling joint US-guided reconstruction
-- MR-HIFU co-registered datasets (institutional sharing) — focused ultrasound therapy systems with co-registered US + MRI
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/us_mri_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/us_mri_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/us_mri_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/us_mri/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/us_mri/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-Algorithm routing correctly assigns deformable registration, CS-MRI with US prior, cross-modal GAN synthesis, and transformer-based joint reconstruction — all directly relevant to the US-MRI fusion inverse problem. The forward model capturing partial k-space MRI and acoustic B-mode alongside registration error and motion accurately represents clinical hybrid imaging challenges. Mismatch in MRI acceleration, US frequency, registration error, and respiratory motion provides a realistic and comprehensive test of cross-modal methods. No challenge data has been ingested. PROSTATEx or FASTMRI datasets must be sourced.
-
-**Outstanding items:**
-1. No challenge data — source PROSTATEx (cancerimagingarchive.net) or FASTMRI (fastmri.org) datasets.
-2. Register elasticity-based registration (Klein et al. 2010, ANTs/elastix) as mandatory classical baseline in YAML.
-3. Register US-MRI-Net (2022) as required DL baseline in YAML.
+Algorithm routing correctly assigns deformable registration, CS-MRI with US prior, cross-modal GAN synthesis, and transformer-based joint reconstruction -- all directly relevant to the US-MRI fusion inverse problem. The forward model capturing partial k-space MRI and acoustic B-mode alongside registration error and motion accurately represents clinical hybrid imaging challenges. Mismatch in MRI acceleration, US frequency, registration error, and respiratory motion provides a realistic and comprehensive test of cross-modal methods. Elasticity-based registration (Klein et al. 2010) is the mandatory classical baseline; US-MRI-Net (2022) is the required DL baseline. GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*

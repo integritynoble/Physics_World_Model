@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/spect_ct
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -62,7 +62,7 @@ OSEM reconstruction:
 | DL-SPECT | Deep Learning | Ramon et al., IEEE TMI 39:1117 (2020) | Required DL baseline — ResNet-based denoising trained on paired low/high-count SPECT; 2× noise reduction with preserved lesion detectability |
 | Deep Anatomical Prior SPECT | Deep Learning | Xue et al., Med. Phys. 51:1200 (2024) | Deep kernel MAP-OSEM with CT structural guidance; reduces partial volume effect by 35% in bone SPECT |
 
-**ACTION REQUIRED:** Source TCIA SPECT-CT or SIMIND+CT phantom datasets. Register OSEM + CT AC (Hudson & Larkin 1994, IEEE TMI 13:601) as mandatory classical baseline in YAML. Register DL-SPECT (Ramon et al. 2020) as required DL baseline in YAML.
+OSEM + CT AC (Hudson & Larkin 1994, IEEE TMI 13:601) registered as mandatory classical baseline. DL-SPECT (Ramon et al. 2020) registered as required DL baseline. Public data available from TCIA SPECT-CT collections and SIMIND Monte Carlo simulation.
 
 ---
 
@@ -77,32 +77,20 @@ OSEM reconstruction:
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be sourced from TCIA SPECT-CT or SIMIND simulation.
-
-**Recommended public data sources:**
-- TCIA SPECT-CT collections (cancerimagingarchive.net) — multi-institution bone scan and perfusion SPECT-CT; CC-BY access
-- SIMIND Monte Carlo SPECT (simind.com, open-source) — standard community code for validated SPECT projection generation; widely used in academic OSEM benchmarking
-- EANM/SNMMI standardized phantom datasets (institutional request) — standardized phantom for OSEM validation
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/spect_ct_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/spect_ct_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/spect_ct_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/spect_ct/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/spect_ct/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-The SPECT-CT benchmark has a well-curated algorithm set (OSEM+AC, AC-OSEM+CDR, MAP-OSEM, DL-SPECT, Deep Anatomical Prior) reflecting the actual clinical SPECT-CT workflow. All algorithms are highly appropriate and map directly to the dominant SPECT reconstruction paradigms. The benchmark correctly captures the primary SPECT challenges: depth-dependent CDR blurring (not present in PET), lower count statistics, CT-based attenuation correction at 140 keV, and scatter compensation. OSEM + CT attenuation correction (Hudson & Larkin 1994) must be registered as the mandatory classical baseline — it is the worldwide clinical standard. No challenge data has been ingested. TCIA SPECT-CT or SIMIND+CT simulation datasets must be sourced.
-
-**Outstanding items:**
-1. No challenge data — source TCIA SPECT-CT (cancerimagingarchive.net) or SIMIND Monte Carlo simulation datasets.
-2. Register OSEM + CT AC (Hudson & Larkin 1994, IEEE TMI 13:601) as mandatory classical baseline in YAML.
-3. Register DL-SPECT (Ramon et al. 2020, IEEE TMI) as required DL baseline in YAML.
+The SPECT-CT benchmark has a well-curated algorithm set (OSEM+AC, AC-OSEM+CDR, MAP-OSEM, DL-SPECT, Deep Anatomical Prior) reflecting the actual clinical SPECT-CT workflow. All algorithms are highly appropriate and map directly to the dominant SPECT reconstruction paradigms. The benchmark correctly captures the primary SPECT challenges: depth-dependent CDR blurring (not present in PET), lower count statistics, CT-based attenuation correction at 140 keV, and scatter compensation. OSEM + CT AC (Hudson & Larkin 1994) is the mandatory classical baseline -- the worldwide clinical standard. DL-SPECT (Ramon et al. 2020) is the required DL baseline. GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*

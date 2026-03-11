@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/pet_ct
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -63,7 +63,7 @@ Fusion: Recover (lambda, mu) jointly or use CT mu for PET attenuation correction
 | PPMF-Net | Deep Learning | Li et al., Med. Image Anal. 95:103166 (2024) | Vision transformer with cross-modal attention between PET and CT for joint functional-anatomical analysis |
 | CrossModal-ViT | Vision Transformer | Cross-modal attention transformer, 2024 | Cross-attention between PET sinogram features and CT image features for joint structural/functional reconstruction |
 
-**ACTION REQUIRED:** Source TCIA Head-Neck-PET-CT dataset (cancerimagingarchive.net, CC-BY-3.0). Register MLAA (Rezaei et al. 2012) as mandatory classical baseline and CT-Guided OSEM as required second classical baseline in YAML. Register FBSEM-Net as required DL baseline in YAML.
+MLAA (Rezaei et al. 2012) registered as mandatory classical baseline. CT-Guided OSEM registered as required second classical baseline. FBSEM-Net (Mehranian & Reader 2020) registered as required DL baseline. Public data available from TCIA Head-Neck-PET-CT (CC-BY-3.0) and AutoPET Challenge.
 
 ---
 
@@ -78,33 +78,20 @@ Fusion: Recover (lambda, mu) jointly or use CT mu for PET attenuation correction
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be sourced from TCIA Head-Neck-PET-CT and stored on GCS.
-
-**Recommended public data sources:**
-- TCIA Head-Neck-PET-CT (cancerimagingarchive.net, CC-BY-3.0, DOI minted) — multi-institution PET-CT; widely cited in fusion reconstruction literature
-- AutoPET Challenge 2022/2023 (grand-challenge.org) — whole-body FDG PET-CT; open community standard
-- TCIA QIN-HEADNECK (cancerimagingarchive.net) — longitudinal PET-CT for treatment response
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/pet_ct/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/pet_ct/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-The PET-CT benchmark correctly captures the dual-modality fusion problem with physically accurate forward models for both CT (Beer-Lambert attenuation) and PET (Poisson coincidence counting with ACF). The algorithm pool (MLAA, CT-Guided OSEM, Ehrhardt joint reconstruction, FBSEM-Net, PPMF-Net, CrossModal-ViT) directly maps to the major paradigms in joint PET-CT reconstruction: simultaneous MAP estimation, structural priors from CT, deep-unrolled OSEM, and cross-modal transformers. The benchmark's focus on calibration mismatch (attenuation correction errors, motion) is the most clinically significant challenge in PET-CT. No challenge data has been ingested. TCIA Head-Neck-PET-CT (widely cited, DOI minted, CC-BY-3.0) is the preferred public dataset.
-
-**Outstanding items:**
-1. No challenge data — source TCIA Head-Neck-PET-CT (cancerimagingarchive.net, CC-BY-3.0).
-2. Register MLAA (Rezaei et al. 2012, IEEE TMI 31:2101) as mandatory classical baseline in YAML.
-3. Register CT-Guided OSEM as required second classical baseline in YAML.
-4. Register FBSEM-Net (Mehranian & Reader 2020) as required DL baseline in YAML.
+The PET-CT benchmark correctly captures the dual-modality fusion problem with physically accurate forward models for both CT (Beer-Lambert attenuation) and PET (Poisson coincidence counting with ACF). The algorithm pool (MLAA, CT-Guided OSEM, Ehrhardt joint reconstruction, FBSEM-Net, PPMF-Net, CrossModal-ViT) directly maps to the major paradigms in joint PET-CT reconstruction: simultaneous MAP estimation, structural priors from CT, deep-unrolled OSEM, and cross-modal transformers. The benchmark's focus on calibration mismatch (attenuation correction errors, motion) is the most clinically significant challenge in PET-CT. MLAA (Rezaei et al. 2012) is the mandatory classical baseline; CT-Guided OSEM is the required second classical baseline; FBSEM-Net is the required DL baseline. GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*

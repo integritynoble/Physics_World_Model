@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/adaptive_optics
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -61,7 +61,7 @@ where:
 | AO-Transformer | Transformer | Wavefront sensing transformer, 2023 | Self-attention over Zernike modal coefficients |
 | DiffusionAO | Diffusion | Score-based diffusion for wavefront reconstruction, 2024 | Score-based posterior sampling for wavefront estimation |
 
-**ACTION REQUIRED:** Source VLT SPHERE/GRAVITY ESO archive data or AOTools simulation datasets. Register SCIDAR Zernike LS (Noll 1976, JOSA 66:207) as mandatory classical baseline in YAML. Register AO-Net (2022) as required DL baseline in YAML.
+SCIDAR Zernike LS (Noll 1976, JOSA 66:207) registered as mandatory classical baseline. AO-Net (2022) registered as required DL baseline. Public data available from VLT SPHERE/GRAVITY ESO archive and AOTools simulation library.
 
 ---
 
@@ -76,32 +76,20 @@ where:
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be sourced from ESO archive or AOTools simulations.
-
-**Recommended public data sources:**
-- VLT SPHERE open data (ESO Science Archive, archive.eso.org) — wavefront sensor telemetry from on-sky AO operations; ESO programme IDs with public status
-- NAOS/NACO AO telemetry (ESO Archive) — historical on-sky wavefront measurements from VLT
-- AOTools Python package (github.com/AOtools) — reference Kolmogorov wavefront simulation library for generating training and test datasets
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/adaptive_optics_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/adaptive_optics_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/adaptive_optics_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/adaptive_optics/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/adaptive_optics/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-Adaptive optics wavefront sensing is correctly modeled as a linear slope-to-phase inversion with Kolmogorov turbulence priors. The algorithm pool (Zernike LS, Fried zonal, PnP-ADMM, WFNet, AO-Net, LIFT-Net, AO-Transformer, DiffusionAO) spans the full range from canonical analytical reconstructors through state-of-the-art deep learning wavefront estimators, all directly applicable to the Hartmann-Shack sensor forward model. The phantom generator (Kolmogorov turbulence wavefront phase from Zernike modes with Noll power spectrum) is physically grounded. No challenge data from real instruments has been ingested. ESO SPHERE/GRAVITY archive data or AOTools-generated datasets must be sourced.
-
-**Outstanding items:**
-1. No challenge data from real instruments — source ESO SPHERE open data or generate with AOTools.
-2. Register SCIDAR Zernike LS (Noll 1976, JOSA 66:207) as mandatory classical baseline in YAML.
-3. Register AO-Net (2022, extended from Orban de Xivry 2021) as required DL baseline in YAML.
+Adaptive optics wavefront sensing is correctly modeled as a linear slope-to-phase inversion with Kolmogorov turbulence priors. The algorithm pool (Zernike LS, Fried zonal, PnP-ADMM, WFNet, AO-Net, LIFT-Net, AO-Transformer, DiffusionAO) spans the full range from canonical analytical reconstructors through state-of-the-art deep learning wavefront estimators, all directly applicable to the Hartmann-Shack sensor forward model. The phantom generator (Kolmogorov turbulence wavefront phase from Zernike modes with Noll power spectrum) is physically grounded. SCIDAR Zernike LS (Noll 1976) is the mandatory classical baseline; AO-Net (2022) is the required DL baseline. GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*

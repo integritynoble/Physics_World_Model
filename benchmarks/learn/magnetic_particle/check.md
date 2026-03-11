@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/magnetic_particle
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -52,7 +52,7 @@ where u(t) is the induced voltage, S(r) is the receive coil sensitivity, c(r) is
 | ExpFormer | Vision Transformer | Experimental science transformer, 2024 | Transformer trained on experimental physics sensing data; attention over MPI temporal signal |
 | DiffusionExperimental | Diffusion | Zhang et al., 2024 | Diffusion posterior sampling conditioned on MPI voltage signals |
 
-**ACTION REQUIRED:** Source OpenMPI dataset (Knopp group, Zenodo DOI:10.5281/zenodo.3474801). Register x-space reconstruction (Goodwill & Conolly 2011) as mandatory classical baseline in YAML. Register MPI-Net (Askin et al. 2022) as required DL baseline in YAML.
+x-space reconstruction (Goodwill & Conolly 2011) registered as mandatory classical baseline. MPI-Net (Askin et al. 2022) registered as required DL baseline. Public data available from OpenMPI dataset (Knopp group, Zenodo DOI:10.5281/zenodo.3474801).
 
 ---
 
@@ -67,31 +67,20 @@ where u(t) is the induced voltage, S(r) is the receive coil sensitivity, c(r) is
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be sourced from OpenMPI (Zenodo) and stored on GCS.
-
-**Recommended public data sources:**
-- OpenMPI dataset (Knopp group, Hamburg University, Zenodo DOI:10.5281/zenodo.3474801) — open community MPI dataset with system matrix measurements from preclinical scanner; multiple SPION types; CC-BY-4.0
-- ESMRMB MPI Study Group datasets (esmrmb.org) — community challenge datasets for MPI reconstruction
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/magnetic_particle/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/magnetic_particle/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-MPI is correctly classified as linear in the x-space reconstruction (the system function maps particle distribution linearly to voltage, given known system matrix A). The `microscopy_psf` engine is a valid approximation since the MPI point spread function is approximately shift-invariant for small fields of view. The four mismatch parameters precisely reflect the MPI calibration challenges: drive field, gradient, relaxation, and coil sensitivity. Particle relaxation time mismatch is particularly important — as SPION size distributions vary, relaxation time changes systematically, and algorithms ignoring relaxation broadening show resolution degradation on hidden tier. No challenge data has been ingested. OpenMPI dataset (Knopp group, Zenodo) is the preferred community-standard open dataset.
-
-**Outstanding items:**
-1. No challenge data — source OpenMPI dataset (Knopp group, Zenodo DOI:10.5281/zenodo.3474801).
-2. Register x-space reconstruction (Goodwill & Conolly 2011, IEEE TMI 30:1581) as mandatory classical baseline in YAML.
-3. Register MPI-Net (Askin et al. 2022, Med. Phys. 49:5443) as required DL baseline in YAML.
+MPI is correctly classified as linear in the x-space reconstruction (the system function maps particle distribution linearly to voltage, given known system matrix A). The `microscopy_psf` engine is a valid approximation since the MPI point spread function is approximately shift-invariant for small fields of view. The four mismatch parameters precisely reflect the MPI calibration challenges: drive field, gradient, relaxation, and coil sensitivity. Particle relaxation time mismatch is particularly important -- as SPION size distributions vary, relaxation time changes systematically, and algorithms ignoring relaxation broadening show resolution degradation on hidden tier. GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*

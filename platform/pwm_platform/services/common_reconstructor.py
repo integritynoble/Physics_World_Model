@@ -101,9 +101,9 @@ _MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
     # Nuclear imaging: sinogram + angles + mu_map
     "pet": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"], "mu_map": ["attenuation_map", "mu_map"]},
     "spect": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"], "mu_map": ["attenuation_map", "mu_map"]},
-    "pet_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "pet_ct": {"y": ["sinogram_measured", "sinogram", "y", "y_ct"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "pet_mr": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
-    "spect_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "spect_ct": {"y": ["y_ct", "y_spect", "sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "muon_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "neutron_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "proton_radiography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
@@ -135,7 +135,7 @@ _MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
 # Modality sets for reconstruction routing
 _SINOGRAM_MODALITIES: set[str] = {
     "ct", "cbct", "pet", "spect", "mammography", "industrial_ct", "spectral_ct",
-    "pet_ct", "pet_mr", "spect_ct", "muon_tomo", "neutron_tomo",
+    "pet_mr", "spect_ct", "muon_tomo", "neutron_tomo",
     "xray_radiography", "fluoroscopy", "angiography", "digital_breast_tomo",
     "ct_fluorescence", "brachytherapy_img", "portal_imaging", "proton_therapy_img",
     "proton_radiography", "dexa", "xray_ndt",
@@ -353,9 +353,41 @@ def _normalize_01(arr: np.ndarray) -> np.ndarray:
     return arr - lo
 
 
+def _match_shapes(a: np.ndarray, b: np.ndarray) -> tuple:
+    """Ensure two display arrays have compatible shapes for metric comparison."""
+    if a.shape == b.shape:
+        return a, b
+    # RGB vs grayscale mismatch
+    if a.ndim == 3 and a.shape[-1] == 3 and b.ndim == 2:
+        a = np.mean(a, axis=-1)
+    elif b.ndim == 3 and b.shape[-1] == 3 and a.ndim == 2:
+        b = np.mean(b, axis=-1)
+    # Spatial size mismatch — resize smaller to larger
+    if a.shape != b.shape and a.ndim == 2 and b.ndim == 2:
+        from PIL import Image
+
+        target = a
+        source = b
+        if a.size < b.size:
+            target, source = b, a
+        img = Image.fromarray(
+            ((source - source.min()) / max(source.max() - source.min(), 1e-8) * 255
+             ).astype(np.uint8)
+        )
+        img = img.resize((target.shape[1], target.shape[0]), Image.BILINEAR)
+        source = img_arr = np.array(img).astype(np.float64) / 255.0
+        source = source * (target.max() - target.min()) + target.min()
+        if a.size < b.size:
+            a = source
+        else:
+            b = source
+    return a, b
+
+
 def _compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
     xt = _normalize_01(_to_2d_display(x_true))
     xr = _normalize_01(_to_2d_display(x_recon))
+    xt, xr = _match_shapes(xt, xr)
     if xt.shape != xr.shape:
         return 0.0
     mse = np.mean((xt - xr) ** 2)
@@ -370,6 +402,7 @@ def _compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 
         xt = _normalize_01(_to_2d_display(x_true))
         xr = _normalize_01(_to_2d_display(x_recon))
+        xt, xr = _match_shapes(xt, xr)
         if xt.shape != xr.shape:
             return 0.0
         mc = xt.ndim == 3 and xt.shape[-1] == 3
@@ -655,45 +688,64 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
         return y_f
     y_n = (y_f - lo) / (hi - lo)
 
+    # For multichannel (RGB) images, use TV (fast) instead of NLM (very slow)
+    is_mc = y_n.ndim == 3 and y_n.shape[-1] == 3
+
+    def _fast_nlm(img, h=0.08, ps=7, pd=11):
+        """NLM with per-channel processing for multichannel speed."""
+        from skimage.restoration import denoise_nl_means
+
+        if img.ndim == 3 and img.shape[-1] == 3:
+            return np.stack([
+                denoise_nl_means(
+                    img[:, :, c], h=h, fast_mode=True,
+                    patch_size=min(ps, 5), patch_distance=min(pd, 7),
+                )
+                for c in range(3)
+            ], axis=-1)
+        return denoise_nl_means(
+            img, h=h, fast_mode=True, patch_size=ps, patch_distance=pd,
+        )
+
     if "tv" in algo_lower and "nlm" not in algo_lower:
         try:
             from skimage.restoration import denoise_tv_chambolle
 
-            recon = denoise_tv_chambolle(y_n, weight=0.08, max_num_iter=200)
+            recon = denoise_tv_chambolle(
+                y_n, weight=0.08, max_num_iter=200,
+                channel_axis=2 if is_mc else None,
+            )
             return np.clip(recon, 0, 1) * (hi - lo) + lo
         except ImportError:
             pass
 
     if "nlm" in algo_lower or "non-local" in algo_lower:
         try:
-            from skimage.restoration import denoise_nl_means
-
-            recon = denoise_nl_means(
-                y_n, h=0.08, fast_mode=True, patch_size=7, patch_distance=11
-            )
+            recon = _fast_nlm(y_n, h=0.08, ps=7, pd=11)
             return np.clip(recon, 0, 1) * (hi - lo) + lo
         except ImportError:
             pass
 
     if "bm3d" in algo_lower or "bm4d" in algo_lower:
-        # BM3D not in standard sklearn — use strong NLM as substitute
         try:
-            from skimage.restoration import denoise_nl_means
-
-            recon = denoise_nl_means(
-                y_n, h=0.06, fast_mode=True, patch_size=7, patch_distance=13
-            )
+            recon = _fast_nlm(y_n, h=0.06, ps=7, pd=13)
             return np.clip(recon, 0, 1) * (hi - lo) + lo
         except ImportError:
             pass
 
     if any(kw in algo_lower for kw in ("wiener", "deconv", "richardson", "rl")):
-        # Redirect to deconvolution
         return _deconv_reconstruct(y, algo_name)
 
-    # Default: NLM + light TV
+    # Default: TV for multichannel (fast), NLM+TV for grayscale
     try:
-        from skimage.restoration import denoise_nl_means, denoise_tv_chambolle
+        from skimage.restoration import denoise_tv_chambolle
+
+        if is_mc:
+            recon = denoise_tv_chambolle(
+                y_n, weight=0.05, max_num_iter=200, channel_axis=2,
+            )
+            return np.clip(recon, 0, 1) * (hi - lo) + lo
+        from skimage.restoration import denoise_nl_means
 
         recon = denoise_nl_means(
             y_n, h=0.08, fast_mode=True, patch_size=5, patch_distance=11
@@ -818,9 +870,14 @@ def _detect_recon_type(
         # Has complex H_ideal → holography
         if H is not None and np.iscomplexobj(H):
             return "phase_retrieval"
-        # Has 2D matrix H_ideal → compressive sensing
+        # Has 2D matrix H_ideal → compressive sensing (only if large enough)
         if H is not None and H.ndim == 2 and not np.iscomplexobj(H):
-            return "matrix_inverse"
+            h_max = max(H.shape)
+            y_max = max(y.shape) if y.ndim >= 2 else y.shape[0]
+            if h_max > 64 or h_max >= y_max:
+                return "matrix_inverse"
+            # Small kernel H_ideal is a PSF → deconvolution
+            return "deconvolution"
         # 1D H_ideal (angles) → sinogram
         if H is not None and H.ndim == 1:
             return "sinogram"
@@ -860,6 +917,14 @@ def _dispatch_reconstruction(
         raise ValueError("No measurement data found")
 
     psf_kernel = data.get("psf")
+
+    # Detect small-kernel H_ideal as PSF (e.g. raman_imaging with 13x13 kernel)
+    if H is not None and H.ndim == 2 and not np.iscomplexobj(H):
+        h_size = max(H.shape)
+        y_size = max(y.shape) if y.ndim >= 2 else y.shape[0]
+        if h_size <= 64 and y_size > h_size * 2:
+            # H_ideal is a PSF kernel, not a forward matrix
+            psf_kernel = H
 
     # Upgrade denoise → deconvolution if PSF data is available
     if recon_type == "denoise" and psf_kernel is not None:

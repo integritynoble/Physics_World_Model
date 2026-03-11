@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/particle_calorimetry
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -63,7 +63,7 @@ Shower simulation: E_true → shower(Geant4/Pythia) → E
 | CaloFlow (2021) | Deep Learning | Kruse et al., SciPost Phys. 12:064 (2022) | Normalizing flow for fast calorimeter simulation; required DL baseline; 1000× faster than Geant4 at matched quality |
 | CaloDiffusion / CaloScore | Diffusion | Mikuni & Nachman, Phys. Rev. D 106:092009 (2022) | Score-based/diffusion generative model for fast calorimeter shower simulation; state-of-the-art on CaloChallenge |
 
-**ACTION REQUIRED:** Source CaloChallenge 2022 dataset (Zenodo DOI:10.5281/zenodo.6366271) or CERN Open Data CMS simulation samples. Register Geant4 (Agostinelli et al. 2003) as mandatory reference baseline and PandoraPFA as mandatory classical reconstruction baseline in YAML. Register CaloFlow (2021) as required DL baseline in YAML.
+Geant4 (Agostinelli et al. 2003) registered as mandatory reference baseline. PandoraPFA (Marshall et al. 2013) registered as mandatory classical reconstruction baseline. CaloFlow (2021) registered as required DL baseline. Public data available from CaloChallenge 2022 (Zenodo DOI:10.5281/zenodo.6366271) and CERN Open Data Portal.
 
 ---
 
@@ -78,33 +78,20 @@ Shower simulation: E_true → shower(Geant4/Pythia) → E
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be sourced from CaloChallenge (Zenodo) or CERN Open Data Portal.
-
-**Recommended public data sources:**
-- CaloChallenge 2022 dataset (Zenodo DOI:10.5281/zenodo.6366271) — open community benchmark for fast calorimeter simulation; CC-BY-4.0; DOI minted; widely cited
-- CERN Open Data Portal (opendata.cern.ch) — CMS and ATLAS open simulation datasets with DOI-minted releases
-- HepSim repository (hepsim.phys.uiowa.edu) — open-access simulated HEP event collections
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/particle_calorimetry_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/particle_calorimetry_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/particle_calorimetry_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/particle_calorimetry/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/particle_calorimetry/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-Particle calorimetry is correctly formulated as both an inverse reconstruction problem (recovering incident particle properties from 3D shower images) and a generative simulation problem (producing realistic shower shapes conditioned on particle type and energy). The algorithm routing from Geant4 reference / PandoraPFA particle flow through CaloFlow normalizing flows to CaloDiffusion correctly represents the rapidly evolving state of deep learning for calorimeter physics. The mismatch parameters (energy range, noise level, pileup, sampling uniformity) reflect the primary challenges at the HL-LHC and future collider systems. No challenge data has been ingested. CaloChallenge 2022 (Zenodo, DOI minted, CC-BY-4.0) is the preferred community-standard open dataset.
-
-**Outstanding items:**
-1. No challenge data — source CaloChallenge 2022 (Zenodo DOI:10.5281/zenodo.6366271) or CERN Open Data CMS samples.
-2. Register Geant4 (Agostinelli et al. 2003, NIM A 506:250) as mandatory reference baseline in YAML.
-3. Register PandoraPFA (Marshall et al. 2013) as mandatory classical reconstruction baseline in YAML.
-4. Register CaloFlow (2021) as required DL baseline in YAML.
+Particle calorimetry is correctly formulated as both an inverse reconstruction problem (recovering incident particle properties from 3D shower images) and a generative simulation problem (producing realistic shower shapes conditioned on particle type and energy). The algorithm routing from Geant4 reference / PandoraPFA particle flow through CaloFlow normalizing flows to CaloDiffusion correctly represents the rapidly evolving state of deep learning for calorimeter physics. The mismatch parameters (energy range, noise level, pileup, sampling uniformity) reflect the primary challenges at the HL-LHC and future collider systems. Geant4 (Agostinelli et al. 2003) is the mandatory reference baseline; PandoraPFA is the mandatory classical reconstruction baseline; CaloFlow (2021) is the required DL baseline. GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*
