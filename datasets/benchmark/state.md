@@ -11,7 +11,7 @@ Last updated: 2026-03-11 — 166 modalities with datasets, 168 with YAML configs
 Reference leaderboard: https://pwm.platformai.org/benchmark
 Total algorithms on leaderboard: 1,367 across 168 modalities
 
-## Quick Status Table
+## Priority 1 — Core Medical & Imaging
 
 | Modality | Dataset | Tested | Best PSNR | YAML Algos | Leaderboard Ref | Speclab |
 |----------|---------|--------|-----------|------------|-----------------|---------|

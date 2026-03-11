@@ -55,8 +55,8 @@ data/
 *.hdf5
 # Allow SPC sampling matrices
 !papers/inversenet/data/spc/sampling_matrix/*.mat
-# Allow benchmark dataset files
-!platform/pwm_platform/static/benchmark-data/**/*.h5
+# Benchmark dataset files served from GCS (not stored in repo)
+# Download: gsutil -m rsync -r gs://pwm-benchmark-datasets/datasets/Benchmark/ datasets/benchmark/
 
 # Large binary data (model checkpoints, datasets, run artifacts)
 # All heavy datasets stored in GCS: gs://pwm-benchmark-datasets/
