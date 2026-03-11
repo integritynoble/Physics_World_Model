@@ -88,7 +88,7 @@ _MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
     "cbct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
     "mammography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
     "industrial_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
-    "spectral_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "spectral_ct": {"y": ["y_high", "y_low", "sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "xray_radiography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
     "fluoroscopy": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
     "angiography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
