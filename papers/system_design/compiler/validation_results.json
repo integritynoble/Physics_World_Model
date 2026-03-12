@@ -1,0 +1,619 @@
+[
+  {
+    "modality": "brillouin",
+    "valid": true,
+    "canonical_chain": "M -> R -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.56,
+    "expected_chain": "M -> R -> D",
+    "carrier": "photon",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "cacti",
+    "valid": true,
+    "canonical_chain": "M -> D -> D",
+    "canonical_match": false,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "CanonicalChain: Canonical chain mismatch: expected ['M', 'Sigma', 'D'], got ['M', 'D', 'D']",
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.72,
+    "expected_chain": "M -> Sigma -> D",
+    "carrier": "photon",
+    "validation_level": "full"
+  },
+  {
+    "modality": "cassi",
+    "valid": true,
+    "canonical_chain": "M -> W -> D -> D",
+    "canonical_match": false,
+    "node_count": 4,
+    "depth": 6,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "CanonicalChain: Canonical chain mismatch: expected ['M', 'W', 'Sigma', 'D'], got ['M', 'W', 'D', 'D']",
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.39,
+    "expected_chain": "M -> W -> Sigma -> D",
+    "carrier": "photon",
+    "validation_level": "full"
+  },
+  {
+    "modality": "cbct",
+    "valid": true,
+    "canonical_chain": "Pi -> Lambda -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.49,
+    "expected_chain": "Pi -> Lambda -> D",
+    "carrier": "xray",
+    "validation_level": "template"
+  },
+  {
+    "modality": "compton",
+    "valid": true,
+    "canonical_chain": "M -> R -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.27,
+    "expected_chain": "M -> R -> D",
+    "carrier": "xray",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "ct",
+    "valid": true,
+    "canonical_chain": "Pi -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.36,
+    "expected_chain": "Pi -> D",
+    "carrier": "xray",
+    "validation_level": "full"
+  },
+  {
+    "modality": "ct_polychromatic",
+    "valid": true,
+    "canonical_chain": "Pi -> Lambda -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.68,
+    "expected_chain": "Pi -> Lambda -> D",
+    "carrier": "xray",
+    "validation_level": "template"
+  },
+  {
+    "modality": "dexa",
+    "valid": true,
+    "canonical_chain": "M -> Pi -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.42,
+    "expected_chain": "M -> Pi -> D",
+    "carrier": "xray",
+    "validation_level": "template"
+  },
+  {
+    "modality": "doppler_us",
+    "valid": true,
+    "canonical_chain": "P -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.27,
+    "expected_chain": "P -> D",
+    "carrier": "acoustic",
+    "validation_level": "template"
+  },
+  {
+    "modality": "dot",
+    "valid": true,
+    "canonical_chain": "M -> R -> P -> R -> D",
+    "canonical_match": true,
+    "node_count": 5,
+    "depth": 7,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.38,
+    "expected_chain": "M -> R -> P -> R -> D",
+    "carrier": "photon",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "elastography",
+    "valid": true,
+    "canonical_chain": "P -> P -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.29,
+    "expected_chain": "P -> P -> D",
+    "carrier": "acoustic",
+    "validation_level": "template"
+  },
+  {
+    "modality": "electron_ptycho",
+    "valid": true,
+    "canonical_chain": "M -> P -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.28,
+    "expected_chain": "M -> P -> D",
+    "carrier": "electron",
+    "validation_level": "held_out"
+  },
+  {
+    "modality": "fluorescence",
+    "valid": true,
+    "canonical_chain": "M -> R -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.31,
+    "expected_chain": "M -> R -> D",
+    "carrier": "photon",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "fluorescence_saturated",
+    "valid": true,
+    "canonical_chain": "M -> R -> Lambda -> D",
+    "canonical_match": true,
+    "node_count": 4,
+    "depth": 6,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.33,
+    "expected_chain": "M -> R -> Lambda -> D",
+    "carrier": "photon",
+    "validation_level": "template"
+  },
+  {
+    "modality": "ghost_imaging",
+    "valid": true,
+    "canonical_chain": "M -> D -> D",
+    "canonical_match": false,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "CanonicalChain: Canonical chain mismatch: expected ['M', 'Sigma', 'D'], got ['M', 'D', 'D']",
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.3,
+    "expected_chain": "M -> Sigma -> D",
+    "carrier": "photon",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "lensless",
+    "valid": true,
+    "canonical_chain": "C -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.27,
+    "expected_chain": "C -> D",
+    "carrier": "photon",
+    "validation_level": "full"
+  },
+  {
+    "modality": "mri",
+    "valid": true,
+    "canonical_chain": "M -> F -> S -> D",
+    "canonical_match": true,
+    "node_count": 4,
+    "depth": 6,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 132.54,
+    "expected_chain": "M -> F -> S -> D",
+    "carrier": "spin",
+    "validation_level": "full"
+  },
+  {
+    "modality": "mri_phase_wrapped",
+    "valid": true,
+    "canonical_chain": "M -> F -> S -> Lambda -> D",
+    "canonical_match": true,
+    "node_count": 5,
+    "depth": 7,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 129.18,
+    "expected_chain": "M -> F -> S -> Lambda -> D",
+    "carrier": "spin",
+    "validation_level": "template"
+  },
+  {
+    "modality": "muon_tomography",
+    "valid": true,
+    "canonical_chain": "R -> Pi -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.49,
+    "expected_chain": "R -> Pi -> D",
+    "carrier": "particle",
+    "validation_level": "template"
+  },
+  {
+    "modality": "oct",
+    "valid": true,
+    "canonical_chain": "P -> P -> D -> D",
+    "canonical_match": false,
+    "node_count": 4,
+    "depth": 6,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "CanonicalChain: Canonical chain mismatch: expected ['P', 'P', 'Sigma', 'D'], got ['P', 'P', 'D', 'D']",
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.41,
+    "expected_chain": "P + P -> Sigma -> D",
+    "carrier": "photon",
+    "validation_level": "held_out"
+  },
+  {
+    "modality": "palm_storm",
+    "valid": true,
+    "canonical_chain": "M -> C -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.33,
+    "expected_chain": "M -> C -> D",
+    "carrier": "photon",
+    "validation_level": "template"
+  },
+  {
+    "modality": "pet",
+    "valid": true,
+    "canonical_chain": "Pi -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.36,
+    "expected_chain": "Pi -> D",
+    "carrier": "xray",
+    "validation_level": "template"
+  },
+  {
+    "modality": "phase_contrast",
+    "valid": true,
+    "canonical_chain": "Pi -> P -> M -> D",
+    "canonical_match": true,
+    "node_count": 4,
+    "depth": 6,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.42,
+    "expected_chain": "Pi -> P -> M -> D",
+    "carrier": "xray",
+    "validation_level": "held_out"
+  },
+  {
+    "modality": "photoacoustic",
+    "valid": true,
+    "canonical_chain": "M -> P -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.28,
+    "expected_chain": "M -> P -> D",
+    "carrier": "acoustic",
+    "validation_level": "held_out"
+  },
+  {
+    "modality": "proton_therapy",
+    "valid": true,
+    "canonical_chain": "Lambda -> Pi -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.38,
+    "expected_chain": "Lambda -> Pi -> D",
+    "carrier": "particle",
+    "validation_level": "template"
+  },
+  {
+    "modality": "ptychography",
+    "valid": true,
+    "canonical_chain": "M -> P -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.26,
+    "expected_chain": "M -> P -> D",
+    "carrier": "photon",
+    "validation_level": "full"
+  },
+  {
+    "modality": "raman",
+    "valid": true,
+    "canonical_chain": "M -> R -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.31,
+    "expected_chain": "M -> R -> D",
+    "carrier": "photon",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "sem",
+    "valid": true,
+    "canonical_chain": "M -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.23,
+    "expected_chain": "M -> D",
+    "carrier": "electron",
+    "validation_level": "template"
+  },
+  {
+    "modality": "sim",
+    "valid": true,
+    "canonical_chain": "M -> C -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.26,
+    "expected_chain": "M -> C -> D",
+    "carrier": "photon",
+    "validation_level": "held_out"
+  },
+  {
+    "modality": "spc",
+    "valid": true,
+    "canonical_chain": "M -> D -> D",
+    "canonical_match": false,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "CanonicalChain: Canonical chain mismatch: expected ['M', 'Sigma', 'D'], got ['M', 'D', 'D']",
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.28,
+    "expected_chain": "M -> Sigma -> D",
+    "carrier": "photon",
+    "validation_level": "full"
+  },
+  {
+    "modality": "spect",
+    "valid": true,
+    "canonical_chain": "Pi -> S -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 124.02,
+    "expected_chain": "Pi -> S -> D",
+    "carrier": "xray",
+    "validation_level": "template"
+  },
+  {
+    "modality": "sted",
+    "valid": true,
+    "canonical_chain": "M -> C -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.36,
+    "expected_chain": "M -> C -> D",
+    "carrier": "photon",
+    "validation_level": "template"
+  },
+  {
+    "modality": "tem",
+    "valid": true,
+    "canonical_chain": "M -> C -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.4,
+    "expected_chain": "M -> C -> D",
+    "carrier": "electron",
+    "validation_level": "template"
+  },
+  {
+    "modality": "thz_tds",
+    "valid": true,
+    "canonical_chain": "C -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.26,
+    "expected_chain": "C -> D",
+    "carrier": "photon",
+    "validation_level": "exotic"
+  },
+  {
+    "modality": "tirf",
+    "valid": true,
+    "canonical_chain": "P -> C -> D",
+    "canonical_match": true,
+    "node_count": 3,
+    "depth": 5,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.29,
+    "expected_chain": "P -> C -> D",
+    "carrier": "photon",
+    "validation_level": "template"
+  },
+  {
+    "modality": "ultrasound",
+    "valid": true,
+    "canonical_chain": "P -> D",
+    "canonical_match": true,
+    "node_count": 2,
+    "depth": 4,
+    "nonlinear_ok": true,
+    "failures": [],
+    "warnings": [
+      "Graph is nonlinear \u2014 adjoint check skipped"
+    ],
+    "compilation_time_ms": 0.26,
+    "expected_chain": "P -> D",
+    "carrier": "acoustic",
+    "validation_level": "template"
+  }
+]
