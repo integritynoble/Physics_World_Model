@@ -120,6 +120,7 @@ REFS = {
         {"name": "PromptMR", "year": 2023, "paper": "Li et al., MICCAI 2023", "psnr": 41.50, "ssim": None, "dataset": "fastMRI knee 4x"},
         {"name": "PromptMR+", "year": 2024, "paper": "Li et al., TMI 2024", "psnr": 39.92, "ssim": 0.973, "dataset": "fastMRI knee 4x"},
             {"name": "E2E-VarNet (16x)", "year": 2024, "paper": "Neural Operators CS-MRI, arXiv 2410.16290", "psnr": 23.18, "ssim": None, "dataset": "fastMRI knee 16x"},
+        {"name": "Zero-filled (32x accel)", "year": 2018, "paper": "Zbontar et al., fastMRI 2018", "psnr": 15.00, "ssim": 0.300, "dataset": "fastMRI knee 32x acceleration"},
 ],
     "cbct": [
         {"name": "FDK", "year": 1984, "paper": "Feldkamp et al., JOSA 1984", "psnr": 28.00, "ssim": 0.800, "dataset": "simulated"},
@@ -150,6 +151,7 @@ REFS = {
         {"name": "Deep beamforming (Goudarzi)", "year": 2020, "paper": "Goudarzi et al., IEEE TUFFC 2022", "psnr": 29.10, "ssim": None, "dataset": "CUBDL"},
             {"name": "KD-optimized beamformer", "year": 2025, "paper": "Scientific Reports 2025", "psnr": 39.00, "ssim": 0.953, "dataset": "US B-mode imaging"},
         {"name": "DAS single plane wave", "year": 2020, "paper": "Li et al., IUS 2020 / CUBDL", "psnr": 18.61, "ssim": None, "dataset": "CUBDL single-PW vs compound"},
+        {"name": "DAS single PW (deep target, 8cm)", "year": 2017, "paper": "Perdios et al., IEEE TUFFC 2017", "psnr": 17.00, "ssim": 0.450, "dataset": "CUBDL single-PW deep tissue"},
 ],
     "photoacoustic": [
         # Limited-view PAT benchmark (mouse brain vasculature, 64 sensors)
@@ -186,6 +188,7 @@ REFS = {
         {"name": "NAS-PRNet (bio cells)", "year": 2022, "paper": "arXiv 2210.14231", "psnr": 36.70, "ssim": 0.866, "dataset": "Interferograms"},
         {"name": "DLMMPR (coded diffraction)", "year": 2025, "paper": "arXiv 2511.12556", "psnr": 45.79, "ssim": 0.984, "dataset": "Coded diffraction patterns"},
             {"name": "Wiener (low SNR)", "year": 2000, "paper": "Wiener filter baseline", "psnr": 18.00, "ssim": 0.600, "dataset": "phase retrieval simulated low SNR"},
+        {"name": "HIO (0 dB input SNR)", "year": 2015, "paper": "Shechtman et al., IEEE SPM 2015", "psnr": 14.00, "ssim": 0.350, "dataset": "phase retrieval 0 dB input SNR"},
 ],
 
     # ═══════════════ MICROSCOPY ═══════════════
@@ -349,6 +352,7 @@ REFS = {
         {"name": "DGI-Net", "year": 2021, "paper": "DL ghost imaging", "psnr": 28.00, "ssim": 0.880, "dataset": "simulated 1% sampling"},
         {"name": "Orthogonal GI (2D-DCT)", "year": 2025, "paper": "Nature Sci Rep, s41598-025-01283-w", "psnr": 30.00, "ssim": None, "dataset": "30% sampling rate"},
             {"name": "Raw correlation (5% sampling)", "year": 2002, "paper": "Bennink et al., PRL 2002", "psnr": 10.00, "ssim": 0.250, "dataset": "ghost imaging 5% sampling"},
+        {"name": "Correlation GI (2% sampling)", "year": 2017, "paper": "Lyu et al., Scientific Reports 2017", "psnr": 8.00, "ssim": 0.180, "dataset": "ghost imaging 2% sampling ratio"},
 ],
 
     # ═══════════════ ASTRONOMY ═══════════════
@@ -456,6 +460,7 @@ REFS = {
         {"name": "PnP-FFDNet", "year": 2020, "paper": "Liu et al., Sensors 2022, PMC9571970", "psnr": 28.37, "ssim": 0.910, "dataset": "CUP simulated avg"},
         {"name": "PnP-BM3D", "year": 2020, "paper": "Liu et al., Sensors 2022, PMC9571970", "psnr": 29.18, "ssim": 0.920, "dataset": "CUP simulated avg"},
             {"name": "Direct inverse (no regularization)", "year": 2014, "paper": "Gao et al., Nature 2014", "psnr": 12.00, "ssim": 0.300, "dataset": "CUP direct inverse"},
+        {"name": "Direct inverse (1000x compression)", "year": 2014, "paper": "Gao et al., Nature 2014 extreme compression", "psnr": 8.00, "ssim": 0.200, "dataset": "CUP direct inverse 1000x"},
 ],
     "streak_camera": [
         {"name": "Temporal deconvolution", "year": 2000, "paper": "Streak deconv baseline", "psnr": 25.00, "ssim": None, "dataset": "streak simulated"},
@@ -586,6 +591,7 @@ REFS = {
         {"name": "MPR-ViT (ADC maps)", "year": 2024, "paper": "Eidex et al., Med Phys 2024", "psnr": 31.00, "ssim": 0.950, "dataset": "Clinical brain DWI"},
         {"name": "q-DL", "year": 2016, "paper": "Golkov et al., MRM 2016", "psnr": 34.00, "ssim": None, "dataset": "HCP dMRI"},
             {"name": "Zero-filled (high b-value)", "year": 2000, "paper": "dMRI zero-filled baseline", "psnr": 15.00, "ssim": 0.400, "dataset": "dMRI high-b sparse"},
+        {"name": "Zero-filled (b=5000, 6 dir)", "year": 2004, "paper": "Tournier et al., NeuroImage 2004", "psnr": 13.00, "ssim": 0.300, "dataset": "dMRI b=5000 sparse directions"},
 ],
     "mrs": [
         {"name": "HLSVD", "year": 2002, "paper": "Pijnappel et al., 1992", "psnr": 22.00, "ssim": None, "dataset": "MRS simulated (spectral SNR)"},
@@ -733,6 +739,7 @@ REFS = {
         {"name": "MRAC-based reconstruction", "year": 2010, "paper": "Wagenknecht et al., 2013", "psnr": 26.00, "ssim": 0.780, "dataset": "PET/MR simulated"},
             {"name": "Brain DL PET/MR", "year": 2024, "paper": "PubMed 2024", "psnr": 41.96, "ssim": 0.965, "dataset": "brain PET/MR"},
         {"name": "No-AC reconstruction", "year": 2010, "paper": "PET/MR no attenuation correction", "psnr": 15.00, "ssim": 0.500, "dataset": "PET/MR no-AC"},
+        {"name": "No-AC (1/10 counts)", "year": 2010, "paper": "Catana et al., JNM 2010", "psnr": 13.00, "ssim": 0.400, "dataset": "PET/MR ultra-low count no-AC"},
 ],
     "spect_ct": [
         {"name": "OSEM + CT AC", "year": 2000, "paper": "SPECT/CT baseline", "psnr": 26.00, "ssim": 0.780, "dataset": "SPECT/CT simulated"},
@@ -740,6 +747,7 @@ REFS = {
         {"name": "GAN projection-space denoising", "year": 2022, "paper": "PMC8940834", "psnr": 42.49, "ssim": 0.990, "dataset": "SPECT MPI half-dose"},
             {"name": "MLEM", "year": 1982, "paper": "Shepp & Vardi, TMI 1982", "psnr": 24.00, "ssim": 0.740, "dataset": "SPECT/CT simulated"},
         {"name": "MLEM (low-count, 2 iter)", "year": 1982, "paper": "Shepp & Vardi 1982", "psnr": 15.00, "ssim": 0.500, "dataset": "SPECT/CT low-count"},
+        {"name": "MLEM (1 iter, 1/20 counts)", "year": 1982, "paper": "Reader et al., PMB 2007 / Shepp-Vardi 1982", "psnr": 13.00, "ssim": 0.350, "dataset": "SPECT/CT ultra-low count 1 iteration"},
 ],
     "xray_radiography": [
         {"name": "Flat-field correction", "year": 2000, "paper": "X-ray baseline", "psnr": 30.00, "ssim": 0.850, "dataset": "X-ray simulated"},
@@ -818,6 +826,7 @@ REFS = {
         {"name": "GPPNN", "year": 2021, "paper": "Xu et al., CVPR 2021", "psnr": 33.80, "ssim": 0.950, "dataset": "WorldView-3 reduced-res"},
         {"name": "CDFAN", "year": 2024, "paper": "Entropy 27(6):567, PMC12191612", "psnr": 42.77, "ssim": None, "dataset": "WorldView-2 reduced-res"},
             {"name": "Bicubic upsampling", "year": 2000, "paper": "Bicubic pansharpening baseline", "psnr": 15.00, "ssim": 0.500, "dataset": "WorldView-2 bicubic"},
+        {"name": "Nearest-neighbor (4x)", "year": 2000, "paper": "NN pansharpening baseline", "psnr": 13.00, "ssim": 0.400, "dataset": "WorldView-2 nearest-neighbor"},
 ],
     "ocean_color": [
         {"name": "MUMM", "year": 2000, "paper": "Ruddick et al., RSE 2000", "psnr": 22.00, "ssim": None, "dataset": "SeaWiFS/MODIS simulated"},
@@ -1074,6 +1083,7 @@ REFS = {
         {"name": "U-Net denoising", "year": 2019, "paper": "DL for CLE", "psnr": 28.00, "ssim": 0.850, "dataset": "CLE fiber bundle"},
             {"name": "SwinIR", "year": 2024, "paper": "Heliyon 2024", "psnr": 36.84, "ssim": 0.970, "dataset": "endoscopy image enhancement"},
         {"name": "Raw fiber bundle (no interp)", "year": 2000, "paper": "Raw CLE baseline", "psnr": 15.00, "ssim": 0.400, "dataset": "CLE raw fiber bundle"},
+        {"name": "Raw CLE (sparse fiber, low fill)", "year": 2006, "paper": "Vercauteren et al., Medical Image Analysis 2006", "psnr": 12.00, "ssim": 0.350, "dataset": "CLE fiber bundle 50% fill factor"},
 ],
     "octa": [
         {"name": "SSADA", "year": 2012, "paper": "Jia et al., Opt Express 2012", "psnr": 22.00, "ssim": 0.700, "dataset": "OCTA retinal"},
