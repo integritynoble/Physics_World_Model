@@ -18,7 +18,7 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | GAP-TV | 2016 | Yuan, ICIP 2016 | 26.4 | 0.8460 | 19.8 | 0.4362 |  |
+| 1 | GAP-TV | 2016 | Yuan, ICIP 2016 | 26.7 | 0.8460 | 19.8 | 0.4362 |  |
 | 2 | DeSCI | 2019 | Liu et al., TPAMI 2019 | 27.1 | 0.8700 | — | — |  |
 | 3 | PnP-FFDNet | 2020 | Yuan et al., CVPR 2020 | 28.7 | 0.9050 | — | — |  |
 | 4 | MetaSCI | 2021 | Wang et al., CVPR 2021 | 30.1 | 0.9150 | — | — |  |
@@ -28,9 +28,12 @@ Generated: 2026-03-11
 | 8 | STFormer | 2022 | Wang et al., NeurIPS 2022 | 33.9 | 0.9600 | — | — |  |
 | 9 | EfficientSCI | 2023 | Wang et al., CVPR 2023 | 34.3 | 0.9610 | 1.5 | 0.0774 |  |
 | 10 | HiSViT | 2023 | Chen et al., ICCV 2023 | 34.5 | — | — | — |  |
-| 11 | EfficientSCI-T (PWM) | — | — | — | — | 8.0 | 0.0759 |  |
-| 12 | mask_division_baseline (test) | — | — | — | — | — | — |  |
-| 13 | gap_tv (test) | — | — | — | — | — | — |  |
+| 11 | DUN-3DUnet | 2022 | Wu et al., CVPR 2022 | 35.3 | 0.9620 | — | — |  |
+| 12 | CTM-SCI | 2024 | CTM-SCI, 2024 | 36.5 | — | — | — |  |
+| 13 | HiSViT-13 | 2024 | Chen et al., ECCV 2024 | 37.3 | — | — | — |  |
+| 14 | EfficientSCI-T (PWM) | — | — | — | — | 8.0 | 0.0759 |  |
+| 15 | mask_division_baseline (test) | — | — | — | — | — | — |  |
+| 16 | gap_tv (test) | — | — | — | — | — | — |  |
 
 ### 2. Coded Aperture Snapshot Spectral Imaging (CASSI) (`cassi`)
 
@@ -48,10 +51,13 @@ Generated: 2026-03-11
 | 10 | DAUHST-9stg | 2022 | Cai et al., NeurIPS 2022 | 38.4 | 0.9670 | — | — |  |
 | 11 | MST++ | 2022 | Cai et al., CVPRW 2022 | 36.0 | 0.9510 | — | — |  |
 | 12 | PADUT | 2023 | Li et al., CVPR 2023 | 34.8 | — | — | — |  |
-| 13 | SSR-L | 2023 | Zhang et al., ICCV 2023 | 34.0 | — | — | — |  |
-| 14 | GAP-TV (guided) (PWM) | — | Yuan et al. 2016 | — | — | 26.2 | 0.9665 | done |
-| 15 | GAP-TV (fast) (PWM) | — | — | — | — | 25.9 | 0.9649 | done |
-| 16 | GAP-TV (small) (PWM) | — | — | — | — | 25.3 | 0.9664 | done |
+| 13 | RDLUF-MixS2 | 2022 | Cai et al., ECCV 2022 | 39.6 | 0.9720 | — | — |  |
+| 14 | SSR-L | 2023 | Zhang et al., ICCV 2023 | 34.0 | — | — | — |  |
+| 15 | PADUT-L | 2023 | Li et al., CVPR 2023 | 38.9 | 0.9700 | — | — |  |
+| 16 | MiJUN | 2025 | MiJUN, AAAI 2025 | 40.9 | 0.9760 | — | — |  |
+| 17 | GAP-TV (guided) (PWM) | — | Yuan et al. 2016 | — | — | 26.2 | 0.9665 | done |
+| 18 | GAP-TV (fast) (PWM) | — | — | — | — | 25.9 | 0.9649 | done |
+| 19 | GAP-TV (small) (PWM) | — | — | — | — | 25.3 | 0.9664 | done |
 
 ### 3. Generic Matrix Sensing (`matrix`)
 
@@ -67,9 +73,9 @@ Generated: 2026-03-11
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | TVAL3 | 2009 | Li et al., TVAL3, Rice 2009 | 24.6 | 0.7500 | 6.8 | 0.0161 |  |
-| 2 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 30.2 | 0.8930 | 4.7 | 0.0013 |  |
+| 2 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.3 | 0.9350 | 4.7 | 0.0013 |  |
 | 3 | CSNet+ | 2019 | Shi et al., TIP 2019 | 29.8 | 0.8820 | — | — |  |
-| 4 | AMP-Net | 2021 | Zhang et al., TIP 2021 | 30.6 | 0.8950 | — | — |  |
+| 4 | AMP-Net | 2021 | Zhang et al., TIP 2021 | 34.6 | 0.9550 | — | — |  |
 | 5 | TransCS | 2022 | Shen et al., TIP 2022 | 31.1 | — | — | — |  |
 | 6 | ADMM-L1 (PWM) | — | Boyd et al. 2010 | — | — | 4.5 | 0.0018 |  |
 
@@ -112,10 +118,11 @@ Generated: 2026-03-11
 | 1 | FDK | 1984 | Feldkamp et al., JOSA 1984 | 28.0 | 0.8000 | 12.7 | 0.4010 |  |
 | 2 | SART | 1984 | Andersen & Kak, 1984 | 32.0 | 0.8800 | — | — |  |
 | 3 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 36.5 | 0.9500 | — | — |  |
-| 4 | FDK-DL (PWM) | — | Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN, IEEE TMI | — | — | — | — |  |
-| 5 | CBCT-UNet (PWM) | — | Jin, K.H. et al. (2017) Deep convolutional network for inverse problems, IEEE TIP | — | — | — | — |  |
-| 6 | fbp_ramlak (test) | — | — | — | — | 14.9 | 0.3496 |  |
-| 7 | fbp_shepp_logan (test) | — | — | — | — | 15.2 | 0.3593 |  |
+| 4 | FACT | 2022 | FACT, 2022 | 33.8 | 0.9300 | — | — |  |
+| 5 | FDK-DL (PWM) | — | Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN, IEEE TMI | — | — | — | — |  |
+| 6 | CBCT-UNet (PWM) | — | Jin, K.H. et al. (2017) Deep convolutional network for inverse problems, IEEE TIP | — | — | — | — |  |
+| 7 | fbp_ramlak (test) | — | — | — | — | 14.9 | 0.3496 |  |
+| 8 | fbp_shepp_logan (test) | — | — | — | — | 15.2 | 0.3593 |  |
 
 ### 9. CEST MRI (`cest_mri`)
 
@@ -151,19 +158,20 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | FBP (Ram-Lak) | 1971 | Ramachandran & Lakshminarayanan 1971 | 29.7 | 0.8200 | 13.7 | 0.0649 |  |
-| 2 | TV regularization | 2006 | Sidky et al., PMB 2006 | 33.5 | 0.9000 | — | — |  |
-| 3 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 38.5 | 0.9590 | 13.7 | 0.0649 |  |
-| 4 | Learned Primal-Dual | 2018 | Adler & Oktem, TMI 2018 | 40.2 | 0.9680 | — | — |  |
-| 5 | iRadonMAP | 2019 | He et al., 2019 | 36.9 | 0.9420 | — | — |  |
-| 6 | DuDoTrans | 2022 | Wang et al., MICCAI 2022 | 42.1 | — | — | — |  |
-| 7 | Score-CT | 2022 | Song et al., ICLR 2022 | 43.0 | — | — | — |  |
-| 8 | DOLCE | 2023 | Liu et al., 2023 | 36.0 | — | — | — |  |
-| 9 | PnP-HQS + NLM (PWM) | — | — | — | — | 1.4 | 0.1306 |  |
-| 10 | RED-CNN (PWM) | — | Chen et al. 2017, IEEE TMI | — | — | 1.3 | 0.1144 |  |
-| 11 | fbp_ramlak (test) | — | — | — | — | 12.9 | 0.0922 |  |
-| 12 | fbp_shepp_logan (test) | — | — | — | — | 13.8 | 0.1053 |  |
-| 13 | sart_10iter (test) | — | — | — | — | 13.8 | 0.2168 |  |
+| 1 | FBP (Ram-Lak) | 1971 | Ramachandran & Lakshminarayanan 1971 | 30.2 | 0.8200 | 13.7 | 0.0649 |  |
+| 2 | TV regularization | 2006 | Sidky et al., PMB 2006 | 33.4 | 0.9000 | — | — |  |
+| 3 | RED-CNN | 2017 | Chen et al., TMI 2017 | 33.2 | 0.9150 | 1.3 | 0.1144 |  |
+| 4 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 38.5 | 0.9590 | 13.7 | 0.0649 |  |
+| 5 | Learned Primal-Dual | 2018 | Adler & Oktem, TMI 2018 | 36.2 | 0.9590 | — | — |  |
+| 6 | iRadonMAP | 2019 | He et al., 2019 | 36.9 | 0.9420 | — | — |  |
+| 7 | LEARN | 2019 | Chen et al., TMI 2018 | 43.1 | — | — | — |  |
+| 8 | DuDoTrans | 2022 | Wang et al., MICCAI 2022 | 42.1 | — | — | — |  |
+| 9 | Score-CT | 2022 | Song et al., ICLR 2022 | 43.0 | — | — | — |  |
+| 10 | DOLCE | 2023 | Liu et al., 2023 | 36.0 | — | — | — |  |
+| 11 | PnP-HQS + NLM (PWM) | — | — | — | — | 1.4 | 0.1306 |  |
+| 12 | fbp_ramlak (test) | — | — | — | — | 12.9 | 0.0922 |  |
+| 13 | fbp_shepp_logan (test) | — | — | — | — | 13.8 | 0.1053 |  |
+| 14 | sart_10iter (test) | — | — | — | — | 13.8 | 0.2168 |  |
 
 ### 13. Dual-Energy X-ray Absorptiometry (DEXA) (`dexa`)
 
@@ -267,12 +275,13 @@ Generated: 2026-03-11
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Richardson-Lucy | 1972 | Richardson 1972 | 30.0 | 0.9000 | 30.6 | 0.9090 | done |
-| 2 | cofe-Net | 2022 | Li et al., cofe-Net, 2022 | 32.0 | — | — | — |  |
-| 3 | RETFound (PWM) | — | Zhou, Y. et al. (2023) RETFound: Foundation model for retinal imaging, Nature 622:156 | — | — | — | — |  |
-| 4 | DR-Grade-Net (PWM) | — | Gulshan, V. et al. (2016) DL for DR detection in retinal fundus, JAMA 316(22) | — | — | — | — |  |
-| 5 | rl_20iter (test) | — | — | — | — | 35.0 | 0.9965 | done |
-| 6 | rl_50iter (test) | — | — | — | — | 35.9 | 0.9972 | done |
-| 7 | precomputed_wiener (test) | — | — | — | — | 22.0 | 0.9248 | done |
+| 2 | Cofe-Net | 2022 | Li et al., Cofe-Net, 2022 | 24.9 | — | — | — |  |
+| 3 | PCE-Net | 2023 | PCE-Net, 2023 | 29.9 | — | — | — |  |
+| 4 | RETFound (PWM) | — | Zhou, Y. et al. (2023) RETFound: Foundation model for retinal imaging, Nature 622:156 | — | — | — | — |  |
+| 5 | DR-Grade-Net (PWM) | — | Gulshan, V. et al. (2016) DL for DR detection in retinal fundus, JAMA 316(22) | — | — | — | — |  |
+| 6 | rl_20iter (test) | — | — | — | — | 35.0 | 0.9965 | done |
+| 7 | rl_50iter (test) | — | — | — | — | 35.9 | 0.9972 | done |
+| 8 | precomputed_wiener (test) | — | — | — | — | 22.0 | 0.9248 | done |
 
 ### 23. Intravascular Ultrasound (IVUS) (`ivus`)
 
@@ -334,14 +343,16 @@ Generated: 2026-03-11
 | 3 | GRAPPA | 2002 | Griswold et al., MRM 2002 | 34.0 | 0.9200 | — | — |  |
 | 4 | U-Net | 2018 | Zbontar et al., fastMRI 2018 | 36.0 | 0.9470 | — | — |  |
 | 5 | E2E-VarNet | 2020 | Sriram et al., NeurIPS 2020 | 40.5 | 0.9720 | — | — |  |
-| 6 | HUMUS-Net | 2022 | Fabian et al., NeurIPS 2022 | 42.0 | 0.9780 | — | — |  |
-| 7 | PromptMR | 2023 | Li et al., MICCAI 2023 | 41.5 | — | — | — |  |
-| 8 | CS-MRI (Wavelet) (PWM) | — | Lustig et al. 2007, MRM | — | — | 13.4 | 0.0132 |  |
-| 9 | MoDL (PWM) | — | Aggarwal et al. 2019, IEEE TMI | — | — | 13.4 | 0.0132 |  |
-| 10 | MoDL (5 unrolls) (PWM) | — | — | — | — | 13.4 | 0.0132 |  |
-| 11 | zero_filled (test) | — | — | — | — | 13.0 | 0.0004 |  |
-| 12 | cs_mri_wavelet (test) | — | — | — | — | 13.0 | 0.0006 |  |
-| 13 | sense (test) | — | — | — | — | 13.0 | 0.0010 |  |
+| 6 | HUMUS-Net | 2022 | Fabian et al., NeurIPS 2022 | 37.3 | 0.9500 | — | — |  |
+| 7 | ReconFormer | 2023 | Guo et al., TMI 2023 | 40.1 | 0.9750 | — | — |  |
+| 8 | PromptMR | 2023 | Li et al., MICCAI 2023 | 41.5 | — | — | — |  |
+| 9 | PromptMR+ | 2024 | Li et al., TMI 2024 | 39.9 | 0.9730 | — | — |  |
+| 10 | CS-MRI (Wavelet) (PWM) | — | Lustig et al. 2007, MRM | — | — | 13.4 | 0.0132 |  |
+| 11 | MoDL (PWM) | — | Aggarwal et al. 2019, IEEE TMI | — | — | 13.4 | 0.0132 |  |
+| 12 | MoDL (5 unrolls) (PWM) | — | — | — | — | 13.4 | 0.0132 |  |
+| 13 | zero_filled (test) | — | — | — | — | 13.0 | 0.0004 |  |
+| 14 | cs_mri_wavelet (test) | — | — | — | — | 13.0 | 0.0006 |  |
+| 15 | sense (test) | — | — | — | — | 13.0 | 0.0010 |  |
 
 ### 29. MR Spectroscopy (MRS) (`mrs`)
 
@@ -367,13 +378,14 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | BM3D | 2007 | Dabov et al., TIP 2007 | 32.0 | 0.8800 | — | — |  |
-| 2 | SwinIR | 2021 | Liang et al., ICCVW 2021 | 35.0 | — | — | — |  |
-| 3 | FFT Recon (PWM) | — | — | — | — | 10.3 | 0.1422 |  |
-| 4 | Spectral Estimation (PWM) | — | Leitgeb et al. 2003, Optics Express | — | — | 10.2 | 0.1411 |  |
-| 5 | OCT Denoising Net (PWM) | — | Devalla et al. 2019, Biomed. Optics Express | — | — | 10.3 | 0.1422 |  |
-| 6 | bscan_baseline (test) | — | — | — | — | 23.1 | 0.9439 | done |
-| 7 | bscan_ideal_baseline (test) | — | — | — | — | 23.5 | 0.9482 | done |
+| 1 | BM3D | 2007 | Dabov et al., TIP 2007 | 25.0 | 0.8000 | — | — |  |
+| 2 | PSCAT | 2022 | PSCAT, PKU37 OCT | 32.2 | 0.9200 | — | — |  |
+| 3 | SwinIR | 2021 | Liang et al., ICCVW 2021 | 35.0 | — | — | — |  |
+| 4 | FFT Recon (PWM) | — | — | — | — | 10.3 | 0.1422 |  |
+| 5 | Spectral Estimation (PWM) | — | Leitgeb et al. 2003, Optics Express | — | — | 10.2 | 0.1411 |  |
+| 6 | OCT Denoising Net (PWM) | — | Devalla et al. 2019, Biomed. Optics Express | — | — | 10.3 | 0.1422 |  |
+| 7 | bscan_baseline (test) | — | — | — | — | 23.1 | 0.9439 | done |
+| 8 | bscan_ideal_baseline (test) | — | — | — | — | 23.5 | 0.9482 | done |
 
 ### 32. OCT Angiography (OCTA) (`octa`)
 
@@ -392,13 +404,14 @@ Generated: 2026-03-11
 | 1 | MLEM | 1982 | Shepp & Vardi, TMI 1982 | 28.0 | 0.7500 | — | — |  |
 | 2 | OSEM | 1994 | Hudson & Larkin, TMI 1994 | 30.0 | 0.8200 | — | — |  |
 | 3 | MAP-OSEM | 2001 | Qi et al., PMB 2003 | 32.0 | 0.8700 | — | — |  |
-| 4 | DeepPET | 2019 | Haggstrom et al., PMB 2019 | 34.5 | 0.9200 | — | — |  |
-| 5 | FBP (emission tomography) (PWM) | — | — | — | — | 15.4 | 0.0116 |  |
-| 6 | NeuroLF-PET (PWM) | — | Häggström, I. et al. (2019) DeepPET: DL for PET reconstruction, Med. Image Anal. 58 | — | — | — | — |  |
-| 7 | PET-DL (U-Net) (PWM) | — | Gong, K. et al. (2019) PET image reconstruction with DL, IEEE TMI 38(9) | — | — | — | — |  |
-| 8 | fbp_ramlak (test) | — | — | — | — | 9.3 | 0.1813 |  |
-| 9 | fbp_shepp_logan (test) | — | — | — | — | 11.9 | 0.2681 |  |
-| 10 | precomputed_fbp (test) | — | — | — | — | 33.1 | 0.9325 | done |
+| 4 | DeepPET | 2019 | Haggstrom et al., PMB 2019 | 34.7 | 0.9200 | — | — |  |
+| 5 | SwinIR-PET | 2023 | SwinIR for PET denoising | 39.9 | 0.9600 | — | — |  |
+| 6 | FBP (emission tomography) (PWM) | — | — | — | — | 15.4 | 0.0116 |  |
+| 7 | NeuroLF-PET (PWM) | — | Häggström, I. et al. (2019) DeepPET: DL for PET reconstruction, Med. Image Anal. 58 | — | — | — | — |  |
+| 8 | PET-DL (U-Net) (PWM) | — | Gong, K. et al. (2019) PET image reconstruction with DL, IEEE TMI 38(9) | — | — | — | — |  |
+| 9 | fbp_ramlak (test) | — | — | — | — | 9.3 | 0.1813 |  |
+| 10 | fbp_shepp_logan (test) | — | — | — | — | 11.9 | 0.2681 |  |
+| 11 | precomputed_fbp (test) | — | — | — | — | 33.1 | 0.9325 | done |
 
 ### 34. Photoacoustic Imaging (`photoacoustic`)
 
@@ -438,11 +451,12 @@ Generated: 2026-03-11
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | MLEM | 1982 | Shepp & Vardi, 1982 | 26.0 | 0.7000 | — | — |  |
 | 2 | OSEM | 1994 | Hudson & Larkin, 1994 | 28.5 | 0.7800 | — | — |  |
-| 3 | FBP (emission tomography) (PWM) | — | — | — | — | 10.8 | 0.0669 |  |
-| 4 | SPECT-DL (OSEM+) (PWM) | — | Shiri, I. et al. (2020) Deep-JASC DL SPECT, Eur. J. Nucl. Med. Mol. Imaging | — | — | — | — |  |
-| 5 | SPECT-UNet (PWM) | — | Kim, K. et al. (2018) Penalized PET reconstruction using DL, IEEE TMI 37(6) | — | — | — | — |  |
-| 6 | fbp_ramlak (test) | — | — | — | — | -6.5 | 0.0101 |  |
-| 7 | precomputed_fbp (test) | — | — | — | — | 30.0 | 0.9523 | done |
+| 3 | DIP-SPECT | 2020 | Baguer et al., 2020 | 33.3 | 0.9000 | — | — |  |
+| 4 | FBP (emission tomography) (PWM) | — | — | — | — | 10.8 | 0.0669 |  |
+| 5 | SPECT-DL (OSEM+) (PWM) | — | Shiri, I. et al. (2020) Deep-JASC DL SPECT, Eur. J. Nucl. Med. Mol. Imaging | — | — | — | — |  |
+| 6 | SPECT-UNet (PWM) | — | Kim, K. et al. (2018) Penalized PET reconstruction using DL, IEEE TMI 37(6) | — | — | — | — |  |
+| 7 | fbp_ramlak (test) | — | — | — | — | -6.5 | 0.0101 |  |
+| 8 | precomputed_fbp (test) | — | — | — | — | 30.0 | 0.9523 | done |
 
 ### 38. Photon-Counting Spectral CT (`spectral_ct`)
 
@@ -736,10 +750,11 @@ Generated: 2026-03-11
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Richardson-Lucy STED | 2006 | RL for STED | 28.0 | 0.8000 | 0.3 | 0.0017 |  |
-| 2 | STED-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods 15:1090 | — | — | — | — |  |
-| 3 | RCAN-STED (PWM) | — | Chen, J. et al. (2021) Three-dimensional residual channel attention for STED, Nature Methods 18:678 | — | — | — | — |  |
-| 4 | precomputed_baseline (test) | — | — | — | — | 25.0 | 0.8484 | done |
-| 5 | rl_20iter (test) | — | — | — | — | — | 0.0000 |  |
+| 2 | DDPM denoiser | 2023 | DDPM-avg for STED | 32.8 | 0.9200 | — | — |  |
+| 3 | STED-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods 15:1090 | — | — | — | — |  |
+| 4 | RCAN-STED (PWM) | — | Chen, J. et al. (2021) Three-dimensional residual channel attention for STED, Nature Methods 18:678 | — | — | — | — |  |
+| 5 | precomputed_baseline (test) | — | — | — | — | 25.0 | 0.8484 | done |
+| 6 | rl_20iter (test) | — | — | — | — | — | 0.0000 |  |
 
 ### 66. Three-Photon Microscopy (`three_photon`)
 
@@ -776,11 +791,12 @@ Generated: 2026-03-11
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Wiener deconvolution | 1949 | Wiener, 1949 | 26.0 | 0.7500 | — | — |  |
-| 2 | Richardson-Lucy (20 iter) | 1972 | Richardson 1972 / Lucy 1974 | 28.0 | 0.8000 | 24.1 | 0.2696 |  |
-| 3 | CARE | 2018 | Weigert et al., Nature Methods 2018 | 33.0 | 0.9200 | 14.5 | 0.7656 |  |
+| 2 | Richardson-Lucy (20 iter) | 1972 | Richardson 1972 / Lucy 1974 | 13.4 | 0.4000 | 24.1 | 0.2696 |  |
+| 3 | CARE | 2018 | Weigert et al., Nature Methods 2018 | 22.1 | 0.7500 | 14.5 | 0.7656 |  |
 | 4 | Noise2Void | 2019 | Krull et al., CVPR 2019 | 31.0 | 0.8800 | — | — |  |
-| 5 | Restormer | 2022 | Zamir et al., CVPR 2022 | 35.5 | — | — | — |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 25.0 | 0.9091 | done |
+| 5 | m-rBCR | 2023 | m-rBCR deconvolution, 2023 | 24.9 | 0.8300 | — | — |  |
+| 6 | Restormer | 2022 | Zamir et al., CVPR 2022 | 35.5 | — | — | — |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 25.0 | 0.9091 | done |
 
 ### 70. Low-Dose Widefield Microscopy (`widefield_lowdose`)
 
@@ -1901,8 +1917,8 @@ Generated: 2026-03-11
 ## Summary
 
 - **Total modalities**: 168
-- **Total algorithm entries**: 970
+- **Total algorithm entries**: 986
 - **Verified (done)**: 219
-- **Not yet verified**: 751
+- **Not yet verified**: 767
 - **Sources**: Published papers (2000-2026), PWM benchmark tests, YAML solver configs
 - **Key benchmarks**: KAIST 10 scenes (CASSI), 6 grayscale SCI (CACTI), LoDoPaB-CT, fastMRI, Blender synthetic (NeRF), KITTI (LiDAR), DiffuserCam (lensless), BioSR (microscopy)

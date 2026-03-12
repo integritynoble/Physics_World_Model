@@ -49,11 +49,14 @@ REFS = {
         {"name": "DAUHST-9stg", "year": 2022, "paper": "Cai et al., NeurIPS 2022", "psnr": 38.36, "ssim": 0.967, "dataset": "KAIST 10 scenes"},
         {"name": "MST++", "year": 2022, "paper": "Cai et al., CVPRW 2022", "psnr": 35.99, "ssim": 0.951, "dataset": "KAIST 10 scenes"},
         {"name": "PADUT", "year": 2023, "paper": "Li et al., CVPR 2023", "psnr": 34.80, "ssim": None, "dataset": "KAIST 10 scenes"},
+        {"name": "RDLUF-MixS2", "year": 2022, "paper": "Cai et al., ECCV 2022", "psnr": 39.57, "ssim": 0.972, "dataset": "KAIST 10 scenes"},
         {"name": "SSR-L", "year": 2023, "paper": "Zhang et al., ICCV 2023", "psnr": 34.00, "ssim": None, "dataset": "KAIST 10 scenes"},
+        {"name": "PADUT-L", "year": 2023, "paper": "Li et al., CVPR 2023", "psnr": 38.89, "ssim": 0.970, "dataset": "KAIST 10 scenes"},
+        {"name": "MiJUN", "year": 2025, "paper": "MiJUN, AAAI 2025", "psnr": 40.86, "ssim": 0.976, "dataset": "KAIST 10 scenes"},
     ],
     "cacti": [
         # 6 grayscale SCI benchmark (Kobe, Traffic, Runner, Drop, Crash, Aerial)
-        {"name": "GAP-TV", "year": 2016, "paper": "Yuan, ICIP 2016", "psnr": 26.40, "ssim": 0.846, "dataset": "6 grayscale SCI"},
+        {"name": "GAP-TV", "year": 2016, "paper": "Yuan, ICIP 2016", "psnr": 26.73, "ssim": 0.846, "dataset": "6 grayscale SCI"},
         {"name": "DeSCI", "year": 2019, "paper": "Liu et al., TPAMI 2019", "psnr": 27.13, "ssim": 0.870, "dataset": "6 grayscale SCI"},
         {"name": "PnP-FFDNet", "year": 2020, "paper": "Yuan et al., CVPR 2020", "psnr": 28.74, "ssim": 0.905, "dataset": "6 grayscale SCI"},
         {"name": "MetaSCI", "year": 2021, "paper": "Wang et al., CVPR 2021", "psnr": 30.12, "ssim": 0.915, "dataset": "6 grayscale SCI"},
@@ -63,13 +66,16 @@ REFS = {
         {"name": "STFormer", "year": 2022, "paper": "Wang et al., NeurIPS 2022", "psnr": 33.91, "ssim": 0.960, "dataset": "6 grayscale SCI"},
         {"name": "EfficientSCI", "year": 2023, "paper": "Wang et al., CVPR 2023", "psnr": 34.26, "ssim": 0.961, "dataset": "6 grayscale SCI"},
         {"name": "HiSViT", "year": 2023, "paper": "Chen et al., ICCV 2023", "psnr": 34.50, "ssim": None, "dataset": "6 grayscale SCI"},
+        {"name": "DUN-3DUnet", "year": 2022, "paper": "Wu et al., CVPR 2022", "psnr": 35.26, "ssim": 0.962, "dataset": "6 grayscale SCI"},
+        {"name": "CTM-SCI", "year": 2024, "paper": "CTM-SCI, 2024", "psnr": 36.52, "ssim": None, "dataset": "6 grayscale SCI"},
+        {"name": "HiSViT-13", "year": 2024, "paper": "Chen et al., ECCV 2024", "psnr": 37.29, "ssim": None, "dataset": "6 grayscale SCI"},
     ],
     "spc": [
         # Single-Pixel Camera CS benchmark (Set11/BSD68)
         {"name": "TVAL3", "year": 2009, "paper": "Li et al., TVAL3, Rice 2009", "psnr": 24.56, "ssim": 0.750, "dataset": "Set11 @ 10% CS ratio"},
-        {"name": "ISTA-Net+", "year": 2018, "paper": "Zhang & Ghanem, CVPR 2018", "psnr": 30.23, "ssim": 0.893, "dataset": "Set11 @ 25% CS ratio"},
+        {"name": "ISTA-Net+", "year": 2018, "paper": "Zhang & Ghanem, CVPR 2018", "psnr": 32.27, "ssim": 0.935, "dataset": "Set11 @ 25% CS ratio"},
         {"name": "CSNet+", "year": 2019, "paper": "Shi et al., TIP 2019", "psnr": 29.84, "ssim": 0.882, "dataset": "Set11 @ 25% CS ratio"},
-        {"name": "AMP-Net", "year": 2021, "paper": "Zhang et al., TIP 2021", "psnr": 30.56, "ssim": 0.895, "dataset": "Set11 @ 25% CS ratio"},
+        {"name": "AMP-Net", "year": 2021, "paper": "Zhang et al., TIP 2021", "psnr": 34.63, "ssim": 0.955, "dataset": "Set11 @ 25% CS ratio"},
         {"name": "TransCS", "year": 2022, "paper": "Shen et al., TIP 2022", "psnr": 31.14, "ssim": None, "dataset": "Set11 @ 25% CS ratio"},
     ],
     "spc_kronecker": [
@@ -84,11 +90,13 @@ REFS = {
     # ═══════════════ MEDICAL IMAGING ═══════════════
     "ct": [
         # LoDoPaB-CT benchmark (362×362, limited-angle/sparse-view)
-        {"name": "FBP (Ram-Lak)", "year": 1971, "paper": "Ramachandran & Lakshminarayanan 1971", "psnr": 29.74, "ssim": 0.820, "dataset": "LoDoPaB-CT"},
-        {"name": "TV regularization", "year": 2006, "paper": "Sidky et al., PMB 2006", "psnr": 33.50, "ssim": 0.900, "dataset": "LoDoPaB-CT"},
+        {"name": "FBP (Ram-Lak)", "year": 1971, "paper": "Ramachandran & Lakshminarayanan 1971", "psnr": 30.19, "ssim": 0.820, "dataset": "LoDoPaB-CT"},
+        {"name": "TV regularization", "year": 2006, "paper": "Sidky et al., PMB 2006", "psnr": 33.36, "ssim": 0.900, "dataset": "LoDoPaB-CT"},
+        {"name": "RED-CNN", "year": 2017, "paper": "Chen et al., TMI 2017", "psnr": 33.22, "ssim": 0.915, "dataset": "AAPM"},
         {"name": "FBPConvNet", "year": 2017, "paper": "Jin et al., TIP 2017", "psnr": 38.51, "ssim": 0.959, "dataset": "LoDoPaB-CT"},
-        {"name": "Learned Primal-Dual", "year": 2018, "paper": "Adler & Oktem, TMI 2018", "psnr": 40.23, "ssim": 0.968, "dataset": "LoDoPaB-CT"},
+        {"name": "Learned Primal-Dual", "year": 2018, "paper": "Adler & Oktem, TMI 2018", "psnr": 36.25, "ssim": 0.959, "dataset": "LoDoPaB-CT"},
         {"name": "iRadonMAP", "year": 2019, "paper": "He et al., 2019", "psnr": 36.87, "ssim": 0.942, "dataset": "LoDoPaB-CT"},
+        {"name": "LEARN", "year": 2019, "paper": "Chen et al., TMI 2018", "psnr": 43.11, "ssim": None, "dataset": "AAPM sparse-view"},
         {"name": "DuDoTrans", "year": 2022, "paper": "Wang et al., MICCAI 2022", "psnr": 42.10, "ssim": None, "dataset": "AAPM"},
         {"name": "Score-CT", "year": 2022, "paper": "Song et al., ICLR 2022", "psnr": 43.00, "ssim": None, "dataset": "AAPM"},
         {"name": "DOLCE", "year": 2023, "paper": "Liu et al., 2023", "psnr": 36.00, "ssim": None, "dataset": "LoDoPaB-CT"},
@@ -100,23 +108,28 @@ REFS = {
         {"name": "GRAPPA", "year": 2002, "paper": "Griswold et al., MRM 2002", "psnr": 34.00, "ssim": 0.920, "dataset": "fastMRI knee 4x"},
         {"name": "U-Net", "year": 2018, "paper": "Zbontar et al., fastMRI 2018", "psnr": 36.00, "ssim": 0.947, "dataset": "fastMRI knee 4x"},
         {"name": "E2E-VarNet", "year": 2020, "paper": "Sriram et al., NeurIPS 2020", "psnr": 40.53, "ssim": 0.972, "dataset": "fastMRI knee 4x"},
-        {"name": "HUMUS-Net", "year": 2022, "paper": "Fabian et al., NeurIPS 2022", "psnr": 42.05, "ssim": 0.978, "dataset": "fastMRI knee 4x"},
+        {"name": "HUMUS-Net", "year": 2022, "paper": "Fabian et al., NeurIPS 2022", "psnr": 37.30, "ssim": 0.950, "dataset": "fastMRI knee 8x"},
+        {"name": "ReconFormer", "year": 2023, "paper": "Guo et al., TMI 2023", "psnr": 40.09, "ssim": 0.975, "dataset": "fastMRI brain 4x"},
         {"name": "PromptMR", "year": 2023, "paper": "Li et al., MICCAI 2023", "psnr": 41.50, "ssim": None, "dataset": "fastMRI knee 4x"},
+        {"name": "PromptMR+", "year": 2024, "paper": "Li et al., TMI 2024", "psnr": 39.92, "ssim": 0.973, "dataset": "fastMRI knee 4x"},
     ],
     "cbct": [
         {"name": "FDK", "year": 1984, "paper": "Feldkamp et al., JOSA 1984", "psnr": 28.00, "ssim": 0.800, "dataset": "simulated"},
         {"name": "SART", "year": 1984, "paper": "Andersen & Kak, 1984", "psnr": 32.00, "ssim": 0.880, "dataset": "simulated"},
         {"name": "FBPConvNet", "year": 2017, "paper": "Jin et al., TIP 2017", "psnr": 36.50, "ssim": 0.950, "dataset": "simulated"},
+        {"name": "FACT", "year": 2022, "paper": "FACT, 2022", "psnr": 33.80, "ssim": 0.930, "dataset": "head 50-view"},
     ],
     "pet": [
         {"name": "MLEM", "year": 1982, "paper": "Shepp & Vardi, TMI 1982", "psnr": 28.00, "ssim": 0.750, "dataset": "simulated"},
         {"name": "OSEM", "year": 1994, "paper": "Hudson & Larkin, TMI 1994", "psnr": 30.00, "ssim": 0.820, "dataset": "simulated"},
         {"name": "MAP-OSEM", "year": 2001, "paper": "Qi et al., PMB 2003", "psnr": 32.00, "ssim": 0.870, "dataset": "simulated"},
-        {"name": "DeepPET", "year": 2019, "paper": "Haggstrom et al., PMB 2019", "psnr": 34.50, "ssim": 0.920, "dataset": "simulated"},
+        {"name": "DeepPET", "year": 2019, "paper": "Haggstrom et al., PMB 2019", "psnr": 34.69, "ssim": 0.920, "dataset": "simulated"},
+        {"name": "SwinIR-PET", "year": 2023, "paper": "SwinIR for PET denoising", "psnr": 39.90, "ssim": 0.960, "dataset": "low-count PET"},
     ],
     "spect": [
         {"name": "MLEM", "year": 1982, "paper": "Shepp & Vardi, 1982", "psnr": 26.00, "ssim": 0.700, "dataset": "simulated"},
         {"name": "OSEM", "year": 1994, "paper": "Hudson & Larkin, 1994", "psnr": 28.50, "ssim": 0.780, "dataset": "simulated"},
+        {"name": "DIP-SPECT", "year": 2020, "paper": "Baguer et al., 2020", "psnr": 33.28, "ssim": 0.900, "dataset": "simulated"},
     ],
 
     # ═══════════════ MEDICAL ULTRASOUND ═══════════════
@@ -155,9 +168,10 @@ REFS = {
     # ═══════════════ MICROSCOPY ═══════════════
     "widefield": [
         {"name": "Wiener deconvolution", "year": 1949, "paper": "Wiener, 1949", "psnr": 26.00, "ssim": 0.750, "dataset": "BioSR"},
-        {"name": "Richardson-Lucy (20 iter)", "year": 1972, "paper": "Richardson 1972 / Lucy 1974", "psnr": 28.00, "ssim": 0.800, "dataset": "BioSR"},
-        {"name": "CARE", "year": 2018, "paper": "Weigert et al., Nature Methods 2018", "psnr": 33.00, "ssim": 0.920, "dataset": "Planaria"},
+        {"name": "Richardson-Lucy (20 iter)", "year": 1972, "paper": "Richardson 1972 / Lucy 1974", "psnr": 13.39, "ssim": 0.400, "dataset": "BioSR"},
+        {"name": "CARE", "year": 2018, "paper": "Weigert et al., Nature Methods 2018", "psnr": 22.15, "ssim": 0.750, "dataset": "BioSR"},
         {"name": "Noise2Void", "year": 2019, "paper": "Krull et al., CVPR 2019", "psnr": 31.00, "ssim": 0.880, "dataset": "Planaria"},
+        {"name": "m-rBCR", "year": 2023, "paper": "m-rBCR deconvolution, 2023", "psnr": 24.89, "ssim": 0.830, "dataset": "BioSR"},
         {"name": "Restormer", "year": 2022, "paper": "Zamir et al., CVPR 2022", "psnr": 35.50, "ssim": None, "dataset": "BioSR"},
     ],
     "sim": [
@@ -174,12 +188,14 @@ REFS = {
 
     # ═══════════════ CLINICAL OPTICS ═══════════════
     "oct": [
-        {"name": "BM3D", "year": 2007, "paper": "Dabov et al., TIP 2007", "psnr": 32.00, "ssim": 0.880, "dataset": "retinal OCT"},
+        {"name": "BM3D", "year": 2007, "paper": "Dabov et al., TIP 2007", "psnr": 25.00, "ssim": 0.800, "dataset": "DUKE retinal OCT"},
+        {"name": "PSCAT", "year": 2022, "paper": "PSCAT, PKU37 OCT", "psnr": 32.18, "ssim": 0.920, "dataset": "PKU37 retinal OCT"},
         {"name": "SwinIR", "year": 2021, "paper": "Liang et al., ICCVW 2021", "psnr": 35.00, "ssim": None, "dataset": "retinal OCT"},
     ],
     "fundus": [
         {"name": "Richardson-Lucy", "year": 1972, "paper": "Richardson 1972", "psnr": 30.00, "ssim": 0.900, "dataset": "DRIVE"},
-        {"name": "cofe-Net", "year": 2022, "paper": "Li et al., cofe-Net, 2022", "psnr": 32.00, "ssim": None, "dataset": "EyeQ"},
+        {"name": "Cofe-Net", "year": 2022, "paper": "Li et al., Cofe-Net, 2022", "psnr": 24.91, "ssim": None, "dataset": "EyeBench"},
+        {"name": "PCE-Net", "year": 2023, "paper": "PCE-Net, 2023", "psnr": 29.90, "ssim": None, "dataset": "EyeBench"},
     ],
 
     # ═══════════════ NEURAL RENDERING ═══════════════
@@ -406,6 +422,7 @@ REFS = {
     ],
     "sted": [
         {"name": "Richardson-Lucy STED", "year": 2006, "paper": "RL for STED", "psnr": 28.00, "ssim": 0.800, "dataset": "STED"},
+        {"name": "DDPM denoiser", "year": 2023, "paper": "DDPM-avg for STED", "psnr": 32.81, "ssim": 0.920, "dataset": "STED"},
     ],
     "tirf": [
         {"name": "Richardson-Lucy", "year": 1972, "paper": "Richardson 1972", "psnr": 28.00, "ssim": 0.800, "dataset": "TIRF"},
