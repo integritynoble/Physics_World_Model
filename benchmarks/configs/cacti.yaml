@@ -81,10 +81,12 @@ solvers:
   traditional_cpu:
     name: GAP-TV
     module: pwm_core.recon.gap_tv
-    function: run_gap_tv
-    params: '0'
+    function: gap_tv_cacti
+    params:
+      iterations: 50
+      lam: 0.05
     gpu: false
-    reference: ''
+    reference: Yuan et al. 2016
   best_quality:
     name: EfficientSCI
     module: pwm_core.recon.efficientsci

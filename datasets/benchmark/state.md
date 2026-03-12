@@ -33,9 +33,9 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | bioluminescence_tomo | 🔄 BLT simulation benchmark (Ntziachristos Nature Methods 2010) | ❌ | ❌ | ✅ 4x, best=13.3 dB | ❌ |
 | brachytherapy_img | ✅ AAPM TG-43 phantom / Open-Source TG-43 data | ❌ | ❌ | ✅ 4x, best=25.2 dB | ❌ |
 | brillouin | 🔄 Brillouin simulation benchmark / RRUFF spectral data | ❌ | ❌ | ✅ 4x, best=35.8 dB | ❌ |
-| cacti | ✅ DAVIS-2017 / Six Scenes (Liu IEEE TPAMI 2019, github.com/liuyang12/SCI) | ❌ | ❌ | ✅ 6x, best=11.5 dB | ❌ |
+| cacti | ✅ DAVIS-2017 / Six Scenes (Liu IEEE TPAMI 2019, github.com/liuyang12/SCI) | ❌ | ❌ | ✅ 4x, best=19.8 dB | ❌ |
 | cars | 🔄 CARS simulation benchmark / SRS hyperspectral data | ❌ | ❌ | ✅ 4x, best=16.7 dB | ❌ |
-| cassi | ✅ CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ❌ | ❌ | ✅ 4x, best=13.6 dB | ❌ |
+| cassi | ✅ CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ❌ | ❌ | ✅ 4x, best=26.2 dB | ❌ |
 | cathodoluminescence | ✅ HyperSpy CL dataset (Zenodo 6513794) / EMPIAR CL data | ❌ | ❌ | ✅ 4x, best=28.9 dB | ❌ |
 | cbct | ✅ AAPM Low-Dose CT Challenge 2016 / LoDoPaB-CT (Sci. Data 2021) | ❌ | ❌ | ✅ 3x, best=15.2 dB | ❌ |
 | cest_mri | ✅ ISMRM 2024 CEST Challenge / fastMRI brain (fastmri.med.nyu.edu) | ❌ | ❌ | ✅ 4x, best=32.1 dB | ❌ |
@@ -419,9 +419,9 @@ Tests run: 2026-03-11 | GPU: NVIDIA GTX 1660 Ti, CUDA 12.4 | PyTorch 2.6.0
 | bioluminescence_tomo | 4 | 13.3 | ✅ |
 | brachytherapy_img | 4 | 25.2 | ✅ |
 | brillouin | 4 | 35.8 | ✅ |
-| cacti | 6 | 11.5 | ✅ |
+| cacti | 4 | 19.8 | ✅ |
 | cars | 4 | 16.7 | ✅ |
-| cassi | 4 | 13.6 | ✅ |
+| cassi | 4 | 26.2 | ✅ |
 | cathodoluminescence | 4 | 28.9 | ✅ |
 | cbct | 3 | 15.2 | ✅ |
 | cest_mri | 4 | 32.1 | ✅ |

@@ -1423,9 +1423,7 @@
       "sample": "sample_00",
       "solvers": {
         "mask_division_baseline": {
-          "status": "completed",
-          "psnr_db": 7.010808898444944,
-          "ssim": 0.35543592122868756,
+          "status": "pending",
           "exec_time_sec": 0.010003089904785156,
           "result_shape": [
             256,
@@ -1434,9 +1432,7 @@
           ]
         },
         "gap_tv": {
-          "status": "completed",
-          "psnr_db": 4.006367176276797,
-          "ssim": 0.12164963868012968,
+          "status": "pending",
           "exec_time_sec": 0.4278876781463623,
           "result_shape": [
             256,
@@ -1446,31 +1442,31 @@
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 2.1457156761973306,
-          "ssim": 0.02415400795685117,
-          "exec_time_sec": 0.0,
+          "psnr_db": 19.783812096671188,
+          "ssim": 0.43622932532244524,
+          "exec_time_sec": 1.2941579818725586,
           "algorithm_name": "GAP-TV"
         },
         "best_quality": {
-          "algorithm_name": "EfficientSCI",
-          "psnr_db": 11.535601848943323,
-          "ssim": 0.1521417876976411,
-          "exec_time_sec": 0.3615434169769287,
-          "status": "completed"
+          "status": "completed",
+          "psnr_db": 1.4734222268645,
+          "ssim": 0.07736501126388855,
+          "exec_time_sec": 0.2239980697631836,
+          "algorithm_name": "EfficientSCI"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 5.945784227917606,
-          "ssim": 0.013409010296314871,
-          "exec_time_sec": 0.9200172424316406,
+          "psnr_db": 5.869669115486289,
+          "ssim": 0.008268322954844308,
+          "exec_time_sec": 0.2689969539642334,
           "algorithm_name": "ELP-Unfolding"
         },
         "small_gpu": {
-          "algorithm_name": "EfficientSCI-T",
-          "psnr_db": 5.1465,
-          "ssim": 0.004658,
-          "exec_time_sec": 0.209,
-          "status": "completed"
+          "status": "completed",
+          "psnr_db": 8.020678067631945,
+          "ssim": 0.07591545177639084,
+          "exec_time_sec": 0.03200054168701172,
+          "algorithm_name": "EfficientSCI-T"
         }
       }
     },
@@ -1791,9 +1787,7 @@
       "sample": "sample_00",
       "solvers": {
         "spectral_shift_baseline": {
-          "status": "completed",
-          "psnr_db": -5.25962064159825,
-          "ssim": 0.009283576324687935,
+          "status": "pending",
           "exec_time_sec": 0.00800466537475586,
           "result_shape": [
             256,
@@ -6299,30 +6293,30 @@
       "solvers": {
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 2.5809943970020632,
-          "ssim": -0.024601180194979082,
-          "exec_time_sec": 0.0,
+          "psnr_db": 25.927490440520927,
+          "ssim": 0.9649493992328644,
+          "exec_time_sec": 6.432630300521851,
           "algorithm_name": "GAP-TV"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 8.951831380068239,
-          "ssim": 0.33777527084688924,
-          "exec_time_sec": 2.4016120433807373,
+          "psnr_db": 26.15002563537932,
+          "ssim": 0.9664742484134704,
+          "exec_time_sec": 16.157511711120605,
           "algorithm_name": "GAP-TV (guided)"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 10.297523042665908,
-          "ssim": 0.42211552357839677,
-          "exec_time_sec": 1.182023525238037,
+          "psnr_db": 25.927490440520927,
+          "ssim": 0.9649493992328644,
+          "exec_time_sec": 8.529290199279785,
           "algorithm_name": "GAP-TV (fast)"
         },
         "small_gpu": {
           "status": "completed",
-          "psnr_db": 13.56646715423016,
-          "ssim": 0.4060023228133028,
-          "exec_time_sec": 0.7133986949920654,
+          "psnr_db": 25.307825413632777,
+          "ssim": 0.9664039510920089,
+          "exec_time_sec": 4.875741720199585,
           "algorithm_name": "GAP-TV (small)"
         }
       }
