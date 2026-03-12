@@ -7,12 +7,12 @@ Last updated: 2026-03-11 — 168/168 modalities audited
 - **Samples OK**: whether sample counts meet requirements (public >= 10, dev >= 20, hidden >= 20)
 - **Public Source**: the standard dataset / data origin used for public tier
 - **Source Verified**: whether the public source has been reviewed and confirmed as widely-accepted
-- **GPU Algo Test**: algorithm testing status (done / pending / in-progress)
+- **Algorithm Test**: algorithm testing status (done / pending / in-progress)
 - **Speclab**: speclab integration status
 
 ## Quick Status Table
 
-| # | Modality | Dataset | Pub | Dev | Hid | Samples OK | Public Source | Source Verified | GPU Algo Test | Speclab |
+| # | Modality | Dataset | Pub | Dev | Hid | Samples OK | Public Source | Source Verified | Algorithm Test | Speclab |
 |---|----------|---------|-----|-----|-----|------------|--------------|-----------------|---------------|---------|
 | 1 | acoustic_emission | done | 6 | 6 | 6 | NO | Simulated / synthetic | pending | in-progress | pending |
 | 2 | acoustic_microscopy | done | 6 | 6 | 6 | NO | Simulated / synthetic | pending | pending | pending |
