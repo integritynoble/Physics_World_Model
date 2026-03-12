@@ -1058,9 +1058,9 @@ def build_md():
                                 pwm_ssim = ss
                             break
 
-                # Fallback: use best PWM result for this modality if it's the
-                # first (lowest PSNR) reference entry — shows PWM capability
-                if pwm_psnr == "—" and algo_num == 1 and pwm_solvers:
+                # Fallback: use best PWM result for this modality when no
+                # specific solver match found — shows PWM capability
+                if pwm_psnr == "—" and pwm_solvers:
                     best_p = 0
                     best_s = ""
                     for sk, sv in pwm_solvers.items():
