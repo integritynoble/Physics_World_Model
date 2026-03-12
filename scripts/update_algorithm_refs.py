@@ -153,6 +153,8 @@ REFS = {
         {"name": "Angular Spectrum", "year": 2000, "paper": "Goodman, Fourier Optics", "psnr": 22.00, "ssim": 0.700, "dataset": "simulated"},
         {"name": "GS (Gerchberg-Saxton)", "year": 1972, "paper": "Gerchberg & Saxton, Optik 1972", "psnr": 20.00, "ssim": 0.650, "dataset": "simulated"},
         {"name": "HIO", "year": 1982, "paper": "Fienup, Applied Optics 1982", "psnr": 25.00, "ssim": 0.780, "dataset": "simulated"},
+        {"name": "CEHAN (CGH)", "year": 2025, "paper": "Appl Opt 65(7), 2025", "psnr": 35.71, "ssim": None, "dataset": "DIV2K"},
+        {"name": "Phase distortion DL", "year": 2024, "paper": "ScienceDirect 2024 (DHM)", "psnr": 36.88, "ssim": 0.990, "dataset": "Digital holographic microscopy"},
     ],
     "ptychography": [
         {"name": "ePIE", "year": 2009, "paper": "Maiden & Rodenburg, Ultramicroscopy 2009", "psnr": 28.00, "ssim": 0.850, "dataset": "simulated"},
@@ -163,6 +165,8 @@ REFS = {
         {"name": "HIO", "year": 1982, "paper": "Fienup, Applied Optics 1982", "psnr": 25.00, "ssim": 0.750, "dataset": "simulated"},
         {"name": "ER (Error Reduction)", "year": 1972, "paper": "Gerchberg & Saxton, 1972", "psnr": 23.00, "ssim": 0.700, "dataset": "simulated"},
         {"name": "WF (Wirtinger Flow)", "year": 2015, "paper": "Candes et al., TIT 2015", "psnr": 30.00, "ssim": 0.900, "dataset": "simulated"},
+        {"name": "NAS-PRNet (bio cells)", "year": 2022, "paper": "arXiv 2210.14231", "psnr": 36.70, "ssim": 0.866, "dataset": "Interferograms"},
+        {"name": "DLMMPR (coded diffraction)", "year": 2025, "paper": "arXiv 2511.12556", "psnr": 45.79, "ssim": 0.984, "dataset": "Coded diffraction patterns"},
     ],
 
     # ═══════════════ MICROSCOPY ═══════════════
@@ -195,6 +199,7 @@ REFS = {
     "fundus": [
         {"name": "Richardson-Lucy", "year": 1972, "paper": "Richardson 1972", "psnr": 30.00, "ssim": 0.900, "dataset": "DRIVE"},
         {"name": "Cofe-Net", "year": 2022, "paper": "Li et al., Cofe-Net, 2022", "psnr": 24.91, "ssim": None, "dataset": "EyeBench"},
+        {"name": "GFE-Net", "year": 2023, "paper": "Med Image Anal 2023", "psnr": 29.72, "ssim": 0.955, "dataset": "EyeQ"},
         {"name": "PCE-Net", "year": 2023, "paper": "PCE-Net, 2023", "psnr": 29.90, "ssim": None, "dataset": "EyeBench"},
     ],
 
@@ -287,13 +292,15 @@ REFS = {
         {"name": "SwinIR", "year": 2021, "paper": "Liang et al., ICCVW 2021", "psnr": 34.00, "ssim": None, "dataset": "SEM denoising"},
     ],
     "tem": [
-        {"name": "BM3D", "year": 2007, "paper": "Dabov et al., BM3D, 2007", "psnr": 30.00, "ssim": None, "dataset": "TEM denoising"},
+        {"name": "BM3D", "year": 2007, "paper": "Lobato et al., npj Comp Mat 2024 (comparison)", "psnr": 30.45, "ssim": None, "dataset": "TEM validation"},
         {"name": "Topaz-Denoise", "year": 2020, "paper": "Bepler et al., Nature Commun 2020", "psnr": 32.00, "ssim": None, "dataset": "TEM denoising"},
         {"name": "SwinIR", "year": 2021, "paper": "Liang et al., 2021", "psnr": 35.00, "ssim": None, "dataset": "TEM denoising"},
+        {"name": "CGRDN", "year": 2024, "paper": "Lobato et al., npj Comp Mat 2024, s41524-023-01188-0", "psnr": 36.96, "ssim": None, "dataset": "TEM validation avg"},
     ],
     "electron_tomography": [
-        {"name": "WBP", "year": 1970, "paper": "Weighted Back-Projection", "psnr": 22.00, "ssim": 0.650, "dataset": "simulated"},
-        {"name": "SIRT", "year": 1972, "paper": "Gilbert, SIRT, 1972", "psnr": 25.00, "ssim": 0.750, "dataset": "simulated"},
+        {"name": "WBP (missing wedge)", "year": 1970, "paper": "Zhang et al., Sci Rep 2019", "psnr": 13.07, "ssim": 0.280, "dataset": "Simulated ET 45-deg missing wedge"},
+        {"name": "SART (missing wedge)", "year": 1972, "paper": "Zhang et al., Sci Rep 2019", "psnr": 18.55, "ssim": 0.312, "dataset": "Simulated ET 45-deg missing wedge"},
+        {"name": "Joint DL model (IRDM)", "year": 2019, "paper": "Zhang et al., Sci Rep 2019, s41598-019-49267-x", "psnr": 27.46, "ssim": 0.953, "dataset": "Simulated ET 45-deg missing wedge"},
     ],
     "cryo_em": [
         # Cryo-EM uses FSC resolution (Å); PSNR/SSIM from 2D denoising benchmarks
@@ -352,6 +359,7 @@ REFS = {
         {"name": "D-bar method", "year": 2000, "paper": "Nachman, Annals Math 1996", "psnr": 18.00, "ssim": 0.600, "dataset": "simulated circular"},
         {"name": "TV-ADMM", "year": 2010, "paper": "TV regularization", "psnr": 22.00, "ssim": 0.750, "dataset": "simulated circular"},
         {"name": "EIDORS-Net", "year": 2020, "paper": "DL for EIT", "psnr": 26.00, "ssim": 0.850, "dataset": "simulated circular"},
+        {"name": "SA-HFL", "year": 2023, "paper": "CMPB 2023, S0169260723005278", "psnr": 31.03, "ssim": 0.988, "dataset": "EIT regular-shaped phantom"},
     ],
     "gravitational_wave": [
         {"name": "Matched filtering", "year": 2000, "paper": "Allen et al., PRD 2012", "psnr": 20.00, "ssim": None, "dataset": "LIGO simulated (SNR proxy)"},
@@ -399,8 +407,10 @@ REFS = {
 
     # ═══════════════ ULTRAFAST ═══════════════
     "cup": [
-        {"name": "TwIST", "year": 2007, "paper": "Bioucas-Dias & Figueiredo, TIP 2007", "psnr": 22.00, "ssim": 0.700, "dataset": "CUP simulated"},
-        {"name": "PnP-FFDNet", "year": 2020, "paper": "Yuan et al., CVPR 2020", "psnr": 28.00, "ssim": None, "dataset": "CUP simulated"},
+        {"name": "TwIST", "year": 2007, "paper": "Liu et al., Sensors 2022, PMC9571970", "psnr": 24.70, "ssim": 0.790, "dataset": "CUP simulated avg"},
+        {"name": "PnP-DnCNN", "year": 2020, "paper": "Liu et al., Sensors 2022, PMC9571970", "psnr": 27.09, "ssim": 0.880, "dataset": "CUP simulated avg"},
+        {"name": "PnP-FFDNet", "year": 2020, "paper": "Liu et al., Sensors 2022, PMC9571970", "psnr": 28.37, "ssim": 0.910, "dataset": "CUP simulated avg"},
+        {"name": "PnP-BM3D", "year": 2020, "paper": "Liu et al., Sensors 2022, PMC9571970", "psnr": 29.18, "ssim": 0.920, "dataset": "CUP simulated avg"},
     ],
     "streak_camera": [
         {"name": "Temporal deconvolution", "year": 2000, "paper": "Streak deconv baseline", "psnr": 25.00, "ssim": None, "dataset": "streak simulated"},
@@ -430,6 +440,7 @@ REFS = {
     "two_photon": [
         {"name": "Richardson-Lucy", "year": 1972, "paper": "Richardson 1972", "psnr": 27.00, "ssim": 0.780, "dataset": "two-photon"},
         {"name": "DeepCAD", "year": 2021, "paper": "Li et al., Nature Methods 2021", "psnr": 35.00, "ssim": None, "dataset": "calcium imaging"},
+        {"name": "UNet-Att (self-supervised)", "year": 2025, "paper": "Complex & Intelligent Systems, 2025", "psnr": 38.27, "ssim": 0.950, "dataset": "Synthetic two-photon calcium"},
     ],
     "sted": [
         {"name": "Richardson-Lucy STED", "year": 2006, "paper": "RL for STED", "psnr": 28.00, "ssim": 0.800, "dataset": "STED"},
@@ -491,14 +502,17 @@ REFS = {
     "fmri": [
         {"name": "Zero-filled IFFT", "year": 2000, "paper": "Baseline", "psnr": 25.00, "ssim": 0.600, "dataset": "fMRI"},
         {"name": "CS-fMRI", "year": 2010, "paper": "Jung et al., PMB 2009", "psnr": 32.00, "ssim": 0.880, "dataset": "fMRI"},
+        {"name": "E2E-VarNet", "year": 2021, "paper": "Sriram et al., fastMRI Challenge 2020", "psnr": 41.41, "ssim": 0.959, "dataset": "fastMRI Brain 4x"},
     ],
     "diffusion_mri": [
         {"name": "Zero-filled IFFT", "year": 2000, "paper": "Baseline", "psnr": 25.00, "ssim": 0.600, "dataset": "dMRI"},
+        {"name": "MPR-ViT (ADC maps)", "year": 2024, "paper": "Eidex et al., Med Phys 2024", "psnr": 31.00, "ssim": 0.950, "dataset": "Clinical brain DWI"},
         {"name": "q-DL", "year": 2016, "paper": "Golkov et al., MRM 2016", "psnr": 34.00, "ssim": None, "dataset": "HCP dMRI"},
     ],
     "mrs": [
         {"name": "HLSVD", "year": 2002, "paper": "Pijnappel et al., 1992", "psnr": 22.00, "ssim": None, "dataset": "MRS simulated (spectral SNR)"},
         {"name": "LCModel", "year": 1993, "paper": "Provencher, MRM 1993", "psnr": 28.00, "ssim": None, "dataset": "MRS simulated (spectral SNR)"},
+        {"name": "DDPM-MRSI (2x SR)", "year": 2025, "paper": "J Imaging Inform Med 2025", "psnr": 29.73, "ssim": 0.956, "dataset": "Brain tumor MRSI"},
     ],
     "mammography": [
         {"name": "FBP", "year": 1971, "paper": "FBP baseline", "psnr": 30.00, "ssim": 0.850, "dataset": "mammography"},
@@ -516,7 +530,8 @@ REFS = {
     ],
     "dot": [
         {"name": "Born approximation", "year": 1999, "paper": "Arridge, Inverse Problems 1999", "psnr": 20.00, "ssim": 0.600, "dataset": "DOT simulated"},
-        {"name": "Tikhonov regularization", "year": 2000, "paper": "Tikhonov", "psnr": 22.00, "ssim": 0.650, "dataset": "DOT simulated"},
+        {"name": "Tikhonov regularization", "year": 2018, "paper": "Feng et al., JBO 24(5), PMC6992907", "psnr": 24.34, "ssim": 0.460, "dataset": "DOT N=1045 avg"},
+        {"name": "BPNN", "year": 2018, "paper": "Feng et al., JBO 24(5), PMC6992907", "psnr": 27.79, "ssim": 0.910, "dataset": "DOT N=1045 avg"},
     ],
     "asl_mri": [
         {"name": "Control-label subtraction", "year": 1998, "paper": "Detre et al., MRM 1992", "psnr": 22.00, "ssim": 0.650, "dataset": "ASL simulated"},
@@ -526,10 +541,12 @@ REFS = {
     ],
     "cest_mri": [
         {"name": "Z-spectrum fitting", "year": 2003, "paper": "Zhou et al., NMR Biomed 2003", "psnr": 25.00, "ssim": 0.750, "dataset": "CEST simulated"},
+        {"name": "ResUNet-NE", "year": 2023, "paper": "Muller et al., Diagnostics 13(21):3326, 2023", "psnr": 35.00, "ssim": None, "dataset": "Synthetic CEST phantoms"},
     ],
     "mr_elastography": [
         {"name": "Direct inversion", "year": 2001, "paper": "Manduca et al., MRM 2001", "psnr": 22.00, "ssim": 0.700, "dataset": "MRE simulated"},
         {"name": "Phase gradient", "year": 2001, "paper": "Manduca et al., MRM 2001", "psnr": 24.00, "ssim": 0.750, "dataset": "MRE simulated"},
+        {"name": "SW-ViT (simulated)", "year": 2025, "paper": "arXiv 2505.18865", "psnr": 32.68, "ssim": 0.995, "dataset": "Noisy simulated shear wave"},
     ],
     "mr_fingerprinting": [
         {"name": "Dictionary matching", "year": 2013, "paper": "Ma et al., Nature 2013", "psnr": 25.00, "ssim": 0.800, "dataset": "MRF simulated"},
@@ -642,7 +659,7 @@ REFS = {
     "gpr": [
         {"name": "Kirchhoff migration", "year": 2000, "paper": "GPR migration", "psnr": 20.00, "ssim": 0.650, "dataset": "simulated GPR"},
         {"name": "RTM (Reverse Time Migration)", "year": 2000, "paper": "RTM", "psnr": 25.00, "ssim": 0.800, "dataset": "simulated GPR"},
-        {"name": "GPR-Net", "year": 2021, "paper": "DL for GPR", "psnr": 30.00, "ssim": 0.900, "dataset": "simulated GPR"},
+        {"name": "PGCDM (Physics-Guided Diffusion)", "year": 2024, "paper": "Remote Sensing 17(23):3837", "psnr": 30.05, "ssim": 0.876, "dataset": "Simulated mining GPR"},
     ],
     "insar": [
         {"name": "Goldstein filter", "year": 1998, "paper": "Goldstein & Werner, GRL 1998", "psnr": 22.00, "ssim": None, "dataset": "InSAR simulated"},
@@ -650,8 +667,9 @@ REFS = {
     ],
     "multispectral_sat": [
         {"name": "BDSD (Band-Dependent Spatial Detail)", "year": 2008, "paper": "Vivone et al., GRSM 2015", "psnr": 30.00, "ssim": 0.900, "dataset": "WorldView-2 reduced-res"},
-        {"name": "PanNet", "year": 2017, "paper": "Yang et al., ICCV 2017", "psnr": 32.50, "ssim": 0.930, "dataset": "WorldView-3 reduced-res"},
+        {"name": "PanNet", "year": 2017, "paper": "Yang et al., ICCV 2017", "psnr": 36.15, "ssim": 0.966, "dataset": "WorldView-2 reduced-res"},
         {"name": "GPPNN", "year": 2021, "paper": "Xu et al., CVPR 2021", "psnr": 33.80, "ssim": 0.950, "dataset": "WorldView-3 reduced-res"},
+        {"name": "CDFAN", "year": 2024, "paper": "Entropy 27(6):567, PMC12191612", "psnr": 42.77, "ssim": None, "dataset": "WorldView-2 reduced-res"},
     ],
     "ocean_color": [
         {"name": "MUMM", "year": 2000, "paper": "Ruddick et al., RSE 2000", "psnr": 22.00, "ssim": None, "dataset": "SeaWiFS/MODIS simulated"},
@@ -662,7 +680,8 @@ REFS = {
     "polsar": [
         {"name": "Lee filter", "year": 1999, "paper": "Lee et al., IEEE TGRS 1999", "psnr": 22.00, "ssim": 0.700, "dataset": "PolSAR simulated"},
         {"name": "Cloude-Pottier decomposition", "year": 1997, "paper": "Cloude & Pottier, IEEE TGRS 1997", "psnr": None, "ssim": None, "dataset": "PolSAR"},
-        {"name": "SAR-CNN despeckling", "year": 2020, "paper": "DL for SAR despeckling", "psnr": 28.00, "ssim": 0.850, "dataset": "PolSAR simulated"},
+        {"name": "CNN learnable activation", "year": 2021, "paper": "Remote Sensing 13(17):3444", "psnr": 26.37, "ssim": 0.830, "dataset": "Synthetic SAR"},
+        {"name": "PAN-DeSpeck", "year": 2023, "paper": "CMC 76(3):54373", "psnr": 28.36, "ssim": 0.905, "dataset": "Synthetic SAR"},
     ],
     "weather_radar": [
         {"name": "CLEAN-AP", "year": 2000, "paper": "CLEAN for weather", "psnr": 25.00, "ssim": None, "dataset": "weather radar simulated"},
@@ -710,6 +729,9 @@ REFS = {
     "magnetic_particle": [
         {"name": "System matrix reconstruction", "year": 2005, "paper": "Gleich & Weizenecker, Nature 2005", "psnr": 22.00, "ssim": None, "dataset": "MPI simulated"},
         {"name": "X-space approach", "year": 2010, "paper": "Goodwill & Conolly, TMI 2010", "psnr": 26.00, "ssim": None, "dataset": "MPI simulated"},
+        {"name": "Hybrid encoder-decoder", "year": 2025, "paper": "Phys Med Biol 2025, 10.1088/1361-6560/ae19c9", "psnr": 29.11, "ssim": 0.930, "dataset": "Open MPI"},
+        {"name": "SRCNN (MPI)", "year": 2024, "paper": "SRCNN for MPI system matrix", "psnr": 32.88, "ssim": 0.989, "dataset": "Open MPI"},
+        {"name": "VRF-Net (recon)", "year": 2026, "paper": "Khair et al., BSPC 113, arXiv 2511.02212", "psnr": 41.58, "ssim": 0.960, "dataset": "Open MPI phantoms 2x"},
     ],
     "ocean_acoustic_tomo": [
         {"name": "Travel-time inversion", "year": 1979, "paper": "Munk & Wunsch, Deep-Sea Res 1979", "psnr": 20.00, "ssim": None, "dataset": "ocean acoustic simulated"},
@@ -723,6 +745,7 @@ REFS = {
     "seismic_tomo": [
         {"name": "Travel-time tomography", "year": 1976, "paper": "Aki et al., JGR 1977", "psnr": 20.00, "ssim": 0.650, "dataset": "simulated seismic"},
         {"name": "FWI", "year": 2009, "paper": "Virieux & Operto, Geophysics 2009", "psnr": 28.00, "ssim": 0.880, "dataset": "Marmousi-2"},
+        {"name": "TSISTA-Net", "year": 2025, "paper": "Applied Sciences 15(23):12700", "psnr": 37.28, "ssim": 0.967, "dataset": "Synthetic tunnel seismic"},
     ],
 
     # ═══════════════ ADDITIONAL INDUSTRIAL ═══════════════
@@ -745,9 +768,13 @@ REFS = {
     ],
     "terahertz": [
         {"name": "TDS deconvolution", "year": 2000, "paper": "THz-TDS baseline", "psnr": 22.00, "ssim": None, "dataset": "THz simulated"},
+        {"name": "EARDB", "year": 2023, "paper": "Hou et al., Entropy 25(3):440, PMC10047599", "psnr": 31.30, "ssim": 0.891, "dataset": "Set5 x4 SR"},
+        {"name": "J-Net (real THz)", "year": 2023, "paper": "Yeo et al., arXiv 2312.01638", "psnr": 32.52, "ssim": None, "dataset": "Real THz images"},
     ],
     "ultrasonic_phased_array": [
         {"name": "TFM (Total Focusing Method)", "year": 2004, "paper": "Holmes et al., NDT&E Int 2005", "psnr": 28.00, "ssim": None, "dataset": "FMC/TFM simulated"},
+        {"name": "CinCGAN", "year": 2025, "paper": "MSSP 2025", "psnr": 36.42, "ssim": None, "dataset": "Sparse TFM"},
+        {"name": "CycleSR", "year": 2025, "paper": "MSSP 2025", "psnr": 39.32, "ssim": None, "dataset": "Sparse TFM"},
     ],
     "xray_ndt": [
         {"name": "FBP", "year": 1971, "paper": "FBP baseline", "psnr": 28.00, "ssim": 0.800, "dataset": "X-ray NDT simulated"},
@@ -822,6 +849,7 @@ REFS = {
     ],
     "flash_lidar": [
         {"name": "TCSPC histogram", "year": 2000, "paper": "flash LiDAR baseline", "psnr": 22.00, "ssim": None, "dataset": "flash LiDAR simulated"},
+        {"name": "Joint depth+reflectivity DNN", "year": 2025, "paper": "arXiv 2505.13250", "psnr": 29.10, "ssim": None, "dataset": "Simulated SPAD data"},
     ],
     "photometric_stereo": [
         {"name": "Woodham (Lambertian)", "year": 1980, "paper": "Woodham, Opt Eng 1980", "psnr": 25.00, "ssim": None, "dataset": "DiLiGenT (MAE ~15 deg)"},
@@ -832,6 +860,8 @@ REFS = {
     "lucky_imaging": [
         {"name": "Shift-and-add", "year": 2000, "paper": "Lucky imaging baseline", "psnr": 22.00, "ssim": None, "dataset": "lucky imaging simulated"},
         {"name": "Drizzle", "year": 2002, "paper": "Fruchter & Hook, PASP 2002", "psnr": 26.00, "ssim": None, "dataset": "lucky imaging simulated"},
+        {"name": "RVRT+", "year": 2025, "paper": "arXiv 2503.15984 (DIPLI)", "psnr": 26.51, "ssim": 0.520, "dataset": "Synthetic atmospheric turbulence"},
+        {"name": "DiffIR2VR-Zero", "year": 2025, "paper": "arXiv 2503.15984 (DIPLI)", "psnr": 27.76, "ssim": 0.620, "dataset": "Synthetic atmospheric turbulence"},
     ],
     "solar_imaging": [
         {"name": "Richardson-Lucy", "year": 1972, "paper": "Richardson 1972", "psnr": 25.00, "ssim": None, "dataset": "solar EUV simulated"},
