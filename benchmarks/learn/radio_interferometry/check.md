@@ -100,3 +100,21 @@ Radio interferometry has a rigorous forward model (the RIME - Radio Interferomet
 | precomputed_baseline | 23.25 | 0.2029 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CLEAN
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.82 dB |
+| SSIM (sample_00) | 0.2883 |
+| Runtime | 0.7 s/sample |
+
+**Result: PASS**

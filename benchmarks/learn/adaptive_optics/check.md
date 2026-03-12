@@ -107,3 +107,21 @@ Adaptive optics wavefront sensing is correctly modeled as a linear slope-to-phas
 | precomputed_baseline | 100.00 | 1.0000 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zernike LS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 13.12 dB |
+| SSIM (sample_00) | 0.1201 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

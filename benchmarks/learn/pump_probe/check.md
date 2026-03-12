@@ -101,3 +101,21 @@ Pump-probe spectroscopy has a well-defined bilinear forward model (concentration
 | precomputed_baseline | 18.24 | 0.7781 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SVD-GlobFit
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 41.4 dB |
+| SSIM (sample_00) | 0.836 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**

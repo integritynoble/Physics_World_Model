@@ -102,3 +102,21 @@ Algorithm routing correctly assigns FBP, SART, TV-regularised reconstruction, an
 | precomputed_baseline | 16.72 | 0.8430 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 12.4 dB |
+| SSIM (sample_00) | 0.3812 |
+| Runtime | 0.94 s/sample |
+
+**Result: PASS**

@@ -88,3 +88,21 @@ The DOT benchmark correctly models the diffuse optical transport forward problem
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Born-Approx
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.02 dB |
+| SSIM (sample_00) | 0.6489 |
+| Runtime | 0.58 s/sample |
+
+**Result: PASS**

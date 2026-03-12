@@ -108,3 +108,21 @@ The electron holography benchmark correctly models the off-axis interference for
 | precomputed_baseline | 9.51 | -0.0481 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FFT-Holo
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 11.26 dB |
+| SSIM (sample_00) | 0.2763 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

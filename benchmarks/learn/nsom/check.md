@@ -98,3 +98,21 @@ y = PSF ⊛ x + noise
 | precomputed_baseline | 19.63 | 0.7328 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BTR
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.22 dB |
+| SSIM (sample_00) | 0.4384 |
+| Runtime | 0.64 s/sample |
+
+**Result: PASS**

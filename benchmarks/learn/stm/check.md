@@ -103,3 +103,21 @@ The STM benchmark correctly models the scanning tunneling microscopy tip-artifac
 | precomputed_baseline | 17.89 | 0.8025 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BTR
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.65 dB |
+| SSIM (sample_00) | 0.9145 |
+| Runtime | 0.53 s/sample |
+
+**Result: PASS**

@@ -115,3 +115,21 @@ Reflectivity at an interface:
 | precomputed_baseline | 10.04 | -0.0384 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.09 dB |
+| SSIM (sample_00) | 0.4663 |
+| Runtime | 2.34 s/sample |
+
+**Result: PASS**

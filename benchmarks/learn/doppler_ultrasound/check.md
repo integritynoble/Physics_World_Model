@@ -149,3 +149,21 @@ Doppler-specific algorithms (autocorrelation velocity estimation, clutter filter
 | 7 | MV-Doppler | Variational | 0 | 26.8 | 0.778 | Langeland et al., IEEE TUFFC 2003 |
 | 8 | VENC-Flow | Classical | 0 | 24.1 | 0.738 | Moran, Magn. Reson. Imaging 1982 |
 | 9 | CF-Doppler | Classical | 0 | 22.5 | 0.712 | Evans & McDicken, Doppler Ultrasound 2000 |
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CF-Doppler
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.47 dB |
+| SSIM (sample_00) | 0.7056 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**

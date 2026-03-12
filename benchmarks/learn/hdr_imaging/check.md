@@ -94,3 +94,21 @@ where f is the nonlinear camera response function (CRF), t_k is the k-th exposur
 | precomputed_baseline | 36.82 | 0.8232 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-Deconv
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 20.16 dB |
+| SSIM (sample_00) | 0.4585 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

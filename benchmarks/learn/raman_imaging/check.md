@@ -98,3 +98,21 @@ The Raman imaging benchmark correctly implements the spectral mixture forward mo
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4 -- updated 2026-03-11*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SG-ALS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 11.39 dB |
+| SSIM (sample_00) | 0.5382 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**

@@ -118,3 +118,21 @@ Domain-specific DESI-MSI algorithm overrides added to `_VARIANT_OVERRIDES` in `_
 | precomputed_baseline | 15.13 | 0.3130 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MSI-Hotelling
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.02 dB |
+| SSIM (sample_00) | 0.6489 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**

@@ -124,3 +124,21 @@ s(t) = Σ_n sigma_n · exp(-j4π f_c R_n(t)/c) · rect(t/T)
 | precomputed_baseline | 11.29 | 0.0394 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CLEAN-VLBI
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.82 dB |
+| SSIM (sample_00) | 0.2883 |
+| Runtime | 0.65 s/sample |
+
+**Result: PASS**

@@ -102,3 +102,21 @@ The PET-MR benchmark correctly captures the unique challenges of MR-based attenu
 | precomputed_baseline | 10.98 | 0.0165 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP-PET
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.8 dB |
+| SSIM (sample_00) | 0.7328 |
+| Runtime | 4.19 s/sample |
+
+**Result: PASS**

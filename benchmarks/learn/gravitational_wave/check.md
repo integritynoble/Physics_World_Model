@@ -103,3 +103,21 @@ The gravitational wave benchmark correctly formulates matched-filter signal dete
 | precomputed_baseline | 100.00 | 0.8666 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Matched Filter
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.05 dB |
+| SSIM (sample_00) | 0.3329 |
+| Runtime | 1.13 s/sample |
+
+**Result: PASS**

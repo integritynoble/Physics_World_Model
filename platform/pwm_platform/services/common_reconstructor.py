@@ -102,7 +102,7 @@ _MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
     "pet": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"], "mu_map": ["attenuation_map", "mu_map"]},
     "spect": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"], "mu_map": ["attenuation_map", "mu_map"]},
     "pet_ct": {"y": ["sinogram_measured", "sinogram", "y", "y_ct"], "angles": ["angles_deg", "angles_nominal", "angles"]},
-    "pet_mr": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "pet_mr": {"y": ["y_pet", "sinogram_measured", "sinogram", "y"], "angles": ["pet_angles_deg", "angles_deg", "angles_nominal", "angles"]},
     "spect_ct": {"y": ["y_ct", "y_spect", "sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "muon_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
     "neutron_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
@@ -130,6 +130,10 @@ _MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
     # Fundus: image_measured
     "fundus": {"y": ["image_measured", "y"]},
     "endoscopy": {"y": ["image_measured", "y"]},
+    # InSAR: y_real/y_imag (complex interferogram stored separately)
+    "insar": {"y": ["y_real", "y"]},
+    # PolSAR
+    "polsar": {"y": ["image_measured", "y"]},
 }
 
 # Modality sets for reconstruction routing
@@ -221,13 +225,17 @@ def _load_sample(h5_path: Path, sample_idx: int = 0, variant_key: str = "") -> d
                     data["y"] = np.array(grp[k])
                     break
 
-        # x_true (ground truth)
+        # x_true (ground truth) — standard or modality-specific key
         if "x_true" in available:
             data["x_true"] = np.array(grp["x_true"])
         elif "x_true_amplitude" in available:
             data["x_true"] = np.array(grp["x_true_amplitude"])
             if "x_true_phase" in available:
                 data["x_true_phase"] = np.array(grp["x_true_phase"])
+        elif "x_pet" in available:
+            data["x_true"] = np.array(grp["x_pet"])
+        elif "x_mr" in available:
+            data["x_true"] = np.array(grp["x_mr"])
 
         # H_ideal (forward model operator)
         if "H_ideal" in available:
@@ -1040,7 +1048,13 @@ def _run_common_sync(
         resolve_algorithm,
     )
 
-    variant = get_variant(variant_key)
+    # Variant aliases: resolve short names to catalog entries
+    _VARIANT_ALIASES: dict[str, str] = {
+        "cassi": "sd_cassi",
+        "spc": "spc_block",
+    }
+    catalog_key = _VARIANT_ALIASES.get(variant_key, variant_key)
+    variant = get_variant(catalog_key)
     if variant is None:
         raise ValueError(f"Unknown variant: {variant_key}")
 
@@ -1106,13 +1120,22 @@ def _run_common_sync(
 
     # Run reconstruction via central dispatch
     dl_note = is_dl
-    effective_algo = algorithm_name if not is_dl else ""
+    if not is_dl:
+        effective_algo = algorithm_name
+    else:
+        # For DL methods, run the best available CPU baseline:
+        # sinogram modalities → PINER-CT (better than plain FBP)
+        recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
+        effective_algo = "PINER-CT" if recon_type_for_baseline == "sinogram" else ""
     x_recon = _dispatch_reconstruction(
         sample_data, variant_key, category, effective_algo
     )
     baseline_method = (
         None if not is_dl else _pick_baseline_name(sample_data, variant_key, category)
     )
+    # Override baseline name for improved sinogram baseline
+    if is_dl and effective_algo == "PINER-CT":
+        baseline_method = "PINER-CT"
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 

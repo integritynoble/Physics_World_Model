@@ -1157,9 +1157,49 @@ async def challenge_tier_page(
             if not recon_files:
                 continue
             _ALGO_DISPLAY = {
+                # CT / sinogram
                 "fbp": "FBP", "fbpconv": "FBPConvNet", "lpd": "Learned Primal-Dual",
                 "dolce": "DOLCE", "pnp-admm": "PnP-ADMM", "pnp-drunet": "PnP-DRUNet",
                 "tv-admm": "TV-ADMM", "red-cnn": "RED-CNN", "dudotrans": "DuDoTrans",
+                "piner-ct": "PINER-CT", "ct-fm": "CT-FM",
+                # MRI / k-space
+                "zero-filled-ifft": "Zero-Filled IFFT", "sense": "SENSE",
+                "grappa": "GRAPPA", "l1-wavelet": "L1-Wavelet",
+                "kt-sparse-sense": "k-t SPARSE-SENSE", "espirit": "ESPIRiT",
+                "loraks": "LORAKS", "bm3d-mri": "BM3D-MRI",
+                "modl": "MoDL", "hybridcascade": "HybridCascade",
+                "e2e-varnet": "E2E-VarNet", "swinmr": "SwinMR",
+                "humus-net": "HUMUS-Net", "humus-net-pp": "HUMUS-Net++",
+                "reconformer": "ReconFormer",
+                # Denoising / microscopy
+                "tv-denoising": "TV-Denoising", "nlm": "NLM",
+                "nlm-tv": "NLM+TV", "bm3d": "BM3D",
+                "richardson-lucy": "Richardson-Lucy", "wiener": "Wiener Filter",
+                "dncnn": "DnCNN", "ffdnet": "FFDNet", "drunet": "DRUNet",
+                "restormer": "Restormer", "uformer": "Uformer",
+                # Phase retrieval
+                "angular-spectrum": "Angular Spectrum", "gerchberg-saxton": "Gerchberg-Saxton",
+                "hio": "HIO", "prdeep": "prDeep",
+                # General
+                "tikhonov": "Tikhonov", "admm": "ADMM", "ista": "ISTA", "fista": "FISTA",
+                "red": "RED", "pnp-hqs": "PnP-HQS", "score-mri": "Score-MRI",
+                # CT variants
+                "fbp-tv": "FBP+TV", "sart": "SART", "osem": "OSEM",
+                "art-tv": "ART-TV", "cgls": "CGLS", "bm3d-ct": "BM3D-CT",
+                # Ultrasound
+                "das": "Delay-and-Sum", "universal-back-proj": "Universal Back-Proj",
+                # Radio/astronomy
+                "clean": "CLEAN", "matched-filter": "Matched Filter",
+                # Phase
+                "angular-spectrum": "Angular Spectrum", "gerchberg-saxton": "Gerchberg-Saxton",
+                "tv-phase": "TV (Phase)", "hio": "HIO",
+                # Nuclear
+                "mlem": "MLEM", "osem-pet": "OSEM-PET",
+                # Misc
+                "phase-unwrap": "Phase Unwrap", "l-bfgs-fwi": "L-BFGS FWI",
+                "bilateral": "Bilateral Filter", "tv-strong": "TV (strong)",
+                "nlm-tv": "NLM+TV", "bilateral-tv": "Bilateral+TV",
+                "espirit": "ESPIRiT",
             }
             algos = []
             for rf in recon_files:

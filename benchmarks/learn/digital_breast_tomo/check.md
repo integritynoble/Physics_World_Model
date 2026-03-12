@@ -117,3 +117,21 @@ limited-angle tomosynthesis forward model.
 | precomputed_baseline | -36.04 | 0.0001 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP-DBT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.75 dB |
+| SSIM (sample_00) | 0.4909 |
+| Runtime | 1.14 s/sample |
+
+**Result: PASS**

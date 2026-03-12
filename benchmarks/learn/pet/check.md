@@ -104,3 +104,21 @@ PET is correctly formulated as a Poisson inverse problem where the sinogram (LOR
 | precomputed_fbp | 33.09 | 0.9325 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP-PET
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 20.34 dB |
+| SSIM (sample_00) | 0.3946 |
+| Runtime | 3.15 s/sample |
+
+**Result: PASS**

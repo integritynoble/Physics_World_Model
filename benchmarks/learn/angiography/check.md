@@ -135,3 +135,21 @@ Calibrated to DSA/3DRA physics: Shen et al. (2024) and Wang et al. (2024).
 | precomputed_baseline | 11.22 | 0.0435 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 12.38 dB |
+| SSIM (sample_00) | 0.1962 |
+| Runtime | 1.03 s/sample |
+
+**Result: PASS**

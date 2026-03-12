@@ -148,3 +148,21 @@ The fMRI benchmark correctly models the BOLD fMRI forward problem with Cartesian
 | zero_filled | 4.93 | -0.5617 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zero-Filled IFFT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.65 dB |
+| SSIM (sample_00) | 0.5721 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

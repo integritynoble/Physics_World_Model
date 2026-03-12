@@ -144,3 +144,21 @@ Calibrated to Alsop et al. (MRM 2015) pCASL normative values and Mutsaerts et al
 | precomputed_baseline | 2.66 | 0.0636 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zero-Filled IFFT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.63 dB |
+| SSIM (sample_00) | 0.0192 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

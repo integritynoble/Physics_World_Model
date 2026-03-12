@@ -158,3 +158,21 @@ The forward model (Radon projection, Poisson noise, sparse views) is physically 
 | fbp_shepp_logan | 15.19 | 0.3593 | 0.07 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.82 dB |
+| SSIM (sample_00) | 0.6261 |
+| Runtime | 1.12 s/sample |
+
+**Result: PASS**

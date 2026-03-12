@@ -138,3 +138,21 @@ All 3 challenge tiers (public/dev/hidden) have been generated and uploaded to GC
 | precomputed_baseline | 25.11 | 0.9781 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 20.68 dB |
+| SSIM (sample_00) | 0.3762 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**

@@ -116,3 +116,21 @@ The EELS benchmark correctly models the electron energy loss spectral imaging fo
 | precomputed_baseline | 24.59 | 0.9842 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PowerLaw-EELS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 19.46 dB |
+| SSIM (sample_00) | 0.4038 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**

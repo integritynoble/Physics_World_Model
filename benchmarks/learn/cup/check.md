@@ -113,3 +113,21 @@ Algorithm routing uses dedicated `_VARIANT_OVERRIDES["cup"]` with 9 domain-speci
 | precomputed_baseline | -2.34 | 0.1202 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-CUP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 9.61 dB |
+| SSIM (sample_00) | 0.219 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

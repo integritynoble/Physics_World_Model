@@ -171,3 +171,21 @@ Algorithm catalog expanded to 30 methods covering 1999-2026. New algorithms adde
 | sense | 13.05 | 0.0010 | 0.04 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zero-Filled IFFT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.75 dB |
+| SSIM (sample_00) | 0.5274 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**

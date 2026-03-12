@@ -99,3 +99,21 @@ where:
 | direct_render_baseline | 0.00 | 0.0000 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** COLMAP+MVS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 9.23 dB |
+| SSIM (sample_00) | 0.4426 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**

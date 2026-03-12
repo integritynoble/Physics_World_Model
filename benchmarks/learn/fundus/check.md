@@ -153,3 +153,21 @@ Three tiers with different random seeds (0/10000/20000) ensure no data leakage b
 | precomputed_wiener | 22.02 | 0.9248 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 31.09 dB |
+| SSIM (sample_00) | 0.8266 |
+| Runtime | 1.25 s/sample |
+
+**Result: PASS**
