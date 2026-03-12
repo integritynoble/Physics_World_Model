@@ -152,6 +152,7 @@ REFS = {
             {"name": "KD-optimized beamformer", "year": 2025, "paper": "Scientific Reports 2025", "psnr": 39.00, "ssim": 0.953, "dataset": "US B-mode imaging"},
         {"name": "DAS single plane wave", "year": 2020, "paper": "Li et al., IUS 2020 / CUBDL", "psnr": 18.61, "ssim": None, "dataset": "CUBDL single-PW vs compound"},
         {"name": "DAS single PW (deep target, 8cm)", "year": 2017, "paper": "Perdios et al., IEEE TUFFC 2017", "psnr": 17.00, "ssim": 0.450, "dataset": "CUBDL single-PW deep tissue"},
+        {"name": "DAS single PW (in vivo)", "year": 2020, "paper": "Li et al., IUS 2020 / CUBDL, PMC verified", "psnr": 13.52, "ssim": None, "dataset": "CUBDL in-vivo single-PW vs 75-PW compound"},
 ],
     "photoacoustic": [
         # Limited-view PAT benchmark (mouse brain vasculature, 64 sensors)
@@ -352,7 +353,8 @@ REFS = {
         {"name": "DGI-Net", "year": 2021, "paper": "DL ghost imaging", "psnr": 28.00, "ssim": 0.880, "dataset": "simulated 1% sampling"},
         {"name": "Orthogonal GI (2D-DCT)", "year": 2025, "paper": "Nature Sci Rep, s41598-025-01283-w", "psnr": 30.00, "ssim": None, "dataset": "30% sampling rate"},
             {"name": "Raw correlation (5% sampling)", "year": 2002, "paper": "Bennink et al., PRL 2002", "psnr": 10.00, "ssim": 0.250, "dataset": "ghost imaging 5% sampling"},
-        {"name": "Correlation GI (2% sampling)", "year": 2017, "paper": "Lyu et al., Scientific Reports 2017", "psnr": 8.00, "ssim": 0.180, "dataset": "ghost imaging 2% sampling ratio"},
+        {"name": "Traditional GI (3000 measurements)", "year": 2021, "paper": "Kim et al., Optics Express 2021, PMID 34809299", "psnr": 7.24, "ssim": 0.280, "dataset": "USAF target 3000 measurements"},
+        {"name": "Correlation GI (natural, 128x128)", "year": 2020, "paper": "Bian et al., Scientific Reports 2020, PMC7376173", "psnr": 9.46, "ssim": None, "dataset": "cat image 128x128 correlation GI"},
 ],
 
     # ═══════════════ ASTRONOMY ═══════════════
@@ -591,7 +593,8 @@ REFS = {
         {"name": "MPR-ViT (ADC maps)", "year": 2024, "paper": "Eidex et al., Med Phys 2024", "psnr": 31.00, "ssim": 0.950, "dataset": "Clinical brain DWI"},
         {"name": "q-DL", "year": 2016, "paper": "Golkov et al., MRM 2016", "psnr": 34.00, "ssim": None, "dataset": "HCP dMRI"},
             {"name": "Zero-filled (high b-value)", "year": 2000, "paper": "dMRI zero-filled baseline", "psnr": 15.00, "ssim": 0.400, "dataset": "dMRI high-b sparse"},
-        {"name": "Zero-filled (b=5000, 6 dir)", "year": 2004, "paper": "Tournier et al., NeuroImage 2004", "psnr": 13.00, "ssim": 0.300, "dataset": "dMRI b=5000 sparse directions"},
+        {"name": "Zero-filled (R=6, multi-b)", "year": 2023, "paper": "Zhong et al., Bioengineering 2023, PMC10376839", "psnr": 12.04, "ssim": 0.300, "dataset": "dMRI b=0-4000 R=6 acceleration"},
+        {"name": "Zero-filled (R=4, multi-b)", "year": 2023, "paper": "Zhong et al., Bioengineering 2023, PMC10376839", "psnr": 12.18, "ssim": None, "dataset": "dMRI b=0-4000 R=4 acceleration"},
 ],
     "mrs": [
         {"name": "HLSVD", "year": 2002, "paper": "Pijnappel et al., 1992", "psnr": 22.00, "ssim": None, "dataset": "MRS simulated (spectral SNR)"},
@@ -826,7 +829,7 @@ REFS = {
         {"name": "GPPNN", "year": 2021, "paper": "Xu et al., CVPR 2021", "psnr": 33.80, "ssim": 0.950, "dataset": "WorldView-3 reduced-res"},
         {"name": "CDFAN", "year": 2024, "paper": "Entropy 27(6):567, PMC12191612", "psnr": 42.77, "ssim": None, "dataset": "WorldView-2 reduced-res"},
             {"name": "Bicubic upsampling", "year": 2000, "paper": "Bicubic pansharpening baseline", "psnr": 15.00, "ssim": 0.500, "dataset": "WorldView-2 bicubic"},
-        {"name": "Nearest-neighbor (4x)", "year": 2000, "paper": "NN pansharpening baseline", "psnr": 13.00, "ssim": 0.400, "dataset": "WorldView-2 nearest-neighbor"},
+        {"name": "Nearest-neighbor (4x)", "year": 2000, "paper": "Deng et al., IEEE GRSM 2022 benchmark", "psnr": 22.00, "ssim": 0.600, "dataset": "WorldView-2 nearest-neighbor"},
 ],
     "ocean_color": [
         {"name": "MUMM", "year": 2000, "paper": "Ruddick et al., RSE 2000", "psnr": 22.00, "ssim": None, "dataset": "SeaWiFS/MODIS simulated"},
@@ -1083,7 +1086,7 @@ REFS = {
         {"name": "U-Net denoising", "year": 2019, "paper": "DL for CLE", "psnr": 28.00, "ssim": 0.850, "dataset": "CLE fiber bundle"},
             {"name": "SwinIR", "year": 2024, "paper": "Heliyon 2024", "psnr": 36.84, "ssim": 0.970, "dataset": "endoscopy image enhancement"},
         {"name": "Raw fiber bundle (no interp)", "year": 2000, "paper": "Raw CLE baseline", "psnr": 15.00, "ssim": 0.400, "dataset": "CLE raw fiber bundle"},
-        {"name": "Raw CLE (sparse fiber, low fill)", "year": 2006, "paper": "Vercauteren et al., Medical Image Analysis 2006", "psnr": 12.00, "ssim": 0.350, "dataset": "CLE fiber bundle 50% fill factor"},
+        {"name": "Raw CLE (honeycomb artifact)", "year": 2022, "paper": "Kim et al., Sensors 2022, PMC9824069", "psnr": 20.58, "ssim": 0.730, "dataset": "CLE synthetic honeycomb artifact"},
 ],
     "octa": [
         {"name": "SSADA", "year": 2012, "paper": "Jia et al., Opt Express 2012", "psnr": 22.00, "ssim": 0.700, "dataset": "OCTA retinal"},
