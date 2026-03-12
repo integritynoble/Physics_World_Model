@@ -118,3 +118,57 @@ Solar EUV imaging has a well-defined integral equation forward model (DEM × tem
 | Runtime | 0.41 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Pixon
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 39.74 dB |
+| SSIM (sample_00) | 0.9716 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 27.45 dB |
+| SSIM (sample_00) | 0.4416 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Pixon
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 39.74 dB |
+| SSIM (sample_00) | 0.9716 |
+| Runtime | 0.52 s/sample |
+
+**Result: PASS**

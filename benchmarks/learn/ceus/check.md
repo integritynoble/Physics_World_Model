@@ -126,3 +126,57 @@ Algorithm routing uses carrier routing `(medical, Acoustic)` → `medical_ultras
 | Runtime | 0.62 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** AM-CEUS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.47 dB |
+| SSIM (sample_00) | 0.7056 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Pulse-Inversion
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.47 dB |
+| SSIM (sample_00) | 0.7056 |
+| Runtime | 0.65 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** AM-CEUS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.47 dB |
+| SSIM (sample_00) | 0.7056 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**

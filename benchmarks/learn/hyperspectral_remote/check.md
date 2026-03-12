@@ -132,3 +132,57 @@ The hyperspectral remote sensing benchmark is fully generated and uploaded. The 
 | Runtime | 1.09 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LTTR
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.95 dB |
+| SSIM (sample_00) | 0.7739 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CNMF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.95 dB |
+| SSIM (sample_00) | 0.7739 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LTTR
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.95 dB |
+| SSIM (sample_00) | 0.7739 |
+| Runtime | 0.58 s/sample |
+
+**Result: PASS**

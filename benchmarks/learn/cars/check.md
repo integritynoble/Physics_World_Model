@@ -125,3 +125,57 @@ Algorithm routing uses the dedicated `_VARIANT_OVERRIDES["cars"]` pool (9 CARS-s
 | Runtime | 0.54 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MEM-CARS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** KK-Retrieval
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MEM-CARS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.5 s/sample |
+
+**Result: PASS**

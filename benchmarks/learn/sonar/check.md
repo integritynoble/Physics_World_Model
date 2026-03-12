@@ -119,3 +119,57 @@ Sonar imaging is grounded in acoustic wave propagation physics with matched filt
 | Runtime | 0.73 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MVDR/Capon
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.67 dB |
+| SSIM (sample_00) | 0.96 |
+| Runtime | 0.92 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DAS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.67 dB |
+| SSIM (sample_00) | 0.96 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MVDR/Capon
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.67 dB |
+| SSIM (sample_00) | 0.96 |
+| Runtime | 0.54 s/sample |
+
+**Result: PASS**

@@ -116,3 +116,57 @@ Algorithm routing correctly assigns 4-bucket phase extraction, sparse MPI deconv
 | Runtime | 0.53 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ToF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.67 dB |
+| SSIM (sample_00) | 0.96 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase Unwrap
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.67 dB |
+| SSIM (sample_00) | 0.96 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ToF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.67 dB |
+| SSIM (sample_00) | 0.96 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**

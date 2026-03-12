@@ -116,3 +116,57 @@ Algorithm routing correctly assigns probe deconvolution, Wiener filtering, BM3D-
 | Runtime | 0.01 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 27.15 dB |
+| SSIM (sample_00) | 0.691 |
+| Runtime | 0.58 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Filter
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 23.01 dB |
+| SSIM (sample_00) | 0.5084 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 27.15 dB |
+| SSIM (sample_00) | 0.691 |
+| Runtime | 0.69 s/sample |
+
+**Result: PASS**

@@ -137,3 +137,57 @@ The CPU baseline (Goldstein phase unwrapping + linear ramp removal) achieves 18.
 | Runtime | 0.9 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** InSAR-BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.79 dB |
+| SSIM (sample_00) | 0.0228 |
+| Runtime | 0.4 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Goldstein-MCF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.62 dB |
+| SSIM (sample_00) | 0.0302 |
+| Runtime | 0.84 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** InSAR-BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.79 dB |
+| SSIM (sample_00) | 0.0228 |
+| Runtime | 1.01 s/sample |
+
+**Result: PASS**

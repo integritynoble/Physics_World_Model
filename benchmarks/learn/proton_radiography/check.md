@@ -118,3 +118,57 @@ Proton radiography is grounded in the Bethe-Bloch energy-loss physics and multip
 | Runtime | 1.11 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DROP-TVS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 12.4 dB |
+| SSIM (sample_00) | 0.3812 |
+| Runtime | 0.85 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP-MLP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.72 dB |
+| SSIM (sample_00) | 0.5497 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DROP-TVS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.72 dB |
+| SSIM (sample_00) | 0.5497 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**

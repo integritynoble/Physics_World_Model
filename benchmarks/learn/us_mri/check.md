@@ -132,3 +132,57 @@ Algorithm routing correctly assigns deformable registration, CS-MRI with US prio
 | Runtime | 0.67 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** B-spline FFD
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.86 dB |
+| SSIM (sample_00) | 0.9172 |
+| Runtime | 0.7 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Demons
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.86 dB |
+| SSIM (sample_00) | 0.9172 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** B-spline FFD
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.86 dB |
+| SSIM (sample_00) | 0.9172 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**

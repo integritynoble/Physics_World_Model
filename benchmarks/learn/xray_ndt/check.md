@@ -120,3 +120,57 @@ Algorithm routing correctly assigns FBP, SART, TV-regularised reconstruction, an
 | Runtime | 0.94 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 12.4 dB |
+| SSIM (sample_00) | 0.3812 |
+| Runtime | 1.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.72 dB |
+| SSIM (sample_00) | 0.5497 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.44 dB |
+| SSIM (sample_00) | 0.279 |
+| Runtime | 12.09 s/sample |
+
+**Result: PASS**

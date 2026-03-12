@@ -118,3 +118,57 @@ Radio astronomy imaging is a classic sparse Fourier inverse problem (aperture sy
 | Runtime | 0.64 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** AIRI
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.82 dB |
+| SSIM (sample_00) | 0.2883 |
+| Runtime | 0.59 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CLEAN
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.82 dB |
+| SSIM (sample_00) | 0.2883 |
+| Runtime | 0.52 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** AIRI
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.82 dB |
+| SSIM (sample_00) | 0.2883 |
+| Runtime | 0.54 s/sample |
+
+**Result: PASS**

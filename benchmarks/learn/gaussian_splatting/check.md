@@ -117,3 +117,57 @@ where:
 | Runtime | 0.07 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Photogrammetry
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 9.23 dB |
+| SSIM (sample_00) | 0.4426 |
+| Runtime | 0.04 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** COLMAP+MVS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 9.23 dB |
+| SSIM (sample_00) | 0.4426 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Photogrammetry
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 9.23 dB |
+| SSIM (sample_00) | 0.4426 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**

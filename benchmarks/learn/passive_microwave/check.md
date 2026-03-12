@@ -120,3 +120,57 @@ Passive microwave radiometry is correctly formulated as a multi-frequency radiat
 | Runtime | 1.53 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov-SMOS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.55 dB |
+| SSIM (sample_00) | 0.8919 |
+| Runtime | 0.64 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Backus-Gilbert
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.55 dB |
+| SSIM (sample_00) | 0.8919 |
+| Runtime | 0.53 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov-SMOS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.55 dB |
+| SSIM (sample_00) | 0.8919 |
+| Runtime | 0.63 s/sample |
+
+**Result: PASS**

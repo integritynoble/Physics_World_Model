@@ -120,3 +120,57 @@ Integral imaging is correctly modeled as a perspective projection through a micr
 | Runtime | 0.56 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.02 dB |
+| SSIM (sample_00) | 0.7173 |
+| Runtime | 7.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Shift-and-Add
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.57 dB |
+| SSIM (sample_00) | 0.4839 |
+| Runtime | 0.98 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.02 dB |
+| SSIM (sample_00) | 0.7173 |
+| Runtime | 24.77 s/sample |
+
+**Result: PASS**

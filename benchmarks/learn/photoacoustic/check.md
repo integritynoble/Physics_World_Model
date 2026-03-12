@@ -132,3 +132,57 @@ The photoacoustic benchmark implements a physically accurate circular-arc transd
 | Runtime | 0.18 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 10.89 dB |
+| SSIM (sample_00) | 0.298 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Universal Back-Proj
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 10.89 dB |
+| SSIM (sample_00) | 0.298 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 10.89 dB |
+| SSIM (sample_00) | 0.298 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**

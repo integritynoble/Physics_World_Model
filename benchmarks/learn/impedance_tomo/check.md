@@ -121,3 +121,57 @@ EIT is correctly modeled as the Calderón problem with a linearized Jacobian-bas
 | Runtime | 1.72 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.41 dB |
+| SSIM (sample_00) | 0.8051 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gauss-Newton
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.02 dB |
+| SSIM (sample_00) | 0.6489 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.41 dB |
+| SSIM (sample_00) | 0.8051 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**

@@ -157,3 +157,111 @@ Significant improvement over GPU precomputed baseline (20.21 dB). CPU algorithm 
 Gallery images uploaded to `gs://pwm-benchmark-datasets/img/benchmark_gallery/acoustic_emission/`.
 Speclab: algorithm available as "TV-Denoising" in the acoustic_emission reconstruction panel.
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Time-Reversal Imaging
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 2.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TDOA-WLS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.69 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.87 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Time-Reversal Imaging
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 2.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TDOA-WLS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.84 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.98 s/sample |
+
+**Result: PASS**

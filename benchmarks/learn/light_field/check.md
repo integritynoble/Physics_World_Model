@@ -126,3 +126,57 @@ Light field camera imaging is correctly distinguished from integral imaging by t
 | Runtime | 0.88 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.02 dB |
+| SSIM (sample_00) | 0.7173 |
+| Runtime | 6.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Shift-and-Sum
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.57 dB |
+| SSIM (sample_00) | 0.4839 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.02 dB |
+| SSIM (sample_00) | 0.7173 |
+| Runtime | 7.02 s/sample |
+
+**Result: PASS**

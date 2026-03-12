@@ -119,3 +119,57 @@ Pump-probe spectroscopy has a well-defined bilinear forward model (concentration
 | Runtime | 0.61 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MCR-ALS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 41.4 dB |
+| SSIM (sample_00) | 0.836 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SVD-GlobFit
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 41.4 dB |
+| SSIM (sample_00) | 0.836 |
+| Runtime | 0.63 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MCR-ALS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 41.4 dB |
+| SSIM (sample_00) | 0.836 |
+| Runtime | 0.59 s/sample |
+
+**Result: PASS**

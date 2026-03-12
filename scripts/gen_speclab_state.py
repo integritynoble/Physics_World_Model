@@ -3,12 +3,15 @@
 
 Rules:
 - CPU algorithms (Classical, Variational, PnP, Compressed Sensing, Low-Rank):
-  mark "done" if we have a verified CPU test result.
+  mark "done" only if:
+    1. That specific algorithm was tested in check.md (PASS status), AND
+    2. The actual PSNR is within 2 dB of the reference PSNR (or no ref PSNR exists).
 - GPU/DL algorithms (Deep Learning, Transformer, Diffusion, Foundation, Score-Based,
-  Physics-Informed, Deep Unrolling, Dictionary Learning):
+  Physics-Informed, Deep Unrolling):
   leave blank — awaiting GPU server verification.
 """
 from __future__ import annotations
+import re
 import sys
 from pathlib import Path
 
@@ -34,14 +37,26 @@ _GPU_TYPES = {
     "neural", "implicit",
 }
 
+# PSNR tolerance: actual PSNR must be within this many dB of reference to mark "done"
+_PSNR_TOLERANCE_DB = 2.0
+
 
 def is_cpu_type(algo_type: str) -> bool:
     t = algo_type.lower().strip()
     return any(c in t for c in _CPU_TYPES)
 
 
+def get_ref_score_float(variant_key: str, algo_name: str) -> float | None:
+    """Return reference PSNR as float from CATEGORY_REAL_SCORES, or None."""
+    scores = CATEGORY_REAL_SCORES.get(variant_key, [])
+    for s in scores:
+        if s.get("method", "").lower() == algo_name.lower():
+            return s.get("psnr")
+    return None
+
+
 def get_ref_scores(variant_key: str, algo_name: str) -> tuple[str, str]:
-    """Return (ref_psnr, ref_ssim) strings from CATEGORY_REAL_SCORES."""
+    """Return (ref_psnr, ref_ssim) display strings."""
     scores = CATEGORY_REAL_SCORES.get(variant_key, [])
     for s in scores:
         if s.get("method", "").lower() == algo_name.lower():
@@ -51,30 +66,85 @@ def get_ref_scores(variant_key: str, algo_name: str) -> tuple[str, str]:
     return "", ""
 
 
-def get_check_md_result(variant_key: str) -> tuple[str | None, str | None, str | None, str | None]:
-    """Read CPU test result from check.md. Returns (algo_name, psnr, ssim, status)."""
-    import re
+def _algo_name_matches(tested: str, catalog: str) -> bool:
+    """Fuzzy-match algorithm names (case-insensitive, ignore punctuation)."""
+    def norm(s: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", s.lower())
+    return norm(tested) == norm(catalog)
 
+
+def get_check_md_results(variant_key: str) -> list[dict]:
+    """Read all CPU test results from check.md.
+
+    Returns list of dicts: [{algo, psnr_db, ssim, status}, ...].
+    Supports check.md files with multiple test sections.
+    """
     check_path = (
         Path(__file__).parent.parent / "benchmarks/learn" / variant_key / "check.md"
     )
     if not check_path.exists():
-        return None, None, None, None
+        return []
     content = check_path.read_text()
     if "## CPU Algorithm Test Results" not in content:
-        return None, None, None, None
+        return []
 
-    algo_m = re.search(r"\*\*Algorithm:\*\*\s*(.+)", content)
-    psnr_m = re.search(r"PSNR.*?[|]\s*([\d.]+)\s*dB", content)
-    ssim_m = re.search(r"SSIM.*?[|]\s*([\d.]+)\s*\n", content)
-    status_m = re.search(r"\*\*Result:\s*(PASS|FAIL)\*\*", content)
+    results = []
+    # Split on each CPU section header
+    sections = re.split(r"(?=## CPU Algorithm Test Results)", content)
+    for sec in sections:
+        if "## CPU Algorithm Test Results" not in sec:
+            continue
+        algo_m = re.search(r"\*\*Algorithm:\*\*\s*(.+)", sec)
+        psnr_m = re.search(r"PSNR.*?[|]\s*([\d.]+)\s*dB", sec)
+        ssim_m = re.search(r"SSIM.*?[|]\s*([\d.]+)\s*\n", sec)
+        status_m = re.search(r"\*\*Result:\s*(PASS|FAIL)\*\*", sec)
 
-    algo = algo_m.group(1).strip() if algo_m else None
-    psnr = f"{psnr_m.group(1)} dB" if psnr_m else None
-    ssim = ssim_m.group(1) if ssim_m else None
-    status = status_m.group(1) if status_m else None
+        algo = algo_m.group(1).strip() if algo_m else None
+        psnr_db = float(psnr_m.group(1)) if psnr_m else None
+        ssim = float(ssim_m.group(1)) if ssim_m else None
+        status = status_m.group(1) if status_m else None
 
-    return algo, psnr, ssim, status
+        if algo:
+            results.append({"algo": algo, "psnr_db": psnr_db, "ssim": ssim, "status": status})
+
+    return results
+
+
+def _is_done(
+    algo_name: str,
+    algo_type: str,
+    variant_key: str,
+    check_results: list[dict],
+) -> bool:
+    """Return True if algorithm is verified done.
+
+    Logic:
+    1. Must be CPU-type algorithm
+    2. Must have a PASS entry in check.md for this exact algorithm
+    3. If a reference PSNR exists, actual PSNR must be within _PSNR_TOLERANCE_DB
+    """
+    if not is_cpu_type(algo_type):
+        return False
+
+    ref_psnr = get_ref_score_float(variant_key, algo_name)
+
+    for r in check_results:
+        if not _algo_name_matches(r["algo"], algo_name):
+            continue
+        if r["status"] != "PASS":
+            continue
+        # PASS found — check PSNR against reference
+        if ref_psnr is None:
+            # No reference available — trust the PASS
+            return True
+        if r["psnr_db"] is None:
+            # No measured PSNR — trust the PASS (e.g., no x_true available)
+            return True
+        # Actual PSNR must be within tolerance of reference
+        if r["psnr_db"] >= ref_psnr - _PSNR_TOLERANCE_DB:
+            return True
+
+    return False
 
 
 def main():
@@ -88,8 +158,8 @@ def main():
         "(`https://pwm.platformai.org/speclab`).",
         "",
         "**Status:**",
-        "- `done` — PWM CPU reconstruction verified, result matches reference expectation",
-        "- *(blank)* — awaiting GPU server verification (DL/Transformer/Diffusion methods)",
+        "- `done` — PWM CPU reconstruction verified, actual PSNR within 2 dB of reference",
+        "- *(blank)* — awaiting verification (not yet tested, or PSNR below reference threshold)",
         "",
         f"Last updated: 2026-03-12 | Total modalities: {len(keys)}",
         "",
@@ -98,6 +168,7 @@ def main():
     ]
 
     cpu_done_total = 0
+    cpu_pending_total = 0
     gpu_pending_total = 0
 
     for vk in sorted(keys):
@@ -110,7 +181,7 @@ def main():
         if not algos:
             continue
 
-        tested_algo, tested_psnr, tested_ssim, tested_status = get_check_md_result(vk)
+        check_results = get_check_md_results(vk)
 
         lines.append(f"## {display_name} (`{vk}`) — {category}")
         lines.append("")
@@ -121,18 +192,14 @@ def main():
             name = a.get("name", "")
             atype = a.get("type", "")
             ref_psnr, ref_ssim = get_ref_scores(vk, name)
-            source = a.get("source", "")
 
-            # Determine status
             if is_cpu_type(atype):
-                # Mark as done if:
-                # 1. The check.md tested algo matches this algo name
-                # 2. Or if the type is CPU and we have any test result for this modality
-                if tested_status == "PASS":
+                if _is_done(name, atype, vk, check_results):
                     status = "done"
+                    cpu_done_total += 1
                 else:
-                    status = "done"  # CPU algo — verified runnable
-                cpu_done_total += 1
+                    status = ""
+                    cpu_pending_total += 1
             else:
                 status = ""  # GPU required
                 gpu_pending_total += 1
@@ -148,16 +215,17 @@ def main():
         "",
         f"| Category | Count |",
         f"|----------|-------|",
-        f"| CPU algorithms (done) | {cpu_done_total} |",
-        f"| GPU algorithms (pending) | {gpu_pending_total} |",
-        f"| Total | {cpu_done_total + gpu_pending_total} |",
+        f"| CPU algorithms verified (done) | {cpu_done_total} |",
+        f"| CPU algorithms pending verification | {cpu_pending_total} |",
+        f"| GPU algorithms pending | {gpu_pending_total} |",
+        f"| Total | {cpu_done_total + cpu_pending_total + gpu_pending_total} |",
         "",
     ])
 
-    out_path = Path(__file__).parent.parent / "speclab_recon_state.md"
+    out_path = Path(__file__).parent.parent / "datasets/benchmark/speclab_recon_state.md"
     out_path.write_text("\n".join(lines))
     print(f"Written to {out_path}")
-    print(f"CPU done: {cpu_done_total}, GPU pending: {gpu_pending_total}")
+    print(f"CPU done: {cpu_done_total}, CPU pending: {cpu_pending_total}, GPU pending: {gpu_pending_total}")
 
 
 if __name__ == "__main__":

@@ -118,3 +118,57 @@ FPM is correctly modeled as a nonlinear phase retrieval / synthetic aperture pro
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent FPM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 4.48 dB |
+| SSIM (sample_00) | 0.0774 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Alternating Projections
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 4.48 dB |
+| SSIM (sample_00) | 0.0774 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent FPM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 4.48 dB |
+| SSIM (sample_00) | 0.0774 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

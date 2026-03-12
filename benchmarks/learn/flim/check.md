@@ -149,3 +149,57 @@ FLIM is correctly modeled as a Poisson deconvolution problem on TCSPC histograms
 | Runtime | 2.39 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RLD-FLIM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.51 dB |
+| SSIM (sample_00) | 0.3667 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phasor-FLIM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RLD-FLIM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.51 dB |
+| SSIM (sample_00) | 0.3667 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**

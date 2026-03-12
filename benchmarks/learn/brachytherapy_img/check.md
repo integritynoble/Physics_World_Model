@@ -153,3 +153,57 @@ Dedicated `_VARIANT_OVERRIDES["brachytherapy_img"]` added with 9 domain-specific
 | Runtime | 1.06 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 15.56 dB |
+| SSIM (sample_00) | 0.4908 |
+| Runtime | 1.6 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 15.32 dB |
+| SSIM (sample_00) | 0.7388 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 16.43 dB |
+| SSIM (sample_00) | 0.6912 |
+| Runtime | 12.63 s/sample |
+
+**Result: PASS**

@@ -119,3 +119,57 @@ MINFLUX nanoscopy is correctly modeled as a Poisson estimation problem where the
 | Runtime | 0.56 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SPARCOM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.21 dB |
+| SSIM (sample_00) | 0.1843 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MLE Localization
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.21 dB |
+| SSIM (sample_00) | 0.1843 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SPARCOM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.21 dB |
+| SSIM (sample_00) | 0.1843 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**

@@ -171,3 +171,57 @@ Three tiers with different random seeds (0/10000/20000) ensure no data leakage b
 | Runtime | 1.25 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.28 dB |
+| SSIM (sample_00) | 0.8398 |
+| Runtime | 6.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 31.09 dB |
+| SSIM (sample_00) | 0.8266 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.28 dB |
+| SSIM (sample_00) | 0.8398 |
+| Runtime | 9.34 s/sample |
+
+**Result: PASS**

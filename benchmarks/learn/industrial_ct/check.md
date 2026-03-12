@@ -119,3 +119,57 @@ Industrial CT is correctly formulated as a Beer-Lambert line-integral inverse pr
 | Runtime | 4.28 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 11.62 dB |
+| SSIM (sample_00) | 0.823 |
+| Runtime | 1.87 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 16.97 dB |
+| SSIM (sample_00) | 0.7875 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 16.1 dB |
+| SSIM (sample_00) | 0.7196 |
+| Runtime | 69.19 s/sample |
+
+**Result: PASS**

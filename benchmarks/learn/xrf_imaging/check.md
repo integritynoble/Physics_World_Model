@@ -121,3 +121,57 @@ Algorithm routing correctly assigns PyMCA least-squares fitting, AXIL/SNIP peak 
 | Runtime | 0.55 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.56 dB |
+| SSIM (sample_00) | 0.8496 |
+| Runtime | 0.64 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FP-Quantify
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.82 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-BM3D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.56 dB |
+| SSIM (sample_00) | 0.8496 |
+| Runtime | 0.92 s/sample |
+
+**Result: PASS**

@@ -127,3 +127,57 @@ Particle calorimetry is correctly formulated as both an inverse reconstruction p
 | Runtime | 1.38 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** GARFIELD++
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.87 dB |
+| SSIM (sample_00) | 0.6965 |
+| Runtime | 0.81 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PandoraPFA
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.87 dB |
+| SSIM (sample_00) | 0.6965 |
+| Runtime | 0.66 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** GARFIELD++
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.87 dB |
+| SSIM (sample_00) | 0.6965 |
+| Runtime | 0.57 s/sample |
+
+**Result: PASS**

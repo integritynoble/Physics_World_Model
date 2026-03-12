@@ -134,3 +134,57 @@ The CLEM benchmark correctly frames the multimodal registration and fusion probl
 | Runtime | 0.58 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landmark-Reg
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.86 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Cross-Correlation
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.69 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landmark-Reg
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.12 dB |
+| SSIM (sample_00) | 0.9283 |
+| Runtime | 0.54 s/sample |
+
+**Result: PASS**

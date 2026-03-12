@@ -148,3 +148,57 @@ The modify_plan.md documents the OCT-pool mismatch and the required override ent
 | Runtime | 0.34 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-CLE
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.98 dB |
+| SSIM (sample_00) | 0.3676 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** NLM-Speckle
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.98 dB |
+| SSIM (sample_00) | 0.3676 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-CLE
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.98 dB |
+| SSIM (sample_00) | 0.3676 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**

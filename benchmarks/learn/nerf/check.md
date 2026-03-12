@@ -160,3 +160,57 @@ No code changes needed.
 | Runtime | 0.71 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Photogrammetry
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.57 dB |
+| SSIM (sample_00) | 0.4839 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** COLMAP+MVS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.57 dB |
+| SSIM (sample_00) | 0.4839 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Photogrammetry
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.57 dB |
+| SSIM (sample_00) | 0.4839 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**

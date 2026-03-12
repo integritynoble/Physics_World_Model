@@ -123,3 +123,57 @@ The event camera benchmark is correctly built around the log-luminance contrast 
 | Runtime | 0.5 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Complementary
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Event-Integration
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Complementary
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**

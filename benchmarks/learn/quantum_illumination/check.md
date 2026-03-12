@@ -119,3 +119,57 @@ Quantum illumination is correctly grounded in the TMSV entangled-photon formalis
 | Runtime | 0.62 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FF-SFG
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** OPA Receiver
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.63 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FF-SFG
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.57 s/sample |
+
+**Result: PASS**

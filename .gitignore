@@ -127,3 +127,19 @@ papers/pwm_flagship/contribution_packages/
 # Pitch deck - confidential
 pitch_deck/
 NUL
+
+# Local dataset files (served from GCS, not stored in repo)
+datasets/SPC/BSDS400/
+datasets/benchmark/fpm/
+datasets/benchmark/fmri/*.json
+datasets/benchmark/build_*.py
+datasets/benchmark/generate_*.py
+datasets/benchmark/README.md
+scripts/add_baselines.py
+
+# Additional local files
+datasets/benchmark/challenge-data/
+datasets/benchmark/gallery/
+datasets/benchmark/**/baseline_summary.json
+datasets/benchmark/mri/*.py
+datasets/benchmark/*/
