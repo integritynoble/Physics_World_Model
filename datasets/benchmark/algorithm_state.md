@@ -256,7 +256,7 @@ Generated: 2026-03-12
 | 2 | Tikhonov regularization | 2018 | Feng et al., JBO 24(5), PMC6992907 | 24.3 | 0.4600 | 7.0 | 0.0193 |  |
 | 3 | BPNN | 2018 | Feng et al., JBO 24(5), PMC6992907 | 27.8 | 0.9100 | 7.0 | 0.0193 |  |
 | 4 | Rytov + Laplacian | 2000 | Arridge et al., PMB 1999 | 18.0 | 0.4500 | 7.0 | 0.0193 |  |
-| 5 | Tikhonov regularization | 2000 | Yoo et al., J Biomed Opt 2019, PMC6992907 | 22.0 | 0.3000 | 7.0 | 0.0193 |  |
+| 5 | Tikhonov (basic, noisy) | 2000 | Yoo et al., J Biomed Opt 2019, PMC6992907 | 22.0 | 0.3000 | 7.0 | 0.0193 |  |
 | 6 | L-BFGS-TV [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.3 | 0.0170 |  |
 | 7 | DOT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.3 | 0.0170 |  |
 | 8 | born_backprojection (test) | — | — | — | — | 4.7 | -0.0078 |  |
@@ -455,7 +455,7 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | SSADA (single-scan) | 2012 | Xu et al. 2021 PMC8221851 (single-scan 12.09 dB) | 22.0 | 0.7000 | 18.8 | 0.4872 |  |
+| 1 | SSADA (single-scan) | 2012 | Xu et al. 2021 PMC8221851 (single-scan 12.09 dB) | 12.1 | 0.7000 | 18.8 | 0.4872 | done |
 | 2 | CNN accelerated OCTA | 2022 | Sci Rep 2022 | 20.8 | 0.6300 | 18.8 | 0.4872 | done |
 | 3 | SU-Net (Siamese) | 2019 | Lee et al., 2019 | 28.0 | 0.8130 | 18.8 | 0.4872 |  |
 | 4 | Motion artifact DL | 2024 | MDPI Mathematics 2024 | 32.7 | 0.9260 | 18.8 | 0.4872 |  |
@@ -2218,8 +2218,8 @@ Generated: 2026-03-12
 
 - **Total modalities**: 168
 - **Total algorithm entries**: 1286
-- **Verified (done)**: 470
-- **Not yet verified**: 816
+- **Verified (done)**: 471
+- **Not yet verified**: 815
 - **Sources**: Published papers (2000-2026), PWM benchmark tests, YAML solver configs
 - **Key benchmarks**: KAIST 10 scenes (CASSI), 6 grayscale SCI (CACTI), LoDoPaB-CT, fastMRI, Blender synthetic (NeRF), KITTI (LiDAR), DiffuserCam (lensless), BioSR (microscopy)
 
@@ -2228,7 +2228,7 @@ Generated: 2026-03-12
 | Category | Modalities | Algorithms | Ref Entries | Done | Done % |
 |----------|-----------|------------|-------------|------|--------|
 | Compressive Imaging | 4 | 49 | 40 | 10 | 20% |
-| Medical Imaging | 37 | 318 | 169 | 75 | 24% |
+| Medical Imaging | 37 | 318 | 169 | 76 | 24% |
 | Coherent Imaging | 5 | 37 | 22 | 12 | 32% |
 | Microscopy | 24 | 156 | 75 | 72 | 46% |
 | Electron Microscopy | 11 | 80 | 37 | 41 | 51% |
