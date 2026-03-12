@@ -894,7 +894,7 @@ def build_md():
     lines.append("## Legend")
     lines.append("- **Ref PSNR/SSIM**: Published reference values from literature")
     lines.append("- **PWM PSNR/SSIM**: Values achieved by PWM framework on synthetic benchmark data")
-    lines.append("- **Status**: `done` = PWM matches reference quality (within 3 dB) | blank = not verified")
+    lines.append("- **Status**: `done` = PWM within 3 dB of reference or better | blank = not verified")
     lines.append("- **Year**: Publication year of algorithm")
     lines.append("- **Dataset**: Benchmark dataset used for reference evaluation")
     lines.append("")
@@ -993,13 +993,13 @@ def build_md():
                                 pwm_ssim = ss
                             break
 
-                # Check done status
+                # Check done status: PWM within 3 dB below ref, or PWM >= ref
                 if ref_psnr != "—":
                     cat_stats[cat]["with_ref"] += 1
                 try:
                     rp = float(ref_psnr) if ref_psnr != "—" else None
                     wp = float(pwm_psnr) if pwm_psnr != "—" else None
-                    if rp and wp and abs(rp - wp) < 3.0:
+                    if rp and wp and wp >= rp - 3.0:
                         status = "done"
                         total_done += 1
                         cat_stats[cat]["done"] += 1

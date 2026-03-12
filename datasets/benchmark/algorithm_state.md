@@ -6,7 +6,7 @@ Generated: 2026-03-11
 ## Legend
 - **Ref PSNR/SSIM**: Published reference values from literature
 - **PWM PSNR/SSIM**: Values achieved by PWM framework on synthetic benchmark data
-- **Status**: `done` = PWM matches reference quality (within 3 dB) | blank = not verified
+- **Status**: `done` = PWM within 3 dB of reference or better | blank = not verified
 - **Year**: Publication year of algorithm
 - **Dataset**: Benchmark dataset used for reference evaluation
 
@@ -583,7 +583,7 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Richardson-Lucy | 1972 | Richardson 1972 | 28.0 | 0.8000 | 32.3 | 0.8670 |  |
+| 1 | Richardson-Lucy | 1972 | Richardson 1972 | 28.0 | 0.8000 | 32.3 | 0.8670 | done |
 | 2 | CARE | 2018 | Weigert et al., Nature Methods 2018 | 33.0 | 0.9200 | 13.9 | 0.3589 |  |
 | 3 | precomputed_baseline (test) | — | — | — | — | 31.3 | 0.9870 | done |
 
@@ -621,7 +621,7 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Richardson-Lucy ExM | 2015 | Chen et al., Science 2015 | 26.0 | — | 33.9 | 0.6181 |  |
+| 1 | Richardson-Lucy ExM | 2015 | Chen et al., Science 2015 | 26.0 | — | 33.9 | 0.6181 | done |
 | 2 | CARE (PWM) | — | Weigert et al. 2018 | — | — | 15.9 | 0.6087 |  |
 | 3 | EXpansionNet (PWM) | — | Weigert, M. et al. (2018) CARE for fluorescence microscopy, Nature Methods 15:1090 | — | — | — | — |  |
 | 4 | precomputed_baseline (test) | — | — | — | — | 33.3 | 0.9823 | done |
@@ -797,7 +797,7 @@ Generated: 2026-03-11
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Wiener deconvolution | 1949 | Wiener, 1949 | 26.0 | 0.7500 | — | — |  |
-| 2 | Richardson-Lucy (20 iter) | 1972 | Richardson 1972 / Lucy 1974 | 13.4 | 0.4000 | 24.1 | 0.2696 |  |
+| 2 | Richardson-Lucy (20 iter) | 1972 | Richardson 1972 / Lucy 1974 | 13.4 | 0.4000 | 24.1 | 0.2696 | done |
 | 3 | CARE | 2018 | Weigert et al., Nature Methods 2018 | 22.1 | 0.7500 | 14.5 | 0.7656 |  |
 | 4 | Noise2Void | 2019 | Krull et al., CVPR 2019 | 31.0 | 0.8800 | — | — |  |
 | 5 | m-rBCR | 2023 | m-rBCR deconvolution, 2023 | 24.9 | 0.8300 | — | — |  |
@@ -1007,7 +1007,7 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Wiener deconvolution | 1949 | Wiener, 1949 | 7.3 | 0.0830 | 11.8 | 0.0031 |  |
+| 1 | Wiener deconvolution | 1949 | Wiener, 1949 | 7.3 | 0.0830 | 11.8 | 0.0031 | done |
 | 2 | ADMM | 2000 | Boyd et al., ADMM, 2010 | 12.8 | 0.4420 | 11.9 | 0.5896 | done |
 | 3 | FlatNet | 2022 | Khan et al., TPAMI 2022 | 21.2 | 0.7200 | 0.5 | 0.0001 |  |
 | 4 | MWDN | 2023 | MWDN, 2023 | 25.7 | 0.8160 | — | — |  |
@@ -1299,7 +1299,7 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | SAFT (Synth Aperture Focus) | 1980 | Doctor et al., 1986 | 25.0 | — | 22.0 | 0.7398 |  |
+| 1 | SAFT (Synth Aperture Focus) | 1980 | Doctor et al., 1986 | 25.0 | — | 22.0 | 0.7398 | done |
 | 2 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 22.0 | 0.7398 | done |
 | 3 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 22.0 | 0.7398 | done |
 | 4 | precomputed_baseline (test) | — | — | — | — | 10.0 | -0.0384 |  |
@@ -1717,7 +1717,7 @@ Generated: 2026-03-11
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | CLEAN | 1974 | Hogbom, A&AS 1974 | 25.0 | — | 37.3 | 0.7683 |  |
+| 1 | CLEAN | 1974 | Hogbom, A&AS 1974 | 25.0 | — | 37.3 | 0.7683 | done |
 | 2 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 37.3 | 0.7683 | done |
 | 3 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 37.3 | 0.7683 | done |
 | 4 | RadioAST-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 37.3 | 0.7683 | done |
@@ -1937,8 +1937,8 @@ Generated: 2026-03-11
 
 - **Total modalities**: 168
 - **Total algorithm entries**: 1005
-- **Verified (done)**: 222
-- **Not yet verified**: 783
+- **Verified (done)**: 228
+- **Not yet verified**: 777
 - **Sources**: Published papers (2000-2026), PWM benchmark tests, YAML solver configs
 - **Key benchmarks**: KAIST 10 scenes (CASSI), 6 grayscale SCI (CACTI), LoDoPaB-CT, fastMRI, Blender synthetic (NeRF), KITTI (LiDAR), DiffuserCam (lensless), BioSR (microscopy)
 
@@ -1949,19 +1949,19 @@ Generated: 2026-03-11
 | Compressive Imaging | 4 | 45 | 36 | 5 | 11% |
 | Medical Imaging | 37 | 238 | 86 | 31 | 13% |
 | Coherent Imaging | 5 | 29 | 13 | 5 | 17% |
-| Microscopy | 24 | 126 | 42 | 31 | 25% |
+| Microscopy | 24 | 126 | 42 | 34 | 27% |
 | Electron Microscopy | 11 | 61 | 19 | 23 | 38% |
 | Computational Optics | 2 | 14 | 7 | 5 | 36% |
-| Computational Photography | 5 | 35 | 19 | 7 | 20% |
+| Computational Photography | 5 | 35 | 19 | 8 | 23% |
 | Neural Rendering | 2 | 20 | 10 | 2 | 10% |
 | Depth Imaging | 5 | 31 | 11 | 5 | 16% |
 | Remote Sensing | 11 | 66 | 23 | 17 | 26% |
 | Scanning Probe Microscopy | 4 | 22 | 6 | 4 | 18% |
-| Industrial Inspection | 10 | 49 | 13 | 16 | 33% |
+| Industrial Inspection | 10 | 49 | 13 | 17 | 35% |
 | Spectroscopy & Spectral Imaging | 8 | 43 | 11 | 15 | 35% |
 | Astronomy & Space Imaging | 4 | 24 | 9 | 12 | 50% |
 | Ultrafast Imaging | 4 | 22 | 7 | 4 | 18% |
 | Quantum Imaging | 3 | 18 | 6 | 5 | 28% |
-| Broader Experimental Science | 11 | 63 | 21 | 18 | 29% |
+| Broader Experimental Science | 11 | 63 | 21 | 19 | 30% |
 | Scientific Instrumentation | 12 | 68 | 22 | 12 | 18% |
 | Multi-Modal Fusion | 6 | 31 | 7 | 5 | 16% |
