@@ -1693,7 +1693,7 @@ class BeerLambert(BasePrimitive):
     _node_role = "transport"
     _physics_tier = "tier1_approx"
     _physics_subrole = "transduction"
-    _canonical_id = CanonicalPrimitive.M
+    _canonical_id = CanonicalPrimitive.Lambda
     _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x, **params):
@@ -2427,13 +2427,14 @@ class NonlinearExcitation(BasePrimitive):
     """Multi-photon excitation: intensity^n.
 
     Forward: |x|^n_photons. Non-linear.
+    Canonical: Lambda (pointwise nonlinear transform)
     """
 
     primitive_id = "nonlinear_excitation"
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
-    _canonical_id = CanonicalPrimitive.M
+    _canonical_id = CanonicalPrimitive.Lambda
     _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
@@ -2446,13 +2447,14 @@ class SaturationDepletion(BasePrimitive):
 
     Forward: x * (1 - depletion_factor * (1 - exp(-r^2 / (2*sigma^2)))).
     Non-linear.
+    Canonical: Lambda (saturation family)
     """
 
     primitive_id = "saturation_depletion"
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
-    _canonical_id = CanonicalPrimitive.M
+    _canonical_id = CanonicalPrimitive.Lambda
     _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
@@ -2582,13 +2584,14 @@ class DualEnergyBeerLambert(BasePrimitive):
 
     Forward: stacks [I_0_low * exp(-mu_low * x), I_0_high * exp(-mu_high * x)]
     along new first axis. Non-linear.
+    Canonical: Lambda (Beer-Lambert family)
     """
 
     primitive_id = "dual_energy_beer_lambert"
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
-    _canonical_id = CanonicalPrimitive.M
+    _canonical_id = CanonicalPrimitive.Lambda
     _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
@@ -2691,13 +2694,14 @@ class ParticleAttenuation(BasePrimitive):
     """Beer-Lambert attenuation for particles.
 
     Forward: I_0 * exp(-cross_section * x). Non-linear.
+    Canonical: Lambda (stopping power / Beer-Lambert family)
     """
 
     primitive_id = "particle_attenuation"
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
-    _canonical_id = CanonicalPrimitive.M
+    _canonical_id = CanonicalPrimitive.Lambda
     _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
