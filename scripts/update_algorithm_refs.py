@@ -69,7 +69,8 @@ REFS = {
         {"name": "DUN-3DUnet", "year": 2022, "paper": "Wu et al., CVPR 2022", "psnr": 35.26, "ssim": 0.962, "dataset": "6 grayscale SCI"},
         {"name": "CTM-SCI", "year": 2024, "paper": "CTM-SCI, 2024", "psnr": 36.52, "ssim": None, "dataset": "6 grayscale SCI"},
         {"name": "HiSViT-13", "year": 2024, "paper": "Chen et al., ECCV 2024", "psnr": 37.29, "ssim": None, "dataset": "6 grayscale SCI"},
-    ],
+            {"name": "GAP-TV (Traffic scene)", "year": 2016, "paper": "Yuan, ICIP 2016 / Wu et al. 2022", "psnr": 20.89, "ssim": 0.715, "dataset": "Traffic scene SCI"},
+],
     "spc": [
         # Single-Pixel Camera CS benchmark (Set11/BSD68)
         {"name": "TVAL3", "year": 2009, "paper": "Li et al., TVAL3, Rice 2009", "psnr": 24.56, "ssim": 0.750, "dataset": "Set11 @ 10% CS ratio"},
@@ -77,7 +78,8 @@ REFS = {
         {"name": "CSNet+", "year": 2019, "paper": "Shi et al., TIP 2019", "psnr": 29.84, "ssim": 0.882, "dataset": "Set11 @ 25% CS ratio"},
         {"name": "AMP-Net", "year": 2021, "paper": "Zhang et al., TIP 2021", "psnr": 34.63, "ssim": 0.955, "dataset": "Set11 @ 25% CS ratio"},
         {"name": "TransCS", "year": 2022, "paper": "Shen et al., TIP 2022", "psnr": 31.14, "ssim": None, "dataset": "Set11 @ 25% CS ratio"},
-    ],
+            {"name": "Random sampling baseline", "year": 2009, "paper": "Baraniuk, IEEE SPM 2007", "psnr": 15.00, "ssim": 0.400, "dataset": "Set11 @ 1% CS ratio"},
+],
     "spc_kronecker": [
         {"name": "D-AMP", "year": 2016, "paper": "Metzler et al., TIT 2016", "psnr": 29.50, "ssim": None, "dataset": "Set11"},
         {"name": "PnP-DRUNet", "year": 2021, "paper": "Zhang et al., DPIR, CVPR 2021", "psnr": 32.00, "ssim": None, "dataset": "Set11"},
@@ -101,7 +103,10 @@ REFS = {
         {"name": "DuDoTrans", "year": 2022, "paper": "Wang et al., MICCAI 2022", "psnr": 42.10, "ssim": None, "dataset": "AAPM"},
         {"name": "Score-CT", "year": 2022, "paper": "Song et al., ICLR 2022", "psnr": 43.00, "ssim": None, "dataset": "AAPM"},
         {"name": "DOLCE", "year": 2023, "paper": "Liu et al., 2023", "psnr": 36.00, "ssim": None, "dataset": "LoDoPaB-CT"},
-    ],
+            {"name": "FBP (2 angles, scattering)", "year": 2021, "paper": "Leuschner et al., J Imaging 2021, PMC8321320", "psnr": 13.06, "ssim": None, "dataset": "Apple CT 2 angles with scattering"},
+        {"name": "FBP (5 angles)", "year": 2021, "paper": "Leuschner et al., J Imaging 2021, PMC8321320", "psnr": 15.51, "ssim": None, "dataset": "Apple CT 5 sparse angles noise-free"},
+        {"name": "FBP (10 angles)", "year": 2021, "paper": "Leuschner et al., J Imaging 2021, PMC8321320", "psnr": 17.09, "ssim": None, "dataset": "Apple CT 10 sparse angles"},
+],
     "mri": [
         # fastMRI benchmark (knee, 4x acceleration)
         {"name": "Zero-filled IFFT", "year": 2000, "paper": "Baseline", "psnr": 28.00, "ssim": 0.640, "dataset": "fastMRI knee 4x"},
@@ -113,13 +118,16 @@ REFS = {
         {"name": "ReconFormer", "year": 2023, "paper": "Guo et al., TMI 2023", "psnr": 40.09, "ssim": 0.975, "dataset": "fastMRI brain 4x"},
         {"name": "PromptMR", "year": 2023, "paper": "Li et al., MICCAI 2023", "psnr": 41.50, "ssim": None, "dataset": "fastMRI knee 4x"},
         {"name": "PromptMR+", "year": 2024, "paper": "Li et al., TMI 2024", "psnr": 39.92, "ssim": 0.973, "dataset": "fastMRI knee 4x"},
-    ],
+            {"name": "E2E-VarNet (16x)", "year": 2024, "paper": "Neural Operators CS-MRI, arXiv 2410.16290", "psnr": 23.18, "ssim": None, "dataset": "fastMRI knee 16x"},
+],
     "cbct": [
         {"name": "FDK", "year": 1984, "paper": "Feldkamp et al., JOSA 1984", "psnr": 28.00, "ssim": 0.800, "dataset": "simulated"},
         {"name": "SART", "year": 1984, "paper": "Andersen & Kak, 1984", "psnr": 32.00, "ssim": 0.880, "dataset": "simulated"},
         {"name": "FBPConvNet", "year": 2017, "paper": "Jin et al., TIP 2017", "psnr": 36.50, "ssim": 0.950, "dataset": "simulated"},
         {"name": "FACT", "year": 2022, "paper": "FACT, 2022", "psnr": 33.80, "ssim": 0.930, "dataset": "head 50-view"},
-    ],
+            {"name": "FDK (6 views)", "year": 1984, "paper": "Zha et al., MICCAI 2024, arXiv 2407.01090", "psnr": 15.34, "ssim": None, "dataset": "LUNA16 chest 6-view sparse"},
+        {"name": "FDK (8 views)", "year": 1984, "paper": "Zha et al., MICCAI 2024", "psnr": 16.58, "ssim": None, "dataset": "LUNA16 chest 8-view sparse"},
+],
     "pet": [
         {"name": "MLEM", "year": 1982, "paper": "Shepp & Vardi, TMI 1982", "psnr": 28.00, "ssim": 0.750, "dataset": "simulated"},
         {"name": "OSEM", "year": 1994, "paper": "Hudson & Larkin, TMI 1994", "psnr": 30.00, "ssim": 0.820, "dataset": "simulated"},
@@ -140,6 +148,7 @@ REFS = {
         {"name": "ADMIRE", "year": 2018, "paper": "Byram et al., IEEE TUFFC 2015", "psnr": None, "ssim": None, "dataset": "CUBDL"},
         {"name": "Deep beamforming (Goudarzi)", "year": 2020, "paper": "Goudarzi et al., IEEE TUFFC 2022", "psnr": 29.10, "ssim": None, "dataset": "CUBDL"},
             {"name": "KD-optimized beamformer", "year": 2025, "paper": "Scientific Reports 2025", "psnr": 39.00, "ssim": 0.953, "dataset": "US B-mode imaging"},
+        {"name": "DAS single plane wave", "year": 2020, "paper": "Li et al., IUS 2020 / CUBDL", "psnr": 18.61, "ssim": None, "dataset": "CUBDL single-PW vs compound"},
 ],
     "photoacoustic": [
         # Limited-view PAT benchmark (mouse brain vasculature, 64 sensors)
@@ -149,6 +158,8 @@ REFS = {
         {"name": "Iterative (model-based)", "year": 2000, "paper": "Antholzer et al., Sci Rep 2020", "psnr": 30.16, "ssim": 0.890, "dataset": "mouse brain 64-sensor"},
         {"name": "Residual U-Net (Deep-PAT)", "year": 2021, "paper": "Shahid et al., Front Neurosci 2021", "psnr": 29.88, "ssim": 0.970, "dataset": "50% sampling"},
             {"name": "Simple backprojection", "year": 2000, "paper": "Basic PAT backprojection", "psnr": 20.00, "ssim": 0.650, "dataset": "limited-view PAT"},
+        {"name": "Time Reversal (16 sensors)", "year": 2020, "paper": "Tong et al., Scientific Reports 2020, PMC7244747", "psnr": 13.91, "ssim": 0.500, "dataset": "mouse brain 16-sensor limited-view"},
+        {"name": "Tikhonov (32 views)", "year": 2023, "paper": "Boink et al., PMC9872879", "psnr": 13.91, "ssim": None, "dataset": "sparse-view PAT simulation"},
 ],
 
     # ═══════════════ COHERENT IMAGING ═══════════════
@@ -159,6 +170,7 @@ REFS = {
         {"name": "CEHAN (CGH)", "year": 2025, "paper": "Appl Opt 65(7), 2025", "psnr": 35.71, "ssim": None, "dataset": "DIV2K"},
         {"name": "Phase distortion DL", "year": 2024, "paper": "ScienceDirect 2024 (DHM)", "psnr": 36.88, "ssim": 0.990, "dataset": "Digital holographic microscopy"},
             {"name": "Direct backpropagation", "year": 1970, "paper": "Gabor, Nature 1948", "psnr": 15.00, "ssim": 0.500, "dataset": "holography simulated"},
+        {"name": "Wirtinger Holography", "year": 2020, "paper": "Peng et al., SIGGRAPH Asia 2020", "psnr": 30.00, "ssim": None, "dataset": "DIV2K 1080p CGH"},
 ],
     "ptychography": [
         {"name": "ePIE", "year": 2009, "paper": "Maiden & Rodenburg, Ultramicroscopy 2009", "psnr": 28.00, "ssim": 0.850, "dataset": "simulated"},
@@ -244,7 +256,9 @@ REFS = {
     "sar": [
         {"name": "Range-Doppler Algorithm", "year": 1978, "paper": "Curlander & McDonough, 1991", "psnr": 25.00, "ssim": 0.700, "dataset": "simulated"},
         {"name": "Omega-K Algorithm", "year": 1992, "paper": "Stolt 1978 / Cafforio 1991", "psnr": 27.00, "ssim": 0.750, "dataset": "simulated"},
-    ],
+            {"name": "Matched Filter (24 pts, 2dB SNR)", "year": 2024, "paper": "Diffusion-Prior SAR, arXiv 2512.02768", "psnr": 8.83, "ssim": None, "dataset": "simulated SAR 24 sampling points"},
+        {"name": "Matched Filter (192 pts)", "year": 2024, "paper": "Diffusion-Prior SAR, arXiv 2512.02768", "psnr": 19.10, "ssim": None, "dataset": "real SAR scene I"},
+],
     "hyperspectral_remote": [
         # NTIRE 2022 spectral recovery challenge (ARAD_1K)
         {"name": "HSCNN+", "year": 2018, "paper": "Shi et al., CVPRW 2018", "psnr": 26.36, "ssim": None, "dataset": "ARAD_1K"},
@@ -641,6 +655,9 @@ REFS = {
         {"name": "Autocorrelation", "year": 1985, "paper": "Kasai et al., 1985", "psnr": 22.00, "ssim": 0.700, "dataset": "Doppler simulated"},
         {"name": "DL Doppler", "year": 2020, "paper": "DL for Doppler dealiasing", "psnr": 30.00, "ssim": 0.880, "dataset": "Doppler simulated"},
             {"name": "Wall filter (highpass)", "year": 1985, "paper": "Wall filter baseline", "psnr": 18.00, "ssim": 0.600, "dataset": "Doppler US simulated"},
+        {"name": "Conventional SVD (95% compression)", "year": 2022, "paper": "Blanchard et al., IEEE TUFFC 2022, PMC9247015", "psnr": 17.44, "ssim": None, "dataset": "functional US 95% compression"},
+        {"name": "Conventional SVD (90% compression)", "year": 2022, "paper": "Blanchard et al., IEEE TUFFC 2022, PMC9247015", "psnr": 19.51, "ssim": None, "dataset": "functional US 90% compression"},
+        {"name": "3D-Res-UNet (95% compression)", "year": 2022, "paper": "Blanchard et al., IEEE TUFFC 2022, PMC9247015", "psnr": 26.73, "ssim": None, "dataset": "functional US 95% compression"},
 ],
     "elastography": [
         {"name": "Phase gradient", "year": 2000, "paper": "Manduca et al., MRM 2001", "psnr": 22.00, "ssim": 0.700, "dataset": "elastography simulated"},
@@ -654,6 +671,7 @@ REFS = {
     "brachytherapy_img": [
         {"name": "FBP", "year": 1971, "paper": "FBP baseline", "psnr": 25.00, "ssim": None, "dataset": "brachytherapy"},
             {"name": "Monte Carlo dose", "year": 2005, "paper": "MC dose calculation", "psnr": 28.00, "ssim": 0.850, "dataset": "brachytherapy simulated"},
+        {"name": "RL-ARCNN (metal artifact reduction)", "year": 2018, "paper": "Huang et al., BioMedical Eng OnLine 2018", "psnr": 38.09, "ssim": None, "dataset": "cervical CT metal artifact"},
 ],
     "portal_imaging": [
         {"name": "Flat-field correction", "year": 2000, "paper": "EPID baseline", "psnr": 25.00, "ssim": 0.750, "dataset": "EPID simulated"},
@@ -730,6 +748,8 @@ REFS = {
     "electron_holography": [
         {"name": "Fourier filtering", "year": 1993, "paper": "Lichte, Ultramicroscopy 1993", "psnr": 25.00, "ssim": None, "dataset": "electron holography"},
             {"name": "DNN phase unwrapping", "year": 2021, "paper": "DL electron holography", "psnr": 30.00, "ssim": 0.880, "dataset": "electron hologram simulated"},
+        {"name": "FIN (Fourier Imager Network)", "year": 2022, "paper": "Huang et al., Light Sci Appl 2022", "psnr": 36.10, "ssim": 0.785, "dataset": "digital holography tissue sections"},
+        {"name": "HoloPhaseNet (cGAN)", "year": 2022, "paper": "Terbe et al., Biomed Opt Express 2022", "psnr": 35.27, "ssim": 0.990, "dataset": "single-cell digital holograms"},
 ],
     "electron_diffraction": [
         {"name": "Center-of-mass analysis", "year": 2014, "paper": "Muller-Caspary et al., 2014", "psnr": 22.00, "ssim": None, "dataset": "4D-STEM simulated"},
@@ -759,6 +779,7 @@ REFS = {
         {"name": "MVDR/Capon beamforming", "year": 1969, "paper": "Capon, Proc IEEE 1969", "psnr": 25.00, "ssim": None, "dataset": "sonar"},
         {"name": "MUSIC", "year": 1986, "paper": "Schmidt, IEEE TAP 1986", "psnr": 27.00, "ssim": None, "dataset": "sonar"},
             {"name": "SwinIR", "year": 2025, "paper": "Frontiers in Remote Sensing 2025", "psnr": 36.14, "ssim": 0.981, "dataset": "sonar image enhancement"},
+        {"name": "Matched Filter (sparse)", "year": 2024, "paper": "SAR analog, arXiv 2512.02768", "psnr": 12.00, "ssim": None, "dataset": "sonar matched filter sparse sampling"},
 ],
     "gpr": [
         {"name": "Kirchhoff migration", "year": 2000, "paper": "GPR migration", "psnr": 20.00, "ssim": 0.650, "dataset": "simulated GPR"},
@@ -836,6 +857,8 @@ REFS = {
     "acoustic_emission": [
         {"name": "AIC picker", "year": 2000, "paper": "Akaike, Ann Inst Stat Math 1974", "psnr": 20.00, "ssim": None, "dataset": "AE simulated"},
             {"name": "MUSIC localization", "year": 1986, "paper": "Schmidt, IEEE TAP 1986", "psnr": 22.00, "ssim": None, "dataset": "AE source location"},
+        {"name": "CNN Beamformer (1 source)", "year": 2023, "paper": "Sensors 2023, PMC10650508", "psnr": 39.40, "ssim": 0.978, "dataset": "passive cavitation imaging 1-source"},
+        {"name": "CNN Beamformer (3 sources)", "year": 2023, "paper": "Sensors 2023, PMC10650508", "psnr": 32.30, "ssim": 0.812, "dataset": "passive cavitation imaging 3-source"},
 ],
     "adaptive_optics": [
         {"name": "Shack-Hartmann WFS", "year": 1971, "paper": "Shack & Platt, 1971", "psnr": 22.00, "ssim": None, "dataset": "AO simulated"},

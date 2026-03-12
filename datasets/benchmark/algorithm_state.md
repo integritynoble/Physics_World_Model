@@ -31,9 +31,10 @@ Generated: 2026-03-12
 | 11 | DUN-3DUnet | 2022 | Wu et al., CVPR 2022 | 35.3 | 0.9620 | 19.8 | 0.4362 |  |
 | 12 | CTM-SCI | 2024 | CTM-SCI, 2024 | 36.5 | — | 19.8 | 0.4362 |  |
 | 13 | HiSViT-13 | 2024 | Chen et al., ECCV 2024 | 37.3 | — | 19.8 | 0.4362 |  |
-| 14 | EfficientSCI-T (PWM) | — | — | — | — | 8.0 | 0.0759 |  |
-| 15 | mask_division_baseline (test) | — | — | — | — | — | — |  |
-| 16 | gap_tv (test) | — | — | — | — | — | — |  |
+| 14 | GAP-TV (Traffic scene) | 2016 | Yuan, ICIP 2016 / Wu et al. 2022 | 20.9 | 0.7150 | 19.8 | 0.4362 | done |
+| 15 | EfficientSCI-T (PWM) | — | — | — | — | 8.0 | 0.0759 |  |
+| 16 | mask_division_baseline (test) | — | — | — | — | — | — |  |
+| 17 | gap_tv (test) | — | — | — | — | — | — |  |
 
 ### 2. Coded Aperture Snapshot Spectral Imaging (CASSI) (`cassi`)
 
@@ -78,7 +79,8 @@ Generated: 2026-03-12
 | 3 | CSNet+ | 2019 | Shi et al., TIP 2019 | 29.8 | 0.8820 | 6.8 | 0.0161 |  |
 | 4 | AMP-Net | 2021 | Zhang et al., TIP 2021 | 34.6 | 0.9550 | 6.8 | 0.0161 |  |
 | 5 | TransCS | 2022 | Shen et al., TIP 2022 | 31.1 | — | 6.8 | 0.0161 |  |
-| 6 | ADMM-L1 (PWM) | — | Boyd et al. 2010 | — | — | 4.5 | 0.0018 |  |
+| 6 | Random sampling baseline | 2009 | Baraniuk, IEEE SPM 2007 | 15.0 | 0.4000 | 6.8 | 0.0161 |  |
+| 7 | ADMM-L1 (PWM) | — | Boyd et al. 2010 | — | — | 4.5 | 0.0018 |  |
 
 ---
 
@@ -114,9 +116,10 @@ Generated: 2026-03-12
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | FBP | 1971 | FBP baseline | 25.0 | — | 25.2 | 0.1810 | done |
 | 2 | Monte Carlo dose | 2005 | MC dose calculation | 28.0 | 0.8500 | 25.2 | 0.1810 | done |
-| 3 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 25.2 | 0.1810 | done |
-| 4 | BrachyNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 25.2 | 0.1810 | done |
-| 5 | precomputed_baseline (test) | — | — | — | — | 20.5 | 0.2374 | done |
+| 3 | RL-ARCNN (metal artifact reduction) | 2018 | Huang et al., BioMedical Eng OnLine 2018 | 38.1 | — | 25.2 | 0.1810 |  |
+| 4 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 25.2 | 0.1810 | done |
+| 5 | BrachyNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 25.2 | 0.1810 | done |
+| 6 | precomputed_baseline (test) | — | — | — | — | 20.5 | 0.2374 | done |
 
 ### 8. Cone-Beam Computed Tomography (CBCT) (`cbct`)
 
@@ -126,10 +129,12 @@ Generated: 2026-03-12
 | 2 | SART | 1984 | Andersen & Kak, 1984 | 32.0 | 0.8800 | 15.2 | 0.3593 |  |
 | 3 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 36.5 | 0.9500 | 15.2 | 0.3593 |  |
 | 4 | FACT | 2022 | FACT, 2022 | 33.8 | 0.9300 | 15.2 | 0.3593 |  |
-| 5 | FDK-DL (PWM) | — | Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN, IEEE TMI | — | — | — | — |  |
-| 6 | CBCT-UNet (PWM) | — | Jin, K.H. et al. (2017) Deep convolutional network for inverse problems, IEEE TIP | — | — | — | — |  |
-| 7 | fbp_ramlak (test) | — | — | — | — | 14.9 | 0.3496 |  |
-| 8 | fbp_shepp_logan (test) | — | — | — | — | 15.2 | 0.3593 |  |
+| 5 | FDK (6 views) | 1984 | Zha et al., MICCAI 2024, arXiv 2407.01090 | 15.3 | — | 15.2 | 0.3593 | done |
+| 6 | FDK (8 views) | 1984 | Zha et al., MICCAI 2024 | 16.6 | — | 15.2 | 0.3593 | done |
+| 7 | FDK-DL (PWM) | — | Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN, IEEE TMI | — | — | — | — |  |
+| 8 | CBCT-UNet (PWM) | — | Jin, K.H. et al. (2017) Deep convolutional network for inverse problems, IEEE TIP | — | — | — | — |  |
+| 9 | fbp_ramlak (test) | — | — | — | — | 14.9 | 0.3496 |  |
+| 10 | fbp_shepp_logan (test) | — | — | — | — | 15.2 | 0.3593 |  |
 
 ### 9. CEST MRI (`cest_mri`)
 
@@ -180,10 +185,13 @@ Generated: 2026-03-12
 | 8 | DuDoTrans | 2022 | Wang et al., MICCAI 2022 | 42.1 | — | 13.8 | 0.1053 |  |
 | 9 | Score-CT | 2022 | Song et al., ICLR 2022 | 43.0 | — | 13.8 | 0.1053 |  |
 | 10 | DOLCE | 2023 | Liu et al., 2023 | 36.0 | — | 13.8 | 0.1053 |  |
-| 11 | PnP-HQS + NLM (PWM) | — | — | — | — | 1.4 | 0.1306 |  |
-| 12 | fbp_ramlak (test) | — | — | — | — | 12.9 | 0.0922 |  |
-| 13 | fbp_shepp_logan (test) | — | — | — | — | 13.8 | 0.1053 |  |
-| 14 | sart_10iter (test) | — | — | — | — | 13.8 | 0.2168 |  |
+| 11 | FBP (2 angles, scattering) | 2021 | Leuschner et al., J Imaging 2021, PMC8321320 | 13.1 | — | 13.8 | 0.1053 | done |
+| 12 | FBP (5 angles) | 2021 | Leuschner et al., J Imaging 2021, PMC8321320 | 15.5 | — | 13.8 | 0.1053 | done |
+| 13 | FBP (10 angles) | 2021 | Leuschner et al., J Imaging 2021, PMC8321320 | 17.1 | — | 13.8 | 0.1053 |  |
+| 14 | PnP-HQS + NLM (PWM) | — | — | — | — | 1.4 | 0.1306 |  |
+| 15 | fbp_ramlak (test) | — | — | — | — | 12.9 | 0.0922 |  |
+| 16 | fbp_shepp_logan (test) | — | — | — | — | 13.8 | 0.1053 |  |
+| 17 | sart_10iter (test) | — | — | — | — | 13.8 | 0.2168 |  |
 
 ### 13. Dual-Energy X-ray Absorptiometry (DEXA) (`dexa`)
 
@@ -225,12 +233,15 @@ Generated: 2026-03-12
 | 1 | Autocorrelation | 1985 | Kasai et al., 1985 | 22.0 | 0.7000 | 17.6 | 0.0064 |  |
 | 2 | DL Doppler | 2020 | DL for Doppler dealiasing | 30.0 | 0.8800 | 17.6 | 0.0064 |  |
 | 3 | Wall filter (highpass) | 1985 | Wall filter baseline | 18.0 | 0.6000 | 17.6 | 0.0064 | done |
-| 4 | Back-Projection (Doppler) (PWM) | — | — | — | — | 5.1 | 0.0242 |  |
-| 5 | UDoppler-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.1 | 0.0242 |  |
-| 6 | Doppler CFAR [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.1 | 0.0242 |  |
-| 7 | autocorrelation_estimator (test) | — | — | — | — | 3.4 | 0.0000 |  |
-| 8 | clutter_filtered (test) | — | — | — | — | 0.2 | -0.0019 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 17.6 | 0.0064 |  |
+| 4 | Conventional SVD (95% compression) | 2022 | Blanchard et al., IEEE TUFFC 2022, PMC9247015 | 17.4 | — | 17.6 | 0.0064 | done |
+| 5 | Conventional SVD (90% compression) | 2022 | Blanchard et al., IEEE TUFFC 2022, PMC9247015 | 19.5 | — | 17.6 | 0.0064 | done |
+| 6 | 3D-Res-UNet (95% compression) | 2022 | Blanchard et al., IEEE TUFFC 2022, PMC9247015 | 26.7 | — | 17.6 | 0.0064 |  |
+| 7 | Back-Projection (Doppler) (PWM) | — | — | — | — | 5.1 | 0.0242 |  |
+| 8 | UDoppler-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.1 | 0.0242 |  |
+| 9 | Doppler CFAR [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.1 | 0.0242 |  |
+| 10 | autocorrelation_estimator (test) | — | — | — | — | 3.4 | 0.0000 |  |
+| 11 | clutter_filtered (test) | — | — | — | — | 0.2 | -0.0019 |  |
+| 12 | precomputed_baseline (test) | — | — | — | — | 17.6 | 0.0064 |  |
 
 ### 17. Diffuse Optical Tomography (DOT) (`dot`)
 
@@ -385,12 +396,13 @@ Generated: 2026-03-12
 | 7 | ReconFormer | 2023 | Guo et al., TMI 2023 | 40.1 | 0.9750 | 13.4 | 0.0132 |  |
 | 8 | PromptMR | 2023 | Li et al., MICCAI 2023 | 41.5 | — | 13.4 | 0.0132 |  |
 | 9 | PromptMR+ | 2024 | Li et al., TMI 2024 | 39.9 | 0.9730 | 13.4 | 0.0132 |  |
-| 10 | CS-MRI (Wavelet) (PWM) | — | Lustig et al. 2007, MRM | — | — | 13.4 | 0.0132 |  |
-| 11 | MoDL (PWM) | — | Aggarwal et al. 2019, IEEE TMI | — | — | 13.4 | 0.0132 |  |
-| 12 | MoDL (5 unrolls) (PWM) | — | — | — | — | 13.4 | 0.0132 |  |
-| 13 | zero_filled (test) | — | — | — | — | 13.0 | 0.0004 |  |
-| 14 | cs_mri_wavelet (test) | — | — | — | — | 13.0 | 0.0006 |  |
-| 15 | sense (test) | — | — | — | — | 13.0 | 0.0010 |  |
+| 10 | E2E-VarNet (16x) | 2024 | Neural Operators CS-MRI, arXiv 2410.16290 | 23.2 | — | 13.4 | 0.0132 |  |
+| 11 | CS-MRI (Wavelet) (PWM) | — | Lustig et al. 2007, MRM | — | — | 13.4 | 0.0132 |  |
+| 12 | MoDL (PWM) | — | Aggarwal et al. 2019, IEEE TMI | — | — | 13.4 | 0.0132 |  |
+| 13 | MoDL (5 unrolls) (PWM) | — | — | — | — | 13.4 | 0.0132 |  |
+| 14 | zero_filled (test) | — | — | — | — | 13.0 | 0.0004 |  |
+| 15 | cs_mri_wavelet (test) | — | — | — | — | 13.0 | 0.0006 |  |
+| 16 | sense (test) | — | — | — | — | 13.0 | 0.0010 |  |
 
 ### 29. MR Spectroscopy (MRS) (`mrs`)
 
@@ -467,9 +479,11 @@ Generated: 2026-03-12
 | 4 | Iterative (model-based) | 2000 | Antholzer et al., Sci Rep 2020 | 30.2 | 0.8900 | 19.1 | 0.2490 |  |
 | 5 | Residual U-Net (Deep-PAT) | 2021 | Shahid et al., Front Neurosci 2021 | 29.9 | 0.9700 | 19.1 | 0.2490 |  |
 | 6 | Simple backprojection | 2000 | Basic PAT backprojection | 20.0 | 0.6500 | 19.1 | 0.2490 | done |
-| 7 | Back Projection (PWM) | — | — | — | — | 18.5 | 0.3658 |  |
-| 8 | Deep-PAT [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 18.5 | 0.3658 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 19.1 | 0.2490 |  |
+| 7 | Time Reversal (16 sensors) | 2020 | Tong et al., Scientific Reports 2020, PMC7244747 | 13.9 | 0.5000 | 19.1 | 0.2490 | done |
+| 8 | Tikhonov (32 views) | 2023 | Boink et al., PMC9872879 | 13.9 | — | 19.1 | 0.2490 | done |
+| 9 | Back Projection (PWM) | — | — | — | — | 18.5 | 0.3658 |  |
+| 10 | Deep-PAT [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 18.5 | 0.3658 |  |
+| 11 | precomputed_baseline (test) | — | — | — | — | 19.1 | 0.2490 |  |
 
 ### 35. Portal Imaging (EPID) (`portal_imaging`)
 
@@ -540,10 +554,11 @@ Generated: 2026-03-12
 | 2 | ADMIRE | 2018 | Byram et al., IEEE TUFFC 2015 | — | — | 14.8 | 0.3464 |  |
 | 3 | Deep beamforming (Goudarzi) | 2020 | Goudarzi et al., IEEE TUFFC 2022 | 29.1 | — | 14.8 | 0.3464 |  |
 | 4 | KD-optimized beamformer | 2025 | Scientific Reports 2025 | 39.0 | 0.9530 | 14.8 | 0.3464 |  |
-| 5 | Richardson-Lucy (ultrasound) (PWM) | — | Richardson 1972, JOSA | — | — | 14.8 | 0.3464 |  |
-| 6 | US-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.8 | 0.3464 |  |
-| 7 | rl_20iter (test) | — | — | — | — | 14.6 | 0.1559 |  |
-| 8 | rl_50iter (test) | — | — | — | — | 14.1 | 0.1323 |  |
+| 5 | DAS single plane wave | 2020 | Li et al., IUS 2020 / CUBDL | 18.6 | — | 14.8 | 0.3464 |  |
+| 6 | Richardson-Lucy (ultrasound) (PWM) | — | Richardson 1972, JOSA | — | — | 14.8 | 0.3464 |  |
+| 7 | US-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.8 | 0.3464 |  |
+| 8 | rl_20iter (test) | — | — | — | — | 14.6 | 0.1559 |  |
+| 9 | rl_50iter (test) | — | — | — | — | 14.1 | 0.1323 |  |
 
 ### 41. X-ray Radiography (`xray_radiography`)
 
@@ -573,7 +588,8 @@ Generated: 2026-03-12
 | 4 | CEHAN (CGH) | 2025 | Appl Opt 65(7), 2025 | 35.7 | — | 14.9 | 0.9212 |  |
 | 5 | Phase distortion DL | 2024 | ScienceDirect 2024 (DHM) | 36.9 | 0.9900 | 14.9 | 0.9212 |  |
 | 6 | Direct backpropagation | 1970 | Gabor, Nature 1948 | 15.0 | 0.5000 | 14.9 | 0.9212 | done |
-| 7 | sqrt_intensity_amplitude (test) | — | — | — | — | — | 0.0003 |  |
+| 7 | Wirtinger Holography | 2020 | Peng et al., SIGGRAPH Asia 2020 | 30.0 | — | 14.9 | 0.9212 |  |
+| 8 | sqrt_intensity_amplitude (test) | — | — | — | — | — | 0.0003 |  |
 
 ### 43. Optical Diffraction Tomography (ODT) (`odt`)
 
@@ -966,10 +982,12 @@ Generated: 2026-03-12
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Fourier filtering | 1993 | Lichte, Ultramicroscopy 1993 | 25.0 | — | 9.5 | -0.0481 |  |
 | 2 | DNN phase unwrapping | 2021 | DL electron holography | 30.0 | 0.8800 | 9.5 | -0.0481 |  |
-| 3 | Phase Retrieval (HIO) (PWM) | — | — | — | — | 5.6 | 0.0115 |  |
-| 4 | EH-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.5 | 0.0049 |  |
-| 5 | Phase-Sideband [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.5 | 0.0049 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 9.5 | -0.0481 |  |
+| 3 | FIN (Fourier Imager Network) | 2022 | Huang et al., Light Sci Appl 2022 | 36.1 | 0.7850 | 9.5 | -0.0481 |  |
+| 4 | HoloPhaseNet (cGAN) | 2022 | Terbe et al., Biomed Opt Express 2022 | 35.3 | 0.9900 | 9.5 | -0.0481 |  |
+| 5 | Phase Retrieval (HIO) (PWM) | — | — | — | — | 5.6 | 0.0115 |  |
+| 6 | EH-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.5 | 0.0049 |  |
+| 7 | Phase-Sideband [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.5 | 0.0049 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 9.5 | -0.0481 |  |
 
 ### 77. Electron Tomography (`electron_tomography`)
 
@@ -1334,10 +1352,12 @@ Generated: 2026-03-12
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Range-Doppler Algorithm | 1978 | Curlander & McDonough, 1991 | 25.0 | 0.7000 | 17.8 | 0.1380 |  |
 | 2 | Omega-K Algorithm | 1992 | Stolt 1978 / Cafforio 1991 | 27.0 | 0.7500 | 17.8 | 0.1380 |  |
-| 3 | FBP (SAR backprojection) (PWM) | — | — | — | — | 13.6 | 0.2879 |  |
-| 4 | SAR-DL (PolSF) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.8 | 0.1380 |  |
-| 5 | SAR-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.8 | 0.1380 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 17.3 | 0.7046 |  |
+| 3 | Matched Filter (24 pts, 2dB SNR) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 8.8 | — | 17.8 | 0.1380 | done |
+| 4 | Matched Filter (192 pts) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 19.1 | — | 17.8 | 0.1380 | done |
+| 5 | FBP (SAR backprojection) (PWM) | — | — | — | — | 13.6 | 0.2879 |  |
+| 6 | SAR-DL (PolSF) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.8 | 0.1380 |  |
+| 7 | SAR-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.8 | 0.1380 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 17.3 | 0.7046 |  |
 
 ### 105. Sonar Imaging (`sonar`)
 
@@ -1346,10 +1366,11 @@ Generated: 2026-03-12
 | 1 | MVDR/Capon beamforming | 1969 | Capon, Proc IEEE 1969 | 25.0 | — | 15.0 | 0.2817 |  |
 | 2 | MUSIC | 1986 | Schmidt, IEEE TAP 1986 | 27.0 | — | 15.0 | 0.2817 |  |
 | 3 | SwinIR | 2025 | Frontiers in Remote Sensing 2025 | 36.1 | 0.9810 | 15.0 | 0.2817 |  |
-| 4 | FISTA-L2 (DAS) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
-| 5 | SonarSR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
-| 6 | Sonar-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 10.3 | 0.5149 |  |
+| 4 | Matched Filter (sparse) | 2024 | SAR analog, arXiv 2512.02768 | 12.0 | — | 15.0 | 0.2817 | done |
+| 5 | FISTA-L2 (DAS) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
+| 6 | SonarSR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
+| 7 | Sonar-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 10.3 | 0.5149 |  |
 
 ### 106. Weather / Doppler Radar (`weather_radar`)
 
@@ -1796,10 +1817,12 @@ Generated: 2026-03-12
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | AIC picker | 2000 | Akaike, Ann Inst Stat Math 1974 | 20.0 | — | 20.2 | 0.0741 | done |
 | 2 | MUSIC localization | 1986 | Schmidt, IEEE TAP 1986 | 22.0 | — | 20.2 | 0.0741 | done |
-| 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.3286 |  |
-| 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.3286 |  |
-| 5 | DeepAE-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.3286 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 20.2 | 0.0741 | done |
+| 3 | CNN Beamformer (1 source) | 2023 | Sensors 2023, PMC10650508 | 39.4 | 0.9780 | 20.2 | 0.0741 |  |
+| 4 | CNN Beamformer (3 sources) | 2023 | Sensors 2023, PMC10650508 | 32.3 | 0.8120 | 20.2 | 0.0741 |  |
+| 5 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.3286 |  |
+| 6 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.3286 |  |
+| 7 | DeepAE-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.3286 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 20.2 | 0.0741 | done |
 
 ### 141. Adaptive Optics (AO) Imaging (`adaptive_optics`)
 
@@ -2148,9 +2171,9 @@ Generated: 2026-03-12
 ## Summary
 
 - **Total modalities**: 168
-- **Total algorithm entries**: 1217
-- **Verified (done)**: 429
-- **Not yet verified**: 788
+- **Total algorithm entries**: 1240
+- **Verified (done)**: 441
+- **Not yet verified**: 799
 - **Sources**: Published papers (2000-2026), PWM benchmark tests, YAML solver configs
 - **Key benchmarks**: KAIST 10 scenes (CASSI), 6 grayscale SCI (CACTI), LoDoPaB-CT, fastMRI, Blender synthetic (NeRF), KITTI (LiDAR), DiffuserCam (lensless), BioSR (microscopy)
 
@@ -2158,22 +2181,22 @@ Generated: 2026-03-12
 
 | Category | Modalities | Algorithms | Ref Entries | Done | Done % |
 |----------|-----------|------------|-------------|------|--------|
-| Compressive Imaging | 4 | 46 | 37 | 8 | 17% |
-| Medical Imaging | 37 | 290 | 140 | 58 | 20% |
-| Coherent Imaging | 5 | 34 | 19 | 11 | 32% |
+| Compressive Imaging | 4 | 48 | 39 | 9 | 19% |
+| Medical Imaging | 37 | 303 | 153 | 66 | 22% |
+| Coherent Imaging | 5 | 35 | 20 | 11 | 31% |
 | Microscopy | 24 | 154 | 73 | 71 | 46% |
-| Electron Microscopy | 11 | 76 | 33 | 39 | 51% |
+| Electron Microscopy | 11 | 78 | 35 | 39 | 50% |
 | Computational Optics | 2 | 16 | 9 | 8 | 50% |
 | Computational Photography | 5 | 36 | 20 | 14 | 39% |
 | Neural Rendering | 2 | 20 | 10 | 4 | 20% |
 | Depth Imaging | 5 | 32 | 13 | 11 | 34% |
-| Remote Sensing | 11 | 79 | 34 | 27 | 34% |
+| Remote Sensing | 11 | 82 | 37 | 30 | 37% |
 | Scanning Probe Microscopy | 4 | 26 | 10 | 11 | 42% |
 | Industrial Inspection | 10 | 71 | 36 | 26 | 37% |
 | Spectroscopy & Spectral Imaging | 8 | 58 | 26 | 32 | 55% |
 | Astronomy & Space Imaging | 4 | 29 | 14 | 21 | 72% |
 | Ultrafast Imaging | 4 | 27 | 13 | 10 | 37% |
 | Quantum Imaging | 3 | 23 | 11 | 9 | 39% |
-| Broader Experimental Science | 11 | 80 | 38 | 36 | 45% |
+| Broader Experimental Science | 11 | 82 | 40 | 36 | 44% |
 | Scientific Instrumentation | 12 | 79 | 32 | 24 | 30% |
 | Multi-Modal Fusion | 6 | 41 | 17 | 9 | 22% |
