@@ -105,10 +105,10 @@ class DiffMode(str, Enum):
 
 
 class CanonicalPrimitive(str, Enum):
-    """The 10 canonical primitives from the Finite Primitive Basis Theorem.
+    """The 11 canonical primitives from the Finite Primitive Basis Theorem.
 
     Every Tier-2 imaging forward model can be decomposed into a DAG of
-    these 10 canonical operators (Theorem 1, FPB paper).
+    these 11 canonical operators (Theorem 1, FPB paper).
     """
 
     P = "propagate"       # Free-space wave propagation
@@ -121,6 +121,7 @@ class CanonicalPrimitive(str, Enum):
     S = "sample"          # Sub-sampling on index set
     W = "disperse"        # Wavelength-dependent spatial shift
     R = "scatter"         # Direction change and/or energy shift
+    Lambda = "transform"  # Pointwise nonlinear physics (5 canonical families)
 
 
 class PhysicsStageFamily(str, Enum):
@@ -131,9 +132,24 @@ class PhysicsStageFamily(str, Enum):
     """
 
     propagation = "propagation"                  # → {P, C}
-    interaction = "interaction"                   # → {M, R}
+    interaction = "interaction"                   # → {M, R, Λ}
     encoding_projection = "encoding_projection"   # → {Π, F}
     detection_readout = "detection_readout"        # → {Σ, S, W, D}
+
+
+class TransformFamily(str, Enum):
+    """The 5 canonical Transform (Λ) response families.
+
+    Each Transform primitive implements one of these pointwise nonlinear
+    physics functions, with at most 2 parameters each.  This bounded
+    parametrisation prevents Λ from becoming a universal approximator.
+    """
+
+    beer_lambert = "beer_lambert"          # Λ(x) = exp(-μ·x), params: μ
+    phase_wrapping = "phase_wrapping"      # Λ(x) = angle(exp(j·x)), params: none
+    beam_hardening = "beam_hardening"      # Λ(x) = a₁·x + a₂·x², params: a₁, a₂
+    stopping_power = "stopping_power"      # Λ(x) = a/x² (Bethe–Bloch), params: a
+    saturation = "saturation"              # Λ(x) = x_max·(1 − exp(−x/x₀)), params: x_max, x₀
 
 
 class DetectFamily(str, Enum):
@@ -209,6 +225,7 @@ class NodeTags(StrictBaseModel):
     canonical_id: Optional[CanonicalPrimitive] = None
     physics_stage: Optional[PhysicsStageFamily] = None
     detect_family: Optional[DetectFamily] = None
+    transform_family: Optional[TransformFamily] = None
 
 
 # ---------------------------------------------------------------------------

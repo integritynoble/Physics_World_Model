@@ -3207,7 +3207,7 @@ class ConeBeamRadon(BasePrimitive):
     _physics_tier = "tier1_approx"
     _physics_subrole = "projection"
     _canonical_id = CanonicalPrimitive.Pi
-    _physics_stage = PhysicsStageFamily.transport
+    _physics_stage = PhysicsStageFamily.encoding_projection
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_angles = self._params.get("n_angles", 180)
