@@ -104,3 +104,21 @@ The portal imaging benchmark correctly models the MV transmission imaging physic
 | precomputed_baseline | 10.49 | 0.4088 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 15.63 dB |
+| SSIM (sample_00) | 0.4838 |
+| Runtime | 2.01 s/sample |
+
+**Result: PASS**

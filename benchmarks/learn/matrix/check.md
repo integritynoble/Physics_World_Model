@@ -99,3 +99,21 @@ Matrix imaging is correctly formulated as a linear inverse problem in the full r
 | precomputed_baseline | 22.04 | 0.6949 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** GAP-TV
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.68 dB |
+| SSIM (sample_00) | 0.7922 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**

@@ -108,3 +108,21 @@ The streak camera benchmark correctly models the compressed sensing ultrafast im
 | precomputed_baseline | 14.29 | 0.1114 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TwIST
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.13 dB |
+| SSIM (sample_00) | 0.2053 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**

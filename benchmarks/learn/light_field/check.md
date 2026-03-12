@@ -108,3 +108,21 @@ Light field camera imaging is correctly distinguished from integral imaging by t
 | precomputed_baseline | 27.26 | 0.9439 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Shift-and-Sum
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.57 dB |
+| SSIM (sample_00) | 0.4839 |
+| Runtime | 0.88 s/sample |
+
+**Result: PASS**

@@ -119,3 +119,21 @@ The ptychography benchmark implements a rigorous forward model: probe-object mul
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3 -- Updated 2026-03-11 with benchmark dataset generation*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ePIE
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 3.52 dB |
+| SSIM (sample_00) | 0.008 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

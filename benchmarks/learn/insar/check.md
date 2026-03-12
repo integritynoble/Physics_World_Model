@@ -119,3 +119,21 @@ The CPU baseline (Goldstein phase unwrapping + linear ramp removal) achieves 18.
 
 ---
 *Comprehensive 6-point check, updated 2026-03-11 with real dataset metrics*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Goldstein-MCF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.62 dB |
+| SSIM (sample_00) | 0.0302 |
+| Runtime | 0.9 s/sample |
+
+**Result: PASS**

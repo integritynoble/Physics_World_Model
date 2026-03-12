@@ -98,3 +98,21 @@ s(t) = integral rho(x,y) * S_c(x,y) * exp(-i2pi k·r) dr
 | precomputed_baseline | 6.01 | 0.0984 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zero-Filled IFFT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.63 dB |
+| SSIM (sample_00) | 0.0192 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

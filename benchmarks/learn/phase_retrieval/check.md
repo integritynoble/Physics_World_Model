@@ -99,3 +99,21 @@ Phase retrieval / CDI is a canonical Fourier intensity inverse problem with well
 | precomputed_baseline | 12.51 | -0.1670 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gerchberg-Saxton
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 2.6 dB |
+| SSIM (sample_00) | 0.2038 |
+| Runtime | 8.68 s/sample |
+
+**Result: PASS**

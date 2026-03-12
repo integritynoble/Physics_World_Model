@@ -99,3 +99,21 @@ The coronagraphy benchmark correctly models the high-contrast imaging inverse pr
 | precomputed_baseline | 25.17 | 0.2028 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ADI
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 43.19 dB |
+| SSIM (sample_00) | 0.7961 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**

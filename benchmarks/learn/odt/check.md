@@ -102,3 +102,21 @@ Optical diffraction tomography is correctly formulated as a coherent-field inver
 | precomputed_baseline | 25.46 | 0.9509 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wolf FBP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 8.0 dB |
+| SSIM (sample_00) | 0.0547 |
+| Runtime | 1.4 s/sample |
+
+**Result: PASS**

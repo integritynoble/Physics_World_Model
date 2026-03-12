@@ -95,3 +95,21 @@ where y_MS is the observed multispectral radiance in band b, PSF_sat is the sate
 | bicubic_upsample | 10.79 | 0.1002 | 0.01 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.55 dB |
+| SSIM (sample_00) | 0.8919 |
+| Runtime | 1.55 s/sample |
+
+**Result: PASS**

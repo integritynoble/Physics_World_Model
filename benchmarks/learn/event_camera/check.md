@@ -105,3 +105,21 @@ The event camera benchmark is correctly built around the log-luminance contrast 
 | precomputed_baseline | 7.30 | 0.0574 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Event-Integration
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 24.29 dB |
+| SSIM (sample_00) | 0.7433 |
+| Runtime | 0.5 s/sample |
+
+**Result: PASS**

@@ -101,3 +101,21 @@ Algorithm routing correctly assigns molecular replacement (Phaser), SAD anomalou
 | precomputed_baseline | 22.37 | 0.0651 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Molecular Replacement
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.08 dB |
+| SSIM (sample_00) | 0.919 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**

@@ -94,3 +94,21 @@ where H_z is the z-component of the sample stray field at lift height z_lift, m_
 | precomputed_baseline | 34.33 | 0.2871 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BTR
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.65 dB |
+| SSIM (sample_00) | 0.9145 |
+| Runtime | 3.1 s/sample |
+
+**Result: PASS**

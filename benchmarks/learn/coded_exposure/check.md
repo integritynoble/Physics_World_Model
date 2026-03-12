@@ -109,3 +109,21 @@ Algorithm routing now uses a dedicated `_VARIANT_OVERRIDES["coded_exposure"]` en
 | precomputed_baseline | 19.86 | 0.8073 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-Deconv
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 20.37 dB |
+| SSIM (sample_00) | 0.3891 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

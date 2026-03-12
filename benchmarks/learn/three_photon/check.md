@@ -111,3 +111,21 @@ The three-photon microscopy benchmark correctly models the deep-tissue multiphot
 | precomputed_baseline | 20.80 | 0.8419 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 21.19 dB |
+| SSIM (sample_00) | 0.2744 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**

@@ -99,3 +99,21 @@ Neutron CT is correctly formulated as a Radon-transform-based tomographic recons
 | precomputed_baseline | -5.66 | 0.0503 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP-PET
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 12.4 dB |
+| SSIM (sample_00) | 0.3812 |
+| Runtime | 2.23 s/sample |
+
+**Result: PASS**

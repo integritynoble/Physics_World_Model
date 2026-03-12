@@ -102,3 +102,21 @@ Passive microwave radiometry is correctly formulated as a multi-frequency radiat
 | precomputed_baseline | 9.19 | 0.5946 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Backus-Gilbert
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.55 dB |
+| SSIM (sample_00) | 0.8919 |
+| Runtime | 1.53 s/sample |
+
+**Result: PASS**

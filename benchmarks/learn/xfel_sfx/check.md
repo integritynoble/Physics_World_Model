@@ -99,3 +99,21 @@ Algorithm routing correctly assigns CrystFEL Monte Carlo merging, EMC orientatio
 | precomputed_baseline | 24.08 | 0.9753 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CrystFEL
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 37.08 dB |
+| SSIM (sample_00) | 0.919 |
+| Runtime | 0.57 s/sample |
+
+**Result: PASS**

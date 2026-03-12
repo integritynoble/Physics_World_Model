@@ -94,3 +94,21 @@ where s(t) is the transmitted pulse, A_i is the reflectivity, r_i is the tissue 
 | precomputed_baseline | 19.83 | 0.8902 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DAS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.47 dB |
+| SSIM (sample_00) | 0.7056 |
+| Runtime | 1.55 s/sample |
+
+**Result: PASS**

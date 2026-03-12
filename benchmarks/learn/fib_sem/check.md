@@ -118,3 +118,21 @@ where CTF(q) is the electron-optical contrast transfer function, V(r) is the 3D 
 | precomputed_baseline | 28.11 | 0.9862 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-FIB
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.56 dB |
+| SSIM (sample_00) | 0.8496 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**

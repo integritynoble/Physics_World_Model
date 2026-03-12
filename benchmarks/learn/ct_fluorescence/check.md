@@ -121,3 +121,21 @@ The CT fluorescence benchmark now uses XRF-CT-specific algorithms and physics, r
 | precomputed_baseline | -37.64 | 0.0002 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP-XRF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 13.79 dB |
+| SSIM (sample_00) | 0.4194 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**

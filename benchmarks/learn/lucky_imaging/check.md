@@ -99,3 +99,21 @@ Lucky imaging is correctly benchmarked as a burst-deconvolution problem under sp
 | precomputed_baseline | 29.22 | 0.9746 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Shift-and-Add
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 27.16 dB |
+| SSIM (sample_00) | 0.459 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**

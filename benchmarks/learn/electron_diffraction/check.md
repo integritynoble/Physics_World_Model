@@ -104,3 +104,21 @@ The electron diffraction benchmark correctly models the 4D-STEM CBED ptychograph
 | precomputed_baseline | 42.01 | 0.9901 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Direct-Methods
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 18.13 dB |
+| SSIM (sample_00) | 0.3126 |
+| Runtime | 0.0 s/sample |
+
+**Result: PASS**

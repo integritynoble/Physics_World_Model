@@ -103,3 +103,21 @@ Algorithm routing correctly assigns PyMCA least-squares fitting, AXIL/SNIP peak 
 | precomputed_baseline | 22.11 | 0.9626 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FP-Quantify
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**

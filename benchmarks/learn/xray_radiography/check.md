@@ -135,3 +135,21 @@ The three large public datasets (CheXpert, MIMIC-CXR, NIH ChestX-ray14) provide 
 | precomputed_baseline | 26.31 | 0.9844 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 15.63 dB |
+| SSIM (sample_00) | 0.4838 |
+| Runtime | 0.9 s/sample |
+
+**Result: PASS**

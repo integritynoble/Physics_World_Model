@@ -110,3 +110,21 @@ The DNA-PAINT benchmark correctly models the SMLM forward problem with stochasti
 | precomputed_baseline | 28.53 | 0.3552 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** STORM-2D
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 20.91 dB |
+| SSIM (sample_00) | 0.1068 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**

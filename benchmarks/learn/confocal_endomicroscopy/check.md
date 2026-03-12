@@ -130,3 +130,21 @@ The modify_plan.md documents the OCT-pool mismatch and the required override ent
 | precomputed_baseline | 34.03 | 0.9927 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** NLM-Speckle
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.98 dB |
+| SSIM (sample_00) | 0.3676 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**

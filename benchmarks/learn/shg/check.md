@@ -107,3 +107,21 @@ The SHG microscopy benchmark correctly models the nonlinear optical microscopy d
 | precomputed_baseline | 23.03 | 0.7974 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.67 dB |
+| SSIM (sample_00) | 0.3838 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**

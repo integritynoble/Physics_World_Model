@@ -102,3 +102,21 @@ Single-pixel camera is a canonical compressed sensing modality with a linear mea
 | backprojection_baseline | -19.34 | -0.0007 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FISTA-TV
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 9.59 dB |
+| SSIM (sample_00) | 0.2188 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**

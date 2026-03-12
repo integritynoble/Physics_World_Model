@@ -98,3 +98,21 @@ y = PSF ⊛ x + noise  (correlation reconstruction equivalent)
 | precomputed_baseline | 6.63 | 0.1947 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** G(2)-Corr
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 1.14 dB |
+| SSIM (sample_00) | 0.1624 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**

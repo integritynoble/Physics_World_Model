@@ -114,3 +114,21 @@ Bioluminescence tomography is correctly modeled as a severely ill-posed diffusio
 | precomputed_baseline | 13.30 | 0.3431 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov-BLT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 32.86 dB |
+| SSIM (sample_00) | 0.9172 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**

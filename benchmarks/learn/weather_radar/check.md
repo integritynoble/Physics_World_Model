@@ -102,3 +102,21 @@ Algorithm routing correctly assigns Marshall-Palmer Z-R, dual-polarization K_DP 
 | precomputed_baseline | 26.85 | 0.9155 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Pulse-Pair Doppler
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.55 dB |
+| SSIM (sample_00) | 0.8919 |
+| Runtime | 0.54 s/sample |
+
+**Result: PASS**

@@ -118,3 +118,21 @@ The baseline (enhanced multi-scale Lee filter + matched filter) achieves 8–19 
 
 ---
 *6-point check updated after dataset generation — 2026-03-11*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Matched Filter
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 14.86 dB |
+| SSIM (sample_00) | 0.1994 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**

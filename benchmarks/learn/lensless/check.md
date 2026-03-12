@@ -103,3 +103,21 @@ Lensless imaging is correctly formulated as a convolution-based inverse problem 
 | wiener_deconv | 11.81 | 0.0031 | 0.01 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 6.58 dB |
+| SSIM (sample_00) | 0.1854 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**

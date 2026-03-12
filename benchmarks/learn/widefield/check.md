@@ -107,3 +107,21 @@ The widefield fluorescence microscopy benchmark faithfully models the key challe
 
 ---
 *Comprehensive 6-point check generated 2026-03-11*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.17 dB |
+| SSIM (sample_00) | 0.4333 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**

@@ -101,3 +101,21 @@ The SIM benchmark correctly implements the structured illumination forward model
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4 -- updated 2026-03-11*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-SIM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.0 dB |
+| SSIM (sample_00) | 0.2556 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

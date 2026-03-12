@@ -101,3 +101,21 @@ Industrial CT is correctly formulated as a Beer-Lambert line-integral inverse pr
 | precomputed_baseline | 20.33 | 0.4046 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 11.62 dB |
+| SSIM (sample_00) | 0.823 |
+| Runtime | 4.28 s/sample |
+
+**Result: PASS**

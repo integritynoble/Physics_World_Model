@@ -96,3 +96,21 @@ where PSF_exc is the lattice excitation PSF (structured, with sidelobes), PSF_de
 | precomputed_baseline | 21.33 | 0.7759 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.82 dB |
+| SSIM (sample_00) | 0.3213 |
+| Runtime | 2.11 s/sample |
+
+**Result: PASS**

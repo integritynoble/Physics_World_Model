@@ -100,3 +100,21 @@ Solar EUV imaging has a well-defined integral equation forward model (DEM × tem
 | precomputed_baseline | 28.37 | 0.9958 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 27.45 dB |
+| SSIM (sample_00) | 0.4416 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**

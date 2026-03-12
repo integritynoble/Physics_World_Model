@@ -97,3 +97,21 @@ The benchmark's very low SNR (0.01-0.1) faithfully represents real cryo-EM condi
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CTFFIND4
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 5.33 dB |
+| SSIM (sample_00) | 0.0148 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**

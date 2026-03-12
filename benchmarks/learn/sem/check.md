@@ -118,3 +118,21 @@ sample_XX/
 3. **Baseline quality:** Mean PSNR ~22-28 dB across tiers (target range achieved).
 4. **Data integrity:** All HDF5 files load correctly with expected shapes and dtypes.
 5. **GCS upload:** All three tier HDF5 files uploaded to `gs://pwm-benchmark-datasets/datasets/Benchmark/sem/`.
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Filter
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 19.3 dB |
+| SSIM (sample_00) | 0.5949 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

@@ -105,3 +105,21 @@ Algorithm pool updated to 7 methods with dedicated `_VARIANT_OVERRIDES["afm"]` e
 | precomputed_baseline | 19.01 | 0.8537 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Plane Fit
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.65 dB |
+| SSIM (sample_00) | 0.9145 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**

@@ -118,3 +118,21 @@ OCT is correctly formulated as a coherent imaging inverse problem where the meas
 | bscan_ideal_baseline | 23.48 | 0.9482 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FFT-OCT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.02 dB |
+| SSIM (sample_00) | 0.8843 |
+| Runtime | 1.4 s/sample |
+
+**Result: PASS**

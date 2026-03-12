@@ -139,3 +139,21 @@ The fluoroscopy benchmark is fully configured with a dedicated phantom generator
 | precomputed_baseline | 43.48 | 0.9997 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-Fluoro
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 15.63 dB |
+| SSIM (sample_00) | 0.4838 |
+| Runtime | 3.59 s/sample |
+
+**Result: PASS**

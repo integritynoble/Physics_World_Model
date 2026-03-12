@@ -104,3 +104,21 @@ The DIC benchmark correctly models the phase-gradient imaging forward problem wi
 | precomputed_baseline | 10.86 | -0.3388 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DIC-Deconv
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.59 dB |
+| SSIM (sample_00) | 0.4033 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
