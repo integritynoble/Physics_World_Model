@@ -37,7 +37,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | brillouin | ✅ [GOLD] Brillouin simulation benchmark / RRUFF spectral reference data | ✅ 12/20/20 | ❌ | ✅ 4x, best=35.8 dB | ✅ | ✅ |
 | cacti | ✅ [GOLD] DAVIS-2017 / Six Scenes (Liu IEEE TPAMI 2019, github.com/liuyang12/SCI) | ✅ 26/26/26 | ❌ | ✅ 6x, best=11.5 dB | ✅ | ✅ |
 | cars | ✅ [GOLD] CARS simulation benchmark / coherent Raman imaging (simulation standard) | ✅ 12/20/20 | ❌ | ✅ 4x, best=16.7 dB | ✅ | ✅ |
-| cassi | ✅ [GOLD] CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ✅ 12/20/20 | ❌ | ✅ 4x, best=13.6 dB | ❌ | ✅ |
+| cassi | ✅ [GOLD] CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ✅ 12/20/20 | ❌ | ✅ 4x, best=13.6 dB | ✅ | ✅ |
 | cathodoluminescence | ✅ [GOLD] HyperSpy CL dataset (Zenodo 6513794) / EMPIAR CL data | ✅ 12/20/20 | ❌ | ✅ 4x, best=28.9 dB | ✅ | ✅ |
 | cbct | ✅ [GOLD] AAPM Low-Dose CT Challenge 2016 / LoDoPaB-CT (Sci. Data 2021) | ✅ 22/40/40 | ❌ | ✅ 3x, best=15.2 dB | ✅ | ✅ |
 | cest_mri | ✅ [GOLD] ISMRM 2024 CEST Challenge / fastMRI brain (fastmri.med.nyu.edu) | ✅ 12/20/20 | ❌ | ✅ 4x, best=32.1 dB | ✅ | ✅ |
@@ -160,7 +160,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | sims | ✅ [GOLD] SIMS surface database / ToF-SIMS benchmark simulation (simulation standard) | ✅ 12/20/20 | ❌ | ✅ 4x, best=20.5 dB | ✅ | ✅ |
 | solar_imaging | ✅ [GOLD] SDO AIA (HEK, lmsal.com) / SOHO EIT / TRACE EUV solar archive | ✅ 12/20/20 | ❌ | ✅ 4x, best=28.4 dB | ✅ | ✅ |
 | sonar | ✅ [GOLD] NOAA multibeam sonar archive / acoustic simulation benchmark | ✅ 12/20/20 | ❌ | ✅ 4x, best=15.0 dB | ✅ | ✅ |
-| spc | ✅ [GOLD] SPC simulation benchmark / Rice SPC dataset (Duarte Science 2008) | ✅ 12/20/20 | ❌ | ✅ 4x, best=6.8 dB | ❌ | ✅ |
+| spc | ✅ [GOLD] SPC simulation benchmark / Rice SPC dataset (Duarte Science 2008) | ✅ 12/20/20 | ❌ | ✅ 4x, best=6.8 dB | ✅ | ✅ |
 | spect | ✅ [GOLD] SIMIND simulation framework / GATE SPECT benchmark (OpenGATE) | ✅ 12/20/20 | ❌ | ✅ 3x, best=30.0 dB | ✅ | ✅ |
 | spect_ct | ✅ [GOLD] TCIA SPECT-CT (The Cancer Imaging Archive) / Philips IQ-SPECT | ✅ 24/40/40 | ❌ | ✅ 4x, best=11.4 dB | ✅ | ✅ |
 | spectral_ct | ✅ [GOLD] AAPM Spectral CT challenge / Medipix3 spectral CT dataset | ✅ 24/40/40 | ❌ | ✅ 4x, best=12.3 dB | ✅ | ✅ |
@@ -198,7 +198,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 - Stage 1 (Datasets Created): 168/168 ✅
 - Stage 2 (Benchmark Page): 0/168 ✅
 - Stage 3 (GPU Tests): 168/168 ✅
-- Stage 4 (SpecLab): 166/168 ✅
+- Stage 4 (SpecLab): 168/168 ✅
 
 ---
 
