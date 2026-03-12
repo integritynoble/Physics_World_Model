@@ -18,6 +18,10 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 
 **Source Quality Check:** 168/168 ✅ GOLD — individually verified, physics-accurate
 
+**Source ✓:** 168/168 — all data sources verified honest and trustworthy
+**Mechanism ✓:** 168/168 — all forward models match modality physics (22 distinct forward model types)
+**Both ✓:** 168/168 — full verification complete
+
 ---
 
 ## Quick Status Table
