@@ -26,6 +26,7 @@ D = CanonicalPrimitive.D
 S = CanonicalPrimitive.S
 W = CanonicalPrimitive.W
 R = CanonicalPrimitive.R
+Lambda = CanonicalPrimitive.Lambda
 
 
 @dataclass(frozen=True)
@@ -195,6 +196,27 @@ CANONICAL_DECOMPOSITIONS: Dict[str, CanonicalDecomposition] = {
     "muon_tomography": CanonicalDecomposition(
         "muon_tomography", "R -> Pi -> D", [R, Pi, D],
         3, 3, "particle", "<1e-2", "template",
+    ),
+    # --- Modalities requiring Lambda (Transform) primitive ---
+    "ct_polychromatic": CanonicalDecomposition(
+        "ct_polychromatic", "Pi -> Lambda -> D", [Pi, Lambda, D],
+        3, 3, "xray", "<1e-3", "template",
+    ),
+    "mri_phase_wrapped": CanonicalDecomposition(
+        "mri_phase_wrapped", "M -> F -> S -> Lambda -> D", [M, F, S, Lambda, D],
+        5, 5, "spin", "<1e-3", "template",
+    ),
+    "cbct": CanonicalDecomposition(
+        "cbct", "Pi -> Lambda -> D", [Pi, Lambda, D],
+        3, 3, "xray", "<1e-3", "template",
+    ),
+    "proton_therapy": CanonicalDecomposition(
+        "proton_therapy", "Lambda -> Pi -> D", [Lambda, Pi, D],
+        3, 3, "particle", "<1e-2", "template",
+    ),
+    "fluorescence_saturated": CanonicalDecomposition(
+        "fluorescence_saturated", "M -> R -> Lambda -> D", [M, R, Lambda, D],
+        4, 4, "photon", "<1e-3", "template",
     ),
 }
 

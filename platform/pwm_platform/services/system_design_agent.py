@@ -20,6 +20,18 @@ from pwm_platform.services.gemini_client import call_gemini
 
 logger = logging.getLogger(__name__)
 
+# ── Compiler integration (lazy import to avoid import errors if pwm_core missing)
+_COMPILER_AVAILABLE = False
+try:
+    from papers.system_design.compiler.agent_translator import AgentToGraphTranslator
+    from papers.system_design.compiler.primitive_compiler import (
+        CompilationReport,
+        ConstrainedPrimitiveCompiler,
+    )
+    _COMPILER_AVAILABLE = True
+except Exception:
+    pass
+
 # ── System Prompts ──────────────────────────────────────────────────────────
 
 _PLAN_FORWARD_SYSTEM = """\
@@ -373,53 +385,78 @@ def _render_recon(lines: list[str], action: dict) -> None:
 # ── Chat description ────────────────────────────────────────────────────────
 
 def describe_spec(spec: dict, period: str) -> str:
-    """Generate a natural-language description of the spec for the chat."""
+    """Generate a concise flowchart summary for the chat bubble."""
     action = spec.get("action", {})
 
     if period == "forward":
         elements = action.get("elements", [])
-        parts = [f"I've designed the forward model for: **{spec.get('task', '')[:120]}**\n"]
-        parts.append(f"The signal chain has **{len(elements)} elements**:\n")
-        for el in elements:
-            name = el.get("name", "")
-            etype = el.get("type", "")
-            noise_types = ", ".join(n.get("type", "") for n in el.get("noise", []))
-            mm_types = ", ".join(m.get("type", "") for m in el.get("mismatch", []))
-            line = f"- **{name}** ({etype})"
-            if noise_types:
-                line += f" | noise: {noise_types}"
-            if mm_types:
-                line += f" | mismatch: {mm_types}"
-            parts.append(line)
-        if action.get("total_noise_model"):
-            parts.append(f"\nComposite noise: `{action['total_noise_model']}`")
-        if action.get("measurement_shape"):
-            parts.append(f"Output shape: `{action['measurement_shape']}`")
+        # Build concise flowchart: just element names joined by arrows
+        names = [el.get("name", "?") for el in elements]
+        flowchart = " → ".join(names) + " → y"
+        shape = action.get("measurement_shape", "")
+        parts = [
+            f"**Forward Model** ({len(elements)} elements)",
+            f"```\n{flowchart}\n```",
+        ]
+        if shape:
+            parts.append(f"Output: `{shape}`")
+
+        # Compiler status
+        compilation = spec.get("_compilation")
+        if compilation:
+            chain = compilation.get("canonical_chain", "")
+            if compilation.get("valid"):
+                parts.append(f"Compiler: **VALID** `{chain}`")
+            else:
+                parts.append(f"Compiler: **INVALID** ({len(compilation.get('failures', []))} issues)")
     else:
         algo = action.get("algorithm_name", "Unknown")
         algo_type = action.get("algorithm_type", "")
         steps = action.get("steps", [])
-        mismatches = action.get("mismatch_corrections", [])
-        parts = [f"I've designed a **{algo}** ({algo_type}) reconstruction plan.\n"]
-        parts.append(f"**{len(steps)} algorithm steps**:\n")
-        for step in steps:
-            parts.append(
-                f"{step.get('step', '')}. **{step.get('name', '')}** - "
-                f"{step.get('description', '')[:100]}"
-            )
-        if mismatches:
-            parts.append(f"\n**{len(mismatches)} mismatch corrections**:")
-            for m in mismatches:
-                parts.append(f"- {m.get('type', '')}: {m.get('correction_method', '')}")
-        if action.get("convergence_criterion"):
-            parts.append(f"\nConvergence: {action['convergence_criterion']}")
-
-    demands = spec.get("demands", {})
-    parts.append(f"\nFeasibility: {demands.get('feasibility', 'yes')}")
-    if demands.get("comments"):
-        parts.append(f"Note: {demands['comments']}")
+        # Build concise step list: just step names
+        step_names = [f"{s.get('step', i+1)}. {s.get('name', '')}" for i, s in enumerate(steps)]
+        parts = [
+            f"**{algo}** ({algo_type}, {len(steps)} steps)",
+            "\n".join(step_names),
+        ]
 
     return "\n".join(parts)
+
+
+# ── Compiler validation ────────────────────────────────────────────────────
+
+def compile_forward_spec(spec: dict, modality: str = "generic") -> dict | None:
+    """Run the Constrained Primitive Compiler on a forward spec.
+
+    Returns a dict with compilation results, or None if compiler unavailable.
+    """
+    if not _COMPILER_AVAILABLE:
+        return None
+
+    action = spec.get("action", {})
+    if not action.get("elements"):
+        return None
+
+    try:
+        translator = AgentToGraphTranslator()
+        graph_spec = translator.translate(action, modality=modality)
+
+        compiler = ConstrainedPrimitiveCompiler()
+        report = compiler.compile(graph_spec, modality=modality)
+
+        return {
+            "valid": report.valid,
+            "canonical_chain": report.canonical_chain_str,
+            "node_count": report.node_count,
+            "depth": report.depth,
+            "nonlinear_ok": report.nonlinear_ok,
+            "failures": report.failures,
+            "warnings": report.warnings,
+            "compilation_time_s": round(report.compilation_time_s, 4),
+        }
+    except Exception as e:
+        logger.warning(f"Compiler failed: {e}")
+        return {"valid": False, "failures": [str(e)], "warnings": []}
 
 
 # ── Agent API ───────────────────────────────────────────────────────────────
@@ -445,6 +482,12 @@ async def generate_plan(
     response = await call_gemini(system, history)
     spec = _extract_json(response)
 
+    # Run compiler on forward specs
+    if period == "forward":
+        compilation = compile_forward_spec(spec, modality=modality or "generic")
+        if compilation:
+            spec["_compilation"] = compilation
+
     description = describe_spec(spec, period)
     plan_md = spec_to_plan_md(spec, period)
     spec_md = spec_to_spec_md(spec, period)
@@ -466,6 +509,12 @@ async def refine_plan(
 
     response = await call_gemini(system, history)
     spec = _extract_json(response)
+
+    # Run compiler on refined forward specs
+    if period == "forward":
+        compilation = compile_forward_spec(spec, modality="generic")
+        if compilation:
+            spec["_compilation"] = compilation
 
     description = describe_spec(spec, period)
     plan_md = spec_to_plan_md(spec, period)
@@ -490,12 +539,34 @@ async def judge_plan(spec: dict, period: str) -> tuple[dict, str]:
     summary = judgment.get("summary", "")
     issues = judgment.get("issues", [])
 
+    # Include compiler results in judgment
+    compilation = spec.get("_compilation")
+    if compilation:
+        judgment["_compilation"] = compilation
+        if not compilation.get("valid", True):
+            # Compiler failures are critical
+            for fail in compilation.get("failures", []):
+                issues.append({
+                    "category": "compiler",
+                    "severity": "critical",
+                    "element_id": "",
+                    "description": fail,
+                    "suggestion": "Fix the forward model to satisfy the 11-primitive basis",
+                })
+
     verdict = "PASS" if feasible else "FAIL"
     lines = [
         f"**Judge Verdict**: {verdict} (confidence: {confidence:.0%})",
         "",
         summary,
     ]
+
+    # Compiler status line
+    if compilation:
+        chain = compilation.get("canonical_chain", "?")
+        comp_status = "VALID" if compilation.get("valid") else "INVALID"
+        lines.append(f"\n**Compiler**: {comp_status} | Chain: `{chain}` | Nodes: {compilation.get('node_count', '?')}")
+
     if issues:
         lines.append("")
         for issue in issues:
