@@ -83,7 +83,7 @@ system_matrix (3), radon_ctf (1), heat_diffusion (2), beamform (2), coronagraph 
 | 25 | **ultrasound** | CAMUS / EchoNet-Dynamic | Physics | ★★★★★ | ✅ | ✅ | depth PSF+Rayleigh speckle | 500 / 10,030 patients | NIfTI/AVI | [echonet.github.io](https://echonet.github.io/dynamic/) | Ouyang et al., Nature 2020 | Research | Dedicated physics generator: depth-dependent PSF + Rayleigh speckle model. |
 | 26 | **doppler_ultrasound** | PICMUS In-Vivo Carotid | Real | ★★★★☆ | ✅ | ✅ | Doppler slow-time phase | RF data | HDF5/MAT | [ustb.no/ustb-datasets](https://www.ustb.no/ustb-datasets/) | Rindal et al., Ultrasonics 2019 | Open | Plane-wave RF data for Doppler imaging. Also: Kaggle carotid color Doppler images. |
 | 27 | **ceus** | B-MODE-AND-CEUS-LIVER (TCIA) | Real | ★★★☆☆ | ✅ | ✅ | contrast agent imaging | Multi-patient | DICOM | [cancerimagingarchive.net/collection/b-mode-and-ceus-liver](https://www.cancerimagingarchive.net/collection/b-mode-and-ceus-liver/) | DOI:10.7937/TCIA.2021.v4z7-tc39 | TCIA | Real CEUS cine-loops + B-mode of liver lesions from clinical trials. |
-| 28 | **elastography** | IMPACT Lab CIRS Phantom | Real | ★★★☆☆ | ✅ | ✅ | strain/displacement PDE | 2,200 RF pairs | MAT | [users.encs.concordia.ca/~impact](https://users.encs.concordia.ca/~impact/ultrasound-elastography-dataset-for-unsupervised-training/) | Concordia University | Research | CIRS phantom with hard inclusions, background 20 kPa, inclusions 2× stiffer. |
+| 28 | **elastography** | IMPACT Lab CIRS Phantom | Real | ★★★☆☆ | ✅ | ✅ | wave Born scattering | 2,200 RF pairs | MAT | [users.encs.concordia.ca/~impact](https://users.encs.concordia.ca/~impact/ultrasound-elastography-dataset-for-unsupervised-training/) | Concordia University | Research | CIRS phantom with hard inclusions, background 20 kPa, inclusions 2× stiffer. |
 | 29 | **ivus** | MICCAI 2011 IVUS Challenge | Real | ★★★★☆ | ✅ | ✅ | rotating transducer B-mode | 2,175 images | DICOM | [cvc.uab.es/IVUSchallenge2011](http://www.cvc.uab.es/IVUSchallenge2011/) | Balocco et al., Med. Image Anal. 2014 | Research | Multi-center, multi-vendor coronary IVUS B-mode with lumen + EEM annotations. |
 | 30 | **photoacoustic** | PATATO / OADAT | Physics | ★★★★☆ | ✅ | ✅ | circular array ToF | Benchmark | HDF5 | Internal | MICCAI PATATO | Research | Dedicated generator: circular transducer array + limited-view tomographic reconstruction. |
 
@@ -161,7 +161,7 @@ system_matrix (3), radon_ctf (1), heat_diffusion (2), beamform (2), coronagraph 
 | 69 | **dic** | DLD Beads + NIST Steel | Real | ★★★☆☆ | ✅ | ✅ | DIC shearing interference | ~50 images | TIFF/PNG | [opticapublishing.figshare.com](https://opticapublishing.figshare.com/articles/dataset/dld_public_dataset_zip/16926607) + [catalog.data.gov](https://catalog.data.gov/dataset/data-publication-differential-interference-contrast-microscopy-from-a-cross-section-of-a-f) | Figshare / NIST | CC BY 4.0 | DLD polystyrene beads with MATLAB code + NIST fractured steel cross-section. |
 | 70 | **dark_field** | — | Physics | ★★☆☆☆ | ✅ | ✅ | PSF convolution | Generated | HDF5 | — | — | — | Dedicated physics: Mie scattering + dark background simulation. No public dark-field microscopy benchmark. |
 | 71 | **phase_contrast** | HiP-CT Synchrotron | Real | ★★★★☆ | ✅ | ✅ | PSF convolution | Whole organ | TIFF | [nature.com/articles/s41597-022-01353-y](https://www.nature.com/articles/s41597-022-01353-y) | Walsh et al., Sci. Data 2022 | CC BY 4.0 | Whole human lung at 25μm voxel, zooms to 2.45μm. Synchrotron-based X-ray phase contrast. |
-| 72 | **shg** | PSHG-TISS (OSF) | Real | ★★★☆☆ | ✅ | ✅ | |χ²|² second harmonic | Multi-tissue | TIFF | [osf.io/K2Z8G45](https://doi.org/10.17605/OSF.IO/K2Z8G45) | Scientific Data 2022 | CC BY 4.0 | Polarization-resolved SHG of breast, skin, thyroid tissue + derived parameter maps. |
+| 72 | **shg** | PSHG-TISS (OSF) | Real | ★★★☆☆ | ✅ | ✅ | PSF convolution (nonlinear) | Multi-tissue | TIFF | [osf.io/K2Z8G45](https://doi.org/10.17605/OSF.IO/K2Z8G45) | Scientific Data 2022 | CC BY 4.0 | Polarization-resolved SHG of breast, skin, thyroid tissue + derived parameter maps. |
 | 73 | **cars** | MCARS Cell Imaging | Real | ★★★☆☆ | ✅ | ✅ | |χ³|² nonlinear | Cell imaging | TIFF | [figshare.com/collections/_/6149604](https://figshare.com/collections/_/6149604) | Boildieu et al., Figshare 2022 | CC BY 4.0 | Multiplex CARS cell imaging with unsupervised segmentation analysis. |
 | 74 | **srs** | OpenSRH | Real | ★★★★★ | ✅ | ✅ | Im(χ³) SRS gain/loss | 300+ patients, 1,300+ WSIs | TIFF | [opensrh.mlins.org](https://opensrh.mlins.org/) | Hollon et al., NeurIPS 2022 | Research | First public SRH dataset. Intraoperative brain tumor imaging, full pathologic annotations. |
 | 75 | **cathodoluminescence** | — | Physics | ★★☆☆☆ | ✅ | ✅ | e-beam→CL emission | Generated | HDF5 | — | — | — | Dedicated physics: electron-beam + material luminescence emission simulation. No public CL benchmark. |
@@ -238,7 +238,7 @@ system_matrix (3), radon_ctf (1), heat_diffusion (2), beamform (2), coronagraph 
 | # | Modality | Dataset | Data Type | Popularity | Src ✓ | Mech ✓ | Forward Model Spec | Size | Format | Source / URL | Key Publication | License | Notes |
 |---|----------|---------|-----------|------------|------|--------|-------------------|------|--------|-------------|-----------------|---------|-------|
 | 112 | **hdr_imaging** | HDR+ Burst Photography | Real | ★★★★★ | ✅ | ✅ | multi-exposure bracketing | Multi-burst | DNG (raw) | [hdrplusdata.org](https://hdrplusdata.org/) | Hasinoff et al., ACM TOG 2016 | Research | Real Android camera bursts (2-10 raw photos, 12-13 MP). |
-| 113 | **event_camera** | DSEC | Real | ★★★★★ | ✅ | ✅ | |Δlog(I)|>C events | 53 driving sequences | HDF5/PNG | [dsec.ifi.uzh.ch](https://dsec.ifi.uzh.ch/) | Gehrig et al., RA-L 2021 | CC BY-SA 4.0 | Stereo event cameras + global shutter RGB + LiDAR + RTK GPS. Day and night. |
+| 113 | **event_camera** | DSEC | Real | ★★★★★ | ✅ | ✅ | DVS log-I quantization | 53 driving sequences | HDF5/PNG | [dsec.ifi.uzh.ch](https://dsec.ifi.uzh.ch/) | Gehrig et al., RA-L 2021 | CC BY-SA 4.0 | Stereo event cameras + global shutter RGB + LiDAR + RTK GPS. Day and night. |
 | 114 | **panorama** | UDIS-D + VPG + ISIQA | Real | ★★★★☆ | ✅ | ✅ | multi-view capture | 24 scenes + 264 stitched | PNG/JPEG | [github.com/visionxiang/Image-Stitching-Dataset](https://github.com/visionxiang/Image-Stitching-Dataset) | Various | Various | VPG: 24 real mobile captures. ISIQA: 264 stitched images with quality scores. |
 | 115 | **polarization** | Spectro-Polarimetric (CVPR 2024) | Real | ★★★★☆ | ✅ | ✅ | Malus's law S₀+S₁cos2θ | 2,022 + 311 images | EXR/PNG | [light.princeton.edu](https://light.princeton.edu/publication/spectral-and-polarization-dataset/) | Princeton, CVPR 2024 | Research | Trichromatic + hyperspectral Stokes images (21 channels). Indoor and outdoor. |
 | 116 | **machine_vision** | MVTec AD | Real | ★★★★★ | ✅ | ✅ | defocus/motion PSF | 5,000+ images, 15 categories | PNG | [mvtec.com/company/research/datasets/mvtec-ad](https://www.mvtec.com/company/research/datasets/mvtec-ad/) | Bergmann et al., CVPR 2019 | CC BY-NC-SA 4.0 | Pixel-precise defect annotations. ~4.9 GB. Standard industrial inspection benchmark. |
@@ -385,7 +385,7 @@ Each modality's forward model has been verified against the correct physics:
 | Primitive | Count | Physics |
 |-----------|-------|---------|
 | Radon projection | 17 | y = R_θ(x) + n — X-ray/CT, particle, neutron tomography |
-| PSF convolution | 25 | y = PSF ⊛ x + n — optical/fluorescence microscopy, telescope |
+| PSF convolution | 26 | y = PSF ⊛ x + n — optical/fluorescence microscopy, telescope, SHG |
 | k-space sampling | 9 | y = MΩ·F·x + n — MRI, radio interferometry |
 | Binary mask | 6 | y = M ⊙ x + n — compressive sensing, single-pixel |
 | Fourier magnitude | 7 | y = |F(x)|² + n — diffraction, crystallography |
@@ -398,11 +398,11 @@ Each modality's forward model has been verified against the correct physics:
 | Multi-exposure | 2 | y = clip(g(t·x)) — HDR, panorama |
 | Temporal shear | 3 | y = Σ C(t)·S(t)·x(t) — CUP, streak camera |
 | Emissivity RT | 4 | T_B = ε·T + atm — passive MW, multispectral |
-| Wave Born | 3 | y = G_wave ⊛ Δv·x — FWI, sonar, ocean acoustic |
+| Wave Born | 4 | y = G_wave ⊛ Δv·x — FWI, sonar, ocean acoustic, elastography |
 | System matrix | 3 | y = A·x — MPI, eddy current, MFM |
 | Radon + CTF | 1 | y = CTF·R_θ(x) — cryo-ET |
-| Heat diffusion | 2 | T(t) ∝ 1/√(αt) — thermography, elastography |
+| Heat diffusion | 1 | T(t) ∝ 1/√(αt) — active thermography |
 | Beamforming | 2 | y = DAS(x) — phased array, IVUS |
 | Coronagraph | 1 | y = PSF_res ⊛ star + planet — coronagraphy |
-| Event threshold | 1 | events when |Δlog I| > C — event camera |
+| Event threshold | 1 | y = exp(quantize(log I, C)) + n — event camera |
 | Identity (OK) | 17 | y = x + n — direct readout (AFM, mass spec, XRF, etc.) |

@@ -267,7 +267,7 @@ MODALITY_CONFIG: Dict[str, Tuple[str, str]] = {
     "digital_breast_tomo": ("radon", "breast"),
     "doppler_ultrasound": ("temporal_shear", "vascular"),
     "dot": ("diffusion", "tissue"),
-    "elastography": ("heat_diffusion", "tissue"),
+    "elastography": ("wave_born", "tissue"),
     "fluoroscopy": ("radon", "anatomy"),
     "impedance_tomo": ("diffusion", "tissue"),
     "ivus": ("beamform", "vascular"),
@@ -306,7 +306,7 @@ MODALITY_CONFIG: Dict[str, Tuple[str, str]] = {
     "minflux": ("psf", "molecule"),
     "spinning_disk": ("psf", "cell"),
     "srs": ("spectral", "cell"),
-    "shg": ("spectral", "tissue"),
+    "shg": ("psf", "tissue"),
     "three_photon": ("psf", "neural"),
     "tirf": ("psf", "cell"),
     "widefield_lowdose": ("psf", "cell"),
@@ -1360,24 +1360,28 @@ def apply_forward_model(
         return y, {"contrast_ratio": float(contrast)}
 
     elif model_type == "event_threshold":
-        # Event camera: binary events where |Δlog(I)| > threshold
-        noise = mismatch_params.get("noise_level", 0.02)
-        threshold = mismatch_params.get("threshold", 0.2)
-        # Generate two frames (current and reference) from x_true
-        I_ref = np.clip(x_true, 0.01, 1.0)
-        # Simulated motion: shift x_true slightly
-        I_cur = np.roll(x_true, 3, axis=1) * rng.uniform(0.9, 1.1)
-        I_cur = np.clip(I_cur, 0.01, 1.0)
-        # Log intensity change
-        delta_log = np.log(I_cur) - np.log(I_ref)
-        # Events: +1 for ON (positive change), -1 for OFF (negative change), 0 otherwise
-        events = np.zeros_like(delta_log)
-        events[delta_log > threshold] = 1.0
-        events[delta_log < -threshold] = 0.5  # Encode OFF events as 0.5
-        # Add noise
-        y = events + noise * rng.randn(*events.shape)
+        # Event camera: integrate events to recover log-intensity image
+        # DVS model: each pixel fires when |Δlog(I)| > C
+        # Measurement: y = log(I) quantized to multiples of C, plus noise
+        # This makes reconstruction a denoising + dequantization problem
+        noise = mismatch_params.get("noise_level", 0.05)
+        threshold = mismatch_params.get("threshold", 0.1)
+        contrast_var = mismatch_params.get("contrast_var", 0.02)
+        # Log-intensity with DVS quantization
+        I = np.clip(x_true, 0.01, 1.0)
+        log_I = np.log(I)
+        # Per-pixel contrast threshold variation (realistic DVS non-uniformity)
+        C = threshold + contrast_var * rng.randn(*log_I.shape)
+        C = np.clip(C, 0.05, 0.3)
+        # Quantize log-intensity to nearest multiple of C
+        y_log = np.round(log_I / C) * C
+        # Add temporal noise (shot noise + junction leakage)
+        y_log += noise * rng.randn(*y_log.shape)
+        # Convert back to intensity domain
+        y = np.exp(y_log)
+        y = y / (y.max() + 1e-8)
         y = np.clip(y, 0, 1).astype(np.float32)
-        return y, {"threshold": float(threshold)}
+        return y, {"threshold": float(threshold), "contrast_var": float(contrast_var)}
 
     else:  # identity
         noise = mismatch_params.get("noise_level", 0.02)

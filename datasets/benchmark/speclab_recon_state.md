@@ -192,7 +192,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-CL | Classical | 25.2 dB | 0.771 |  |
+| Wiener-CL | Classical | 25.2 dB | 0.771 | done |
 | Richardson-Lucy | Classical | 27.5 dB | 0.812 |  |
 | DnCNN-CL | Deep Learning | 31.8 dB | 0.875 |  |
 | U-Net-CL | Deep Learning | 34.2 dB | 0.908 |  |
@@ -713,7 +713,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Deconv-Exp | Classical | 24.5 dB | 0.742 | done |
 | RL-ExM | Classical | 26.9 dB | 0.778 | done |
-| TV-ExM | Variational | 29.1 dB | 0.819 |  |
+| TV-ExM | Variational | 29.1 dB | 0.819 | done |
 | DnCNN-ExM | Deep Learning | 31.8 dB | 0.86 |  |
 | DeepInterp-ExM | Deep Learning | 34.2 dB | 0.898 |  |
 | TransExM | Transformer | 36.3 dB | 0.927 |  |
@@ -755,7 +755,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Phasor-FLIM | Classical | 23.2 dB | 0.722 | done |
 | MLE-FLIM | Statistical | 25.8 dB | 0.762 |  |
-| RLD-FLIM | Classical | 27.9 dB | 0.798 |  |
+| RLD-FLIM | Classical | 27.9 dB | 0.798 | done |
 | DnCNN-FLIM | Deep Learning | 30.7 dB | 0.845 |  |
 | FLIMJ | Deep Learning | 33.1 dB | 0.882 |  |
 | TransFLIM | Transformer | 35.5 dB | 0.918 |  |
@@ -1858,8 +1858,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical |  |  |  |
-| PnP-HSICNN | PnP |  |  |  |
+| GAP-TV | Classical |  |  | done |
+| PnP-HSICNN | PnP |  |  | done |
 | HDNet | Deep Learning |  |  |  |
 | MST-L | Transformer |  |  |  |
 
@@ -1962,8 +1962,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FISTA-TV | Classical |  |  |  |
-| PnP-DRUNet | PnP |  |  |  |
+| FISTA-TV | Classical |  |  | done |
+| PnP-DRUNet | PnP |  |  | done |
 | HATNet | Deep Learning |  |  |  |
 | ISTA-Net | Deep Unfolding |  |  |  |
 
@@ -1971,8 +1971,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FISTA-TV | Classical |  |  |  |
-| PnP-DRUNet | PnP |  |  |  |
+| FISTA-TV | Classical |  |  | done |
+| PnP-DRUNet | PnP |  |  | done |
 | HATNet | Deep Learning |  |  |  |
 | ISTA-Net | Deep Unfolding |  |  |  |
 
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 418 |
-| CPU algorithms pending verification | 157 |
+| CPU algorithms verified (done) | 427 |
+| CPU algorithms pending verification | 148 |
 | GPU algorithms pending | 979 |
 | Total | 1554 |
