@@ -631,7 +631,7 @@ REFS = {
         {"name": "Tikhonov regularization", "year": 2018, "paper": "Feng et al., JBO 24(5), PMC6992907", "psnr": 24.34, "ssim": 0.460, "dataset": "DOT N=1045 avg"},
         {"name": "BPNN", "year": 2018, "paper": "Feng et al., JBO 24(5), PMC6992907", "psnr": 27.79, "ssim": 0.910, "dataset": "DOT N=1045 avg"},
             {"name": "Rytov + Laplacian", "year": 2000, "paper": "Arridge et al., PMB 1999", "psnr": 18.00, "ssim": 0.450, "dataset": "DOT phantom"},
-        {"name": "Tikhonov regularization", "year": 2000, "paper": "Yoo et al., J Biomed Opt 2019, PMC6992907", "psnr": 22.00, "ssim": 0.300, "dataset": "DOT raw measurement"},
+        {"name": "Tikhonov (basic, noisy)", "year": 2000, "paper": "Yoo et al., J Biomed Opt 2019, PMC6992907", "psnr": 22.00, "ssim": 0.300, "dataset": "DOT noisy measurement"},
 ],
     "asl_mri": [
         {"name": "Control-label subtraction", "year": 1998, "paper": "Detre et al., MRM 1992", "psnr": 22.00, "ssim": 0.650, "dataset": "ASL simulated"},
@@ -1095,7 +1095,7 @@ REFS = {
         {"name": "Raw CLE (honeycomb artifact)", "year": 2022, "paper": "Kim et al., Sensors 2022, PMC9824069", "psnr": 20.58, "ssim": 0.730, "dataset": "CLE synthetic honeycomb artifact"},
 ],
     "octa": [
-        {"name": "SSADA (single-scan)", "year": 2012, "paper": "Xu et al. 2021 PMC8221851 (single-scan 12.09 dB)", "psnr": 22.00, "ssim": 0.700, "dataset": "OCTA retinal"},
+        {"name": "SSADA (single-scan)", "year": 2012, "paper": "Xu et al. 2021 PMC8221851 (single-scan 12.09 dB)", "psnr": 12.09, "ssim": 0.700, "dataset": "OCTA single-scan retinal"},
         {"name": "CNN accelerated OCTA", "year": 2022, "paper": "Sci Rep 2022", "psnr": 20.82, "ssim": 0.630, "dataset": "Retinal OCTA"},
         {"name": "SU-Net (Siamese)", "year": 2019, "paper": "Lee et al., 2019", "psnr": 28.01, "ssim": 0.813, "dataset": "Retinal OCTA B-scans"},
         {"name": "Motion artifact DL", "year": 2024, "paper": "MDPI Mathematics 2024", "psnr": 32.67, "ssim": 0.926, "dataset": "Nailfold OCTA"},
