@@ -277,6 +277,7 @@ CALLING_CONVENTION = {
     "hatnet": "sci",
     "ista_net": "sci",
     "lista": "lista",
+    "classical": "lista",
     "ifcnn": "ifcnn",
     "sim_solver": "sim",
     "dl_sim": "sim",
@@ -288,6 +289,10 @@ CALLING_CONVENTION = {
     "gaussian_splatting_solver": "standard",
     "panorama_solver": "standard",
     "pnp": "pnp_ct",
+    "spc_solvers": "spc",
+    "gap_tv": "cassi",
+    "mri_solvers": "mri",
+    "care_unet": "dl_image",
 }
 
 
@@ -356,6 +361,60 @@ def run_lista_call(fn, y, H_ideal, params, sample):
         return None, {"error": str(e)}
 
 
+def run_spc_call(fn, y, H_ideal, params, sample):
+    """SPC: pass first measurement vector + sensing matrix."""
+    if H_ideal is None or H_ideal.ndim < 2:
+        return None, {"error": "H_ideal (sensing matrix) not available"}
+    y_vec = y[0].astype(np.float32) if y.ndim > 1 else y.astype(np.float32)
+    A = H_ideal.astype(np.float32)
+    kw = params if isinstance(params, dict) else {}
+    try:
+        result = fn(y_vec, A, **kw)
+        return result, {}
+    except TypeError:
+        try:
+            result = fn(y_vec, A)
+            return result, {}
+        except Exception as e:
+            return None, {"error": str(e)}
+    except Exception as e:
+        return None, {"error": str(e)}
+
+
+def run_cassi_call(fn, y, H_ideal, params, sample):
+    """CASSI: pass measurement + 2D mask + explicit keyword params."""
+    mask = H_ideal.astype(np.float32) if H_ideal is not None else np.ones(y.shape, dtype=np.float32)
+    kw = params if isinstance(params, dict) else {}
+    try:
+        result = fn(y.astype(np.float32), mask, **kw)
+        return result, {}
+    except Exception as e:
+        return None, {"error": str(e)}
+
+
+def run_mri_full_call(fn, y, H_ideal, params, sample):
+    """MRI: combine multi-coil kspace to single coil, use mask from sample."""
+    kspace = y.astype(np.complex64) if not np.iscomplexobj(y) else y.astype(np.complex64)
+    if kspace.ndim == 3:
+        kspace = (np.sqrt(np.sum(np.abs(kspace)**2, axis=0)).astype(np.float32) + 0j).astype(np.complex64)
+    shape = kspace.shape[-2:] if kspace.ndim >= 2 else kspace.shape
+    if sample is not None and "mask" in sample:
+        mask = sample["mask"].astype(np.float32)
+        if mask.shape != shape:
+            mask = (np.abs(kspace) > 0).astype(np.float32)
+    elif H_ideal is not None and isinstance(H_ideal, np.ndarray) and H_ideal.shape == shape:
+        mask = (H_ideal != 0).astype(np.float32)
+    else:
+        mask = (np.abs(kspace) > 0).astype(np.float32)
+    try:
+        return fn(kspace, mask, weights_path=None), {}
+    except Exception:
+        try:
+            return fn(kspace, mask), {}
+        except Exception as e:
+            return None, {"error": str(e)}
+
+
 def run_pnp_ct_call(fn, y, H_ideal, params, sample):
     """Run PnP for CT: build Radon forward/adjoint from angles, then call run_pnp."""
     try:
@@ -415,6 +474,12 @@ def call_solver(module_name, fn, fn_name, y, H_ideal, params, sample=None):
         return run_lista_call(fn, y, H_ideal, params, sample)
     elif conv == "pnp_ct":
         return run_pnp_ct_call(fn, y, H_ideal, params, sample)
+    elif conv == "spc":
+        return run_spc_call(fn, y, H_ideal, params, sample)
+    elif conv == "cassi":
+        return run_cassi_call(fn, y, H_ideal, params, sample)
+    elif conv == "mri":
+        return run_mri_full_call(fn, y, H_ideal, params, sample)
     else:
         return run_standard_solver(fn, y, H_ideal, params)
 

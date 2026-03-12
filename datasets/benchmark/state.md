@@ -58,8 +58,8 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | diffusion_mri | ✅ Human Connectome Project dMRI (hcp.nmr.wustl.edu) / Sherbrooke-3T | ❌ | ❌ | ✅ 1x, best=11.3 dB | ❌ |
 | digital_breast_tomo | ✅ INBreast (BCDR) / VDM-100 DBT dataset (TCIA) | ❌ | ❌ | ✅ 1x, best=-36.0 dB | ❌ |
 | dna_paint | ✅ SMLM Challenge 2016 / DNA-PAINT sim benchmark (Jungmann lab) | ❌ | ❌ | ✅ 3x, best=28.5 dB | ❌ |
-| doppler_ultrasound | ✅ EchoNet-Dynamic (Stanford, Ouyang Nature 2020) / CAMUS | ❌ | ❌ | ✅ 3x, best=17.6 dB | ❌ |
-| dot | 🔄 UCL DOT simulation benchmark / BabyBrain DOT data | ❌ | ❌ | ✅ 3x, best=7.0 dB | ❌ |
+| doppler_ultrasound | ✅ EchoNet-Dynamic (Stanford, Ouyang Nature 2020) / CAMUS | ❌ | ❌ | ✅ 4x, best=17.6 dB | ❌ |
+| dot | 🔄 UCL DOT simulation benchmark / BabyBrain DOT data | ❌ | ❌ | ✅ 4x, best=7.0 dB | ❌ |
 | ebsd | ✅ DREAM.3D synthetic EBSD / NIST SRM EBSD benchmark | ❌ | ❌ | ✅ 1x, best=21.8 dB | ❌ |
 | eddy_current | 🔄 EEDB NDT benchmark / Rolls-Royce ECT dataset | ❌ | ❌ | ✅ 1x, best=4.8 dB | ❌ |
 | edx_mapping | ✅ NIST SRM-2460 EDX / HyperSpy EDX demo dataset (Zenodo) | ❌ | ❌ | ✅ 4x, best=22.0 dB | ❌ |
@@ -444,8 +444,8 @@ Tests run: 2026-03-11 | GPU: NVIDIA GTX 1660 Ti, CUDA 12.4 | PyTorch 2.6.0
 | diffusion_mri | 1 | 11.3 | ✅ |
 | digital_breast_tomo | 1 | -36.0 | ✅ |
 | dna_paint | 3 | 28.5 | ✅ |
-| doppler_ultrasound | 3 | 17.6 | ✅ |
-| dot | 3 | 7.0 | ✅ |
+| doppler_ultrasound | 4 | 17.6 | ✅ |
+| dot | 4 | 7.0 | ✅ |
 | ebsd | 1 | 21.8 | ✅ |
 | eddy_current | 1 | 4.8 | ✅ |
 | edx_mapping | 4 | 22.0 | ✅ |

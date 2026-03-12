@@ -3941,6 +3941,13 @@
           "ssim": 0.006449,
           "exec_time_sec": 0.0,
           "status": "done"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.138486322067286,
+          "ssim": 0.024227412175641824,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Back-Projection (Doppler)"
         }
       },
       "dataset_available": true
@@ -3967,6 +3974,13 @@
           "ssim": 0.019292,
           "exec_time_sec": 0.0,
           "status": "done"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.269775924472706,
+          "ssim": 0.017009620554745197,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Born Approximation"
         }
       },
       "dataset_available": true
