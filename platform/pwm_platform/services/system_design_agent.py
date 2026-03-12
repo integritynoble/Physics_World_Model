@@ -373,51 +373,31 @@ def _render_recon(lines: list[str], action: dict) -> None:
 # ── Chat description ────────────────────────────────────────────────────────
 
 def describe_spec(spec: dict, period: str) -> str:
-    """Generate a natural-language description of the spec for the chat."""
+    """Generate a concise flowchart summary for the chat bubble."""
     action = spec.get("action", {})
 
     if period == "forward":
         elements = action.get("elements", [])
-        parts = [f"I've designed the forward model for: **{spec.get('task', '')[:120]}**\n"]
-        parts.append(f"The signal chain has **{len(elements)} elements**:\n")
-        for el in elements:
-            name = el.get("name", "")
-            etype = el.get("type", "")
-            noise_types = ", ".join(n.get("type", "") for n in el.get("noise", []))
-            mm_types = ", ".join(m.get("type", "") for m in el.get("mismatch", []))
-            line = f"- **{name}** ({etype})"
-            if noise_types:
-                line += f" | noise: {noise_types}"
-            if mm_types:
-                line += f" | mismatch: {mm_types}"
-            parts.append(line)
-        if action.get("total_noise_model"):
-            parts.append(f"\nComposite noise: `{action['total_noise_model']}`")
-        if action.get("measurement_shape"):
-            parts.append(f"Output shape: `{action['measurement_shape']}`")
+        # Build concise flowchart: just element names joined by arrows
+        names = [el.get("name", "?") for el in elements]
+        flowchart = " → ".join(names) + " → y"
+        shape = action.get("measurement_shape", "")
+        parts = [
+            f"**Forward Model** ({len(elements)} elements)",
+            f"```\n{flowchart}\n```",
+        ]
+        if shape:
+            parts.append(f"Output: `{shape}`")
     else:
         algo = action.get("algorithm_name", "Unknown")
         algo_type = action.get("algorithm_type", "")
         steps = action.get("steps", [])
-        mismatches = action.get("mismatch_corrections", [])
-        parts = [f"I've designed a **{algo}** ({algo_type}) reconstruction plan.\n"]
-        parts.append(f"**{len(steps)} algorithm steps**:\n")
-        for step in steps:
-            parts.append(
-                f"{step.get('step', '')}. **{step.get('name', '')}** - "
-                f"{step.get('description', '')[:100]}"
-            )
-        if mismatches:
-            parts.append(f"\n**{len(mismatches)} mismatch corrections**:")
-            for m in mismatches:
-                parts.append(f"- {m.get('type', '')}: {m.get('correction_method', '')}")
-        if action.get("convergence_criterion"):
-            parts.append(f"\nConvergence: {action['convergence_criterion']}")
-
-    demands = spec.get("demands", {})
-    parts.append(f"\nFeasibility: {demands.get('feasibility', 'yes')}")
-    if demands.get("comments"):
-        parts.append(f"Note: {demands['comments']}")
+        # Build concise step list: just step names
+        step_names = [f"{s.get('step', i+1)}. {s.get('name', '')}" for i, s in enumerate(steps)]
+        parts = [
+            f"**{algo}** ({algo_type}, {len(steps)} steps)",
+            "\n".join(step_names),
+        ]
 
     return "\n".join(parts)
 

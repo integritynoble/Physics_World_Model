@@ -10,13 +10,13 @@
             <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">PWM-SyS</span>
         </div>
         <p class="mt-1 text-sm text-gray-600">
-            Design imaging systems interactively with AI-powered Plan, Judge, and Performance agents.
+            Design imaging systems with AI-powered Plan, Judge, and Performance agents.
         </p>
     </div>
 
     <!-- Tabs -->
     <div class="border-b border-gray-200">
-        <nav class="flex gap-6" id="sysdesign-tabs">
+        <nav class="flex gap-6">
             <button onclick="switchTab('studio')" id="tab-studio"
                 class="py-2 px-1 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600 transition-colors">
                 Design Studio
@@ -29,59 +29,46 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- Design Studio Tab                                                  -->
+    <!-- Design Studio                                                      -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <div id="panel-studio">
-        <!-- Agent legend -->
-        <div class="flex flex-wrap gap-3 mb-4">
-            <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                <span class="text-xs text-gray-600">Plan Agent (Gemini 2.5 Flash)</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-gray-500"></span>
-                <span class="text-xs text-gray-600">Judge Agent</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                <span class="text-xs text-gray-600">Performance Agent</span>
-            </div>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <!-- ── Chat Column (2/3) ── -->
-            <div class="lg:col-span-2">
-                <div class="bg-white shadow rounded-lg flex flex-col" style="height: 620px;">
+            <!-- ── Chat Column (3/4) ── -->
+            <div class="lg:col-span-3">
+                <div class="bg-white shadow rounded-lg flex flex-col" style="height: 640px;">
                     <!-- Chat Log -->
                     <div id="chat-log" class="flex-1 overflow-y-auto p-4 space-y-4">
-                        <!-- Welcome message -->
+                        <!-- Welcome -->
                         <div class="flex justify-start">
                             <div class="max-w-[90%] px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-gray-700">
-                                <p class="font-medium text-emerald-800 mb-1">Welcome to PWM System Designer</p>
-                                <p>Describe the imaging system you want to design. Examples:</p>
-                                <ul class="mt-2 space-y-1.5 text-xs text-gray-600">
-                                    <li class="cursor-pointer hover:text-indigo-600" onclick="fillPrompt(this.textContent.trim())">
-                                        Design a sparse-view CT system with 60 angles and low dose
-                                    </li>
-                                    <li class="cursor-pointer hover:text-indigo-600" onclick="fillPrompt(this.textContent.trim())">
-                                        Design a TV-ADMM reconstruction for sparse CT with beam hardening correction
-                                    </li>
-                                    <li class="cursor-pointer hover:text-indigo-600" onclick="fillPrompt(this.textContent.trim())">
-                                        Create a widefield fluorescence microscopy forward model
-                                    </li>
-                                    <li class="cursor-pointer hover:text-indigo-600" onclick="fillPrompt(this.textContent.trim())">
-                                        Design an MRI forward model with parallel imaging and B0 inhomogeneity
-                                    </li>
-                                </ul>
-                                <p class="mt-2 text-xs text-gray-500">
-                                    After your spec is generated and judged, you can refine it through chat or run the Performance Agent.
-                                </p>
+                                <p class="font-medium text-emerald-800 mb-1">PWM System Designer</p>
+                                <p class="text-xs text-gray-600 mb-2">Describe your imaging system. The Plan Agent designs it, Judge Agent validates, and you can refine through conversation.</p>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                                    <button onclick="fillPrompt('Design a sparse-view CT system with 60 angles and low dose')"
+                                        class="text-left text-xs text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded transition-colors">
+                                        Sparse-view CT forward model
+                                    </button>
+                                    <button onclick="fillPrompt('Design a TV-ADMM reconstruction for sparse CT with beam hardening correction')"
+                                        class="text-left text-xs text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded transition-colors">
+                                        TV-ADMM CT reconstruction
+                                    </button>
+                                    <button onclick="fillPrompt('Design an MRI forward model with 8-channel parallel imaging and 4x acceleration')"
+                                        class="text-left text-xs text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded transition-colors">
+                                        MRI parallel imaging
+                                    </button>
+                                    <button onclick="fillPrompt('Design a widefield fluorescence microscopy forward model with LED excitation')"
+                                        class="text-left text-xs text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded transition-colors">
+                                        Widefield fluorescence microscopy
+                                    </button>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-2">Or load a full example from the sidebar to see the complete workflow.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Loading spinner -->
-                    <div id="chat-spinner" class="htmx-indicator flex justify-center py-3 border-t border-gray-100">
+                    <!-- Spinner -->
+                    <div id="chat-spinner" class="htmx-indicator flex justify-center py-2 border-t border-gray-100">
                         <div class="flex items-center gap-2 text-sm text-gray-400">
                             <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
@@ -91,7 +78,7 @@
                         </div>
                     </div>
 
-                    <!-- Input Area -->
+                    <!-- Input -->
                     <div class="border-t border-gray-200 p-3">
                         <form id="chat-form"
                               hx-post="/api/v1/system-design/chat"
@@ -103,7 +90,7 @@
                             <input type="hidden" name="session_id" id="sysdesign-session-id" value="">
                             <textarea name="message" id="chat-input" rows="2"
                                 class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
-                                placeholder="Describe your imaging system design..."
+                                placeholder="Describe your imaging system..."
                                 onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();this.form.requestSubmit();}"></textarea>
                             <div class="flex flex-col gap-1.5">
                                 <button type="submit"
@@ -117,45 +104,119 @@
                                     hx-swap="beforeend"
                                     hx-indicator="#chat-spinner"
                                     class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                                    disabled
-                                    title="Run Performance Agent (available after spec passes judge)">
+                                    disabled title="Available after spec passes judge">
                                     Run
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                {% if not user %}
-                <div class="mt-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
-                    <a href="/login" class="font-medium underline">Log in</a> to use the Design Studio. Your conversations will be saved.
-                </div>
-                {% endif %}
             </div>
 
-            <!-- ── Spec Sidebar (1/3) ── -->
+            <!-- ── Sidebar (1/4) ── -->
             <div class="lg:col-span-1">
-                <div class="bg-white shadow rounded-lg flex flex-col" style="height: 620px;">
+                <div class="bg-white shadow rounded-lg flex flex-col" style="height: 640px;">
                     <!-- Sidebar Tabs -->
-                    <div class="border-b border-gray-200 px-3 pt-2 flex items-center gap-4">
-                        <button onclick="switchSpecView('plan')" id="spec-tab-plan"
+                    <div class="border-b border-gray-200 px-3 pt-2 flex items-center gap-3">
+                        <button onclick="switchSidebar('examples')" id="side-tab-examples"
                             class="py-1.5 text-xs font-medium border-b-2 border-indigo-600 text-indigo-600 transition-colors">
+                            Examples
+                        </button>
+                        <button onclick="switchSidebar('plan')" id="side-tab-plan"
+                            class="py-1.5 text-xs font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors">
                             Plan
                         </button>
-                        <button onclick="switchSpecView('spec')" id="spec-tab-spec"
+                        <button onclick="switchSidebar('spec')" id="side-tab-spec"
                             class="py-1.5 text-xs font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors">
                             Spec
                         </button>
                         <div class="flex-1"></div>
                         <div id="judge-badge" class="hidden py-1.5">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Judged: PASS</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">PASS</span>
                         </div>
                     </div>
 
-                    <!-- Spec Content -->
-                    <div id="spec-content" class="flex-1 overflow-y-auto p-4">
-                        <div class="text-sm text-gray-400 italic py-8 text-center">
-                            Design a system to see the spec here...
+                    <!-- Sidebar Content -->
+                    <div class="flex-1 overflow-y-auto">
+                        <!-- Examples Panel -->
+                        <div id="side-panel-examples" class="p-3 space-y-3">
+                            <p class="text-xs text-gray-500">Load a complete workflow showing forward model + reconstruction with multiple refinement rounds.</p>
+
+                            <!-- CT Example -->
+                            <div class="border border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-colors">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700">CT</span>
+                                    <span class="text-sm font-medium text-gray-800">Sparse-View CT</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">60-angle low-dose CT. 3 forward rounds + 3 reconstruction rounds with TV-ADMM.</p>
+                                <button hx-post="/api/v1/system-design/example/ct_sparse"
+                                        hx-target="#chat-log"
+                                        hx-swap="innerHTML"
+                                        hx-indicator="#chat-spinner"
+                                        class="w-full text-xs px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded font-medium hover:bg-indigo-100 transition-colors">
+                                    Load Example
+                                </button>
+                            </div>
+
+                            <!-- MRI Example -->
+                            <div class="border border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-colors">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700">MRI</span>
+                                    <span class="text-sm font-medium text-gray-800">Parallel Imaging</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">8-channel 4x accelerated MRI. 2 forward rounds + 2 reconstruction rounds with GRAPPA.</p>
+                                <button hx-post="/api/v1/system-design/example/mri_parallel"
+                                        hx-target="#chat-log"
+                                        hx-swap="innerHTML"
+                                        hx-indicator="#chat-spinner"
+                                        class="w-full text-xs px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded font-medium hover:bg-indigo-100 transition-colors">
+                                    Load Example
+                                </button>
+                            </div>
+
+                            <!-- Microscopy Example -->
+                            <div class="border border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-colors">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700">Microscopy</span>
+                                    <span class="text-sm font-medium text-gray-800">Widefield Fluorescence</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">LED fluorescence microscopy. 2 forward rounds + 2 reconstruction rounds with TV-RL.</p>
+                                <button hx-post="/api/v1/system-design/example/widefield_fluor"
+                                        hx-target="#chat-log"
+                                        hx-swap="innerHTML"
+                                        hx-indicator="#chat-spinner"
+                                        class="w-full text-xs px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded font-medium hover:bg-indigo-100 transition-colors">
+                                    Load Example
+                                </button>
+                            </div>
+
+                            <!-- How it works -->
+                            <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-500 space-y-1">
+                                <p class="font-medium text-gray-700">How it works:</p>
+                                <p>1. Describe your system (or load example)</p>
+                                <p>2. Plan Agent designs the spec</p>
+                                <p>3. Judge Agent validates feasibility</p>
+                                <p>4. Chat to refine the spec</p>
+                                <p>5. Click <b>Run</b> for performance analysis</p>
+                            </div>
+                        </div>
+
+                        <!-- Plan Panel (hidden by default) -->
+                        <div id="side-panel-plan" class="hidden p-4">
+                            <div id="spec-content-plan">
+                                <div class="text-sm text-gray-400 italic py-8 text-center">
+                                    Design a system to see the plan here.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spec Panel (hidden by default) -->
+                        <div id="side-panel-spec" class="hidden p-4">
+                            <div id="spec-content-spec">
+                                <div class="text-sm text-gray-400 italic py-8 text-center">
+                                    Design a system to see the full spec here.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,7 +225,7 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- System Catalog Tab (hidden by default)                             -->
+    <!-- System Catalog (hidden by default)                                 -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <div id="panel-catalog" class="hidden space-y-8">
         <!-- Stats Row -->
@@ -179,37 +240,15 @@
             </div>
             <div class="bg-white shadow rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold text-amber-600">8</div>
-                <div class="text-xs text-gray-500 mt-1">Adequacy Dimensions</div>
+                <div class="text-xs text-gray-500 mt-1">Adequacy Dims</div>
             </div>
             <div class="bg-white shadow rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold text-purple-600">3</div>
                 <div class="text-xs text-gray-500 mt-1">Benchmark Tasks</div>
             </div>
             <div class="bg-white shadow rounded-lg p-4 text-center">
-                <a href="/speclab" class="text-2xl font-bold text-green-600 hover:text-green-700">Try it</a>
+                <a href="/speclab" class="text-2xl font-bold text-green-600 hover:text-green-700">Try</a>
                 <div class="text-xs text-gray-500 mt-1">in SpecLab</div>
-            </div>
-        </div>
-
-        <!-- How It Works -->
-        <div class="bg-white shadow rounded-lg px-6 py-5">
-            <h2 class="text-lg font-semibold text-gray-900 mb-3">How PWM-SyS Works</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 rounded-lg border-2 border-gray-100">
-                    <div class="text-xs font-bold text-gray-400 uppercase mb-1">Layer A</div>
-                    <h3 class="text-sm font-bold text-gray-800">System Descriptor</h3>
-                    <p class="text-xs text-gray-600 mt-1">Neutral, factual hardware and solver properties for {{ total_systems }} systems.</p>
-                </div>
-                <div class="p-4 rounded-lg border-2 border-gray-100">
-                    <div class="text-xs font-bold text-gray-400 uppercase mb-1">Layer B</div>
-                    <h3 class="text-sm font-bold text-gray-800">Evaluation Protocol</h3>
-                    <p class="text-xs text-gray-600 mt-1">Feasibility Gate &rarr; Pareto Ranking &rarr; Preference Ranking.</p>
-                </div>
-                <div class="p-4 rounded-lg border-2 border-gray-100">
-                    <div class="text-xs font-bold text-gray-400 uppercase mb-1">Layer C</div>
-                    <h3 class="text-sm font-bold text-gray-800">Interactive Tools</h3>
-                    <p class="text-xs text-gray-600 mt-1">Query the catalog in <a href="/speclab" class="text-indigo-600 hover:underline">SpecLab</a>.</p>
-                </div>
             </div>
         </div>
 
@@ -229,9 +268,8 @@
         <div id="sys-{{ cat_key }}" class="scroll-mt-4">
             <div class="flex items-center gap-3 border-b border-gray-200 pb-2 mb-4">
                 <h2 class="text-lg font-bold text-gray-900">{{ cat_key | replace('_', ' ') | title }}</h2>
-                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ systems | length }} system{{ 's' if systems | length != 1 else '' }}</span>
+                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ systems | length }}</span>
             </div>
-
             <div class="overflow-x-auto">
                 <table class="min-w-full text-xs bg-white shadow rounded-lg">
                     <thead class="bg-gray-50">
@@ -239,64 +277,35 @@
                             <th class="px-3 py-2 text-left font-medium text-gray-500">System</th>
                             <th class="px-2 py-2 text-center font-medium text-gray-500">Shots</th>
                             <th class="px-2 py-2 text-center font-medium text-gray-500">Resolution</th>
-                            <th class="px-2 py-2 text-center font-medium text-gray-500">Capital Cost</th>
-                            <th class="px-2 py-2 text-center font-medium text-gray-500">Operator</th>
-                            <th class="px-2 py-2 text-center font-medium text-gray-500">Best PSNR</th>
+                            <th class="px-2 py-2 text-center font-medium text-gray-500">Cost</th>
+                            <th class="px-2 py-2 text-center font-medium text-gray-500">PSNR</th>
                             <th class="px-2 py-2 text-center font-medium text-gray-500">SSIM</th>
                             <th class="px-2 py-2 text-left font-medium text-gray-500">Best Solver</th>
-                            <th class="px-2 py-2 text-center font-medium text-gray-500">Algos</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         {% for sys in systems %}
                         <tr class="hover:bg-gray-50">
                             <td class="px-3 py-2">
-                                <a href="/benchmark/{{ sys.id }}" class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline">{{ sys.display_name }}</a>
+                                <a href="/benchmark/{{ sys.id }}" class="font-medium text-indigo-600 hover:underline">{{ sys.display_name }}</a>
                                 <span class="ml-1 text-gray-400">{{ sys.carrier }}</span>
                             </td>
+                            <td class="px-2 py-2 text-center font-mono">{{ sys.shots_per_datacube }}</td>
                             <td class="px-2 py-2 text-center font-mono">
-                                {% if sys.shots_per_datacube == 1 %}
-                                <span class="text-emerald-600 font-bold">1</span>
-                                {% else %}
-                                {{ sys.shots_per_datacube }}
-                                {% endif %}
+                                {% if sys.spatial_resolution_um < 1 %}{{ (sys.spatial_resolution_um * 1000) | round(0) | int }} nm
+                                {% elif sys.spatial_resolution_um < 1000 %}{{ sys.spatial_resolution_um | round(0) | int }} &micro;m
+                                {% else %}{{ (sys.spatial_resolution_um / 1000) | round(1) }} mm{% endif %}
                             </td>
                             <td class="px-2 py-2 text-center font-mono">
-                                {% if sys.spatial_resolution_um < 0.001 %}
-                                {{ (sys.spatial_resolution_um * 1000000) | round(1) }} pm
-                                {% elif sys.spatial_resolution_um < 1 %}
-                                {{ (sys.spatial_resolution_um * 1000) | round(0) | int }} nm
-                                {% elif sys.spatial_resolution_um < 1000 %}
-                                {{ sys.spatial_resolution_um | round(0) | int }} &micro;m
-                                {% else %}
-                                {{ (sys.spatial_resolution_um / 1000) | round(1) }} mm
-                                {% endif %}
-                            </td>
-                            <td class="px-2 py-2 text-center font-mono">
-                                {% if sys.capital_cost_k_usd >= 1000 %}
-                                ${{ (sys.capital_cost_k_usd / 1000) | round(0) | int }}M
-                                {% else %}
-                                ${{ sys.capital_cost_k_usd | round(0) | int }}k
-                                {% endif %}
-                            </td>
-                            <td class="px-2 py-2 text-center">
-                                <span class="px-1.5 py-0.5 rounded text-[10px] font-medium
-                                    {% if sys.operator_skill == 'untrained' %}bg-green-100 text-green-700
-                                    {% elif sys.operator_skill == 'technician' %}bg-blue-100 text-blue-700
-                                    {% elif sys.operator_skill == 'expert' %}bg-amber-100 text-amber-700
-                                    {% else %}bg-red-100 text-red-700{% endif %}">
-                                    {{ sys.operator_skill }}
-                                </span>
+                                {% if sys.capital_cost_k_usd >= 1000 %}${{ (sys.capital_cost_k_usd / 1000) | round(0) | int }}M
+                                {% else %}${{ sys.capital_cost_k_usd | round(0) | int }}k{% endif %}
                             </td>
                             <td class="px-2 py-2 text-center font-mono font-bold
-                                {% if sys.best_psnr_db >= 38 %}text-emerald-700
-                                {% elif sys.best_psnr_db >= 34 %}text-blue-700
-                                {% else %}text-gray-700{% endif %}">
+                                {% if sys.best_psnr_db >= 38 %}text-emerald-700{% elif sys.best_psnr_db >= 34 %}text-blue-700{% else %}text-gray-700{% endif %}">
                                 {{ sys.best_psnr_db }} dB
                             </td>
                             <td class="px-2 py-2 text-center font-mono text-gray-600">{{ sys.best_ssim }}</td>
                             <td class="px-2 py-2 text-gray-700">{{ sys.best_method }}</td>
-                            <td class="px-2 py-2 text-center text-gray-500">{{ sys.num_algorithms_in_catalog }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -304,18 +313,6 @@
             </div>
         </div>
         {% endfor %}
-
-        <!-- CTA -->
-        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg px-6 py-5 text-center">
-            <h3 class="text-lg font-bold text-emerald-900">Try System Recommendation</h3>
-            <p class="text-sm text-emerald-700 mt-1">Describe your requirements and get ranked system+solver recommendations.</p>
-            <a href="/speclab" class="mt-3 inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors shadow-sm">
-                Open SpecLab
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                </svg>
-            </a>
-        </div>
     </div>
 </div>
 
@@ -323,59 +320,50 @@
 <!-- JavaScript                                                         -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <script>
-/* ── Tab switching ── */
+/* Tab switching */
 function switchTab(tab) {
     document.getElementById('panel-studio').classList.toggle('hidden', tab !== 'studio');
     document.getElementById('panel-catalog').classList.toggle('hidden', tab !== 'catalog');
-
-    var studioBtn = document.getElementById('tab-studio');
-    var catalogBtn = document.getElementById('tab-catalog');
-
-    studioBtn.classList.toggle('border-indigo-600', tab === 'studio');
-    studioBtn.classList.toggle('text-indigo-600', tab === 'studio');
-    studioBtn.classList.toggle('border-transparent', tab !== 'studio');
-    studioBtn.classList.toggle('text-gray-500', tab !== 'studio');
-
-    catalogBtn.classList.toggle('border-indigo-600', tab === 'catalog');
-    catalogBtn.classList.toggle('text-indigo-600', tab === 'catalog');
-    catalogBtn.classList.toggle('border-transparent', tab !== 'catalog');
-    catalogBtn.classList.toggle('text-gray-500', tab !== 'catalog');
+    _setTabActive('tab-studio', tab === 'studio');
+    _setTabActive('tab-catalog', tab === 'catalog');
 }
 
-/* ── Spec sidebar view switching ── */
-var _currentSpecView = 'plan';
+/* Sidebar panel switching */
+function switchSidebar(panel) {
+    ['examples', 'plan', 'spec'].forEach(function(p) {
+        var el = document.getElementById('side-panel-' + p);
+        if (el) el.classList.toggle('hidden', p !== panel);
+    });
+    _setTabActive('side-tab-examples', panel === 'examples');
+    _setTabActive('side-tab-plan', panel === 'plan');
+    _setTabActive('side-tab-spec', panel === 'spec');
 
-function switchSpecView(view) {
-    _currentSpecView = view;
-    var planTab = document.getElementById('spec-tab-plan');
-    var specTab = document.getElementById('spec-tab-spec');
-
-    planTab.classList.toggle('border-indigo-600', view === 'plan');
-    planTab.classList.toggle('text-indigo-600', view === 'plan');
-    planTab.classList.toggle('border-transparent', view !== 'plan');
-    planTab.classList.toggle('text-gray-500', view !== 'plan');
-
-    specTab.classList.toggle('border-indigo-600', view === 'spec');
-    specTab.classList.toggle('text-indigo-600', view === 'spec');
-    specTab.classList.toggle('border-transparent', view !== 'spec');
-    specTab.classList.toggle('text-gray-500', view !== 'spec');
-
-    var sid = document.getElementById('sysdesign-session-id').value;
-    if (sid && typeof htmx !== 'undefined') {
-        htmx.ajax('GET', '/api/v1/system-design/spec/' + sid + '?view=' + view, '#spec-content');
+    // Fetch spec content if switching to plan/spec
+    if (panel === 'plan' || panel === 'spec') {
+        var sid = document.getElementById('sysdesign-session-id').value;
+        if (sid && typeof htmx !== 'undefined') {
+            var view = panel === 'plan' ? 'plan' : 'spec';
+            htmx.ajax('GET', '/api/v1/system-design/spec/' + sid + '?view=' + view, '#spec-content-' + panel);
+        }
     }
 }
 
-/* ── Fill prompt from example click ── */
+function _setTabActive(id, active) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('border-indigo-600', active);
+    el.classList.toggle('text-indigo-600', active);
+    el.classList.toggle('border-transparent', !active);
+    el.classList.toggle('text-gray-500', !active);
+}
+
+/* Fill prompt from button click */
 function fillPrompt(text) {
     var input = document.getElementById('chat-input');
-    if (input) {
-        input.value = text;
-        input.focus();
-    }
+    if (input) { input.value = text; input.focus(); }
 }
 
-/* ── After chat send callback ── */
+/* After chat send */
 function afterChatSend() {
     var input = document.getElementById('chat-input');
     if (input) input.value = '';
