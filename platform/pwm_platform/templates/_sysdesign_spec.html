@@ -1,0 +1,25 @@
+{# ── Spec or Plan view for the sidebar ── #}
+<div class="space-y-3">
+    {% if content %}
+    {# Status badges #}
+    <div class="flex flex-wrap gap-2">
+        {% if period %}
+        <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700">{{ period }}</span>
+        {% endif %}
+        {% if modality %}
+        <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600">{{ modality }}</span>
+        {% endif %}
+        {% if spec_judged %}
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">PASS</span>
+        {% endif %}
+    </div>
+
+    {# Rendered content #}
+    <div class="text-xs leading-relaxed whitespace-pre-wrap font-mono text-gray-700 bg-gray-50 p-3 rounded border border-gray-200 overflow-x-auto max-h-[480px] overflow-y-auto">{{ content }}</div>
+    {% else %}
+    <div class="text-sm text-gray-400 italic py-8 text-center">
+        No {{ view }} available yet.<br>
+        Start by describing your system design.
+    </div>
+    {% endif %}
+</div>

@@ -1,0 +1,224 @@
+# Algorithm catalog — one entry per algorithm across all modalities.
+# Fields: id, name, type, categories, parameters, reference, notes
+
+algorithms:
+  # ── Classical / analytical ─────────────────────────────────────────────────
+
+  - id: fbp
+    name: "Filtered Back-Projection"
+    type: Classical
+    categories: [tomography, ct, cbct, pet, spect]
+    parameters:
+      filter: ram-lak
+      interpolation: linear
+    runtime_complexity: O(N^2 log N)
+    reference: "Kak & Slaney, IEEE Press 1988"
+    notes: "Baseline; fast but noise-sensitive"
+
+  - id: zero_filled_ifft
+    name: "Zero-Filled IFFT"
+    type: Classical
+    categories: [mri]
+    parameters: {}
+    reference: "Pruessmann et al., MRM 1999"
+    notes: "Baseline; aliasing from undersampling"
+
+  - id: sense
+    name: "SENSE"
+    type: Classical
+    categories: [mri]
+    parameters:
+      regularization: tikhonov
+      lambda: 1.0e-4
+    reference: "Pruessmann et al., MRM 42(5) 1999"
+
+  - id: grappa
+    name: "GRAPPA"
+    type: Classical
+    categories: [mri]
+    parameters:
+      kernel_size: [5, 5]
+      acs_lines: 32
+    reference: "Griswold et al., MRM 47(6) 2002"
+
+  - id: richardson_lucy
+    name: "Richardson-Lucy Deconvolution"
+    type: Classical
+    categories: [microscopy, widefield, confocal]
+    parameters:
+      num_iterations: 50
+      regularization: total_variation
+    reference: "Richardson, J. Opt. Soc. Am. 62 (1972)"
+
+  - id: wiener_filter
+    name: "Wiener Filter"
+    type: Classical
+    categories: [microscopy]
+    parameters:
+      snr_estimate: 100.0
+    reference: "Wiener 1942"
+
+  # ── Variational / optimization ─────────────────────────────────────────────
+
+  - id: sart
+    name: "SART (Simultaneous Algebraic Reconstruction)"
+    type: Classical
+    categories: [tomography, ct, cbct]
+    parameters:
+      num_iterations: 20
+      relaxation: 0.15
+    reference: "Andersen & Kak, Ultrason. Imaging 1984"
+
+  - id: osem
+    name: "OSEM (Ordered Subsets EM)"
+    type: Classical
+    categories: [tomography, pet, spect]
+    parameters:
+      num_subsets: 16
+      num_iterations: 10
+    reference: "Hudson & Larkin, IEEE TMI 1994"
+
+  - id: tv_admm
+    name: "TV-ADMM (Total Variation via ADMM)"
+    type: Variational
+    categories: [tomography, ct, mri, microscopy]
+    parameters:
+      lambda_tv: 5.0e-3
+      rho: 1.0
+      num_iterations: 100
+      inner_iterations: 10
+    reference: "Sidky & Pan, Phys. Med. Biol. 53(17) 2008"
+    notes: "Edge-preserving, good for sparse-view CT"
+
+  - id: l1_wavelet
+    name: "L1-Wavelet Compressed Sensing"
+    type: Compressed Sensing
+    categories: [mri]
+    parameters:
+      lambda: 1.0e-3
+      wavelet: db4
+      num_iterations: 50
+    reference: "Lustig et al., MRM 58(6) 2007"
+
+  - id: espirit
+    name: "ESPIRiT"
+    type: Compressed Sensing
+    categories: [mri]
+    parameters:
+      calib_region: 24
+      eigen_threshold: 0.02
+    reference: "Uecker et al., MRM 71(3) 2014"
+
+  - id: tv_deconvolution
+    name: "TV-Regularized Deconvolution"
+    type: Variational
+    categories: [microscopy]
+    parameters:
+      lambda_tv: 1.0e-2
+      num_iterations: 100
+    reference: "Rudin et al., Physica D 1992"
+
+  - id: blind_deconvolution
+    name: "Blind Deconvolution"
+    type: Variational
+    categories: [microscopy]
+    parameters:
+      psf_size: [31, 31]
+      lambda_sparse: 1.0e-3
+      num_iterations: 200
+    reference: "Krishnan et al., CVPR 2011"
+
+  # ── Plug-and-Play (PnP) ────────────────────────────────────────────────────
+
+  - id: pnp_admm
+    name: "PnP-ADMM with BM3D Denoiser"
+    type: PnP
+    categories: [tomography, ct, mri, microscopy]
+    parameters:
+      denoiser: bm3d
+      sigma_denoiser: 0.02
+      rho: 1.0
+      num_iterations: 50
+    reference: "Venkatakrishnan et al., GlobalSIP 2013; Chan et al., SIAM-IS 2017"
+
+  - id: pnp_dncnn
+    name: "PnP-DnCNN"
+    type: PnP
+    categories: [mri, ct, microscopy]
+    parameters:
+      denoiser: dncnn
+      noise_level: 15
+      num_iterations: 30
+    reference: "Ahmad et al., IEEE TCI 2019"
+
+  # ── Deep Unrolling ────────────────────────────────────────────────────────
+
+  - id: unrolled_admm
+    name: "Unrolled ADMM (Deep)"
+    type: Deep Unrolling
+    categories: [tomography, ct, mri]
+    parameters:
+      num_unroll_stages: 10
+      feature_channels: 64
+    reference: "Yang et al., NeurIPS 2016 (Deep ADMM-Net)"
+    notes: "Requires pre-trained weights; not trained at test time"
+
+  - id: deep_admm_net
+    name: "Deep ADMM-Net"
+    type: Deep Unrolling
+    categories: [mri]
+    parameters:
+      num_stages: 11
+      num_filters: 32
+    reference: "Yang et al., NeurIPS 2016"
+
+  - id: e2e_varnet
+    name: "End-to-End VarNet"
+    type: Deep Unrolling
+    categories: [mri]
+    parameters:
+      num_cascades: 12
+      num_coils: 8
+    reference: "Hammernik et al., MRM 79(6) 2018; Sriram et al., MICCAI 2020"
+
+  # ── Transformer ───────────────────────────────────────────────────────────
+
+  - id: swinmr
+    name: "SwinMR"
+    type: Transformer
+    categories: [mri]
+    parameters:
+      window_size: 8
+      embed_dim: 96
+    reference: "Huang et al., arXiv 2022"
+
+  # ── Diffusion ─────────────────────────────────────────────────────────────
+
+  - id: diffusion_mbir
+    name: "DiffusionMBIR"
+    type: Diffusion
+    categories: [ct]
+    parameters:
+      num_diffusion_steps: 1000
+      measurement_consistency_weight: 1.0
+    reference: "Song et al., arXiv 2021; Gao et al., IEEE TMI 2024"
+
+  # ── Deep learning (image domain) ──────────────────────────────────────────
+
+  - id: care_denoising
+    name: "CARE (Content-Aware Image Restoration)"
+    type: Deep Learning
+    categories: [microscopy]
+    parameters:
+      patch_size: [64, 64]
+      num_filters: 32
+    reference: "Weigert et al., Nature Methods 15 (2018)"
+
+  - id: deep_deconvolution
+    name: "Deep Deconvolution (U-Net)"
+    type: Deep Learning
+    categories: [microscopy, widefield]
+    parameters:
+      architecture: unet
+      depth: 4
+    reference: "Ronneberger et al., MICCAI 2015"
