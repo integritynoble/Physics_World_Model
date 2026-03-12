@@ -1106,13 +1106,22 @@ def _run_common_sync(
 
     # Run reconstruction via central dispatch
     dl_note = is_dl
-    effective_algo = algorithm_name if not is_dl else ""
+    if not is_dl:
+        effective_algo = algorithm_name
+    else:
+        # For DL methods, run the best available CPU baseline:
+        # sinogram modalities → PINER-CT (better than plain FBP)
+        recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
+        effective_algo = "PINER-CT" if recon_type_for_baseline == "sinogram" else ""
     x_recon = _dispatch_reconstruction(
         sample_data, variant_key, category, effective_algo
     )
     baseline_method = (
         None if not is_dl else _pick_baseline_name(sample_data, variant_key, category)
     )
+    # Override baseline name for improved sinogram baseline
+    if is_dl and effective_algo == "PINER-CT":
+        baseline_method = "PINER-CT"
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 
