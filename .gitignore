@@ -62,19 +62,21 @@ data/
 # All heavy datasets stored in GCS: gs://pwm-benchmark-datasets/
 # See DATA.md for download instructions
 checkpoint/
-datasets/
-!benchmarks/datasets/
-benchmarks/datasets/__pycache__/
-!datasets/benchmark/state.md
-!datasets/benchmark/*.py
-!datasets/benchmark/*.json
-runs/
-
-# Heavy datasets (stored in GCS, not GitHub)
+# Ignore heavy dataset binary files (state.md, *.py, *.json remain tracked)
+datasets/benchmark/**/public/
+datasets/benchmark/**/dev/
+datasets/benchmark/**/hidden/
 datasets/inversenet_cacti/
 datasets/inversenet_cassi/
 datasets/inversenet_spc/
 datasets/lip_arena/
+datasets/real_ct/
+datasets/real_mri/
+!benchmarks/datasets/
+benchmarks/datasets/__pycache__/
+runs/
+
+# Heavy datasets (stored in GCS, not GitHub) — also covered above
 
 # Paper results and model weights (stored in GCS, not GitHub)
 papers/inversenet/results/
