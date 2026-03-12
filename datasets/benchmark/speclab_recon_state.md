@@ -585,7 +585,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| PowerLaw-EELS | Classical | 21.8 dB | 0.699 |  |
+| PowerLaw-EELS | Classical | 21.8 dB | 0.699 | done |
 | MLS-EELS | Statistical | 24.5 dB | 0.744 |  |
 | ICA-EELS | Statistical | 27.1 dB | 0.786 |  |
 | DnCNN-EELS | Deep Learning | 30.0 dB | 0.838 |  |
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 417 |
-| CPU algorithms pending verification | 158 |
+| CPU algorithms verified (done) | 418 |
+| CPU algorithms pending verification | 157 |
 | GPU algorithms pending | 979 |
 | Total | 1554 |
