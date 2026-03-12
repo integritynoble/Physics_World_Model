@@ -143,11 +143,12 @@ _SINOGRAM_MODALITIES: set[str] = {
     "xray_radiography", "fluoroscopy", "angiography", "digital_breast_tomo",
     "ct_fluorescence", "brachytherapy_img", "portal_imaging", "proton_therapy_img",
     "proton_radiography", "dexa", "xray_ndt",
+    "cryo_et", "flash_lidar", "electron_tomography", "gpr", "seismic_tomo", "xrf_tomo",
 }
 
 _MRI_MODALITIES: set[str] = {
     "mri", "fmri", "diffusion_mri", "mrs", "mra", "mr_elastography",
-    "mr_fingerprinting", "swi", "asl_mri", "cest_mri",
+    "mr_fingerprinting", "swi", "asl_mri", "cest_mri", "us_mri",
 }
 
 _MICROSCOPY_MODALITIES: set[str] = {
@@ -161,28 +162,34 @@ _PHASE_RETRIEVAL_MODALITIES: set[str] = {
     "holography", "phase_retrieval", "phase_contrast", "fpm",
     "ptychography", "electron_holography", "electron_diffraction",
     "talbot_lau", "shearography", "adaptive_optics",
+    "saxs", "waxs", "xfel_sfx", "xray_crystallography", "neutron_diffraction", "ebsd",
+    "dic", "lensless",
 }
 
 _DENOISING_MODALITIES: set[str] = {
-    "sem", "tem", "stem", "ebsd", "eels", "oct", "octa", "fundus",
+    "sem", "tem", "stem", "eels", "oct", "octa", "fundus",
     "endoscopy", "ultrasound", "doppler_ultrasound", "elastography",
-    "photoacoustic", "fluoroscopy", "sar", "sonar", "lidar",
+    "photoacoustic", "sar", "sonar", "lidar",
     "afm", "stm", "nsom", "mfm",
     "flim", "coded_exposure", "hdr_imaging",
     "confocal_endomicroscopy", "ceus", "ivus",
-    "fib_sem", "flash_lidar",
-    "tof_camera", "structured_light",
-    "event_camera", "streak_camera",
-    "weather_radar", "passive_microwave",
+    "fib_sem", "tof_camera", "structured_light",
+    "event_camera", "streak_camera", "cup",
+    "weather_radar", "passive_microwave", "multispectral_sat", "ocean_color",
     "active_thermography", "eddy_current",
     "acoustic_emission", "acoustic_microscopy",
     "coronagraphy", "solar_imaging",
-    "eht_imaging", "radio_astronomy", "radio_interferometry",
     "raman_imaging", "ftir_imaging", "srs", "cars", "libs", "sims",
     "brillouin", "desi", "maldi_msi",
     "cathodoluminescence", "edx_mapping",
     "machine_vision", "lucky_imaging",
-    "photometric_stereo", "dic",
+    "photometric_stereo", "panorama",
+    "dot", "bioluminescence_tomo", "nirs_brain", "impedance_tomo",
+    "magnetic_particle", "ultrasonic_phased_array",
+    "polsar", "polarization", "pump_probe", "gravitational_wave",
+    "fwi", "ocean_acoustic_tomo",
+    "matrix", "entangled_photon", "quantum_illumination",
+    "atom_probe", "xrf_imaging", "particle_calorimetry",
 }
 
 
