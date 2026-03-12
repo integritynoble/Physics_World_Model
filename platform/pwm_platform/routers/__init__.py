@@ -10,6 +10,7 @@ from pwm_platform.routers.pages import router as pages_router
 from pwm_platform.routers.runs import router as runs_router
 from pwm_platform.routers.spec_chat import router as spec_chat_router
 from pwm_platform.routers.submissions import router as submissions_router
+from pwm_platform.routers.system_design_chat import router as system_design_chat_router
 
 __all__ = [
     "auth_router",
@@ -22,4 +23,5 @@ __all__ = [
     "runs_router",
     "spec_chat_router",
     "submissions_router",
+    "system_design_chat_router",
 ]

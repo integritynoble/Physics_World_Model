@@ -31,6 +31,7 @@ from pwm_platform.routers import (
     runs_router,
     spec_chat_router,
     submissions_router,
+    system_design_chat_router,
 )
 
 logging.basicConfig(
@@ -94,6 +95,7 @@ app.include_router(datasets_router)
 app.include_router(modalities_router)
 app.include_router(bootstrap_router)
 app.include_router(spec_chat_router)
+app.include_router(system_design_chat_router)
 app.include_router(gcs_proxy_router)
 app.include_router(submissions_router)
 app.include_router(pages_router)

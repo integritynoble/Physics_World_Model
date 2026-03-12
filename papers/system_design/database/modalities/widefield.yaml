@@ -1,0 +1,136 @@
+name: widefield
+display_name: "Widefield Fluorescence Microscopy"
+aliases: ["widefield_fluorescence", "epi_fluorescence"]
+category: microscopy
+physics_class: fluorescence
+wave_model: incoherent
+sensor_type: scmos
+geometry: planar
+
+forward_elements:
+  - id: excitation
+    name: "Excitation Light Source (LED)"
+    type: source
+    parameters:
+      wavelength_nm: 488
+      power_mW: 50
+      illumination: widefield_epi
+      coherence: incoherent
+    noise: []
+    mismatch:
+      - type: illumination_nonuniformity
+        description: "Vignetting and uneven illumination across FOV"
+        severity: medium
+        correction_method: "Flat-field correction with fluorescent slide"
+
+  - id: sample_interaction
+    name: "Sample Fluorescence Emission"
+    type: interaction
+    parameters:
+      fluorophore: GFP
+      excitation_nm: 488
+      emission_nm: 520
+      quantum_yield: 0.6
+      extinction_coefficient_M_cm: 56000
+    noise: []
+    mismatch:
+      - type: photobleaching
+        description: "Fluorophore bleaching over time reduces signal"
+        severity: medium
+        correction_method: "Bleaching correction by exponential fitting"
+      - type: autofluorescence
+        description: "Background autofluorescence from cellular components"
+        severity: low
+        correction_method: "Background subtraction"
+    connects_to: [objective]
+
+  - id: objective
+    name: "Objective Lens (60x / 1.4 NA)"
+    type: processing
+    parameters:
+      magnification: 60
+      NA: 1.4
+      immersion: oil
+      working_distance_mm: 0.13
+      PSF_model: gibson_lanni
+      lateral_resolution_nm: 200
+      axial_resolution_nm: 500
+    noise: []
+    mismatch:
+      - type: spherical_aberration
+        description: "Refractive index mismatch between immersion and sample medium"
+        severity: medium
+        correction_method: "Correction collar adjustment or pupil phase recovery"
+      - type: defocus
+        description: "Sample drift or z-stage inaccuracy"
+        severity: low
+        correction_method: "Autofocus or phase diversity"
+    connects_to: [tube_lens]
+
+  - id: tube_lens
+    name: "Tube Lens + Dichroic Filter"
+    type: processing
+    parameters:
+      focal_length_mm: 200
+      dichroic: Di03-R488-t1
+      emission_filter: ET525/50m
+      transmission: 0.92
+    noise: []
+    mismatch: []
+    connects_to: [camera]
+
+  - id: camera
+    name: "sCMOS Camera"
+    type: detector
+    parameters:
+      model: "Hamamatsu ORCA-Flash4.0 V3"
+      pixels: [2048, 2048]
+      pixel_size_um: 6.5
+      effective_pixel_nm: 108   # at 60x
+      full_well_electrons: 30000
+      quantum_efficiency: 0.82
+      readout_noise_electrons: 1.4
+      exposure_ms: 100
+    noise:
+      - type: poisson
+        parameters:
+          description: "Photon shot noise"
+      - type: gaussian
+        parameters:
+          sigma_electrons: 1.4
+          description: "Readout noise"
+      - type: fixed_pattern
+        parameters:
+          sigma_electrons: 0.5
+          description: "PRNU and dark current pattern"
+    mismatch:
+      - type: pixel_saturation
+        description: "Bright structures saturate well capacity"
+        severity: low
+        correction_method: "HDR imaging or exposure reduction"
+
+mismatch_sources:
+  - spherical_aberration
+  - refractive_index_mismatch
+  - photobleaching
+  - illumination_nonuniformity
+  - sample_drift
+
+algorithms:
+  - richardson_lucy
+  - tv_deconvolution
+  - wiener_filter
+  - blind_deconvolution
+  - care_denoising
+  - deep_deconvolution
+
+budget_estimate:
+  equipment_k_usd: 80
+  installation_k_usd: 10
+  per_sample_usd: 2
+  annual_maintenance_k_usd: 5
+
+references:
+  - "Richardson, J. Opt. Soc. Am. 62, 55-59 (1972)"
+  - "Weigert et al., Nature Methods 15, 1090-1097 (2018) (CARE)"
+  - "Gibson & Lanni, J. Opt. Soc. Am. A 8(10), 1991"

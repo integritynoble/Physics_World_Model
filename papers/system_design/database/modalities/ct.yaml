@@ -1,0 +1,130 @@
+name: ct
+display_name: "X-ray Computed Tomography"
+aliases: ["xray_ct", "xray-ct"]
+category: tomography
+physics_class: x_ray_attenuation
+wave_model: ray
+sensor_type: flat_panel_scintillator
+geometry: circular_trajectory
+
+forward_elements:
+  - id: source
+    name: "X-ray Tube Source"
+    type: source
+    parameters:
+      energy_kev_range: [70, 140]
+      flux_photons_per_s: 1.0e6
+      focal_spot_mm: 0.6
+      filtration: "2.5mm Al + 0.1mm Cu"
+      spectrum: polychromatic
+    noise: []
+    mismatch:
+      - type: beam_hardening
+        description: "Polychromatic spectrum causes cupping artifacts in soft tissue"
+        severity: high
+        correction_method: "Polynomial linearization or iterative correction"
+
+  - id: phantom_interaction
+    name: "Phantom / Patient Attenuation"
+    type: interaction
+    parameters:
+      model: beer_lambert
+      mu_water_cm: 0.206
+      material: soft_tissue
+    noise: []
+    mismatch:
+      - type: scatter
+        description: "Compton scatter adds low-frequency background bias"
+        severity: medium
+        correction_method: "Scatter kernel estimation or Monte Carlo correction"
+    connects_to: [geometry]
+
+  - id: geometry
+    name: "Acquisition Geometry"
+    type: geometry
+    parameters:
+      scan_type: parallel_beam
+      num_angles: 180
+      angular_range_deg: 180
+      source_detector_distance_mm: 1000
+      detector_pixel_pitch_mm: 0.5
+      num_detector_pixels: 512
+    noise: []
+    mismatch:
+      - type: center_of_rotation_offset
+        description: "CoR shift causes ring artifacts"
+        severity: medium
+        correction_method: "Calibration phantom sinogram alignment"
+      - type: detector_tilt
+        description: "Tilted detector row causes blur"
+        severity: low
+        correction_method: "Geometric calibration"
+    connects_to: [detector]
+
+  - id: detector
+    name: "Flat Panel Detector (CsI:Tl)"
+    type: detector
+    parameters:
+      type: scintillator_ccd
+      pixels: [512, 512]
+      pixel_pitch_mm: 0.5
+      scintillator: "CsI:Tl"
+      scintillator_thickness_um: 600
+      quantum_efficiency: 0.8
+      fill_factor: 0.9
+    noise:
+      - type: poisson
+        parameters:
+          I0: 1.0e5
+      - type: gaussian
+        parameters:
+          sigma_electrons: 5.0
+      - type: dark_current
+        parameters:
+          electrons_per_s: 0.1
+    mismatch:
+      - type: detector_response_nonuniformity
+        description: "Per-pixel gain variations"
+        severity: low
+        correction_method: "Flat-field calibration"
+    connects_to: [digitization]
+
+  - id: digitization
+    name: "ADC / Digitization"
+    type: digitization
+    parameters:
+      bit_depth: 14
+      dynamic_range_db: 80
+    noise: []
+    mismatch:
+      - type: detector_nonlinearity
+        description: "ADC saturation at high flux"
+        severity: low
+        correction_method: "Nonlinearity lookup table correction"
+
+mismatch_sources:
+  - beam_hardening
+  - scatter
+  - center_of_rotation
+  - detector_response_nonuniformity
+  - motion_blur
+
+algorithms:
+  - fbp
+  - sart
+  - osem
+  - tv_admm
+  - pnp_admm
+  - unrolled_admm
+  - diffusion_mbir
+
+budget_estimate:
+  equipment_k_usd: 500
+  installation_k_usd: 100
+  per_scan_usd: 50
+  annual_maintenance_k_usd: 30
+
+references:
+  - "Kak & Slaney, Principles of Computerized Tomographic Imaging, IEEE Press 1988"
+  - "Feldkamp et al., J. Opt. Soc. Am. A 1(6), 1984"
+  - "Sidky & Pan, Phys. Med. Biol. 53(17), 2008"

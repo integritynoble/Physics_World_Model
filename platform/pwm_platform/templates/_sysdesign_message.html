@@ -1,0 +1,91 @@
+{# ── Single chat round: user message + assistant response + judge verdict ── #}
+
+{# ── User bubble (right-aligned) ── #}
+<div class="flex justify-end">
+    <div class="max-w-[80%] px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm whitespace-pre-line">
+        {{ user_message }}
+    </div>
+</div>
+
+{# ── Assistant bubble (left-aligned) — plan description ── #}
+<div class="flex justify-start">
+    <div class="max-w-[90%] px-4 py-3 rounded-lg bg-white border border-gray-200 shadow-sm">
+        {% if is_performance %}
+        <div class="flex items-center gap-1.5 mb-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800 uppercase">Performance Agent</span>
+        </div>
+        {% else %}
+        <div class="flex items-center gap-1.5 mb-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800 uppercase">Plan Agent</span>
+            {% if modality %}
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600">{{ modality }}</span>
+            {% endif %}
+            {% if period %}
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600">{{ period }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        <div class="text-sm text-gray-700 prose prose-sm max-w-none whitespace-pre-line">{{ assistant_text }}</div>
+    </div>
+</div>
+
+{# ── Judge bubble (if present) ── #}
+{% if judge_text %}
+<div class="flex justify-start">
+    <div class="max-w-[90%] px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 shadow-sm">
+        <div class="flex items-center gap-1.5 mb-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase
+                {% if spec_judged %}bg-emerald-100 text-emerald-800{% else %}bg-red-100 text-red-800{% endif %}">
+                Judge Agent
+            </span>
+            {% if spec_judged %}
+            <span class="text-[10px] font-bold text-emerald-700">PASSED</span>
+            {% else %}
+            <span class="text-[10px] font-bold text-red-700">NEEDS REVISION</span>
+            {% endif %}
+        </div>
+        <div class="text-sm text-gray-700 prose prose-sm max-w-none whitespace-pre-line">{{ judge_text }}</div>
+    </div>
+</div>
+{% endif %}
+
+{# ── Update session state ── #}
+<script>
+(function() {
+    // Update session ID
+    var el = document.getElementById('sysdesign-session-id');
+    if (el) el.value = '{{ session_id }}';
+
+    // Update spec sidebar with plan view
+    var sid = '{{ session_id }}';
+    if (sid && typeof htmx !== 'undefined') {
+        htmx.ajax('GET', '/api/v1/system-design/spec/' + sid + '?view=plan', '#spec-content');
+    }
+
+    // Update run button state
+    var runBtn = document.getElementById('run-btn');
+    if (runBtn) {
+        {% if spec_judged %}
+        runBtn.disabled = false;
+        runBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        {% else %}
+        runBtn.disabled = true;
+        runBtn.classList.add('opacity-40', 'cursor-not-allowed');
+        {% endif %}
+    }
+
+    // Update judge badge
+    var badge = document.getElementById('judge-badge');
+    if (badge) {
+        {% if spec_judged %}
+        badge.classList.remove('hidden');
+        {% else %}
+        badge.classList.add('hidden');
+        {% endif %}
+    }
+
+    // Scroll chat log
+    var log = document.getElementById('chat-log');
+    if (log) setTimeout(function() { log.scrollTop = log.scrollHeight; }, 80);
+})();
+</script>

@@ -1,0 +1,139 @@
+name: mri
+display_name: "Magnetic Resonance Imaging"
+aliases: ["mr", "nmr"]
+category: mri
+physics_class: nuclear_magnetic_resonance
+wave_model: electromagnetic_rf
+sensor_type: rf_coil_array
+geometry: k_space
+
+forward_elements:
+  - id: main_field
+    name: "Main Magnetic Field (B0)"
+    type: source
+    parameters:
+      field_strength_T: 3.0
+      homogeneity_ppm: 1.0
+    noise: []
+    mismatch:
+      - type: b0_inhomogeneity
+        description: "Off-resonance causing geometric distortion and signal pile-up"
+        severity: medium
+        correction_method: "B0 field map estimation and phase correction"
+    connects_to: [rf_excitation]
+
+  - id: rf_excitation
+    name: "RF Excitation (B1+)"
+    type: source
+    parameters:
+      flip_angle_deg: 90
+      pulse_type: sinc
+      bandwidth_hz: 3000
+    noise: []
+    mismatch:
+      - type: b1_inhomogeneity
+        description: "Non-uniform flip angle across FOV"
+        severity: medium
+        correction_method: "B1 field map calibration"
+    connects_to: [tissue_response]
+
+  - id: tissue_response
+    name: "Tissue Magnetization Response"
+    type: interaction
+    parameters:
+      model: bloch_equations
+      T1_range_ms: [500, 1500]
+      T2_range_ms: [40, 200]
+      T2_star_range_ms: [20, 100]
+    noise: []
+    mismatch:
+      - type: chemical_shift
+        description: "Fat-water chemical shift causes spatial misregistration"
+        severity: medium
+        correction_method: "Dixon method or spectral fat suppression"
+    connects_to: [k_space_sampling]
+
+  - id: k_space_sampling
+    name: "k-Space Sampling (Accelerated)"
+    type: geometry
+    parameters:
+      trajectory: cartesian
+      acceleration_factor: 4
+      sampling_mask: equispaced_with_random_center
+      num_coils: 8
+      FOV_mm: 256
+      matrix_size: [256, 256]
+    noise: []
+    mismatch:
+      - type: eddy_currents
+        description: "Gradient switching induces eddy currents causing phase errors"
+        severity: medium
+        correction_method: "Pre-emphasis calibration on gradient system"
+      - type: motion
+        description: "Patient motion during scan causes phase inconsistency"
+        severity: high
+        correction_method: "Navigator echoes or retrospective motion correction"
+    connects_to: [receiver_coil]
+
+  - id: receiver_coil
+    name: "Multi-Channel Receive Coil Array"
+    type: detector
+    parameters:
+      num_coils: 8
+      coil_sensitivity_model: biot_savart
+    noise:
+      - type: thermal_johnson
+        parameters:
+          T_K: 310
+          bandwidth_hz: 150000
+      - type: physiological
+        parameters:
+          description: "Patient-induced noise dominates at 3T+"
+    mismatch:
+      - type: coil_sensitivity_mismatch
+        description: "Estimated vs. actual coil sensitivities differ"
+        severity: medium
+        correction_method: "ESPIRiT or JSENSE coil calibration"
+    connects_to: [adc]
+
+  - id: adc
+    name: "ADC / k-Space Digitization"
+    type: digitization
+    parameters:
+      bit_depth: 16
+      bandwidth_hz: 150000
+      dwell_time_us: 6.67
+    noise: []
+    mismatch: []
+
+mismatch_sources:
+  - b0_inhomogeneity
+  - b1_inhomogeneity
+  - chemical_shift
+  - eddy_currents
+  - motion
+  - coil_sensitivity_mismatch
+  - k_space_trajectory_errors
+
+algorithms:
+  - zero_filled_ifft
+  - sense
+  - grappa
+  - l1_wavelet
+  - espirit
+  - pnp_dncnn
+  - deep_admm_net
+  - e2e_varnet
+  - swinmr
+
+budget_estimate:
+  equipment_k_usd: 2000
+  installation_k_usd: 500
+  per_scan_usd: 300
+  annual_maintenance_k_usd: 150
+
+references:
+  - "Pruessmann et al., MRM 42(5), 1999 (SENSE)"
+  - "Griswold et al., MRM 47(6), 2002 (GRAPPA)"
+  - "Lustig et al., MRM 58(6), 2007 (Compressed sensing MRI)"
+  - "Hammernik et al., MRM 79(6), 2018 (E2E-VarNet)"
