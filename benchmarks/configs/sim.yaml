@@ -92,17 +92,19 @@ solvers:
     gpu: false
     reference: 'Wen et al. 2021, Light: S&A'
   famous_dl:
-    name: DL-SIM
-    module: pwm_core.recon.dl_sim
-    function: dl_sim_reconstruct
-    params: 3M
+    name: fairSIM (open-source)
+    module: pwm_core.recon.sim_solver
+    function: fairsim_reconstruction
+    params:
+      wiener_param: 0.001
     gpu: false
-    reference: Jin et al. 2020, Nature Comm.
+    reference: Mueller et al. 2016, Nature Comm.
   small_gpu:
-    name: DL-SIM
-    module: pwm_core.recon.dl_sim
-    function: dl_sim_reconstruct
-    params: '0'
+    name: Wiener-SIM (fast)
+    module: pwm_core.recon.sim_solver
+    function: wiener_sim_2d
+    params:
+      wiener_param: 0.005
     gpu: false
     reference: ''
 metrics:

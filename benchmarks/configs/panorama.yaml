@@ -60,8 +60,9 @@ solvers:
   best_quality:
     name: Guided Filter Fusion
     module: pwm_core.recon.panorama_solver
-    function: multifocus_fusion_guided
-    params: '0'
+    function: run_panorama_fusion
+    params:
+      method: guided
     gpu: false
     reference: ''
   famous_dl:

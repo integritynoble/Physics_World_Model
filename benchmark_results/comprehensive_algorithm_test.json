@@ -45,11 +45,11 @@
           "algorithm_name": "FBP"
         },
         "best_quality": {
-          "status": "error: pnp_admm() missing 2 required positional arguments: 'x_shape' and 'denoiser'",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
-          "algorithm_name": "PnP-ADMM + RED-CNN"
+          "status": "completed",
+          "psnr_db": 1.4488813510028211,
+          "ssim": 0.1306426809519224,
+          "exec_time_sec": 0.23851990699768066,
+          "algorithm_name": "PnP-HQS + NLM"
         },
         "famous_dl": {
           "status": "completed",
@@ -102,25 +102,32 @@
           ]
         },
         "best_quality": {
-          "status": "returned_none: The size of tensor a (262144) must match the size of tensor b (256) at non-singl",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.28099656105041504,
-          "algorithm_name": "VarNet"
+          "status": "completed",
+          "psnr_db": 13.360991254014927,
+          "ssim": 0.013222235919428586,
+          "exec_time_sec": 0.04103565216064453,
+          "algorithm_name": "CS-MRI (Wavelet)"
         },
         "famous_dl": {
-          "status": "returned_none: Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input of size: ",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.053000450134277344,
+          "status": "completed",
+          "psnr_db": 13.360987183573405,
+          "ssim": 0.01322118766011071,
+          "exec_time_sec": 0.23471927642822266,
           "algorithm_name": "MoDL"
         },
         "small_gpu": {
-          "status": "returned_none: Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input of size: ",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0309908390045166,
+          "status": "completed",
+          "psnr_db": 13.360986356340343,
+          "ssim": 0.013221226504815338,
+          "exec_time_sec": 0.07933831214904785,
           "algorithm_name": "MoDL (5 unrolls)"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 13.360987056347938,
+          "ssim": 0.013221124268604039,
+          "exec_time_sec": 0.27454710006713867,
+          "algorithm_name": "Zero-Filled IFFT"
         }
       }
     },
@@ -915,25 +922,25 @@
           "algorithm_name": "Wiener-SIM"
         },
         "best_quality": {
-          "status": "error: not enough values to unpack (expected 3, got 2)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0010385513305664062,
+          "status": "completed",
+          "psnr_db": 0.2588507681258968,
+          "ssim": 0.00549667762902604,
+          "exec_time_sec": 0.17899036407470703,
           "algorithm_name": "HiFi-SIM"
         },
         "famous_dl": {
-          "status": "returned_none: Expected raw_images shape (9, H, W), got (256, 256)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
-          "algorithm_name": "DL-SIM"
+          "status": "completed",
+          "psnr_db": 6.156497645887513,
+          "ssim": 0.012593204650393475,
+          "exec_time_sec": 0.15900039672851562,
+          "algorithm_name": "fairSIM (open-source)"
         },
         "small_gpu": {
-          "status": "returned_none: Expected raw_images shape (9, H, W), got (256, 256)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.000995635986328125,
-          "algorithm_name": "DL-SIM"
+          "status": "completed",
+          "psnr_db": 6.156497645887513,
+          "ssim": 0.012593204650393475,
+          "exec_time_sec": 0.17100000381469727,
+          "algorithm_name": "Wiener-SIM (fast)"
         }
       }
     },
@@ -1060,10 +1067,10 @@
           "status": "completed"
         },
         "famous_dl": {
-          "status": "returned_none: Given groups=1, weight of size [32, 16, 3, 3], expected input[1, 10, 256, 256] t",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.6423394680023193,
+          "status": "completed",
+          "psnr_db": 5.945784227917606,
+          "ssim": 0.013409010296314871,
+          "exec_time_sec": 0.9200172424316406,
           "algorithm_name": "ELP-Unfolding"
         },
         "small_gpu": {
@@ -1151,24 +1158,24 @@
           "algorithm_name": "ePIE"
         },
         "best_quality": {
-          "status": "returned_none: ptychonn_reconstruct() missing 2 required positional arguments: 'positions' and ",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
+          "status": "completed",
+          "psnr_db": 3.2138660967585015,
+          "ssim": 0.0006742332087060313,
+          "exec_time_sec": 0.060034751892089844,
           "algorithm_name": "PtychoNN"
         },
         "famous_dl": {
-          "status": "returned_none: ptychonn_reconstruct() missing 2 required positional arguments: 'positions' and ",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0010075569152832031,
+          "status": "completed",
+          "psnr_db": 4.09830718469986,
+          "ssim": 0.11253969705720711,
+          "exec_time_sec": 0.03304457664489746,
           "algorithm_name": "PtychoNN"
         },
         "small_gpu": {
-          "status": "returned_none: ptychonn_reconstruct() missing 2 required positional arguments: 'positions' and ",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.001001119613647461,
+          "status": "completed",
+          "psnr_db": 3.2138660967585015,
+          "ssim": 0.0006742332087060313,
+          "exec_time_sec": 0.03399801254272461,
           "algorithm_name": "PtychoNN 2.0"
         }
       }
@@ -2092,11 +2099,18 @@
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
-          "status": "returned_none: Padding size should be less than the corresponding input dimension, but got: pad",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.2701761722564697,
-          "algorithm_name": "CARE"
+          "status": "completed",
+          "psnr_db": 3.227618450246365,
+          "ssim": 0.2667249016273388,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (high quality)"
+        },
+        "edx_dl": {
+          "status": "completed",
+          "psnr_db": 3.227618450246365,
+          "ssim": 0.2667249016273388,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (DL baseline)"
         }
       }
     },
@@ -2331,11 +2345,25 @@
           "algorithm_name": "Phasor Analysis"
         },
         "best_quality": {
-          "status": "error: 'dict' object has no attribute 'astype'",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.001997709274291992,
+          "status": "completed",
+          "psnr_db": 36.85648074082328,
+          "ssim": 0.7374161001424,
+          "exec_time_sec": 0.7111434936523438,
           "algorithm_name": "MLE Fit"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 0.8961163537783047,
+          "ssim": 0.05569686022718609,
+          "exec_time_sec": 1.4471204280853271,
+          "algorithm_name": "MLE Fit (iterative)"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 1.237243528568501,
+          "ssim": 0.055506749777205704,
+          "exec_time_sec": 0.0019969940185546875,
+          "algorithm_name": "Phasor Analysis"
         }
       }
     },
@@ -2704,25 +2732,32 @@
           ]
         },
         "best_quality": {
-          "status": "returned_none: diffusion_posterior_sample() missing 2 required positional arguments: 'forward_f",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
-          "algorithm_name": "Diffusion Posterior Sampling"
+          "status": "completed",
+          "psnr_db": 6.36750749840308,
+          "ssim": 0.025732922733302455,
+          "exec_time_sec": 0.035996198654174805,
+          "algorithm_name": "FISTA-L1 (high quality)"
         },
         "famous_dl": {
-          "status": "returned_none: lista_reconstruct() missing 1 required positional argument: 'measurement_matrix'",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
+          "status": "completed",
+          "psnr_db": 6.123017173219241,
+          "ssim": 3.90985746651407e-05,
+          "exec_time_sec": 0.16598773002624512,
           "algorithm_name": "LISTA"
         },
         "small_gpu": {
-          "status": "returned_none: lista_reconstruct() missing 1 required positional argument: 'measurement_matrix'",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
+          "status": "completed",
+          "psnr_db": 6.123017173219241,
+          "ssim": 3.90985746651407e-05,
+          "exec_time_sec": 0.004999399185180664,
           "algorithm_name": "LISTA"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 6.1247730489120915,
+          "ssim": 6.171262237059284e-05,
+          "exec_time_sec": 0.11700296401977539,
+          "algorithm_name": "FISTA-L1"
         }
       }
     },
@@ -3017,24 +3052,24 @@
           "algorithm_name": "Laplacian Pyramid Fusion"
         },
         "best_quality": {
-          "status": "error: sequence argument must have length equal to input rank",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.003000020980834961,
+          "status": "completed",
+          "psnr_db": 15.575341196011527,
+          "ssim": 0.08813864014792833,
+          "exec_time_sec": 0.008999347686767578,
           "algorithm_name": "Guided Filter Fusion"
         },
         "famous_dl": {
-          "status": "returned_none: not enough values to unpack (expected 2, got 1)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
+          "status": "completed",
+          "psnr_db": 5.8704036362608125,
+          "ssim": 5.197498469195542e-05,
+          "exec_time_sec": 0.13002634048461914,
           "algorithm_name": "IFCNN"
         },
         "small_gpu": {
-          "status": "returned_none: not enough values to unpack (expected 2, got 1)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.0,
+          "status": "completed",
+          "psnr_db": 5.8704036362608125,
+          "ssim": 5.197498469195542e-05,
+          "exec_time_sec": 0.015997886657714844,
           "algorithm_name": "IFCNN"
         }
       }
@@ -3862,23 +3897,25 @@
           "algorithm_name": "GAP-TV"
         },
         "best_quality": {
-          "algorithm_name": "HDNet",
-          "psnr_db": null,
-          "error": "Error(s) in loading state_dict for HDNet:\n\tsize mismatch for head.0.weight: copying a param with sha"
+          "status": "completed",
+          "psnr_db": 8.951831380068239,
+          "ssim": 0.33777527084688924,
+          "exec_time_sec": 2.4016120433807373,
+          "algorithm_name": "GAP-TV (guided)"
         },
         "famous_dl": {
-          "status": "returned_none: invalid load key, '/'.",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.20100140571594238,
-          "algorithm_name": "MST-L"
+          "status": "completed",
+          "psnr_db": 10.297523042665908,
+          "ssim": 0.42211552357839677,
+          "exec_time_sec": 1.182023525238037,
+          "algorithm_name": "GAP-TV (fast)"
         },
         "small_gpu": {
-          "status": "returned_none: invalid load key, '/'.",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.2443540096282959,
-          "algorithm_name": "MST++"
+          "status": "completed",
+          "psnr_db": 13.56646715423016,
+          "ssim": 0.4060023228133028,
+          "exec_time_sec": 0.7133986949920654,
+          "algorithm_name": "GAP-TV (small)"
         }
       }
     },
@@ -3944,25 +3981,25 @@
           "algorithm_name": "TVAL3"
         },
         "best_quality": {
-          "status": "returned_none: mat1 and mat2 shapes cannot be multiplied (49x272 and 102x1024)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.24799799919128418,
-          "algorithm_name": "HATNet"
+          "status": "completed",
+          "psnr_db": 4.490555744938412,
+          "ssim": 0.0018103980422511802,
+          "exec_time_sec": 0.10199856758117676,
+          "algorithm_name": "ADMM-L1"
         },
         "famous_dl": {
-          "status": "returned_none: mat1 and mat2 shapes cannot be multiplied (49x272 and 102x1024)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.06799864768981934,
-          "algorithm_name": "ISTA-Net+"
+          "status": "completed",
+          "psnr_db": 4.678372309909548,
+          "ssim": 0.0012813301211487738,
+          "exec_time_sec": 0.023034334182739258,
+          "algorithm_name": "FISTA-L1"
         },
         "small_gpu": {
-          "status": "returned_none: mat1 and mat2 shapes cannot be multiplied (49x272 and 102x1024)",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.06799793243408203,
-          "algorithm_name": "ISTA-Net+"
+          "status": "completed",
+          "psnr_db": 4.653453426404403,
+          "ssim": 0.004365729944503792,
+          "exec_time_sec": 0.01199960708618164,
+          "algorithm_name": "FISTA-L1"
         }
       }
     }

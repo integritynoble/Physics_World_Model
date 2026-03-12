@@ -101,19 +101,22 @@ solvers:
     gpu: false
     reference: Becker 2012, J. Microscopy
   famous_dl:
-    name: FLIMNet
+    name: MLE Fit (iterative)
     module: pwm_core.recon.flim_solver
-    function: flimnet_recon
-    params: 3M
+    function: run_flim
+    params:
+      method: mle_fit
+      n_iters: 100
     gpu: false
-    reference: Smith et al. 2019, Biomed. Optics Express
+    reference: Becker 2012, J. Microscopy
   small_gpu:
-    name: FLIMNet
+    name: Phasor Analysis
     module: pwm_core.recon.flim_solver
-    function: flimnet_recon
-    params: '0'
+    function: run_flim
+    params:
+      method: phasor
     gpu: false
-    reference: ''
+    reference: Digman et al. 2008, Biophysical Journal
 metrics:
   names:
   - psnr

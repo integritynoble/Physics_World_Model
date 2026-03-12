@@ -267,7 +267,7 @@ CALLING_CONVENTION = {
     "redcnn": "dl_image",
     "flatnet": "dl_image",
     "phasenet": "dl_image",
-    "ptychonn": "dl_image",
+    "ptychonn": "ptychonn",
     "varnet": "mri",
     "modl": "mri",
     "efficientsci": "sci",
@@ -276,21 +276,121 @@ CALLING_CONVENTION = {
     "mst": "sci",
     "hatnet": "sci",
     "ista_net": "sci",
-    "lista": "dl_image",
-    "ifcnn": "dl_image",
-    "dl_sim": "dl_image",
+    "lista": "lista",
+    "ifcnn": "ifcnn",
+    "sim_solver": "sim",
+    "dl_sim": "sim",
     "diffusion": "dl_image",
     "diffusion_posterior": "dl_image",
     "destripe_net": "dl_image",
-    "nerf_solver": "dl_image",
+    "nerf_solver": "standard",
     "noise2void": "dl_image",
     "gaussian_splatting_solver": "standard",
-    "nerf_solver": "standard",
     "panorama_solver": "standard",
+    "pnp": "pnp_ct",
 }
 
 
-def call_solver(module_name, fn, fn_name, y, H_ideal, params):
+def run_sim_call(fn, y, H_ideal, params, sample):
+    """Run SIM solver using raw_frames (9, H, W) when available."""
+    raw_frames = sample.get("raw_frames") if sample else None
+    if raw_frames is None:
+        raw_frames = y
+    if raw_frames.ndim != 3:
+        return None, {"error": f"raw_frames must be 3D, got {raw_frames.shape}"}
+    try:
+        result = fn(raw_frames)
+        return result, {}
+    except Exception:
+        try:
+            result = fn(raw_frames, H_ideal)
+            return result, {}
+        except Exception as e:
+            return None, {"error": str(e)}
+
+
+def run_ptychonn_call(fn, y, H_ideal, params, sample):
+    """Run PtychoNN using (diffraction_patterns, scan_positions, object_shape)."""
+    positions = sample.get("scan_positions") if sample else None
+    x_true = sample.get("x_true") if sample else None
+    if positions is None:
+        return None, {"error": "scan_positions not in dataset"}
+    object_shape = tuple(x_true.shape[:2]) if x_true is not None else (256, 256)
+    try:
+        result = fn(y, positions, object_shape)
+        return result, {}
+    except Exception as e:
+        return None, {"error": str(e)}
+
+
+def run_ifcnn_call(fn, y, H_ideal, params, sample):
+    """Run IFCNN by converting stacked (N, H, W) array to list of 2D images."""
+    if y.ndim == 3:
+        images = [y[i].astype(np.float32) for i in range(y.shape[0])]
+    elif y.ndim == 2:
+        images = [y.astype(np.float32), y.astype(np.float32)]  # need at least 2
+    else:
+        images = [y.astype(np.float32), y.astype(np.float32)]
+    # Normalize each image to [0, 1]
+    normalized = []
+    for img in images:
+        mn, mx = img.min(), img.max()
+        normalized.append((img - mn) / (mx - mn + 1e-8))
+    try:
+        result = fn(normalized)
+        return result, {}
+    except Exception as e:
+        return None, {"error": str(e)}
+
+
+def run_lista_call(fn, y, H_ideal, params, sample):
+    """Run LISTA with (y_vector, measurement_matrix) API."""
+    if H_ideal is None or H_ideal.ndim < 2:
+        return None, {"error": "H_ideal (measurement matrix) not available"}
+    # Take one measurement vector if y is 2D
+    y_vec = y[0] if y.ndim > 1 else y
+    try:
+        result = fn(y_vec, H_ideal)
+        return result, {}
+    except Exception as e:
+        return None, {"error": str(e)}
+
+
+def run_pnp_ct_call(fn, y, H_ideal, params, sample):
+    """Run PnP for CT: build Radon forward/adjoint from angles, then call run_pnp."""
+    try:
+        from skimage.transform import radon, iradon
+        angles_deg = H_ideal
+        if angles_deg.max() > 2 * np.pi:
+            # degrees
+            angles_rad = np.deg2rad(angles_deg)
+        else:
+            angles_rad = angles_deg
+            angles_deg = np.rad2deg(angles_rad)
+
+        out_size = sample.get("x_true").shape[0] if sample and sample.get("x_true") is not None else 362
+
+        class CTPhysics:
+            def __init__(self):
+                self.x_shape = (out_size, out_size)
+            def forward(self, x):
+                return radon(x.reshape(out_size, out_size), theta=angles_deg, circle=False).astype(np.float32)
+            def adjoint(self, sino):
+                return iradon(sino, theta=angles_deg, filter_name=None, circle=False,
+                              output_size=out_size).astype(np.float32)
+
+        physics = CTPhysics()
+        cfg = params if isinstance(params, dict) else {}
+        if "denoiser" not in cfg:
+            cfg["denoiser"] = "nlm"
+        if "iters" not in cfg:
+            cfg["iters"] = 15
+        return fn(y, physics, cfg)
+    except Exception as e:
+        return None, {"error": str(e)}
+
+
+def call_solver(module_name, fn, fn_name, y, H_ideal, params, sample=None):
     """Dispatch to the right calling convention."""
     mod_short = module_name.split(".")[-1]
     conv = CALLING_CONVENTION.get(mod_short, "standard")
@@ -305,6 +405,16 @@ def call_solver(module_name, fn, fn_name, y, H_ideal, params):
         return run_mri_solver(fn, y, H_ideal, params)
     elif conv == "sci":
         return run_sci_solver(fn, y, H_ideal, params)
+    elif conv == "sim":
+        return run_sim_call(fn, y, H_ideal, params, sample)
+    elif conv == "ptychonn":
+        return run_ptychonn_call(fn, y, H_ideal, params, sample)
+    elif conv == "ifcnn":
+        return run_ifcnn_call(fn, y, H_ideal, params, sample)
+    elif conv == "lista":
+        return run_lista_call(fn, y, H_ideal, params, sample)
+    elif conv == "pnp_ct":
+        return run_pnp_ct_call(fn, y, H_ideal, params, sample)
     else:
         return run_standard_solver(fn, y, H_ideal, params)
 
@@ -340,7 +450,7 @@ def test_solver(mod_id, solver_key, solver_cfg):
     # Run solver
     t0 = time.time()
     try:
-        result = call_solver(module_path, fn, fn_name, y, H_ideal, params)
+        result = call_solver(module_path, fn, fn_name, y, H_ideal, params, sample)
         elapsed = time.time() - t0
 
         if isinstance(result, tuple):

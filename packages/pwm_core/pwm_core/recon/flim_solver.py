@@ -106,9 +106,12 @@ def mle_fit_recon(
     t = time_axis.astype(np.float64)  # (T,)
 
     # Precompute IRF FFT for convolution
-    if irf is not None:
+    irf_fft = None
+    if irf is not None and not isinstance(irf, (dict, str)):
         irf = irf.astype(np.float64)
         irf_fft = np.fft.fft(irf)
+    else:
+        irf = None
 
     # Vectorized Levenberg-Marquardt over all pixels
     # Flatten spatial dims for vectorization

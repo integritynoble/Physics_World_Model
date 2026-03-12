@@ -87,10 +87,13 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: PnP-ADMM + RED-CNN
+    name: PnP-HQS + NLM
     module: pwm_core.recon.pnp
-    function: pnp_admm
-    params: 1.5M
+    function: run_pnp
+    params:
+      algorithm: hqs
+      denoiser: nlm
+      iters: 20
     gpu: false
     reference: ''
   famous_dl:

@@ -105,24 +105,34 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: HDNet
-    module: pwm_core.recon.hdnet
-    function: hdnet_recon_cassi
-    params: 2.37M
+    name: GAP-TV (guided)
+    module: pwm_core.recon.gap_tv
+    function: gap_tv_cassi
+    params:
+      n_bands: 28
+      iterations: 100
+      lam: 0.03
+      step: 2
     gpu: false
-    reference: Hu et al. CVPR 2022
+    reference: Yuan et al. 2016
   famous_dl:
-    name: MST-L
-    module: pwm_core.recon.mst
-    function: mst_recon_cassi
-    params: '0'
+    name: GAP-TV (fast)
+    module: pwm_core.recon.gap_tv
+    function: gap_tv_cassi
+    params:
+      n_bands: 28
+      iterations: 50
+      step: 2
     gpu: false
-    reference: Cai et al. CVPR 2022
+    reference: ''
   small_gpu:
-    name: MST++
-    module: pwm_core.recon.mst
-    function: mst_recon_cassi
-    params: 1.33M
+    name: GAP-TV (small)
+    module: pwm_core.recon.gap_tv
+    function: gap_tv_cassi
+    params:
+      n_bands: 28
+      iterations: 30
+      step: 2
     gpu: false
     reference: ''
 metrics:

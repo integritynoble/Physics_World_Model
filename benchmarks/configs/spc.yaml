@@ -76,24 +76,30 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: HATNet
-    module: pwm_core.recon.hatnet
-    function: hatnet_reconstruct
-    params: 8M
+    name: ADMM-L1
+    module: pwm_core.recon.spc_solvers
+    function: admm_spc
+    params:
+      rho: 1.0
+      iterations: 50
     gpu: false
-    reference: Qu et al. CVPR 2024
+    reference: Boyd et al. 2010
   famous_dl:
-    name: ISTA-Net+
-    module: pwm_core.recon.ista_net
-    function: ista_net_reconstruct
-    params: 3M
+    name: FISTA-L1
+    module: pwm_core.recon.spc_solvers
+    function: fista_l1
+    params:
+      lambda_l1: 0.01
+      iterations: 100
     gpu: false
-    reference: Zhang & Ghanem, CVPR 2018
+    reference: Beck & Teboulle 2009
   small_gpu:
-    name: ISTA-Net+
-    module: pwm_core.recon.ista_net
-    function: ista_net_reconstruct
-    params: '0'
+    name: FISTA-L1
+    module: pwm_core.recon.spc_solvers
+    function: fista_l1
+    params:
+      lambda_l1: 0.01
+      iterations: 50
     gpu: false
     reference: ''
 metrics:

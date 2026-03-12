@@ -52,19 +52,23 @@ mismatch_params:
   unit: '-'
 solvers:
   traditional_cpu:
-    name: Tikhonov / FISTA-L2
+    name: FISTA-L1
     module: pwm_core.recon.classical
-    function: run_fista_l2
-    params: '0'
+    function: fista_l2
+    params:
+      lam: 0.001
+      iters: 50
     gpu: false
     reference: ''
   best_quality:
-    name: Diffusion Posterior Sampling
-    module: pwm_core.recon.diffusion_posterior
-    function: diffusion_posterior_sample
-    params: 60M
-    gpu: true
-    reference: Song et al. 2023
+    name: FISTA-L1 (high quality)
+    module: pwm_core.recon.classical
+    function: fista_l2
+    params:
+      lam: 0.0001
+      iters: 200
+    gpu: false
+    reference: Beck & Teboulle 2009
   famous_dl:
     name: LISTA
     module: pwm_core.recon.lista

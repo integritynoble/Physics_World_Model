@@ -74,19 +74,21 @@ mismatch_params:
   unit: '-'
 solvers:
   traditional_cpu:
-    name: SENSE
+    name: Zero-Filled IFFT
     module: pwm_core.recon.mri_solvers
-    function: run_sense
+    function: zero_filled_reconstruction
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: VarNet
-    module: pwm_core.recon.varnet
-    function: varnet_recon
-    params: 30M
+    name: CS-MRI (Wavelet)
+    module: pwm_core.recon.mri_solvers
+    function: cs_mri_wavelet
+    params:
+      lam: 0.01
+      iters: 50
     gpu: false
-    reference: Sriram et al. 2020, MICCAI
+    reference: Lustig et al. 2007, MRM
   famous_dl:
     name: MoDL
     module: pwm_core.recon.modl
