@@ -295,3 +295,57 @@ Reflectivity at an interface:
 | Runtime | 7.46 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.09 dB |
+| SSIM (sample_00) | 0.4663 |
+| Runtime | 5.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconv
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 25.89 dB |
+| SSIM (sample_00) | 0.5298 |
+| Runtime | 0.04 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.55 dB |
+| SSIM (sample_00) | 0.8294 |
+| Runtime | 9.91 s/sample |
+
+**Result: PASS**

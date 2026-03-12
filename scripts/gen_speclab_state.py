@@ -73,14 +73,22 @@ def _algo_name_matches(tested: str, catalog: str) -> bool:
     return norm(tested) == norm(catalog)
 
 
+_LEARN_DIR_ALIASES: dict[str, str] = {
+    "sd_cassi": "cassi",
+    "spc_block": "spc",
+    "spc_kronecker": "spc",
+}
+
+
 def get_check_md_results(variant_key: str) -> list[dict]:
     """Read all CPU test results from check.md.
 
     Returns list of dicts: [{algo, psnr_db, ssim, status}, ...].
     Supports check.md files with multiple test sections.
     """
+    dir_name = _LEARN_DIR_ALIASES.get(variant_key, variant_key)
     check_path = (
-        Path(__file__).parent.parent / "benchmarks/learn" / variant_key / "check.md"
+        Path(__file__).parent.parent / "benchmarks/learn" / dir_name / "check.md"
     )
     if not check_path.exists():
         return []

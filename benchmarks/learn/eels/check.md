@@ -152,3 +152,39 @@ The EELS benchmark correctly models the electron energy loss spectral imaging fo
 | Runtime | 0.48 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PowerLaw-EELS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 19.46 dB |
+| SSIM (sample_00) | 0.4038 |
+| Runtime | 5.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PowerLaw-EELS
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 2.87 s/sample |
+
+**Result: PASS**

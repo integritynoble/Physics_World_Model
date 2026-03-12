@@ -17,6 +17,7 @@ from __future__ import annotations
 import base64
 import io
 import logging
+import re
 import time
 from pathlib import Path
 from typing import Optional
@@ -787,7 +788,7 @@ def _deconv_reconstruct(
 
         Y = fft2(y_n)
         H = fft2(psf_padded)
-        K = 0.02
+        K = 0.03
         X = Y * np.conj(H) / (np.abs(H) ** 2 + K)
         recon = np.real(ifft2(X))
         return np.clip(recon, 0, 1) * (hi - lo) + lo
@@ -800,6 +801,18 @@ def _deconv_reconstruct(
         y_pos = np.clip(y_n, 1e-6, None)
         n_iter = 50 if "richardson" in algo_lower or "rl" in algo_lower else 30
         recon = richardson_lucy(y_pos, use_psf, num_iter=n_iter, clip=True)
+
+        # TV post-processing for TV-regularized algorithms
+        if "tv" in algo_lower:
+            try:
+                from skimage.restoration import denoise_tv_chambolle
+
+                recon = denoise_tv_chambolle(
+                    np.clip(recon, 0, 1), weight=0.02, max_num_iter=100
+                )
+            except ImportError:
+                pass
+
         return np.clip(recon, 0, 1) * (hi - lo) + lo
     except ImportError:
         pass
@@ -869,7 +882,8 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
         except ImportError:
             pass
 
-    if any(kw in algo_lower for kw in ("wiener", "deconv", "richardson", "rl")):
+    if any(kw in algo_lower for kw in ("wiener", "deconv", "richardson")) or \
+            re.search(r'\brl\b', algo_lower):
         return _deconv_reconstruct(y, algo_name)
 
     # Default: TV for multichannel (fast), NLM+TV for grayscale
