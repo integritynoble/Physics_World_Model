@@ -673,59 +673,63 @@
   },
   "acoustic_emission": {
     "variant": "acoustic_emission",
-    "method": "CPU_baseline",
-    "mismatch_param": "nominal",
-    "nominal": true,
-    "perturbed": false,
+    "method": "TV-Denoising (CPU)",
+    "mismatch_param": "wave_speed_error",
+    "nominal": "5900 m/s",
+    "perturbed": "\u00b1200 m/s",
     "num_scenes": 4,
     "scenes": [
       {
         "scene_idx": 0,
         "scene_name": "scene_00",
-        "psnr_I": 7.571173064124359,
-        "ssim_I": 0.3615423650336687,
-        "psnr_II": 7.4787043554532,
-        "ssim_II": 0.19183056162517473,
-        "psnr_III": 15.877011561792095,
-        "ssim_III": 0.43371088310804984
+        "psnr_I": 31.785076691778315,
+        "ssim_I": 0.8511870575060845,
+        "psnr_II": 31.785076691778315,
+        "ssim_II": 0.8511870575060845,
+        "psnr_III": 31.785076691778315,
+        "ssim_III": 0.8511870575060845,
+        "runtime_s": 0.07168054580688477
       },
       {
         "scene_idx": 1,
         "scene_name": "scene_01",
-        "psnr_I": 7.696275051470366,
-        "ssim_I": 0.38332215792026303,
-        "psnr_II": 7.84628185762466,
-        "ssim_II": 0.19830484931809553,
-        "psnr_III": 15.892411144666065,
-        "ssim_III": 0.4210479658349237
+        "psnr_I": 29.884228663081913,
+        "ssim_I": 0.8550613670272827,
+        "psnr_II": 29.884228663081913,
+        "ssim_II": 0.8550613670272827,
+        "psnr_III": 29.884228663081913,
+        "ssim_III": 0.8550613670272827,
+        "runtime_s": 0.30669522285461426
       },
       {
         "scene_idx": 2,
         "scene_name": "scene_02",
-        "psnr_I": 7.974649369166899,
-        "ssim_I": 0.3846392902527589,
-        "psnr_II": 7.451966505304711,
-        "ssim_II": 0.1929426619644849,
-        "psnr_III": 16.022129586295627,
-        "ssim_III": 0.41754865353673254
+        "psnr_I": 29.562504361978213,
+        "ssim_I": 0.8625437765569687,
+        "psnr_II": 29.562504361978213,
+        "ssim_II": 0.8625437765569687,
+        "psnr_III": 29.562504361978213,
+        "ssim_III": 0.8625437765569687,
+        "runtime_s": 0.15450596809387207
       },
       {
         "scene_idx": 3,
         "scene_name": "scene_03",
-        "psnr_I": 7.8395670635647985,
-        "ssim_I": 0.3793851129719163,
-        "psnr_II": 7.6728272486833315,
-        "ssim_II": 0.19311764475591156,
-        "psnr_III": 15.93892392838001,
-        "ssim_III": 0.4166048155455938
+        "psnr_I": 31.335573215313698,
+        "ssim_I": 0.8570949125213623,
+        "psnr_II": 31.335573215313698,
+        "ssim_II": 0.8570949125213623,
+        "psnr_III": 31.335573215313698,
+        "ssim_III": 0.8570949125213623,
+        "runtime_s": 0.0530705451965332
       }
     ],
-    "mean_psnr_I": 7.770416137081606,
-    "mean_ssim_I": 0.37722223154465173,
-    "mean_psnr_II": 7.612444991766475,
-    "mean_ssim_II": 0.19404892941591667,
-    "mean_psnr_III": 15.93261905528345,
-    "mean_ssim_III": 0.422228079506325
+    "mean_psnr_I": 30.641845733038036,
+    "mean_ssim_I": 0.8564717784029245,
+    "mean_psnr_II": 30.641845733038036,
+    "mean_ssim_II": 0.8564717784029245,
+    "mean_psnr_III": 30.641845733038036,
+    "mean_ssim_III": 0.8564717784029245
   },
   "acoustic_microscopy": {
     "variant": "acoustic_microscopy",

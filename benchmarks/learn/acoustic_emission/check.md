@@ -127,3 +127,33 @@ crack-propagation line source distribution.
 | precomputed_baseline | 20.21 | 0.0741 | 0.00 | PASS |
 
 *Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-Denoising (Total Variation minimization via Chambolle's algorithm)
+**Type:** Classical CPU
+**Test Date:** 2026-03-11
+**Dataset:** public tier, samples 00–03 (4 scenes)
+**Status:** DONE
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 31.79 dB |
+| SSIM (sample_00) | 0.8512 |
+| PSNR (sample_01) | 29.88 dB |
+| SSIM (sample_01) | 0.8551 |
+| PSNR (sample_02) | 29.56 dB |
+| SSIM (sample_02) | 0.8625 |
+| PSNR (sample_03) | 31.34 dB |
+| SSIM (sample_03) | 0.8571 |
+| Mean PSNR | 30.64 dB |
+| Mean SSIM | 0.8565 |
+| Runtime | 0.07–0.31 s/sample |
+
+**Notes:** TV denoising with weight=0.05 applied to the PSF-blurred measurement y.
+Significant improvement over GPU precomputed baseline (20.21 dB). CPU algorithm validated.
+Gallery images uploaded to `gs://pwm-benchmark-datasets/img/benchmark_gallery/acoustic_emission/`.
+Speclab: algorithm available as "TV-Denoising" in the acoustic_emission reconstruction panel.
+**Result: PASS**

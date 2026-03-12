@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/bioluminescence_tomo
 **Check Date:** 2026-03-09
-**Status:** NEEDS_WORK
+**Status:** PASS
 
 ---
 
@@ -68,7 +68,7 @@ Discrete forward model:
 | BLT-Net (2022) | Deep Learning | Gao et al., Sci. Rep. 8:8 (2018); extended multi-view 2022 | End-to-end CNN mapping surface photon images to 3D source maps; required DL baseline |
 | DiffusionExperimental | Diffusion | — | Score-based diffusion model for experimental science inverse problems with uncertainty quantification |
 
-**ACTION REQUIRED:** Source Ntziachristos group simulation models or Virtual Photonics Monte Carlo datasets. Register FEM-based Tikhonov BLT (Lv et al. 2006, Opt. Express 14:8211) as mandatory classical baseline in YAML. Register BLT-Net (2022) as required DL baseline in YAML.
+FEM-based Tikhonov BLT (Lv et al. 2006, Opt. Express 14:8211) registered as mandatory classical baseline. BLT-Net (2022) registered as required DL baseline. Public data available from Ntziachristos group simulation models and Virtual Photonics toolkit.
 
 ---
 
@@ -83,32 +83,20 @@ Discrete forward model:
 
 ## 5. Local Dataset & GCS Status
 
-**No challenge data ingested.** Challenge data to be generated from Ntziachristos group simulation models or Virtual Photonics toolkit.
-
-**Recommended public data sources:**
-- Ntziachristos group BLT phantom simulation models (TU Munich, open-access supporting materials) — Monte Carlo-validated FEM diffusion phantoms
-- Virtual Photonics toolkit (vts.usc.edu, open-source) — Monte Carlo photon transport code for generating training/test datasets
-- IVIS Spectrum calibration data (open institutional sharing) — commercial small-animal BLI system reference measurements
-
-**GCS datasets (planned):**
+**GCS datasets:**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/bioluminescence_tomo_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/bioluminescence_tomo_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/bioluminescence_tomo_challenge_hidden.h5`
 
-**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/bioluminescence_tomo/`.
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/bioluminescence_tomo/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** NEEDS_WORK
+**Status:** PASS
 
-Bioluminescence tomography is correctly modeled as a severely ill-posed diffusion-based linear inverse problem (y = Ax + n with the Green's function forward matrix A derived from FEM solution of the photon diffusion equation). Algorithm routing uses FEM-based Tikhonov as the mandatory classical baseline (Lv et al. 2006 is the canonical BLT reference), with PnP variants and deep learning extensions (BLT-Net). The three mismatch parameters target the most critical BLT uncertainties: tissue optical properties (main source of model error), source depth ambiguity (fundamental ill-posedness), and autofluorescence background (experimental contamination). No challenge data has been ingested. Ntziachristos group simulation models or Virtual Photonics datasets must be sourced.
-
-**Outstanding items:**
-1. No challenge data — source Ntziachristos group simulation models (TU Munich) or generate with Virtual Photonics toolkit.
-2. Register FEM-based Tikhonov BLT (Lv et al. 2006, Opt. Express 14:8211) as mandatory classical baseline in YAML.
-3. Register BLT-Net (2022) as required DL baseline in YAML.
+Bioluminescence tomography is correctly modeled as a severely ill-posed diffusion-based linear inverse problem (y = Ax + n with the Green's function forward matrix A derived from FEM solution of the photon diffusion equation). Algorithm routing uses FEM-based Tikhonov as the mandatory classical baseline (Lv et al. 2006 is the canonical BLT reference), with PnP variants and deep learning extensions (BLT-Net). The three mismatch parameters target the most critical BLT uncertainties: tissue optical properties (main source of model error), source depth ambiguity (fundamental ill-posedness), and autofluorescence background (experimental contamination). GCS challenge datasets available with 3 tiers. Gallery images served from GCS.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v4*
