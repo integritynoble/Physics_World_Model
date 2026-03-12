@@ -35,7 +35,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | brillouin | 🔄 Brillouin simulation benchmark / RRUFF spectral data | ✅ 12/20/20 | ❌ | ✅ 1x, best=35.8 dB | ❌ |
 | cacti | ✅ DAVIS-2017 / Six Scenes (Liu IEEE TPAMI 2019, github.com/liuyang12/SCI) | ✅ 26/26/26 | ❌ | ✅ 6x, best=11.5 dB | ❌ |
 | cars | 🔄 CARS simulation benchmark / SRS hyperspectral data | ✅ 12/20/20 | ❌ | ✅ 1x, best=14.2 dB | ❌ |
-| cassi | ✅ CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ❌ | ❌ | ✅ 1x, best=-5.3 dB | ❌ |
+| cassi | ✅ CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ✅ 12/20/20 | ❌ | ✅ 1x, best=-5.3 dB | ❌ |
 | cathodoluminescence | ✅ HyperSpy CL dataset (Zenodo 6513794) / EMPIAR CL data | ✅ 12/20/20 | ❌ | ✅ 1x, best=28.9 dB | ❌ |
 | cbct | ✅ AAPM Low-Dose CT Challenge 2016 / LoDoPaB-CT (Sci. Data 2021) | ✅ 22/40/40 | ❌ | ✅ 3x, best=15.2 dB | ❌ |
 | cest_mri | ✅ ISMRM 2024 CEST Challenge / fastMRI brain (fastmri.med.nyu.edu) | ✅ 12/20/20 | ❌ | ✅ 1x, best=31.0 dB | ❌ |
@@ -79,7 +79,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | fluoroscopy | ✅ TCIA Fluoroscopy / CVC-ClinicDB (Bernal CMIG 2015) | ✅ 12/20/20 | ❌ | ✅ 2x, best=43.5 dB | ❌ |
 | fmri | ✅ Human Connectome Project fMRI / OpenNeuro (Poldrack OpenNeuro 2013) | ✅ 12/20/20 | ❌ | ✅ 1x, best=4.9 dB | ❌ |
 | fpm | ✅ FPM benchmark (Tian Light Sci. Appl. 2015) / UCB FPM dataset | ✅ 12/20/20 | ❌ | ✅ 2x, best=16.9 dB | ❌ |
-| ftir_imaging | ✅ USGS spectral library v7 (usgs.gov) / SFDB FTIR benchmark | 🔄 0/40/22 | ❌ | ✅ 1x, best=14.8 dB | ❌ |
+| ftir_imaging | ✅ USGS spectral library v7 (usgs.gov) / SFDB FTIR benchmark | ✅ 12/20/20 | ❌ | ✅ 1x, best=14.8 dB | ❌ |
 | fundus | ✅ DRIVE (Staal IEEE TMI 2004) / STARE / CHASE_DB1 / DiaRetDB | ✅ 12/20/20 | ❌ | ✅ 4x, best=35.9 dB | ❌ |
 | fwi | ✅ OpenFWI (Deng IEEE TGRS 2021) / SEG-SALT / Marmousi-2 | ✅ 12/20/20 | ❌ | ✅ 1x, best=8.7 dB | ❌ |
 | gaussian_splatting | ✅ Tanks & Temples (Knapitsch SIGGRAPH 2017) / Mip-NeRF360 / Blender | ✅ 12/20/20 | ❌ | ✅ 5x, best=inf dB | ❌ |
@@ -106,7 +106,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | magnetic_particle | ✅ OpenMPIData (Knopp IJMRI 2016, zenodo.org) / MPI reconstruction challenge | ✅ 12/20/20 | ❌ | ✅ 1x, best=26.5 dB | ❌ |
 | maldi_msi | ✅ MetaboLights MSI / PRIDE-MALDI database (EBI) | ✅ 12/20/20 | ❌ | ✅ 1x, best=26.3 dB | ❌ |
 | mammography | ✅ CBIS-DDSM (Lee Sci. Data 2017) / VinDr-Mammo / INBreast | ✅ 24/40/40 | ❌ | ✅ 2x, best=20.9 dB | ❌ |
-| matrix | ✅ matrix completion benchmark / Jester / ML-100K (MovieLens) | 🔄 6/6/6 | ❌ | ✅ 5x, best=22.0 dB | ❌ |
+| matrix | ✅ matrix completion benchmark / Jester / ML-100K (MovieLens) | ✅ 12/20/20 | ❌ | ✅ 5x, best=22.0 dB | ❌ |
 | mfm | 🔄 MFM simulation benchmark / NanoWorld MFM calibration data | ✅ 12/20/20 | ❌ | ✅ 3x, best=34.3 dB | ❌ |
 | minflux | 🔄 MINFLUX simulation benchmark / Göttingen MINFLUX dataset | ✅ 12/20/20 | ❌ | ✅ 3x, best=29.5 dB | ❌ |
 | mr_elastography | ✅ MRE-NIST phantom data / RSNA QIBA MRE challenge | ✅ 12/20/20 | ❌ | ✅ 1x, best=6.0 dB | ❌ |
@@ -125,7 +125,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | ocean_color | ✅ NASA MODIS ocean color (oceancolor.gsfc.nasa.gov) / SeaWiFS dataset | ✅ 12/20/20 | ❌ | ✅ 1x, best=44.1 dB | ❌ |
 | oct | ✅ RETOUCH (Bogunovic IVCM 2019) / Duke OCT / OPTIMA retinal OCT | ✅ 24/40/40 | ❌ | ✅ 6x, best=23.5 dB | ❌ |
 | octa | ✅ ROSE dataset (Ma TPAMI 2021) / CAVF OCTA benchmark | ✅ 12/20/20 | ❌ | ✅ 2x, best=16.8 dB | ❌ |
-| odt | ✅ 2.5D DIC/ODT benchmark / Toulouse ODT dataset / TORCH benchmark | 🔄 12/5/5 | ❌ | ✅ 1x, best=25.5 dB | ❌ |
+| odt | ✅ 2.5D DIC/ODT benchmark / Toulouse ODT dataset / TORCH benchmark | ✅ 12/20/20 | ❌ | ✅ 1x, best=25.5 dB | ❌ |
 | palm_storm | ✅ SMLM Challenge 2016 (smlmchallenge.net) / ThunderSTORM benchmark | ✅ 24/40/40 | ❌ | ✅ 3x, best=32.4 dB | ❌ |
 | panorama | ✅ SUN360 (Xiao CVPR 2012) / Laval HDR Panorama Dataset | ✅ 12/20/20 | ❌ | ✅ 5x, best=15.6 dB | ❌ |
 | particle_calorimetry | ✅ GEANT4 CaloChallenge 2022 (Fast Calorimeter Simulation Challenge) | ✅ 12/20/20 | ❌ | ✅ 1x, best=36.2 dB | ❌ |
@@ -142,7 +142,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | portal_imaging | ✅ EPID benchmark / AAPM TG-58 portal imaging dataset | ✅ 12/20/20 | ❌ | ✅ 1x, best=10.5 dB | ❌ |
 | proton_radiography | 🔄 pCT collaboration dataset / FLASH proton CT simulation | ✅ 12/20/20 | ❌ | ✅ 2x, best=10.9 dB | ❌ |
 | proton_therapy_img | 🔄 Proton CT simulation (TOPAS MC) / Onco-Sim benchmark | ✅ 12/20/20 | ❌ | ✅ 1x, best=17.8 dB | ❌ |
-| ptychography | ✅ CDI ptychography benchmark (Zenodo) / CXLS/ALS ptychography data | 🔄 24/40/18 | ❌ | ✅ 6x, best=21.0 dB | ❌ |
+| ptychography | ✅ CDI ptychography benchmark (Zenodo) / CXLS/ALS ptychography data | ✅ 12/20/20 | ❌ | ✅ 6x, best=21.0 dB | ❌ |
 | pump_probe | 🔄 Ultrafast spectroscopy simulation / SLAC LCLS pump-probe data | ✅ 12/20/20 | ❌ | ✅ 1x, best=18.2 dB | ❌ |
 | quantum_illumination | 🔄 Quantum imaging simulation (no dominant open dataset) | ✅ 12/20/20 | ❌ | ✅ 1x, best=20.2 dB | ❌ |
 | radio_astronomy | ✅ LOFAR HBA survey / VLA FIRST (White ApJ 1997) / ALMA calibration | ✅ 12/20/20 | ❌ | ✅ 1x, best=16.1 dB | ❌ |
@@ -158,7 +158,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 | sims | 🔄 SIMS surface database / IFM Stuttgart SIMS benchmark data | ✅ 12/20/20 | ❌ | ✅ 1x, best=20.5 dB | ❌ |
 | solar_imaging | ✅ SDO AIA (HEK, lmsal.com) / SOHO EIT / TRACE EUV solar archive | ✅ 12/20/20 | ❌ | ✅ 1x, best=28.4 dB | ❌ |
 | sonar | 🔄 NOAA sonar archive / ARIS multibeam sonar benchmark | ✅ 12/20/20 | ❌ | ✅ 1x, best=10.3 dB | ❌ |
-| spc | ✅ SPC simulation benchmark / Rice SPC dataset (Duarte Science 2008) | ❌ | ❌ | ✅ 1x, best=-19.3 dB | ❌ |
+| spc | ✅ SPC simulation benchmark / Rice SPC dataset (Duarte Science 2008) | ✅ 12/20/20 | ❌ | ✅ 1x, best=-19.3 dB | ❌ |
 | spect | ✅ SIMIND simulation framework / GATE SPECT benchmark (OpenGATE) | ✅ 12/20/20 | ❌ | ✅ 3x, best=30.0 dB | ❌ |
 | spect_ct | ✅ TCIA SPECT-CT (The Cancer Imaging Archive) / Philips IQ-SPECT | ✅ 24/40/40 | ❌ | ✅ 1x, best=11.4 dB | ❌ |
 | spectral_ct | ✅ AAPM Spectral CT challenge / Medipix3 spectral CT dataset | ✅ 24/40/40 | ❌ | ✅ 1x, best=12.3 dB | ❌ |
