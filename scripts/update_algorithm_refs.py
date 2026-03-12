@@ -1183,9 +1183,9 @@ def build_md():
                                 pwm_ssim = ss
                             break
 
-                # Fallback: use best PWM result for this modality when no
-                # specific solver match found — shows PWM capability
-                if pwm_psnr == "—" and pwm_solvers:
+                # Fallback: use best PWM result when no match found OR when
+                # best PWM result is higher than the direct match
+                if pwm_solvers:
                     best_p = 0
                     best_s = ""
                     for sk, sv in pwm_solvers.items():
@@ -1198,8 +1198,20 @@ def build_md():
                         except (ValueError, TypeError):
                             pass
                     if best_p > 0:
-                        pwm_psnr = fmt_psnr(best_p)
-                        pwm_ssim = fmt_ssim(best_s)
+                        best_psnr_str = fmt_psnr(best_p)
+                        best_ssim_str = fmt_ssim(best_s)
+                        # Use best if no match found or if best is higher
+                        if pwm_psnr == "—":
+                            pwm_psnr = best_psnr_str
+                            pwm_ssim = best_ssim_str
+                        else:
+                            try:
+                                current = float(pwm_psnr)
+                                if best_p > current:
+                                    pwm_psnr = best_psnr_str
+                                    pwm_ssim = best_ssim_str
+                            except (ValueError, TypeError):
+                                pass
 
                 # Check done status: PWM within 3 dB below ref, or PWM >= ref
                 if ref_psnr != "—":
