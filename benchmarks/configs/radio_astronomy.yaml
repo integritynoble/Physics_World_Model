@@ -59,27 +59,28 @@ mismatch_params:
   unit: arcsec
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   clean_dl:
-    name: RadioAST-DL
-    module: pwm_core.recon.radio_astro_solvers
-    function: radio_dl_recon
-    params: 15M
-    gpu: true
-    reference: Connor, L. & van Leeuwen, J. (2018) Applying DL to fast radio burst
-      classification, AJ 156(6)
+    name: RadioAST-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

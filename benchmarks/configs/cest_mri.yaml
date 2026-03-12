@@ -59,26 +59,28 @@ mismatch_params:
   unit: '-'
 solvers:
   traditional_cpu:
-    name: FBP
-    module: pwm_core.recon.fbp
-    function: run_fbp
-    params: '0'
+    name: FBP [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
+  best_quality:
+    name: DL-Recon [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
+  cest_dl:
+    name: CEST-Net [proxy]
+    module: pwm_core.recon.mri_solvers
+    function: zero_filled_reconstruction
+    params: {}
     gpu: false
     reference: ''
-  best_quality:
-    name: DL-Recon
-    module: pwm_core.recon.dl_recon
-    function: dl_reconstruct
-    params: 5M
-    gpu: true
-    reference: ''
-  cest_dl:
-    name: CEST-Net
-    module: pwm_core.recon.cest_solvers
-    function: cest_dl_recon
-    params: 8M
-    gpu: true
-    reference: Liu, Z. et al. (2021) CEST and NOE MRI with DL, Magn. Reson. Med. 85(2)
 metrics:
   names:
   - psnr

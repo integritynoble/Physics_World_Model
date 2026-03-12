@@ -58,27 +58,28 @@ mismatch_params:
   unit: '-'
 solvers:
   traditional_cpu:
-    name: RDA
-    module: pwm_core.recon.sar_rda
-    function: range_doppler
-    params: '0'
+    name: RDA [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: SAR-DL
-    module: pwm_core.recon.sar_dl
-    function: sar_dl_recon
-    params: 5M
-    gpu: true
-    reference: ''
+    name: SAR-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   weather_dl:
-    name: NowcastNet
-    module: pwm_core.recon.weather_solvers
-    function: nowcastnet_recon
-    params: 50M
-    gpu: true
-    reference: Zhang, Y. et al. (2023) Skilful nowcasting of extreme precipitation
-      with NowcastNet, Nature 619:526
+    name: NowcastNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

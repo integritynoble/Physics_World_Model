@@ -50,21 +50,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: SEM-DL (SegNet)
-    module: pwm_core.recon.sem_solvers
-    function: sem_segnet_recon
-    params: 30M
-    gpu: true
-    reference: 'Stringer, C. et al. (2021) Cellpose: generalist algorithm for segmentation,
-      Nature Methods 18:100'
+    name: SEM-DL (SegNet) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: SEM-UNet
-    module: pwm_core.recon.sem_solvers
-    function: sem_unet_recon
-    params: 31M
-    gpu: true
-    reference: Ronneberger, O. et al. (2015) U-Net for biomedical image segmentation,
-      MICCAI
+    name: SEM-UNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

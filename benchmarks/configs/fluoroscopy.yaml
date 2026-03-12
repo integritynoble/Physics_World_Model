@@ -51,20 +51,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: FluoroNet
-    module: pwm_core.recon.fluoro_solvers
-    function: fluoro_net_recon
-    params: 14M
-    gpu: true
-    reference: Gu, J. et al. (2022) DL fluoroscopy denoising, Med. Image Anal. 75
+    name: FluoroNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: X-ray CNN
-    module: pwm_core.recon.fluoro_solvers
-    function: xray_cnn_recon
-    params: 10M
-    gpu: true
-    reference: Cheng, C.T. et al. (2021) A scalable physician-level AI for chest X-ray,
-      NPJ Digital Med.
+    name: X-ray CNN [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

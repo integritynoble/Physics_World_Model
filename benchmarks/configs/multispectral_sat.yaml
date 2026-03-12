@@ -59,26 +59,28 @@ mismatch_params:
   unit: px
 solvers:
   traditional_cpu:
-    name: RDA
-    module: pwm_core.recon.sar_rda
-    function: range_doppler
-    params: '0'
+    name: RDA [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: SAR-DL
-    module: pwm_core.recon.sar_dl
-    function: sar_dl_recon
-    params: 5M
-    gpu: true
-    reference: ''
+    name: SAR-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   ms_dl:
-    name: MS-Pansharpening-DL
-    module: pwm_core.recon.multispectral_solvers
-    function: ms_pan_dl_recon
-    params: 15M
-    gpu: true
-    reference: Yang, J. et al. (2017) Pansharpening via deep residual learning, GRSS
+    name: MS-Pansharpening-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

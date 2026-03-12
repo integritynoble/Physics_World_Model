@@ -37,34 +37,35 @@ data_source:
 mismatch_params: []
 solvers:
   traditional_cpu:
-    name: FISTA-L2 (Fourier ratio)
-    module: pwm_core.recon.classical
-    function: run_fista_l2
-    params: '0'
+    name: FISTA-L2 (Fourier ratio) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: EELS-Net
-    module: pwm_core.recon.eels_solvers
-    function: eels_net_recon
-    params: 8M
-    gpu: true
-    reference: Shao, Y. et al. (2021) Deep learning for EELS, Ultramicroscopy 226
-  famous_dl:
-    name: MLLS-EELS
-    module: pwm_core.recon.eels_solvers
-    function: mlls_eels_recon
-    params: '0'
+    name: EELS-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Verbeeck, J. & Van Aert, S. (2004) Model based quantification of EELS,
-      Ultramicroscopy
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: MLLS-EELS [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
   eels_dl:
-    name: EELS-Net
-    module: pwm_core.recon.eels_solvers
-    function: eels_dl_recon
-    params: 8M
-    gpu: true
-    reference: Shao, Y. et al. (2021) DL for EELS, Ultramicroscopy 226
+    name: EELS-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

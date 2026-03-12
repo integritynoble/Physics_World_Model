@@ -49,20 +49,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: SAR-DL (PolSF)
-    module: pwm_core.recon.sar_solvers
-    function: sar_dl_recon
-    params: 20M
-    gpu: true
-    reference: Schwartz, E. et al. (2022) Deep-learning-based SAR despeckling, ISPRS
-      J.
+    name: SAR-DL (PolSF) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: SAR-CNN
-    module: pwm_core.recon.sar_solvers
-    function: sar_cnn_recon
-    params: 12M
-    gpu: true
-    reference: Wang, P. et al. (2017) SAR image despeckling with CNN, IEEE GRSL
+    name: SAR-CNN [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

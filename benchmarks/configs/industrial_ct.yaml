@@ -59,27 +59,29 @@ mismatch_params:
   unit: '-'
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   ict_dl:
-    name: IndustrialCT-Net
-    module: pwm_core.recon.industrial_ct_solvers
-    function: ict_dl_recon
-    params: 20M
-    gpu: true
-    reference: Holub, W. et al. (2021) DL for industrial CT defect detection, NDT&E
-      Int. 122
+    name: IndustrialCT-Net [proxy]
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params:
+      filter: ram-lak
+    gpu: false
+    reference: Shepp & Logan 1974
 metrics:
   names:
   - psnr

@@ -48,21 +48,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: ED-Net
-    module: pwm_core.recon.ed_solvers
-    function: ed_net_recon
-    params: 10M
-    gpu: true
-    reference: Zuo, J.M. et al. (2022) DL for electron diffraction, Microsc. Microanal.
-      28(1)
-  famous_dl:
-    name: CRISP-ED
-    module: pwm_core.recon.ed_solvers
-    function: crisp_ed_recon
-    params: '0'
+    name: ED-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Zou, X. et al. (1993) Crystal structure determination from electron
-      diffraction, Acta Cryst.
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: CRISP-ED [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

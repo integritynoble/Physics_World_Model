@@ -72,21 +72,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: TIRF-Net (CARE)
-    module: pwm_core.recon.tirf_solvers
-    function: tirf_care_recon
-    params: 15M
-    gpu: true
-    reference: Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods
-      15:1090
-  famous_dl:
-    name: TIRF-SRRF
-    module: pwm_core.recon.tirf_solvers
-    function: tirf_srrf_recon
-    params: '0'
+    name: TIRF-Net (CARE) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Gustafsson, N. et al. (2016) Fast live-cell conventional fluorophore
-      nanoscopy with SRRF, Nature Comms 7:12471
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: TIRF-SRRF [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

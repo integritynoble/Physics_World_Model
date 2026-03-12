@@ -230,6 +230,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 14.795598361460398,
+          "ssim": 0.34639316117544244,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (ultrasound)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.795598361460398,
+          "ssim": 0.34639316117544244,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "US-UNet (DeepUS) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 14.795598361460398,
+          "ssim": 0.34639316117544244,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "US-CNN [proxy]"
         }
       }
     },
@@ -307,6 +328,20 @@
           "ssim": 0.004691223456085463,
           "exec_time_sec": 0.0769956111907959,
           "algorithm_name": "FBP (mammography)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.8496884274907388,
+          "ssim": 0.09884950544746779,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MammoNet (GatorTron) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 0.8496884274907388,
+          "ssim": 0.09884950544746779,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Mammo-ResNet [proxy]"
         }
       }
     },
@@ -402,6 +437,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.934229958047034,
+          "ssim": 0.05357803427569121,
+          "exec_time_sec": 0.0010006427764892578,
+          "algorithm_name": "SENSE (fMRI)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.934229958047034,
+          "ssim": 0.05357803427569121,
+          "exec_time_sec": 0.0009844303131103516,
+          "algorithm_name": "fMRI-Transformer [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 4.934229958047034,
+          "ssim": 0.05357803427569121,
+          "exec_time_sec": 0.0010013580322265625,
+          "algorithm_name": "DeepBold [proxy]"
         }
       }
     },
@@ -418,6 +474,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 11.306745986502357,
+          "ssim": 0.8085651901224242,
+          "exec_time_sec": 0.09899735450744629,
+          "algorithm_name": "SENSE (WLS tensor fit)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 11.306745986502357,
+          "ssim": 0.8085651901224242,
+          "exec_time_sec": 0.0010001659393310547,
+          "algorithm_name": "q-DL (qDiffusion) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 11.306745986502357,
+          "ssim": 0.8085651901224242,
+          "exec_time_sec": 0.0010006427764892578,
+          "algorithm_name": "SHORE-Net [proxy]"
         }
       }
     },
@@ -467,6 +544,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.119805331430928,
+          "ssim": 0.004060125036560912,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.119805331430928,
+          "ssim": 0.004060125036560912,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "asl_dl": {
+          "status": "completed",
+          "psnr_db": 2.0427531152807923,
+          "ssim": 0.2530841988308504,
+          "exec_time_sec": 1.6851329803466797,
+          "algorithm_name": "ASL-Net [proxy]"
         }
       }
     },
@@ -483,6 +581,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.052929730640068,
+          "ssim": 0.2197385208766572,
+          "exec_time_sec": 0.001001119613647461,
+          "algorithm_name": "SENSE (spectroscopy)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.263935238832628,
+          "ssim": 0.0011065910396935285,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MRS-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 4.263935238832628,
+          "ssim": 0.0011065910396935285,
+          "exec_time_sec": 0.0009992122650146484,
+          "algorithm_name": "HLSVD-MRS [proxy]"
         }
       }
     },
@@ -499,6 +618,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.155469204824424,
+          "ssim": 0.003957557319903726,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.155469204824424,
+          "ssim": 0.003957557319903726,
+          "exec_time_sec": 0.001001596450805664,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "mrf_dl": {
+          "status": "completed",
+          "psnr_db": 2.0588611080615222,
+          "ssim": 0.25171832284248247,
+          "exec_time_sec": 0.03799939155578613,
+          "algorithm_name": "MRF-Net [proxy]"
         }
       }
     },
@@ -515,6 +655,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.244615666499956,
+          "ssim": 0.002018964228003461,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.244615666499956,
+          "ssim": 0.002018964228003461,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "mre_dl": {
+          "status": "completed",
+          "psnr_db": 4.244615666499956,
+          "ssim": 0.002018964228003461,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MRE-Net [proxy]"
         }
       }
     },
@@ -531,6 +692,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.5729986664953928,
+          "ssim": 0.006428763054810701,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 3.5729986664953928,
+          "ssim": 0.006428763054810701,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "mra_dl": {
+          "status": "completed",
+          "psnr_db": 0.545953038237285,
+          "ssim": 0.009466066954535316,
+          "exec_time_sec": 0.002002716064453125,
+          "algorithm_name": "MRA-VesselNet [proxy]"
         }
       }
     },
@@ -547,6 +729,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.642913545432567,
+          "ssim": 0.0020258118701236426,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.642913545432567,
+          "ssim": 0.0020258118701236426,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "swi_dl": {
+          "status": "completed",
+          "psnr_db": 2.029279005737086,
+          "ssim": 0.2415300694224201,
+          "exec_time_sec": 0.00400233268737793,
+          "algorithm_name": "SWI-Net [proxy]"
         }
       }
     },
@@ -563,6 +766,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.9102364568350314,
+          "ssim": 0.181073020235869,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 1.9102364568350314,
+          "ssim": 0.181073020235869,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "petct_dl": {
+          "status": "completed",
+          "psnr_db": 1.9102364568350314,
+          "ssim": 0.181073020235869,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PET-CT-Fusion-Net [proxy]"
         }
       }
     },
@@ -579,6 +803,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.1221251850425196,
+          "ssim": 0.30339975436683514,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.1221251850425196,
+          "ssim": 0.30339975436683514,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "petmr_dl": {
+          "status": "completed",
+          "psnr_db": 2.1221251850425196,
+          "ssim": 0.30339975436683514,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PET-MR-DeepJoint [proxy]"
         }
       }
     },
@@ -595,6 +840,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.1470384502578943,
+          "ssim": 0.2421121786478928,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.1470384502578943,
+          "ssim": 0.2421121786478928,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "spectct_dl": {
+          "status": "completed",
+          "psnr_db": 2.1470384502578943,
+          "ssim": 0.2421121786478928,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SPECT-CT-Net [proxy]"
         }
       }
     },
@@ -611,6 +877,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.938895682157534,
+          "ssim": 0.18956382263365862,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 1.938895682157534,
+          "ssim": 0.18956382263365862,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "spectral_ct_dl": {
+          "status": "completed",
+          "psnr_db": 1.938895682157534,
+          "ssim": 0.18956382263365862,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SpectralCT-Net [proxy]"
         }
       }
     },
@@ -627,6 +914,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.851693189279574,
+          "ssim": 0.4679835901993611,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.851693189279574,
+          "ssim": 0.4679835901993611,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "ict_dl": {
+          "status": "completed",
+          "psnr_db": 0.38060629953024017,
+          "ssim": 0.07019938199829776,
+          "exec_time_sec": 0.26742100715637207,
+          "algorithm_name": "IndustrialCT-Net [proxy]"
         }
       }
     },
@@ -653,6 +961,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 17.889118845755483,
+          "ssim": 0.010081271605041063,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 17.889118845755483,
+          "ssim": 0.010081271605041063,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "relion_dl": {
+          "status": "completed",
+          "psnr_db": 17.889118845755483,
+          "ssim": 0.010081271605041063,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CryoDRGN [proxy]"
         }
       }
     },
@@ -676,6 +1005,20 @@
           "ssim": 0.4996949358801498,
           "exec_time_sec": 0.0009996891021728516,
           "algorithm_name": "Richardson-Lucy (SEM)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 23.168982670432435,
+          "ssim": 0.4996949358801498,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SEM-DL (SegNet) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 23.168982670432435,
+          "ssim": 0.4996949358801498,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SEM-UNet [proxy]"
         }
       }
     },
@@ -692,6 +1035,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 6.8514174980278035,
+          "ssim": 0.001975115233666814,
+          "exec_time_sec": 0.16666054725646973,
+          "algorithm_name": "FISTA-L2 (CTF correction)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 12.859630076134547,
+          "ssim": 0.09967599353701943,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "TEM-DL (ePIE-Net) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 12.859630076134547,
+          "ssim": 0.09967599353701943,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "TEM-UNet [proxy]"
         }
       }
     },
@@ -1023,6 +1387,34 @@
             256,
             256
           ]
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 25.15650171903726,
+          "ssim": 0.5035790489164628,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EELS-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 25.15650171903726,
+          "ssim": 0.5035790489164628,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MLLS-EELS [proxy]"
+        },
+        "eels_dl": {
+          "status": "completed",
+          "psnr_db": 25.15650171903726,
+          "ssim": 0.5035790489164628,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EELS-Net [proxy]"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 25.15650171903726,
+          "ssim": 0.5035790489164628,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FISTA-L2 (Fourier ratio) [proxy]"
         }
       }
     },
@@ -1289,6 +1681,27 @@
           "ssim": 0.023674962064387378,
           "exec_time_sec": 0.0,
           "algorithm_name": "Sequential Phase Retrieval"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.208544783527332,
+          "ssim": 0.023674962064387378,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Gradient Descent FPM [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 5.208544783527332,
+          "ssim": 0.023674962064387378,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Fourier Ptychnet"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 5.208544783527332,
+          "ssim": 0.023674962064387378,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Fourier Ptychnet"
         }
       }
     },
@@ -1305,6 +1718,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.06355268189754,
+          "ssim": 0.07822668090539271,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 3.06355268189754,
+          "ssim": 0.07822668090539271,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "odt_dl": {
+          "status": "completed",
+          "psnr_db": 3.06355268189754,
+          "ssim": 0.07822668090539271,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ODT-Net (PhaseNet) [proxy]"
         }
       }
     },
@@ -1328,6 +1762,27 @@
           "ssim": 0.3296867524783251,
           "exec_time_sec": 9.287993907928467,
           "algorithm_name": "HIO"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 11.75522481200133,
+          "ssim": 0.31925476637269523,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RAAR [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 11.75522481200133,
+          "ssim": 0.31925476637269523,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "prDeep [proxy]"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 11.75522481200133,
+          "ssim": 0.31925476637269523,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "prDeep [proxy]"
         }
       }
     },
@@ -1384,6 +1839,20 @@
           "ssim": 0.2878537380034089,
           "exec_time_sec": 0.1629929542541504,
           "algorithm_name": "FBP (SAR backprojection)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 17.80907915629476,
+          "ssim": 0.13800554364244752,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL (PolSF) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 17.80907915629476,
+          "ssim": 0.13800554364244752,
+          "exec_time_sec": 0.0010313987731933594,
+          "algorithm_name": "SAR-CNN [proxy]"
         }
       }
     },
@@ -1400,6 +1869,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 31.826017306287024,
+          "ssim": 0.9073188642266897,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 31.826017306287024,
+          "ssim": 0.9073188642266897,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "insar_dl": {
+          "status": "completed",
+          "psnr_db": 31.826017306287024,
+          "ssim": 0.9073188642266897,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "InSAR-Net [proxy]"
         }
       }
     },
@@ -1417,6 +1907,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 11.285355041725573,
+          "ssim": 0.07180756590174878,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 11.285355041725573,
+          "ssim": 0.07180756590174878,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "ms_dl": {
+          "status": "completed",
+          "psnr_db": 11.285355041725573,
+          "ssim": 0.07180756590174878,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MS-Pansharpening-DL [proxy]"
         }
       }
     },
@@ -1440,6 +1951,27 @@
           "ssim": 0.36582742745337754,
           "exec_time_sec": 0.0,
           "algorithm_name": "Back Projection"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 18.548146423734387,
+          "ssim": 0.36582742745337754,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Time Reversal [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 18.548146423734387,
+          "ssim": 0.36582742745337754,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Deep-PAT [proxy]"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 18.548146423734387,
+          "ssim": 0.36582742745337754,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Deep-PAT [proxy]"
         }
       }
     },
@@ -1500,6 +2032,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 7.165863396006211,
+          "ssim": 0.32855502311191614,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 7.165863396006211,
+          "ssim": 0.32855502311191614,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "dl_localizer": {
+          "status": "completed",
+          "psnr_db": 7.165863396006211,
+          "ssim": 0.32855502311191614,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DeepAE-Net [proxy]"
         }
       }
     },
@@ -1516,6 +2069,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 22.011529376518205,
+          "ssim": 0.739813210894589,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 22.011529376518205,
+          "ssim": 0.739813210894589,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "saft_dl": {
+          "status": "completed",
+          "psnr_db": 22.011529376518205,
+          "ssim": 0.739813210894589,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAFT-DL [proxy]"
         }
       }
     },
@@ -1532,6 +2106,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 7.18333901836214,
+          "ssim": 0.14754569271200557,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 7.18333901836214,
+          "ssim": 0.14754569271200557,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "pulsed_phase_tv": {
+          "status": "completed",
+          "psnr_db": 7.18333901836214,
+          "ssim": 0.14754569271200557,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Pulsed-Phase TV [proxy]"
         }
       }
     },
@@ -1548,6 +2143,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 24.19059314810232,
+          "ssim": 0.44151014638403907,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 24.19059314810232,
+          "ssim": 0.44151014638403907,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "deep_ao": {
+          "status": "completed",
+          "psnr_db": 24.19059314810232,
+          "ssim": 0.44151014638403907,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Deep-AO [proxy]"
         }
       }
     },
@@ -1601,6 +2217,20 @@
           "ssim": 0.5828047543860039,
           "exec_time_sec": 1.3494582176208496,
           "algorithm_name": "FBP (DSA baseline)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.8005623737775602,
+          "ssim": 0.3743046307114533,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DSA-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 2.8005623737775602,
+          "ssim": 0.3743046307114533,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "VesselSegNet [proxy]"
         }
       }
     },
@@ -1618,6 +2248,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.4416592668372754,
+          "ssim": 0.04146200807644931,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.4416592668372754,
+          "ssim": 0.04146200807644931,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "apt_dl": {
+          "status": "completed",
+          "psnr_db": 2.4416592668372754,
+          "ssim": 0.04146200807644931,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "APT-Net [proxy]"
         }
       }
     },
@@ -1634,6 +2285,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.1759072167046574,
+          "ssim": 0.09736448361180657,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 3.1759072167046574,
+          "ssim": 0.09736448361180657,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "blt_dl": {
+          "status": "completed",
+          "psnr_db": 3.1759072167046574,
+          "ssim": 0.09736448361180657,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "BLT-Net [proxy]"
         }
       }
     },
@@ -1650,6 +2322,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 25.158110743981148,
+          "ssim": 0.18095199478333637,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 25.158110743981148,
+          "ssim": 0.18095199478333637,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "brachy_dl": {
+          "status": "completed",
+          "psnr_db": 25.158110743981148,
+          "ssim": 0.18095199478333637,
+          "exec_time_sec": 2.193450927734375e-05,
+          "algorithm_name": "BrachyNet [proxy]"
         }
       }
     },
@@ -1666,6 +2359,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 26.560116658255026,
+          "ssim": 0.4966672136939139,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 26.560116658255026,
+          "ssim": 0.4966672136939139,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "brillouin_dl": {
+          "status": "completed",
+          "psnr_db": 26.560116658255026,
+          "ssim": 0.4966672136939139,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Brillouin-Net [proxy]"
         }
       }
     },
@@ -1682,6 +2396,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 16.747042831275103,
+          "ssim": 0.48123261879041324,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 16.747042831275103,
+          "ssim": 0.48123261879041324,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "cars_dl": {
+          "status": "completed",
+          "psnr_db": 16.747042831275103,
+          "ssim": 0.48123261879041324,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CARS-DeepSpec [proxy]"
         }
       }
     },
@@ -1698,6 +2433,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 28.81183923958268,
+          "ssim": 0.7716031964268616,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 28.81183923958268,
+          "ssim": 0.7716031964268616,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "cl_dl": {
+          "status": "completed",
+          "psnr_db": 28.81183923958268,
+          "ssim": 0.7716031964268616,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CL-Net [proxy]"
         }
       }
     },
@@ -1714,6 +2470,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 32.149580217834874,
+          "ssim": 0.6435061998112697,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 32.149580217834874,
+          "ssim": 0.6435061998112697,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "cest_dl": {
+          "status": "completed",
+          "psnr_db": 13.926319014525628,
+          "ssim": 0.3632246759709995,
+          "exec_time_sec": 0.027001619338989258,
+          "algorithm_name": "CEST-Net [proxy]"
         }
       }
     },
@@ -1730,6 +2507,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 16.201296226160768,
+          "ssim": 0.11975890280198702,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 16.201296226160768,
+          "ssim": 0.11975890280198702,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "us_dl_enhance": {
+          "status": "completed",
+          "psnr_db": 16.201296226160768,
+          "ssim": 0.11975890280198702,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "US-DeepSight [proxy]"
         }
       }
     },
@@ -1747,6 +2545,27 @@
             128,
             2
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 28.11337563786965,
+          "ssim": 0.7704891585134364,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 28.11337563786965,
+          "ssim": 0.7704891585134364,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "clem_dl": {
+          "status": "completed",
+          "psnr_db": 28.11337563786965,
+          "ssim": 0.7704891585134364,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CLEM-Net [proxy]"
         }
       }
     },
@@ -1763,6 +2582,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 32.11761336295202,
+          "ssim": 0.9313060240577271,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 32.11761336295202,
+          "ssim": 0.9313060240577271,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "coded_dl": {
+          "status": "completed",
+          "psnr_db": 32.11761336295202,
+          "ssim": 0.9313060240577271,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FlowNet-Coded [proxy]"
         }
       }
     },
@@ -1779,6 +2619,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 31.39458289564327,
+          "ssim": 0.7037327602061172,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 31.39458289564327,
+          "ssim": 0.7037327602061172,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "cle_dl": {
+          "status": "completed",
+          "psnr_db": 31.39458289564327,
+          "ssim": 0.7037327602061172,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CLE-Net (CARE) [proxy]"
         }
       }
     },
@@ -1839,6 +2700,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 25.205580770420056,
+          "ssim": 0.8930270693371166,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 25.205580770420056,
+          "ssim": 0.8930270693371166,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "speckle_null_dl": {
+          "status": "completed",
+          "psnr_db": 25.205580770420056,
+          "ssim": 0.8930270693371166,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-SpeckleNull [proxy]"
         }
       }
     },
@@ -1885,6 +2767,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.2835341956344575,
+          "ssim": 0.3255694867297111,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 3.2835341956344575,
+          "ssim": 0.3255694867297111,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "xfct_dl": {
+          "status": "completed",
+          "psnr_db": 3.2835341956344575,
+          "ssim": 0.3255694867297111,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "XFCT-Net [proxy]"
         }
       }
     },
@@ -1902,6 +2805,27 @@
             128,
             8
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.534789541384615,
+          "ssim": 0.19248797043963994,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.534789541384615,
+          "ssim": 0.19248797043963994,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "e2e_cup": {
+          "status": "completed",
+          "psnr_db": 5.534789541384615,
+          "ssim": 0.19248797043963994,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "E2E-CUP [proxy]"
         }
       }
     },
@@ -1949,6 +2873,27 @@
             128,
             10
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.5163653557427892,
+          "ssim": 0.0055645927564111665,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 1.5163653557427892,
+          "ssim": 0.0055645927564111665,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "desi_dl": {
+          "status": "completed",
+          "psnr_db": 1.5163653557427892,
+          "ssim": 0.0055645927564111665,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DESI-SegNet [proxy]"
         }
       }
     },
@@ -1965,6 +2910,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.6829636096954346,
+          "algorithm_name": "FISTA-L2 (dual-energy)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.476810666137613,
+          "ssim": 0.30990951041810455,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DXA-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 2.476810666137613,
+          "ssim": 0.30990951041810455,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DEXA-UNet [proxy]"
         }
       }
     },
@@ -2011,6 +2977,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.526249678751624,
+          "ssim": 0.2564824668323449,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.526249678751624,
+          "ssim": 0.2564824668323449,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "dbt_dl": {
+          "status": "completed",
+          "psnr_db": 2.526249678751624,
+          "ssim": 0.2564824668323449,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DBT-DL [proxy]"
         }
       }
     },
@@ -2057,6 +3044,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.049589798925857,
+          "ssim": 0.2847089862366397,
+          "exec_time_sec": 0.012981653213500977,
+          "algorithm_name": "FISTA-L2 (Hough baseline)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 21.93275668582129,
+          "ssim": 0.8024439610891319,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EBSD-DL (DictIndex) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 21.93275668582129,
+          "ssim": 0.8024439610891319,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EMsoft-EBSD [proxy]"
         }
       }
     },
@@ -2073,6 +3081,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 22.884386840319088,
+          "ssim": 0.6356435945734445,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 22.884386840319088,
+          "ssim": 0.6356435945734445,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "ec_dl": {
+          "status": "completed",
+          "psnr_db": 22.884386840319088,
+          "ssim": 0.6356435945734445,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ECT-Net [proxy]"
         }
       }
     },
@@ -2127,6 +3156,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 11.404887409525186,
+          "ssim": 0.014794728493232675,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 11.404887409525186,
+          "ssim": 0.014794728493232675,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "eht_dl": {
+          "status": "completed",
+          "psnr_db": 11.404887409525186,
+          "ssim": 0.014794728493232675,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EHT-PRIMO [proxy]"
         }
       }
     },
@@ -2143,6 +3193,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 11.017498895246982,
+          "ssim": 0.7948673565238608,
+          "exec_time_sec": 0.0019996166229248047,
+          "algorithm_name": "SENSE (displacement field)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 10.30926437733984,
+          "ssim": 0.003077992849706839,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MRE-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 10.30926437733984,
+          "ssim": 0.003077992849706839,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "NLSI-Solver [proxy]"
         }
       }
     },
@@ -2166,6 +3237,20 @@
           "ssim": 0.9888860070715025,
           "exec_time_sec": 0.0,
           "algorithm_name": "ePIE (electron ptychography)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 42.008709985061216,
+          "ssim": 0.9888860070715025,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ED-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 42.008709985061216,
+          "ssim": 0.9888860070715025,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CRISP-ED [proxy]"
         }
       }
     },
@@ -2189,6 +3274,20 @@
           "ssim": 0.01147805100894565,
           "exec_time_sec": 2.666698694229126,
           "algorithm_name": "Phase Retrieval (HIO)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 6.501142324135074,
+          "ssim": 0.004902341585674159,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EH-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 6.501142324135074,
+          "ssim": 0.004902341585674159,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Phase-Sideband [proxy]"
         }
       }
     },
@@ -2212,6 +3311,20 @@
           "ssim": 0.9525257895803622,
           "exec_time_sec": 0.41098856925964355,
           "algorithm_name": "FBP (SIRT baseline)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.800588067720485,
+          "ssim": 0.2536339242263996,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "IMOD-SIRT-DL [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 4.800588067720485,
+          "ssim": 0.2536339242263996,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SIRT-3D [proxy]"
         }
       }
     },
@@ -2228,6 +3341,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 31.81591346164989,
+          "ssim": 0.9771616755144208,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 31.81591346164989,
+          "ssim": 0.9771616755144208,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "qgi_dl": {
+          "status": "completed",
+          "psnr_db": 31.81591346164989,
+          "ssim": 0.9771616755144208,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "QGI-DL [proxy]"
         }
       }
     },
@@ -2244,6 +3378,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.2438074962789205,
+          "ssim": -0.010406328443693835,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.2438074962789205,
+          "ssim": -0.010406328443693835,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "event_dl": {
+          "status": "completed",
+          "psnr_db": 4.2438074962789205,
+          "ssim": -0.010406328443693835,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "E2VID+ [proxy]"
         }
       }
     },
@@ -2320,6 +3475,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.8584528834731597,
+          "ssim": 0.14331870706406385,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 1.8584528834731597,
+          "ssim": 0.14331870706406385,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "flash_dl": {
+          "status": "completed",
+          "psnr_db": 1.8584528834731597,
+          "ssim": 0.14331870706406385,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FlashLiDAR-Net [proxy]"
         }
       }
     },
@@ -2387,6 +3563,20 @@
           "ssim": 0.12387103014202162,
           "exec_time_sec": 0.3473396301269531,
           "algorithm_name": "FBP (fluoroscopy)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 43.60011523727424,
+          "ssim": 0.9820643296904283,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FluoroNet [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 43.60011523727424,
+          "ssim": 0.9820643296904283,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "X-ray CNN [proxy]"
         }
       }
     },
@@ -2404,6 +3594,27 @@
             64,
             10
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 34.57396582897048,
+          "ssim": 0.9203651243868173,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 34.57396582897048,
+          "ssim": 0.9203651243868173,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "ftir_dl": {
+          "status": "completed",
+          "psnr_db": 34.57396582897048,
+          "ssim": 0.9203651243868173,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FTIR-UNet [proxy]"
         }
       }
     },
@@ -2420,6 +3631,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.68926523552385,
+          "ssim": 0.000852510824016116,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.68926523552385,
+          "ssim": 0.000852510824016116,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "fwi_dl": {
+          "status": "completed",
+          "psnr_db": 5.68926523552385,
+          "ssim": 0.000852510824016116,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "InversionNet [proxy]"
         }
       }
     },
@@ -2436,6 +3668,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "gi_dl": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "GI-Net [proxy]"
         }
       }
     },
@@ -2452,6 +3705,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.6194823913715855,
+          "ssim": 0.0035090036753582096,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.6194823913715855,
+          "ssim": 0.0035090036753582096,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "gpr_dl": {
+          "status": "completed",
+          "psnr_db": 5.6194823913715855,
+          "ssim": 0.0035090036753582096,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "GPR-Net [proxy]"
         }
       }
     },
@@ -2468,6 +3742,27 @@
             1,
             4096
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 24.5563281243793,
+          "ssim": 0.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 24.5563281243793,
+          "ssim": 0.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "matched_filter_dl": {
+          "status": "completed",
+          "psnr_db": 24.5563281243793,
+          "ssim": 0.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "GW-DL (PyCBC-ML) [proxy]"
         }
       }
     },
@@ -2484,6 +3779,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 32.371771658969784,
+          "ssim": 0.7267124926030664,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 32.371771658969784,
+          "ssim": 0.7267124926030664,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "hdr_dl": {
+          "status": "completed",
+          "psnr_db": 32.371771658969784,
+          "ssim": 0.7267124926030664,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "HDR-Net [proxy]"
         }
       }
     },
@@ -2501,6 +3817,27 @@
             64,
             20
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 24.82333074562867,
+          "ssim": 0.6998277387969969,
+          "exec_time_sec": 0.00099945068359375,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 24.82333074562867,
+          "ssim": 0.6998277387969969,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "hyper_dl": {
+          "status": "completed",
+          "psnr_db": 24.82333074562867,
+          "ssim": 0.6998277387969969,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SST-USRNet [proxy]"
         }
       }
     },
@@ -2517,6 +3854,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "eit_dl": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EIT-Net [proxy]"
         }
       }
     },
@@ -2540,6 +3898,27 @@
           "ssim": 0.9013129889672721,
           "exec_time_sec": 0.0,
           "algorithm_name": "Depth Estimation"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 33.399143339002705,
+          "ssim": 0.9013129889672721,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DIBR [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 33.399143339002705,
+          "ssim": 0.9013129889672721,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EPINet [proxy]"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 33.399143339002705,
+          "ssim": 0.9013129889672721,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EPINet [proxy]"
         }
       }
     },
@@ -2586,6 +3965,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 15.283437779657426,
+          "ssim": 0.7252867638562408,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 15.283437779657426,
+          "ssim": 0.7252867638562408,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "ivus_dl": {
+          "status": "completed",
+          "psnr_db": 15.283437779657426,
+          "ssim": 0.7252867638562408,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "IVUS-Net [proxy]"
         }
       }
     },
@@ -2633,6 +4033,27 @@
             128,
             5
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 26.47249350101586,
+          "ssim": 0.651640118451501,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 26.47249350101586,
+          "ssim": 0.651640118451501,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "libs_dl": {
+          "status": "completed",
+          "psnr_db": 26.47249350101586,
+          "ssim": 0.651640118451501,
+          "exec_time_sec": 0.0010004043579101562,
+          "algorithm_name": "LIBS-CNN [proxy]"
         }
       }
     },
@@ -2649,6 +4070,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.3901853833808095,
+          "ssim": 0.039599343146532885,
+          "exec_time_sec": 0.01752161979675293,
+          "algorithm_name": "FISTA-L2 (depth)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 32.74042840627099,
+          "ssim": 0.8269406540363875,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PointNeXt [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 32.74042840627099,
+          "ssim": 0.8269406540363875,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PointNet++ [proxy]"
         }
       }
     },
@@ -2665,6 +4107,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 29.58087250250898,
+          "ssim": 0.7116545810634748,
+          "exec_time_sec": 0.0010013580322265625,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 29.58087250250898,
+          "ssim": 0.7116545810634748,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "lucky_dl": {
+          "status": "completed",
+          "psnr_db": 29.58087250250898,
+          "ssim": 0.7116545810634748,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Lucky-DL [proxy]"
         }
       }
     },
@@ -2681,6 +4144,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 28.295519320915467,
+          "ssim": 0.29337118206522184,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 28.295519320915467,
+          "ssim": 0.29337118206522184,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "mv_dl": {
+          "status": "completed",
+          "psnr_db": 28.295519320915467,
+          "ssim": 0.29337118206522184,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PatchCore [proxy]"
         }
       }
     },
@@ -2697,6 +4181,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.6742122127451062,
+          "ssim": 0.028355313012335615,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 1.6742122127451062,
+          "ssim": 0.028355313012335615,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "mpi_dl": {
+          "status": "completed",
+          "psnr_db": 1.6742122127451062,
+          "ssim": 0.028355313012335615,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MPI-Net [proxy]"
         }
       }
     },
@@ -2714,6 +4219,27 @@
             128,
             5
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 27.138412960673307,
+          "ssim": 0.6924075588671429,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 27.138412960673307,
+          "ssim": 0.6924075588671429,
+          "exec_time_sec": 1.7404556274414062e-05,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "msi_dl": {
+          "status": "completed",
+          "psnr_db": 27.138412960673307,
+          "ssim": 0.6924075588671429,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "MSI-UNet [proxy]"
         }
       }
     },
@@ -2841,6 +4367,20 @@
           "ssim": 0.0018748757250815595,
           "exec_time_sec": 0.1563718318939209,
           "algorithm_name": "FBP (muon tomography)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 3.245373299126633,
+          "ssim": 0.01995537385282902,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "POCA-DL [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 3.245373299126633,
+          "ssim": 0.01995537385282902,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "EM-POCA [proxy]"
         }
       }
     },
@@ -2886,6 +4426,20 @@
           "ssim": null,
           "exec_time_sec": null,
           "algorithm_name": "Instant-NGP"
+        },
+        "rl_proxy": {
+          "status": "completed",
+          "psnr_db": 19.683447922533947,
+          "ssim": 0.8506680916195141,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (proxy baseline)"
+        },
+        "fista_proxy": {
+          "status": "completed",
+          "psnr_db": 19.683447922533947,
+          "ssim": 0.8506680916195141,
+          "exec_time_sec": 0.0009999275207519531,
+          "algorithm_name": "FISTA-TV (proxy baseline)"
         }
       }
     },
@@ -2902,6 +4456,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.28943679963504,
+          "ssim": 0.0013076984424204444,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.28943679963504,
+          "ssim": 0.0013076984424204444,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "nd_dl": {
+          "status": "completed",
+          "psnr_db": 5.28943679963504,
+          "ssim": 0.0013076984424204444,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "NeutronDiff-Net [proxy]"
         }
       }
     },
@@ -2925,6 +4500,20 @@
           "ssim": 0.020956610502438834,
           "exec_time_sec": 0.09088253974914551,
           "algorithm_name": "FBP (neutron tomography)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 6.645535501267358,
+          "ssim": 0.6130041545908543,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "NeuTomo-DL [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 6.645535501267358,
+          "ssim": 0.6130041545908543,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "GRIDREC-Neutron [proxy]"
         }
       }
     },
@@ -2941,6 +4530,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 20.247288150603083,
+          "ssim": 0.5397764807988158,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 20.247288150603083,
+          "ssim": 0.5397764807988158,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "nirs_dl": {
+          "status": "completed",
+          "psnr_db": 20.247288150603083,
+          "ssim": 0.5397764807988158,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "fNIRS-Net [proxy]"
         }
       }
     },
@@ -2987,6 +4597,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 26.571783821812677,
+          "ssim": 0.6788576336203234,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 26.571783821812677,
+          "ssim": 0.6788576336203234,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "oat_dl": {
+          "status": "completed",
+          "psnr_db": 26.571783821812677,
+          "ssim": 0.6788576336203234,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "OAT-Net [proxy]"
         }
       }
     },
@@ -3004,6 +4635,27 @@
             128,
             4
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 38.22322197359462,
+          "ssim": 0.9991632162824768,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 38.22322197359462,
+          "ssim": 0.9991632162824768,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "oc_dl": {
+          "status": "completed",
+          "psnr_db": 38.22322197359462,
+          "ssim": 0.9991632162824768,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "OC-Net [proxy]"
         }
       }
     },
@@ -3027,6 +4679,20 @@
           "ssim": 0.056625880636278464,
           "exec_time_sec": 0.0009958744049072266,
           "algorithm_name": "FFT Recon (OCTA)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 18.79703920894019,
+          "ssim": 0.4871501535572624,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "OCTA-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 18.79703920894019,
+          "ssim": 0.4871501535572624,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "OCTA-FF [proxy]"
         }
       }
     },
@@ -3087,6 +4753,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 36.65880127372324,
+          "ssim": 0.9420925228273582,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 36.65880127372324,
+          "ssim": 0.9420925228273582,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "cal_dl": {
+          "status": "completed",
+          "psnr_db": 36.65880127372324,
+          "ssim": 0.9420925228273582,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CaloDiffusion [proxy]"
         }
       }
     },
@@ -3103,6 +4790,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 16.926171852197754,
+          "ssim": 0.3301217756544677,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 16.926171852197754,
+          "ssim": 0.3301217756544677,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "pm_dl": {
+          "status": "completed",
+          "psnr_db": 16.926171852197754,
+          "ssim": 0.3301217756544677,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PM-Net [proxy]"
         }
       }
     },
@@ -3149,6 +4857,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 7.1289040926973595,
+          "ssim": 0.5222776543916682,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 7.1289040926973595,
+          "ssim": 0.5222776543916682,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "ps_dl": {
+          "status": "completed",
+          "psnr_db": 7.1289040926973595,
+          "ssim": 0.5222776543916682,
+          "exec_time_sec": 4.100799560546875e-05,
+          "algorithm_name": "PS-FCN [proxy]"
         }
       }
     },
@@ -3172,6 +4901,20 @@
           "ssim": 0.08921144984048862,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-HQS"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 8.424766007179464,
+          "ssim": 0.08921144984048862,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PolarNet [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 8.424766007179464,
+          "ssim": 0.08921144984048862,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Stokes-NN [proxy]"
         }
       }
     },
@@ -3188,6 +4931,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 7.180414205422277,
+          "ssim": 0.2891229047448424,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 7.180414205422277,
+          "ssim": 0.2891229047448424,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "polsar_dl": {
+          "status": "completed",
+          "psnr_db": 7.180414205422277,
+          "ssim": 0.2891229047448424,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PolSAR-Net [proxy]"
         }
       }
     },
@@ -3204,6 +4968,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 17.313309215442892,
+          "ssim": 0.13842928585709732,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 17.313309215442892,
+          "ssim": 0.13842928585709732,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "portal_dl": {
+          "status": "completed",
+          "psnr_db": 17.313309215442892,
+          "ssim": 0.13842928585709732,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PortalDL [proxy]"
         }
       }
     },
@@ -3227,6 +5012,20 @@
           "ssim": 0.03969204760452908,
           "exec_time_sec": 0.058997154235839844,
           "algorithm_name": "FBP (proton radiography)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 12.007168074636855,
+          "ssim": 0.3614605536133993,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ProtonRecon-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 12.007168074636855,
+          "ssim": 0.3614605536133993,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP-Proton [proxy]"
         }
       }
     },
@@ -3243,6 +5042,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 26.57537480617767,
+          "ssim": 0.511801648888766,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FBP [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 26.57537480617767,
+          "ssim": 0.511801648888766,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-Recon [proxy]"
+        },
+        "proton_therapy_dl": {
+          "status": "completed",
+          "psnr_db": 26.57537480617767,
+          "ssim": 0.511801648888766,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ProtonTherapy-Net [proxy]"
         }
       }
     },
@@ -3260,6 +5080,27 @@
             128,
             8
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 7.543201238645853,
+          "ssim": 0.8550694465287277,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 7.543201238645853,
+          "ssim": 0.8550694465287277,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "pp_dl": {
+          "status": "completed",
+          "psnr_db": 7.543201238645853,
+          "ssim": 0.8550694465287277,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PumpProbe-Net [proxy]"
         }
       }
     },
@@ -3276,6 +5117,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 19.02795950289686,
+          "ssim": 0.42922108066927167,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 19.02795950289686,
+          "ssim": 0.42922108066927167,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "qi_dl": {
+          "status": "completed",
+          "psnr_db": 19.02795950289686,
+          "ssim": 0.42922108066927167,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "QI-DL [proxy]"
         }
       }
     },
@@ -3292,6 +5154,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 37.33069298067893,
+          "ssim": 0.7682813158335384,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 37.33069298067893,
+          "ssim": 0.7682813158335384,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "clean_dl": {
+          "status": "completed",
+          "psnr_db": 37.33069298067893,
+          "ssim": 0.7682813158335384,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RadioAST-DL [proxy]"
         }
       }
     },
@@ -3308,6 +5191,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 9.022619818298722,
+          "ssim": 0.08804218184084325,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 9.022619818298722,
+          "ssim": 0.08804218184084325,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "ri_dl": {
+          "status": "completed",
+          "psnr_db": 9.022619818298722,
+          "ssim": 0.08804218184084325,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "R2D2 (interferometry) [proxy]"
         }
       }
     },
@@ -3325,6 +5229,27 @@
             128,
             5
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 19.69076520886409,
+          "ssim": 0.5113513428533775,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 19.69076520886409,
+          "ssim": 0.5113513428533775,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "raman_dl": {
+          "status": "completed",
+          "psnr_db": 19.69076520886409,
+          "ssim": 0.5113513428533775,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RamanNet [proxy]"
         }
       }
     },
@@ -3341,6 +5266,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 6.058279938515333,
+          "ssim": 0.026494522171808154,
+          "exec_time_sec": 0.00099945068359375,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 6.058279938515333,
+          "ssim": 0.026494522171808154,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "saxs_dl": {
+          "status": "completed",
+          "psnr_db": 6.058279938515333,
+          "ssim": 0.026494522171808154,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAXS-VAE [proxy]"
         }
       }
     },
@@ -3357,6 +5303,27 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.561289911947963,
+          "ssim": 0.04302713738387369,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.561289911947963,
+          "ssim": 0.04302713738387369,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "seismic_dl": {
+          "status": "completed",
+          "psnr_db": 2.561289911947963,
+          "ssim": 0.04302713738387369,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SeisInversion-Net [proxy]"
         }
       }
     },
@@ -3373,6 +5340,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 13.19764888060326,
+          "ssim": 0.17334119306156606,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 13.19764888060326,
+          "ssim": 0.17334119306156606,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "shear_dl": {
+          "status": "completed",
+          "psnr_db": 13.19764888060326,
+          "ssim": 0.17334119306156606,
+          "exec_time_sec": 0.0005309581756591797,
+          "algorithm_name": "ShearNet [proxy]"
         }
       }
     },
@@ -3420,6 +5408,27 @@
             128,
             3
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 7.855465393019946,
+          "ssim": 0.4523540653562658,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 7.855465393019946,
+          "ssim": 0.4523540653562658,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "sims_dl": {
+          "status": "completed",
+          "psnr_db": 7.855465393019946,
+          "ssim": 0.4523540653562658,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SIMS-Net [proxy]"
         }
       }
     },
@@ -3436,6 +5445,27 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 26.934117876944352,
+          "ssim": 0.9167165766455564,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 26.934117876944352,
+          "ssim": 0.9167165766455564,
+          "exec_time_sec": 0.0005202293395996094,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "solar_dl": {
+          "status": "completed",
+          "psnr_db": 26.934117876944352,
+          "ssim": 0.9167165766455564,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SolarNet [proxy]"
         }
       }
     },
@@ -3452,6 +5482,27 @@
             128,
             128
           ]
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.958800101892047,
+          "ssim": 0.28166851397276427,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SonarSR-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 14.958800101892047,
+          "ssim": 0.28166851397276427,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Sonar-CNN [proxy]"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 14.958800101892047,
+          "ssim": 0.28166851397276427,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FISTA-L2 (DAS) [proxy]"
         }
       }
     },
@@ -3499,6 +5550,27 @@
             128,
             4
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 29.010308157218265,
+          "ssim": 0.9306862704499593,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 29.010308157218265,
+          "ssim": 0.9306862704499593,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "srs_dl": {
+          "status": "completed",
+          "psnr_db": 29.010308157218265,
+          "ssim": 0.9306862704499593,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SRS-DeepSpec [proxy]"
         }
       }
     },
@@ -3522,6 +5594,20 @@
           "ssim": 0.9508197817894375,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy (STEM)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 31.007320411628744,
+          "ssim": 0.9508197817894375,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "STEM-DL (AtomSegNet) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 31.007320411628744,
+          "ssim": 0.9508197817894375,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "STEM-UNet [proxy]"
         }
       }
     },
@@ -3568,6 +5654,27 @@
             128,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 30.82202513365216,
+          "ssim": 0.2856309711159227,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 30.82202513365216,
+          "ssim": 0.2856309711159227,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "streak_dl": {
+          "status": "completed",
+          "psnr_db": 30.82202513365216,
+          "ssim": 0.2856309711159227,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "StreakNet [proxy]"
         }
       }
     },
@@ -3584,6 +5691,27 @@
             128,
             128
           ]
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 6.633728801815386,
+          "ssim": 0.0042052019909978745,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SL-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 6.633728801815386,
+          "ssim": 0.0042052019909978745,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FTPD [proxy]"
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 6.633728801815386,
+          "ssim": 0.0042052019909978745,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "FISTA-L2 (phase unwrap) [proxy]"
         }
       }
     },
@@ -3600,6 +5728,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 28.894827761829287,
+          "ssim": 0.9890949409019559,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 28.894827761829287,
+          "ssim": 0.9890949409019559,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "talbot_dl": {
+          "status": "completed",
+          "psnr_db": 28.894827761829287,
+          "ssim": 0.9890949409019559,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Talbot-Net [proxy]"
         }
       }
     },
@@ -3616,6 +5765,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 8.730911989419573,
+          "ssim": 0.02172972893402745,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 8.730911989419573,
+          "ssim": 0.02172972893402745,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "thz_dl": {
+          "status": "completed",
+          "psnr_db": 8.730911989419573,
+          "ssim": 0.02172972893402745,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "THz-Net [proxy]"
         }
       }
     },
@@ -3669,6 +5839,20 @@
           "ssim": 0.11062745557553832,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy (TIRF)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 27.718660963405107,
+          "ssim": 0.11062745557553832,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "TIRF-Net (CARE) [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 27.718660963405107,
+          "ssim": 0.11062745557553832,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "TIRF-SRRF [proxy]"
         }
       }
     },
@@ -3685,6 +5869,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.442016801739678,
+          "ssim": 0.028439824244351656,
+          "exec_time_sec": 0.009999990463256836,
+          "algorithm_name": "FISTA-L2 (depth)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 12.349629178768167,
+          "ssim": 0.13178525725398357,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ToF-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 12.349629178768167,
+          "ssim": 0.13178525725398357,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ToF-MPI Deconv [proxy]"
         }
       }
     },
@@ -3701,6 +5906,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 30.80015268610024,
+          "ssim": 0.24085823596872888,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 30.80015268610024,
+          "ssim": 0.24085823596872888,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "upa_dl": {
+          "status": "completed",
+          "psnr_db": 30.80015268610024,
+          "ssim": 0.24085823596872888,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "TFM-DL [proxy]"
         }
       }
     },
@@ -3717,6 +5943,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 25.52171674267155,
+          "ssim": 0.34702923316000445,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 25.52171674267155,
+          "ssim": 0.34702923316000445,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "us_mri_dl": {
+          "status": "completed",
+          "psnr_db": 9.714658837816936,
+          "ssim": 0.5795712085340456,
+          "exec_time_sec": 0.0010020732879638672,
+          "algorithm_name": "US-MRI-Net [proxy]"
         }
       }
     },
@@ -3733,6 +5980,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.15826269901799617,
+          "ssim": 0.0024096638964687758,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.15826269901799617,
+          "ssim": 0.0024096638964687758,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "waxs_dl": {
+          "status": "completed",
+          "psnr_db": 0.15826269901799617,
+          "ssim": 0.0024096638964687758,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "WAXS-Net [proxy]"
         }
       }
     },
@@ -3749,6 +6017,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 21.771105964060258,
+          "ssim": 0.11866140885596518,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "RDA [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 21.771105964060258,
+          "ssim": 0.11866140885596518,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SAR-DL [proxy]"
+        },
+        "weather_dl": {
+          "status": "completed",
+          "psnr_db": 21.771105964060258,
+          "ssim": 0.11866140885596518,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "NowcastNet [proxy]"
         }
       }
     },
@@ -3795,6 +6084,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 19.691036839867152,
+          "ssim": 0.86430675973653,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 19.691036839867152,
+          "ssim": 0.86430675973653,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "sfx_dl": {
+          "status": "completed",
+          "psnr_db": 19.691036839867152,
+          "ssim": 0.86430675973653,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "SFX-Net [proxy]"
         }
       }
     },
@@ -3811,6 +6121,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.14634331909787418,
+          "ssim": 0.006303794893174264,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.14634331909787418,
+          "ssim": 0.006303794893174264,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "xtal_dl": {
+          "status": "completed",
+          "psnr_db": 0.14634331909787418,
+          "ssim": 0.006303794893174264,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "AlphaFold-SF [proxy]"
         }
       }
     },
@@ -3827,6 +6158,27 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.9559116029097643,
+          "ssim": 0.3333854402057743,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 2.9559116029097643,
+          "ssim": 0.3333854402057743,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "ndt_dl": {
+          "status": "completed",
+          "psnr_db": 2.9559116029097643,
+          "ssim": 0.3333854402057743,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "NDT-DefectNet [proxy]"
         }
       }
     },
@@ -3850,6 +6202,20 @@
           "ssim": -0.0019350148372196774,
           "exec_time_sec": 0.05758357048034668,
           "algorithm_name": "FBP (X-ray radiography)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 3.758811647554726,
+          "ssim": 0.3321944624828177,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "CheXNet [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 3.758811647554726,
+          "ssim": 0.3321944624828177,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "X-ray UNet [proxy]"
         }
       }
     },
@@ -3867,6 +6233,27 @@
             128,
             3
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 19.16377926175886,
+          "ssim": 0.4456688334965812,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 19.16377926175886,
+          "ssim": 0.4456688334965812,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "xrf_dl": {
+          "status": "completed",
+          "psnr_db": 19.16377926175886,
+          "ssim": 0.4456688334965812,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "XRF-Net [proxy]"
         }
       }
     },
@@ -3884,6 +6271,27 @@
             64,
             3
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.9106788547957918,
+          "ssim": 0.0361000957125197,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Adjoint [proxy]"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 1.9106788547957918,
+          "ssim": 0.0361000957125197,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM [proxy]"
+        },
+        "xrft_dl": {
+          "status": "completed",
+          "psnr_db": 1.9106788547957918,
+          "ssim": 0.0361000957125197,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "XRFT-Net [proxy]"
         }
       }
     },
@@ -3948,6 +6356,20 @@
           "ssim": 0.024227412175641824,
           "exec_time_sec": 0.0,
           "algorithm_name": "Back-Projection (Doppler)"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.138486322067286,
+          "ssim": 0.024227412175641824,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "UDoppler-Net [proxy]"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 5.138486322067286,
+          "ssim": 0.024227412175641824,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Doppler CFAR [proxy]"
         }
       },
       "dataset_available": true
@@ -3981,6 +6403,20 @@
           "ssim": 0.017009620554745197,
           "exec_time_sec": 0.0,
           "algorithm_name": "Born Approximation"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.269775924472706,
+          "ssim": 0.017009620554745197,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "L-BFGS-TV [proxy]"
+        },
+        "dot_dl": {
+          "status": "completed",
+          "psnr_db": 4.269775924472706,
+          "ssim": 0.017009620554745197,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DOT-Net [proxy]"
         }
       },
       "dataset_available": true

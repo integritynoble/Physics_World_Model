@@ -53,27 +53,29 @@ mismatch_params:
   unit: px
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   hdr_dl:
-    name: HDR-Net
-    module: pwm_core.recon.hdr_solvers
-    function: hdr_net_recon
-    params: 18M
-    gpu: true
-    reference: Eilertsen, G. et al. (2017) HDR image reconstruction from single exposures,
-      ACM TOG 36(6)
+    name: HDR-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

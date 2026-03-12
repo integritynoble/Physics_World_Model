@@ -57,27 +57,28 @@ mismatch_params:
   unit: m/ns
 solvers:
   traditional_cpu:
-    name: RDA
-    module: pwm_core.recon.sar_rda
-    function: range_doppler
-    params: '0'
+    name: RDA [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: SAR-DL
-    module: pwm_core.recon.sar_dl
-    function: sar_dl_recon
-    params: 5M
-    gpu: true
-    reference: ''
+    name: SAR-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   gpr_dl:
-    name: GPR-Net
-    module: pwm_core.recon.gpr_solvers
-    function: gpr_net_recon
-    params: 9M
-    gpu: true
-    reference: Giannakis, I. et al. (2021) DL-enhanced GPR data processing, IEEE Geosci.
-      Remote Sens. Lett. 19
+    name: GPR-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

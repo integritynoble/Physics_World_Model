@@ -48,26 +48,25 @@ solvers:
   traditional_cpu:
     name: FISTA-L2 (depth)
     module: pwm_core.recon.classical
-    function: run_fista_l2
+    function: fista_l2
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: ToF-Net
-    module: pwm_core.recon.tof_solvers
-    function: tof_dl_recon
-    params: 12M
-    gpu: true
-    reference: Agresti, G. et al. (2019) Unsupervised domain adaptation for ToF depth
-      completion, ICCV Workshop
-  famous_dl:
-    name: ToF-MPI Deconv
-    module: pwm_core.recon.tof_solvers
-    function: tof_mpi_deconv
-    params: '0'
+    name: ToF-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Gutierrez, O. et al. (2019) Practical calibration of actuated multi-beam
-      ToF, CVPR
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: ToF-MPI Deconv [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

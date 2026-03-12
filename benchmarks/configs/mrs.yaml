@@ -48,26 +48,25 @@ solvers:
   traditional_cpu:
     name: SENSE (spectroscopy)
     module: pwm_core.recon.mri_solvers
-    function: run_sense
+    function: zero_filled_reconstruction
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: MRS-Net
-    module: pwm_core.recon.mrs_solvers
-    function: mrs_net_recon
-    params: 8M
-    gpu: true
-    reference: Lee, H.H. & Kim, H. (2019) Intact metabolite spectrum mining by DL
-      in MRS, Magn. Reson. Med. 82(1)
-  famous_dl:
-    name: HLSVD-MRS
-    module: pwm_core.recon.mrs_solvers
-    function: hlsvd_mrs_recon
-    params: '0'
+    name: MRS-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Pijnappel, W.W.F. et al. (1992) SVD-based quantification of MRS signals,
-      J. Magn. Reson.
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: HLSVD-MRS [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

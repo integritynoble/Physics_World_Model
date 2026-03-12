@@ -56,7 +56,8 @@ data_source:
   dataset_url: https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis, ECCV 2020'
+  citation: 'Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields
+    for View Synthesis, ECCV 2020'
   license: MIT
 mismatch_params: []
 solvers:
@@ -88,6 +89,24 @@ solvers:
     params: 5M
     gpu: false
     reference: Muller et al. 2022
+  rl_proxy:
+    name: Richardson-Lucy (proxy baseline)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 50
+    gpu: false
+    reference: Richardson 1972, JOSA
+  fista_proxy:
+    name: FISTA-TV (proxy baseline)
+    module: pwm_core.recon.cs_solvers
+    function: run_ista
+    params:
+      iters: 30
+      fista: true
+      use_tv: true
+    gpu: false
+    reference: Beck & Teboulle 2009, SIAM
 metrics:
   names:
   - psnr
@@ -100,7 +119,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis, ECCV 2020'
+    reference: 'Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields
+      for View Synthesis, ECCV 2020'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / nerf_graph_v1

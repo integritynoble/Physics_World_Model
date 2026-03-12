@@ -53,27 +53,29 @@ mismatch_params:
   unit: '-'
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   e2e_cup:
-    name: E2E-CUP
-    module: pwm_core.recon.cup_solvers
-    function: e2e_cup_recon
-    params: 18M
-    gpu: true
-    reference: Zeng, T. et al. (2021) E2E compressed ultrafast photography, Optica
-      8(6)
+    name: E2E-CUP [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

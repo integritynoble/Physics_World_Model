@@ -52,27 +52,29 @@ mismatch_params:
   unit: m/s
 solvers:
   traditional_cpu:
-    name: FBP
-    module: pwm_core.recon.fbp
-    function: run_fbp
-    params: '0'
+    name: FBP [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: DL-Recon
-    module: pwm_core.recon.dl_recon
-    function: dl_reconstruct
-    params: 5M
-    gpu: true
-    reference: ''
+    name: DL-Recon [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   ivus_dl:
-    name: IVUS-Net
-    module: pwm_core.recon.ivus_solvers
-    function: ivus_net_recon
-    params: 12M
-    gpu: true
-    reference: Yang, J. et al. (2021) IVUS tissue characterization with DL, Med. Image
-      Anal. 71
+    name: IVUS-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

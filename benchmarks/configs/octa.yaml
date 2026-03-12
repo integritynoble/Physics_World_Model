@@ -53,20 +53,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: OCTA-Net
-    module: pwm_core.recon.octa_solvers
-    function: octa_net_recon
-    params: 20M
-    gpu: true
-    reference: Li, M. et al. (2020) IPN-V2 for retinal vessel segmentation in OCTA,
-      AAAI
+    name: OCTA-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: OCTA-FF
-    module: pwm_core.recon.octa_solvers
-    function: octa_ff_recon
-    params: 12M
-    gpu: true
-    reference: 'Ma, Y. et al. (2020) OCTA-500: A retinal dataset for OCTA, IEEE TMI'
+    name: OCTA-FF [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

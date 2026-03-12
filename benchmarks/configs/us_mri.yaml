@@ -53,26 +53,28 @@ mismatch_params:
   unit: mm
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
+  best_quality:
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
+  us_mri_dl:
+    name: US-MRI-Net [proxy]
+    module: pwm_core.recon.mri_solvers
+    function: zero_filled_reconstruction
+    params: {}
     gpu: false
     reference: ''
-  best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
-  us_mri_dl:
-    name: US-MRI-Net
-    module: pwm_core.recon.us_mri_solvers
-    function: us_mri_dl_recon
-    params: 20M
-    gpu: true
-    reference: Zhu, B. et al. (2018) Image reconstruction by DL, Nature 555:487
 metrics:
   names:
   - psnr

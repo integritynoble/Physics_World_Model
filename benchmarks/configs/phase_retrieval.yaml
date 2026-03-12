@@ -50,7 +50,8 @@ data_source:
   dataset_url: https://github.com/swing-research/phase-retrieval
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Candes et al., Phase Retrieval via Wirtinger Flow, IEEE Trans. Information Theory 2015
+  citation: Candes et al., Phase Retrieval via Wirtinger Flow, IEEE Trans. Information
+    Theory 2015
   license: MIT
 mismatch_params:
 - name: Support mask error
@@ -80,26 +81,27 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: RAAR
-    module: pwm_core.recon.phase_retrieval_solver
-    function: raar_recon
-    params: '0'
+    name: RAAR [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Luke 2005, Inverse Problems
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: prDeep
-    module: pwm_core.recon.phase_retrieval_solver
-    function: prdeep_recon
-    params: 6M
+    name: prDeep [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
     gpu: false
-    reference: Metzler et al. NeurIPS 2018
+    reference: Richardson 1972, JOSA
   small_gpu:
-    name: prDeep
-    module: pwm_core.recon.phase_retrieval_solver
-    function: prdeep_recon
-    params: '0'
+    name: prDeep [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr
@@ -111,7 +113,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Candes et al., Phase Retrieval via Wirtinger Flow, IEEE Trans. Information Theory 2015
+    reference: Candes et al., Phase Retrieval via Wirtinger Flow, IEEE Trans. Information
+      Theory 2015
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / phase_retrieval_graph_v1

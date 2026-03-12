@@ -67,21 +67,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: CheXNet
-    module: pwm_core.recon.xray_solvers
-    function: chexnet_recon
-    params: 121M
-    gpu: true
-    reference: 'Rajpurkar, P. et al. (2017) CheXNet: Radiologist-level pneumonia detection,
-      NIPS ML4H'
+    name: CheXNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: X-ray UNet
-    module: pwm_core.recon.xray_solvers
-    function: xray_unet_recon
-    params: 31M
-    gpu: true
-    reference: Litjens, G. et al. (2017) Survey of DL in medical image analysis, Med.
-      Image Anal. 42
+    name: X-ray UNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

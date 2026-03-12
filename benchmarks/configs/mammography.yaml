@@ -51,21 +51,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: MammoNet (GatorTron)
-    module: pwm_core.recon.mammo_solvers
-    function: mammo_net_recon
-    params: 85M
-    gpu: true
-    reference: Shen, L. et al. (2021) Deep learning for mass detection in mammography,
-      NPJ Digital Med.
+    name: MammoNet (GatorTron) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: Mammo-ResNet
-    module: pwm_core.recon.mammo_solvers
-    function: mammo_resnet_recon
-    params: 25M
-    gpu: true
-    reference: Wu, N. et al. (2019) Deep neural networks improve radiologists performance
-      in breast cancer screening, RSNA
+    name: Mammo-ResNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

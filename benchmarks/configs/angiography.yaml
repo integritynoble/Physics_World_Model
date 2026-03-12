@@ -53,19 +53,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: DSA-Net
-    module: pwm_core.recon.angio_solvers
-    function: dsa_net_recon
-    params: 25M
-    gpu: true
-    reference: Shit, S. et al. (2021) clDice vessel segmentation, CVPR
+    name: DSA-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: VesselSegNet
-    module: pwm_core.recon.angio_solvers
-    function: vessel_segnet_recon
-    params: 20M
-    gpu: true
-    reference: Moccia, S. et al. (2018) Blood vessel segmentation, IEEE TBME
+    name: VesselSegNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

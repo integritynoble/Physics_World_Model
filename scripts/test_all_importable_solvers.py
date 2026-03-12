@@ -158,9 +158,9 @@ def load_sample(mod_id, sample_idx=0):
 
         # Normalize special key names for y (measurement)
         if "y" not in sample:
-            for key in ("sinogram_measured", "bscan_measured", "kspace_undersampled",
-                        "projection_measured", "measurement", "interferogram",
-                        "kspace", "sinogram", "projection"):
+            for key in ("sinogram_measured", "bscan_measured", "bmode_measured",
+                        "kspace_undersampled", "projection_measured", "measurement",
+                        "interferogram", "kspace", "sinogram", "projection"):
                 if key in sample:
                     sample["y"] = sample[key]
                     break

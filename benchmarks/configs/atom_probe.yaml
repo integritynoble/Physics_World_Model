@@ -57,27 +57,29 @@ mismatch_params:
   unit: nm
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   apt_dl:
-    name: APT-Net
-    module: pwm_core.recon.apt_solvers
-    function: apt_net_recon
-    params: 6M
-    gpu: true
-    reference: Haley, D. et al. (2020) Prospects for atom-by-atom analysis, npj Comput.
-      Mater. 6:149
+    name: APT-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

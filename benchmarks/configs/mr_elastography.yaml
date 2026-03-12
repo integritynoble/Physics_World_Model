@@ -59,27 +59,29 @@ mismatch_params:
   unit: amplitude
 solvers:
   traditional_cpu:
-    name: FBP
-    module: pwm_core.recon.fbp
-    function: run_fbp
-    params: '0'
+    name: FBP [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: DL-Recon
-    module: pwm_core.recon.dl_recon
-    function: dl_reconstruct
-    params: 5M
-    gpu: true
-    reference: ''
+    name: DL-Recon [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
+    gpu: false
+    reference: Richardson 1972, JOSA
   mre_dl:
-    name: MRE-Net
-    module: pwm_core.recon.mre_solvers
-    function: mre_dl_recon
-    params: 12M
-    gpu: true
-    reference: Waddington, D.E.J. et al. (2023) DL for MR elastography, Med. Image
-      Anal. 83
+    name: MRE-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

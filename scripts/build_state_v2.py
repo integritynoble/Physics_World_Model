@@ -220,9 +220,11 @@ def get_dataset_status(mod):
 
 def get_algo_results(mod, algo_data):
     """Get best GPU test result for a modality."""
+    # Prefer direct key first; fallback to legacy alias keys
     aliases = {"cassi": "sd_cassi", "spc": "spc_kronecker"}
-    key = aliases.get(mod, mod)
-    info = algo_data.get(key, algo_data.get(mod, {}))
+    alias_key = aliases.get(mod, mod)
+    # Direct key takes priority over alias (cassi > sd_cassi)
+    info = algo_data.get(mod, algo_data.get(alias_key, {}))
     if not info:
         return None, 0
 

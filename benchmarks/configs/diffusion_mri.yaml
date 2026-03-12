@@ -48,24 +48,24 @@ solvers:
   traditional_cpu:
     name: SENSE (WLS tensor fit)
     module: pwm_core.recon.mri_solvers
-    function: run_sense
+    function: zero_filled_reconstruction
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: q-DL (qDiffusion)
-    module: pwm_core.recon.dmri_solvers
-    function: q_dl_recon
-    params: 18M
-    gpu: true
-    reference: Golkov, V. et al. (2016) q-space deep learning, IEEE TMI 35(5)
-  famous_dl:
-    name: SHORE-Net
-    module: pwm_core.recon.dmri_solvers
-    function: shore_net_recon
-    params: 12M
+    name: q-DL (qDiffusion) [proxy]
+    module: pwm_core.recon.mri_solvers
+    function: zero_filled_reconstruction
+    params: &id001 {}
     gpu: false
-    reference: 'Fick, R.H.J. et al. (2016) MAPL: PGSE dMRI beyond DTI, NeuroImage'
+    reference: ''
+  famous_dl:
+    name: SHORE-Net [proxy]
+    module: pwm_core.recon.mri_solvers
+    function: zero_filled_reconstruction
+    params: *id001
+    gpu: false
+    reference: ''
 metrics:
   names:
   - psnr

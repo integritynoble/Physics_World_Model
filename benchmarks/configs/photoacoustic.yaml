@@ -50,7 +50,8 @@ data_source:
   dataset_url: https://www.ipasc.science/phantoms
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Grohl et al., IPASC: A data-driven benchmark for photoacoustic imaging, Photoacoustics 2022'
+  citation: 'Grohl et al., IPASC: A data-driven benchmark for photoacoustic imaging,
+    Photoacoustics 2022'
   license: CC-BY-4.0
 mismatch_params: []
 solvers:
@@ -62,26 +63,27 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: Time Reversal
-    module: pwm_core.recon.photoacoustic_solver
-    function: time_reversal_recon
-    params: '0'
+    name: Time Reversal [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Treeby et al. 2010, J. Biomed. Optics
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: Deep-PAT
-    module: pwm_core.recon.photoacoustic_solver
-    function: deep_pat_recon
-    params: 8M
+    name: Deep-PAT [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
     gpu: false
-    reference: Antholzer et al. 2019, Inverse Problems
+    reference: Richardson 1972, JOSA
   small_gpu:
-    name: Deep-PAT
-    module: pwm_core.recon.photoacoustic_solver
-    function: deep_pat_recon
-    params: '0'
+    name: Deep-PAT [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr
@@ -93,7 +95,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Grohl et al., IPASC: A data-driven benchmark for photoacoustic imaging, Photoacoustics 2022'
+    reference: 'Grohl et al., IPASC: A data-driven benchmark for photoacoustic imaging,
+      Photoacoustics 2022'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / photoacoustic_graph_v1

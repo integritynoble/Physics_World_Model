@@ -46,26 +46,24 @@ solvers:
   traditional_cpu:
     name: SENSE (fMRI)
     module: pwm_core.recon.mri_solvers
-    function: run_sense
+    function: zero_filled_reconstruction
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: fMRI-Transformer
-    module: pwm_core.recon.fmri_solvers
-    function: fmri_transformer_recon
-    params: 22M
-    gpu: true
-    reference: Thomas, A.W. et al. (2022) Self-supervised learning of brain dynamics,
-      NeurIPS
+    name: fMRI-Transformer [proxy]
+    module: pwm_core.recon.mri_solvers
+    function: zero_filled_reconstruction
+    params: &id001 {}
+    gpu: false
+    reference: ''
   famous_dl:
-    name: DeepBold
-    module: pwm_core.recon.fmri_solvers
-    function: deepbold_recon
-    params: 8M
-    gpu: true
-    reference: Chou, X.L. et al. (2023) BOLD signal prediction with deep neural networks,
-      NeuroImage
+    name: DeepBold [proxy]
+    module: pwm_core.recon.mri_solvers
+    function: zero_filled_reconstruction
+    params: *id001
+    gpu: false
+    reference: ''
 metrics:
   names:
   - psnr

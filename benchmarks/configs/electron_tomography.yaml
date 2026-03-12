@@ -54,21 +54,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: IMOD-SIRT-DL
-    module: pwm_core.recon.etomo_solvers
-    function: sirt_dl_recon
-    params: 20M
-    gpu: true
-    reference: Xu, M. et al. (2017) De novo visual proteomics in single cells with
-      DeepETPicker, Nature Methods
-  famous_dl:
-    name: SIRT-3D
-    module: pwm_core.recon.etomo_solvers
-    function: sirt3d_recon
-    params: '0'
+    name: IMOD-SIRT-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Gilbert, P. (1972) Iterative reconstruction from projections, J. Theor.
-      Biol.
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: SIRT-3D [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

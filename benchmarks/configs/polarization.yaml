@@ -70,20 +70,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: PolarNet
-    module: pwm_core.recon.polarization_solvers
-    function: polar_net_recon
-    params: 12M
-    gpu: true
-    reference: Zhao, Y. et al. (2022) DL for polarization imaging, Opt. Lett. 47(17)
-  famous_dl:
-    name: Stokes-NN
-    module: pwm_core.recon.polarization_solvers
-    function: stokes_nn_recon
-    params: 5M
+    name: PolarNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Lara, D. & Dainty, C. (2006) Axially resolved complete Mueller matrix,
-      Opt. Lett.
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: Stokes-NN [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

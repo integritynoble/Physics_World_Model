@@ -47,28 +47,28 @@ data_source:
 mismatch_params: []
 solvers:
   traditional_cpu:
-    name: FISTA-L2 (phase unwrap)
-    module: pwm_core.recon.classical
-    function: run_fista_l2
-    params: '0'
+    name: FISTA-L2 (phase unwrap) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: SL-Net
-    module: pwm_core.recon.structured_light_solvers
-    function: sl_net_recon
-    params: 10M
-    gpu: true
-    reference: Nguyen, H. et al. (2020) DL for structured light profilometry, Opt.
-      Lasers Eng. 133
-  famous_dl:
-    name: FTPD
-    module: pwm_core.recon.structured_light_solvers
-    function: ftpd_solver
-    params: '0'
+    name: SL-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Takeda, M. & Mutoh, K. (1983) Fourier transform profilometry, Appl.
-      Opt. 22(24)
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: FTPD [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

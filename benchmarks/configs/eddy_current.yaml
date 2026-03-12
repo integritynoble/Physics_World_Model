@@ -59,27 +59,28 @@ mismatch_params:
   unit: deg
 solvers:
   traditional_cpu:
-    name: Adjoint
-    module: pwm_core.recon.adjoint
-    function: run_adjoint
-    params: '0'
+    name: Adjoint [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: PnP-ADMM
-    module: pwm_core.recon.pnp_admm
-    function: pnp_admm_recon
-    params: 2M
-    gpu: true
-    reference: ''
-  ec_dl:
-    name: ECT-Net
-    module: pwm_core.recon.ec_solvers
-    function: ec_net_recon
-    params: 5M
+    name: PnP-ADMM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 150
     gpu: false
-    reference: Miorelli, R. et al. (2020) DL for eddy current NDT, NDT&E International
-      116
+    reference: Richardson 1972, JOSA
+  ec_dl:
+    name: ECT-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

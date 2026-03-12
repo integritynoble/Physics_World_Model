@@ -48,25 +48,25 @@ solvers:
   traditional_cpu:
     name: FISTA-L2 (depth)
     module: pwm_core.recon.classical
-    function: run_fista_l2
+    function: fista_l2
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: PointNeXt
-    module: pwm_core.recon.lidar_solvers
-    function: pointnext_recon
-    params: 41M
-    gpu: true
-    reference: 'Qian, G. et al. (2022) PointNeXt: Revisiting PointNet++, NeurIPS'
+    name: PointNeXt [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: PointNet++
-    module: pwm_core.recon.lidar_solvers
-    function: pointnet_pp_recon
-    params: 1.7M
-    gpu: true
-    reference: 'Qi, C.R. et al. (2017) PointNet++: Deep hierarchical feature learning,
-      NeurIPS'
+    name: PointNet++ [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

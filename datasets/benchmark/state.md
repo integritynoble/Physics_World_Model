@@ -22,174 +22,174 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 
 | Modality | Stage 0: Public Dataset | Stage 1: Dataset | Stage 2: Benchmark | Stage 3: GPU Tests | Stage 4: SpecLab |
 |----------|------------------------|------------------|-------------------|--------------------|------------------|
-| acoustic_emission | 🔄 AE simulation benchmark / EWGAE standards dataset | ❌ | ❌ | ✅ 1x, best=20.2 dB | ❌ |
-| acoustic_microscopy | 🔄 SAM synthetic benchmark (no dominant public dataset) | ❌ | ❌ | ✅ 1x, best=10.0 dB | ❌ |
-| active_thermography | ✅ PVC-Infrared Dataset (Applied Sciences 2023, doi:10.3390/app13052901) / ALETHEIA 2024 | ❌ | ❌ | ✅ 1x, best=6.5 dB | ❌ |
-| adaptive_optics | ✅ ESO VLT SPHERE archive + AOTools simulation | ❌ | ❌ | ✅ 1x, best=100.0 dB | ❌ |
+| acoustic_emission | 🔄 AE simulation benchmark / EWGAE standards dataset | ❌ | ❌ | ✅ 4x, best=20.2 dB | ❌ |
+| acoustic_microscopy | 🔄 SAM synthetic benchmark (no dominant public dataset) | ❌ | ❌ | ✅ 4x, best=22.0 dB | ❌ |
+| active_thermography | ✅ PVC-Infrared Dataset (Applied Sciences 2023, doi:10.3390/app13052901) / ALETHEIA 2024 | ❌ | ❌ | ✅ 4x, best=7.2 dB | ❌ |
+| adaptive_optics | ✅ ESO VLT SPHERE archive + AOTools simulation | ❌ | ❌ | ✅ 4x, best=100.0 dB | ❌ |
 | afm | ✅ QUAM-AFM (ACS J. Chem. Inf. Model. 2022, doi:10.1021/acs.jcim.1c01323) | ❌ | ❌ | ✅ 3x, best=31.3 dB | ❌ |
-| angiography | ✅ XCAD coronary angiography (ICCV 2021) / ARCADE dataset | ❌ | ❌ | ✅ 2x, best=12.9 dB | ❌ |
-| asl_mri | ✅ Human Connectome Project ASL (hcp.nmr.wustl.edu) / ISMRM-OSIPI ASL Challenge | ❌ | ❌ | ✅ 1x, best=2.7 dB | ❌ |
-| atom_probe | 🔄 APT simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 1x, best=40.2 dB | ❌ |
-| bioluminescence_tomo | 🔄 BLT simulation benchmark (Ntziachristos Nature Methods 2010) | ❌ | ❌ | ✅ 1x, best=13.3 dB | ❌ |
-| brachytherapy_img | ✅ AAPM TG-43 phantom / Open-Source TG-43 data | ❌ | ❌ | ✅ 1x, best=20.5 dB | ❌ |
-| brillouin | 🔄 Brillouin simulation benchmark / RRUFF spectral data | ❌ | ❌ | ✅ 1x, best=35.8 dB | ❌ |
+| angiography | ✅ XCAD coronary angiography (ICCV 2021) / ARCADE dataset | ❌ | ❌ | ✅ 4x, best=12.9 dB | ❌ |
+| asl_mri | ✅ Human Connectome Project ASL (hcp.nmr.wustl.edu) / ISMRM-OSIPI ASL Challenge | ❌ | ❌ | ✅ 4x, best=4.1 dB | ❌ |
+| atom_probe | 🔄 APT simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 4x, best=40.2 dB | ❌ |
+| bioluminescence_tomo | 🔄 BLT simulation benchmark (Ntziachristos Nature Methods 2010) | ❌ | ❌ | ✅ 4x, best=13.3 dB | ❌ |
+| brachytherapy_img | ✅ AAPM TG-43 phantom / Open-Source TG-43 data | ❌ | ❌ | ✅ 4x, best=25.2 dB | ❌ |
+| brillouin | 🔄 Brillouin simulation benchmark / RRUFF spectral data | ❌ | ❌ | ✅ 4x, best=35.8 dB | ❌ |
 | cacti | ✅ DAVIS-2017 / Six Scenes (Liu IEEE TPAMI 2019, github.com/liuyang12/SCI) | ❌ | ❌ | ✅ 6x, best=11.5 dB | ❌ |
-| cars | 🔄 CARS simulation benchmark / SRS hyperspectral data | ❌ | ❌ | ✅ 1x, best=14.2 dB | ❌ |
-| cassi | ✅ CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ❌ | ❌ | ✅ 1x, best=-5.3 dB | ❌ |
-| cathodoluminescence | ✅ HyperSpy CL dataset (Zenodo 6513794) / EMPIAR CL data | ❌ | ❌ | ✅ 1x, best=28.9 dB | ❌ |
+| cars | 🔄 CARS simulation benchmark / SRS hyperspectral data | ❌ | ❌ | ✅ 4x, best=16.7 dB | ❌ |
+| cassi | ✅ CAVE hyperspectral (Columbia Univ.) / KAIST MST (CVPR 2022, github.com/caiyuanhao1998/MST) | ❌ | ❌ | ✅ 4x, best=13.6 dB | ❌ |
+| cathodoluminescence | ✅ HyperSpy CL dataset (Zenodo 6513794) / EMPIAR CL data | ❌ | ❌ | ✅ 4x, best=28.9 dB | ❌ |
 | cbct | ✅ AAPM Low-Dose CT Challenge 2016 / LoDoPaB-CT (Sci. Data 2021) | ❌ | ❌ | ✅ 3x, best=15.2 dB | ❌ |
-| cest_mri | ✅ ISMRM 2024 CEST Challenge / fastMRI brain (fastmri.med.nyu.edu) | ❌ | ❌ | ✅ 1x, best=31.0 dB | ❌ |
-| ceus | ✅ CAMUS cardiac US (CREATIS INSA-Lyon, Leclerc IEEE TMI 2019) | ❌ | ❌ | ✅ 1x, best=24.5 dB | ❌ |
-| clem | ✅ EMPIAR-10094 CLEM (EBI, CC0) / OpenOrganelle CLEM | ❌ | ❌ | ✅ 1x, best=17.0 dB | ❌ |
-| coded_exposure | ✅ GoPro Deblurring (Nah CVPR 2017) / HDR+ Dataset (SIGGRAPH Asia 2016) | ❌ | ❌ | ✅ 1x, best=19.9 dB | ❌ |
+| cest_mri | ✅ ISMRM 2024 CEST Challenge / fastMRI brain (fastmri.med.nyu.edu) | ❌ | ❌ | ✅ 4x, best=32.1 dB | ❌ |
+| ceus | ✅ CAMUS cardiac US (CREATIS INSA-Lyon, Leclerc IEEE TMI 2019) | ❌ | ❌ | ✅ 4x, best=24.5 dB | ❌ |
+| clem | ✅ EMPIAR-10094 CLEM (EBI, CC0) / OpenOrganelle CLEM | ❌ | ❌ | ✅ 4x, best=28.1 dB | ❌ |
+| coded_exposure | ✅ GoPro Deblurring (Nah CVPR 2017) / HDR+ Dataset (SIGGRAPH Asia 2016) | ❌ | ❌ | ✅ 4x, best=32.1 dB | ❌ |
 | confocal_3d | ✅ OpenCell 3D confocal (CZI) / Broad Bioimage Benchmark (BBBC) | ❌ | ❌ | ✅ 6x, best=27.3 dB | ❌ |
-| confocal_endomicroscopy | ✅ UCL pCLE dataset / Mauna Kea CellvizioNet benchmark | ❌ | ❌ | ✅ 1x, best=34.0 dB | ❌ |
+| confocal_endomicroscopy | ✅ UCL pCLE dataset / Mauna Kea CellvizioNet benchmark | ❌ | ❌ | ✅ 4x, best=34.0 dB | ❌ |
 | confocal_livecell | ✅ LiveCell (Edlund Nature Methods 2021) / CTC Cell Tracking Challenge | ❌ | ❌ | ✅ 5x, best=32.3 dB | ❌ |
-| coronagraphy | ✅ HST coronagraph MAST archive / GPIES direct-imaging survey | ❌ | ❌ | ✅ 1x, best=25.2 dB | ❌ |
-| cryo_em | ✅ EMPIAR-10028 TRPV1 (Bai Nature 2015) / EMDB GroEL / SHREC 2019 | ❌ | ❌ | ✅ 2x, best=19.2 dB | ❌ |
+| coronagraphy | ✅ HST coronagraph MAST archive / GPIES direct-imaging survey | ❌ | ❌ | ✅ 4x, best=25.2 dB | ❌ |
+| cryo_em | ✅ EMPIAR-10028 TRPV1 (Bai Nature 2015) / EMDB GroEL / SHREC 2019 | ❌ | ❌ | ✅ 5x, best=19.2 dB | ❌ |
 | cryo_et | ✅ SHREC 2021 cryo-ET challenge / EMPIAR-10045 / IsoNet dataset | ❌ | ❌ | ✅ 3x, best=13.2 dB | ❌ |
 | ct | ✅ LoDoPaB-CT (Leuschner Sci. Data 2021, doi:10.1038/s41597-021-00893-z) | ✅ | ❌ | ✅ 7x, best=13.8 dB | ❌ |
-| ct_fluorescence | 🔄 CT-FMT simulation benchmark / FLECT phantom data | ❌ | ❌ | ✅ 1x, best=-37.6 dB | ❌ |
-| cup | 🔄 CUP (Compressed Ultrafast Photography) benchmark | ❌ | ❌ | ✅ 1x, best=-2.3 dB | ❌ |
+| ct_fluorescence | 🔄 CT-FMT simulation benchmark / FLECT phantom data | ❌ | ❌ | ✅ 4x, best=3.3 dB | ❌ |
+| cup | 🔄 CUP (Compressed Ultrafast Photography) benchmark | ❌ | ❌ | ✅ 4x, best=5.5 dB | ❌ |
 | dark_field | ✅ Munich Talbot-Lau dark-field CT benchmark / PSI grating data | ❌ | ❌ | ✅ 3x, best=25.1 dB | ❌ |
-| desi | ✅ MetaboLights DESI-MSI dataset / EMBL-EBI MSI archive | ❌ | ❌ | ✅ 1x, best=15.1 dB | ❌ |
-| dexa | ✅ OsteoArthritis Initiative (OAI) DXA — UCSF (oai.ucsf.edu) | ❌ | ❌ | ✅ 1x, best=9.5 dB | ❌ |
+| desi | ✅ MetaboLights DESI-MSI dataset / EMBL-EBI MSI archive | ❌ | ❌ | ✅ 4x, best=15.1 dB | ❌ |
+| dexa | ✅ OsteoArthritis Initiative (OAI) DXA — UCSF (oai.ucsf.edu) | ❌ | ❌ | ✅ 4x, best=inf dB | ❌ |
 | dic | ✅ SciPy phase benchmark / ACPA DIC Challenge dataset | ❌ | ❌ | ✅ 3x, best=15.6 dB | ❌ |
-| diffusion_mri | ✅ Human Connectome Project dMRI (hcp.nmr.wustl.edu) / Sherbrooke-3T | ❌ | ❌ | ✅ 1x, best=11.3 dB | ❌ |
-| digital_breast_tomo | ✅ INBreast (BCDR) / VDM-100 DBT dataset (TCIA) | ❌ | ❌ | ✅ 1x, best=-36.0 dB | ❌ |
+| diffusion_mri | ✅ Human Connectome Project dMRI (hcp.nmr.wustl.edu) / Sherbrooke-3T | ❌ | ❌ | ✅ 4x, best=11.3 dB | ❌ |
+| digital_breast_tomo | ✅ INBreast (BCDR) / VDM-100 DBT dataset (TCIA) | ❌ | ❌ | ✅ 4x, best=2.5 dB | ❌ |
 | dna_paint | ✅ SMLM Challenge 2016 / DNA-PAINT sim benchmark (Jungmann lab) | ❌ | ❌ | ✅ 3x, best=28.5 dB | ❌ |
-| doppler_ultrasound | ✅ EchoNet-Dynamic (Stanford, Ouyang Nature 2020) / CAMUS | ❌ | ❌ | ✅ 4x, best=17.6 dB | ❌ |
-| dot | 🔄 UCL DOT simulation benchmark / BabyBrain DOT data | ❌ | ❌ | ✅ 4x, best=7.0 dB | ❌ |
-| ebsd | ✅ DREAM.3D synthetic EBSD / NIST SRM EBSD benchmark | ❌ | ❌ | ✅ 1x, best=21.8 dB | ❌ |
-| eddy_current | 🔄 EEDB NDT benchmark / Rolls-Royce ECT dataset | ❌ | ❌ | ✅ 1x, best=4.8 dB | ❌ |
+| doppler_ultrasound | ✅ EchoNet-Dynamic (Stanford, Ouyang Nature 2020) / CAMUS | ❌ | ❌ | ✅ 6x, best=17.6 dB | ❌ |
+| dot | 🔄 UCL DOT simulation benchmark / BabyBrain DOT data | ❌ | ❌ | ✅ 6x, best=7.0 dB | ❌ |
+| ebsd | ✅ DREAM.3D synthetic EBSD / NIST SRM EBSD benchmark | ❌ | ❌ | ✅ 4x, best=21.9 dB | ❌ |
+| eddy_current | 🔄 EEDB NDT benchmark / Rolls-Royce ECT dataset | ❌ | ❌ | ✅ 4x, best=22.9 dB | ❌ |
 | edx_mapping | ✅ NIST SRM-2460 EDX / HyperSpy EDX demo dataset (Zenodo) | ❌ | ❌ | ✅ 4x, best=22.0 dB | ❌ |
-| eels | ✅ EELS.info database (eels.info) / Cornell EELS dataset | ❌ | ❌ | ✅ 1x, best=24.6 dB | ❌ |
-| eht_imaging | ✅ EHT 2019 M87 public data release (eventhorizontelescope.org) | ❌ | ❌ | ✅ 1x, best=11.3 dB | ❌ |
-| elastography | ✅ MRE phantom NIST / RSNA Quantitative Imaging Biomarker Alliance | ❌ | ❌ | ✅ 1x, best=5.7 dB | ❌ |
-| electron_diffraction | ✅ CIF/ICSD + RRUFF ED patterns / CBED simulation benchmark | ❌ | ❌ | ✅ 2x, best=42.0 dB | ❌ |
-| electron_holography | 🔄 EMDB holography dataset / FZJ Juelich electron holography | ❌ | ❌ | ✅ 2x, best=9.5 dB | ❌ |
-| electron_tomography | ✅ EMPIAR-10005 / EMPIAR-10045 (EBI) / EMDB tilt series | ❌ | ❌ | ✅ 2x, best=25.1 dB | ❌ |
+| eels | ✅ EELS.info database (eels.info) / Cornell EELS dataset | ❌ | ❌ | ✅ 5x, best=25.2 dB | ❌ |
+| eht_imaging | ✅ EHT 2019 M87 public data release (eventhorizontelescope.org) | ❌ | ❌ | ✅ 4x, best=11.4 dB | ❌ |
+| elastography | ✅ MRE phantom NIST / RSNA Quantitative Imaging Biomarker Alliance | ❌ | ❌ | ✅ 4x, best=11.0 dB | ❌ |
+| electron_diffraction | ✅ CIF/ICSD + RRUFF ED patterns / CBED simulation benchmark | ❌ | ❌ | ✅ 4x, best=42.0 dB | ❌ |
+| electron_holography | 🔄 EMDB holography dataset / FZJ Juelich electron holography | ❌ | ❌ | ✅ 4x, best=9.5 dB | ❌ |
+| electron_tomography | ✅ EMPIAR-10005 / EMPIAR-10045 (EBI) / EMDB tilt series | ❌ | ❌ | ✅ 4x, best=25.1 dB | ❌ |
 | endoscopy | ✅ Kvasir-SEG (Jha IEEE Access 2020) / CholecT50 / HyperKvasir | ❌ | ❌ | ✅ 3x, best=11.8 dB | ❌ |
-| entangled_photon | 🔄 Quantum imaging simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 1x, best=31.8 dB | ❌ |
-| event_camera | ✅ DAVIS 240C / N-Caltech101 / MVSEC (Zhu RAL 2018) | ❌ | ❌ | ✅ 1x, best=7.3 dB | ❌ |
+| entangled_photon | 🔄 Quantum imaging simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 4x, best=31.8 dB | ❌ |
+| event_camera | ✅ DAVIS 240C / N-Caltech101 / MVSEC (Zhu RAL 2018) | ❌ | ❌ | ✅ 4x, best=7.3 dB | ❌ |
 | expansion | ✅ ExPath benchmark / Allen Institute ExM public data | ❌ | ❌ | ✅ 3x, best=33.9 dB | ❌ |
 | fib_sem | ✅ OpenOrganelle FIB-SEM (Janelia, janelia.org) / H01 connectome | ❌ | ❌ | ✅ 3x, best=28.1 dB | ❌ |
-| flash_lidar | ✅ KITTI LiDAR (Geiger CVPR 2012) / Middlebury flash 3D | ❌ | ❌ | ✅ 1x, best=4.3 dB | ❌ |
+| flash_lidar | ✅ KITTI LiDAR (Geiger CVPR 2012) / Middlebury flash 3D | ❌ | ❌ | ✅ 4x, best=4.3 dB | ❌ |
 | flim | ✅ FLUTE benchmark (Zanacchi Nature Methods 2019) / FLIM-FRET dataset | ❌ | ❌ | ✅ 5x, best=36.9 dB | ❌ |
-| fluoroscopy | ✅ TCIA Fluoroscopy / CVC-ClinicDB (Bernal CMIG 2015) | ❌ | ❌ | ✅ 2x, best=43.5 dB | ❌ |
-| fmri | ✅ Human Connectome Project fMRI / OpenNeuro (Poldrack OpenNeuro 2013) | ❌ | ❌ | ✅ 1x, best=4.9 dB | ❌ |
-| fpm | ✅ FPM benchmark (Tian Light Sci. Appl. 2015) / UCB FPM dataset | ❌ | ❌ | ✅ 2x, best=16.9 dB | ❌ |
-| ftir_imaging | ✅ USGS spectral library v7 (usgs.gov) / SFDB FTIR benchmark | ❌ | ❌ | ✅ 1x, best=14.8 dB | ❌ |
+| fluoroscopy | ✅ TCIA Fluoroscopy / CVC-ClinicDB (Bernal CMIG 2015) | ❌ | ❌ | ✅ 4x, best=43.6 dB | ❌ |
+| fmri | ✅ Human Connectome Project fMRI / OpenNeuro (Poldrack OpenNeuro 2013) | ❌ | ❌ | ✅ 4x, best=4.9 dB | ❌ |
+| fpm | ✅ FPM benchmark (Tian Light Sci. Appl. 2015) / UCB FPM dataset | ❌ | ❌ | ✅ 5x, best=16.9 dB | ❌ |
+| ftir_imaging | ✅ USGS spectral library v7 (usgs.gov) / SFDB FTIR benchmark | ❌ | ❌ | ✅ 4x, best=34.6 dB | ❌ |
 | fundus | ✅ DRIVE (Staal IEEE TMI 2004) / STARE / CHASE_DB1 / DiaRetDB | ❌ | ❌ | ✅ 4x, best=35.9 dB | ❌ |
-| fwi | ✅ OpenFWI (Deng IEEE TGRS 2021) / SEG-SALT / Marmousi-2 | ❌ | ❌ | ✅ 1x, best=8.7 dB | ❌ |
+| fwi | ✅ OpenFWI (Deng IEEE TGRS 2021) / SEG-SALT / Marmousi-2 | ❌ | ❌ | ✅ 4x, best=8.7 dB | ❌ |
 | gaussian_splatting | ✅ Tanks & Temples (Knapitsch SIGGRAPH 2017) / Mip-NeRF360 / Blender | ❌ | ❌ | ✅ 5x, best=inf dB | ❌ |
-| ghost_imaging | 🔄 Ghost imaging simulation benchmark / NIST quantum dataset | ❌ | ❌ | ✅ 1x, best=6.6 dB | ❌ |
-| gpr | 🔄 ISAP GPR benchmark / SFDB GPR dataset / IDS simulation data | ❌ | ❌ | ✅ 1x, best=10.6 dB | ❌ |
-| gravitational_wave | ✅ LIGO O3 public data (GWOSC, gwosc.org) / GWTC-3 catalog | ❌ | ❌ | ✅ 1x, best=100.0 dB | ❌ |
-| hdr_imaging | ✅ HDR-DB (Fairchild RIT) / HDREye / Laval HDR panorama database | ❌ | ❌ | ✅ 1x, best=36.8 dB | ❌ |
+| ghost_imaging | 🔄 Ghost imaging simulation benchmark / NIST quantum dataset | ❌ | ❌ | ✅ 4x, best=inf dB | ❌ |
+| gpr | 🔄 ISAP GPR benchmark / SFDB GPR dataset / IDS simulation data | ❌ | ❌ | ✅ 4x, best=10.6 dB | ❌ |
+| gravitational_wave | ✅ LIGO O3 public data (GWOSC, gwosc.org) / GWTC-3 catalog | ❌ | ❌ | ✅ 4x, best=100.0 dB | ❌ |
+| hdr_imaging | ✅ HDR-DB (Fairchild RIT) / HDREye / Laval HDR panorama database | ❌ | ❌ | ✅ 4x, best=36.8 dB | ❌ |
 | holography | ✅ HoloPy benchmark / DHM simulation / FINCH holography data | ❌ | ❌ | ✅ 5x, best=14.9 dB | ❌ |
-| hyperspectral_remote | ✅ AVIRIS Indian Pines / ROSIS Pavia / GRSS Data Fusion Contest | ❌ | ❌ | ✅ 1x, best=29.1 dB | ❌ |
-| impedance_tomo | ✅ EIDORS simulation framework / Finnish EIT challenge (FEIT) | ❌ | ❌ | ✅ 1x, best=11.2 dB | ❌ |
-| industrial_ct | ✅ GCPD industrial CT / Zeiss Xradia / WoDT benchmark | ❌ | ❌ | ✅ 1x, best=20.3 dB | ❌ |
-| insar | ✅ Sentinel-1 SLC archive (ESA Copernicus, esa.int) / COSAR benchmark | ❌ | ❌ | ✅ 1x, best=31.8 dB | ❌ |
-| integral | ✅ EPFL integral imaging dataset / Stanford Light Field archive | ❌ | ❌ | ✅ 2x, best=40.0 dB | ❌ |
+| hyperspectral_remote | ✅ AVIRIS Indian Pines / ROSIS Pavia / GRSS Data Fusion Contest | ❌ | ❌ | ✅ 4x, best=29.1 dB | ❌ |
+| impedance_tomo | ✅ EIDORS simulation framework / Finnish EIT challenge (FEIT) | ❌ | ❌ | ✅ 4x, best=inf dB | ❌ |
+| industrial_ct | ✅ GCPD industrial CT / Zeiss Xradia / WoDT benchmark | ❌ | ❌ | ✅ 4x, best=20.3 dB | ❌ |
+| insar | ✅ Sentinel-1 SLC archive (ESA Copernicus, esa.int) / COSAR benchmark | ❌ | ❌ | ✅ 4x, best=31.8 dB | ❌ |
+| integral | ✅ EPFL integral imaging dataset / Stanford Light Field archive | ❌ | ❌ | ✅ 5x, best=40.0 dB | ❌ |
 | ism | 🔄 ISM simulation benchmark / Oxford ISM comparison data | ❌ | ❌ | ✅ 3x, best=3.1 dB | ❌ |
-| ivus | ✅ MICCAI 2011 IVUS segmentation challenge / CARDIAC Atlas Project | ❌ | ❌ | ✅ 1x, best=19.8 dB | ❌ |
+| ivus | ✅ MICCAI 2011 IVUS segmentation challenge / CARDIAC Atlas Project | ❌ | ❌ | ✅ 4x, best=19.8 dB | ❌ |
 | lattice_lightsheet | ✅ Allen Cell Institute lattice light-sheet / Janelia LLS data | ❌ | ❌ | ✅ 3x, best=25.1 dB | ❌ |
 | lensless | ✅ DiffuserCam (Monakhova Optica 2019) / PhlatCam benchmark | ❌ | ❌ | ✅ 5x, best=11.9 dB | ❌ |
-| libs | ✅ NIST LIBS database (nist.gov/srd) / RRUFF LIBS spectra | ❌ | ❌ | ✅ 1x, best=18.0 dB | ❌ |
-| lidar | ✅ KITTI LiDAR (Geiger CVPR 2012) / nuScenes / SemanticKITTI | ❌ | ❌ | ✅ 1x, best=32.6 dB | ❌ |
+| libs | ✅ NIST LIBS database (nist.gov/srd) / RRUFF LIBS spectra | ❌ | ❌ | ✅ 4x, best=26.5 dB | ❌ |
+| lidar | ✅ KITTI LiDAR (Geiger CVPR 2012) / nuScenes / SemanticKITTI | ❌ | ❌ | ✅ 4x, best=32.7 dB | ❌ |
 | light_field | ✅ Stanford Light Field Archive (lightfield.stanford.edu) / INRIA LF | ❌ | ❌ | ✅ 5x, best=27.3 dB | ❌ |
 | lightsheet | ✅ Allen Brain Atlas light-sheet (alleninstitute.org) / Zebrafish SPIM | ❌ | ❌ | ✅ 7x, best=20.0 dB | ❌ |
-| lucky_imaging | 🔄 Lucky imaging benchmark / Palomar speckle dataset (no dominant standard) | ❌ | ❌ | ✅ 1x, best=29.2 dB | ❌ |
-| machine_vision | ✅ MVTec Anomaly Detection (Bergmann CVPR 2019) / BSDS500 | ❌ | ❌ | ✅ 1x, best=26.5 dB | ❌ |
-| magnetic_particle | ✅ OpenMPIData (Knopp IJMRI 2016, zenodo.org) / MPI reconstruction challenge | ❌ | ❌ | ✅ 1x, best=26.5 dB | ❌ |
-| maldi_msi | ✅ MetaboLights MSI / PRIDE-MALDI database (EBI) | ❌ | ❌ | ✅ 1x, best=26.3 dB | ❌ |
-| mammography | ✅ CBIS-DDSM (Lee Sci. Data 2017) / VinDr-Mammo / INBreast | ❌ | ❌ | ✅ 2x, best=20.9 dB | ❌ |
+| lucky_imaging | 🔄 Lucky imaging benchmark / Palomar speckle dataset (no dominant standard) | ❌ | ❌ | ✅ 4x, best=29.6 dB | ❌ |
+| machine_vision | ✅ MVTec Anomaly Detection (Bergmann CVPR 2019) / BSDS500 | ❌ | ❌ | ✅ 4x, best=28.3 dB | ❌ |
+| magnetic_particle | ✅ OpenMPIData (Knopp IJMRI 2016, zenodo.org) / MPI reconstruction challenge | ❌ | ❌ | ✅ 4x, best=26.5 dB | ❌ |
+| maldi_msi | ✅ MetaboLights MSI / PRIDE-MALDI database (EBI) | ❌ | ❌ | ✅ 4x, best=27.1 dB | ❌ |
+| mammography | ✅ CBIS-DDSM (Lee Sci. Data 2017) / VinDr-Mammo / INBreast | ❌ | ❌ | ✅ 4x, best=20.9 dB | ❌ |
 | matrix | ✅ matrix completion benchmark / Jester / ML-100K (MovieLens) | ❌ | ❌ | ✅ 5x, best=22.0 dB | ❌ |
 | mfm | 🔄 MFM simulation benchmark / NanoWorld MFM calibration data | ❌ | ❌ | ✅ 3x, best=34.3 dB | ❌ |
 | minflux | 🔄 MINFLUX simulation benchmark / Göttingen MINFLUX dataset | ❌ | ❌ | ✅ 3x, best=29.5 dB | ❌ |
-| mr_elastography | ✅ MRE-NIST phantom data / RSNA QIBA MRE challenge | ❌ | ❌ | ✅ 1x, best=6.0 dB | ❌ |
-| mr_fingerprinting | ✅ MRF simulation (Ma Nature 2013) / CPMG relaxometry data | ❌ | ❌ | ✅ 1x, best=1.8 dB | ❌ |
-| mra | ✅ TOF-MRA (MICCAI ADAM/IXI dataset) / 1000PLUS | ❌ | ❌ | ✅ 1x, best=12.1 dB | ❌ |
+| mr_elastography | ✅ MRE-NIST phantom data / RSNA QIBA MRE challenge | ❌ | ❌ | ✅ 4x, best=6.0 dB | ❌ |
+| mr_fingerprinting | ✅ MRF simulation (Ma Nature 2013) / CPMG relaxometry data | ❌ | ❌ | ✅ 4x, best=4.2 dB | ❌ |
+| mra | ✅ TOF-MRA (MICCAI ADAM/IXI dataset) / 1000PLUS | ❌ | ❌ | ✅ 4x, best=12.1 dB | ❌ |
 | mri | ✅ fastMRI multi-coil k-space (Zbontar NeurIPS 2018, fastmri.med.nyu.edu) | ❌ | ❌ | ✅ 7x, best=13.4 dB | ❌ |
-| mrs | ✅ MRSHUB benchmark (mrshub.org) / BIG-PRESS simulation / ISMRM MRS challenge | ❌ | ❌ | ✅ 1x, best=1.9 dB | ❌ |
-| multispectral_sat | ✅ Sentinel-2 (ESA Copernicus) / WorldView-3 / DESIS hyperspectral | ❌ | ❌ | ✅ 1x, best=10.8 dB | ❌ |
-| muon_tomo | 🔄 Muon tomography simulation / CERN CMS muon data | ❌ | ❌ | ✅ 2x, best=5.2 dB | ❌ |
-| nerf | ✅ NeRF Blender (Mildenhall ECCV 2020) / LLFF / DTU MVS dataset | ❌ | ❌ | ✅ 2x, best=29.0 dB | ❌ |
-| neutron_diffraction | ✅ ILL neutron diffraction data / SINQ PSI / ICSD CIF structures | ❌ | ❌ | ✅ 1x, best=8.5 dB | ❌ |
-| neutron_tomo | ✅ PSI NEUTRA dataset / ILL ICON neutron CT | ❌ | ❌ | ✅ 2x, best=4.3 dB | ❌ |
-| nirs_brain | ✅ fNIRS-BIDS benchmark / LABBRAIN fNIRS dataset / UCL Multimodal Imaging | ❌ | ❌ | ✅ 1x, best=14.5 dB | ❌ |
+| mrs | ✅ MRSHUB benchmark (mrshub.org) / BIG-PRESS simulation / ISMRM MRS challenge | ❌ | ❌ | ✅ 4x, best=4.3 dB | ❌ |
+| multispectral_sat | ✅ Sentinel-2 (ESA Copernicus) / WorldView-3 / DESIS hyperspectral | ❌ | ❌ | ✅ 4x, best=11.3 dB | ❌ |
+| muon_tomo | 🔄 Muon tomography simulation / CERN CMS muon data | ❌ | ❌ | ✅ 4x, best=5.2 dB | ❌ |
+| nerf | ✅ NeRF Blender (Mildenhall ECCV 2020) / LLFF / DTU MVS dataset | ❌ | ❌ | ✅ 4x, best=29.0 dB | ❌ |
+| neutron_diffraction | ✅ ILL neutron diffraction data / SINQ PSI / ICSD CIF structures | ❌ | ❌ | ✅ 4x, best=8.5 dB | ❌ |
+| neutron_tomo | ✅ PSI NEUTRA dataset / ILL ICON neutron CT | ❌ | ❌ | ✅ 4x, best=6.6 dB | ❌ |
+| nirs_brain | ✅ fNIRS-BIDS benchmark / LABBRAIN fNIRS dataset / UCL Multimodal Imaging | ❌ | ❌ | ✅ 4x, best=20.2 dB | ❌ |
 | nsom | 🔄 NSOM simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 3x, best=22.3 dB | ❌ |
-| ocean_acoustic_tomo | 🔄 NOAA ocean acoustic data / SWEX simulation benchmark | ❌ | ❌ | ✅ 1x, best=5.6 dB | ❌ |
-| ocean_color | ✅ NASA MODIS ocean color (oceancolor.gsfc.nasa.gov) / SeaWiFS dataset | ❌ | ❌ | ✅ 1x, best=44.1 dB | ❌ |
+| ocean_acoustic_tomo | 🔄 NOAA ocean acoustic data / SWEX simulation benchmark | ❌ | ❌ | ✅ 4x, best=26.6 dB | ❌ |
+| ocean_color | ✅ NASA MODIS ocean color (oceancolor.gsfc.nasa.gov) / SeaWiFS dataset | ❌ | ❌ | ✅ 4x, best=44.1 dB | ❌ |
 | oct | ✅ RETOUCH (Bogunovic IVCM 2019) / Duke OCT / OPTIMA retinal OCT | ❌ | ❌ | ✅ 6x, best=23.5 dB | ❌ |
-| octa | ✅ ROSE dataset (Ma TPAMI 2021) / CAVF OCTA benchmark | ❌ | ❌ | ✅ 2x, best=16.8 dB | ❌ |
-| odt | ✅ 2.5D DIC/ODT benchmark / Toulouse ODT dataset / TORCH benchmark | ❌ | ❌ | ✅ 1x, best=25.5 dB | ❌ |
+| octa | ✅ ROSE dataset (Ma TPAMI 2021) / CAVF OCTA benchmark | ❌ | ❌ | ✅ 4x, best=18.8 dB | ❌ |
+| odt | ✅ 2.5D DIC/ODT benchmark / Toulouse ODT dataset / TORCH benchmark | ❌ | ❌ | ✅ 4x, best=25.5 dB | ❌ |
 | palm_storm | ✅ SMLM Challenge 2016 (smlmchallenge.net) / ThunderSTORM benchmark | ❌ | ❌ | ✅ 3x, best=32.4 dB | ❌ |
 | panorama | ✅ SUN360 (Xiao CVPR 2012) / Laval HDR Panorama Dataset | ❌ | ❌ | ✅ 5x, best=15.6 dB | ❌ |
-| particle_calorimetry | ✅ GEANT4 CaloChallenge 2022 (Fast Calorimeter Simulation Challenge) | ❌ | ❌ | ✅ 1x, best=36.2 dB | ❌ |
-| passive_microwave | ✅ AMSR2 / SSMIS Level-3 (NASA NSIDC) / GMI precipitation data | ❌ | ❌ | ✅ 1x, best=9.2 dB | ❌ |
+| particle_calorimetry | ✅ GEANT4 CaloChallenge 2022 (Fast Calorimeter Simulation Challenge) | ❌ | ❌ | ✅ 4x, best=36.7 dB | ❌ |
+| passive_microwave | ✅ AMSR2 / SSMIS Level-3 (NASA NSIDC) / GMI precipitation data | ❌ | ❌ | ✅ 4x, best=16.9 dB | ❌ |
 | pet | ✅ TCIA-PET LIDC (Clark Sci. Data 2013) / OpenPET simulation data | ❌ | ❌ | ✅ 4x, best=33.1 dB | ❌ |
-| pet_ct | ✅ TCIA PET-CT (The Cancer Imaging Archive) / MAASTRO PET-CT dataset | ❌ | ❌ | ✅ 1x, best=13.0 dB | ❌ |
-| pet_mr | ✅ MICCAI PET-MR challenge / BrainPET dataset / ADNI PET-MRI | ❌ | ❌ | ✅ 1x, best=11.0 dB | ❌ |
+| pet_ct | ✅ TCIA PET-CT (The Cancer Imaging Archive) / MAASTRO PET-CT dataset | ❌ | ❌ | ✅ 4x, best=13.0 dB | ❌ |
+| pet_mr | ✅ MICCAI PET-MR challenge / BrainPET dataset / ADNI PET-MRI | ❌ | ❌ | ✅ 4x, best=11.0 dB | ❌ |
 | phase_contrast | ✅ CXLS phase contrast / APS phase contrast dataset / Siemens Fresnel | ❌ | ❌ | ✅ 3x, best=45.6 dB | ❌ |
-| phase_retrieval | ✅ CDI challenge benchmark / ptychography phase retrieval (Zenodo) | ❌ | ❌ | ✅ 2x, best=12.6 dB | ❌ |
-| photoacoustic | ✅ MICCAI PATATO dataset / PAT-Public (ucl.ac.uk) / OADAT benchmark | ❌ | ❌ | ✅ 2x, best=19.1 dB | ❌ |
-| photometric_stereo | ✅ DiLiGenT-MV (Ren IEEE TPAMI 2022) / CyclesPS benchmark | ❌ | ❌ | ✅ 1x, best=29.0 dB | ❌ |
-| polarization | ✅ AOLP dataset (Tyo Appl. Opt. 2006) / Polarization benchmark | ❌ | ❌ | ✅ 2x, best=15.8 dB | ❌ |
-| polsar | ✅ UAVSAR (NASA JPL) / SIR-C / RADARSAT-2 PolSAR (MDA) | ❌ | ❌ | ✅ 1x, best=3.5 dB | ❌ |
-| portal_imaging | ✅ EPID benchmark / AAPM TG-58 portal imaging dataset | ❌ | ❌ | ✅ 1x, best=10.5 dB | ❌ |
-| proton_radiography | 🔄 pCT collaboration dataset / FLASH proton CT simulation | ❌ | ❌ | ✅ 2x, best=10.9 dB | ❌ |
-| proton_therapy_img | 🔄 Proton CT simulation (TOPAS MC) / Onco-Sim benchmark | ❌ | ❌ | ✅ 1x, best=17.8 dB | ❌ |
+| phase_retrieval | ✅ CDI challenge benchmark / ptychography phase retrieval (Zenodo) | ❌ | ❌ | ✅ 5x, best=12.6 dB | ❌ |
+| photoacoustic | ✅ MICCAI PATATO dataset / PAT-Public (ucl.ac.uk) / OADAT benchmark | ❌ | ❌ | ✅ 5x, best=19.1 dB | ❌ |
+| photometric_stereo | ✅ DiLiGenT-MV (Ren IEEE TPAMI 2022) / CyclesPS benchmark | ❌ | ❌ | ✅ 4x, best=29.0 dB | ❌ |
+| polarization | ✅ AOLP dataset (Tyo Appl. Opt. 2006) / Polarization benchmark | ❌ | ❌ | ✅ 4x, best=15.8 dB | ❌ |
+| polsar | ✅ UAVSAR (NASA JPL) / SIR-C / RADARSAT-2 PolSAR (MDA) | ❌ | ❌ | ✅ 4x, best=7.2 dB | ❌ |
+| portal_imaging | ✅ EPID benchmark / AAPM TG-58 portal imaging dataset | ❌ | ❌ | ✅ 4x, best=17.3 dB | ❌ |
+| proton_radiography | 🔄 pCT collaboration dataset / FLASH proton CT simulation | ❌ | ❌ | ✅ 4x, best=12.0 dB | ❌ |
+| proton_therapy_img | 🔄 Proton CT simulation (TOPAS MC) / Onco-Sim benchmark | ❌ | ❌ | ✅ 4x, best=26.6 dB | ❌ |
 | ptychography | ✅ CDI ptychography benchmark (Zenodo) / CXLS/ALS ptychography data | ❌ | ❌ | ✅ 6x, best=21.0 dB | ❌ |
-| pump_probe | 🔄 Ultrafast spectroscopy simulation / SLAC LCLS pump-probe data | ❌ | ❌ | ✅ 1x, best=18.2 dB | ❌ |
-| quantum_illumination | 🔄 Quantum imaging simulation (no dominant open dataset) | ❌ | ❌ | ✅ 1x, best=20.2 dB | ❌ |
-| radio_astronomy | ✅ LOFAR HBA survey / VLA FIRST (White ApJ 1997) / ALMA calibration | ❌ | ❌ | ✅ 1x, best=16.1 dB | ❌ |
-| radio_interferometry | ✅ MeerKAT MeerLICHT / VLBI imaging challenge 2022 (radiointerferometrychallenege.github.io) | ❌ | ❌ | ✅ 1x, best=23.2 dB | ❌ |
-| raman_imaging | ✅ RRUFF Raman database (rruff.info) / NIST SRM Raman benchmark | ❌ | ❌ | ✅ 1x, best=14.1 dB | ❌ |
-| sar | ✅ Sentinel-1 GRD (ESA Copernicus) / UAVSAR (NASA JPL) / ERS-2 | ❌ | ❌ | ✅ 2x, best=17.3 dB | ❌ |
-| saxs | ✅ cSAXS synchrotron data (PSI) / ALS SAXS dataset / ESRF BM26 | ❌ | ❌ | ✅ 1x, best=8.4 dB | ❌ |
-| seismic_tomo | ✅ IRIS SEED seismic (ds.iris.edu) / SEG-Y NCEDC dataset / Marmousi | ❌ | ❌ | ✅ 1x, best=9.0 dB | ❌ |
-| sem | ✅ SEM-CIFA dataset / NIST SEM calibration / ZEISS SEM benchmark | ❌ | ❌ | ✅ 2x, best=23.2 dB | ❌ |
-| shearography | 🔄 Shearography simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 1x, best=8.0 dB | ❌ |
+| pump_probe | 🔄 Ultrafast spectroscopy simulation / SLAC LCLS pump-probe data | ❌ | ❌ | ✅ 4x, best=18.2 dB | ❌ |
+| quantum_illumination | 🔄 Quantum imaging simulation (no dominant open dataset) | ❌ | ❌ | ✅ 4x, best=20.2 dB | ❌ |
+| radio_astronomy | ✅ LOFAR HBA survey / VLA FIRST (White ApJ 1997) / ALMA calibration | ❌ | ❌ | ✅ 4x, best=37.3 dB | ❌ |
+| radio_interferometry | ✅ MeerKAT MeerLICHT / VLBI imaging challenge 2022 (radiointerferometrychallenege.github.io) | ❌ | ❌ | ✅ 4x, best=23.2 dB | ❌ |
+| raman_imaging | ✅ RRUFF Raman database (rruff.info) / NIST SRM Raman benchmark | ❌ | ❌ | ✅ 4x, best=19.7 dB | ❌ |
+| sar | ✅ Sentinel-1 GRD (ESA Copernicus) / UAVSAR (NASA JPL) / ERS-2 | ❌ | ❌ | ✅ 4x, best=17.8 dB | ❌ |
+| saxs | ✅ cSAXS synchrotron data (PSI) / ALS SAXS dataset / ESRF BM26 | ❌ | ❌ | ✅ 4x, best=8.4 dB | ❌ |
+| seismic_tomo | ✅ IRIS SEED seismic (ds.iris.edu) / SEG-Y NCEDC dataset / Marmousi | ❌ | ❌ | ✅ 4x, best=9.0 dB | ❌ |
+| sem | ✅ SEM-CIFA dataset / NIST SEM calibration / ZEISS SEM benchmark | ❌ | ❌ | ✅ 4x, best=23.2 dB | ❌ |
+| shearography | 🔄 Shearography simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 4x, best=13.2 dB | ❌ |
 | shg | 🔄 SHG collagen benchmark / NLO microscopy public dataset | ❌ | ❌ | ✅ 3x, best=23.0 dB | ❌ |
 | sim | ✅ SIMbench (Culley Nature Methods 2018) / SMLM SIM benchmark | ❌ | ❌ | ✅ 6x, best=21.6 dB | ❌ |
-| sims | 🔄 SIMS surface database / IFM Stuttgart SIMS benchmark data | ❌ | ❌ | ✅ 1x, best=20.5 dB | ❌ |
-| solar_imaging | ✅ SDO AIA (HEK, lmsal.com) / SOHO EIT / TRACE EUV solar archive | ❌ | ❌ | ✅ 1x, best=28.4 dB | ❌ |
-| sonar | 🔄 NOAA sonar archive / ARIS multibeam sonar benchmark | ❌ | ❌ | ✅ 1x, best=10.3 dB | ❌ |
-| spc | ✅ SPC simulation benchmark / Rice SPC dataset (Duarte Science 2008) | ❌ | ❌ | ✅ 1x, best=-19.3 dB | ❌ |
+| sims | 🔄 SIMS surface database / IFM Stuttgart SIMS benchmark data | ❌ | ❌ | ✅ 4x, best=20.5 dB | ❌ |
+| solar_imaging | ✅ SDO AIA (HEK, lmsal.com) / SOHO EIT / TRACE EUV solar archive | ❌ | ❌ | ✅ 4x, best=28.4 dB | ❌ |
+| sonar | 🔄 NOAA sonar archive / ARIS multibeam sonar benchmark | ❌ | ❌ | ✅ 4x, best=15.0 dB | ❌ |
+| spc | ✅ SPC simulation benchmark / Rice SPC dataset (Duarte Science 2008) | ❌ | ❌ | ✅ 4x, best=6.8 dB | ❌ |
 | spect | ✅ SIMIND simulation framework / GATE SPECT benchmark (OpenGATE) | ❌ | ❌ | ✅ 3x, best=30.0 dB | ❌ |
-| spect_ct | ✅ TCIA SPECT-CT (The Cancer Imaging Archive) / Philips IQ-SPECT | ❌ | ❌ | ✅ 1x, best=11.4 dB | ❌ |
-| spectral_ct | ✅ AAPM Spectral CT challenge / Medipix3 spectral CT dataset | ❌ | ❌ | ✅ 1x, best=12.3 dB | ❌ |
+| spect_ct | ✅ TCIA SPECT-CT (The Cancer Imaging Archive) / Philips IQ-SPECT | ❌ | ❌ | ✅ 4x, best=11.4 dB | ❌ |
+| spectral_ct | ✅ AAPM Spectral CT challenge / Medipix3 spectral CT dataset | ❌ | ❌ | ✅ 4x, best=12.3 dB | ❌ |
 | spinning_disk | ✅ Spinning disk benchmark / BBBC (Broad Bioimage Benchmark Collection) | ❌ | ❌ | ✅ 3x, best=30.6 dB | ❌ |
-| srs | 🔄 SRS benchmark / coherent Raman spectral imaging dataset | ❌ | ❌ | ✅ 1x, best=29.1 dB | ❌ |
+| srs | 🔄 SRS benchmark / coherent Raman spectral imaging dataset | ❌ | ❌ | ✅ 4x, best=29.1 dB | ❌ |
 | sted | ✅ STED benchmark (Culley Nature Methods 2018) / Leica/Abberior data | ❌ | ❌ | ✅ 3x, best=25.0 dB | ❌ |
-| stem | ✅ AAEM STEM benchmark / EMPIAR STEM datasets / NIST STEM SRM | ❌ | ❌ | ✅ 2x, best=31.0 dB | ❌ |
+| stem | ✅ AAEM STEM benchmark / EMPIAR STEM datasets / NIST STEM SRM | ❌ | ❌ | ✅ 4x, best=31.0 dB | ❌ |
 | stm | ✅ STM database (nanosurf.com) / NIST surface topography SRM | ❌ | ❌ | ✅ 3x, best=23.3 dB | ❌ |
-| streak_camera | 🔄 Streak camera simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 1x, best=14.3 dB | ❌ |
-| structured_light | ✅ SL benchmark (Gupta CVPR 2012) / CAVE SL dataset | ❌ | ❌ | ✅ 1x, best=8.0 dB | ❌ |
-| swi | ✅ SWI benchmark / OpenNeuro SWI dataset (openneuro.org) | ❌ | ❌ | ✅ 1x, best=1.9 dB | ❌ |
-| talbot_lau | ✅ Munich Talbot-Lau grating data (TU Munich) / PSI grating CT | ❌ | ❌ | ✅ 1x, best=6.6 dB | ❌ |
-| tem | ✅ EMPIAR TEM datasets (EBI) / JEOL benchmark / NIST TEM SRM | ❌ | ❌ | ✅ 1x, best=25.3 dB | ❌ |
-| terahertz | ✅ THz-TDS simulation benchmark / NIST THz spectroscopy database | ❌ | ❌ | ✅ 1x, best=37.1 dB | ❌ |
+| streak_camera | 🔄 Streak camera simulation benchmark (no dominant open dataset) | ❌ | ❌ | ✅ 4x, best=30.8 dB | ❌ |
+| structured_light | ✅ SL benchmark (Gupta CVPR 2012) / CAVE SL dataset | ❌ | ❌ | ✅ 4x, best=8.0 dB | ❌ |
+| swi | ✅ SWI benchmark / OpenNeuro SWI dataset (openneuro.org) | ❌ | ❌ | ✅ 4x, best=4.6 dB | ❌ |
+| talbot_lau | ✅ Munich Talbot-Lau grating data (TU Munich) / PSI grating CT | ❌ | ❌ | ✅ 4x, best=28.9 dB | ❌ |
+| tem | ✅ EMPIAR TEM datasets (EBI) / JEOL benchmark / NIST TEM SRM | ❌ | ❌ | ✅ 4x, best=25.3 dB | ❌ |
+| terahertz | ✅ THz-TDS simulation benchmark / NIST THz spectroscopy database | ❌ | ❌ | ✅ 4x, best=37.1 dB | ❌ |
 | three_photon | ✅ 3PM simulation / Kleinfeld lab 3PM dataset (UCSD) | ❌ | ❌ | ✅ 3x, best=20.8 dB | ❌ |
-| tirf | ✅ TIRF benchmark (SMLM Challenge) / Cell-TIRF dataset | ❌ | ❌ | ✅ 2x, best=31.2 dB | ❌ |
-| tof_camera | ✅ ETH3D (Schops CVPR 2017) / Middlebury 3D ToF / TUM RGB-D | ❌ | ❌ | ✅ 1x, best=42.0 dB | ❌ |
+| tirf | ✅ TIRF benchmark (SMLM Challenge) / Cell-TIRF dataset | ❌ | ❌ | ✅ 4x, best=31.2 dB | ❌ |
+| tof_camera | ✅ ETH3D (Schops CVPR 2017) / Middlebury 3D ToF / TUM RGB-D | ❌ | ❌ | ✅ 4x, best=42.0 dB | ❌ |
 | two_photon | ✅ Allen Brain 2P-SCC (alleninstitute.org) / Carandini-Harris dataset | ❌ | ❌ | ✅ 3x, best=33.8 dB | ❌ |
-| ultrasonic_phased_array | 🔄 PAUT benchmark (ASNT) / NDT phased array Open-PAUT data | ❌ | ❌ | ✅ 1x, best=29.6 dB | ❌ |
-| ultrasound | ✅ CAMUS (Leclerc IEEE TMI 2019) / EchoNet-Dynamic (Ouyang Nature 2020) | ❌ | ❌ | ✅ 2x, best=14.6 dB | ❌ |
-| us_mri | ✅ Ultrashort TE / ZTE MRI benchmark / PETRA dataset (Siemens) | ❌ | ❌ | ✅ 1x, best=7.6 dB | ❌ |
-| waxs | ✅ ESRF WAXS archive / ALS SAXS/WAXS / DLS SAXS data | ❌ | ❌ | ✅ 1x, best=20.6 dB | ❌ |
-| weather_radar | ✅ NEXRAD WSR-88D (NOAA, ncdc.noaa.gov) / MetOffice C-band / OPERA | ❌ | ❌ | ✅ 1x, best=26.9 dB | ❌ |
+| ultrasonic_phased_array | 🔄 PAUT benchmark (ASNT) / NDT phased array Open-PAUT data | ❌ | ❌ | ✅ 4x, best=30.8 dB | ❌ |
+| ultrasound | ✅ CAMUS (Leclerc IEEE TMI 2019) / EchoNet-Dynamic (Ouyang Nature 2020) | ❌ | ❌ | ✅ 5x, best=14.8 dB | ❌ |
+| us_mri | ✅ Ultrashort TE / ZTE MRI benchmark / PETRA dataset (Siemens) | ❌ | ❌ | ✅ 4x, best=25.5 dB | ❌ |
+| waxs | ✅ ESRF WAXS archive / ALS SAXS/WAXS / DLS SAXS data | ❌ | ❌ | ✅ 4x, best=20.6 dB | ❌ |
+| weather_radar | ✅ NEXRAD WSR-88D (NOAA, ncdc.noaa.gov) / MetOffice C-band / OPERA | ❌ | ❌ | ✅ 4x, best=26.9 dB | ❌ |
 | widefield | ✅ BSDS500 / MitoCheck widefield (EMBL) / Broad BBBC benchmark | ❌ | ❌ | ✅ 5x, best=25.0 dB | ❌ |
 | widefield_lowdose | ✅ CARE low-dose fluorescence (Weigert Nature Methods 2018) / BBBC | ❌ | ❌ | ✅ 3x, best=29.0 dB | ❌ |
-| xfel_sfx | ✅ CFEL SFX benchmark / LCLS SFX data (lcls.slac.stanford.edu) | ❌ | ❌ | ✅ 1x, best=24.1 dB | ❌ |
-| xray_crystallography | ✅ PDB (Protein Data Bank, rcsb.org) / CCDC CSD / ICDD PDF-4+ | ❌ | ❌ | ✅ 1x, best=22.4 dB | ❌ |
-| xray_ndt | ✅ ASTM NDT E1000 / WoDT benchmark / Zeiss Xradia NDT dataset | ❌ | ❌ | ✅ 1x, best=16.7 dB | ❌ |
-| xray_radiography | ✅ Chest X-ray14 (Wang CVPR 2017) / PadChest / CheXpert (Stanford) | ❌ | ❌ | ✅ 2x, best=26.3 dB | ❌ |
-| xrf_imaging | ✅ ESRF XRF imaging dataset / APS XRF benchmark | ❌ | ❌ | ✅ 1x, best=22.1 dB | ❌ |
-| xrf_tomo | ✅ XRF-CT benchmark (APS) / ESRF XRF-CT / Dls I18 dataset | ❌ | ❌ | ✅ 1x, best=15.6 dB | ❌ |
+| xfel_sfx | ✅ CFEL SFX benchmark / LCLS SFX data (lcls.slac.stanford.edu) | ❌ | ❌ | ✅ 4x, best=24.1 dB | ❌ |
+| xray_crystallography | ✅ PDB (Protein Data Bank, rcsb.org) / CCDC CSD / ICDD PDF-4+ | ❌ | ❌ | ✅ 4x, best=22.4 dB | ❌ |
+| xray_ndt | ✅ ASTM NDT E1000 / WoDT benchmark / Zeiss Xradia NDT dataset | ❌ | ❌ | ✅ 4x, best=16.7 dB | ❌ |
+| xray_radiography | ✅ Chest X-ray14 (Wang CVPR 2017) / PadChest / CheXpert (Stanford) | ❌ | ❌ | ✅ 4x, best=26.3 dB | ❌ |
+| xrf_imaging | ✅ ESRF XRF imaging dataset / APS XRF benchmark | ❌ | ❌ | ✅ 4x, best=22.1 dB | ❌ |
+| xrf_tomo | ✅ XRF-CT benchmark (APS) / ESRF XRF-CT / Dls I18 dataset | ❌ | ❌ | ✅ 4x, best=15.6 dB | ❌ |
 
 **Summary:**
 - Stage 0 (Dataset Verified): 136/168 ✅ | 32/168 🔄
@@ -408,174 +408,174 @@ Tests run: 2026-03-11 | GPU: NVIDIA GTX 1660 Ti, CUDA 12.4 | PyTorch 2.6.0
 
 | Modality | Solvers Tested | Best PSNR (dB) | Status |
 |----------|---------------|----------------|--------|
-| acoustic_emission | 1 | 20.2 | ✅ |
-| acoustic_microscopy | 1 | 10.0 | ✅ |
-| active_thermography | 1 | 6.5 | ✅ |
-| adaptive_optics | 1 | 100.0 | ✅ |
+| acoustic_emission | 4 | 20.2 | ✅ |
+| acoustic_microscopy | 4 | 22.0 | ✅ |
+| active_thermography | 4 | 7.2 | ✅ |
+| adaptive_optics | 4 | 100.0 | ✅ |
 | afm | 3 | 31.3 | ✅ |
-| angiography | 2 | 12.9 | ✅ |
-| asl_mri | 1 | 2.7 | ✅ |
-| atom_probe | 1 | 40.2 | ✅ |
-| bioluminescence_tomo | 1 | 13.3 | ✅ |
-| brachytherapy_img | 1 | 20.5 | ✅ |
-| brillouin | 1 | 35.8 | ✅ |
+| angiography | 4 | 12.9 | ✅ |
+| asl_mri | 4 | 4.1 | ✅ |
+| atom_probe | 4 | 40.2 | ✅ |
+| bioluminescence_tomo | 4 | 13.3 | ✅ |
+| brachytherapy_img | 4 | 25.2 | ✅ |
+| brillouin | 4 | 35.8 | ✅ |
 | cacti | 6 | 11.5 | ✅ |
-| cars | 1 | 14.2 | ✅ |
-| cassi | 1 | -5.3 | ✅ |
-| cathodoluminescence | 1 | 28.9 | ✅ |
+| cars | 4 | 16.7 | ✅ |
+| cassi | 4 | 13.6 | ✅ |
+| cathodoluminescence | 4 | 28.9 | ✅ |
 | cbct | 3 | 15.2 | ✅ |
-| cest_mri | 1 | 31.0 | ✅ |
-| ceus | 1 | 24.5 | ✅ |
-| clem | 1 | 17.0 | ✅ |
-| coded_exposure | 1 | 19.9 | ✅ |
+| cest_mri | 4 | 32.1 | ✅ |
+| ceus | 4 | 24.5 | ✅ |
+| clem | 4 | 28.1 | ✅ |
+| coded_exposure | 4 | 32.1 | ✅ |
 | confocal_3d | 6 | 27.3 | ✅ |
-| confocal_endomicroscopy | 1 | 34.0 | ✅ |
+| confocal_endomicroscopy | 4 | 34.0 | ✅ |
 | confocal_livecell | 5 | 32.3 | ✅ |
-| coronagraphy | 1 | 25.2 | ✅ |
-| cryo_em | 2 | 19.2 | ✅ |
+| coronagraphy | 4 | 25.2 | ✅ |
+| cryo_em | 5 | 19.2 | ✅ |
 | cryo_et | 3 | 13.2 | ✅ |
 | ct | 7 | 13.8 | ✅ |
-| ct_fluorescence | 1 | -37.6 | ✅ |
-| cup | 1 | -2.3 | ✅ |
+| ct_fluorescence | 4 | 3.3 | ✅ |
+| cup | 4 | 5.5 | ✅ |
 | dark_field | 3 | 25.1 | ✅ |
-| desi | 1 | 15.1 | ✅ |
-| dexa | 1 | 9.5 | ✅ |
+| desi | 4 | 15.1 | ✅ |
+| dexa | 4 | inf | ✅ |
 | dic | 3 | 15.6 | ✅ |
-| diffusion_mri | 1 | 11.3 | ✅ |
-| digital_breast_tomo | 1 | -36.0 | ✅ |
+| diffusion_mri | 4 | 11.3 | ✅ |
+| digital_breast_tomo | 4 | 2.5 | ✅ |
 | dna_paint | 3 | 28.5 | ✅ |
-| doppler_ultrasound | 4 | 17.6 | ✅ |
-| dot | 4 | 7.0 | ✅ |
-| ebsd | 1 | 21.8 | ✅ |
-| eddy_current | 1 | 4.8 | ✅ |
+| doppler_ultrasound | 6 | 17.6 | ✅ |
+| dot | 6 | 7.0 | ✅ |
+| ebsd | 4 | 21.9 | ✅ |
+| eddy_current | 4 | 22.9 | ✅ |
 | edx_mapping | 4 | 22.0 | ✅ |
-| eels | 1 | 24.6 | ✅ |
-| eht_imaging | 1 | 11.3 | ✅ |
-| elastography | 1 | 5.7 | ✅ |
-| electron_diffraction | 2 | 42.0 | ✅ |
-| electron_holography | 2 | 9.5 | ✅ |
-| electron_tomography | 2 | 25.1 | ✅ |
+| eels | 5 | 25.2 | ✅ |
+| eht_imaging | 4 | 11.4 | ✅ |
+| elastography | 4 | 11.0 | ✅ |
+| electron_diffraction | 4 | 42.0 | ✅ |
+| electron_holography | 4 | 9.5 | ✅ |
+| electron_tomography | 4 | 25.1 | ✅ |
 | endoscopy | 3 | 11.8 | ✅ |
-| entangled_photon | 1 | 31.8 | ✅ |
-| event_camera | 1 | 7.3 | ✅ |
+| entangled_photon | 4 | 31.8 | ✅ |
+| event_camera | 4 | 7.3 | ✅ |
 | expansion | 3 | 33.9 | ✅ |
 | fib_sem | 3 | 28.1 | ✅ |
-| flash_lidar | 1 | 4.3 | ✅ |
+| flash_lidar | 4 | 4.3 | ✅ |
 | flim | 5 | 36.9 | ✅ |
-| fluoroscopy | 2 | 43.5 | ✅ |
-| fmri | 1 | 4.9 | ✅ |
-| fpm | 2 | 16.9 | ✅ |
-| ftir_imaging | 1 | 14.8 | ✅ |
+| fluoroscopy | 4 | 43.6 | ✅ |
+| fmri | 4 | 4.9 | ✅ |
+| fpm | 5 | 16.9 | ✅ |
+| ftir_imaging | 4 | 34.6 | ✅ |
 | fundus | 4 | 35.9 | ✅ |
-| fwi | 1 | 8.7 | ✅ |
+| fwi | 4 | 8.7 | ✅ |
 | gaussian_splatting | 5 | inf | ✅ |
-| ghost_imaging | 1 | 6.6 | ✅ |
-| gpr | 1 | 10.6 | ✅ |
-| gravitational_wave | 1 | 100.0 | ✅ |
-| hdr_imaging | 1 | 36.8 | ✅ |
+| ghost_imaging | 4 | inf | ✅ |
+| gpr | 4 | 10.6 | ✅ |
+| gravitational_wave | 4 | 100.0 | ✅ |
+| hdr_imaging | 4 | 36.8 | ✅ |
 | holography | 5 | 14.9 | ✅ |
-| hyperspectral_remote | 1 | 29.1 | ✅ |
-| impedance_tomo | 1 | 11.2 | ✅ |
-| industrial_ct | 1 | 20.3 | ✅ |
-| insar | 1 | 31.8 | ✅ |
-| integral | 2 | 40.0 | ✅ |
+| hyperspectral_remote | 4 | 29.1 | ✅ |
+| impedance_tomo | 4 | inf | ✅ |
+| industrial_ct | 4 | 20.3 | ✅ |
+| insar | 4 | 31.8 | ✅ |
+| integral | 5 | 40.0 | ✅ |
 | ism | 3 | 3.1 | ✅ |
-| ivus | 1 | 19.8 | ✅ |
+| ivus | 4 | 19.8 | ✅ |
 | lattice_lightsheet | 3 | 25.1 | ✅ |
 | lensless | 5 | 11.9 | ✅ |
-| libs | 1 | 18.0 | ✅ |
-| lidar | 1 | 32.6 | ✅ |
+| libs | 4 | 26.5 | ✅ |
+| lidar | 4 | 32.7 | ✅ |
 | light_field | 5 | 27.3 | ✅ |
 | lightsheet | 7 | 20.0 | ✅ |
-| lucky_imaging | 1 | 29.2 | ✅ |
-| machine_vision | 1 | 26.5 | ✅ |
-| magnetic_particle | 1 | 26.5 | ✅ |
-| maldi_msi | 1 | 26.3 | ✅ |
-| mammography | 2 | 20.9 | ✅ |
+| lucky_imaging | 4 | 29.6 | ✅ |
+| machine_vision | 4 | 28.3 | ✅ |
+| magnetic_particle | 4 | 26.5 | ✅ |
+| maldi_msi | 4 | 27.1 | ✅ |
+| mammography | 4 | 20.9 | ✅ |
 | matrix | 5 | 22.0 | ✅ |
 | mfm | 3 | 34.3 | ✅ |
 | minflux | 3 | 29.5 | ✅ |
-| mr_elastography | 1 | 6.0 | ✅ |
-| mr_fingerprinting | 1 | 1.8 | ✅ |
-| mra | 1 | 12.1 | ✅ |
+| mr_elastography | 4 | 6.0 | ✅ |
+| mr_fingerprinting | 4 | 4.2 | ✅ |
+| mra | 4 | 12.1 | ✅ |
 | mri | 7 | 13.4 | ✅ |
-| mrs | 1 | 1.9 | ✅ |
-| multispectral_sat | 1 | 10.8 | ✅ |
-| muon_tomo | 2 | 5.2 | ✅ |
-| nerf | 2 | 29.0 | ✅ |
-| neutron_diffraction | 1 | 8.5 | ✅ |
-| neutron_tomo | 2 | 4.3 | ✅ |
-| nirs_brain | 1 | 14.5 | ✅ |
+| mrs | 4 | 4.3 | ✅ |
+| multispectral_sat | 4 | 11.3 | ✅ |
+| muon_tomo | 4 | 5.2 | ✅ |
+| nerf | 4 | 29.0 | ✅ |
+| neutron_diffraction | 4 | 8.5 | ✅ |
+| neutron_tomo | 4 | 6.6 | ✅ |
+| nirs_brain | 4 | 20.2 | ✅ |
 | nsom | 3 | 22.3 | ✅ |
-| ocean_acoustic_tomo | 1 | 5.6 | ✅ |
-| ocean_color | 1 | 44.1 | ✅ |
+| ocean_acoustic_tomo | 4 | 26.6 | ✅ |
+| ocean_color | 4 | 44.1 | ✅ |
 | oct | 6 | 23.5 | ✅ |
-| octa | 2 | 16.8 | ✅ |
-| odt | 1 | 25.5 | ✅ |
+| octa | 4 | 18.8 | ✅ |
+| odt | 4 | 25.5 | ✅ |
 | palm_storm | 3 | 32.4 | ✅ |
 | panorama | 5 | 15.6 | ✅ |
-| particle_calorimetry | 1 | 36.2 | ✅ |
-| passive_microwave | 1 | 9.2 | ✅ |
+| particle_calorimetry | 4 | 36.7 | ✅ |
+| passive_microwave | 4 | 16.9 | ✅ |
 | pet | 4 | 33.1 | ✅ |
-| pet_ct | 1 | 13.0 | ✅ |
-| pet_mr | 1 | 11.0 | ✅ |
+| pet_ct | 4 | 13.0 | ✅ |
+| pet_mr | 4 | 11.0 | ✅ |
 | phase_contrast | 3 | 45.6 | ✅ |
-| phase_retrieval | 2 | 12.6 | ✅ |
-| photoacoustic | 2 | 19.1 | ✅ |
-| photometric_stereo | 1 | 29.0 | ✅ |
-| polarization | 2 | 15.8 | ✅ |
-| polsar | 1 | 3.5 | ✅ |
-| portal_imaging | 1 | 10.5 | ✅ |
-| proton_radiography | 2 | 10.9 | ✅ |
-| proton_therapy_img | 1 | 17.8 | ✅ |
+| phase_retrieval | 5 | 12.6 | ✅ |
+| photoacoustic | 5 | 19.1 | ✅ |
+| photometric_stereo | 4 | 29.0 | ✅ |
+| polarization | 4 | 15.8 | ✅ |
+| polsar | 4 | 7.2 | ✅ |
+| portal_imaging | 4 | 17.3 | ✅ |
+| proton_radiography | 4 | 12.0 | ✅ |
+| proton_therapy_img | 4 | 26.6 | ✅ |
 | ptychography | 6 | 21.0 | ✅ |
-| pump_probe | 1 | 18.2 | ✅ |
-| quantum_illumination | 1 | 20.2 | ✅ |
-| radio_astronomy | 1 | 16.1 | ✅ |
-| radio_interferometry | 1 | 23.2 | ✅ |
-| raman_imaging | 1 | 14.1 | ✅ |
-| sar | 2 | 17.3 | ✅ |
-| saxs | 1 | 8.4 | ✅ |
-| seismic_tomo | 1 | 9.0 | ✅ |
-| sem | 2 | 23.2 | ✅ |
-| shearography | 1 | 8.0 | ✅ |
+| pump_probe | 4 | 18.2 | ✅ |
+| quantum_illumination | 4 | 20.2 | ✅ |
+| radio_astronomy | 4 | 37.3 | ✅ |
+| radio_interferometry | 4 | 23.2 | ✅ |
+| raman_imaging | 4 | 19.7 | ✅ |
+| sar | 4 | 17.8 | ✅ |
+| saxs | 4 | 8.4 | ✅ |
+| seismic_tomo | 4 | 9.0 | ✅ |
+| sem | 4 | 23.2 | ✅ |
+| shearography | 4 | 13.2 | ✅ |
 | shg | 3 | 23.0 | ✅ |
 | sim | 6 | 21.6 | ✅ |
-| sims | 1 | 20.5 | ✅ |
-| solar_imaging | 1 | 28.4 | ✅ |
-| sonar | 1 | 10.3 | ✅ |
-| spc | 1 | -19.3 | ✅ |
+| sims | 4 | 20.5 | ✅ |
+| solar_imaging | 4 | 28.4 | ✅ |
+| sonar | 4 | 15.0 | ✅ |
+| spc | 4 | 6.8 | ✅ |
 | spect | 3 | 30.0 | ✅ |
-| spect_ct | 1 | 11.4 | ✅ |
-| spectral_ct | 1 | 12.3 | ✅ |
+| spect_ct | 4 | 11.4 | ✅ |
+| spectral_ct | 4 | 12.3 | ✅ |
 | spinning_disk | 3 | 30.6 | ✅ |
-| srs | 1 | 29.1 | ✅ |
+| srs | 4 | 29.1 | ✅ |
 | sted | 3 | 25.0 | ✅ |
-| stem | 2 | 31.0 | ✅ |
+| stem | 4 | 31.0 | ✅ |
 | stm | 3 | 23.3 | ✅ |
-| streak_camera | 1 | 14.3 | ✅ |
-| structured_light | 1 | 8.0 | ✅ |
-| swi | 1 | 1.9 | ✅ |
-| talbot_lau | 1 | 6.6 | ✅ |
-| tem | 1 | 25.3 | ✅ |
-| terahertz | 1 | 37.1 | ✅ |
+| streak_camera | 4 | 30.8 | ✅ |
+| structured_light | 4 | 8.0 | ✅ |
+| swi | 4 | 4.6 | ✅ |
+| talbot_lau | 4 | 28.9 | ✅ |
+| tem | 4 | 25.3 | ✅ |
+| terahertz | 4 | 37.1 | ✅ |
 | three_photon | 3 | 20.8 | ✅ |
-| tirf | 2 | 31.2 | ✅ |
-| tof_camera | 1 | 42.0 | ✅ |
+| tirf | 4 | 31.2 | ✅ |
+| tof_camera | 4 | 42.0 | ✅ |
 | two_photon | 3 | 33.8 | ✅ |
-| ultrasonic_phased_array | 1 | 29.6 | ✅ |
-| ultrasound | 2 | 14.6 | ✅ |
-| us_mri | 1 | 7.6 | ✅ |
-| waxs | 1 | 20.6 | ✅ |
-| weather_radar | 1 | 26.9 | ✅ |
+| ultrasonic_phased_array | 4 | 30.8 | ✅ |
+| ultrasound | 5 | 14.8 | ✅ |
+| us_mri | 4 | 25.5 | ✅ |
+| waxs | 4 | 20.6 | ✅ |
+| weather_radar | 4 | 26.9 | ✅ |
 | widefield | 5 | 25.0 | ✅ |
 | widefield_lowdose | 3 | 29.0 | ✅ |
-| xfel_sfx | 1 | 24.1 | ✅ |
-| xray_crystallography | 1 | 22.4 | ✅ |
-| xray_ndt | 1 | 16.7 | ✅ |
-| xray_radiography | 2 | 26.3 | ✅ |
-| xrf_imaging | 1 | 22.1 | ✅ |
-| xrf_tomo | 1 | 15.6 | ✅ |
+| xfel_sfx | 4 | 24.1 | ✅ |
+| xray_crystallography | 4 | 22.4 | ✅ |
+| xray_ndt | 4 | 16.7 | ✅ |
+| xray_radiography | 4 | 26.3 | ✅ |
+| xrf_imaging | 4 | 22.1 | ✅ |
+| xrf_tomo | 4 | 15.6 | ✅ |
 
 ---
 

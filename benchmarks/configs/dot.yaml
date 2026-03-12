@@ -60,20 +60,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: L-BFGS-TV
-    module: pwm_core.recon.dot_solver
-    function: lbfgs_tv_recon
-    params: '0'
+    name: L-BFGS-TV [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Schweiger & Arridge 2005, PMB
+    reference: Richardson 1972, JOSA
   dot_dl:
-    name: DOT-Net
-    module: pwm_core.recon.dot_solvers
-    function: dot_net_recon
-    params: 8M
-    gpu: true
-    reference: Yoo, J. et al. (2020) Deep learning diffuse optical tomography, Opt.
-      Lett. 45(20)
+    name: DOT-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

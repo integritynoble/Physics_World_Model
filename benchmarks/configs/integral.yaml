@@ -49,7 +49,8 @@ data_source:
   dataset_url: http://lightfields.stanford.edu/LF2016.html
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive, 2016
+  citation: Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive,
+    2016
   license: Research use
 mismatch_params: []
 solvers:
@@ -61,26 +62,27 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: DIBR
-    module: pwm_core.recon.integral_solver
-    function: dibr_recon
-    params: '0'
+    name: DIBR [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
     gpu: false
-    reference: Fehn 2004, Proc. SPIE
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: EPINet
-    module: pwm_core.recon.integral_solver
-    function: epinet_recon
-    params: 5M
+    name: EPINet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
     gpu: false
-    reference: Shin et al. CVPR 2018
+    reference: Richardson 1972, JOSA
   small_gpu:
-    name: EPINet
-    module: pwm_core.recon.integral_solver
-    function: epinet_recon
-    params: '0'
+    name: EPINet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr
@@ -93,7 +95,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive, 2016
+    reference: Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive,
+      2016
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / integral_graph_v1

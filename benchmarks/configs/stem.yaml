@@ -53,21 +53,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: STEM-DL (AtomSegNet)
-    module: pwm_core.recon.stem_solvers
-    function: atom_seg_net_recon
-    params: 10M
-    gpu: true
-    reference: 'Wu, X. et al. (2021) AtomSegNet: DL networks for atom detection in
-      STEM, npj Comput. Mater. 7:175'
+    name: STEM-DL (AtomSegNet) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 30
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: STEM-UNet
-    module: pwm_core.recon.stem_solvers
-    function: stem_unet_recon
-    params: 31M
-    gpu: true
-    reference: Madsen, J. et al. (2018) A deep learning approach to identify local
-      structures in atomic scale images, Adv. Theory Simul.
+    name: STEM-UNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

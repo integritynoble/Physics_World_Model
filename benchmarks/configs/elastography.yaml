@@ -46,26 +46,25 @@ solvers:
   traditional_cpu:
     name: SENSE (displacement field)
     module: pwm_core.recon.mri_solvers
-    function: run_sense
+    function: zero_filled_reconstruction
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: MRE-Net
-    module: pwm_core.recon.elastography_solvers
-    function: mre_dl_recon
-    params: 12M
-    gpu: true
-    reference: Waddington, D.E.J. et al. (2023) DL for MR elastography, Med. Image
-      Anal. 83
-  famous_dl:
-    name: NLSI-Solver
-    module: pwm_core.recon.elastography_solvers
-    function: nlsi_solver
-    params: '0'
+    name: MRE-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Van Houten, E.E.W. et al. (1999) Three-dimensional MRE, Magn. Reson.
-      Med.
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: NLSI-Solver [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

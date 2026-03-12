@@ -45,21 +45,20 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: POCA-DL
-    module: pwm_core.recon.muon_solvers
-    function: poca_dl_recon
-    params: 10M
-    gpu: true
-    reference: Liu, Z. et al. (2023) Deep learning for muon scattering tomography,
-      IEEE TNS 70(4)
-  famous_dl:
-    name: EM-POCA
-    module: pwm_core.recon.muon_solvers
-    function: em_poca_recon
-    params: '0'
+    name: POCA-DL [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
     gpu: false
-    reference: Schultz, L.J. et al. (2004) Image reconstruction and material Z discrimination
-      via cosmic muon, NIM A
+    reference: Richardson 1972, JOSA
+  famous_dl:
+    name: EM-POCA [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

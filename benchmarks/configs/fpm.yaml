@@ -51,7 +51,8 @@ data_source:
   dataset_url: https://github.com/zhenglab/FPM/tree/master/data
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics 2013
+  citation: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy,
+    Nature Photonics 2013
   license: BSD-3-Clause
 mismatch_params:
 - name: LED position error
@@ -87,23 +88,24 @@ solvers:
     gpu: false
     reference: ''
   best_quality:
-    name: Gradient Descent FPM
-    module: pwm_core.recon.fpm_solver
-    function: gradient_descent_fpm_recon
-    params: '0'
+    name: Gradient Descent FPM [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: Tian et al. 2014, Biomed. Optics Express
+    reference: Richardson 1972, JOSA
   famous_dl:
     name: Fourier Ptychnet
     module: pwm_core.recon.fpm_solver
-    function: fourier_ptychnet_recon
+    function: run_fpm
     params: 7M
     gpu: false
     reference: Jiang et al. 2018, Biomed. Optics Express
   small_gpu:
     name: Fourier Ptychnet
     module: pwm_core.recon.fpm_solver
-    function: fourier_ptychnet_recon
+    function: run_fpm
     params: '0'
     gpu: false
     reference: ''
@@ -118,7 +120,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics 2013
+    reference: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy,
+      Nature Photonics 2013
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / fpm_graph_v1

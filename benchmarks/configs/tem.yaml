@@ -48,26 +48,25 @@ solvers:
   traditional_cpu:
     name: FISTA-L2 (CTF correction)
     module: pwm_core.recon.classical
-    function: run_fista_l2
+    function: fista_l2
     params: '0'
     gpu: false
     reference: ''
   best_quality:
-    name: TEM-DL (ePIE-Net)
-    module: pwm_core.recon.tem_solvers
-    function: epie_net_recon
-    params: 15M
-    gpu: true
-    reference: Chen, Z. et al. (2021) Electron ptychography achieves atomic-resolution
-      limits, Science 372:6544
+    name: TEM-DL (ePIE-Net) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: TEM-UNet
-    module: pwm_core.recon.tem_solvers
-    function: tem_unet_recon
-    params: 31M
-    gpu: true
-    reference: Madsen, J. et al. (2018) DL approach for local structures in STEM images,
-      Adv. Theory Simul.
+    name: TEM-UNet [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr

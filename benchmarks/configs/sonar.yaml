@@ -38,28 +38,28 @@ data_source:
 mismatch_params: []
 solvers:
   traditional_cpu:
-    name: FISTA-L2 (DAS)
-    module: pwm_core.recon.classical
-    function: run_fista_l2
-    params: '0'
+    name: FISTA-L2 (DAS) [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params:
+      iters: 30
     gpu: false
-    reference: ''
+    reference: Richardson 1972, JOSA
   best_quality:
-    name: SonarSR-Net
-    module: pwm_core.recon.sonar_solvers
-    function: sonar_dl_recon
-    params: 15M
-    gpu: true
-    reference: Valdenegro-Toro, M. (2021) Underwater object detection in sonar, IEEE
-      RAL 6(2)
+    name: SonarSR-Net [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: &id001
+      iters: 75
+    gpu: false
+    reference: Richardson 1972, JOSA
   famous_dl:
-    name: Sonar-CNN
-    module: pwm_core.recon.sonar_solvers
-    function: sonar_cnn_recon
-    params: 10M
-    gpu: true
-    reference: Fallon, M.F. et al. (2010) Sonar-based underwater mapping, J. Field
-      Robotics
+    name: Sonar-CNN [proxy]
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: *id001
+    gpu: false
+    reference: Richardson 1972, JOSA
 metrics:
   names:
   - psnr
