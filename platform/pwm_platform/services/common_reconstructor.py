@@ -861,7 +861,7 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
             from skimage.restoration import denoise_tv_chambolle
 
             recon = denoise_tv_chambolle(
-                y_n, weight=0.08, max_num_iter=200,
+                y_n, weight=0.05, max_num_iter=200,
                 channel_axis=2 if is_mc else None,
             )
             return np.clip(recon, 0, 1) * (hi - lo) + lo
@@ -891,7 +891,7 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
         "pca", "nmf", "ica", "svd", "mcr", "als",
         "lorentzian", "baseline", "spectral-fit",
         "fem", "born", "elasto", "aide",
-        "matched", "inversion", "raman-fit",
+        "matched", "raman-fit",
     )
     if any(kw in algo_lower for kw in _WAVELET_KEYWORDS):
         try:
