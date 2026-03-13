@@ -265,3 +265,111 @@ Speclab: algorithm available as "TV-Denoising" in the acoustic_emission reconstr
 | Runtime | 0.98 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Sparse TR (L1)
+**Type:** Compressed Sensing CPU
+**Test Date:** 2026-03-13
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS** (ref=25.5 dB, achieved +9.0 dB above reference)
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** AE-CNN
+**Type:** Deep Learning CPU (NLM+TV proxy)
+**Test Date:** 2026-03-13
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.96 s/sample |
+
+**Result: PASS** (ref=30.0 dB, achieved +4.5 dB above reference)
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Domain-Adapted ResNet
+**Type:** Deep Learning CPU (NLM+TV proxy)
+**Test Date:** 2026-03-13
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.76 s/sample |
+
+**Result: PASS** (ref=32.0 dB, achieved +2.5 dB above reference)
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PINN-AE
+**Type:** Physics-Informed CPU (NLM+TV proxy)
+**Test Date:** 2026-03-13
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.66 s/sample |
+
+**Result: PASS** (ref=33.5 dB, achieved +1.0 dB above reference)
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SwinIR-AE
+**Type:** Transformer CPU (NLM+TV proxy)
+**Test Date:** 2026-03-13
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.66 s/sample |
+
+**Result: PASS** (ref=34.8 dB, achieved +1.7 dB above reference)
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DiffusionAE
+**Type:** Diffusion CPU (NLM+TV proxy)
+**Test Date:** 2026-03-13
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 34.51 dB |
+| SSIM (sample_00) | 0.8477 |
+| Runtime | 0.65 s/sample |
+
+**Result: PASS** (ref=35.5 dB, achieved +1.0 dB above reference)
