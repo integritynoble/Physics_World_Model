@@ -22,7 +22,7 @@ Icons: ✅ done | 🔄 in progress | ❌ pending
 
 | Modality | Stage 0: Public Dataset | Stage 1: Dataset | Stage 2: Benchmark | Stage 3: GPU Tests | Stage 4: SpecLab |
 |----------|------------------------|------------------|-------------------|--------------------|------------------|
-| acoustic_emission | 🔄 AE simulation benchmark / EWGAE standards dataset | ❌ | ❌ | ✅ 4x, best=20.2 dB | ✅ 9/9 |
+| acoustic_emission | 🔄 AE simulation benchmark / EWGAE standards dataset | ❌ | ❌ | ✅ 4x, best=20.2 dB | ❌ |
 | acoustic_microscopy | 🔄 SAM synthetic benchmark (no dominant public dataset) | ❌ | ❌ | ✅ 4x, best=22.0 dB | ❌ |
 | active_thermography | ✅ PVC-Infrared Dataset (Applied Sciences 2023, doi:10.3390/app13052901) / ALETHEIA 2024 | ❌ | ❌ | ✅ 4x, best=7.2 dB | ❌ |
 | adaptive_optics | ✅ ESO VLT SPHERE archive + AOTools simulation | ❌ | ❌ | ✅ 4x, best=100.0 dB | ❌ |

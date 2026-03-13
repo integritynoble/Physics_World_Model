@@ -493,7 +493,7 @@ Generated: 2026-03-12
 | 3 | Pixel-DL | 2020 | Antholzer et al., Sci Rep 2020 | 29.6 | 0.9100 | 19.1 | 0.2490 |  |
 | 4 | Iterative (model-based) | 2000 | Antholzer et al., Sci Rep 2020 | 30.2 | 0.8900 | 19.1 | 0.2490 |  |
 | 5 | Residual U-Net (Deep-PAT) | 2021 | Shahid et al., Front Neurosci 2021 | 29.9 | 0.9700 | 19.1 | 0.2490 |  |
-| 6 | Simple backprojection | 2000 | Basic PAT backprojection | 20.0 | 0.6500 | 19.1 | 0.2490 | done |
+| 6 | Backprojection (limited view) | 2021 | Shahid et al., PMC8165448 (FD-UNet BP input=21.9) | 21.9 | 0.6500 | 19.1 | 0.2490 | done |
 | 7 | Time Reversal (16 sensors) | 2020 | Tong et al., Scientific Reports 2020, PMC7244747 | 13.9 | 0.5000 | 19.1 | 0.2490 | done |
 | 8 | Tikhonov (32 views) | 2023 | Boink et al., PMC9872879 | 13.9 | — | 19.1 | 0.2490 | done |
 | 9 | Back Projection (PWM) | — | — | — | — | 18.5 | 0.3658 |  |

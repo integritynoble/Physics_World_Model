@@ -161,7 +161,7 @@ REFS = {
         {"name": "Pixel-DL", "year": 2020, "paper": "Antholzer et al., Sci Rep 2020", "psnr": 29.59, "ssim": 0.910, "dataset": "mouse brain 64-sensor"},
         {"name": "Iterative (model-based)", "year": 2000, "paper": "Antholzer et al., Sci Rep 2020", "psnr": 30.16, "ssim": 0.890, "dataset": "mouse brain 64-sensor"},
         {"name": "Residual U-Net (Deep-PAT)", "year": 2021, "paper": "Shahid et al., Front Neurosci 2021", "psnr": 29.88, "ssim": 0.970, "dataset": "50% sampling"},
-            {"name": "Simple backprojection", "year": 2000, "paper": "Basic PAT backprojection", "psnr": 20.00, "ssim": 0.650, "dataset": "limited-view PAT"},
+            {"name": "Backprojection (limited view)", "year": 2021, "paper": "Shahid et al., PMC8165448 (FD-UNet BP input=21.9)", "psnr": 21.92, "ssim": 0.650, "dataset": "synthetic vasculature limited-view"},
         {"name": "Time Reversal (16 sensors)", "year": 2020, "paper": "Tong et al., Scientific Reports 2020, PMC7244747", "psnr": 13.91, "ssim": 0.500, "dataset": "mouse brain 16-sensor limited-view"},
         {"name": "Tikhonov (32 views)", "year": 2023, "paper": "Boink et al., PMC9872879", "psnr": 13.91, "ssim": None, "dataset": "sparse-view PAT simulation"},
 ],
