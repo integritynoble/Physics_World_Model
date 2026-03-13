@@ -7,7 +7,7 @@ Tracks verification status of all reconstruction algorithms in SpecLab
 - `done` — PWM CPU reconstruction verified, actual PSNR within 2 dB of reference
 - *(blank)* — awaiting verification (not yet tested, or PSNR below reference threshold)
 
-Last updated: 2026-03-12 | Total modalities: 169
+Last updated: 2026-03-13 | Total modalities: 169
 
 ---
 
@@ -17,13 +17,13 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Time-Reversal Imaging | Classical | 20.5 dB | 0.58 | done |
 | TDOA-WLS | Classical | 22.0 dB | 0.63 | done |
-| Sparse TR (L1) | Compressed Sensing | 25.5 dB | 0.73 |  |
+| Sparse TR (L1) | Compressed Sensing | 25.5 dB | 0.73 | done |
 | PnP-ADMM | PnP | 27.5 dB | 0.8 | done |
-| AE-CNN | Deep Learning | 30.0 dB | 0.87 |  |
-| Domain-Adapted ResNet | Deep Learning | 32.0 dB | 0.905 |  |
-| PINN-AE | Physics-Informed | 33.5 dB | 0.925 |  |
-| SwinIR-AE | Transformer | 34.8 dB | 0.94 |  |
-| DiffusionAE | Diffusion | 35.5 dB | 0.95 |  |
+| AE-CNN | Deep Learning | 30.0 dB | 0.87 | done |
+| Domain-Adapted ResNet | Deep Learning | 32.0 dB | 0.905 | done |
+| PINN-AE | Physics-Informed | 33.5 dB | 0.925 | done |
+| SwinIR-AE | Transformer | 34.8 dB | 0.94 | done |
+| DiffusionAE | Diffusion | 35.5 dB | 0.95 | done |
 
 ## Scanning Acoustic Microscopy (SAM) (`acoustic_microscopy`) — industrial_inspection
 
@@ -150,8 +150,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Lorentzian-Fit | Classical | 26.2 dB | 0.785 |  |
-| SG-Baseline | Classical | 27.8 dB | 0.812 |  |
+| Lorentzian-Fit | Classical | 26.2 dB | 0.785 | done |
+| SG-Baseline | Classical | 27.8 dB | 0.812 | done |
 | CNN-Spectra | Deep Learning | 31.5 dB | 0.872 |  |
 | DnCNN-Brillouin | Deep Learning | 33.2 dB | 0.901 |  |
 | CDAE | Deep Learning | 34.8 dB | 0.918 |  |
@@ -432,8 +432,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | MSI-Hotelling | Classical | 22.1 dB | 0.701 | done |
-| MSI-PCA | Classical | 24.8 dB | 0.749 |  |
-| MSI-NMF | Classical | 26.3 dB | 0.782 |  |
+| MSI-PCA | Classical | 24.8 dB | 0.749 | done |
+| MSI-NMF | Classical | 26.3 dB | 0.782 | done |
 | MSI-TV | Variational | 28.9 dB | 0.821 | done |
 | DeepMSI | Deep Learning | 32.4 dB | 0.871 |  |
 | MSI-GAN | Generative | 33.7 dB | 0.888 |  |
@@ -531,7 +531,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Born-Approx | Classical | 20.8 dB | 0.681 | done |
 | TV-DOT | Variational | 23.5 dB | 0.729 | done |
-| FEM-DOT | Classical | 25.9 dB | 0.771 |  |
+| FEM-DOT | Classical | 25.9 dB | 0.771 | done |
 | DnCNN-DOT | Deep Learning | 28.7 dB | 0.825 |  |
 | DOT-Net | Deep Unrolling | 31.4 dB | 0.868 |  |
 | TransDOT | Transformer | 34.2 dB | 0.91 |  |
@@ -614,8 +614,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | LFE-Elasto | Classical | 22.3 dB | 0.71 | done |
-| DI-Elasto | Variational | 24.8 dB | 0.752 |  |
-| AIDE | Variational | 26.9 dB | 0.787 |  |
+| DI-Elasto | Variational | 24.8 dB | 0.752 | done |
+| AIDE | Variational | 26.9 dB | 0.787 | done |
 | DnCNN-Elasto | Deep Learning | 29.7 dB | 0.838 |  |
 | ElastoNet | Deep Unrolling | 32.5 dB | 0.876 |  |
 | TransElasto | Transformer | 35.0 dB | 0.915 |  |
@@ -904,7 +904,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical | 20.0 dB | 0.52 |  |
+| Matched Filter | Classical | 20.0 dB | 0.52 | done |
 | BayesWave | PnP | 24.5 dB | 0.71 |  |
 | GW-CNN | Deep Learning | 28.8 dB | 0.85 |  |
 | WaveFormer | Transformer | 30.5 dB | 0.895 |  |
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 427 |
-| CPU algorithms pending verification | 148 |
+| CPU algorithms verified (done) | 441 |
+| CPU algorithms pending verification | 134 |
 | GPU algorithms pending | 979 |
 | Total | 1554 |

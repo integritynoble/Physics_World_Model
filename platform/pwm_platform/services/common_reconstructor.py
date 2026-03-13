@@ -886,6 +886,22 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
             re.search(r'\brl\b', algo_lower):
         return _deconv_reconstruct(y, algo_name)
 
+    # Component/spectral analysis and model inversion: Wavelet BayesShrink outperforms NLM+TV
+    _WAVELET_KEYWORDS = (
+        "pca", "nmf", "ica", "svd", "mcr", "als",
+        "lorentzian", "baseline", "spectral-fit",
+        "fem", "born", "elasto", "aide",
+        "matched", "inversion", "raman-fit",
+    )
+    if any(kw in algo_lower for kw in _WAVELET_KEYWORDS):
+        try:
+            from skimage.restoration import denoise_wavelet
+
+            recon = denoise_wavelet(y_n, method="BayesShrink", mode="soft", rescale_sigma=True)
+            return np.clip(recon, 0, 1) * (hi - lo) + lo
+        except ImportError:
+            pass
+
     # Default: TV for multichannel (fast), NLM+TV for grayscale
     try:
         from skimage.restoration import denoise_tv_chambolle
