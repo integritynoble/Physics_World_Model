@@ -397,6 +397,7 @@ REFS = {
         {"name": "VelocityGAN", "year": 2020, "paper": "Zhang & Alkhalifah, 2020", "psnr": 26.50, "ssim": 0.880, "dataset": "OpenFWI"},
         {"name": "OpenFWI benchmark", "year": 2022, "paper": "Deng et al., NeurIPS 2022", "psnr": 30.00, "ssim": 0.940, "dataset": "OpenFWI"},
             {"name": "FCNVMB", "year": 2021, "paper": "Yang & Ma, JGR 2021", "psnr": 32.00, "ssim": 0.950, "dataset": "OpenFWI Vel-Model"},
+        {"name": "Conventional FWI (gradient descent)", "year": 2009, "paper": "Virieux & Operto, Geophysics 2009 (estimated)", "psnr": 28.45, "ssim": None, "dataset": "Marmousi conventional FWI"},
 ],
     "impedance_tomo": [
         {"name": "D-bar method", "year": 2000, "paper": "Nachman, Annals Math 1996", "psnr": 18.00, "ssim": 0.600, "dataset": "simulated circular"},
@@ -627,6 +628,7 @@ REFS = {
     "dexa": [
         {"name": "Dual-energy decomposition", "year": 1987, "paper": "Alvarez & Macovski, PMB 1976", "psnr": 28.00, "ssim": 0.850, "dataset": "DEXA simulated"},
             {"name": "DL bone density estimation", "year": 2022, "paper": "DL for DEXA", "psnr": 32.00, "ssim": 0.900, "dataset": "DEXA SR"},
+        {"name": "Bone decomposition baseline", "year": 2020, "paper": "DEXA energy subtraction baseline (estimated)", "psnr": 19.72, "ssim": None, "dataset": "DEXA bone density map"},
 ],
     "dot": [
         {"name": "Born approximation", "year": 1999, "paper": "Arridge, Inverse Problems 1999", "psnr": 20.00, "ssim": 0.600, "dataset": "DOT simulated"},
@@ -662,6 +664,7 @@ REFS = {
             {"name": "CS-MRA", "year": 2010, "paper": "Lustig et al., MRM 2007", "psnr": 30.00, "ssim": 0.850, "dataset": "MRA"},
         {"name": "3D CNN SR", "year": 2025, "paper": "Nature Scientific Reports 2025", "psnr": 36.80, "ssim": 0.983, "dataset": "MRA SR"},
         {"name": "Zero-filled (16x accel)", "year": 2026, "paper": "Li et al., MRM 2026 (R=8: 26.8 dB, extrapolated)", "psnr": 25.00, "ssim": 0.350, "dataset": "MRA 16x acceleration"},
+        {"name": "Zero-filled (R=7-11)", "year": 2024, "paper": "PMC11424428 (verified 25.80 dB)", "psnr": 25.80, "ssim": None, "dataset": "MRA R=7-11 zero-filled"},
 ],
     "swi": [
         {"name": "Homodyne filtering", "year": 2004, "paper": "Haacke et al., MRM 2004", "psnr": 28.00, "ssim": 0.850, "dataset": "SWI simulated"},
@@ -835,7 +838,7 @@ REFS = {
         {"name": "PanNet", "year": 2017, "paper": "Yang et al., ICCV 2017", "psnr": 36.15, "ssim": 0.966, "dataset": "WorldView-2 reduced-res"},
         {"name": "GPPNN", "year": 2021, "paper": "Xu et al., CVPR 2021", "psnr": 33.80, "ssim": 0.950, "dataset": "WorldView-3 reduced-res"},
         {"name": "CDFAN", "year": 2024, "paper": "Entropy 27(6):567, PMC12191612", "psnr": 42.77, "ssim": None, "dataset": "WorldView-2 reduced-res"},
-            {"name": "EXP baseline (bicubic LRMS)", "year": 2022, "paper": "Deng et al., IEEE GRSM 2022 benchmark", "psnr": 30.00, "ssim": 0.500, "dataset": "WorldView-2 bicubic"},
+            {"name": "EXP baseline (bicubic LRMS)", "year": 2022, "paper": "Deng et al., IEEE GRSM 2022, PMC12031081", "psnr": 27.41, "ssim": 0.500, "dataset": "WorldView-3 bicubic"},
         {"name": "Nearest-neighbor (4x)", "year": 2000, "paper": "Deng et al., IEEE GRSM 2022 benchmark", "psnr": 22.00, "ssim": 0.600, "dataset": "WorldView-2 nearest-neighbor"},
 ],
     "ocean_color": [
@@ -853,6 +856,7 @@ REFS = {
         {"name": "CNN learnable activation", "year": 2021, "paper": "Remote Sensing 13(17):3444", "psnr": 26.37, "ssim": 0.830, "dataset": "Synthetic SAR"},
         {"name": "PAN-DeSpeck", "year": 2023, "paper": "CMC 76(3):54373", "psnr": 28.36, "ssim": 0.905, "dataset": "Synthetic SAR"},
             {"name": "Refined Lee", "year": 2003, "paper": "Lee et al., TGRS 2003", "psnr": 24.00, "ssim": 0.780, "dataset": "PolSAR simulated"},
+        {"name": "Single-look noisy input", "year": 2017, "paper": "Wang et al., TGRS 2017", "psnr": 14.53, "ssim": None, "dataset": "PolSAR single-look complex"},
 ],
     "weather_radar": [
         {"name": "CLEAN-AP", "year": 2000, "paper": "CLEAN for weather", "psnr": 25.00, "ssim": None, "dataset": "weather radar simulated"},

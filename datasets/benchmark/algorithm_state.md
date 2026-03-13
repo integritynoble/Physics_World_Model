@@ -201,10 +201,11 @@ Generated: 2026-03-12
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Dual-energy decomposition | 1987 | Alvarez & Macovski, PMB 1976 | 28.0 | 0.8500 | 9.5 | 0.2550 |  |
 | 2 | DL bone density estimation | 2022 | DL for DEXA | 32.0 | 0.9000 | 9.5 | 0.2550 |  |
-| 3 | FISTA-L2 (dual-energy) (PWM) | — | — | — | — | — | 1.0000 |  |
-| 4 | DXA-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.3099 |  |
-| 5 | DEXA-UNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.3099 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 9.5 | 0.2550 |  |
+| 3 | Bone decomposition baseline | 2020 | DEXA energy subtraction baseline (estimated) | 19.7 | — | 9.5 | 0.2550 |  |
+| 4 | FISTA-L2 (dual-energy) (PWM) | — | — | — | — | — | 1.0000 |  |
+| 5 | DXA-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.3099 |  |
+| 6 | DEXA-UNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.3099 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 9.5 | 0.2550 |  |
 
 ### 14. Diffusion MRI (DTI) (`diffusion_mri`)
 
@@ -389,10 +390,11 @@ Generated: 2026-03-12
 | 2 | CS-MRA | 2010 | Lustig et al., MRM 2007 | 30.0 | 0.8500 | 12.1 | 0.2673 |  |
 | 3 | 3D CNN SR | 2025 | Nature Scientific Reports 2025 | 36.8 | 0.9830 | 12.1 | 0.2673 |  |
 | 4 | Zero-filled (16x accel) | 2026 | Li et al., MRM 2026 (R=8: 26.8 dB, extrapolated) | 25.0 | 0.3500 | 12.1 | 0.2673 |  |
-| 5 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.6 | 0.0064 |  |
-| 6 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.6 | 0.0064 |  |
-| 7 | MRA-VesselNet [proxy] (PWM) | — | — | — | — | 0.5 | 0.0095 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 12.1 | 0.2673 |  |
+| 5 | Zero-filled (R=7-11) | 2024 | PMC11424428 (verified 25.80 dB) | 25.8 | — | 12.1 | 0.2673 |  |
+| 6 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.6 | 0.0064 |  |
+| 7 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.6 | 0.0064 |  |
+| 8 | MRA-VesselNet [proxy] (PWM) | — | — | — | — | 0.5 | 0.0095 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 12.1 | 0.2673 |  |
 
 ### 28. Magnetic Resonance Imaging (MRI) (`mri`)
 
@@ -1320,7 +1322,7 @@ Generated: 2026-03-12
 | 2 | PanNet | 2017 | Yang et al., ICCV 2017 | 36.1 | 0.9660 | 11.3 | 0.0718 |  |
 | 3 | GPPNN | 2021 | Xu et al., CVPR 2021 | 33.8 | 0.9500 | 11.3 | 0.0718 |  |
 | 4 | CDFAN | 2024 | Entropy 27(6):567, PMC12191612 | 42.8 | — | 11.3 | 0.0718 |  |
-| 5 | EXP baseline (bicubic LRMS) | 2022 | Deng et al., IEEE GRSM 2022 benchmark | 30.0 | 0.5000 | 11.3 | 0.0718 |  |
+| 5 | EXP baseline (bicubic LRMS) | 2022 | Deng et al., IEEE GRSM 2022, PMC12031081 | 27.4 | 0.5000 | 11.3 | 0.0718 |  |
 | 6 | Nearest-neighbor (4x) | 2000 | Deng et al., IEEE GRSM 2022 benchmark | 22.0 | 0.6000 | 11.3 | 0.0718 |  |
 | 7 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 11.3 | 0.0718 |  |
 | 8 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 11.3 | 0.0718 |  |
@@ -1359,10 +1361,11 @@ Generated: 2026-03-12
 | 3 | CNN learnable activation | 2021 | Remote Sensing 13(17):3444 | 26.4 | 0.8300 | 7.2 | 0.2891 |  |
 | 4 | PAN-DeSpeck | 2023 | CMC 76(3):54373 | 28.4 | 0.9050 | 7.2 | 0.2891 |  |
 | 5 | Refined Lee | 2003 | Lee et al., TGRS 2003 | 24.0 | 0.7800 | 7.2 | 0.2891 |  |
-| 6 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
-| 7 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
-| 8 | PolSAR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 3.5 | -0.0175 |  |
+| 6 | Single-look noisy input | 2017 | Wang et al., TGRS 2017 | 14.5 | — | 7.2 | 0.2891 |  |
+| 7 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
+| 8 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
+| 9 | PolSAR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
+| 10 | precomputed_baseline (test) | — | — | — | — | 3.5 | -0.0175 |  |
 
 ### 103. Radio Interferometry (VLBI) (`radio_interferometry`)
 
@@ -1896,8 +1899,9 @@ Generated: 2026-03-12
 | 3 | VelocityGAN | 2020 | Zhang & Alkhalifah, 2020 | 26.5 | 0.8800 | 8.7 | 0.0125 |  |
 | 4 | OpenFWI benchmark | 2022 | Deng et al., NeurIPS 2022 | 30.0 | 0.9400 | 8.7 | 0.0125 |  |
 | 5 | FCNVMB | 2021 | Yang & Ma, JGR 2021 | 32.0 | 0.9500 | 8.7 | 0.0125 |  |
-| 6 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.7 | 0.0009 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 8.7 | 0.0125 |  |
+| 6 | Conventional FWI (gradient descent) | 2009 | Virieux & Operto, Geophysics 2009 (estimated) | 28.4 | — | 8.7 | 0.0125 |  |
+| 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.7 | 0.0009 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 8.7 | 0.0125 |  |
 
 ### 144. Gravitational Wave Detection (`gravitational_wave`)
 
@@ -2221,9 +2225,9 @@ Generated: 2026-03-12
 ## Summary
 
 - **Total modalities**: 168
-- **Total algorithm entries**: 1290
+- **Total algorithm entries**: 1294
 - **Verified (done)**: 474
-- **Not yet verified**: 816
+- **Not yet verified**: 820
 - **Sources**: Published papers (2000-2026), PWM benchmark tests, YAML solver configs
 - **Key benchmarks**: KAIST 10 scenes (CASSI), 6 grayscale SCI (CACTI), LoDoPaB-CT, fastMRI, Blender synthetic (NeRF), KITTI (LiDAR), DiffuserCam (lensless), BioSR (microscopy)
 
@@ -2232,7 +2236,7 @@ Generated: 2026-03-12
 | Category | Modalities | Algorithms | Ref Entries | Done | Done % |
 |----------|-----------|------------|-------------|------|--------|
 | Compressive Imaging | 4 | 49 | 40 | 10 | 20% |
-| Medical Imaging | 37 | 320 | 171 | 77 | 24% |
+| Medical Imaging | 37 | 322 | 173 | 77 | 24% |
 | Coherent Imaging | 5 | 37 | 22 | 12 | 32% |
 | Microscopy | 24 | 156 | 75 | 72 | 46% |
 | Electron Microscopy | 11 | 80 | 37 | 41 | 51% |
@@ -2240,13 +2244,13 @@ Generated: 2026-03-12
 | Computational Photography | 5 | 37 | 21 | 15 | 41% |
 | Neural Rendering | 2 | 20 | 10 | 4 | 20% |
 | Depth Imaging | 5 | 33 | 14 | 12 | 36% |
-| Remote Sensing | 11 | 85 | 40 | 31 | 36% |
+| Remote Sensing | 11 | 86 | 41 | 31 | 36% |
 | Scanning Probe Microscopy | 4 | 26 | 10 | 11 | 42% |
 | Industrial Inspection | 10 | 74 | 39 | 29 | 39% |
 | Spectroscopy & Spectral Imaging | 8 | 58 | 26 | 32 | 55% |
 | Astronomy & Space Imaging | 4 | 30 | 15 | 22 | 73% |
 | Ultrafast Imaging | 4 | 29 | 15 | 11 | 38% |
 | Quantum Imaging | 3 | 26 | 14 | 11 | 42% |
-| Broader Experimental Science | 11 | 85 | 43 | 38 | 45% |
+| Broader Experimental Science | 11 | 86 | 44 | 38 | 44% |
 | Scientific Instrumentation | 12 | 81 | 35 | 24 | 30% |
 | Multi-Modal Fusion | 6 | 47 | 23 | 13 | 28% |
