@@ -4084,15 +4084,15 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 29.606345227547763,
-          "ssim": 0.9907893121426455,
+          "psnr_db": 29.853224801417014,
+          "ssim": 0.9911485817689557,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 29.606345227547763,
-          "ssim": 0.9907893121426455,
+          "psnr_db": 29.853224801417014,
+          "ssim": 0.9911485817689557,
           "exec_time_sec": 210.614506483078,
           "algorithm_name": "SfM + MVS"
         },
@@ -5939,5 +5939,5 @@
     "total_solvers": 190,
     "solvers_passed": 190
   },
-  "last_updated": "2026-03-13T15:39:45"
+  "last_updated": "2026-03-13T16:04:26"
 }

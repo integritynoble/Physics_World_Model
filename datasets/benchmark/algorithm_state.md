@@ -1197,18 +1197,18 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | NeRF | 2020 | Mildenhall et al., ECCV 2020 | 31.0 | 0.9470 | 29.6 | 0.9908 | done |
-| 2 | Plenoxels | 2022 | Fridovich-Keil et al., CVPR 2022 | 31.7 | 0.9580 | 29.6 | 0.9908 | done |
-| 3 | TensoRF | 2022 | Chen et al., ECCV 2022 | 33.1 | 0.9630 | 29.6 | 0.9908 |  |
-| 4 | Instant-NGP | 2022 | Muller et al., SIGGRAPH 2022 | 33.2 | 0.9600 | 29.6 | 0.9908 |  |
-| 5 | 3D Gaussian Splatting | 2023 | Kerbl et al., SIGGRAPH 2023 | 33.3 | 0.9690 | 29.6 | 0.9908 |  |
-| 6 | Mip-NeRF 360 | 2022 | Barron et al., CVPR 2022 | 33.1 | 0.9610 | 29.6 | 0.9908 |  |
-| 7 | Zip-NeRF | 2023 | Barron et al., ICCV 2023 | 33.7 | — | 29.6 | 0.9908 |  |
-| 8 | SfM + MVS (PWM) | — | — | 29.0 | — | 29.6 | 0.9908 | done |
-| 9 | NeRF (original MLP) (PWM) | — | Mildenhall et al. 2020 | 29.0 | — | 29.6 | 0.9908 | done |
-| 10 | Richardson-Lucy (proxy baseline) (PWM) | — | Richardson 1972, JOSA | 29.0 | — | 29.6 | 0.9908 | done |
-| 11 | FISTA-TV (proxy baseline) (PWM) | — | Beck & Teboulle 2009, SIAM | 29.0 | — | 29.6 | 0.9908 | done |
-| 12 | precomputed_baseline (test) | — | — | 29.0 | — | 29.6 | 0.9908 | done |
+| 1 | NeRF | 2020 | Mildenhall et al., ECCV 2020 | 31.0 | 0.9470 | 29.9 | 0.9911 | done |
+| 2 | Plenoxels | 2022 | Fridovich-Keil et al., CVPR 2022 | 31.7 | 0.9580 | 29.9 | 0.9911 | done |
+| 3 | TensoRF | 2022 | Chen et al., ECCV 2022 | 33.1 | 0.9630 | 29.9 | 0.9911 |  |
+| 4 | Instant-NGP | 2022 | Muller et al., SIGGRAPH 2022 | 33.2 | 0.9600 | 29.9 | 0.9911 |  |
+| 5 | 3D Gaussian Splatting | 2023 | Kerbl et al., SIGGRAPH 2023 | 33.3 | 0.9690 | 29.9 | 0.9911 |  |
+| 6 | Mip-NeRF 360 | 2022 | Barron et al., CVPR 2022 | 33.1 | 0.9610 | 29.9 | 0.9911 |  |
+| 7 | Zip-NeRF | 2023 | Barron et al., ICCV 2023 | 33.7 | — | 29.9 | 0.9911 |  |
+| 8 | SfM + MVS (PWM) | — | — | 29.0 | — | 29.9 | 0.9911 | done |
+| 9 | NeRF (original MLP) (PWM) | — | Mildenhall et al. 2020 | 29.0 | — | 29.9 | 0.9911 | done |
+| 10 | Richardson-Lucy (proxy baseline) (PWM) | — | Richardson 1972, JOSA | 29.0 | — | 29.9 | 0.9911 | done |
+| 11 | FISTA-TV (proxy baseline) (PWM) | — | Beck & Teboulle 2009, SIAM | 29.0 | — | 29.9 | 0.9911 | done |
+| 12 | precomputed_baseline (test) | — | — | 29.0 | — | 29.9 | 0.9911 | done |
 
 ---
 
