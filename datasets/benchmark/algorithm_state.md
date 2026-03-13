@@ -284,7 +284,7 @@ Generated: 2026-03-12
 | 2 | Richardson-Lucy | 1972 | Richardson 1972 | 24.0 | 0.7200 | 11.8 | 0.8796 |  |
 | 3 | U-Net denoising | 2019 | DL for CLE | 28.0 | 0.8500 | 11.8 | 0.8796 |  |
 | 4 | SwinIR | 2024 | Heliyon 2024 | 36.8 | 0.9700 | 11.8 | 0.8796 |  |
-| 5 | Raw fiber bundle (no interp) | 2000 | Raw CLE baseline | 15.0 | 0.4000 | 11.8 | 0.8796 |  |
+| 5 | Gaussian filter (fiber bundle) | 2023 | Kim et al., Sensors 2023, PMC9824069 | 19.0 | — | 11.8 | 0.8796 |  |
 | 6 | Raw CLE (honeycomb artifact) | 2022 | Kim et al., Sensors 2022, PMC9824069 | 20.6 | 0.7300 | 11.8 | 0.8796 |  |
 | 7 | FISTA-L2 (endoscopy) (PWM) | — | — | — | — | — | — |  |
 | 8 | EndoMapper-Net (PWM) | — | Ozyoruk, K.B. et al. (2021) EndoMapper, Nat. Mach. Intel. 3 | — | — | — | — |  |

@@ -1091,7 +1091,7 @@ REFS = {
         {"name": "Richardson-Lucy", "year": 1972, "paper": "Richardson 1972", "psnr": 24.00, "ssim": 0.720, "dataset": "CLE fiber bundle"},
         {"name": "U-Net denoising", "year": 2019, "paper": "DL for CLE", "psnr": 28.00, "ssim": 0.850, "dataset": "CLE fiber bundle"},
             {"name": "SwinIR", "year": 2024, "paper": "Heliyon 2024", "psnr": 36.84, "ssim": 0.970, "dataset": "endoscopy image enhancement"},
-        {"name": "Raw fiber bundle (no interp)", "year": 2000, "paper": "Raw CLE baseline", "psnr": 15.00, "ssim": 0.400, "dataset": "CLE raw fiber bundle"},
+        {"name": "Gaussian filter (fiber bundle)", "year": 2023, "paper": "Kim et al., Sensors 2023, PMC9824069", "psnr": 18.98, "ssim": None, "dataset": "CLE synthetic honeycomb Gaussian 3x3"},
         {"name": "Raw CLE (honeycomb artifact)", "year": 2022, "paper": "Kim et al., Sensors 2022, PMC9824069", "psnr": 20.58, "ssim": 0.730, "dataset": "CLE synthetic honeycomb artifact"},
 ],
     "octa": [
