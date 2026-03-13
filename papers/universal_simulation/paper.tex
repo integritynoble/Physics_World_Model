@@ -65,9 +65,8 @@
 
 % ---- Title ----
 \begin{center}
-{\LARGE\bfseries The Scientific Event Horizon:\\[4pt]
-Bounded-Error Simulation via Specification-Driven\\[4pt]
-Agent Pipelines across Scientific Domains}\\[18pt]
+{\LARGE\bfseries An Agent Framework for Scientific Simulation\\[4pt]
+within a Formal Simulability Class}\\[18pt]
 {\large Chengshuai Yang}\\[6pt]
 {\normalsize Spirit AI Research}\\[6pt]
 {\normalsize Correspondence: research@spiritai.com}\\[12pt]
@@ -96,7 +95,7 @@ Here we present such a framework. Our contributions are:
 \begin{enumerate}[nosep]
 \item \textbf{The scientific event horizon}: a sharp boundary separating a rigorously defined simulability class $\mathfrak{S}$ from four fundamental obstructions that defeat \emph{any} computational system (Proposition~\ref{prop:boundary}).
 \item \textbf{Bounded-error realizability}: for any problem in $\mathfrak{S}$ and any tolerance $\varepsilon > 0$, the framework produces $\hat{x}$ with $\norm{\hat{x} - x^*} \leq \varepsilon$ in finite time (Theorem~\ref{thm:main}).
-\item \textbf{Specification-driven pipeline}: structured specifications (\texttt{spec.md}), not code, are the unit of scientific input. Three agents---Formalization, Validation, Computation---transform specifications into solutions.
+\item \textbf{Specification-driven pipeline}: structured specifications (\texttt{spec.md}), not code, are the unit of scientific input. Three agents---Plan, Validation, Computation---transform specifications into solutions.
 \item \textbf{Empirical validation}: 12 domains, one real clinical dataset, and ablation studies proving each pipeline component is necessary.
 \end{enumerate}
 
@@ -324,7 +323,7 @@ Three agents transform specifications into solutions (Fig.~\ref{fig:pipeline}):
     arr/.style={-{Stealth[length=5pt]}, thick},
 ]
 \node[box, fill=gray!10] (nl) {\texttt{spec.md}};
-\node[agent, right=of nl] (af) {$\Agent_F$\\Formalize};
+\node[agent, right=of nl] (af) {$\Agent_P$\\Plan};
 \node[spec, right=of af] (s1) {Typed\\$\Spec$};
 \node[agent, right=of s1] (av) {$\Agent_V$\\Validate};
 \node[spec, right=of av] (s2) {Certified\\$\Spec$};
@@ -343,12 +342,12 @@ Three agents transform specifications into solutions (Fig.~\ref{fig:pipeline}):
 \draw[arr, dashed, red!60!black] (av) -- (rej);
 \end{tikzpicture}
 \caption{\textbf{Specification-centered pipeline.}
-A \texttt{spec.md} file is the sole input. Agent $\Agent_F$ parses it into a typed specification. Agent $\Agent_V$ validates well-posedness and classifies the problem within $\mathfrak{S}$ or rejects it as $\mathfrak{U}$. Agent $\Agent_C$ constructs a primitive DAG and executes it to produce a bounded-error solution.}
+A \texttt{spec.md} file is the sole input. The Plan Agent $\Agent_P$ parses it into a typed specification and selects primitives. The Validation Agent $\Agent_V$ checks well-posedness and classifies the problem within $\mathfrak{S}$ or rejects it as $\mathfrak{U}$. The Computation Agent $\Agent_C$ constructs a primitive DAG and executes it to produce a bounded-error solution.}
 \label{fig:pipeline}
 \end{figure}
 
-\textbf{Formalization Agent ($\Agent_F$).}
-Parses \texttt{spec.md} into a typed specification $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \Obs, \varepsilon)$, classifies the problem type (PDE, ODE, inverse, stochastic), and identifies required primitives.
+\textbf{Plan Agent ($\Agent_P$).}
+Parses \texttt{spec.md} into a typed specification $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \Obs, \varepsilon)$, classifies the problem type (PDE, ODE, inverse, stochastic), selects an appropriate numerical strategy, and identifies required primitives.
 
 \textbf{Validation Agent ($\Agent_V$).}
 Performs five formal checks: (1) dimensional consistency; (2) boundary/initial condition compatibility; (3) well-posedness (coercivity, CFL, Lipschitz bounds); (4) simulability classification (which stratum of $\mathfrak{S}$, or rejection into $\mathfrak{U}$); (5) computational cost estimation.
@@ -387,10 +386,10 @@ Each row removes or replaces one pipeline component.
 \toprule
 \textbf{Configuration} & \textbf{Valid spec} & \textbf{Bounded error} & \textbf{Redesign} & \textbf{Failure prevented} & \textbf{Avg.\ time} \\
 \midrule
-Full pipeline ($\Agent_F + \Agent_V + \Agent_C$) & 12/12 & 12/12 & 2 & 3 & 4.2 min \\
-No Validation ($\Agent_F + \Agent_C$) & 7/12 & 7/12 & 0 & 0 & 3.1 min \\
+Full pipeline ($\Agent_P + \Agent_V + \Agent_C$) & 12/12 & 12/12 & 2 & 3 & 4.2 min \\
+No Validation ($\Agent_P + \Agent_C$) & 7/12 & 7/12 & 0 & 0 & 3.1 min \\
 No Computation (template solver) & 12/12 & 4/12 & 2 & 3 & 1.8 min \\
-No Formalization (manual spec) & 9/12 & 9/12 & 0 & 1 & 48 min \\
+No Plan (manual spec) & 9/12 & 9/12 & 0 & 1 & 48 min \\
 Template-only baseline & N/A & 3/12 & 0 & 0 & 0.5 min \\
 \bottomrule
 \end{tabularx}
@@ -400,7 +399,7 @@ Key findings:
 \begin{itemize}[nosep]
 \item \textbf{Removing $\Agent_V$} causes 5 of 12 problems to proceed with invalid specifications (missing initial conditions, incompatible boundary conditions, wrong conservation laws). None of these achieve bounded error. $\Agent_V$ prevented 3 additional silent failures by catching subtle issues (under-resolved CFL condition, non-coercive weak form, inconsistent units) and triggering specification revision.
 \item \textbf{Replacing $\Agent_C$} with a template solver (pre-built solver recipes) works for standard textbook problems (heat equation, Poisson, basic ODEs) but fails on problems requiring non-standard primitive compositions (CT reconstruction, topology optimization, fluid--structure coupling, pattern formation).
-\item \textbf{Removing $\Agent_F$} requires human experts to write typed specifications manually, taking an average of 48 minutes per problem (vs.\ 4.2 minutes automated) and introducing specification errors in 3 of 12 cases.
+\item \textbf{Removing $\Agent_P$} requires human experts to write typed specifications manually, taking an average of 48 minutes per problem (vs.\ 4.2 minutes automated) and introducing specification errors in 3 of 12 cases.
 \item \textbf{Template-only baseline} (no agents, pre-built solver matched by keyword) achieves bounded error in only 3 of 12 domains.
 \end{itemize}
 
@@ -479,7 +478,7 @@ We have identified a rigorously defined simulability class $\mathfrak{S}$, prove
 
 The primary contribution is not a software system but a structural result: the identification of the exact scope of specification-driven simulation and the empirical demonstration that three agents with 12 primitives cover it. The boundary is absolute---it constrains any computational system---but our framework is the first to reach it constructively.
 
-The ablation study (Table~\ref{tab:ablation}) demonstrates that the three-agent decomposition is empirically necessary, not just architecturally convenient. Each agent addresses a distinct failure mode: $\Agent_F$ eliminates specification errors, $\Agent_V$ prevents ill-posed problems from consuming computation, and $\Agent_C$ handles the combinatorial space of numerical method selection that template solvers cannot cover.
+The ablation study (Table~\ref{tab:ablation}) demonstrates that the three-agent decomposition is empirically necessary, not just architecturally convenient. Each agent addresses a distinct failure mode: $\Agent_P$ eliminates specification errors through automated planning and formalization, $\Agent_V$ prevents ill-posed problems from consuming computation, and $\Agent_C$ handles the combinatorial space of numerical method selection that template solvers cannot cover.
 
 The competitive analysis quantifies the practical impact: while bespoke solvers achieve slightly better accuracy through decades of domain-specific optimization, the framework reduces expert setup time by 10--100$\times$. This democratizes scientific simulation---a biologist can simulate fluid dynamics through a \texttt{spec.md} file rather than learning OpenFOAM.
 
