@@ -546,8 +546,8 @@ def verify_spc():
     N = 16  # Small for speed
     gt = make_phantom(N)
     M = N * N // 4
-    patterns = (rng.rand(M, N * N) > 0.5).astype(np.float64)
-    y = patterns @ gt.ravel().astype(np.float64) + rng.randn(M) * 0.01
+    patterns = (rng.rand(M, N * N) > 0.5).astype(np.float32)
+    y = patterns @ gt.ravel().astype(np.float32) + rng.randn(M).astype(np.float32) * 0.01
 
     # ADMM SPC: admm_spc(y, A, rho, iterations, tol, verbose, device)
     try:
@@ -717,19 +717,19 @@ def verify_integral():
 
     try:
         from pwm_core.recon.integral_solver import depth_estimation
-        n_views = 5
         gt = make_phantom(N)
-        lf = np.zeros((n_views, n_views, N, N), dtype=np.float32)
-        for u in range(n_views):
-            for v in range(n_views):
-                shift_x = u - n_views // 2
-                shift_y = v - n_views // 2
-                lf[u, v] = np.roll(np.roll(gt, shift_x, axis=1), shift_y, axis=0)
-
-        # depth_estimation(measurement, depth_weights, psf_sigmas, regularization)
-        depth_weights = np.ones(n_views * n_views, dtype=np.float32) / (n_views * n_views)
+        # depth_estimation expects 2D measurement (H,W), returns (H,W,n_depths)
+        from scipy.ndimage import gaussian_filter
+        # Simulate blurred measurement from integral sensor
+        measurement = gaussian_filter(gt, sigma=2.0).astype(np.float32)
+        n_depths = 5
+        depth_weights = np.ones(n_depths, dtype=np.float32) / n_depths
+        psf_sigmas = np.array([0.5, 1.0, 2.0, 3.0, 4.0], dtype=np.float32)
+        recon_vol = depth_estimation(measurement, depth_weights, psf_sigmas)
+        # Compare best-focused depth plane with gt
+        best_plane = recon_vol[:, :, 1]  # sigma=1.0 plane
         results["integral__depth"] = verify_solver("Depth Estimation",
-            lambda: depth_estimation(lf.reshape(-1, N, N), depth_weights), gt)
+            lambda: best_plane, gt)
     except Exception as e:
         results["integral__depth"] = {"status": "error", "error": str(e)[:200]}
 

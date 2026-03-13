@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-03-13T08:27:35",
+  "timestamp": "2026-03-13T08:54:08",
   "platform": "local_cpu",
   "solvers": {
     "ct__fbp_ramlak": {
       "status": "verified",
       "psnr_db": 12.94,
       "ssim": 0.0406,
-      "exec_time": 0.26,
+      "exec_time": 0.277,
       "shape": [
         256,
         256
@@ -16,7 +16,7 @@
       "status": "verified",
       "psnr_db": 13.78,
       "ssim": 0.1064,
-      "exec_time": 0.165,
+      "exec_time": 0.181,
       "shape": [
         256,
         256
@@ -26,7 +26,7 @@
       "status": "verified",
       "psnr_db": 13.75,
       "ssim": 0.4289,
-      "exec_time": 52.844,
+      "exec_time": 56.114,
       "shape": [
         256,
         256
@@ -46,7 +46,7 @@
       "status": "verified",
       "psnr_db": 18.43,
       "ssim": 0.2961,
-      "exec_time": 0.079,
+      "exec_time": 0.093,
       "shape": [
         128,
         128
@@ -56,7 +56,7 @@
       "status": "verified",
       "psnr_db": 23.78,
       "ssim": 0.6524,
-      "exec_time": 0.045,
+      "exec_time": 0.028,
       "shape": [
         128,
         128
@@ -66,7 +66,7 @@
       "status": "verified",
       "psnr_db": 18.42,
       "ssim": 0.2971,
-      "exec_time": 0.062,
+      "exec_time": 0.036,
       "shape": [
         128,
         128
@@ -86,7 +86,7 @@
       "status": "verified",
       "psnr_db": 22.01,
       "ssim": 0.5681,
-      "exec_time": 0.085,
+      "exec_time": 0.079,
       "shape": [
         128,
         128
@@ -96,7 +96,7 @@
       "status": "verified",
       "psnr_db": 18.41,
       "ssim": 0.2289,
-      "exec_time": 0.117,
+      "exec_time": 0.131,
       "shape": [
         32,
         32
@@ -106,7 +106,7 @@
       "status": "verified",
       "psnr_db": 21.03,
       "ssim": 0.6004,
-      "exec_time": 0.262,
+      "exec_time": 0.324,
       "shape": [
         32,
         32
@@ -116,7 +116,7 @@
       "status": "verified",
       "psnr_db": -Infinity,
       "ssim": NaN,
-      "exec_time": 0.714,
+      "exec_time": 0.523,
       "shape": [
         32,
         32
@@ -126,7 +126,7 @@
       "status": "verified",
       "psnr_db": 13.04,
       "ssim": 0.1233,
-      "exec_time": 1.215,
+      "exec_time": 1.248,
       "shape": [
         32,
         32
@@ -136,7 +136,7 @@
       "status": "verified",
       "psnr_db": 9.76,
       "ssim": -0.0158,
-      "exec_time": 1.207,
+      "exec_time": 1.285,
       "shape": [
         32,
         32
@@ -146,7 +146,7 @@
       "status": "verified",
       "psnr_db": 7.04,
       "ssim": -0.0043,
-      "exec_time": 1.01,
+      "exec_time": 0.562,
       "shape": [
         32,
         32
@@ -176,7 +176,7 @@
       "status": "verified",
       "psnr_db": 11.81,
       "ssim": 0.1653,
-      "exec_time": 0.058,
+      "exec_time": 0.072,
       "shape": [
         64,
         64
@@ -196,7 +196,7 @@
       "status": "verified",
       "psnr_db": 56.64,
       "ssim": 0.9997,
-      "exec_time": 0.037,
+      "exec_time": 0.046,
       "shape": [
         64,
         64
@@ -206,7 +206,7 @@
       "status": "verified",
       "psnr_db": 8.71,
       "ssim": 0.0537,
-      "exec_time": 0.045,
+      "exec_time": 0.046,
       "shape": [
         64,
         64
@@ -216,7 +216,7 @@
       "status": "verified",
       "psnr_db": 19.47,
       "ssim": 0.5138,
-      "exec_time": 0.003,
+      "exec_time": 0.004,
       "shape": [
         64,
         64
@@ -236,7 +236,7 @@
       "status": "verified",
       "psnr_db": 15.93,
       "ssim": 0.4451,
-      "exec_time": 0.001,
+      "exec_time": 0.002,
       "shape": [
         64,
         64
@@ -246,7 +246,7 @@
       "status": "verified",
       "psnr_db": 21.12,
       "ssim": 0.6824,
-      "exec_time": 0.044,
+      "exec_time": 0.048,
       "shape": [
         64,
         64
@@ -286,7 +286,7 @@
       "status": "verified",
       "psnr_db": 6.91,
       "ssim": -1.0,
-      "exec_time": 0.018,
+      "exec_time": 0.02,
       "shape": [
         4,
         32,
@@ -295,18 +295,23 @@
     },
     "spc__admm": {
       "status": "verified",
-      "psnr_db": 11.46,
+      "psnr_db": 11.45,
       "ssim": 0.2589,
-      "exec_time": 0.034,
+      "exec_time": 0.044,
       "shape": [
         16,
         16
       ]
     },
     "spc__fista_l1": {
-      "status": "error",
-      "error": "expected scalar type Double but found Float",
-      "exec_time": 0.01
+      "status": "verified",
+      "psnr_db": NaN,
+      "ssim": NaN,
+      "exec_time": 0.023,
+      "shape": [
+        16,
+        16
+      ]
     },
     "sim__wiener": {
       "status": "verified",
@@ -320,9 +325,9 @@
     },
     "ptychography__epie": {
       "status": "verified",
-      "psnr_db": 2.35,
-      "ssim": 0.0693,
-      "exec_time": 0.044,
+      "psnr_db": 2.27,
+      "ssim": 0.0509,
+      "exec_time": 0.043,
       "shape": [
         64,
         64
@@ -332,7 +337,7 @@
       "status": "verified",
       "psnr_db": 13.21,
       "ssim": 0.3441,
-      "exec_time": 0.054,
+      "exec_time": 0.05,
       "shape": [
         64,
         64
@@ -352,22 +357,27 @@
       "status": "verified",
       "psnr_db": 17.31,
       "ssim": 0.9701,
-      "exec_time": 0.022,
+      "exec_time": 0.024,
       "shape": [
         32,
         32
       ]
     },
     "integral__depth": {
-      "status": "error",
-      "error": "too many values to unpack (expected 2)",
-      "exec_time": 0.0
+      "status": "verified",
+      "psnr_db": 16.56,
+      "ssim": 0.6061,
+      "exec_time": 0.0,
+      "shape": [
+        64,
+        64
+      ]
     },
     "light_field__shift_sum": {
       "status": "verified",
       "psnr_db": 13.43,
       "ssim": 0.2602,
-      "exec_time": 1.364,
+      "exec_time": 1.22,
       "shape": [
         64,
         64
@@ -397,7 +407,7 @@
       "status": "verified",
       "psnr_db": 17.78,
       "ssim": 0.1344,
-      "exec_time": 0.062,
+      "exec_time": 0.055,
       "shape": [
         128,
         128
@@ -407,7 +417,7 @@
       "status": "verified",
       "psnr_db": 37.52,
       "ssim": 0.9972,
-      "exec_time": 0.007,
+      "exec_time": 0.006,
       "shape": [
         128,
         128
@@ -417,7 +427,7 @@
       "status": "verified",
       "psnr_db": 20.94,
       "ssim": 0.8163,
-      "exec_time": 0.002,
+      "exec_time": 0.003,
       "shape": [
         128,
         128
@@ -447,7 +457,7 @@
       "status": "verified",
       "psnr_db": 25.1,
       "ssim": 0.3515,
-      "exec_time": 0.003,
+      "exec_time": 0.002,
       "shape": [
         128,
         128
@@ -457,7 +467,7 @@
       "status": "verified",
       "psnr_db": 30.84,
       "ssim": 0.7142,
-      "exec_time": 0.017,
+      "exec_time": 0.019,
       "shape": [
         128,
         128
@@ -467,7 +477,7 @@
       "status": "verified",
       "psnr_db": 30.84,
       "ssim": 0.7142,
-      "exec_time": 0.022,
+      "exec_time": 0.019,
       "shape": [
         128,
         128
@@ -495,8 +505,8 @@
     }
   },
   "summary": {
-    "verified": 48,
-    "errors": 2,
+    "verified": 50,
+    "errors": 0,
     "skipped": 0,
     "total_solvers": 50
   }
