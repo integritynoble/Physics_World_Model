@@ -91,26 +91,26 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | DSA (Digital Subtraction) | 1980 | DSA, Mistretta et al., 1981 | 25.0 | 0.8000 | 12.9 | 0.5828 |  |
+| 1 | DSA (Digital Subtraction) | 1980 | DSA, Mistretta et al., 1981 | 25.0 | 0.8000 | 12.9 | 0.5828 | done |
 | 2 | Deep Decoupling Net (GAN+RDB) | 2024 | IIETA, TS 2024 | 23.7 | 0.8770 | 12.9 | 0.5828 |  |
 | 3 | Maskless 2D-DSA (U-Net) | 2022 | Gao et al., JVIR 2022, PubMed 35311665 | 43.0 | 0.9800 | 12.9 | 0.5828 |  |
-| 4 | DSA subtraction (with motion) | 1980 | Ueda et al., Radiology 2021 (motion-free=40.2 dB) | 30.0 | 0.5000 | 12.9 | 0.5828 |  |
+| 4 | DSA subtraction (with motion) | 1980 | Ueda et al., Radiology 2021 (motion-free=40.2 dB) | 30.0 | 0.5000 | 12.9 | 0.5828 | done |
 | 5 | DSA-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.8 | 0.3743 |  |
 | 6 | VesselSegNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.8 | 0.3743 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 11.2 | 0.0435 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 11.2 | 0.0435 | done |
 
 ### 6. Arterial Spin Labeling (ASL) MRI (`asl_mri`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Control-label subtraction | 1998 | Detre et al., MRM 1992 | 22.0 | 0.6500 | 4.1 | 0.0041 |  |
+| 1 | Control-label subtraction | 1998 | Detre et al., MRM 1992 | 22.0 | 0.6500 | 4.1 | 0.0041 | done |
 | 2 | ASLRDB (Dilated+RDB) | 2025 | Springer, SIVP 2025 | 25.0 | 0.8240 | 4.1 | 0.0041 |  |
 | 3 | HUST (Transformer) 2D | 2025 | Springer, Vis Comput 2025 | 33.7 | 0.9600 | 4.1 | 0.0041 |  |
 | 4 | HUST (Transformer) 3D | 2025 | Springer, Vis Comput 2025 | 45.1 | 0.9900 | 4.1 | 0.0041 |  |
 | 5 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.1 | 0.0041 |  |
 | 6 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.1 | 0.0041 |  |
 | 7 | ASL-Net [proxy] (PWM) | — | — | — | — | 2.0 | 0.2531 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 2.7 | 0.0636 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 2.7 | 0.0636 | done |
 
 ### 7. Brachytherapy Imaging (`brachytherapy_img`)
 
@@ -199,13 +199,13 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Dual-energy decomposition | 1987 | Alvarez & Macovski, PMB 1976 | 28.0 | 0.8500 | 9.5 | 0.2550 |  |
+| 1 | Dual-energy decomposition | 1987 | Alvarez & Macovski, PMB 1976 | 28.0 | 0.8500 | 9.5 | 0.2550 | done |
 | 2 | DL bone density estimation | 2022 | DL for DEXA | 32.0 | 0.9000 | 9.5 | 0.2550 |  |
 | 3 | Bone decomposition baseline | 2020 | DEXA energy subtraction baseline (estimated) | 19.7 | — | 9.5 | 0.2550 |  |
-| 4 | FISTA-L2 (dual-energy) (PWM) | — | — | — | — | — | 1.0000 |  |
+| 4 | FISTA-L2 (dual-energy) (PWM) | — | — | — | — | — | 1.0000 | done |
 | 5 | DXA-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.3099 |  |
 | 6 | DEXA-UNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.3099 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 9.5 | 0.2550 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 9.5 | 0.2550 | done |
 
 ### 14. Diffusion MRI (DTI) (`diffusion_mri`)
 
@@ -225,12 +225,12 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | FBP | 1971 | FBP baseline | 25.0 | — | 2.5 | 0.2565 |  |
-| 2 | SART | 1984 | Andersen & Kak 1984 | 30.0 | — | 2.5 | 0.2565 |  |
-| 3 | TV-regularized MLEM | 2010 | TV-MLEM for DBT | 28.0 | 0.8700 | 2.5 | 0.2565 |  |
+| 1 | FBP | 1971 | FBP baseline | 25.0 | — | 2.5 | 0.2565 | done |
+| 2 | SART | 1984 | Andersen & Kak 1984 | 30.0 | — | 2.5 | 0.2565 | done |
+| 3 | TV-regularized MLEM | 2010 | TV-MLEM for DBT | 28.0 | 0.8700 | 2.5 | 0.2565 | done |
 | 4 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.2565 |  |
 | 5 | DBT-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.5 | 0.2565 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | — | 0.0001 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | — | 0.0001 | done |
 
 ### 16. Doppler Ultrasound (`doppler_ultrasound`)
 
@@ -253,16 +253,16 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Born approximation | 1999 | Arridge, Inverse Problems 1999 | 20.0 | 0.6000 | 7.0 | 0.0193 |  |
-| 2 | Tikhonov regularization | 2018 | Feng et al., JBO 24(5), PMC6992907 | 24.3 | 0.4600 | 7.0 | 0.0193 |  |
+| 1 | Born approximation | 1999 | Arridge, Inverse Problems 1999 | 20.0 | 0.6000 | 7.0 | 0.0193 | done |
+| 2 | Tikhonov regularization | 2018 | Feng et al., JBO 24(5), PMC6992907 | 24.3 | 0.4600 | 7.0 | 0.0193 | done |
 | 3 | BPNN | 2018 | Feng et al., JBO 24(5), PMC6992907 | 27.8 | 0.9100 | 7.0 | 0.0193 |  |
-| 4 | Rytov + Laplacian | 2000 | Arridge et al., PMB 1999 | 18.0 | 0.4500 | 7.0 | 0.0193 |  |
-| 5 | Tikhonov (basic, noisy) | 2000 | Yoo et al., J Biomed Opt 2019, PMC6992907 | 22.0 | 0.3000 | 7.0 | 0.0193 |  |
+| 4 | Rytov + Laplacian | 2000 | Arridge et al., PMB 1999 | 18.0 | 0.4500 | 7.0 | 0.0193 | done |
+| 5 | Tikhonov (basic, noisy) | 2000 | Yoo et al., J Biomed Opt 2019, PMC6992907 | 22.0 | 0.3000 | 7.0 | 0.0193 | done |
 | 6 | L-BFGS-TV [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.3 | 0.0170 |  |
 | 7 | DOT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.3 | 0.0170 |  |
-| 8 | born_backprojection (test) | — | — | — | — | 4.7 | -0.0078 |  |
-| 9 | tikhonov (test) | — | — | — | — | 2.4 | -0.0033 |  |
-| 10 | precomputed_baseline (test) | — | — | — | — | 7.0 | 0.0193 |  |
+| 8 | born_backprojection (test) | — | — | — | — | 4.7 | -0.0078 | done |
+| 9 | tikhonov (test) | — | — | — | — | 2.4 | -0.0033 | done |
+| 10 | precomputed_baseline (test) | — | — | — | — | 7.0 | 0.0193 | done |
 
 ### 18. Shear-Wave Elastography (`elastography`)
 
@@ -311,13 +311,13 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Zero-filled IFFT | 2000 | Baseline | 25.0 | 0.6000 | 4.9 | 0.0536 |  |
-| 2 | CS-fMRI | 2010 | Jung et al., PMB 2009 | 32.0 | 0.8800 | 4.9 | 0.0536 |  |
+| 1 | Zero-filled IFFT | 2000 | Baseline | 25.0 | 0.6000 | 4.9 | 0.0536 | done |
+| 2 | CS-fMRI | 2010 | Jung et al., PMB 2009 | 32.0 | 0.8800 | 4.9 | 0.0536 | done |
 | 3 | E2E-VarNet | 2021 | Sriram et al., fastMRI Challenge 2020 | 41.4 | 0.9590 | 4.9 | 0.0536 |  |
-| 4 | SENSE (fMRI) (PWM) | — | — | — | — | 4.9 | 0.0536 |  |
+| 4 | SENSE (fMRI) (PWM) | — | — | — | — | 4.9 | 0.0536 | done |
 | 5 | fMRI-Transformer [proxy] (PWM) | — | — | — | — | 4.9 | 0.0536 |  |
 | 6 | DeepBold [proxy] (PWM) | — | — | — | — | 4.9 | 0.0536 |  |
-| 7 | zero_filled (test) | — | — | — | — | 4.9 | — |  |
+| 7 | zero_filled (test) | — | — | — | — | 4.9 | — | done |
 
 ### 22. Fundus Camera (`fundus`)
 
@@ -367,34 +367,34 @@ Generated: 2026-03-12
 | 4 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.2 | 0.0020 |  |
 | 5 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.2 | 0.0020 |  |
 | 6 | MRE-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.2 | 0.0020 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 6.0 | 0.0984 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 6.0 | 0.0984 | done |
 
 ### 26. MR Fingerprinting (MRF) (`mr_fingerprinting`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Dictionary matching | 2013 | Ma et al., Nature 2013 | 25.0 | 0.8000 | 4.2 | 0.0040 |  |
-| 2 | MANTIS | 2019 | Fang et al., MRM 2019 | 30.0 | 0.9000 | 4.2 | 0.0040 |  |
+| 1 | Dictionary matching | 2013 | Ma et al., Nature 2013 | 25.0 | 0.8000 | 4.2 | 0.0040 | done |
+| 2 | MANTIS | 2019 | Fang et al., MRM 2019 | 30.0 | 0.9000 | 4.2 | 0.0040 | done |
 | 3 | GAST-Mamba (T1 map) | 2025 | arXiv 2507.03369 | 33.1 | 0.9670 | 4.2 | 0.0040 |  |
 | 4 | MRF-Mixer (T1 map) | 2025 | MDPI Information 2025 | 33.5 | 0.9800 | 4.2 | 0.0040 |  |
 | 5 | MRF-Mixer (T2 map) | 2025 | MDPI Information 2025 | 35.9 | 0.9800 | 4.2 | 0.0040 |  |
 | 6 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.2 | 0.0040 |  |
 | 7 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.2 | 0.0040 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 1.8 | 0.0693 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 1.8 | 0.0693 | done |
 
 ### 27. MR Angiography (MRA) (`mra`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Zero-filled IFFT | 2000 | Baseline | 25.0 | 0.6500 | 12.1 | 0.2673 |  |
-| 2 | CS-MRA | 2010 | Lustig et al., MRM 2007 | 30.0 | 0.8500 | 12.1 | 0.2673 |  |
+| 1 | Zero-filled IFFT | 2000 | Baseline | 25.0 | 0.6500 | 12.1 | 0.2673 | done |
+| 2 | CS-MRA | 2010 | Lustig et al., MRM 2007 | 30.0 | 0.8500 | 12.1 | 0.2673 | done |
 | 3 | 3D CNN SR | 2025 | Nature Scientific Reports 2025 | 36.8 | 0.9830 | 12.1 | 0.2673 |  |
-| 4 | Zero-filled (16x accel) | 2026 | Li et al., MRM 2026 (R=8: 26.8 dB, extrapolated) | 25.0 | 0.3500 | 12.1 | 0.2673 |  |
-| 5 | Zero-filled (R=7-11) | 2024 | PMC11424428 (verified 25.80 dB) | 25.8 | — | 12.1 | 0.2673 |  |
+| 4 | Zero-filled (16x accel) | 2026 | Li et al., MRM 2026 (R=8: 26.8 dB, extrapolated) | 25.0 | 0.3500 | 12.1 | 0.2673 | done |
+| 5 | Zero-filled (R=7-11) | 2024 | PMC11424428 (verified 25.80 dB) | 25.8 | — | 12.1 | 0.2673 | done |
 | 6 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.6 | 0.0064 |  |
 | 7 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.6 | 0.0064 |  |
 | 8 | MRA-VesselNet [proxy] (PWM) | — | — | — | — | 0.5 | 0.0095 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 12.1 | 0.2673 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 12.1 | 0.2673 | done |
 
 ### 28. Magnetic Resonance Imaging (MRI) (`mri`)
 
@@ -422,12 +422,12 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | HLSVD | 2002 | Pijnappel et al., 1992 | 22.0 | — | 4.3 | 0.0011 |  |
-| 2 | LCModel | 1993 | Provencher, MRM 1993 | 28.0 | — | 4.3 | 0.0011 |  |
+| 1 | HLSVD | 2002 | Pijnappel et al., 1992 | 22.0 | — | 4.3 | 0.0011 | done |
+| 2 | LCModel | 1993 | Provencher, MRM 1993 | 28.0 | — | 4.3 | 0.0011 | done |
 | 3 | DDPM-MRSI (2x SR) | 2025 | J Imaging Inform Med 2025 | 29.7 | 0.9560 | 4.3 | 0.0011 |  |
-| 4 | SENSE (spectroscopy) (PWM) | — | — | — | — | 2.1 | 0.2197 |  |
+| 4 | SENSE (spectroscopy) (PWM) | — | — | — | — | 2.1 | 0.2197 | done |
 | 5 | MRS-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.3 | 0.0011 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 1.9 | 0.0676 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 1.9 | 0.0676 | done |
 
 ### 30. Functional Near-Infrared Spectroscopy (fNIRS) (`nirs_brain`)
 
@@ -458,15 +458,15 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | SSADA (single-scan) | 2012 | Xu et al. 2021 PMC8221851 (single-scan 12.09 dB) | 12.1 | 0.7000 | 18.8 | 0.4872 |  |
+| 1 | SSADA (single-scan) | 2012 | Xu et al. 2021 PMC8221851 (single-scan 12.09 dB) | 12.1 | 0.7000 | 18.8 | 0.4872 | done |
 | 2 | CNN accelerated OCTA | 2022 | Sci Rep 2022 | 20.8 | 0.6300 | 18.8 | 0.4872 |  |
 | 3 | SU-Net (Siamese) | 2019 | Lee et al., 2019 | 28.0 | 0.8130 | 18.8 | 0.4872 |  |
 | 4 | Motion artifact DL | 2024 | MDPI Mathematics 2024 | 32.7 | 0.9260 | 18.8 | 0.4872 |  |
-| 5 | Single-scan OCTA (noisy) | 2021 | Xu et al. 2021, PMC8221851 | 12.1 | — | 18.8 | 0.4872 |  |
-| 6 | FFT Recon (OCTA) (PWM) | — | — | — | — | 13.3 | 0.0566 |  |
+| 5 | Single-scan OCTA (noisy) | 2021 | Xu et al. 2021, PMC8221851 | 12.1 | — | 18.8 | 0.4872 | done |
+| 6 | FFT Recon (OCTA) (PWM) | — | — | — | — | 13.3 | 0.0566 | done |
 | 7 | OCTA-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 18.8 | 0.4872 |  |
 | 8 | OCTA-FF [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 18.8 | 0.4872 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 16.8 | 0.4326 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 16.8 | 0.4326 | done |
 
 ### 33. Positron Emission Tomography (PET) (`pet`)
 
@@ -542,26 +542,26 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Material decomposition | 2003 | Alvarez & Macovski, PMB 1976 | 28.0 | 0.8500 | 12.3 | 0.1106 |  |
-| 2 | ADMM-TV | 2010 | TV regularization | 30.0 | 0.8700 | 12.3 | 0.1106 |  |
+| 1 | Material decomposition | 2003 | Alvarez & Macovski, PMB 1976 | 28.0 | 0.8500 | 12.3 | 0.1106 | done |
+| 2 | ADMM-TV | 2010 | TV regularization | 30.0 | 0.8700 | 12.3 | 0.1106 | done |
 | 3 | Butterfly-Net | 2022 | Li et al., PMB 2022 | 34.0 | 0.9500 | 12.3 | 0.1106 |  |
 | 4 | D3QN | 2024 | Phys Med Biol 2024 | 37.4 | 0.9790 | 12.3 | 0.1106 |  |
-| 5 | FBP per bin (lowest energy) | 2024 | Xing et al., 2024, PMC11744124 | 27.0 | 0.5000 | 12.3 | 0.1106 |  |
-| 6 | FBP (30 sparse views) | 2025 | Guo et al., QIMS 2025, PMC12209656 | 15.5 | — | 12.3 | 0.1106 |  |
+| 5 | FBP per bin (lowest energy) | 2024 | Xing et al., 2024, PMC11744124 | 27.0 | 0.5000 | 12.3 | 0.1106 | done |
+| 6 | FBP (30 sparse views) | 2025 | Guo et al., QIMS 2025, PMC12209656 | 15.5 | — | 12.3 | 0.1106 | done |
 | 7 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1896 |  |
 | 8 | SpectralCT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1896 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 12.3 | 0.1106 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 12.3 | 0.1106 | done |
 
 ### 39. Susceptibility-Weighted Imaging (SWI) (`swi`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Homodyne filtering | 2004 | Haacke et al., MRM 2004 | 28.0 | 0.8500 | 4.6 | 0.0020 |  |
+| 1 | Homodyne filtering | 2004 | Haacke et al., MRM 2004 | 28.0 | 0.8500 | 4.6 | 0.0020 | done |
 | 2 | DeepSWI (cGAN) | 2023 | Genc et al., JMRI 2023 | 36.9 | 0.8900 | 4.6 | 0.0020 |  |
 | 3 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.6 | 0.0020 |  |
 | 4 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 4.6 | 0.0020 |  |
 | 5 | SWI-Net [proxy] (PWM) | — | — | — | — | 2.0 | 0.2415 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 1.9 | 0.0677 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 1.9 | 0.0677 | done |
 
 ### 40. Ultrasound B-mode Imaging (`ultrasound`)
 
@@ -748,23 +748,23 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | GS-FPM | 2013 | Zheng et al., Nature Photonics 2013 | 28.0 | 0.8500 | 16.9 | 0.7943 |  |
-| 2 | Gradient descent FPM | 2015 | Tian & Waller, Optica 2015 | 30.0 | 0.8700 | 16.9 | 0.7943 |  |
+| 1 | GS-FPM | 2013 | Zheng et al., Nature Photonics 2013 | 28.0 | 0.8500 | 16.9 | 0.7943 | done |
+| 2 | Gradient descent FPM | 2015 | Tian & Waller, Optica 2015 | 30.0 | 0.8700 | 16.9 | 0.7943 | done |
 | 3 | Single low-res capture | 2013 | FPM single image baseline | 18.0 | 0.6000 | 16.9 | 0.7943 |  |
-| 4 | Sequential Phase Retrieval (PWM) | — | — | — | — | 5.2 | 0.0237 |  |
+| 4 | Sequential Phase Retrieval (PWM) | — | — | — | — | 5.2 | 0.0237 | done |
 | 5 | Fourier Ptychnet (PWM) | — | Jiang et al. 2018, Biomed. Optics Express | — | — | 5.2 | 0.0237 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 16.9 | 0.7943 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 16.9 | 0.7943 | done |
 
 ### 55. Image Scanning Microscopy (ISM) (`ism`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Pixel reassignment | 2010 | Muller & Enderlein, PRL 2010 | 28.0 | — | 3.1 | 0.1516 |  |
-| 2 | Airyscan processing | 2017 | Huff, Methods Appl Fluor 2017 | 30.0 | — | 3.1 | 0.1516 |  |
-| 3 | Richardson-Lucy (PWM) | — | — | — | — | 3.1 | 0.1516 |  |
+| 1 | Pixel reassignment | 2010 | Muller & Enderlein, PRL 2010 | 28.0 | — | 3.1 | 0.1516 | done |
+| 2 | Airyscan processing | 2017 | Huff, Methods Appl Fluor 2017 | 30.0 | — | 3.1 | 0.1516 | done |
+| 3 | Richardson-Lucy (PWM) | — | — | — | — | 3.1 | 0.1516 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | — | — | 0.5 | 0.0286 |  |
 | 5 | ISM-Reassignment-Net (PWM) | — | Castello, M. et al. (2019) Image scanning microscopy ISM, Nature Methods 16:175 | — | — | — | — |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | — | 0.0000 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | — | 0.0000 | done |
 
 ### 56. Lattice Light-Sheet Microscopy (`lattice_lightsheet`)
 
@@ -830,15 +830,15 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Mueller matrix | 2000 | Chipman, Handbook of Optics | 25.0 | — | 15.8 | 0.6265 |  |
+| 1 | Mueller matrix | 2000 | Chipman, Handbook of Optics | 25.0 | — | 15.8 | 0.6265 | done |
 | 2 | DnCNN | 2022 | Opt Express 30(12), PMC9208591 | 34.4 | 0.8100 | 15.8 | 0.6265 |  |
 | 3 | MIRNet | 2022 | Opt Express 30(12), PMC9208591 | 37.9 | 0.8950 | 15.8 | 0.6265 |  |
 | 4 | MDU-Net | 2022 | Opt Express 30(12), PMC9208591 | 38.1 | 0.8970 | 15.8 | 0.6265 |  |
-| 5 | Raw Mueller matrix | 2022 | Ye et al., Biomed Opt Express 2022, PMC9208591 | 29.0 | 0.5000 | 15.8 | 0.6265 |  |
-| 6 | PnP-HQS (PWM) | — | — | — | — | 8.4 | 0.0892 |  |
+| 5 | Raw Mueller matrix | 2022 | Ye et al., Biomed Opt Express 2022, PMC9208591 | 29.0 | 0.5000 | 15.8 | 0.6265 | done |
+| 6 | PnP-HQS (PWM) | — | — | — | — | 8.4 | 0.0892 | done |
 | 7 | PolarNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 8.4 | 0.0892 |  |
 | 8 | Stokes-NN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 8.4 | 0.0892 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 15.8 | 0.6265 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 15.8 | 0.6265 | done |
 
 ### 62. Second Harmonic Generation (SHG) Microscopy (`shg`)
 
@@ -1005,14 +1005,14 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Fourier filtering | 1993 | Lichte, Ultramicroscopy 1993 | 25.0 | — | 9.5 | -0.0481 |  |
+| 1 | Fourier filtering | 1993 | Lichte, Ultramicroscopy 1993 | 25.0 | — | 9.5 | -0.0481 | done |
 | 2 | DNN phase unwrapping | 2021 | DL electron holography | 30.0 | 0.8800 | 9.5 | -0.0481 |  |
 | 3 | FIN (Fourier Imager Network) | 2022 | Huang et al., Light Sci Appl 2022 | 36.1 | 0.7850 | 9.5 | -0.0481 |  |
 | 4 | HoloPhaseNet (cGAN) | 2022 | Terbe et al., Biomed Opt Express 2022 | 35.3 | 0.9900 | 9.5 | -0.0481 |  |
-| 5 | Phase Retrieval (HIO) (PWM) | — | — | — | — | 5.6 | 0.0115 |  |
+| 5 | Phase Retrieval (HIO) (PWM) | — | — | — | — | 5.6 | 0.0115 | done |
 | 6 | EH-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.5 | 0.0049 |  |
 | 7 | Phase-Sideband [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.5 | 0.0049 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 9.5 | -0.0481 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 9.5 | -0.0481 | done |
 
 ### 77. Electron Tomography (`electron_tomography`)
 
@@ -1191,7 +1191,7 @@ Generated: 2026-03-12
 | 5 | 3DGS (full) (PWM) | — | Kerbl et al. SIGGRAPH 2023 | — | — | — | 1.0000 |  |
 | 6 | NeRF (baseline comparison) (PWM) | — | — | — | — | — | 1.0000 |  |
 | 7 | 3DGS (compact) (PWM) | — | — | — | — | — | 1.0000 |  |
-| 8 | direct_render_baseline (test) | — | — | — | — | 0.0 | 0.0000 |  |
+| 8 | direct_render_baseline (test) | — | — | — | — | 0.0 | 0.0000 | done |
 
 ### 90. Neural Radiance Fields (NeRF) (`nerf`)
 
@@ -1218,12 +1218,12 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | TCSPC histogram | 2000 | flash LiDAR baseline | 22.0 | — | 4.3 | — |  |
+| 1 | TCSPC histogram | 2000 | flash LiDAR baseline | 22.0 | — | 4.3 | — | done |
 | 2 | Joint depth+reflectivity DNN | 2025 | arXiv 2505.13250 | 29.1 | — | 4.3 | — |  |
-| 3 | Matched filter SPAD | 2010 | SPAD baseline | 18.0 | — | 4.3 | — |  |
+| 3 | Matched filter SPAD | 2010 | SPAD baseline | 18.0 | — | 4.3 | — | done |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1433 |  |
 | 5 | FlashLiDAR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1433 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 4.3 | — |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 4.3 | — | done |
 
 ### 92. LiDAR Scanner (`lidar`)
 
@@ -1253,12 +1253,12 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Gray code | 2003 | Scharstein & Szeliski, 2003 | 25.0 | — | 8.0 | -0.0287 |  |
-| 2 | Phase-shifting (4-step) | 1984 | Creath, 1988 | 35.0 | 0.9500 | 8.0 | -0.0287 |  |
+| 1 | Gray code | 2003 | Scharstein & Szeliski, 2003 | 25.0 | — | 8.0 | -0.0287 | done |
+| 2 | Phase-shifting (4-step) | 1984 | Creath, 1988 | 35.0 | 0.9500 | 8.0 | -0.0287 | done |
 | 3 | SFNet (fringe-to-phase) | 2024 | ArXiv 2402.00977 | 38.0 | — | 8.0 | -0.0287 |  |
 | 4 | SL-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.6 | 0.0042 |  |
 | 5 | FTPD [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.6 | 0.0042 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 8.0 | -0.0287 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 8.0 | -0.0287 | done |
 
 ### 95. Time-of-Flight Depth Camera (`tof_camera`)
 
@@ -1318,16 +1318,16 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | BDSD (Band-Dependent Spatial Detail) | 2008 | Vivone et al., GRSM 2015 | 30.0 | 0.9000 | 11.3 | 0.0718 |  |
+| 1 | BDSD (Band-Dependent Spatial Detail) | 2008 | Vivone et al., GRSM 2015 | 30.0 | 0.9000 | 11.3 | 0.0718 | done |
 | 2 | PanNet | 2017 | Yang et al., ICCV 2017 | 36.1 | 0.9660 | 11.3 | 0.0718 |  |
 | 3 | GPPNN | 2021 | Xu et al., CVPR 2021 | 33.8 | 0.9500 | 11.3 | 0.0718 |  |
 | 4 | CDFAN | 2024 | Entropy 27(6):567, PMC12191612 | 42.8 | — | 11.3 | 0.0718 |  |
-| 5 | EXP baseline (bicubic LRMS) | 2022 | Deng et al., IEEE GRSM 2022, PMC12031081 | 27.4 | 0.5000 | 11.3 | 0.0718 |  |
-| 6 | Nearest-neighbor (4x) | 2000 | Deng et al., IEEE GRSM 2022 benchmark | 22.0 | 0.6000 | 11.3 | 0.0718 |  |
+| 5 | EXP baseline (bicubic LRMS) | 2022 | Deng et al., IEEE GRSM 2022, PMC12031081 | 27.4 | 0.5000 | 11.3 | 0.0718 | done |
+| 6 | Nearest-neighbor (4x) | 2000 | Deng et al., IEEE GRSM 2022 benchmark | 22.0 | 0.6000 | 11.3 | 0.0718 | done |
 | 7 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 11.3 | 0.0718 |  |
 | 8 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 11.3 | 0.0718 |  |
 | 9 | MS-Pansharpening-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 11.3 | 0.0718 |  |
-| 10 | bicubic_upsample (test) | — | — | — | — | 10.8 | 0.1002 |  |
+| 10 | bicubic_upsample (test) | — | — | — | — | 10.8 | 0.1002 | done |
 
 ### 100. Ocean Color Remote Sensing (`ocean_color`)
 
@@ -1344,28 +1344,28 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Tikhonov retrieval | 2000 | Tikhonov | 22.0 | — | 16.9 | 0.3301 |  |
-| 2 | OI (Optimal Interpolation) | 2000 | Bretherton et al., MWR 1976 | 25.0 | — | 16.9 | 0.3301 |  |
-| 3 | Linear regression retrieval | 1990 | Statistical retrieval baseline | 18.0 | 0.5500 | 16.9 | 0.3301 |  |
+| 1 | Tikhonov retrieval | 2000 | Tikhonov | 22.0 | — | 16.9 | 0.3301 | done |
+| 2 | OI (Optimal Interpolation) | 2000 | Bretherton et al., MWR 1976 | 25.0 | — | 16.9 | 0.3301 | done |
+| 3 | Linear regression retrieval | 1990 | Statistical retrieval baseline | 18.0 | 0.5500 | 16.9 | 0.3301 | done |
 | 4 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 16.9 | 0.3301 |  |
 | 5 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 16.9 | 0.3301 |  |
 | 6 | PM-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 16.9 | 0.3301 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 9.2 | 0.5946 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 9.2 | 0.5946 | done |
 
 ### 102. Polarimetric SAR (PolSAR) (`polsar`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Lee filter | 1999 | Lee et al., IEEE TGRS 1999 | 22.0 | 0.7000 | 7.2 | 0.2891 |  |
-| 2 | Cloude-Pottier decomposition | 1997 | Cloude & Pottier, IEEE TGRS 1997 | — | — | 7.2 | 0.2891 |  |
+| 1 | Lee filter | 1999 | Lee et al., IEEE TGRS 1999 | 22.0 | 0.7000 | 7.2 | 0.2891 | done |
+| 2 | Cloude-Pottier decomposition | 1997 | Cloude & Pottier, IEEE TGRS 1997 | — | — | 7.2 | 0.2891 | done |
 | 3 | CNN learnable activation | 2021 | Remote Sensing 13(17):3444 | 26.4 | 0.8300 | 7.2 | 0.2891 |  |
 | 4 | PAN-DeSpeck | 2023 | CMC 76(3):54373 | 28.4 | 0.9050 | 7.2 | 0.2891 |  |
-| 5 | Refined Lee | 2003 | Lee et al., TGRS 2003 | 24.0 | 0.7800 | 7.2 | 0.2891 |  |
-| 6 | Single-look noisy input | 2017 | Wang et al., TGRS 2017 | 14.5 | — | 7.2 | 0.2891 |  |
+| 5 | Refined Lee | 2003 | Lee et al., TGRS 2003 | 24.0 | 0.7800 | 7.2 | 0.2891 | done |
+| 6 | Single-look noisy input | 2017 | Wang et al., TGRS 2017 | 14.5 | — | 7.2 | 0.2891 | done |
 | 7 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
 | 8 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
 | 9 | PolSAR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.2891 |  |
-| 10 | precomputed_baseline (test) | — | — | — | — | 3.5 | -0.0175 |  |
+| 10 | precomputed_baseline (test) | — | — | — | — | 3.5 | -0.0175 | done |
 
 ### 103. Radio Interferometry (VLBI) (`radio_interferometry`)
 
@@ -1383,27 +1383,27 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Range-Doppler Algorithm | 1978 | Curlander & McDonough, 1991 | 25.0 | 0.7000 | 17.8 | 0.1380 |  |
-| 2 | Omega-K Algorithm | 1992 | Stolt 1978 / Cafforio 1991 | 27.0 | 0.7500 | 17.8 | 0.1380 |  |
-| 3 | Matched Filter (24 pts, 2dB SNR) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 8.8 | — | 17.8 | 0.1380 |  |
-| 4 | Matched Filter (192 pts) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 19.1 | — | 17.8 | 0.1380 |  |
-| 5 | FBP (SAR backprojection) (PWM) | — | — | — | — | 13.6 | 0.2879 |  |
+| 1 | Range-Doppler Algorithm | 1978 | Curlander & McDonough, 1991 | 25.0 | 0.7000 | 17.8 | 0.1380 | done |
+| 2 | Omega-K Algorithm | 1992 | Stolt 1978 / Cafforio 1991 | 27.0 | 0.7500 | 17.8 | 0.1380 | done |
+| 3 | Matched Filter (24 pts, 2dB SNR) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 8.8 | — | 17.8 | 0.1380 | done |
+| 4 | Matched Filter (192 pts) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 19.1 | — | 17.8 | 0.1380 | done |
+| 5 | FBP (SAR backprojection) (PWM) | — | — | — | — | 13.6 | 0.2879 | done |
 | 6 | SAR-DL (PolSF) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.8 | 0.1380 |  |
 | 7 | SAR-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.8 | 0.1380 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 17.3 | 0.7046 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 17.3 | 0.7046 | done |
 
 ### 105. Sonar Imaging (`sonar`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | MVDR/Capon beamforming | 1969 | Capon, Proc IEEE 1969 | 25.0 | — | 15.0 | 0.2817 |  |
-| 2 | MUSIC | 1986 | Schmidt, IEEE TAP 1986 | 27.0 | — | 15.0 | 0.2817 |  |
+| 1 | MVDR/Capon beamforming | 1969 | Capon, Proc IEEE 1969 | 25.0 | — | 15.0 | 0.2817 | done |
+| 2 | MUSIC | 1986 | Schmidt, IEEE TAP 1986 | 27.0 | — | 15.0 | 0.2817 | done |
 | 3 | SwinIR | 2025 | Frontiers in Remote Sensing 2025 | 36.1 | 0.9810 | 15.0 | 0.2817 |  |
-| 4 | Matched Filter (sparse) | 2024 | SAR analog, arXiv 2512.02768 | 12.0 | — | 15.0 | 0.2817 |  |
+| 4 | Matched Filter (sparse) | 2024 | SAR analog, arXiv 2512.02768 | 12.0 | — | 15.0 | 0.2817 | done |
 | 5 | FISTA-L2 (DAS) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
 | 6 | SonarSR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
 | 7 | Sonar-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 15.0 | 0.2817 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 10.3 | 0.5149 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 10.3 | 0.5149 | done |
 
 ### 106. Weather / Doppler Radar (`weather_radar`)
 
@@ -1488,15 +1488,15 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Pulsed phase thermography | 1996 | Maldague & Marinetti, J Appl Phys 1996 | 25.0 | — | 7.2 | 0.1475 |  |
-| 2 | Bicubic baseline | 2024 | Sci Reports 2024, PMC11227526 | 42.1 | 0.9820 | 7.2 | 0.1475 |  |
+| 1 | Pulsed phase thermography | 1996 | Maldague & Marinetti, J Appl Phys 1996 | 25.0 | — | 7.2 | 0.1475 | done |
+| 2 | Bicubic baseline | 2024 | Sci Reports 2024, PMC11227526 | 42.1 | 0.9820 | 7.2 | 0.1475 | done |
 | 3 | SRCNN | 2024 | Sci Reports 2024, PMC11227526 | 42.9 | 0.9840 | 7.2 | 0.1475 |  |
 | 4 | EDSR | 2024 | Sci Reports 2024, PMC11227526 | 45.3 | 0.9900 | 7.2 | 0.1475 |  |
 | 5 | RCAN | 2024 | Sci Reports 2024, PMC11227526 | 45.9 | 0.9920 | 7.2 | 0.1475 |  |
 | 6 | TESR (Transformer) | 2024 | Sci Reports 2024, PMC11227526 | 46.2 | 0.9920 | 7.2 | 0.1475 |  |
 | 7 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.1475 |  |
 | 8 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.2 | 0.1475 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 6.5 | 0.1897 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 6.5 | 0.1897 | done |
 
 ### 113. Eddy Current Imaging (`eddy_current`)
 
@@ -1535,16 +1535,16 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Phase-shifting shearography | 2000 | Hung, 1982 | 28.0 | — | 13.2 | 0.1733 |  |
-| 2 | Fourier transform method | 1982 | Takeda et al., JOSA 1982 | 25.0 | — | 13.2 | 0.1733 |  |
+| 1 | Phase-shifting shearography | 2000 | Hung, 1982 | 28.0 | — | 13.2 | 0.1733 | done |
+| 2 | Fourier transform method | 1982 | Takeda et al., JOSA 1982 | 25.0 | — | 13.2 | 0.1733 | done |
 | 3 | FPD-CNN | 2020 | Lin et al., Applied Optics 2020 | 27.9 | 0.9720 | 13.2 | 0.1733 |  |
 | 4 | DBDNet | 2021 | Li et al., Applied Optics 2021 | 20.6 | — | 13.2 | 0.1733 |  |
-| 5 | OCPDE (Oriented Coupled PDE) | 2020 | Lin et al., Applied Optics 2020 | 14.1 | — | 13.2 | 0.1733 |  |
-| 6 | WFLPF (Windowed Fourier LP Filter) | 2020 | Lin et al., Applied Optics 2020 | 12.8 | — | 13.2 | 0.1733 |  |
+| 5 | OCPDE (Oriented Coupled PDE) | 2020 | Lin et al., Applied Optics 2020 | 14.1 | — | 13.2 | 0.1733 | done |
+| 6 | WFLPF (Windowed Fourier LP Filter) | 2020 | Lin et al., Applied Optics 2020 | 12.8 | — | 13.2 | 0.1733 | done |
 | 7 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 13.2 | 0.1733 |  |
 | 8 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 13.2 | 0.1733 |  |
 | 9 | ShearNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 13.2 | 0.1733 |  |
-| 10 | precomputed_baseline (test) | — | — | — | — | 8.0 | -0.0011 |  |
+| 10 | precomputed_baseline (test) | — | — | — | — | 8.0 | -0.0011 | done |
 
 ### 117. Terahertz Imaging (THz) (`terahertz`)
 
@@ -1640,36 +1640,36 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | ATR correction | 2000 | Bassan et al., Analyst 2010 | 24.0 | — | 34.6 | 0.9204 |  |
-| 2 | MCR-ALS | 2000 | Tauler, Chemom Intell Lab 1995 | 28.0 | — | 34.6 | 0.9204 |  |
+| 1 | ATR correction | 2000 | Bassan et al., Analyst 2010 | 24.0 | — | 34.6 | 0.9204 | done |
+| 2 | MCR-ALS | 2000 | Tauler, Chemom Intell Lab 1995 | 28.0 | — | 34.6 | 0.9204 | done |
 | 3 | U-Net SR FTIR | 2022 | DL for FTIR imaging | 30.0 | 0.9000 | 34.6 | 0.9204 |  |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 34.6 | 0.9204 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 34.6 | 0.9204 |  |
 | 6 | FTIR-UNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 34.6 | 0.9204 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 14.8 | 0.8058 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 14.8 | 0.8058 | done |
 
 ### 125. Laser-Induced Breakdown Spectroscopy (LIBS) Imaging (`libs`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Peak identification | 2000 | LIBS baseline | 22.0 | — | 26.5 | 0.6516 |  |
-| 2 | PLS regression | 2005 | Hahn & Omenetto, Appl Spectrosc 2010 | 25.0 | — | 26.5 | 0.6516 |  |
+| 1 | Peak identification | 2000 | LIBS baseline | 22.0 | — | 26.5 | 0.6516 | done |
+| 2 | PLS regression | 2005 | Hahn & Omenetto, Appl Spectrosc 2010 | 25.0 | — | 26.5 | 0.6516 | done |
 | 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 26.5 | 0.6516 |  |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 26.5 | 0.6516 |  |
 | 5 | LIBS-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 26.5 | 0.6516 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 18.0 | 0.5987 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 18.0 | 0.5987 | done |
 
 ### 126. Raman Imaging / Microscopy (`raman_imaging`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Savitzky-Golay | 1964 | Savitzky & Golay, 1964 | 20.0 | — | 19.7 | 0.5114 |  |
-| 2 | PCA denoising | 2000 | Horgan et al., Anal Chem 2022 (comparison) | 39.4 | 0.8680 | 19.7 | 0.5114 |  |
+| 1 | Savitzky-Golay | 1964 | Savitzky & Golay, 1964 | 20.0 | — | 19.7 | 0.5114 | done |
+| 2 | PCA denoising | 2000 | Horgan et al., Anal Chem 2022 (comparison) | 39.4 | 0.8680 | 19.7 | 0.5114 | done |
 | 3 | DeepeR (1D ResUNet) | 2022 | Horgan et al., Anal Chem 2022, PMC9286315 | 46.2 | 0.9530 | 19.7 | 0.5114 |  |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 19.7 | 0.5114 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 19.7 | 0.5114 |  |
 | 6 | RamanNet [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 19.7 | 0.5114 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 14.1 | 0.2149 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 14.1 | 0.2149 | done |
 
 ### 127. Secondary Ion Mass Spectrometry (SIMS) Imaging (`sims`)
 
@@ -1759,27 +1759,27 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | TwIST | 2007 | Liu et al., Sensors 2022, PMC9571970 | 24.7 | 0.7900 | 5.5 | 0.1925 |  |
+| 1 | TwIST | 2007 | Liu et al., Sensors 2022, PMC9571970 | 24.7 | 0.7900 | 5.5 | 0.1925 | done |
 | 2 | PnP-DnCNN | 2020 | Liu et al., Sensors 2022, PMC9571970 | 27.1 | 0.8800 | 5.5 | 0.1925 |  |
 | 3 | PnP-FFDNet | 2020 | Liu et al., Sensors 2022, PMC9571970 | 28.4 | 0.9100 | 5.5 | 0.1925 |  |
-| 4 | PnP-BM3D | 2020 | Liu et al., Sensors 2022, PMC9571970 | 29.2 | 0.9200 | 5.5 | 0.1925 |  |
-| 5 | Direct inverse (no regularization) | 2014 | Gao et al., Nature 2014 | 12.0 | 0.3000 | 5.5 | 0.1925 |  |
-| 6 | Direct inverse (1000x compression) | 2014 | Gao et al., Nature 2014 extreme compression | 8.0 | 0.2000 | 5.5 | 0.1925 |  |
+| 4 | PnP-BM3D | 2020 | Liu et al., Sensors 2022, PMC9571970 | 29.2 | 0.9200 | 5.5 | 0.1925 | done |
+| 5 | Direct inverse (no regularization) | 2014 | Gao et al., Nature 2014 | 12.0 | 0.3000 | 5.5 | 0.1925 | done |
+| 6 | Direct inverse (1000x compression) | 2014 | Gao et al., Nature 2014 extreme compression | 8.0 | 0.2000 | 5.5 | 0.1925 | done |
 | 7 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.5 | 0.1925 |  |
 | 8 | E2E-CUP [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.5 | 0.1925 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | -2.3 | 0.1202 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | -2.3 | 0.1202 | done |
 
 ### 134. Pump-Probe Microscopy (`pump_probe`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | SVD analysis | 2000 | SVD for transient spectra | 22.0 | — | 18.2 | 0.7781 |  |
-| 2 | MCR-ALS | 2000 | Tauler, Chemom Intell Lab 1995 | 26.0 | — | 18.2 | 0.7781 |  |
-| 3 | Simple averaging | 2000 | Time-averaging baseline | 18.0 | 0.5000 | 18.2 | 0.7781 |  |
+| 1 | SVD analysis | 2000 | SVD for transient spectra | 22.0 | — | 18.2 | 0.7781 | done |
+| 2 | MCR-ALS | 2000 | Tauler, Chemom Intell Lab 1995 | 26.0 | — | 18.2 | 0.7781 | done |
+| 3 | Simple averaging | 2000 | Time-averaging baseline | 18.0 | 0.5000 | 18.2 | 0.7781 | done |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.5 | 0.8551 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.5 | 0.8551 |  |
 | 6 | PumpProbe-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 7.5 | 0.8551 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 18.2 | 0.7781 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 18.2 | 0.7781 | done |
 
 ### 135. Streak Camera Imaging (`streak_camera`)
 
@@ -1824,19 +1824,19 @@ Generated: 2026-03-12
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | DeepGhost (autoencoder) | 2020 | Nature Sci Rep, s41598-020-68401-8 | 19.9 | 0.6000 | 6.6 | 0.1947 |  |
-| 2 | Correlation imaging | 2002 | Bennink et al., PRL 2002 | 15.0 | 0.4000 | 6.6 | 0.1947 |  |
-| 3 | Differential GI | 2010 | Ferri et al., 2010 | 18.0 | 0.5000 | 6.6 | 0.1947 |  |
-| 4 | CS-GI | 2013 | Katz et al., APL 2009 | 22.0 | 0.7000 | 6.6 | 0.1947 |  |
+| 2 | Correlation imaging | 2002 | Bennink et al., PRL 2002 | 15.0 | 0.4000 | 6.6 | 0.1947 | done |
+| 3 | Differential GI | 2010 | Ferri et al., 2010 | 18.0 | 0.5000 | 6.6 | 0.1947 | done |
+| 4 | CS-GI | 2013 | Katz et al., APL 2009 | 22.0 | 0.7000 | 6.6 | 0.1947 | done |
 | 5 | Bio-inspired self-attention | 2025 | MDPI Biomimetics 11(1):53 | 24.5 | 0.8000 | 6.6 | 0.1947 |  |
 | 6 | DGI-Net | 2021 | DL ghost imaging | 28.0 | 0.8800 | 6.6 | 0.1947 |  |
-| 7 | Orthogonal GI (2D-DCT) | 2025 | Nature Sci Rep, s41598-025-01283-w | 30.0 | — | 6.6 | 0.1947 |  |
-| 8 | Raw correlation (5% sampling) | 2002 | Bennink et al., PRL 2002 | 10.0 | 0.2500 | 6.6 | 0.1947 |  |
+| 7 | Orthogonal GI (2D-DCT) | 2025 | Nature Sci Rep, s41598-025-01283-w | 30.0 | — | 6.6 | 0.1947 | done |
+| 8 | Raw correlation (5% sampling) | 2002 | Bennink et al., PRL 2002 | 10.0 | 0.2500 | 6.6 | 0.1947 | done |
 | 9 | Traditional GI (3000 measurements) | 2021 | Kim et al., Optics Express 2021, PMID 34809299 | 7.2 | 0.2800 | 6.6 | 0.1947 |  |
-| 10 | Correlation GI (natural, 128x128) | 2020 | Bian et al., Scientific Reports 2020, PMC7376173 | 9.5 | — | 6.6 | 0.1947 |  |
+| 10 | Correlation GI (natural, 128x128) | 2020 | Bian et al., Scientific Reports 2020, PMC7376173 | 9.5 | — | 6.6 | 0.1947 | done |
 | 11 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
 | 12 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
 | 13 | GI-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
-| 14 | precomputed_baseline (test) | — | — | — | — | 6.6 | 0.1947 |  |
+| 14 | precomputed_baseline (test) | — | — | — | — | 6.6 | 0.1947 | done |
 
 ### 139. Quantum Illumination (`quantum_illumination`)
 
@@ -1870,50 +1870,50 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Shack-Hartmann WFS | 1971 | Shack & Platt, 1971 | 22.0 | — | 24.2 | 0.4415 |  |
-| 2 | Phase diversity | 1982 | Gonsalves, Opt Eng 1982 | 26.0 | — | 24.2 | 0.4415 |  |
+| 1 | Shack-Hartmann WFS | 1971 | Shack & Platt, 1971 | 22.0 | — | 24.2 | 0.4415 | done |
+| 2 | Phase diversity | 1982 | Gonsalves, Opt Eng 1982 | 26.0 | — | 24.2 | 0.4415 | done |
 | 3 | cGAN wavefront | 2020 | Biomed Opt Express 2020 | 31.0 | 0.9000 | 24.2 | 0.4415 |  |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 24.2 | 0.4415 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 24.2 | 0.4415 |  |
 | 6 | Deep-AO [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 24.2 | 0.4415 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | — | 1.0000 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | — | 1.0000 | done |
 
 ### 142. Bioluminescence Tomography (BLT) (`bioluminescence_tomo`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Diffusion-model inversion | 2005 | Wang et al., Opt Lett 2004 | 18.0 | 0.6000 | 13.3 | 0.3431 |  |
-| 2 | L1-regularized BLT | 2010 | TV-BLT | 22.0 | 0.7500 | 13.3 | 0.3431 |  |
-| 3 | Direct mapping | 2000 | Direct BLT mapping baseline | 12.0 | 0.4000 | 13.3 | 0.3431 |  |
+| 1 | Diffusion-model inversion | 2005 | Wang et al., Opt Lett 2004 | 18.0 | 0.6000 | 13.3 | 0.3431 | done |
+| 2 | L1-regularized BLT | 2010 | TV-BLT | 22.0 | 0.7500 | 13.3 | 0.3431 | done |
+| 3 | Direct mapping | 2000 | Direct BLT mapping baseline | 12.0 | 0.4000 | 13.3 | 0.3431 | done |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.2 | 0.0974 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.2 | 0.0974 |  |
 | 6 | BLT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.2 | 0.0974 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 13.3 | 0.3431 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 13.3 | 0.3431 | done |
 
 ### 143. Full-Waveform Inversion (FWI) (`fwi`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Adjoint-state FWI | 2006 | Virieux & Operto, Geophysics 2009 | 25.0 | 0.8500 | 8.7 | 0.0125 |  |
+| 1 | Adjoint-state FWI | 2006 | Virieux & Operto, Geophysics 2009 | 25.0 | 0.8500 | 8.7 | 0.0125 | done |
 | 2 | InversionNet | 2020 | Wu & Lin, JGR 2019 | 28.0 | 0.9000 | 8.7 | 0.0125 |  |
 | 3 | VelocityGAN | 2020 | Zhang & Alkhalifah, 2020 | 26.5 | 0.8800 | 8.7 | 0.0125 |  |
 | 4 | OpenFWI benchmark | 2022 | Deng et al., NeurIPS 2022 | 30.0 | 0.9400 | 8.7 | 0.0125 |  |
 | 5 | FCNVMB | 2021 | Yang & Ma, JGR 2021 | 32.0 | 0.9500 | 8.7 | 0.0125 |  |
-| 6 | Conventional FWI (gradient descent) | 2009 | Virieux & Operto, Geophysics 2009 (estimated) | 28.4 | — | 8.7 | 0.0125 |  |
+| 6 | Conventional FWI (gradient descent) | 2009 | Virieux & Operto, Geophysics 2009 (estimated) | 28.4 | — | 8.7 | 0.0125 | done |
 | 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.7 | 0.0009 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 8.7 | 0.0125 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 8.7 | 0.0125 | done |
 
 ### 144. Gravitational Wave Detection (`gravitational_wave`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Matched filtering | 2000 | Allen et al., PRD 2012 | 20.0 | — | 24.6 | 0.0000 |  |
-| 2 | BayesWave | 2015 | Cornish & Littenberg, CQG 2015 | 25.0 | — | 24.6 | 0.0000 |  |
+| 1 | Matched filtering | 2000 | Allen et al., PRD 2012 | 20.0 | — | 24.6 | 0.0000 | done |
+| 2 | BayesWave | 2015 | Cornish & Littenberg, CQG 2015 | 25.0 | — | 24.6 | 0.0000 | done |
 | 3 | cWaveNet | 2020 | Wei & Huerta, PLB 2020 | 22.0 | — | 24.6 | 0.0000 |  |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 24.6 | 0.0000 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 24.6 | 0.0000 |  |
 | 6 | GW-DL (PyCBC-ML) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 24.6 | 0.0000 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | — | 0.8666 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | — | 0.8666 | done |
 
 ### 145. Electrical Impedance Tomography (EIT) (`impedance_tomo`)
 
@@ -1950,12 +1950,12 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Travel-time inversion | 1979 | Munk & Wunsch, Deep-Sea Res 1979 | 20.0 | — | 26.6 | 0.6789 |  |
-| 2 | Matched-field processing | 1990 | Tolstoy, JASA 1993 | 22.0 | — | 26.6 | 0.6789 |  |
+| 1 | Travel-time inversion | 1979 | Munk & Wunsch, Deep-Sea Res 1979 | 20.0 | — | 26.6 | 0.6789 | done |
+| 2 | Matched-field processing | 1990 | Tolstoy, JASA 1993 | 22.0 | — | 26.6 | 0.6789 | done |
 | 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 26.6 | 0.6789 |  |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 26.6 | 0.6789 |  |
 | 5 | OAT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 26.6 | 0.6789 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 5.6 | 0.6714 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 5.6 | 0.6714 | done |
 
 ### 148. Particle Calorimetry (`particle_calorimetry`)
 
@@ -1972,27 +1972,27 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | CLEAN | 1974 | Hogbom, A&AS 1974 | 25.0 | — | 37.3 | 0.7683 |  |
-| 2 | POLISH | 2022 | MNRAS 2022 | 55.9 | 0.9980 | 37.3 | 0.7683 |  |
+| 1 | CLEAN | 1974 | Hogbom, A&AS 1974 | 25.0 | — | 37.3 | 0.7683 | done |
+| 2 | POLISH | 2022 | MNRAS 2022 | 55.9 | 0.9980 | 37.3 | 0.7683 | done |
 | 3 | U-Net denoising | 2021 | DL radio astronomy | 35.0 | — | 37.3 | 0.7683 |  |
 | 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 37.3 | 0.7683 |  |
 | 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 37.3 | 0.7683 |  |
 | 6 | RadioAST-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 37.3 | 0.7683 |  |
-| 7 | precomputed_baseline (test) | — | — | — | — | 16.1 | 0.2876 |  |
+| 7 | precomputed_baseline (test) | — | — | — | — | 16.1 | 0.2876 | done |
 
 ### 150. Seismic Tomography (`seismic_tomo`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Travel-time tomography | 1976 | Aki et al., JGR 1977 | 20.0 | 0.6500 | 9.0 | 0.5099 |  |
+| 1 | Travel-time tomography | 1976 | Aki et al., JGR 1977 | 20.0 | 0.6500 | 9.0 | 0.5099 | done |
 | 2 | FWI | 2009 | Virieux & Operto, Geophysics 2009 | 28.0 | 0.8800 | 9.0 | 0.5099 |  |
 | 3 | TSISTA-Net | 2025 | Applied Sciences 15(23):12700 | 37.3 | 0.9670 | 9.0 | 0.5099 |  |
 | 4 | PhaseNet-DAS | 2023 | Zhu et al., 2023 | 30.0 | 0.9200 | 9.0 | 0.5099 |  |
-| 5 | Simple ray tracing | 1976 | Aki et al., JGR 1977 | 12.0 | 0.4000 | 9.0 | 0.5099 |  |
+| 5 | Simple ray tracing | 1976 | Aki et al., JGR 1977 | 12.0 | 0.4000 | 9.0 | 0.5099 | done |
 | 6 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.6 | 0.0430 |  |
 | 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.6 | 0.0430 |  |
 | 8 | SeisInversion-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.6 | 0.0430 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 9.0 | 0.5099 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 9.0 | 0.5099 | done |
 
 ---
 
@@ -2024,16 +2024,16 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | RELION | 2012 | Scheres, JSB 2012 | 18.0 | — | 19.2 | 0.0300 |  |
+| 1 | RELION | 2012 | Scheres, JSB 2012 | 18.0 | — | 19.2 | 0.0300 | done |
 | 2 | DRA (denoising-recon) | 2024 | arXiv 2410.11373 | 20.2 | 0.8700 | 19.2 | 0.0300 |  |
-| 3 | cryoSPARC | 2017 | Punjani et al., Nature Methods 2017 | 20.0 | — | 19.2 | 0.0300 |  |
+| 3 | cryoSPARC | 2017 | Punjani et al., Nature Methods 2017 | 20.0 | — | 19.2 | 0.0300 | done |
 | 4 | DUAL (cryo-ET) | 2024 | PMC10942334, 2024 | 21.3 | 0.8240 | 19.2 | 0.0300 |  |
 | 5 | Topaz-Denoise | 2020 | Bepler et al., Nature Commun 2020 | 25.0 | — | 19.2 | 0.0300 |  |
 | 6 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.9 | 0.0101 |  |
 | 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.9 | 0.0101 |  |
 | 8 | CryoDRGN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 17.9 | 0.0101 |  |
-| 9 | precomputed_wiener (test) | — | — | — | — | 19.2 | 0.0300 |  |
-| 10 | rl_ctf_20iter (test) | — | — | — | — | 13.2 | 0.4136 |  |
+| 9 | precomputed_wiener (test) | — | — | — | — | 19.2 | 0.0300 | done |
+| 10 | rl_ctf_20iter (test) | — | — | — | — | 13.2 | 0.4136 | done |
 
 ### 154. MALDI Mass Spectrometry Imaging (`maldi_msi`)
 
@@ -2062,46 +2062,46 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Rietveld refinement | 1969 | Rietveld, JAC 1969 | 25.0 | — | 8.5 | 0.0116 |  |
-| 2 | Le Bail fitting | 1988 | Le Bail et al., 1988 | 22.0 | — | 8.5 | 0.0116 |  |
+| 1 | Rietveld refinement | 1969 | Rietveld, JAC 1969 | 25.0 | — | 8.5 | 0.0116 | done |
+| 2 | Le Bail fitting | 1988 | Le Bail et al., 1988 | 22.0 | — | 8.5 | 0.0116 | done |
 | 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.3 | 0.0013 |  |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.3 | 0.0013 |  |
 | 5 | NeutronDiff-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.3 | 0.0013 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 8.5 | 0.0116 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 8.5 | 0.0116 | done |
 
 ### 157. Neutron Radiography / Tomography (`neutron_tomo`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | FBP | 1971 | FBP baseline | 25.0 | 0.7000 | 6.6 | 0.6130 |  |
-| 2 | SIRT | 1972 | Gilbert 1972 | 28.0 | 0.8000 | 6.6 | 0.6130 |  |
+| 1 | FBP | 1971 | FBP baseline | 25.0 | 0.7000 | 6.6 | 0.6130 | done |
+| 2 | SIRT | 1972 | Gilbert 1972 | 28.0 | 0.8000 | 6.6 | 0.6130 | done |
 | 3 | NeuTomo-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.6 | 0.6130 |  |
 | 4 | GRIDREC-Neutron [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.6 | 0.6130 |  |
-| 5 | precomputed_baseline (test) | — | — | — | — | -5.7 | 0.0503 |  |
+| 5 | precomputed_baseline (test) | — | — | — | — | -5.7 | 0.0503 | done |
 
 ### 158. Proton Radiography (`proton_radiography`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | MLP (Most Likely Path) | 2004 | Schulte et al., Med Phys 2008 | 22.0 | — | 12.0 | 0.3615 |  |
-| 2 | DROP-TVS | 2013 | Penfold et al., Med Phys 2010 | 28.0 | — | 12.0 | 0.3615 |  |
+| 1 | MLP (Most Likely Path) | 2004 | Schulte et al., Med Phys 2008 | 22.0 | — | 12.0 | 0.3615 | done |
+| 2 | DROP-TVS | 2013 | Penfold et al., Med Phys 2010 | 28.0 | — | 12.0 | 0.3615 | done |
 | 3 | cGAN synthetic CT | 2023 | PubMed 37800874 | 29.0 | 0.9520 | 12.0 | 0.3615 |  |
 | 4 | CNN proton portal imaging | 2024 | PMC11682722 | 39.1 | 0.9870 | 12.0 | 0.3615 |  |
-| 5 | FBP (straight-line approx) | 2003 | Schulte et al., Med Phys 2005 | 25.0 | — | 12.0 | 0.3615 |  |
+| 5 | FBP (straight-line approx) | 2003 | Schulte et al., Med Phys 2005 | 25.0 | — | 12.0 | 0.3615 | done |
 | 6 | ProtonRecon-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 12.0 | 0.3615 |  |
 | 7 | FBP-Proton [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 12.0 | 0.3615 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 4.1 | -0.0000 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 4.1 | -0.0000 | done |
 
 ### 159. Small-Angle X-ray Scattering (SAXS) (`saxs`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Guinier analysis | 1939 | Guinier, 1939 | 20.0 | — | 8.4 | 0.0542 |  |
-| 2 | McSAS | 2013 | Bressler et al., JAC 2015 | 25.0 | — | 8.4 | 0.0542 |  |
+| 1 | Guinier analysis | 1939 | Guinier, 1939 | 20.0 | — | 8.4 | 0.0542 | done |
+| 2 | McSAS | 2013 | Bressler et al., JAC 2015 | 25.0 | — | 8.4 | 0.0542 | done |
 | 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.1 | 0.0265 |  |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.1 | 0.0265 |  |
 | 5 | SAXS-VAE [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 6.1 | 0.0265 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 8.4 | 0.0542 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 8.4 | 0.0542 | done |
 
 ### 160. Wide-Angle X-ray Scattering (WAXS) (`waxs`)
 
@@ -2129,15 +2129,15 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | FBP | 1971 | FBP baseline | 22.0 | — | 15.6 | 0.8431 |  |
-| 2 | SIRT | 1972 | Gilbert 1972 | 26.0 | — | 15.6 | 0.8431 |  |
+| 1 | FBP | 1971 | FBP baseline | 22.0 | — | 15.6 | 0.8431 | done |
+| 2 | SIRT | 1972 | Gilbert 1972 | 26.0 | — | 15.6 | 0.8431 | done |
 | 3 | Optimized SCUNet | 2024 | MDPI J Imaging 10(6):127 | 39.0 | 0.8600 | 15.6 | 0.8431 |  |
 | 4 | 1D-CNN + U-Net | 2025 | Nature Sci Reports, s41598-025-03900-0 | 39.1 | 0.9790 | 15.6 | 0.8431 |  |
-| 5 | FBP reconstruction | 2000 | Sci Rep 2025 (U-Net=39.1, FBP estimated) | 25.0 | 0.5500 | 15.6 | 0.8431 |  |
+| 5 | FBP reconstruction | 2000 | Sci Rep 2025 (U-Net=39.1, FBP estimated) | 25.0 | 0.5500 | 15.6 | 0.8431 | done |
 | 6 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.0361 |  |
 | 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.0361 |  |
 | 8 | XRFT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.0361 |  |
-| 9 | precomputed_baseline (test) | — | — | — | — | 15.6 | 0.8431 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 15.6 | 0.8431 | done |
 
 ---
 
@@ -2147,23 +2147,23 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Landmark registration | 2000 | CLEM registration | 22.0 | — | 28.1 | 0.7705 |  |
+| 1 | Landmark registration | 2000 | CLEM registration | 22.0 | — | 28.1 | 0.7705 | done |
 | 2 | VoxelMorph registration | 2019 | Balakrishnan et al., TMI 2019 | 26.0 | 0.8300 | 28.1 | 0.7705 |  |
 | 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 28.1 | 0.7705 |  |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 28.1 | 0.7705 |  |
 | 5 | CLEM-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 28.1 | 0.7705 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | 17.0 | 0.7297 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | 17.0 | 0.7297 | done |
 
 ### 164. CT + Fluorescence (FLIT) (`ct_fluorescence`)
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | FBP + fluorescence | 2000 | XFCT baseline | 22.0 | — | 3.3 | 0.3256 |  |
-| 2 | SIRT | 1972 | Gilbert 1972 | 25.0 | 0.7500 | 3.3 | 0.3256 |  |
+| 1 | FBP + fluorescence | 2000 | XFCT baseline | 22.0 | — | 3.3 | 0.3256 | done |
+| 2 | SIRT | 1972 | Gilbert 1972 | 25.0 | 0.7500 | 3.3 | 0.3256 | done |
 | 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.3 | 0.3256 |  |
 | 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.3 | 0.3256 |  |
 | 5 | XFCT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 3.3 | 0.3256 |  |
-| 6 | precomputed_baseline (test) | — | — | — | — | — | 0.0002 |  |
+| 6 | precomputed_baseline (test) | — | — | — | — | — | 0.0002 | done |
 
 ### 165. PET/CT Fusion (`pet_ct`)
 
@@ -2183,14 +2183,14 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | MRAC-based reconstruction | 2010 | Wagenknecht et al., 2013 | 26.0 | 0.7800 | 11.0 | 0.0165 |  |
+| 1 | MRAC-based reconstruction | 2010 | Wagenknecht et al., 2013 | 26.0 | 0.7800 | 11.0 | 0.0165 | done |
 | 2 | Brain DL PET/MR | 2024 | PubMed 2024 | 42.0 | 0.9650 | 11.0 | 0.0165 |  |
-| 3 | No-AC reconstruction | 2010 | PET/MR no attenuation correction | 15.0 | 0.5000 | 11.0 | 0.0165 |  |
-| 4 | No-AC (1/10 counts) | 2010 | Catana et al., JNM 2010 | 13.0 | 0.4000 | 11.0 | 0.0165 |  |
+| 3 | No-AC reconstruction | 2010 | PET/MR no attenuation correction | 15.0 | 0.5000 | 11.0 | 0.0165 | done |
+| 4 | No-AC (1/10 counts) | 2010 | Catana et al., JNM 2010 | 13.0 | 0.4000 | 11.0 | 0.0165 | done |
 | 5 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.1 | 0.3034 |  |
 | 6 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.1 | 0.3034 |  |
 | 7 | PET-MR-DeepJoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 2.1 | 0.3034 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 11.0 | 0.0165 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 11.0 | 0.0165 | done |
 
 ### 167. SPECT/CT Fusion (`spect_ct`)
 
@@ -2211,14 +2211,14 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | B-spline FFD | 2003 | Rueckert et al., TMI 1999 | 25.0 | 0.8000 | 25.5 | 0.3470 |  |
+| 1 | B-spline FFD | 2003 | Rueckert et al., TMI 1999 | 25.0 | 0.8000 | 25.5 | 0.3470 | done |
 | 2 | VoxelMorph | 2019 | Balakrishnan et al., TMI 2019 | 30.0 | 0.9000 | 25.5 | 0.3470 |  |
-| 3 | Demons registration | 1998 | Thirion, MIA 1998 | 22.0 | 0.7500 | 25.5 | 0.3470 |  |
-| 4 | Affine registration | 2000 | Affine US/MRI baseline (estimated) | 21.0 | 0.6000 | 25.5 | 0.3470 |  |
+| 3 | Demons registration | 1998 | Thirion, MIA 1998 | 22.0 | 0.7500 | 25.5 | 0.3470 | done |
+| 4 | Affine registration | 2000 | Affine US/MRI baseline (estimated) | 21.0 | 0.6000 | 25.5 | 0.3470 | done |
 | 5 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 25.5 | 0.3470 |  |
 | 6 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 25.5 | 0.3470 |  |
 | 7 | US-MRI-Net [proxy] (PWM) | — | — | — | — | 9.7 | 0.5796 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 7.6 | -0.0694 |  |
+| 8 | precomputed_baseline (test) | — | — | — | — | 7.6 | -0.0694 | done |
 
 ---
 

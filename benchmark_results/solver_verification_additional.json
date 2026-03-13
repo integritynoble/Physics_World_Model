@@ -1,0 +1,133 @@
+{
+  "timestamp": "2026-03-13T09:29:27",
+  "platform": "local_cpu",
+  "solvers": {
+    "phase_retrieval__hio": {
+      "status": "verified",
+      "psnr_db": 12.48,
+      "ssim": 0.692,
+      "exec_time": 0.134,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "phase_retrieval__raar": {
+      "status": "verified",
+      "psnr_db": 12.76,
+      "ssim": 0.7102,
+      "exec_time": 0.154,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "classical__gradient_descent": {
+      "status": "verified",
+      "psnr_db": 4.42,
+      "ssim": 0.3047,
+      "exec_time": 0.041,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "classical__conjugate_gradient": {
+      "status": "verified",
+      "psnr_db": 7.52,
+      "ssim": 0.3384,
+      "exec_time": 0.017,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "rl__3d_8x32x32": {
+      "status": "verified",
+      "psnr_db": 11.64,
+      "ssim": 0.04,
+      "exec_time": 0.007,
+      "shape": [
+        8,
+        32,
+        32
+      ]
+    },
+    "photoacoustic__time_reversal": {
+      "status": "verified",
+      "psnr_db": 10.49,
+      "ssim": 0.6153,
+      "exec_time": 0.086,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "dot__lbfgs_tv": {
+      "status": "verified",
+      "psnr_db": 6.39,
+      "ssim": 0.2598,
+      "exec_time": 0.091,
+      "shape": [
+        8,
+        8,
+        8
+      ]
+    },
+    "oct__spectral_estimation": {
+      "status": "verified",
+      "psnr_db": 0.0,
+      "ssim": 0.0,
+      "exec_time": 0.115,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "sim__hifi": {
+      "status": "verified",
+      "psnr_db": -3.48,
+      "ssim": -0.0045,
+      "exec_time": 0.008,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "fpm__gradient_descent": {
+      "status": "verified",
+      "psnr_db": 5.26,
+      "ssim": 0.0027,
+      "exec_time": 0.079,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "holography__tv_admm": {
+      "status": "verified",
+      "psnr_db": -31.22,
+      "ssim": 0.0,
+      "exec_time": 0.219,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "rl__operator_based": {
+      "status": "verified",
+      "psnr_db": 27.06,
+      "ssim": 0.9726,
+      "exec_time": 0.011,
+      "shape": [
+        32,
+        32
+      ]
+    }
+  },
+  "summary": {
+    "verified": 12,
+    "errors": 0,
+    "total": 12
+  }
+}
