@@ -1,5 +1,7 @@
 \input{preamble}
 
+\begin{document}
+
 \title{Eleven Primitives and Three Gates:\\
 The Universal Structure of Computational Imaging}
 
@@ -9,17 +11,12 @@ Chengshuai Yang$^{1,*}$
 Xin Yuan$^{2}$
 }
 
-\date{}
+\date{%
+$^1$NextGen PlatformAI C Corp, USA.\quad
+$^2$School of Engineering, Westlake University, Hangzhou, China.\\[2pt]
+$^*$Correspondence: \url{integrityyang@gmail.com}%
+}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\footnotetext[1]{$^1$NextGen PlatformAI C Corp, USA.
-$^2$School of Engineering, Westlake University, Hangzhou, China.
-$^*$Correspondence: \texttt{integrityyang@gmail.com}}
-\renewcommand{\thefootnote}{\arabic{footnote}}
-
-\begin{document}
-
-\linenumbers
 \maketitle
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -34,7 +31,9 @@ Computational imaging systems---from coded-aperture cameras to cryo-electron mic
 %% ═══════════════════════════════════════════════════════════════════
 \section*{Introduction}
 
+\begin{sloppypar}
 A coded-aperture camera, an MRI scanner, and a cryo-electron microscope appear to share nothing: they employ different physical carriers, different geometries, and different detectors. Yet each converts a physical scene into digital measurements by composing a small chain of transformations---propagation, interaction, encoding, detection---and each reconstructs the scene by inverting a mathematical model of that chain. When the model matches reality, modern algorithms deliver extraordinary results. When it does not---and on deployed instruments, it never perfectly does---reconstruction degrades or fails entirely. The failure is silent and systematic: the algorithm faithfully solves the wrong problem. Despite a decade of progress in reconstruction algorithms, no general framework exists to explain \emph{why} a reconstruction failed, \emph{where} in the forward model the error resides, or \emph{how} to fix it without retraining the solver.
+\end{sloppypar}
 
 This paper establishes that the space of imaging forward models has a surprisingly simple and universal structure---a finite grammar of 11 primitives---and that every reconstruction failure admits a complete, actionable diagnosis through exactly 3 independent gates. Over the past decade, the community has invested enormous effort in improving reconstruction algorithms---progressing from compressed sensing~\cite{candes2008compressed,donoho2006compressed} and plug-and-play priors~\cite{venkatakrishnan2013pnp,yuan2021pnp} to deep unrolling networks~\cite{monga2021unrolling} and vision transformers~\cite{cai2022mst}---with snapshot compressive imaging emerging as a unifying framework for coded aperture systems~\cite{yuan2021sci}. These advances are real and important: a better solver on a well-calibrated operator remains the gold standard. Yet algorithms routinely fail when deployed on real instruments~\cite{antun2020instabilities}, and the root cause is often not the algorithm but an undiagnosed forward-model error. Calibration methods exist for specific instruments---ESPIRiT~\cite{uecker2014espirit} for MRI, ePIE~\cite{maiden2009ptychography} for electron ptychography---but they do not generalise across modalities, and no systematic framework decomposes reconstruction failures into root causes or guides the design of new imaging systems from first principles.
 
@@ -42,15 +41,36 @@ Here we establish two complementary foundations within Physics World Models (\pw
 
 The framework serves dual purposes (\cref{fig:overview}). For \textbf{existing instruments}, the Triad identifies the dominant gate and prescribes targeted intervention---calibration for Gate~3, acquisition redesign for Gate~1, or source/detector improvement for Gate~2. For \textbf{new instruments}, the 11-primitive basis provides a compositional design language: specifying a new modality reduces to selecting primitives and their parameters, with Gate~1 analysis guiding sampling strategy, Gate~2 guiding carrier and source selection, and Gate~3 predicting the calibration accuracy required for a target reconstruction quality. Solver design remains essential throughout: once the dominant gate is addressed, a better solver delivers further gains on the corrected operator.
 
+\begin{sloppypar}
 We validate both results---the Finite Primitive Basis Theorem (every forward model decomposes into 11 primitives) and the Triad Decomposition (every reconstruction failure has exactly three root causes)---across twelve modalities spanning all five carrier families---optical photons (CASSI~\cite{wagadarikar2008cassi}, CACTI~\cite{llull2013cacti}, SPC~\cite{duarte2008spc}, lensless imaging, compressive holography, fluorescence microscopy), X-ray photons (CT~\cite{feldkamp1984practical}, CBCT), electrons (electron ptychography~\cite{rodenburg2004ptychography}, cryo-EM), nuclear spins (MRI~\cite{pruessmann1999sense,lustig2007sparse}), and acoustic waves (ultrasound)---with hardware validation on all twelve modalities confirming Triad predictions on physical measurements. The validated modalities include two Nobel Prize--winning techniques (cryo-EM, 2017 Chemistry; super-resolution fluorescence, 2014 Chemistry), three clinically deployed instruments (CT, CBCT, MRI), and the first acoustic-carrier validation in computational imaging. A held-out closure test on 8 additional modalities confirms basis completeness with saturating growth. The proof of Theorem~\ref{thm:fpb} is in Supplementary Note~12; formal primitive semantics and typed DAG denotation are developed in~\cite{yang2026fpt}.
+\end{sloppypar}
 
 \paragraph{Generalization beyond imaging.}
 The finite-basis result raises a natural question: do other measurement domains admit similarly compact primitive decompositions? The \opg{} formalism and Triad Decomposition are structurally applicable wherever a forward model maps quantities of interest to observations through composable physical stages. Seismology (wave propagation $+$ attenuation $+$ sensor response), radio astronomy (aperture synthesis $+$ ionospheric distortion $+$ noise), and particle physics (interaction model $+$ detector response $+$ pile-up) all exhibit the same three-gate failure structure. Whether these domains also admit small primitive bases is an empirical question that our framework is designed to answer.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_overview.pdf}
+\caption{\textbf{The universal grammar of computational imaging.}
+\textbf{a},~Any computational imaging system---from coded-aperture cameras to cryo-electron microscopes---serves as input.
+\textbf{b},~The system is composed as a typed directed acyclic graph (DAG) over 11 universal primitives (\cref{fig:operatorgraph}); shown here for CASSI as an example.
+The grammar enables two workflows.
+\emph{Top (existing instruments):}
+\textbf{c},~The \triad{} diagnoses the DAG through three independent gates: information deficiency (Gate~1), carrier budget (Gate~2), and operator mismatch (Gate~3).
+\textbf{d},~Based on the dominant gate, a targeted correction is applied: sampling redesign (Gate~1), source/detector improvement (Gate~2), or operator calibration (Gate~3).
+\textbf{e},~The existing solver is re-run with the corrected operator, recovering $+0.8$ to $+13.9$\,dB without retraining.
+\emph{Bottom (new instruments):}
+\textbf{f},~The same three gates guide the design of a new modality from first principles: Gate~1 determines sampling geometry, Gate~2 guides carrier and source selection, and Gate~3 predicts the calibration accuracy required for a target reconstruction quality.
+\textbf{g},~The output is an optimized new system specification ready to build.
+Together, the 11 primitives (alphabet) and 3 gates (rules) form a universal grammar for designing, diagnosing, and correcting any imaging system.}
+\label{fig:overview}
+\end{figure}
 
 
 %% ═══════════════════════════════════════════════════════════════════
 %%  2. THE FINITE PRIMITIVE BASIS
 %% ═══════════════════════════════════════════════════════════════════
+\FloatBarrier
 \section*{The Finite Primitive Basis}
 
 A foundational question in computational imaging is whether the diversity of imaging forward models---from coded aperture cameras to MRI scanners to electron microscopes---can be captured by a small, fixed set of primitive operators. We answer affirmatively.
@@ -112,6 +132,14 @@ For every $H \in \ctier$, there exists a typed DAG $G$ with $V \subseteq \Blib$ 
 
 \noindent\textit{Proof sketch.} By Definition~\ref{def:ctier}, $H = H_K \circ \cdots \circ H_1$ with $K \leq \Nmax$. Each factor is classified into one of six physics-stage families and realized by primitives: propagation $\to$ $P$ or $C$; elastic interaction $\to$ $M$; inelastic interaction $\to$ $R$; pointwise nonlinear physics $\to$ $\Lambda$; encoding--projection $\to$ $\Pi$ or $F$; detection--readout $\to$ finite composition from $\{\Sigma, S, W, C, D\}$. For linear stages, per-factor errors compose via sub-multiplicativity: $\|H - \Hdag\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}$. For nonlinear stages, the Lipschitz composition bound $\|H(\mathbf{x}) - \hat{H}(\mathbf{x})\| \leq \sum_k \varepsilon_k \prod_{j>k} \gamma_j$ applies, where $\gamma_j$ is the Lipschitz constant of stage~$j$. Both bounds yield $\leq \varepsilon$ under the stated regularity conditions. Full proof in Supplementary Note~12; formal primitive semantics and typed DAG denotation in~\cite{yang2026fpt}. Example \opg{} DAGs for CASSI, MRI, and CT alongside the four-tier fidelity ladder are shown in \cref{fig:operatorgraph}. \hfill$\square$
 
+\begin{figure}[t!]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_operatorgraph.pdf}
+\caption{\textbf{11 primitives: OperatorGraph IR, Physics Fidelity Ladder, and basis completeness.}
+\textbf{a},~The 11 universal primitives grouped by physical role: generation (Propagate~$P$), encoding (Modulate~$M$, Project~$\Pi$, Convolve~$C$, Scatter~$R$, Transform~$\Lambda$), transform (Encode~$F$, Accumulate~$\Sigma$), and detection (Sample~$S$, Disperse~$W$, Detect~$D$). Each primitive carries a typed signature mapping its input to its output (e.g., $P$: free-space propagation; $D$: detector response). \textbf{b},~Example \opg{} DAGs for three modalities: CASSI (photon), MRI (spin), and CT (X-ray photon). Each node wraps a primitive operator; edges define data flow. The symbols in panel~b correspond directly to the primitive labels in panel~a. \textbf{c},~Fidelity levels: forward models range from linear shift-invariant (simplest) through nonlinear and full-wave; all 11 primitives apply uniformly across every level. \textbf{d},~Basis-growth saturation: the number of distinct primitives $K$ required to express $N$ registered modalities saturates at $K{=}11$ for $N \geq 35$; no additional primitive has been needed for the 135 subsequent modalities across 23 physical categories.}
+\label{fig:operatorgraph}
+\end{figure}
+
 \medskip
 
 \noindent\fbox{\parbox{0.96\textwidth}{\small
@@ -135,6 +163,7 @@ Table~\ref{tab:decomposition_main} reports the DAG decomposition and measured $\
 
 \begin{table}[h]
 \centering\small
+\setlength{\tabcolsep}{5pt}
 \caption{Primitive decomposition and fidelity error $\etier$ (mean over 20 test objects). All values satisfy $\etier < 0.01$.}
 \label{tab:decomposition_main}
 \begin{tabular}{@{}llllcc@{}}
@@ -180,6 +209,7 @@ Plotting the number of distinct primitives $K$ against the number of registered 
 The theoretical complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$) are conservative: empirically, all 26 registered and 8 held-out modalities (${\sim}30$ unique, accounting for 4 overlaps) require $\leq 6$ nodes and depth $\leq 5$ (held-out closure test table above), with the median modality using 4 nodes at depth 3. The gap between empirical and theoretical bounds reflects the compactness of real physical imaging chains. Moreover, the basis is \emph{minimal}: for each of the 11 primitives, we exhibit a witness modality whose representation error exceeds $\varepsilon$ when that primitive is removed (Supplementary Note~10, Proposition~1 therein; beam hardening CT witnesses the necessity of Transform~$\Lambda$). Eight primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$, $\Lambda$) are strictly necessary; the remaining three ($C$, $S$, $W$) are necessary under the stated complexity bounds.
 
 
+
 %% ═══════════════════════════════════════════════════════════════════
 %%  3. THE TRIAD DECOMPOSITION
 %% ═══════════════════════════════════════════════════════════════════
@@ -219,6 +249,14 @@ $\|\delta\boldsymbol{\theta}\|_{\mathbf{J}^\top\mathbf{J}} > (\sigma_n / \|\math
 
 \noindent\textit{Proof.} See Supplementary Note~1, Proposition~2. \hfill$\square$
 
+\begin{figure}[t!]
+\centering
+\includegraphics[width=\textwidth]{figures/fig3_triad.pdf}
+\caption{\textbf{Triad Decomposition: all three gates validated with real data.}
+\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Three-gate degradation and correction heatmap. \emph{G1}~(blue): $\Delta$PSNR under extreme compression (Table~S12; all 12~modalities). \emph{G2}~(amber): $\Delta$PSNR under extreme noise (Table~S13; all 12~modalities). \emph{G3}~(green): correction gain $\Delta$PSNR under standard mismatch conditions (Table~S1; all 12~modalities). G1/G2~degrade at extreme conditions confirming they are real failure modes; G3~dominates under standard deployment because Gates~1 and~2 were already optimized at design time. \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 12 validated modalities, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
+\label{fig:triad}
+\end{figure}
+
 \paragraph{Lifecycle prediction: Gate~3 dominates in well-designed instruments.}
 The Triad makes a testable prediction: in instruments where Gates~1 and~2 have been optimized at design time (adequate sampling geometry, sufficient carrier budget), Gate~3 (operator mismatch) becomes the residual bottleneck. Across all 12 validated modalities spanning 5 carrier families (\cref{fig:triad}b), \gatethree{} is the dominant failure gate ($C_{\mathrm{mismatch}} > \max(C_{\mathrm{noise}}, C_{\mathrm{recover}})$ in 12/12 modalities; Supplementary Tables~S12--S13 confirm that Gates~1--2 bind only at extreme compression or photon starvation). In CASSI, a sub-pixel mask shift degrades MST-L by $13.98 \pm 0.62$\,dB (mean $\pm$ s.d.\ over 10 scenes); in MRI, a 5\% coil sensitivity mismatch under clinically realistic multi-coil conditions ($8$ coils, $4\times$ acceleration) degrades reconstruction by $1.75$--$7.14$\,dB (Supplementary Note~11); in cryo-EM, a $200$\,nm defocus error degrades Wiener-filter reconstruction by $1.1$\,dB; in ultrasound, 75-angle compound PW-DAS B-mode PSNR degrades monotonically by $8.2$\,dB across $\Delta c = 10$--$200$\,m/s (self-reference, mean over 5 real RF datasets). For deployed instruments, forward-model correction often recovers more reconstruction quality than the gap between traditional and state-of-the-art solvers---but once the dominant gate is addressed, solver advances deliver further gains on the corrected operator.
 
@@ -226,12 +264,16 @@ The Triad makes a testable prediction: in instruments where Gates~1 and~2 have b
 The two contributions are complementary: the Finite Primitive Basis provides a universal representation (every forward model is a DAG over 11 primitives~\cite{yang2026fpt}), and the Triad provides a universal diagnostic law over that representation. The DAG structure makes Gate~3 diagnosis \emph{actionable}: the mismatch scoring module localizes the offending primitive node and corrects its parameters.
 
 
+
 %% ═══════════════════════════════════════════════════════════════════
 %%  4. CONSEQUENCES: DIAGNOSIS AND CORRECTION
 %% ═══════════════════════════════════════════════════════════════════
+\FloatBarrier
 \section*{Consequences: Diagnosis and Correction}
 
+\begin{sloppypar}
 The two theoretical results directly imply a practical framework. The \opg{} provides a modality-agnostic representation; the Triad provides root-cause diagnosis. Three deterministic agents---one per gate---evaluate information capacity, carrier budget, and operator mismatch respectively, producing a quantitative \triadreport{} for every imaging configuration (\cref{fig:overview}; see Methods for implementation details).
+\end{sloppypar}
 
 \paragraph{Correction pipeline.}
 When \gatethree{} is dominant, a two-stage correction pipeline refines the forward model parameters: a coarse beam search over the mismatch parameter family $\mismatchparam = (\theta_1, \ldots, \theta_k)$ associated with the offending DAG node, followed by gradient refinement via backpropagation through the differentiable forward model. Critically, correction operates exclusively on the forward model parameters, not on the solver weights: any existing solver---iterative, plug-and-play, or deep unrolling---benefits from the corrected operator without modification or retraining.
@@ -239,13 +281,21 @@ When \gatethree{} is dominant, a two-stage correction pipeline refines the forwa
 \paragraph{4-Scenario Protocol.}
 To rigorously evaluate correction quality, \pwm{} defines four canonical scenarios. \textbf{Scenario~I} (Ideal): the solver reconstructs using the true operator $\Htrue$. \textbf{Scenario~II} (Mismatch): the solver uses the nominal operator $\Hnom$ on data generated by $\Htrue$. \textbf{Scenario~III} (Oracle): the true operator on mismatched data, providing the correction ceiling. \textbf{Scenario~IV} (Corrected): the solver uses the \pwm{}-corrected operator. The recovery ratio $\recoveryratio = (\psnr_{\mathrm{IV}} - \psnr_{\mathrm{II}}) / (\psnr_{\mathrm{I}} - \psnr_{\mathrm{II}})$ quantifies how much of the mismatch-induced degradation is recovered (see Methods, \cref{eq:recovery_ratio}).
 
-
 %% ═══════════════════════════════════════════════════════════════════
 %%  5. EMPIRICAL VALIDATION
 %% ═══════════════════════════════════════════════════════════════════
+\FloatBarrier
 \section*{Empirical Validation}
 
 We validate both theoretical contributions---the Finite Primitive Basis Theorem (Theorem~\ref{thm:fpb}: 11 primitives suffice and are necessary) and the Triad Decomposition (Definition~\ref{def:triad}: three independent failure gates)---in two stages: controlled simulation experiments across twelve modalities using the 4-Scenario Protocol, and physical validation spanning all twelve modalities---hardware validation on real data from all twelve modalities covering all five carrier families (optical photons, incoherent: CASSI, CACTI, SPC, lensless imaging; optical photons, coherent: compressive holography, fluorescence microscopy; X-ray photons: CT, CBCT; electrons: electron ptychography, cryo-EM; nuclear spins: MRI; acoustic waves: ultrasound). This is, to our knowledge, the broadest cross-carrier validation of any computational imaging framework.
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_scenario_protocol.pdf}
+\caption{\textbf{4-Scenario Protocol across 6 representative modalities.}
+Each panel shows PSNR~(dB) for the four scenarios: Sc.~I (ideal operator, green), Sc.~II (mismatched operator, red), Sc.~III (oracle correction, blue), and Sc.~IV (autonomous calibration, purple). Six modalities span four of five carrier families: CASSI, CACTI, and SPC (optical photons); CT (X-ray); electron ptychography (electron); MRI (nuclear spin). For low-dimensional mismatch (CT, electron ptychography, MRI), Sc.~IV $\approx$ Sc.~III $\approx$ Sc.~I, confirming near-complete recovery. For multi-parameter mismatch (CASSI), recovery reaches 85\%; CACTI and SPC achieve 100\% and 86\%, respectively (Supplementary Table~S9). Sc.~I PSNR from Table~S3; Sc.~II/III from Table~S1.}
+\label{fig:scenario_protocol}
+\end{figure}
 
 \subsection*{Simulation experiments}
 
@@ -258,7 +308,16 @@ In CASSI, a 5-parameter mismatch~\cite{yang2026inversenet} collapses all solvers
 \paragraph{Carrier-agnostic operation.}
 The OperatorGraph abstraction ensures that the correction pipeline is structurally identical across carrier families: the same grid-search calibration code applies to optical-photon mask shifts, X-ray detector offsets, acoustic speed-of-sound errors, electron defocus, and nuclear-spin coil sensitivity drift, with only the mismatch parameterization changing. This architectural carrier-agnosticism is reflected in the comparable correction gains across all five families (\cref{fig:triad}b, \cref{fig:scenario_protocol}).
 
+\FloatBarrier
 \subsection*{Hardware validation}
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_hardware.pdf}
+\caption{\textbf{Hardware validation on real CASSI and CACTI instruments.}
+\textbf{a},~CASSI real data: measurement residual ratio (mismatched/calibrated) across 5 TSA scenes. GAP-TV shows $1.8\times$ mean ratio. \textbf{b},~CACTI real data: residual ratio across 4 scenes. GAP-TV shows $10.4\times$ mean ratio; PnP-FFDNet shows $2.0\times$. \textbf{c},~Simulation-to-hardware gap: comparing mismatch degradation in simulation versus real hardware for CASSI and CACTI. \textbf{d},~Autonomous calibration: grid-search parameter recovery for CASSI (85\%), CACTI (100\%), and SPC (86--92\%).}
+\label{fig:hardware}
+\end{figure}
 
 \paragraph{CASSI real data.}
 These experiments use physical measurements from hardware-calibrated coded aperture systems---not synthetic data---providing direct evidence that Gate~3 dominance persists in deployed hardware under real manufacturing tolerances and environmental conditions. We reconstruct 5 real TSA scenes~\cite{wagadarikar2008cassi} under calibrated and perturbed masks. GAP-TV shows a mean residual ratio of $1.8\times$ ($0.00189 \to 0.00333$); HDNet shows $1.0\times$ (mask-oblivious). MST-S/L show ratios near $1.0\times$ on real data, in contrast to severe synthetic degradation. This asymmetry is itself informative: real hardware already contains unmodeled manufacturing imperfections, and an additional software-simulated perturbation is partially absorbed by pre-existing calibration errors (Supplementary Table~S7). An extended cross-residual analysis (Supplementary Note~15) reveals a deeper diagnostic: the \emph{cross-residual}---evaluating a mismatched reconstruction under the true forward model---increases monotonically from $0.3\%$ at $0.25$\,px shift to $11.1\%$ at $2.0$\,px shift, with per-scene standard deviation $< 0.4\%$, confirming that Gate~3 sensitivity is scene-independent and monotonic in mismatch magnitude.
@@ -302,6 +361,8 @@ Grid-search calibration recovers $\recoveryratio = 0.85$ (CASSI, 1{,}140\,s; 95\
 \paragraph{Simulation-to-hardware gap.}
 \cref{fig:hardware} summarises residual ratios (panels a--b), the simulation-to-hardware gap (panel c), and autonomous calibration recovery across all three modalities (panel d). CASSI shows smaller real degradation ($1.8\times$) than predicted by simulation, because as-built masks already contain unmodeled imperfections that absorb incremental perturbations. CACTI shows larger real sensitivity ($10.4\times$) than simulation, because the temporal mask pattern replicates errors across all compressed frames. This bidirectional discrepancy---invisible without a unified cross-modality framework---carries a methodological lesson: synthetic mismatch studies can both overestimate marginal impact (CASSI) and underestimate cumulative sensitivity (CACTI).
 
+
+\FloatBarrier
 \subsection*{Design validation}
 
 \paragraph{Gates as quantitative design specifications.}
@@ -311,12 +372,15 @@ The three gates, when inverted, yield quantitative design constraints that can b
 The Finite Primitive Basis enables a compositional design workflow: a new imaging modality is specified by selecting primitives from the 11-member library, defining their parameters, and connecting them as a typed DAG. The framework then evaluates the candidate design through all three gates before hardware fabrication begins (\cref{fig:overview}f--g). To demonstrate this workflow concretely, we compose a snapshot compressive video imager from three primitives---Modulate~$M$ (binary coded mask), Accumulate~$\Sigma$ (temporal integration across $B$ frames), and Detect~$D$ (photon-counting sensor)---matching the CACTI architecture~\cite{yuan2021sci}. Gate~1 analysis on the composed DAG predicts that at compression ratio $B = 8$, the measurement matrix retains sufficient rank for ${\sim}27$\,dB reconstruction (GAP-TV). Gate~2 analysis predicts a minimum of ${\sim}5{,}000$ peak photons per compressed frame for the solver to operate above the noise floor. Gate~3 analysis identifies mask alignment as the dominant sensitivity: a sub-pixel shift causes $13$\,dB degradation (\cref{fig:scenario_protocol}; Supplementary Table~S9), specifying a calibration tolerance of $< 0.25$\,px for the mask fabrication process. This three-gate design specification---minimum compression ratio, minimum photon budget, maximum mask alignment error---is derived entirely from the primitive DAG and validated against the empirical results in the preceding sections.
 
 \paragraph{Systematic design exploration.}
+\begin{sloppypar}
 Scaling beyond individual modalities, the PWM framework maintains a registry of 170 imaging configurations (\cref{tab:decomposition_main}), each specified as a primitive DAG with typed carrier, hardware parameters, and gate-specific design thresholds. This registry enables purpose-conditioned system selection: given a measurement task with target resolution, temporal bandwidth, budget, and sample constraints, the designer queries the registry to identify feasible modalities and rank them by task-normalised adequacy across eight dimensions (acquisition feasibility, temporal and spatial adequacy, observable sufficiency, output recovery quality, budget feasibility, deployment burden, and sample compatibility). For instance, a designer seeking to build a spectral imager for precision agriculture queries the registry with constraints on spectral range (400--1000\,nm), minimum band count ($\geq 20$), frame rate ($\geq 30$\,fps), and budget. The registry returns multiple feasible architectures---coded-aperture (CASSI), mosaic-filter, and filter-wheel systems---ranked by task-normalised adequacy. For each candidate, the three gates generate quantitative design specifications: Gate~1 determines the minimum spatial$\times$spectral sampling density required for the target reconstruction quality, Gate~2 determines the minimum illumination power for adequate per-band SNR (critical at 30\,fps where exposure time is short), and Gate~3 predicts the calibration tolerance for each architecture (\eg{}, mask alignment $< 0.25$\,px for CASSI, filter registration accuracy for mosaic sensors). This gate-based specification---derived entirely from the primitive DAG of each candidate---enables quantitative comparison across architecturally distinct systems on a common footing, completing the design loop from task requirements to hardware tolerances (\cref{fig:overview}f--g).
+\end{sloppypar}
 
 
 %% ═══════════════════════════════════════════════════════════════════
 %%  6. DISCUSSION
 %% ═══════════════════════════════════════════════════════════════════
+\FloatBarrier
 \section*{Discussion}
 
 The central finding is that the space of imaging forward models has finite structural complexity---11 primitives suffice and are necessary---and that every reconstruction failure decomposes into exactly three independent, testable root causes. This closure extends to particle-beam probes (neutron CT, proton CT, muon tomography) with zero additional primitives, as their DAGs decompose entirely into existing library members (Supplementary Note~S24). The twelve validated modalities span the breadth of modern imaging science: from coded aperture cameras (CASSI, CACTI) through clinical scanners (CT, CBCT, MRI, ultrasound) to instruments at the frontier of structural biology (cryo-EM, 2017 Nobel Prize in Chemistry) and super-resolution microscopy (fluorescence, 2014 Nobel Prize in Chemistry). In every case, the same 11 primitives compose the forward model and the same 3 gates diagnose every failure.
@@ -399,7 +463,7 @@ All synthetic measurement data can be regenerated using the \opg{} templates and
 The \pwm{} codebase, including all \opg{} templates, agent implementations, real-data validation scripts, and evaluation pipelines, is available at \url{https://github.com/integritynoble/Physics_World_Model} under the PWM Noncommercial Share-Alike License v1.0 (see \texttt{LICENSE} in the repository).
 
 \paragraph{Correspondence.}
-Correspondence and requests for materials should be addressed to C.Y.\ (\texttt{integrityyang@gmail.com}).
+Correspondence and requests for materials should be addressed to C.Y.\ (\url{integrityyang@gmail.com}).
 
 %% ═══════════════════════════════════════════════════════════════════
 %%  ONLINE METHODS
@@ -413,60 +477,6 @@ Correspondence and requests for materials should be addressed to C.Y.\ (\texttt{
 \bibliographystyle{unsrtnat}
 \bibliography{pwm_flagship}
 
-%% ═══════════════════════════════════════════════════════════════════
-%%  FIGURE CAPTIONS (Nature style: at end of manuscript)
-%% ═══════════════════════════════════════════════════════════════════
-\clearpage
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\textwidth]{figures/fig1_overview.pdf}
-\caption{\textbf{The universal grammar of computational imaging.}
-\textbf{a},~Any computational imaging system---from coded-aperture cameras to cryo-electron microscopes---serves as input.
-\textbf{b},~The system is composed as a typed directed acyclic graph (DAG) over 11 universal primitives (\cref{fig:operatorgraph}); shown here for CASSI as an example.
-The grammar enables two workflows.
-\emph{Top (existing instruments):}
-\textbf{c},~The \triad{} diagnoses the DAG through three independent gates: information deficiency (Gate~1), carrier budget (Gate~2), and operator mismatch (Gate~3).
-\textbf{d},~Based on the dominant gate, a targeted correction is applied: sampling redesign (Gate~1), source/detector improvement (Gate~2), or operator calibration (Gate~3).
-\textbf{e},~The existing solver is re-run with the corrected operator, recovering $+0.8$ to $+13.9$\,dB without retraining.
-\emph{Bottom (new instruments):}
-\textbf{f},~The same three gates guide the design of a new modality from first principles: Gate~1 determines sampling geometry, Gate~2 guides carrier and source selection, and Gate~3 predicts the calibration accuracy required for a target reconstruction quality.
-\textbf{g},~The output is an optimized new system specification ready to build.
-Together, the 11 primitives (alphabet) and 3 gates (rules) form a universal grammar for designing, diagnosing, and correcting any imaging system.}
-\label{fig:overview}
-\end{figure}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\textwidth]{figures/fig2_operatorgraph.pdf}
-\caption{\textbf{11 primitives: OperatorGraph IR, Physics Fidelity Ladder, and basis completeness.}
-\textbf{a},~The 11 universal primitives grouped by physical role: generation (Propagate~$P$), encoding (Modulate~$M$, Project~$\Pi$, Convolve~$C$, Scatter~$R$, Transform~$\Lambda$), transform (Encode~$F$, Accumulate~$\Sigma$), and detection (Sample~$S$, Disperse~$W$, Detect~$D$). Each primitive carries a typed signature mapping its input to its output (e.g., $P$: free-space propagation; $D$: detector response). \textbf{b},~Example \opg{} DAGs for three modalities: CASSI (photon), MRI (spin), and CT (X-ray photon). Each node wraps a primitive operator; edges define data flow. The symbols in panel~b correspond directly to the primitive labels in panel~a. \textbf{c},~Fidelity levels: forward models range from linear shift-invariant (simplest) through nonlinear and full-wave; all 11 primitives apply uniformly across every level. \textbf{d},~Basis-growth saturation: the number of distinct primitives $K$ required to express $N$ registered modalities saturates at $K{=}11$ for $N \geq 35$; no additional primitive has been needed for the 135 subsequent modalities across 23 physical categories.}
-\label{fig:operatorgraph}
-\end{figure}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\textwidth]{figures/fig3_triad.pdf}
-\caption{\textbf{Triad Decomposition: all three gates validated with real data.}
-\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Three-gate degradation and correction heatmap. \emph{G1}~(blue): $\Delta$PSNR under extreme compression (Table~S12; all 12~modalities). \emph{G2}~(amber): $\Delta$PSNR under extreme noise (Table~S13; all 12~modalities). \emph{G3}~(green): correction gain $\Delta$PSNR under standard mismatch conditions (Table~S1; all 12~modalities). G1/G2~degrade at extreme conditions confirming they are real failure modes; G3~dominates under standard deployment because Gates~1 and~2 were already optimized at design time. \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 12 validated modalities, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
-\label{fig:triad}
-\end{figure}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\textwidth]{figures/fig4_scenario_protocol.pdf}
-\caption{\textbf{4-Scenario Protocol across 6 representative modalities.}
-Each panel shows PSNR~(dB) for the four scenarios: Sc.~I (ideal operator, green), Sc.~II (mismatched operator, red), Sc.~III (oracle correction, blue), and Sc.~IV (autonomous calibration, purple). Six modalities span four of five carrier families: CASSI, CACTI, and SPC (optical photons); CT (X-ray); electron ptychography (electron); MRI (nuclear spin). For low-dimensional mismatch (CT, electron ptychography, MRI), Sc.~IV $\approx$ Sc.~III $\approx$ Sc.~I, confirming near-complete recovery. For multi-parameter mismatch (CASSI), recovery reaches 85\%; CACTI and SPC achieve 100\% and 86\%, respectively (Supplementary Table~S9). Sc.~I PSNR from Table~S3; Sc.~II/III from Table~S1.}
-\label{fig:scenario_protocol}
-\end{figure}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\textwidth]{figures/fig5_hardware.pdf}
-\caption{\textbf{Hardware validation on real CASSI and CACTI instruments.}
-\textbf{a},~CASSI real data: measurement residual ratio (mismatched/calibrated) across 5 TSA scenes. GAP-TV shows $1.8\times$ mean ratio. \textbf{b},~CACTI real data: residual ratio across 4 scenes. GAP-TV shows $10.4\times$ mean ratio; PnP-FFDNet shows $2.0\times$. \textbf{c},~Simulation-to-hardware gap: comparing mismatch degradation in simulation versus real hardware for CASSI and CACTI. \textbf{d},~Autonomous calibration: grid-search parameter recovery for CASSI (85\%), CACTI (100\%), and SPC (86--92\%).}
-\label{fig:hardware}
-\end{figure}
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -476,6 +486,7 @@ Each panel shows PSNR~(dB) for the four scenarios: Sc.~I (ideal operator, green)
 \noindent\textbf{Extended Data Table~1} $|$ \textbf{Primitive necessity ablation.} For each of the 11 primitives, the witness modality whose representation error $\etier$ exceeds $\varepsilon = 0.01$ when that primitive is removed from $\Blib$. Eight primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$, $\Lambda$) are strictly necessary; the remaining three ($C$, $S$, $W$) are necessary under the stated complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$). Data from~\cite{yang2026fpt}, Proposition~1.
 
 \begin{center}
+\small\setlength{\tabcolsep}{5pt}
 \begin{tabular}{@{}lllr@{}}
 \toprule
 \textbf{Removed primitive} & \textbf{Witness modality} & \textbf{Why irreplaceable} & $\etier$ \textbf{without} \\
