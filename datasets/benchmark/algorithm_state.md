@@ -1155,7 +1155,7 @@ Generated: 2026-03-12
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Wiener deconvolution | 1949 | Wiener, 1949 | 7.3 | 0.0830 | 11.9 | 0.5896 | done |
+| 1 | Wiener deconvolution | 2025 | LensNet, IJCAI 2025 (DiffuserCam Wiener=7.33) | 7.3 | 0.0830 | 11.9 | 0.5896 | done |
 | 2 | ADMM | 2000 | Boyd et al., ADMM, 2010 | 12.8 | 0.4420 | 11.9 | 0.5896 | done |
 | 3 | FlatNet | 2022 | Khan et al., TPAMI 2022 | 21.2 | 0.7200 | 11.9 | 0.5896 |  |
 | 4 | MWDN | 2023 | MWDN, 2023 | 25.7 | 0.8160 | 11.9 | 0.5896 |  |
@@ -1284,7 +1284,7 @@ Generated: 2026-03-12
 | 2 | RTM (Reverse Time Migration) | 2000 | RTM | 25.0 | 0.8000 | 10.6 | 0.0059 |  |
 | 3 | PGCDM (Physics-Guided Diffusion) | 2024 | Remote Sensing 17(23):3837 | 30.1 | 0.8760 | 10.6 | 0.0059 |  |
 | 4 | PSTM | 2005 | Pre-stack time migration | 22.0 | 0.7200 | 10.6 | 0.0059 |  |
-| 5 | Raw B-scan (no migration) | 2000 | GPR raw radargram | 12.0 | 0.4000 | 10.6 | 0.0059 | done |
+| 5 | Raw B-scan (noisy input) | 2021 | MCAE GPR, Electronics 10(11):1269 (noisy=11.23 dB) | 11.2 | 0.4000 | 10.6 | 0.0059 | done |
 | 6 | RDA [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.6 | 0.0035 |  |
 | 7 | SAR-DL [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.6 | 0.0035 |  |
 | 8 | GPR-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 5.6 | 0.0035 |  |

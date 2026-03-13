@@ -276,7 +276,7 @@ REFS = {
     # ═══════════════ COMPUTATIONAL PHOTOGRAPHY ═══════════════
     "lensless": [
         # DiffuserCam benchmark
-        {"name": "Wiener deconvolution", "year": 1949, "paper": "Wiener, 1949", "psnr": 7.33, "ssim": 0.083, "dataset": "DiffuserCam"},
+        {"name": "Wiener deconvolution", "year": 2025, "paper": "LensNet, IJCAI 2025 (DiffuserCam Wiener=7.33)", "psnr": 7.33, "ssim": 0.083, "dataset": "DiffuserCam"},
         {"name": "ADMM", "year": 2000, "paper": "Boyd et al., ADMM, 2010", "psnr": 12.76, "ssim": 0.442, "dataset": "DiffuserCam"},
         {"name": "FlatNet", "year": 2022, "paper": "Khan et al., TPAMI 2022", "psnr": 21.16, "ssim": 0.720, "dataset": "DiffuserCam"},
         {"name": "MWDN", "year": 2023, "paper": "MWDN, 2023", "psnr": 25.74, "ssim": 0.816, "dataset": "DiffuserCam"},
@@ -827,7 +827,7 @@ REFS = {
         {"name": "RTM (Reverse Time Migration)", "year": 2000, "paper": "RTM", "psnr": 25.00, "ssim": 0.800, "dataset": "simulated GPR"},
         {"name": "PGCDM (Physics-Guided Diffusion)", "year": 2024, "paper": "Remote Sensing 17(23):3837", "psnr": 30.05, "ssim": 0.876, "dataset": "Simulated mining GPR"},
             {"name": "PSTM", "year": 2005, "paper": "Pre-stack time migration", "psnr": 22.00, "ssim": 0.720, "dataset": "simulated GPR"},
-        {"name": "Raw B-scan (no migration)", "year": 2000, "paper": "GPR raw radargram", "psnr": 12.00, "ssim": 0.400, "dataset": "GPR raw B-scan"},
+        {"name": "Raw B-scan (noisy input)", "year": 2021, "paper": "MCAE GPR, Electronics 10(11):1269 (noisy=11.23 dB)", "psnr": 11.23, "ssim": 0.400, "dataset": "GPR raw B-scan noisy"},
 ],
     "insar": [
         {"name": "Goldstein filter", "year": 1998, "paper": "Goldstein & Werner, GRL 1998", "psnr": 22.00, "ssim": None, "dataset": "InSAR simulated"},
