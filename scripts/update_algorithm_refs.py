@@ -405,6 +405,8 @@ REFS = {
         {"name": "SA-HFL", "year": 2023, "paper": "CMPB 2023, S0169260723005278", "psnr": 31.03, "ssim": 0.988, "dataset": "EIT regular-shaped phantom"},
             {"name": "Newton one-step", "year": 2005, "paper": "Cheney et al., SIAM 1999", "psnr": 20.00, "ssim": 0.700, "dataset": "simulated circular EIT"},
         {"name": "Linear backprojection", "year": 1990, "paper": "EIT backprojection (RS-FISTA=37.5 dB, extrapolated)", "psnr": 22.00, "ssim": 0.450, "dataset": "simulated circular EIT"},
+        {"name": "LBP (Linear Back Projection)", "year": 2023, "paper": "Ivanenko et al., Sensors 2023, PMC10538128", "psnr": 12.45, "ssim": None, "dataset": "wearable thorax EIT 16-electrode"},
+        {"name": "TPINV (Tikhonov Pseudoinverse)", "year": 2023, "paper": "Ivanenko et al., Sensors 2023, PMC10538128", "psnr": 12.93, "ssim": None, "dataset": "wearable thorax EIT 16-electrode"},
 ],
     "gravitational_wave": [
         {"name": "Matched filtering", "year": 2000, "paper": "Allen et al., PRD 2012", "psnr": 20.00, "ssim": None, "dataset": "LIGO simulated (SNR proxy)"},
@@ -723,6 +725,7 @@ REFS = {
         {"name": "Butterfly-Net", "year": 2022, "paper": "Li et al., PMB 2022", "psnr": 34.00, "ssim": 0.950, "dataset": "spectral CT"},
         {"name": "D3QN", "year": 2024, "paper": "Phys Med Biol 2024", "psnr": 37.42, "ssim": 0.979, "dataset": "spectral CT material decomposition"},
         {"name": "FBP per bin (lowest energy)", "year": 2024, "paper": "Xing et al., 2024, PMC11744124", "psnr": 27.00, "ssim": 0.500, "dataset": "spectral CT per-bin FBP"},
+        {"name": "FBP (30 sparse views)", "year": 2025, "paper": "Guo et al., QIMS 2025, PMC12209656", "psnr": 15.50, "ssim": None, "dataset": "spectral CT 30 views 8 channels"},
 ],
     "digital_breast_tomo": [
         {"name": "FBP", "year": 1971, "paper": "FBP baseline", "psnr": 25.00, "ssim": None, "dataset": "DBT"},
@@ -1093,6 +1096,7 @@ REFS = {
             {"name": "SwinIR", "year": 2024, "paper": "Heliyon 2024", "psnr": 36.84, "ssim": 0.970, "dataset": "endoscopy image enhancement"},
         {"name": "Gaussian filter (fiber bundle)", "year": 2023, "paper": "Kim et al., Sensors 2023, PMC9824069", "psnr": 18.98, "ssim": None, "dataset": "CLE synthetic honeycomb Gaussian 3x3"},
         {"name": "Raw CLE (honeycomb artifact)", "year": 2022, "paper": "Kim et al., Sensors 2022, PMC9824069", "psnr": 20.58, "ssim": 0.730, "dataset": "CLE synthetic honeycomb artifact"},
+        {"name": "Raw fiber bundle (no processing)", "year": 2019, "paper": "Shao et al., Optics Express 2019, PMC6825616", "psnr": 14.60, "ssim": None, "dataset": "lens tissue raw FB image"},
 ],
     "octa": [
         {"name": "SSADA (single-scan)", "year": 2012, "paper": "Xu et al. 2021 PMC8221851 (single-scan 12.09 dB)", "psnr": 12.09, "ssim": 0.700, "dataset": "OCTA single-scan retinal"},

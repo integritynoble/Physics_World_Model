@@ -286,12 +286,13 @@ Generated: 2026-03-12
 | 4 | SwinIR | 2024 | Heliyon 2024 | 36.8 | 0.9700 | 11.8 | 0.8796 |  |
 | 5 | Gaussian filter (fiber bundle) | 2023 | Kim et al., Sensors 2023, PMC9824069 | 19.0 | — | 11.8 | 0.8796 |  |
 | 6 | Raw CLE (honeycomb artifact) | 2022 | Kim et al., Sensors 2022, PMC9824069 | 20.6 | 0.7300 | 11.8 | 0.8796 |  |
-| 7 | FISTA-L2 (endoscopy) (PWM) | — | — | — | — | — | — |  |
-| 8 | EndoMapper-Net (PWM) | — | Ozyoruk, K.B. et al. (2021) EndoMapper, Nat. Mach. Intel. 3 | — | — | — | — |  |
-| 9 | AF-SfMLearner (PWM) | — | Shao, S. et al. (2022) Self-supervised depth estimation in endoscopy, MICCAI 2022 | — | — | — | — |  |
-| 10 | rl_20iter (test) | — | — | — | — | 11.8 | 0.8796 |  |
-| 11 | rl_50iter (test) | — | — | — | — | 10.4 | 0.8225 |  |
-| 12 | precomputed_recon (test) | — | — | — | — | 4.1 | 0.3912 |  |
+| 7 | Raw fiber bundle (no processing) | 2019 | Shao et al., Optics Express 2019, PMC6825616 | 14.6 | — | 11.8 | 0.8796 | done |
+| 8 | FISTA-L2 (endoscopy) (PWM) | — | — | — | — | — | — |  |
+| 9 | EndoMapper-Net (PWM) | — | Ozyoruk, K.B. et al. (2021) EndoMapper, Nat. Mach. Intel. 3 | — | — | — | — |  |
+| 10 | AF-SfMLearner (PWM) | — | Shao, S. et al. (2022) Self-supervised depth estimation in endoscopy, MICCAI 2022 | — | — | — | — |  |
+| 11 | rl_20iter (test) | — | — | — | — | 11.8 | 0.8796 |  |
+| 12 | rl_50iter (test) | — | — | — | — | 10.4 | 0.8225 |  |
+| 13 | precomputed_recon (test) | — | — | — | — | 4.1 | 0.3912 |  |
 
 ### 20. Fluoroscopy (`fluoroscopy`)
 
@@ -544,9 +545,10 @@ Generated: 2026-03-12
 | 3 | Butterfly-Net | 2022 | Li et al., PMB 2022 | 34.0 | 0.9500 | 12.3 | 0.1106 |  |
 | 4 | D3QN | 2024 | Phys Med Biol 2024 | 37.4 | 0.9790 | 12.3 | 0.1106 |  |
 | 5 | FBP per bin (lowest energy) | 2024 | Xing et al., 2024, PMC11744124 | 27.0 | 0.5000 | 12.3 | 0.1106 |  |
-| 6 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1896 |  |
-| 7 | SpectralCT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1896 |  |
-| 8 | precomputed_baseline (test) | — | — | — | — | 12.3 | 0.1106 |  |
+| 6 | FBP (30 sparse views) | 2025 | Guo et al., QIMS 2025, PMC12209656 | 15.5 | — | 12.3 | 0.1106 |  |
+| 7 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1896 |  |
+| 8 | SpectralCT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 1.9 | 0.1896 |  |
+| 9 | precomputed_baseline (test) | — | — | — | — | 12.3 | 0.1106 |  |
 
 ### 39. Susceptibility-Weighted Imaging (SWI) (`swi`)
 
@@ -1919,10 +1921,12 @@ Generated: 2026-03-12
 | 4 | SA-HFL | 2023 | CMPB 2023, S0169260723005278 | 31.0 | 0.9880 | 11.2 | 0.3124 |  |
 | 5 | Newton one-step | 2005 | Cheney et al., SIAM 1999 | 20.0 | 0.7000 | 11.2 | 0.3124 |  |
 | 6 | Linear backprojection | 1990 | EIT backprojection (RS-FISTA=37.5 dB, extrapolated) | 22.0 | 0.4500 | 11.2 | 0.3124 |  |
-| 7 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
-| 8 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
-| 9 | EIT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
-| 10 | precomputed_baseline (test) | — | — | — | — | 11.2 | 0.3124 |  |
+| 7 | LBP (Linear Back Projection) | 2023 | Ivanenko et al., Sensors 2023, PMC10538128 | 12.4 | — | 11.2 | 0.3124 | done |
+| 8 | TPINV (Tikhonov Pseudoinverse) | 2023 | Ivanenko et al., Sensors 2023, PMC10538128 | 12.9 | — | 11.2 | 0.3124 | done |
+| 9 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
+| 10 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
+| 11 | EIT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | — | 1.0000 |  |
+| 12 | precomputed_baseline (test) | — | — | — | — | 11.2 | 0.3124 |  |
 
 ### 146. Magnetic Particle Imaging (MPI) (`magnetic_particle`)
 
@@ -2217,9 +2221,9 @@ Generated: 2026-03-12
 ## Summary
 
 - **Total modalities**: 168
-- **Total algorithm entries**: 1286
-- **Verified (done)**: 471
-- **Not yet verified**: 815
+- **Total algorithm entries**: 1290
+- **Verified (done)**: 474
+- **Not yet verified**: 816
 - **Sources**: Published papers (2000-2026), PWM benchmark tests, YAML solver configs
 - **Key benchmarks**: KAIST 10 scenes (CASSI), 6 grayscale SCI (CACTI), LoDoPaB-CT, fastMRI, Blender synthetic (NeRF), KITTI (LiDAR), DiffuserCam (lensless), BioSR (microscopy)
 
@@ -2228,7 +2232,7 @@ Generated: 2026-03-12
 | Category | Modalities | Algorithms | Ref Entries | Done | Done % |
 |----------|-----------|------------|-------------|------|--------|
 | Compressive Imaging | 4 | 49 | 40 | 10 | 20% |
-| Medical Imaging | 37 | 318 | 169 | 76 | 24% |
+| Medical Imaging | 37 | 320 | 171 | 77 | 24% |
 | Coherent Imaging | 5 | 37 | 22 | 12 | 32% |
 | Microscopy | 24 | 156 | 75 | 72 | 46% |
 | Electron Microscopy | 11 | 80 | 37 | 41 | 51% |
@@ -2243,6 +2247,6 @@ Generated: 2026-03-12
 | Astronomy & Space Imaging | 4 | 30 | 15 | 22 | 73% |
 | Ultrafast Imaging | 4 | 29 | 15 | 11 | 38% |
 | Quantum Imaging | 3 | 26 | 14 | 11 | 42% |
-| Broader Experimental Science | 11 | 83 | 41 | 36 | 43% |
+| Broader Experimental Science | 11 | 85 | 43 | 38 | 45% |
 | Scientific Instrumentation | 12 | 81 | 35 | 24 | 30% |
 | Multi-Modal Fusion | 6 | 47 | 23 | 13 | 28% |
