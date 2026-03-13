@@ -1,7 +1,7 @@
 # Algorithm State — PWM5 Benchmark
 
 Comprehensive listing of reconstruction algorithms for all 168 modalities.
-Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
+Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 
 ## Legend
 - **Ref PSNR/SSIM**: Published reference values from literature
@@ -668,13 +668,13 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Richardson-Lucy 3D | 1972 | Richardson 1972 | 26.0 | 0.7500 | 27.3 | 0.8317 | done |
-| 2 | CARE 3D | 2018 | Weigert et al., Nature Methods 2018 | 32.0 | 0.9000 | 27.3 | 0.8317 |  |
-| 3 | Noise2Void 3D | 2019 | Krull et al., CVPR 2019 | 28.0 | 0.8200 | 27.3 | 0.8317 | done |
-| 4 | CARE-3D (PWM) | — | — | 27.3 | — | 27.3 | 0.8317 | done |
-| 5 | CARE-3D (slice-wise) (PWM) | — | — | 27.3 | — | 27.3 | 0.8317 | done |
-| 6 | precomputed_baseline (test) | — | — | 27.3 | — | 27.3 | 0.8317 | done |
-| 7 | rl_20iter (test) | — | — | 27.3 | — | 27.3 | 0.8317 | done |
+| 1 | Richardson-Lucy 3D | 1972 | Richardson 1972 | 26.0 | 0.7500 | 27.5 | 0.5925 | done |
+| 2 | CARE 3D | 2018 | Weigert et al., Nature Methods 2018 | 32.0 | 0.9000 | 27.5 | 0.5925 |  |
+| 3 | Noise2Void 3D | 2019 | Krull et al., CVPR 2019 | 28.0 | 0.8200 | 27.5 | 0.5925 | done |
+| 4 | CARE-3D (PWM) | — | — | 27.3 | — | 27.5 | 0.5925 | done |
+| 5 | CARE-3D (slice-wise) (PWM) | — | — | 27.3 | — | 27.5 | 0.5925 | done |
+| 6 | precomputed_baseline (test) | — | — | 27.3 | — | 27.5 | 0.5925 | done |
+| 7 | rl_20iter (test) | — | — | 27.3 | — | 27.5 | 0.5925 | done |
 
 ### 48. Confocal Live-Cell Microscopy (`confocal_livecell`)
 
@@ -855,14 +855,14 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Wiener-SIM | 2008 | Gustafsson et al., 2008 | 30.0 | 0.8800 | 25.8 | 0.3484 |  |
-| 2 | fairSIM | 2015 | Muller et al., Bioinformatics 2016 | 30.5 | 0.8900 | 25.8 | 0.3484 |  |
-| 3 | ML-SIM | 2021 | Christensen et al., APL 2021 | 33.0 | — | 25.8 | 0.3484 |  |
-| 4 | Bicubic interpolation | 2000 | Interpolation baseline | 22.0 | 0.7000 | 25.8 | 0.3484 | done |
-| 5 | HiFi-SIM (PWM) | — | Wen et al. 2021, Light: S&A | 24.0 | — | 25.8 | 0.3484 | done |
-| 6 | Wiener-SIM (fast) (PWM) | — | — | 24.0 | — | 25.8 | 0.3484 | done |
-| 7 | precomputed_baseline (test) | — | — | 24.0 | — | 25.8 | 0.3484 | done |
-| 8 | wiener_sim (test) | — | — | 24.0 | — | 25.8 | 0.3484 | done |
+| 1 | Wiener-SIM | 2008 | Gustafsson et al., 2008 | 30.0 | 0.8800 | 26.0 | 0.3445 |  |
+| 2 | fairSIM | 2015 | Muller et al., Bioinformatics 2016 | 30.5 | 0.8900 | 26.0 | 0.3445 |  |
+| 3 | ML-SIM | 2021 | Christensen et al., APL 2021 | 33.0 | — | 26.0 | 0.3445 |  |
+| 4 | Bicubic interpolation | 2000 | Interpolation baseline | 22.0 | 0.7000 | 26.0 | 0.3445 | done |
+| 5 | HiFi-SIM (PWM) | — | Wen et al. 2021, Light: S&A | 24.0 | — | 26.0 | 0.3445 | done |
+| 6 | Wiener-SIM (fast) (PWM) | — | — | 24.0 | — | 26.0 | 0.3445 | done |
+| 7 | precomputed_baseline (test) | — | — | 24.0 | — | 26.0 | 0.3445 | done |
+| 8 | wiener_sim (test) | — | — | 24.0 | — | 26.0 | 0.3445 | done |
 
 ### 64. Spinning Disk Confocal Microscopy (`spinning_disk`)
 
@@ -1383,14 +1383,14 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Range-Doppler Algorithm | 1978 | Curlander & McDonough, 1991 | 25.0 | 0.7000 | 21.9 | 0.8590 |  |
-| 2 | Omega-K Algorithm | 1992 | Stolt 1978 / Cafforio 1991 | 27.0 | 0.7500 | 21.9 | 0.8590 |  |
-| 3 | Matched Filter (24 pts, 2dB SNR) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 8.8 | — | 21.9 | 0.8590 | done |
-| 4 | Matched Filter (192 pts) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 19.1 | — | 21.9 | 0.8590 | done |
-| 5 | FBP (SAR backprojection) (PWM) | — | — | 18.5 | — | 21.9 | 0.8590 | done |
-| 6 | SAR-DL (PolSF) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 21.9 | 0.8590 |  |
-| 7 | SAR-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 21.9 | 0.8590 |  |
-| 8 | precomputed_baseline (test) | — | — | 18.5 | — | 21.9 | 0.8590 | done |
+| 1 | Range-Doppler Algorithm | 1978 | Curlander & McDonough, 1991 | 25.0 | 0.7000 | 22.0 | 0.8600 | done |
+| 2 | Omega-K Algorithm | 1992 | Stolt 1978 / Cafforio 1991 | 27.0 | 0.7500 | 22.0 | 0.8600 |  |
+| 3 | Matched Filter (24 pts, 2dB SNR) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 8.8 | — | 22.0 | 0.8600 | done |
+| 4 | Matched Filter (192 pts) | 2024 | Diffusion-Prior SAR, arXiv 2512.02768 | 19.1 | — | 22.0 | 0.8600 | done |
+| 5 | FBP (SAR backprojection) (PWM) | — | — | 18.5 | — | 22.0 | 0.8600 | done |
+| 6 | SAR-DL (PolSF) [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 22.0 | 0.8600 |  |
+| 7 | SAR-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 22.0 | 0.8600 |  |
+| 8 | precomputed_baseline (test) | — | — | 18.5 | — | 22.0 | 0.8600 | done |
 
 ### 105. Sonar Imaging (`sonar`)
 
@@ -1460,12 +1460,12 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | Drift correction | 2000 | SPM baseline | 22.0 | 0.7000 | 25.7 | 0.9583 | done |
-| 2 | DeepSPM | 2020 | Krull et al., 2020 | 30.0 | 0.8800 | 25.7 | 0.9583 |  |
-| 3 | Richardson-Lucy (PWM) | — | — | 23.3 | — | 25.7 | 0.9583 | done |
-| 4 | CARE (PWM) | — | Weigert et al. 2018 | 23.3 | — | 25.7 | 0.9583 | done |
-| 5 | STM-Net (PWM) | — | Ziatdinov, M. et al. (2021) DL for atomic-level STM, Nat. Mach. Intell. 3:269 | 23.3 | — | 25.7 | 0.9583 | done |
-| 6 | precomputed_baseline (test) | — | — | 23.3 | — | 25.7 | 0.9583 | done |
+| 1 | Drift correction | 2000 | SPM baseline | 22.0 | 0.7000 | 25.9 | 0.9607 | done |
+| 2 | DeepSPM | 2020 | Krull et al., 2020 | 30.0 | 0.8800 | 25.9 | 0.9607 |  |
+| 3 | Richardson-Lucy (PWM) | — | — | 23.3 | — | 25.9 | 0.9607 | done |
+| 4 | CARE (PWM) | — | Weigert et al. 2018 | 23.3 | — | 25.9 | 0.9607 | done |
+| 5 | STM-Net (PWM) | — | Ziatdinov, M. et al. (2021) DL for atomic-level STM, Nat. Mach. Intell. 3:269 | 23.3 | — | 25.9 | 0.9607 | done |
+| 6 | precomputed_baseline (test) | — | — | 23.3 | — | 25.9 | 0.9607 | done |
 
 ---
 
@@ -1475,14 +1475,14 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | SAFT (Synth Aperture Focus) | 1980 | Doctor et al., 1986 | 25.0 | — | 23.7 | 0.9368 | done |
-| 2 | DAS beamforming | 1990 | Beamforming baseline | 22.0 | — | 23.7 | 0.9368 | done |
-| 3 | SwinIR (SAM) | 2024 | Somani et al., CVPR Workshop 2023 | 35.1 | 0.9500 | 23.7 | 0.9368 |  |
-| 4 | HDL-SAM (SwinIR+Hypergraph) | 2024 | Somani & Banerjee, OpenReview 2024 | 31.6 | 0.9200 | 23.7 | 0.9368 |  |
-| 5 | Hypergraph Inpainting | 2023 | Somani et al., CVPR Workshop 2023 | 28.0 | 0.8200 | 23.7 | 0.9368 |  |
-| 6 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 23.7 | 0.9368 |  |
-| 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 23.7 | 0.9368 |  |
-| 8 | precomputed_baseline (test) | — | — | 22.6 | — | 23.7 | 0.9368 | done |
+| 1 | SAFT (Synth Aperture Focus) | 1980 | Doctor et al., 1986 | 25.0 | — | 23.8 | 0.9383 | done |
+| 2 | DAS beamforming | 1990 | Beamforming baseline | 22.0 | — | 23.8 | 0.9383 | done |
+| 3 | SwinIR (SAM) | 2024 | Somani et al., CVPR Workshop 2023 | 35.1 | 0.9500 | 23.8 | 0.9383 |  |
+| 4 | HDL-SAM (SwinIR+Hypergraph) | 2024 | Somani & Banerjee, OpenReview 2024 | 31.6 | 0.9200 | 23.8 | 0.9383 |  |
+| 5 | Hypergraph Inpainting | 2023 | Somani et al., CVPR Workshop 2023 | 28.0 | 0.8200 | 23.8 | 0.9383 |  |
+| 6 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 23.8 | 0.9383 |  |
+| 7 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 23.8 | 0.9383 |  |
+| 8 | precomputed_baseline (test) | — | — | 22.6 | — | 23.8 | 0.9383 | done |
 
 ### 112. Active Thermography (IR) (`active_thermography`)
 
@@ -1919,18 +1919,18 @@ Generated: 2026-03-13 | **655/1294 algorithms done (50.6%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | D-bar method | 2000 | Nachman, Annals Math 1996 | 18.0 | 0.6000 | 14.7 | 0.1806 |  |
-| 2 | TV-ADMM | 2010 | TV regularization | 22.0 | 0.7500 | 14.7 | 0.1806 |  |
-| 3 | EIDORS-Net | 2020 | DL for EIT | 26.0 | 0.8500 | 14.7 | 0.1806 |  |
-| 4 | SA-HFL | 2023 | CMPB 2023, S0169260723005278 | 31.0 | 0.9880 | 14.7 | 0.1806 |  |
-| 5 | Newton one-step | 2005 | Cheney et al., SIAM 1999 | 20.0 | 0.7000 | 14.7 | 0.1806 |  |
-| 6 | Linear backprojection | 1990 | EIT backprojection (RS-FISTA=37.5 dB, extrapolated) | 22.0 | 0.4500 | 14.7 | 0.1806 |  |
-| 7 | LBP (Linear Back Projection) | 2023 | Ivanenko et al., Sensors 2023, PMC10538128 | 12.4 | — | 14.7 | 0.1806 | done |
-| 8 | TPINV (Tikhonov Pseudoinverse) | 2023 | Ivanenko et al., Sensors 2023, PMC10538128 | 12.9 | — | 14.7 | 0.1806 | done |
-| 9 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.7 | 0.1806 |  |
-| 10 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.7 | 0.1806 |  |
-| 11 | EIT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.7 | 0.1806 |  |
-| 12 | precomputed_baseline (test) | — | — | 12.6 | — | 14.7 | 0.1806 | done |
+| 1 | D-bar method | 2000 | Nachman, Annals Math 1996 | 18.0 | 0.6000 | 14.9 | 0.1754 |  |
+| 2 | TV-ADMM | 2010 | TV regularization | 22.0 | 0.7500 | 14.9 | 0.1754 |  |
+| 3 | EIDORS-Net | 2020 | DL for EIT | 26.0 | 0.8500 | 14.9 | 0.1754 |  |
+| 4 | SA-HFL | 2023 | CMPB 2023, S0169260723005278 | 31.0 | 0.9880 | 14.9 | 0.1754 |  |
+| 5 | Newton one-step | 2005 | Cheney et al., SIAM 1999 | 20.0 | 0.7000 | 14.9 | 0.1754 |  |
+| 6 | Linear backprojection | 1990 | EIT backprojection (RS-FISTA=37.5 dB, extrapolated) | 22.0 | 0.4500 | 14.9 | 0.1754 |  |
+| 7 | LBP (Linear Back Projection) | 2023 | Ivanenko et al., Sensors 2023, PMC10538128 | 12.4 | — | 14.9 | 0.1754 | done |
+| 8 | TPINV (Tikhonov Pseudoinverse) | 2023 | Ivanenko et al., Sensors 2023, PMC10538128 | 12.9 | — | 14.9 | 0.1754 | done |
+| 9 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.9 | 0.1754 |  |
+| 10 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.9 | 0.1754 |  |
+| 11 | EIT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | — | — | 14.9 | 0.1754 |  |
+| 12 | precomputed_baseline (test) | — | — | 12.6 | — | 14.9 | 0.1754 | done |
 
 ### 146. Magnetic Particle Imaging (MPI) (`magnetic_particle`)
 
