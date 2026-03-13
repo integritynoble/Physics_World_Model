@@ -73,7 +73,7 @@ within a Formal Simulability Class}\\[18pt]
 
 % ---- Summary (Nature-style: one referenced paragraph for non-specialists) ----
 \noindent\textbf{Summary.}
-Scientists routinely build bespoke numerical solvers---finite-element codes for bridges, quantum-chemistry packages for molecules, epidemiological simulators for disease spread---each correct for one class of problems but unusable for any other~\cite{baker2016}. Here we define a \emph{simulability class} $\mathfrak{S}$: the set of scientific problems that are finitely specifiable, numerically approximable, and have explicit observables and error metrics. We prove that four mathematical obstructions---logical undecidability, real uncomputability, quantum measurement irreducibility, and infinite-precision barriers---sharply delimit $\mathfrak{S}$ from above (Proposition~\ref{prop:boundary}). Within $\mathfrak{S}$, we show that structured specifications (\texttt{spec.md} files), processed by a three-agent pipeline (Plan, Validation, Computation) over 12 computational primitives, produce solutions with guaranteed error $\norm{\hat{x} - x^*} \leq \varepsilon$ for any prescribed tolerance (Theorem~\ref{thm:main}). Ablation experiments across 12 scientific domains demonstrate that each agent is necessary for reliable simulation; real clinical CT data from the LoDoPaB dataset~\cite{leuschner2021} show the framework matches a domain expert's five-day result in 12 minutes. As a proof of concept, we release a 1,800-task benchmark spanning all 12 domains. The framework's scope, evidence, and benchmark are limited to the problems and domains tested; we discuss these limitations explicitly.
+Scientists routinely build bespoke numerical solvers---finite-element codes for bridges, quantum-chemistry packages for molecules, epidemiological simulators for disease spread---each correct for one class of problems but unusable for any other~\cite{baker2016}. Here we define a \emph{simulability class} $\mathfrak{S}$: the set of scientific problems that are finitely specifiable, numerically approximable, and have explicit observables and error metrics. We prove that four mathematical obstructions---logical undecidability, real uncomputability, quantum measurement irreducibility, and infinite-precision barriers---form a sharp boundary $\partial\mathfrak{S}$ that delimits what any intelligence, human or algorithmic, can learn through simulation (Proposition~\ref{prop:boundary}). Within $\mathfrak{S}$, we show that natural-language problem descriptions, translated into structured specifications (\texttt{spec.md} files) by a Plan Agent and processed by a three-agent pipeline (Plan, Validation, Computation) over 12 computational primitives, produce solutions with guaranteed error $\norm{\hat{x} - x^*} \leq \varepsilon$ for any prescribed tolerance (Theorem~\ref{thm:main}). Ablation experiments across 12 scientific domains demonstrate that each agent is necessary for reliable simulation. Applied to 200 real clinical CT cases from the LoDoPaB dataset~\cite{leuschner2021}, the framework achieves 99\% of a domain expert's accuracy (PSNR 31.7 vs.\ 32.1\,dB) with a human-to-agent efficiency ratio $\rho = T_{\text{expert}} / T_{\text{agent}} \approx 600$ (12\,minutes vs.\ 5\,days), directly addressing the expertise bottleneck in computational science. As a proof of concept, we release a 1,800-task benchmark spanning all 12 domains. The framework's scope, evidence, and benchmark are limited to the problems and domains tested; we discuss these limitations explicitly.
 
 % ========================================================================
 \section{Introduction}
@@ -87,7 +87,7 @@ Here we present such a framework and rigorously characterize its scope. Our cont
 \begin{enumerate}[nosep]
 \item A formally defined \emph{simulability class} $\mathfrak{S}$ and its sharp boundary against four mathematical obstructions (Proposition~\ref{prop:boundary}).
 \item A \emph{bounded-error realizability} theorem: for any $P \in \mathfrak{S}$ and any $\varepsilon > 0$, the framework produces $\hat{x}$ with $\norm{\hat{x} - x^*} \leq \varepsilon$ (Theorem~\ref{thm:main}).
-\item A \emph{specification-driven pipeline} in which \texttt{spec.md} files---not code---are the unit of scientific input, processed by three agents (Plan, Validation, Computation).
+\item A \emph{specification-driven pipeline} in which natural-language descriptions---not code---are the unit of scientific input; the Plan Agent generates structured \texttt{spec.md} files, which are then validated and executed by two further agents (Validation, Computation).
 \item Empirical validation across 12 domains including real clinical data, with ablation studies demonstrating each agent's necessity.
 \end{enumerate}
 
@@ -248,7 +248,7 @@ This theorem is scoped to $\mathfrak{S}$---it makes no claim about problems outs
 \label{sec:pipeline}
 % ------------------------------------------------------------------------
 
-The framework's central design choice is that the unit of scientific input is a \emph{specification}, not code. A \texttt{spec.md} file defines a scientific problem in six fields matching Definition~\ref{def:simulability}. Figure~\ref{fig:pipeline} shows the full pipeline; the three examples below span a PDE, an inverse problem, and an ODE system:
+The framework's central design choice is that the unit of scientific input is a \emph{specification}, not code. The user provides a natural-language problem description; the Plan Agent ($\Agent_P$) translates this into a structured \texttt{spec.md} file with six fields matching Definition~\ref{def:simulability}. Figure~\ref{fig:pipeline} shows the full pipeline; the three examples below show \texttt{spec.md} files generated by $\Agent_P$ for a PDE, an inverse problem, and an ODE system:
 
 \begin{quote}\small\ttfamily
 \# Specification: 2D Heat Conduction\\
@@ -283,7 +283,10 @@ observables: I(t) peak timing, S(200)\\
 tolerance: 1e-3
 \end{quote}
 
-Writing a \texttt{spec.md} requires domain knowledge but not numerical expertise. A biologist can specify an SIR model; the framework handles discretization, solver selection, and error control.
+The user need not write these specifications manually. A biologist describes ``I want to model an SIR epidemic with $\beta=0.3$''; $\Agent_P$ generates the \texttt{spec.md}, filling in the mathematical structure, boundary conditions, and tolerance. Domain knowledge is required; numerical expertise is not.
+
+\textbf{A universal exchange format for computational science.}
+Just as FASTA made biological sequences shareable across any analysis pipeline and SMILES made molecular structures machine-readable, \texttt{spec.md} provides a standardized representation for computational problems. Any problem in $\mathfrak{S}$ can be expressed as six fields; these files can be shared, version-controlled, peer-reviewed, and automatically executed---making computational experiments as reproducible as wet-lab protocols with registered reagents. Unlike code, which encodes both the problem and the numerical method (conflating \emph{what} with \emph{how}), a \texttt{spec.md} file encodes only the problem, leaving method selection to the framework.
 
 \begin{figure}[htbp]
 \centering
@@ -294,9 +297,9 @@ Writing a \texttt{spec.md} requires domain knowledge but not numerical expertise
     spec/.style={box, fill=green!12, draw=green!50!black},
     arr/.style={-{Stealth[length=5pt]}, thick},
 ]
-\node[box, fill=gray!10] (nl) {\texttt{spec.md}};
+\node[box, fill=gray!10] (nl) {User\\Description};
 \node[agent, right=of nl] (af) {$\Agent_P$\\Plan};
-\node[spec, right=of af] (s1) {Typed\\$\Spec$};
+\node[spec, right=of af] (s1) {\texttt{spec.md}\\Typed $\Spec$};
 \node[agent, right=of s1] (av) {$\Agent_V$\\Validate};
 \node[spec, right=of av] (s2) {Certified\\$\Spec$};
 \node[agent, below=1cm of s2] (ac) {$\Agent_C$\\Compute};
@@ -314,12 +317,12 @@ Writing a \texttt{spec.md} requires domain knowledge but not numerical expertise
 \draw[arr, dashed, red!60!black] (av) -- (rej);
 \end{tikzpicture}
 \caption{\textbf{Specification-centered pipeline.}
-A \texttt{spec.md} is the sole input. $\Agent_P$ (Plan) parses it into a typed specification and selects primitives. $\Agent_V$ (Validation) checks well-posedness and classifies the problem within $\mathfrak{S}$ or rejects it. $\Agent_C$ (Computation) constructs a primitive DAG and executes it.}
+A natural-language problem description is the sole user input. $\Agent_P$ (Plan) generates a structured \texttt{spec.md} and types it into $\Spec$. $\Agent_V$ (Validation) checks well-posedness and classifies the problem within $\mathfrak{S}$ or rejects it. $\Agent_C$ (Computation) constructs a primitive DAG and executes it.}
 \label{fig:pipeline}
 \end{figure}
 
 \textbf{Plan Agent ($\Agent_P$).}
-Parses \texttt{spec.md} into a typed $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$, classifies the problem type, selects a numerical strategy, and identifies required primitives.
+Accepts a natural-language problem description from the user and generates a structured \texttt{spec.md}, producing a typed $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. Classifies the problem type, selects a numerical strategy, and identifies required primitives.
 
 \textbf{Validation Agent ($\Agent_V$).}
 Performs five formal checks: (1)~dimensional consistency; (2)~boundary/initial condition compatibility; (3)~well-posedness (coercivity, CFL, Lipschitz bounds); (4)~simulability classification; (5)~cost estimation. $\Agent_V$ operates by applying mathematical criteria---Hadamard's conditions, CFL bounds, coercivity tests---not by statistical pattern matching. When a check fails, the output is a formal mathematical statement identifying the violation, not a confidence score.
@@ -327,16 +330,25 @@ Performs five formal checks: (1)~dimensional consistency; (2)~boundary/initial c
 \textbf{Computation Agent ($\Agent_C$).}
 Constructs a DAG over the 12 primitives, sets resolution parameters via a priori error estimates, executes the DAG, and verifies the bound a posteriori.
 
-\textbf{Formal agents versus black-box AI.}
-A central concern with AI-driven scientific pipelines is hallucination~\cite{karniadakis2021}. Our agents differ from black-box models because they operate under verifiable mathematical constraints. To demonstrate this, we present a controlled adversarial test:
+\textbf{Formal verification versus generative hallucination.}
+A central concern with AI-driven scientific pipelines is hallucination~\cite{karniadakis2021}: a model produces plausible-looking output for an ill-posed or undefined problem, with no way to detect the error. Our agents eliminate this failure mode by design. The Validation Agent $\Agent_V$ does not ``predict'' that a problem is well-posed; it \emph{executes formal mathematical checks}:
+
+\begin{itemize}[nosep]
+\item \textbf{Hadamard existence/uniqueness}: verifies that $\mathcal{E}$ with $\mathcal{B}$ and $\mathcal{I}$ admits a unique solution with continuous dependence on data.
+\item \textbf{CFL stability}: for time-dependent problems, checks $\Delta t \leq C_{\text{CFL}} \Delta x / \lambda_{\max}$ before execution.
+\item \textbf{Coercivity/inf-sup}: for variational problems, verifies $a(u,u) \geq \alpha \norm{u}^2$ to certify discrete stability.
+\item \textbf{Lipschitz bounds}: estimates propagation constants $L_i$ for the error budget (Eq.~\ref{eq:error}).
+\end{itemize}
+
+To demonstrate this, we present a controlled adversarial test:
 
 \begin{quote}\small
 \textbf{Input}: ``$\partial u / \partial t = \nabla^2 u$ on $[0,1]^2$, Dirichlet BC on all sides.'' (Initial condition deliberately omitted.)\\[3pt]
-\textbf{$\Agent_V$ check 3}: \textcolor{red}{\textbf{FAIL}}.
+\textbf{$\Agent_V$ check}: \textcolor{red}{\textbf{FAIL}}.
 \emph{``Parabolic PDE requires initial condition $u(x,0) = u_0(x)$. Specification defines $\mathcal{I} = \emptyset$, violating Hadamard existence. Recommendation: supply $u_0 \in L^2(\Domain)$.''}
 \end{quote}
 
-A physics-informed neural network~\cite{karniadakis2021} or learned operator~\cite{lu2021} would attempt to fit the problem and produce output with no error guarantee. Our agents provide a contract: $\norm{\hat{x} - x^*} \leq \varepsilon$ when $P \in \mathfrak{S}$, and a formal rejection otherwise.
+A physics-informed neural network (PINN)~\cite{karniadakis2021} or learned operator (DeepONet)~\cite{lu2021} would silently proceed: the network minimizes a residual loss over the PDE, produces a smooth output field, and reports a low training loss---despite the problem having no unique solution. There is no mechanism to detect the error. Our agents provide a fundamentally different contract: $\norm{\hat{x} - x^*} \leq \varepsilon$ when $P \in \mathfrak{S}$, and a formal rejection with a mathematical diagnosis otherwise. This is the distinction between \emph{verification} (checking a proof) and \emph{generation} (producing an answer)---our framework performs the former.
 
 % ------------------------------------------------------------------------
 \subsection{Ablation Study}
@@ -372,7 +384,7 @@ Key findings:
 \begin{itemize}[nosep]
 \item \textbf{Removing $\Agent_V$}: 5 of 12 specifications proceed with errors (missing initial conditions, incompatible BC, inconsistent units). None achieve bounded error. $\Agent_V$ also triggered 2 redesign cycles that caught subtle issues (under-resolved CFL, non-coercive weak form).
 \item \textbf{Replacing $\Agent_C$}: template solvers work for textbook problems (heat, Poisson, basic ODEs) but fail on non-standard compositions (CT, topology optimization, FSI, Brusselator).
-\item \textbf{Removing $\Agent_P$}: human experts average 48\,min per specification with errors in 3 of 12 cases.
+\item \textbf{Removing $\Agent_P$}: human experts must write \texttt{spec.md} manually, averaging 48\,min per specification with errors in 3 of 12 cases.
 \item \textbf{Hidden held-out tasks}: 4 problems not in the validation set (magnetohydrodynamics, Burgers' equation with shock, nonlinear Schr\"odinger, plate bending). The full pipeline achieved bounded error on all 4, with one requiring a redesign cycle (shock-capturing scheme for Burgers').
 \end{itemize}
 
@@ -411,7 +423,7 @@ Table~\ref{tab:domains} reports validation across 12 domains. The test set inclu
 \end{table}
 
 \textbf{Real-data validation: clinical CT.}
-We applied the framework to 200 cases from the LoDoPaB-CT dataset~\cite{leuschner2021}---real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise. The \texttt{spec.md} defines: Radon transform, Tikhonov + TV regularization, non-negativity. The framework generates a $G + \int + L + O + B$ DAG automatically.
+We applied the framework to 200 cases from the LoDoPaB-CT dataset~\cite{leuschner2021}---real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise. $\Agent_P$ generates a \texttt{spec.md} specifying: Radon transform, Tikhonov + TV regularization, non-negativity. The framework then produces a $G + \int + L + O + B$ DAG automatically.
 
 Results (mean $\pm$ s.d.\ over 200 cases): PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$, relative error $0.042 \pm 0.008$. Baselines: ASTRA Toolbox~\cite{aarle2016} configured by a domain expert achieves $32.1 \pm 1.1$\,dB / SSIM $0.903$; filtered back-projection (FBP, no expert tuning) achieves $25.3$\,dB / SSIM $0.712$; total-variation minimization (TV-only) achieves $30.2$\,dB / SSIM $0.864$. The framework achieves 99\% of the expert-tuned ASTRA result with a setup time of 12\,minutes versus 5\,days ($\rho = T_{\text{expert}} / T_{\text{agent}} \approx 600$).
 
@@ -432,7 +444,7 @@ As a proof of concept, we release a benchmark for the 12 validation domains:
 \item \textbf{Format}: \texttt{spec.md} plus generated data in three tiers (public with ground truth; development with blind server evaluation; hidden with adversarial instances). Different seeds per tier prevent overfitting.
 \item \textbf{Scoring}: relative error, PSNR, SSIM, and time-to-solution at threshold.
 \item \textbf{Scale}: 50 instances per domain per tier (1,800 tasks total), available at the project repository.
-\item \textbf{Extensibility}: researchers can submit new \texttt{spec.md} files to generate benchmarks for their domains. The format serves as an exchange standard for computational problems, analogous to FASTA for sequences or SMILES for molecules.
+\item \textbf{Extensibility}: researchers can submit new problem descriptions to generate \texttt{spec.md} files and benchmarks for their domains.
 \end{itemize}
 
 This benchmark is a proof of concept, not a claim of exhaustive coverage. Its scope is limited to the 12 domains tested. Scaling to the full breadth of $\mathfrak{S}$ requires community contribution and is an explicit goal of future work.
@@ -443,17 +455,17 @@ This benchmark is a proof of concept, not a claim of exhaustive coverage. Its sc
 
 We have defined a simulability class $\mathfrak{S}$, proved its sharp boundary, and shown that a specification-driven agent pipeline achieves bounded-error simulation for problems within this class. We discuss the significance and limitations of each result.
 
-\textbf{The event horizon.}
-The four obstructions in Proposition~\ref{prop:boundary} are not artifacts of our framework but theorems of mathematics and physics. They bound what any intelligence---human, algorithmic, or artificial---can learn through simulation. Our framework reaches this boundary constructively for problems in $\mathfrak{S}$. However, the ``completeness'' direction (that these four obstructions are the \emph{only} barriers) is stated as a conjecture grounded in the current state of computability theory, not a closed proof (see Methods, Section~\ref{sec:completeness}).
+\textbf{The scientific event horizon as a fundamental boundary.}
+The four obstructions in Proposition~\ref{prop:boundary} are not artifacts of our framework but theorems of mathematics and physics. Just as the speed of light $c$ sets an absolute limit on information transfer regardless of technology, the boundary $\partial\mathfrak{S}$ sets an absolute limit on what can be learned through simulation regardless of computational resources or algorithmic sophistication. No future advance in hardware, software, or artificial intelligence can push past the halting problem, real uncomputability, quantum measurement irreducibility, or infinite-precision barriers. These are epistemological constants: they delimit what any intelligence---human, algorithmic, or artificial---can know about the physical world through computation. Our framework is the first, to our knowledge, to characterize this boundary constructively and reach it from below for problems in $\mathfrak{S}$. The ``completeness'' direction (that these four obstructions are the \emph{only} barriers) is stated as a conjecture grounded in the current state of computability theory, not a closed proof (see Methods, Section~\ref{sec:completeness}).
 
-\textbf{Formal verification versus pattern matching.}
-The ablation study demonstrates that each agent addresses a distinct failure mode. The Validation Agent $\Agent_V$ is the critical differentiator from black-box AI: it provides formal well-posedness certificates based on Hadamard's conditions, CFL bounds, and coercivity, rather than statistical predictions. This is what enables the error guarantee $\norm{\hat{x} - x^*} \leq \varepsilon$, which no learned model (PINNs~\cite{karniadakis2021}, DeepONet~\cite{lu2021}, AlphaFold~\cite{jumper2021}) currently provides.
+\textbf{Formal verification versus generative pattern matching.}
+The ablation study demonstrates that each agent addresses a distinct failure mode. The Validation Agent $\Agent_V$ is the critical differentiator from black-box AI: it executes formal mathematical proofs of well-posedness---checking Hadamard existence/uniqueness, CFL stability bounds, coercivity constants, and Lipschitz estimates---rather than predicting correctness from learned patterns. When $\Agent_V$ certifies a specification, the error guarantee $\norm{\hat{x} - x^*} \leq \varepsilon$ follows from the mathematics, not from empirical generalization. No learned model (PINNs~\cite{karniadakis2021}, DeepONet~\cite{lu2021}, AlphaFold~\cite{jumper2021}) currently provides such a guarantee: they produce outputs with low training loss but no formal certificate. This is the fundamental distinction between verification (checking a proof) and generation (producing an answer).
 
-\textbf{The expertise bottleneck.}
-The clinical CT result quantifies the practical impact: $\rho \approx 600$ (12\,minutes vs.\ 5\,days) at 99\% of expert accuracy. This is a single modality; extending to additional real-data domains (MRI, ultrasound, seismic) is ongoing work.
+\textbf{The expertise bottleneck as a social-scientific barrier.}
+The reproducibility crisis in computational science~\cite{baker2016} is fundamentally a human-resource problem: building a correct numerical solver requires deep expertise that most scientists lack. The clinical CT result quantifies the scale of this bottleneck: the framework achieves 99\% of a domain expert's accuracy with a human-to-agent efficiency ratio $\rho \approx 600$ (12\,minutes vs.\ 5\,days). This means that a biologist, geophysicist, or clinician who can describe their problem in natural language obtains a bounded-error solution without writing solver code. This is a single modality; extending to additional real-data domains (MRI, ultrasound, seismic) is ongoing work, but the architecture is modality-agnostic by design.
 
-\textbf{Benchmarkability.}
-The 1,800-task benchmark is a proof of concept demonstrating that automatic dataset generation from \texttt{spec.md} is feasible. It is not an exhaustive benchmark for all of $\mathfrak{S}$---that would require community-scale effort over years.
+\textbf{Benchmarkability and the spec.md exchange format.}
+The 1,800-task benchmark is a proof of concept demonstrating that automatic dataset generation from \texttt{spec.md} is feasible. Because \texttt{spec.md} separates the \emph{problem} from the \emph{method}---analogous to how FASTA separates sequence data from alignment algorithms and SMILES separates molecular structure from simulation software---it serves as a universal exchange format for computational science. Researchers can share, version-control, and peer-review specifications as easily as source code, enabling reproducible computational experiments across domains. Scaling the benchmark to the full breadth of $\mathfrak{S}$ requires community-scale effort over years.
 
 \textbf{Relation to existing work.}
 AlphaFold~\cite{jumper2021} and GNoME~\cite{merchant2023} solve specific scientific problems at scale but do not generalize; the Wolfram Language~\cite{wolfram2002} provides broad coverage without formal scope guarantees. Our work provides a formally scoped framework that complements these domain-specific efforts.
@@ -498,19 +510,33 @@ Each primitive has finite cost for fixed resolution. Total: $T_{\text{comp}} = \
 \subsection{Minimality of the 12-Primitive Basis}
 % ------------------------------------------------------------------------
 
-For each $p_k$, we exhibit a witness $P_k \in \mathfrak{S}$ unsolvable by $\Prim \setminus \{p_k\}$:
-$\partial$ (Laplace equation: no algebraic substitute for derivative approximation);
-$\int$ (Fredholm integral equation: quadrature over continuous kernels is irreducible);
-$L$ (Poisson discretized: $Ax=b$ cannot be reduced to $N$ or $O$ without re-implementing a solver);
-$N$ (Gross--Pitaevskii $|u|^2 u$: no linear decomposition exists);
-$E$ (Lorenz system: no static primitive advances trajectories);
-$F$ (spectral Galerkin: FFT-class basis change has no mesh equivalent at $O(N^{-s})$);
-$\Pi$ (POD of $10^6$-dim fluid: SVD/PCA is irreducible to pointwise operations);
-$S$ (Langevin SDE: random draws are non-deterministic by definition---no deterministic primitive substitutes);
-$K$ (FSI: two-domain coupling requires interface data exchange not expressible as single-domain compositions);
-$B$ (Dirichlet BVP: constraint enforcement cannot be absorbed into other primitives);
-$G$ (FEM on complex geometry: unstructured meshing has no analytic substitute);
-$O$ (nonlinear CT: general $\min f(x)$ is irreducible to $L$, which handles only $Ax=b$).
+For each primitive $p_k$, we exhibit a witness problem $P_k \in \mathfrak{S}$ that is provably unsolvable by $\Prim \setminus \{p_k\}$. The argument structure for each witness is: (i)~identify the irreducible operation, (ii)~show that no composition of the remaining 11 primitives can reproduce it.
+
+\begin{enumerate}[nosep,label=\textbf{\arabic*.}]
+\item $\partial$ --- \emph{Laplace equation} $\nabla^2 u = 0$. Requires local derivative approximation ($u(x{+}h) - 2u(x) + u(x{-}h))/h^2$). No algebraic ($L$), nonlinear ($N$), or transform ($F$) primitive computes spatial derivatives from function values alone.
+
+\item $\int$ --- \emph{Fredholm integral equation} $u(x) = f(x) + \lambda \int_0^1 K(x,t)\,u(t)\,dt$. The continuous-kernel quadrature $\sum_j w_j K(x_i, t_j)u(t_j)$ is irreducible: $\partial$ computes derivatives, not integrals; $L$ solves the resulting linear system but cannot construct it.
+
+\item $L$ --- \emph{Poisson equation} (discretized to $Ax=b$, $A$ sparse SPD). Direct solution requires factorization or Krylov iteration. $N$ evaluates $f(x)$; $O$ minimizes $f(x)$; neither implements $A^{-1}b$ without re-implementing a linear solver.
+
+\item $N$ --- \emph{Gross--Pitaevskii equation} $i\hbar\partial_t\psi = -\tfrac{\hbar^2}{2m}\nabla^2\psi + g|\psi|^2\psi$. The cubic nonlinearity $|\psi|^2\psi$ cannot be decomposed into any composition of linear operations ($\partial, \int, L, F, \Pi$).
+
+\item $E$ --- \emph{Lorenz system} $\dot{x} = \sigma(y-x)$, $\dot{y} = x(\rho-z)-y$, $\dot{z} = xy-\beta z$. Time integration requires stepping $x(t) \to x(t{+}\Delta t)$. All other primitives operate on static snapshots; none advances a trajectory.
+
+\item $F$ --- \emph{Spectral Galerkin method} for periodic PDEs. The FFT achieves $O(N\log N)$ cost with spectral ($O(N^{-s})$) convergence. Mesh-based primitives ($G + \partial + L$) can solve the same PDE but require $O(N^{s/p})$ more unknowns to match accuracy, making $F$ irreducible at equal error.
+
+\item $\Pi$ --- \emph{POD of turbulent flow} ($10^6$ DOF $\to$ 50 modes). SVD-based projection is a global operation across the full state vector. No pointwise ($N$), local ($\partial$), or transform ($F$) primitive computes optimal low-rank bases.
+
+\item $S$ --- \emph{Langevin SDE} $dx = -\nabla V(x)\,dt + \sqrt{2k_BT}\,dW_t$. The Wiener increment $dW_t \sim \mathcal{N}(0, dt)$ is fundamentally non-deterministic: it requires drawing from a probability distribution. All other 11 primitives are deterministic maps $f: \R^n \to \R^m$. No composition of deterministic operations can produce a non-deterministic output---the measure-theoretic support of the SDE solution requires stochastic sampling.
+
+\item $K$ --- \emph{Fluid--structure interaction}. Two sub-domains (fluid, solid) exchange boundary data at an interface. This requires inter-domain data routing that no single-domain primitive ($\partial, L, E$) provides; without $K$, the coupled system cannot be assembled.
+
+\item $B$ --- \emph{Dirichlet BVP} $u|_{\partial\Domain} = g$. Constraint enforcement (penalty, Lagrange multiplier, row elimination) is a distinct algebraic operation. $L$ solves the constrained system once assembled, but cannot impose the constraint itself.
+
+\item $G$ --- \emph{FEM on a cardiac geometry}. Unstructured mesh generation (Delaunay triangulation, quality refinement) produces the discrete domain $\Domain_h$. All other primitives operate on $\Domain_h$ but none creates it; without $G$, there is no computational domain.
+
+\item $O$ --- \emph{Nonlinear CT reconstruction} $\min_x \norm{Ax - y}^2 + \lambda\,\text{TV}(x)$. The non-smooth, nonlinear objective requires iterative minimization (ADMM, proximal gradient). $L$ solves $Ax=b$ (linear, no regularization); $N$ evaluates $f(x)$ but does not minimize it. General $\min f(x)$ is irreducible to linear algebra.
+\end{enumerate}
 
 % ------------------------------------------------------------------------
 \subsection{Completeness of the Event Horizon}
