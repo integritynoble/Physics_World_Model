@@ -21,6 +21,7 @@
 \usepackage{microtype}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,decorations.pathreplacing}
+\usepackage{mdframed}
 
 % ---- Page style ----
 \pagestyle{fancy}
@@ -56,6 +57,13 @@
 \newcommand{\Agent}{\mathcal{A}}
 \newcommand{\R}{\mathbb{R}}
 
+% ---- Theorem box style ----
+\mdfdefinestyle{theorembox}{%
+  linecolor=blue!40!black, linewidth=1pt,
+  backgroundcolor=blue!2,
+  innertopmargin=10pt, innerbottommargin=10pt,
+  innerleftmargin=10pt, innerrightmargin=10pt}
+
 \begin{document}
 
 % ---- Title ----
@@ -70,54 +78,29 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 \vspace{6pt}
 
-% ---- Summary ----
+% ---- Summary (strict 6-beat Nature style) ----
 \noindent\textbf{Summary.}
-Designing a computational imaging system---selecting the forward model, validating physical feasibility, and predicting reconstruction quality---today demands weeks of specialist effort per modality, concentrating the field within a small number of expert groups and limiting reproducibility~\cite{baker2016}.
+Designing a computational imaging system---selecting the forward model, validating physical feasibility, and predicting reconstruction quality---today demands weeks of specialist effort per modality, concentrating the field within a small number of expert groups~\cite{baker2016}.
 %
-Here we introduce a specification-driven agent framework that translates a natural-language description of any imaging system expressible as a finite composition of 11 canonical primitives~\cite{paperII} (Definition~\ref{def:scope}) into a validated, executable forward model in minutes.
+We previously established that 11 canonical primitives suffice to represent any imaging forward model across 168+ modalities~\cite{paperII}, but this Finite Primitive Basis (FPB) provides no design automation, no formal validation, and no link from natural-language intent to reconstruction error.
 %
-The framework is organized around \texttt{spec.md}, a structured 7-field specification---analogous to FASTA for sequences or SMILES for molecules---that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}) and serves as a shareable, versionable, peer-reviewable scientific artifact.
+Here we introduce \texttt{spec.md}---a structured 7-field specification format analogous to FASTA for sequences---together with three agents (Plan, Judge, Performance) that translate a natural-language description into a validated, executable forward model with formal error guarantees.
 %
-Three agents---Plan ($\Agent_P$), Judge ($\Agent_J$), and Performance ($\Agent_\Pi$)---generate, verify, and evaluate specifications; we prove (Theorem~\ref{thm:design}) that the total design-to-real reconstruction error decomposes into five independently bounded and independently measurable terms, providing a formal bridge from natural-language intent to physical reconstruction error.
+We prove that the design-to-real reconstruction error decomposes into five independently bounded, independently measurable terms (Theorem~\ref{thm:design}), each linked to a specific corrective action, and that all five terms are explicitly computable from the 6-gate compiler output.
 %
-On real clinical CT data (LoDoPaB, 200 cases~\cite{leuschner2021}), the framework achieves 98\% of expert-tuned reconstruction quality with a $\sim\!420\times$ reduction in setup time (25\,min vs.\ 7\,days); the Judge rejects ill-posed designs with 96\% precision via deterministic verification, and the Performance Agent predicts PSNR within $\pm 1.8$\,dB ($R^2 = 0.91$) across 36 quantitatively validated modalities.
+On real clinical CT (LoDoPaB, 200 cases~\cite{leuschner2021}), the framework achieves 98\% of expert-tuned quality with $420\times$ reduction in setup time; across 36 validated modalities spanning 5 carrier families, the Judge rejects ill-posed designs with 96\% precision and the Performance Agent predicts PSNR within $\pm 1.8$\,dB ($R^2 = 0.91$).
 %
-Each of the 11 primitives is implemented across four fidelity tiers---from geometric optics (Tier-0) through Fourier models (Tier-1) and shift-variant operators (Tier-2) to full-wave and Monte Carlo solvers (Tier-3)---and a tier-lifting protocol enables hybrid reconstruction that combines fast low-tier adjoints with high-tier forward models, so the framework covers the full physics hierarchy without restricting to any single fidelity level.
+A tier-lifting protocol demonstrated on diffuse-optical and coherent-imaging cross-tier combinations enables hybrid reconstruction across the four-level fidelity hierarchy, reducing unmodeled-physics error to machine precision on selected cases.
 
 % ========================================================================
 \section{Introduction}
 % ========================================================================
 
-Computational imaging systems share a universal mathematical structure: a forward model $A$ maps an unknown object $x$ to measurements $y = A(x) + \text{noise}$, and reconstruction inverts this mapping~\cite{barbastathis2019dl}.  Designing $A$ for a new system requires selecting appropriate physical operators (Radon projection for CT, k-space encoding for MRI, coded aperture modulation for spectral imaging), setting dozens of parameters, and validating that the composition is physically consistent and numerically well-conditioned.  Today this process is entirely manual, requiring weeks of specialist effort per modality---an expertise bottleneck that effectively excludes the broader scientific community from prototyping new imaging systems.
+Computational imaging systems share a universal mathematical structure: a forward model $A$ maps an unknown object $x$ to measurements $y = A(x) + \text{noise}$, and reconstruction inverts this mapping~\cite{barbastathis2019dl}.  Designing $A$ for a new system requires selecting physical operators (Radon projection for CT, k-space encoding for MRI, coded-aperture modulation for spectral imaging), setting dozens of parameters, and validating that the composition is physically consistent and numerically well-conditioned.  This process is entirely manual and takes weeks per modality---an expertise bottleneck that excludes the broader scientific community from prototyping new imaging systems.
 
-The mathematical foundation for automating this process now exists.  We previously showed~\cite{paperII} that 11 canonical primitives---Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, Scatter, and Transform---suffice to express any imaging forward model across 168+ modalities and 5 carrier families.  Each primitive is implemented across a four-level \emph{fidelity hierarchy}:
-\begin{itemize}[nosep]
-\item \textbf{Tier-0} (geometric): ray optics, coordinate transforms, projection geometry;
-\item \textbf{Tier-1} (Fourier/convolution): paraxial propagation, angular spectrum, shift-invariant models;
-\item \textbf{Tier-2} (shift-variant): linear or mildly nonlinear operators including the Radon transform, k-space encoding, and coded-aperture modulation---the standard forward models for most imaging modalities;
-\item \textbf{Tier-3} (full-physics): full-wave solvers (FDTD, BPM), Monte Carlo photon transport, radiative transfer, and learned surrogates (NeRF, PINNs).
-\end{itemize}
-The same 11 primitives span all four tiers; what changes is the fidelity of each primitive's evaluation.  This \emph{Finite Primitive Basis} (FPB) provides the representation language but not the design tool: it does not tell a user which primitives to compose, what parameters to set, whether the result is physically valid, or how close the designed system will be to reality.
+The mathematical foundation for automation now exists.  We previously showed~\cite{paperII} that 11 canonical primitives---Propagate ($P$), Modulate ($M$), Project ($\Pi$), Encode ($F$), Convolve ($C$), Accumulate ($\Sigma$), Detect ($D$), Sample ($S$), Disperse ($W$), Scatter ($R$), and Transform ($\Lambda$)---suffice to express any imaging forward model across 168+ modalities, 22 application domains, and 5 carrier families.  Each primitive is implemented across a four-level \emph{fidelity hierarchy}: Tier-0 (geometric optics, ray transforms), Tier-1 (Fourier/convolution, paraxial models), Tier-2 (shift-variant linear operators: Radon, k-space, coded aperture), and Tier-3 (full-physics: FDTD, Monte Carlo, learned surrogates).  This \emph{Finite Primitive Basis} (FPB) is the representation language---but it does not tell a user which primitives to compose, what parameters to set, whether the result is physically valid, or how close the designed system will be to reality.
 
-Here we build the design layer on top of the FPB.  Our contributions are:
-\begin{enumerate}[nosep]
-\item \textbf{\texttt{spec.md}}: a structured 7-field specification format that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}), serving as a shareable, versionable, peer-reviewable scientific artifact (Section~\ref{sec:specmd}).
-\item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Performance ($\Agent_\Pi$) agents that generate, formally verify, and evaluate specifications over the FPB (Section~\ref{sec:pipeline}).
-\item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms (Theorem~\ref{thm:design}).
-\item \textbf{Validation}: real clinical CT (LoDoPaB, 200 cases), quantitative reconstruction across 36 modalities, expert comparison on 6 modalities, and agent-level evaluation (Judge 96\% rejection precision, Performance $R^2 = 0.91$) (Sections~\ref{sec:cross}--\ref{sec:ablation}).
-\end{enumerate}
-
-\textbf{Scope.}
-The framework covers any imaging system expressible as a finite DAG over the 11 FPB primitives at any fidelity tier (Definition~\ref{def:scope})---168+ modalities across 20+ domains.  Of these, 36 have fully validated canonical decompositions and quantitative reconstruction results; the remainder compile successfully but lack per-modality reconstruction validation.  Most modalities are validated at Tier-2; a tier-lifting protocol (Section~\ref{sec:tierlifting}) enables hybrid reconstruction across tiers for systems requiring higher-fidelity physics.  The agents depend on current LLM capabilities and may misspecify novel modalities; we discuss limitations after the Results.
-
-% ========================================================================
-\section{Results}
-% ========================================================================
-
-% ------------------------------------------------------------------------
-\subsection{Design Scope and Boundary}
-\label{sec:boundary}
-% ------------------------------------------------------------------------
+We make the scope of `designable' precise:
 
 \begin{definition}[Designable Imaging System]
 \label{def:scope}
@@ -130,40 +113,33 @@ An imaging system $A$ is \emph{designable} within this framework if:
 \end{enumerate}
 \end{definition}
 
-The framework covers 168+ imaging modalities across 22 application domains and 5 carrier families at all four fidelity tiers (Table~\ref{tab:scope}).  We classify these by validation depth: \emph{fully validated} modalities have canonical decompositions and quantitative reconstruction benchmarks; \emph{quantitatively validated} modalities have reconstruction results but no independent canonical chain; \emph{compiled only} modalities pass all 6 compiler gates but lack per-modality reconstruction evaluation.  Parenthetical annotations indicate the primary fidelity tier.  The full 168+ modality list is provided in Extended Data Table~1.
+This definition encompasses 168+ modalities across 22 domains (Extended Data Table~\ref{tab:ext_registry}).  We build the \emph{design layer} on top of the FPB.  Our contributions are:
+\begin{enumerate}[nosep]
+\item \textbf{\texttt{spec.md}}: a structured 7-field specification format that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}), serving as a shareable, peer-reviewable scientific artifact (Section~\ref{sec:specmd}).
+\item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Performance ($\Agent_\Pi$) agents that generate, formally verify, and evaluate specifications over the FPB (Section~\ref{sec:pipeline}).
+\item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a compiler gate and a corrective action (Theorem~\ref{thm:design}).
+\end{enumerate}
 
-\begin{table}[htbp]
-\centering
-\caption{Design scope by validation depth.  ``Fully validated'': canonical decomposition + quantitative reconstruction.  ``Quantitatively validated'': reconstruction benchmarked without independent canonical chain.  ``Compiled only'': passes all compiler gates; reconstruction not individually benchmarked.  Tier annotations: T0=geometric, T1=Fourier, T2=shift-variant, T3=full-wave/learned.  Representative modalities listed; full registry in Extended Data.}
-\label{tab:scope}
-\small
-\begin{tabular}{@{}llcp{6.2cm}@{}}
-\toprule
-\textbf{Level} & \textbf{Count} & \textbf{Carriers} & \textbf{Representative modalities (tier)} \\
-\midrule
-Fully validated & 36 & 5 & CT\,(T1--2), MRI\,(T1--2), PET\,(T2), SPECT\,(T2), ultrasound\,(T2), OCT\,(T1--2), SIM\,(T1), STED\,(T1), ptychography\,(T1--2), CASSI\,(T2), lensless\,(T1), DOT\,(T2--3), Brillouin\,(T2), SEM\,(T2), TEM\,(T2), elastography\,(T2) \\
-\addlinespace
-Quant.\ validated & 12 & 4 & light field\,(T1), FLIM\,(T2), FPM\,(T1--2), coded exposure\,(T2), event camera\,(T2), holography\,(T1), CBCT\,(T2), Doppler US\,(T2), phase contrast\,(T1), TIRF\,(T1), ghost imaging\,(T2), THz-TDS\,(T2) \\
-\addlinespace
-Compiled only & 120+ & 5 & cryo-EM\,(T2), SAR\,(T2), LiDAR\,(T0--1), NeRF\,(T3), Gaussian splatting\,(T3), PET-CT\,(T2), XFEL-SFX\,(T2), and 113+ others across 22 domains \\
-\bottomrule
-\end{tabular}
-\end{table}
+\textbf{Scope and honesty.}
+Of the 168+ modalities, 36 have fully validated canonical decompositions with quantitative reconstruction; 3 are validated on real measured data (CT, MRI, CASSI).  The remaining 120+ compile through all 6 gates but lack per-modality reconstruction benchmarks---compilation alone does not guarantee reconstruction quality.  Most modalities are validated at Tier-2; tier-lifting (Section~\ref{sec:tierlifting}) is demonstrated on two cross-tier combinations but not yet validated across all Tier-3 modalities.  The agents depend on current LLM capabilities and may misspecify novel or under-documented modalities.
+
+% ========================================================================
+\section{Results}
+% ========================================================================
 
 % ------------------------------------------------------------------------
 \subsection{The spec.md Specification Format}
 \label{sec:specmd}
 % ------------------------------------------------------------------------
 
-The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  Just as FASTA standardized biological sequence representation and SMILES standardized molecular structure, \texttt{spec.md} standardizes the representation of imaging systems.  A specification separates the imaging problem (\emph{what} physical process to model) from the numerical method (\emph{how} to discretize and solve it), enabling sharing, version control, and peer review of imaging system designs independently of implementation.
+The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  Just as FASTA standardized biological sequences, \texttt{spec.md} standardizes imaging system representation.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}), enabling sharing, version control, and peer review independently of implementation.  A journal could require a \texttt{spec.md} alongside a methods section, analogous to how genomics journals require accession numbers.
 
-A \texttt{spec.md} file has seven mandatory fields (Figure~\ref{fig:specmd}).  The user provides a natural-language description (e.g., ``design a coded-aperture spectral imager for 400--700\,nm''); the Plan Agent generates the \texttt{spec.md}.  Three diverse examples illustrate the format's expressiveness across carrier families and problem structures.
+A \texttt{spec.md} has seven mandatory fields (Figure~\ref{fig:specmd}).  The Plan Agent generates it from natural language; the Judge verifies it; the Performance Agent predicts reconstruction quality.
 
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
   specbox/.style={draw=black!60, rounded corners=2pt, fill=gray!4, text width=0.92\textwidth, inner sep=6pt, font=\small\ttfamily},
-  fieldlabel/.style={font=\small\sffamily\bfseries, text=blue!60!black},
 ]
 % Schema
 \node[specbox, text width=0.92\textwidth] (schema) at (0,0) {
@@ -201,7 +177,7 @@ forward\_model: Modulate(M, coil) $\to$ Encode(F, kspace) $\to$ Sample(S) $\to$ 
 noise: Gaussian, SNR=30\,dB \quad target: SSIM $\geq$ 0.9
 };
 \end{tikzpicture}
-\caption{\textbf{The \texttt{spec.md} specification format.}  Seven mandatory fields fully determine an imaging system design.  Three examples span X-ray (CT), optical (CASSI), and spin (MRI) carriers, illustrating how a single format captures diverse physics.  Each \texttt{forward\_model} field is a primitive chain over the 11 FPB operators.  The Plan Agent generates a \texttt{spec.md} from natural language; the Judge verifies it; the Performance Agent predicts reconstruction quality.}
+\caption{\textbf{The \texttt{spec.md} specification format.}  Seven mandatory fields fully determine an imaging system design.  Three examples span X-ray (CT), optical (CASSI), and spin (MRI) carriers.  Each \texttt{forward\_model} field is a primitive chain over the 11 FPB operators.}
 \label{fig:specmd}
 \end{figure}
 
@@ -213,15 +189,16 @@ noise: Gaussian, SNR=30\,dB \quad target: SSIM $\geq$ 0.9
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
-    node distance=0.5cm and 0.8cm,
-    box/.style={draw, rounded corners=3pt, minimum height=1cm, minimum width=2.0cm, align=center, font=\small},
+    node distance=0.4cm and 0.6cm,
+    box/.style={draw, rounded corners=3pt, minimum height=0.9cm, minimum width=1.8cm, align=center, font=\small},
     agent/.style={box, fill=blue!12, draw=blue!50!black, thick},
     spec/.style={box, fill=green!12, draw=green!50!black},
-    gate/.style={box, fill=orange!8, draw=orange!50!black, minimum width=1.0cm, font=\scriptsize},
+    gate/.style={box, fill=orange!8, draw=orange!50!black, minimum width=0.9cm, font=\scriptsize},
+    err/.style={box, fill=yellow!10, draw=yellow!50!black, font=\scriptsize},
     arr/.style={-{Stealth[length=5pt]}, thick},
 ]
 % Input
-\node[box, fill=gray!10] (nl) {User\\Description};
+\node[box, fill=gray!10] (nl) {NL\\Prompt};
 
 % Plan Agent
 \node[agent, right=of nl] (plan) {$\Agent_P$\\Plan};
@@ -231,23 +208,27 @@ noise: Gaussian, SNR=30\,dB \quad target: SSIM $\geq$ 0.9
 \node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
 
 % Compiler gates (below judge)
-\node[gate, below=0.6cm of judge, xshift=-1.5cm] (g1) {DAG};
-\node[gate, right=0.3cm of g1] (g2) {Chain};
-\node[gate, right=0.3cm of g2] (g3) {Bounds};
-\node[gate, right=0.3cm of g3] (g4) {NL};
-\node[gate, right=0.3cm of g4] (g5) {Adjoint};
+\node[gate, below=0.5cm of judge, xshift=-1.2cm] (g1) {DAG};
+\node[gate, right=0.25cm of g1] (g2) {Chain};
+\node[gate, right=0.25cm of g2] (g3) {Bounds};
+\node[gate, right=0.25cm of g3] (g4) {NL};
+\node[gate, right=0.25cm of g4] (g5) {Adj.};
+\node[gate, right=0.25cm of g5] (g6) {Err.};
 
 % Certified spec
-\node[spec, right=of judge] (cert) {Certified\\$\Spec$};
+\node[spec, right=of judge] (cert) {DAG\\$+$ cert.};
 
 % Performance Agent
-\node[agent, below=1.2cm of cert] (perf) {$\Agent_\Pi$\\Performance};
+\node[agent, right=of cert] (perf) {$\Agent_\Pi$\\Perf.};
 
 % Output
-\node[box, fill=green!20, left=of perf] (out) {Validated\\Operator\\$\hat{A}$};
+\node[box, fill=green!18, right=of perf] (out) {$\hat{A}$};
+
+% Error report
+\node[err, below=0.6cm of out] (errbox) {$\eps$ bounds\\report};
 
 % Reject
-\node[box, fill=red!8, draw=red!50!black, dashed, below=0.5cm of judge] (rej) {Reject};
+\node[box, fill=red!8, draw=red!50!black, dashed, below=1.8cm of judge, xshift=-1.5cm] (rej) {\scriptsize Reject};
 
 % Arrows
 \draw[arr] (nl) -- (plan);
@@ -256,263 +237,188 @@ noise: Gaussian, SNR=30\,dB \quad target: SSIM $\geq$ 0.9
 \draw[arr] (judge) -- (cert);
 \draw[arr] (cert) -- (perf);
 \draw[arr] (perf) -- (out);
-\draw[arr, dashed, red!60!black] (judge) -- (rej);
+\draw[arr] (out) -- (errbox);
+\draw[arr, dashed, red!60!black] (judge) |- (rej);
 
 % Feedback loop
-\draw[arr, dashed, blue!60!black] (judge.north) -- ++(0,0.4) -| node[above, font=\scriptsize, pos=0.25] {redesign} (plan.north);
+\draw[arr, dashed, blue!60!black] (judge.north) -- ++(0,0.35) -| node[above, font=\scriptsize, pos=0.25] {redesign} (plan.north);
 
 % Compiler bracket
-\draw[decorate, decoration={brace, amplitude=4pt, mirror}] ([yshift=-2pt]g1.south west) -- ([yshift=-2pt]g5.south east) node[midway, below=4pt, font=\scriptsize] {6-Gate Compiler};
-\draw[arr, gray] (judge.south) -- ++(0,-0.25) -| (g3.north);
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-2pt]g1.south west) -- ([yshift=-2pt]g6.south east) node[midway, below=4pt, font=\scriptsize] {6-Gate Compiler};
+\draw[arr, gray] (judge.south) -- ++(0,-0.15) -| (g3.north);
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
-A natural-language description is the sole user input.  $\Agent_P$ (Plan) generates a structured \texttt{spec.md}.  $\Agent_J$ (Judge) validates physical feasibility via a 6-gate compiler and formal checks; rejected designs trigger redesign (dashed blue).  $\Agent_\Pi$ (Performance) predicts reconstruction quality and flags designs below target.}
+A natural-language prompt is the sole user input.
+$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates it via a 6-gate compiler
+(Gates~1--6 map to Theorem~\ref{thm:design} error terms); rejected designs trigger
+redesign (dashed blue, up to 3 rounds).
+$\Agent_\Pi$ predicts reconstruction quality and outputs $\hat{A}$ with an explicit
+$\eps$-bound report.}
 \label{fig:pipeline}
 \end{figure}
 
 \textbf{Plan Agent ($\Agent_P$).}
-Accepts a natural-language description and generates a structured \texttt{spec.md}, selecting the appropriate FPB primitives, carrier type, geometry, noise model, and parameters.  The Plan Agent operates with access to the 168+-modality registry and 36 fully validated canonical decompositions, which provide reference primitive chains for known modalities and composition rules for new ones.
+Accepts a natural-language description and generates a \texttt{spec.md}, selecting FPB primitives, carrier type, geometry, noise model, and parameters from the 168+-modality registry and 36 validated canonical decompositions.
 
 \textbf{Judge Agent ($\Agent_J$).}
-Evaluates the \texttt{spec.md} for physical and algorithmic feasibility.  The Judge receives both the specification and the 6-gate compiler report (DAG acyclicity, canonical chain match, complexity bounds, nonlinear family constraints, adjoint consistency, and representation error).  It performs three additional checks: (1)~physical plausibility (carrier-geometry compatibility, parameter ranges); (2)~noise model consistency (SNR vs.\ detector physics); (3)~reconstruction feasibility (condition number, null-space analysis).  Compiler failures or feasibility violations trigger rejection with a formal diagnosis; the Plan Agent receives the diagnosis and regenerates (up to 3 rounds).
+Validates the specification via the 6-gate compiler: (1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds ($N \leq 20$, $D \leq 10$), (4)~nonlinear family constraints (VC dimension $\leq 3$), (5)~adjoint consistency, and (6)~representation error.  The Judge additionally checks carrier-geometry compatibility, noise model consistency, and reconstruction feasibility (condition number, null-space analysis).  Compiler failures trigger rejection with a formal diagnosis; the Plan Agent regenerates (up to 3 rounds).
 
 \textbf{Performance Agent ($\Agent_\Pi$).}
-Predicts expected reconstruction quality (PSNR, SSIM), computational cost, and measurement SNR.  Predictions are based on analytical estimates (condition number, noise amplification factor) combined with calibrated lookup from the 168+-modality performance database.  The Performance Agent flags designs whose predicted quality falls below the \texttt{spec.md} target.
+Predicts reconstruction quality (PSNR, SSIM), computational cost, and measurement SNR from analytical estimates (condition number, noise amplification factor) combined with calibrated lookup from the performance database.
 
-\textbf{Formal verification versus black-box design.}
-The Judge does not \emph{predict} feasibility; it \emph{executes a deterministic verification suite}: DAG acyclicity, chain fidelity, complexity bounds ($N \leq 20$, $D \leq 10$), nonlinear family constraints (VC dimension $\leq 3$), CFL/coercivity stability analysis, and Lipschitz constant computation.  If the Judge certifies a design, every term in the five-part error decomposition (Theorem~\ref{thm:design}) is explicitly bounded---a contract that learned design tools, which output a scalar ``confidence'' with no formal relationship to physical error, cannot provide.  This distinction is particularly relevant for safety-critical applications such as clinical CT or radiotherapy dose planning, where unbounded model error is unacceptable.
+\textbf{Formal verification.}
+The Judge does not \emph{predict} feasibility; it \emph{executes deterministic verification}.  If the Judge certifies a design, every term in the five-part error decomposition (Theorem~\ref{thm:design}) is explicitly bounded---a contract that learned design tools cannot provide.
 
 % ------------------------------------------------------------------------
 \subsection{Design-to-Real Error Bound}
 \label{sec:theorem}
 % ------------------------------------------------------------------------
 
-\begin{theorem}[Design-to-Real Bounded Error]
+The following theorem is the paper's central result.  It converts the implicit, unmeasured gap between a designed model and reality into an explicit five-term error budget.
+
+\begin{mdframed}[style=theorembox]
+\begin{theorem}[Design-to-Real Error Decomposition]
 \label{thm:design}
-Let $\Atrue$ be the true imaging forward model and $\Aagent$ the agent-designed model for a designable system (Definition~\ref{def:scope}).  Let $\hat{x}$ be the regularized reconstruction from $\Aagent$ and $x^*$ the true object.  Then the reconstruction error satisfies:
+Let $\Atrue$ be the true imaging forward model and $\Aagent$ the agent-designed model for a designable system (Definition~\ref{def:scope}).  Let $\hat{x}$ be the regularized reconstruction from $\Aagent$ and $x^*$ the true object.  Under Assumptions A1--A4 (Methods), the reconstruction error satisfies:
 \begin{equation}\label{eq:design_error}
-\norm{\hat{x} - x^*} \leq \underbrace{\eps_{\text{FPB}}}_{\text{basis}} + \underbrace{\eps_{\text{spec}}}_{\text{specification}} + \underbrace{\eps_{\text{trans}}}_{\text{translation}} + \underbrace{\eps_{\text{param}}}_{\text{parameter}} + \underbrace{\eps_{\text{unmod}}}_{\text{unmodeled}}
+\|\hat{x} - x^*\| \leq \underbrace{\eps_{\text{FPB}}}_{\text{basis}} + \underbrace{\eps_{\text{spec}}}_{\text{specification}} + \underbrace{\eps_{\text{trans}}}_{\text{translation}} + \underbrace{\eps_{\text{param}}}_{\text{parameter}} + \underbrace{\eps_{\text{unmod}}}_{\text{unmodeled}} \;+\; \eps_{\text{recon}}
 \end{equation}
-where each term is independently bounded and independently measurable:
+where each design-error term is independently bounded and independently measurable:
 \begin{itemize}[nosep]
-\item $\eps_{\text{FPB}} < 0.01$: FPB representation error, guaranteed by the basis theorem~\cite{paperII}.  \emph{Measured by}: Gate~6 of the compiler.
-\item $\eps_{\text{spec}} \leq C_1 \cdot \delta_{\text{spec}}$: specification incompleteness or error.  \emph{Bounded by}: 6-gate compiler ($\delta_{\text{spec}} = 0$ when all gates pass).
-\item $\eps_{\text{trans}} \leq C_2 \cdot \delta_{\text{chain}}$: natural-language$\to$DAG translation error.  \emph{Bounded by}: canonical chain registry lookup ($\delta_{\text{chain}} = 0$ for 31/36 validated modalities).
-\item $\eps_{\text{param}} \leq L_A \cdot \norm{\theta_{\text{agent}} - \theta_{\text{true}}}$: parameter mismatch, bounded by the operator Lipschitz constant $L_A$ (computed per primitive by the compiler).  \emph{Reducible by}: calibration.
-\item $\eps_{\text{unmod}}$: residual physics not captured at the selected fidelity tier.  Zero when operating at Tier-3; otherwise \emph{reducible by}: tier-lifting (Section~\ref{sec:tierlifting}).
+\item $\eps_{\text{FPB}} < 0.01$: FPB representation error.  \emph{Measured by}: Gate~6.  \emph{Guaranteed by}: the basis theorem~\cite{paperII}.
+\item $\eps_{\text{spec}} = 0$ when all 6 compiler gates pass.  \emph{Bounded by}: $C_1 \cdot \delta_{\text{spec}}$ otherwise.
+\item $\eps_{\text{trans}} = 0$ when the canonical chain matches the 36-modality registry (31/36 = 86\%).  \emph{Bounded by}: $C_2 \cdot \delta_{\text{chain}}$ otherwise.
+\item $\eps_{\text{param}} \leq \frac{2B}{\alpha + \lambda}\,L_A\,\|\theta_{\text{agent}} - \theta_{\text{true}}\|$, where $L_A$ is the operator Lipschitz constant (computed per primitive by Gate~4), $\alpha$ is the coercivity constant, $\lambda$ the regularization weight, and $B$ a signal bound.  \emph{Reducible by}: calibration.
+\item $\eps_{\text{unmod}} = 0$ at Tier-3; otherwise reducible by tier-lifting (Section~\ref{sec:tierlifting}).
+\item $\eps_{\text{recon}}$: irreducible reconstruction error (noise floor $+$ regularization bias), independent of the design.
 \end{itemize}
 \end{theorem}
+\end{mdframed}
 
-\begin{proof}[Proof sketch]
-Define $x_{\text{ideal}}$ as the reconstruction using $\Atrue$ with optimal parameters.  By the triangle inequality,
-$\norm{\hat{x} - x^*} \leq \norm{\hat{x} - x_{\text{ideal}}} + \norm{x_{\text{ideal}} - x^*}$.
-The first term decomposes into $\eps_{\text{param}} + \eps_{\text{unmod}}$ via the reconstruction stability bound (Step~2, Methods): for regularized least-squares with coercivity $\alpha$ and regularization $\lambda$, $\norm{\hat{x} - x_{\text{ideal}}} \leq (\alpha + \lambda)^{-1}\norm{(\Aagent - \Atrue)(x^*)}$.
-The second term decomposes via the model approximation chain: true physics $\xrightarrow{\eps_{\text{unmod}}}$ selected-tier model $\xrightarrow{\eps_{\text{FPB}}}$ FPB $\xrightarrow{\eps_{\text{spec}}}$ specification $\xrightarrow{\eps_{\text{trans}}}$ DAG $\xrightarrow{\eps_{\text{param}}}$ parameterized operator.
-The Lipschitz bound on $\eps_{\text{param}}$ follows from the finite parametrization of the 11 primitives (at most 2 free parameters per nonlinear family, VC dimension $\leq 3$; see Methods for the full derivation).
-\end{proof}
+\textbf{Compiler--theorem link.}
+When all 6 gates pass: $\eps_{\text{FPB}} < 0.01$ (Gate~6), $\eps_{\text{spec}} = 0$ (Gates~1--5 jointly), and $\eps_{\text{param}}$ is bounded by the Lipschitz constant from Gate~4.  If additionally the canonical chain matches the registry: $\eps_{\text{trans}} = 0$.  At Tier-3: $\eps_{\text{unmod}} = 0$.  The total design error then reduces to $L_A\|\Delta\theta\| \cdot 2B/(\alpha+\lambda) + 0.01$, dominated by parameter mismatch alone---which is reducible by calibration.
 
-\textbf{Practical significance.}  Because each term is independently measurable, the theorem provides a \emph{diagnostic protocol}: given a reconstruction residual, the practitioner can determine which term dominates and take the corresponding corrective action---calibration for $\eps_{\text{param}}$, specification refinement for $\eps_{\text{spec}}$, or tier-lifting for $\eps_{\text{unmod}}$.  In practice, $\eps_{\text{FPB}}$ and $\eps_{\text{spec}}$ are negligible when the compiler certifies the design; $\eps_{\text{trans}} = 0$ for 86\% of validated modalities; the dominant residual terms are $\eps_{\text{param}}$ (reducible by calibration) and $\eps_{\text{unmod}}$ (reducible by tier-lifting).  To our knowledge, no prior automated design system provides such a decomposition.
+\textbf{Diagnostic protocol.}
+Because each term is independently measurable, a practitioner can determine which term dominates a given reconstruction residual and take the corresponding corrective action: calibration for $\eps_{\text{param}}$, specification refinement for $\eps_{\text{spec}}$, tier-lifting for $\eps_{\text{unmod}}$.  In practice, $\eps_{\text{FPB}}$ and $\eps_{\text{spec}}$ are negligible when the compiler certifies the design.  The full proof with explicit assumptions appears in Methods.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Modality Validation}
 \label{sec:cross}
 % ------------------------------------------------------------------------
 
-We validated the framework across all 168+ modalities in the registry.  For each, the Plan Agent generated a \texttt{spec.md} from a one-sentence natural-language description, the Judge validated it through the 6-gate compiler, and the Performance Agent predicted reconstruction quality.  Of the 36 modalities with fully validated canonical decompositions, we report quantitative reconstruction results for 12 representative modalities spanning all 5 carrier families in Table~\ref{tab:cross}; full results for all 36 are in Methods.
+We validated the framework on all 168+ modalities.  For each, the Plan Agent generated a \texttt{spec.md} from a one-sentence description, the Judge validated it, and the Performance Agent predicted reconstruction quality.  Table~\ref{tab:cross} reports 12 representative modalities spanning all 5 carrier families, grouped by carrier; full results for all 36 validated modalities appear in Methods.
 
 \begin{table}[htbp]
 \centering
-\caption{Cross-modality validation (12 of 36 modalities).  $\rho_{\text{time}}$: human-to-agent time ratio.  PSNR: mean $\pm$ s.d.\ over 50 test instances.  ``Real'' indicates measured (non-synthetic) data.  95\% confidence intervals computed via bootstrap ($n=1000$).}
+\caption{Cross-modality validation (12 of 36 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data.}
 \label{tab:cross}
 \small
-\begin{tabularx}{\textwidth}{llccccl}
+\begin{tabularx}{\textwidth}{@{}llccc@{\hspace{4pt}}c@{\hspace{4pt}}l@{}}
 \toprule
 \textbf{Modality} & \textbf{Chain} & \textbf{Carrier} & \textbf{PSNR (dB)} & \textbf{$\rho_{\text{time}}$} & \textbf{$\rho_{\text{recov}}$} & \textbf{Data} \\
 \midrule
-CT & $\Pi \to D$ & X-ray & $31.7 \pm 1.2$ & 420 & 0.94 & \textbf{Real} \\
-MRI & $M \to F \to S \to D$ & Spin & $31.7 \pm 1.4$ & 380 & 0.88 & \textbf{Real} \\
-CASSI & $M \to W \to \Sigma \to D$ & Photon & $29.5 \pm 1.0$ & 310 & 0.87 & \textbf{Real} \\
-OCT & $P + P \to \Sigma \to D$ & Photon & $30.5 \pm 1.1$ & 290 & 0.86 & Synth. \\
-SIM & $M \to C \to D$ & Photon & $32.1 \pm 1.3$ & 350 & 0.92 & Synth. \\
-Ptychography & $M \to P \to D$ & Photon & $28.4 \pm 1.6$ & 270 & 0.83 & Synth. \\
-Ultrasound & $P \to R \to P \to D$ & Acoustic & $27.9 \pm 1.4$ & 250 & 0.81 & Synth. \\
-PET & $\Pi \to D$ & Particle & $26.3 \pm 1.8$ & 220 & 0.78 & Synth. \\
-DOT & $M \to R \to P \to R \to D$ & Photon & $24.1 \pm 2.1$ & 190 & 0.72 & Synth. \\
-Lensless & $C \to D$ & Photon & $31.4 \pm 1.0$ & 340 & 0.90 & Synth. \\
-Light field & $M \to C \to S \to D$ & Photon & $29.2 \pm 1.2$ & 280 & 0.85 & Synth. \\
-SPECT & $M \to \Pi \to D$ & Particle & $25.8 \pm 1.7$ & 200 & 0.76 & Synth. \\
+\multicolumn{7}{@{}l}{\textit{X-ray}} \\
+\quad CT & $\Pi \to D$ & X-ray & $31.7 \pm 1.2$ & 420 & $\sim$1.0 & \textbf{Real} \\
+\addlinespace[2pt]
+\multicolumn{7}{@{}l}{\textit{Optical photons}} \\
+\quad CASSI & $M \to W \to \Sigma \to D$ & Photon & $29.5 \pm 1.0$ & 310 & 0.85 & \textbf{Real} \\
+\quad OCT & $P + P \to \Sigma \to D$ & Photon & $30.5 \pm 1.1$ & 290 & 0.86 & Synth. \\
+\quad SIM & $M \to C \to D$ & Photon & $32.1 \pm 1.3$ & 350 & 0.92 & Synth. \\
+\quad Ptychography & $M \to P \to D$ & Photon & $28.4 \pm 1.6$ & 270 & 0.83 & Synth. \\
+\quad Lensless & $C \to D$ & Photon & $31.4 \pm 1.0$ & 340 & 0.90 & Synth. \\
+\quad DOT & $M \to R \to P \to R \to D$ & Photon & $24.1 \pm 2.1$ & 190 & 0.72 & Synth. \\
+\addlinespace[2pt]
+\multicolumn{7}{@{}l}{\textit{Spin}} \\
+\quad MRI & $M \to F \to S \to D$ & Spin & $31.7 \pm 1.4$ & 380 & $\sim$1.0 & \textbf{Real} \\
+\addlinespace[2pt]
+\multicolumn{7}{@{}l}{\textit{Acoustic}} \\
+\quad Ultrasound & $P \to R \to P \to D$ & Acoustic & $27.9 \pm 1.4$ & 250 & 0.81 & Synth. \\
+\addlinespace[2pt]
+\multicolumn{7}{@{}l}{\textit{Particle}} \\
+\quad PET & $\Pi \to D$ & Particle & $26.3 \pm 1.8$ & 220 & 0.78 & Synth. \\
+\quad SPECT & $M \to \Pi \to D$ & Particle & $25.8 \pm 1.7$ & 200 & 0.76 & Synth. \\
+\quad Light field & $M \to C \to S \to D$ & Photon & $29.2 \pm 1.2$ & 280 & 0.85 & Synth. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Three modalities are validated on measured data: CT (LoDoPaB, 200 clinical sinograms; Section~\ref{sec:real}), MRI (M4Raw~\cite{leuschner2021}, 50 multi-coil acquisitions with retrospective Cartesian undersampling at $4\times$ acceleration), and CASSI (KAIST TSA dataset, 10 coded-aperture hyperspectral measurements).  The remaining 9 modalities use synthetic data generated from the validated forward models.
+The recovery ratio $\rho_{\text{recov}}$ is computed from a 4-scenario protocol validated on 6 representative modalities spanning 4 carrier families: CASSI, CACTI, and SPC (optical photons); CT (X-ray); electron ptychography (electron); MRI (spin)~\cite{paperII}.  For modalities with low-dimensional parameter mismatch (CT, electron ptychography, MRI), Sc.~IV (autonomous calibration) $\approx$ Sc.~III (oracle correction) $\approx$ Sc.~I (ideal), confirming near-complete recovery.  For multi-parameter mismatch: CASSI 85\%, CACTI 100\%, SPC 86\% (see Methods for protocol details).
 
-The recovery ratio $\rho_{\text{recov}} = (\text{PSNR}_{\text{auto-corrected}} - \text{PSNR}_{\text{mismatched}}) / (\text{PSNR}_{\text{oracle}} - \text{PSNR}_{\text{mismatched}})$
-measures how well auto-correction compensates for model mismatch.  Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88]), indicating 85\% mismatch-gap recovery on average.
+Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88]).  Human-to-agent time ratio $\rho_{\text{time}}$ ranges from 190 (DOT) to 420 (CT); expert times estimated from published development timelines~\cite{aarle2016,ong2019sigpy} (see Methods for methodology).
 
-The human-to-agent time ratio $\rho_{\text{time}} = T_{\text{expert}} / T_{\text{agent}}$ ranges from 190 (DOT) to 420 (CT).  Expert setup times were estimated from published development timelines~\cite{aarle2016,ong2019sigpy} and confirmed by domain experts (see Methods for methodology).
-
-\textbf{Compilation metrics.}  All 168+ modalities achieve 100\% compilation pass rate (Gates~1--4).  Among the 36 fully validated: canonical chain fidelity 31/36 (86.1\%); the 5 non-matching modalities involve the Accumulate ($\Sigma$) primitive merged into detection---a representation choice, not a physical error.  Mean compilation time: 0.35\,ms.
+\textbf{Compilation.}  All 168+ modalities: 100\% compilation pass rate (Gates~1--4).  Among the 36 fully validated: canonical chain fidelity 31/36 (86.1\%); the 5 non-matching involve the Accumulate primitive merged into detection---a representation choice, not a physical error.  Mean compilation time: 0.35\,ms.
 
 % ------------------------------------------------------------------------
 \subsection{Real-Data Validation}
 \label{sec:real}
 % ------------------------------------------------------------------------
 
-\textbf{Clinical CT (LoDoPaB, $n=200$).}
-We applied the full pipeline to 200 cases from the LoDoPaB-CT dataset~\cite{leuschner2021}---real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise.
+\textbf{Clinical CT (LoDoPaB, $n{=}200$).}
+200 real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise.  User input: ``parallel-beam CT, 128 projections, Poisson noise.''  Agent: PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$.  Expert-tuned ASTRA~\cite{aarle2016}: PSNR $32.1 \pm 1.1$\,dB, SSIM $0.903 \pm 0.028$.  Quality ratio: 98.8\%.  Setup: 25\,min vs.\ 7\,days ($\rho_{\text{time}} \approx 420$).  Performance Agent prediction: 31\,dB (actual: 31.7, error 0.7\,dB).
 
-\textbf{User input}: ``Design a parallel-beam CT system for clinical abdominal imaging, 128 projections, Poisson noise.''
+\textbf{MRI (M4Raw, $n{=}50$).}
+50 multi-coil acquisitions with retrospective $4\times$ Cartesian undersampling.  Agent: PSNR $31.7 \pm 1.4$\,dB, SSIM $0.878 \pm 0.035$.  Expert SigPy~\cite{ong2019sigpy}: PSNR $32.4 \pm 1.3$\,dB.  Quality ratio: 97.8\%.
 
-$\Agent_P$ generated a \texttt{spec.md} specifying: carrier=xray, geometry=parallel\_beam (128 angles), forward\_model=$\Pi \to D$ (Radon + intensity detection), noise=Poisson ($I_0 = 10^4$).  $\Agent_J$ certified the design (all 6 gates passed, chain fidelity match).  $\Agent_\Pi$ predicted PSNR $\approx 31 \pm 2$\,dB.
+\textbf{CASSI (KAIST TSA, $n{=}10$).}
+10 coded-aperture hyperspectral measurements.  Agent: PSNR $29.5 \pm 1.0$\,dB, SSIM $0.852 \pm 0.028$.  Expert GAP-TV~\cite{monga2021unrolling}: PSNR $30.2 \pm 0.9$\,dB.  Quality ratio: 97.7\%.
 
-Results (mean $\pm$ s.d.\ over 200 cases):
-\begin{itemize}[nosep]
-\item Agent-designed system: PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$
-\item Expert-tuned ASTRA Toolbox~\cite{aarle2016}: PSNR $32.1 \pm 1.1$\,dB, SSIM $0.903 \pm 0.028$
-\item Filtered back-projection (FBP, no tuning): PSNR $25.3$\,dB, SSIM $0.712$
-\item TV-only (no expert tuning): PSNR $30.2$\,dB, SSIM $0.864$
-\end{itemize}
-
-The framework achieves 98\% of expert-tuned quality ($31.7/32.1$) with setup time of 25\,minutes versus 7\,days ($\rho_{\text{time}} \approx 420$).  The Performance Agent prediction (31\,dB) was within 0.7\,dB of the actual result.
-
-\textbf{MRI (M4Raw, $n=50$).}
-We applied the pipeline to 50 multi-coil acquisitions from the M4Raw dataset with retrospective $4\times$ Cartesian undersampling.  $\Agent_P$ generated a \texttt{spec.md}: carrier=spin, geometry=cartesian\_kspace (acceleration=4x), forward\_model=$M \to F \to S \to D$ (coil sensitivity modulation, k-space encoding, undersampling, detection), noise=Gaussian (SNR=30\,dB).  Results (mean $\pm$ s.d.): PSNR $31.7 \pm 1.4$\,dB, SSIM $0.878 \pm 0.035$.  Expert-tuned SigPy pipeline~\cite{ong2019sigpy}: PSNR $32.4 \pm 1.3$\,dB, SSIM $0.893 \pm 0.030$.  Quality ratio: 97.8\%.
-
-\textbf{CASSI (KAIST TSA, $n=10$).}
-We validated on 10 coded-aperture hyperspectral measurements from the KAIST TSA dataset.
-$\Agent_P$ specified: carrier=photon, geometry=coded\_aperture + disperser ($\lambda$=[400,700]\,nm),
-forward\_model=$M \to W \to \Sigma \to D$.
-Results: PSNR $29.5 \pm 1.0$\,dB, SSIM $0.852 \pm 0.028$.
-Expert-tuned GAP-TV~\cite{monga2021unrolling}: PSNR $30.2 \pm 0.9$\,dB, SSIM $0.871 \pm 0.025$.
-Quality ratio: 97.7\%.
-
-% ------------------------------------------------------------------------
-\subsection{Judge Agent: Rejection Accuracy}
-\label{sec:judge}
-% ------------------------------------------------------------------------
-
-We tested the Judge Agent on 150 specifications: 75 valid (from the 36-modality registry plus 39 variants across all 5 carrier families) and 75 deliberately ill-posed, stratified by error category.
-
-\begin{table}[htbp]
-\centering
-\caption{Judge Agent rejection performance ($n=150$ specifications, stratified by carrier family and error type).  Error categories: S=structural (missing fields, wrong carrier), P=parametric (out-of-range values), N=noise model incompatibility, NL=nonlinear family violation.}
-\label{tab:judge}
-\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-\textbf{Metric} & \textbf{Value} & \textbf{95\% CI} \\
-\midrule
-True positive (correctly rejected) & 72/75 & [92\%, 100\%] \\
-True negative (correctly accepted) & 72/75 & [92\%, 100\%] \\
-Precision (rejection) & 96.0\% & [91\%, 99\%] \\
-Recall (rejection) & 96.0\% & [91\%, 99\%] \\
-\midrule
-\multicolumn{3}{@{}l}{\textit{Rejection by error category (of 75 ill-posed):}} \\
-\quad Structural (S) & 25/25 & 100\% detected \\
-\quad Parametric (P) & 22/25 & 3 subtle range violations missed \\
-\quad Noise/NL (N+NL) & 25/25 & 100\% detected \\
-\midrule
-\multicolumn{3}{@{}l}{\textit{Failure modes (6 errors):}} \\
-\quad FN: subtle parameter range & 3 & Values 1--5\% outside bounds \\
-\quad FP: conservative CFL check & 3 & Brillouin, DOT, Compton \\
-\midrule
-\multicolumn{3}{@{}l}{\textit{Redesign loop (triggered on rejection):}} \\
-\quad Mean redesign rounds & 1.4 & Before acceptance \\
-\quad Max redesign rounds & 3 & Cap enforced by framework \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{Rejection examples.}  The Judge rejected: (i)~a CT specification with negative projection angles ($\theta < 0$, structural violation); (ii)~an MRI encoding violating the Nyquist--Shannon sampling limit (parametric); (iii)~a DOT specification pairing Gaussian noise with a photon-counting detector (noise model incompatibility).  All three were caught deterministically by the 6-gate compiler, not by learned prediction.  The 3 false negatives involved parameter values 1--5\% outside physics-based bounds but within the compiler's numerical tolerance; the 3 false positives involved conservative CFL stability checks on scattering-dominated modalities (Brillouin, DOT, Compton) where the generic bound was tighter than necessary.
-
-% ------------------------------------------------------------------------
-\subsection{Performance Agent: Prediction Accuracy}
-\label{sec:performance}
-% ------------------------------------------------------------------------
-
-We compared the Performance Agent's predicted PSNR against actual reconstruction PSNR on all 36 modalities (50 instances each, 1,800 total predictions).
-
-\begin{table}[htbp]
-\centering
-\caption{Performance Agent prediction accuracy across 36 modalities (1,800 predictions).  95\% CIs via bootstrap.  Modality groups: well-characterized (CT, MRI, CASSI, SIM, etc.), moderate (OCT, ptychography, light field), and scattering-dominated (DOT, Compton, Brillouin).}
-\label{tab:perf}
-\small
-\begin{tabular}{@{}lrl@{}}
-\toprule
-\textbf{Metric} & \textbf{Value} & \textbf{95\% CI} \\
-\midrule
-Overall MAE & 1.8\,dB & [1.5, 2.1] \\
-Overall RMSE & 2.3\,dB & [1.9, 2.7] \\
-$R^2$ (Pearson) & 0.91 & [0.87, 0.94] \\
-Within $\pm 3$\,dB & 89\% (32/36) & --- \\
-\midrule
-\textit{By modality group:} & & \\
-\quad Well-characterized ($n=20$) & MAE 0.9\,dB & [0.6, 1.2] \\
-\quad Moderate ($n=10$) & MAE 2.1\,dB & [1.6, 2.6] \\
-\quad Scattering-dominated ($n=6$) & MAE 3.8\,dB & [2.9, 4.7] \\
-\midrule
-Best-case & 0.3\,dB (CT) & --- \\
-Worst-case & 4.7\,dB (DOT) & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The largest prediction errors occur for scattering-dominated modalities (DOT, Compton, Brillouin) where operating at lower fidelity tiers introduces model uncertainty that the Performance Agent cannot fully account for analytically; tier-lifting to Tier-3 would reduce this gap.  For well-characterized modalities (CT, MRI, CASSI, SIM), the MAE is $< 1.0$\,dB---comparable to inter-algorithm variation in reconstruction benchmarks~\cite{ongie2020deep}.
+Across 3 real-data modalities: mean quality ratio $98.1 \pm 0.6$\%.  Extending real-data validation to additional modalities (ultrasound, OCT, PET) is an immediate next step.
 
 % ------------------------------------------------------------------------
 \subsection{Agent Ablation Study}
 \label{sec:ablation}
 % ------------------------------------------------------------------------
 
-We performed controlled ablations on 12 representative modalities (spanning all 5 carrier families) with 5 independent trials per configuration, totalling 300 pipeline runs (Table~\ref{tab:ablation}).  The 12 modalities include 6 from the ``well-characterized'' group (CT, MRI, CASSI, SIM, lensless, PET) and 6 from harder categories (ptychography, DOT, ultrasound, SPECT, OCT, light field) to test robustness across difficulty levels.
+We ablated the pipeline on 12 representative modalities spanning all 5 carrier families, with 5 independent trials per configuration (300 total runs).  Table~\ref{tab:ablation} reports the main result: \textbf{the full pipeline is the only configuration achieving bounded-error success on all 12 modalities across all 5 trials}.
 
 \begin{table}[htbp]
 \centering
-\caption{Ablation study ($n{=}5$ trials $\times$ 12 modalities, mean $\pm$ s.d.).  ``Valid'': passes all compiler gates.  ``$\leq \eps$'': reconstruction error within theorem bound.  ``Time'': total pipeline time.}
+\caption{Ablation study (5 trials $\times$ 12 modalities = 300 runs).  ``Valid'': passes all compiler gates.  ``$\leq \eps$'': reconstruction within Theorem~\ref{thm:design} error bound.  No single agent is dispensable.}
 \label{tab:ablation}
 \small
-\begin{tabularx}{\textwidth}{Xccccl}
+\begin{tabularx}{\textwidth}{@{}Xccccl@{}}
 \toprule
-\textbf{Configuration} & \textbf{Valid} & \textbf{$\leq \eps$} & \textbf{Redesign} & \textbf{Time} & \textbf{Failure Mode} \\
+\textbf{Configuration} & \textbf{Valid} & \textbf{$\leq \eps$} & \textbf{Redesign} & \textbf{Time} & \textbf{Dominant failure} \\
 \midrule
-Full ($\Agent_P + \Agent_J + \Agent_\Pi$) & 12/12 & 12/12 & 1.7$\pm$0.6 & 4.8$\pm$0.5\,min & --- \\
-No $\Agent_J$ ($\Agent_P + \Agent_\Pi$) & 8.2/12 & 6.4/12 & 0 & 2.9$\pm$0.3\,min & Invalid spec (4), unbounded $\eps$ (2) \\
-No $\Agent_\Pi$ ($\Agent_P + \Agent_J$) & 12/12 & 9.6/12 & 1.7$\pm$0.6 & 3.4$\pm$0.4\,min & Suboptimal params (2.4) \\
-No $\Agent_P$ (manual spec) & 10.4/12 & 10.4/12 & 0 & 52$\pm$9\,min & Human error (1.6) \\
-Template only & --- & 3/12 & 0 & 0.5\,min & No coverage (9) \\
+Full ($\Agent_P{+}\Agent_J{+}\Agent_\Pi$) & 12/12 & 12/12 & 1.7$\pm$0.6 & 4.8\,min & --- \\
+No $\Agent_J$ & 8.2/12 & 6.4/12 & 0 & 2.9\,min & Invalid spec, unbounded $\eps$ \\
+No $\Agent_\Pi$ & 12/12 & 9.6/12 & 1.7$\pm$0.6 & 3.4\,min & Suboptimal parameters \\
+No $\Agent_P$ (manual) & 10.4/12 & 10.4/12 & 0 & 52\,min & Human error (14\%) \\
+Template only & --- & 3/12 & 0 & 0.5\,min & No coverage (75\%) \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Key findings:
-\begin{itemize}[nosep]
-\item \textbf{Removing $\Agent_J$} (60 runs): 4 of 12 specifications pass compilation but are physically invalid.  Failure categories: incompatible noise model (CASSI: Poisson noise specified for a photon-counting detector that requires Gaussian read noise), missing modulation (CASSI without coded aperture), wrong carrier (ultrasound specified as photon), and unstable CFL for DOT.  2 additional specifications compile but produce unbounded reconstruction error due to undetected ill-conditioning.  The Judge is necessary for both safety and correctness.
+\textbf{Removing $\Agent_J$} (Judge): 4/12 specifications pass compilation but are physically invalid (wrong carrier, missing modulation, incompatible noise model, unstable CFL).  2 additional compile but produce unbounded reconstruction error due to undetected ill-conditioning.  The Judge is necessary for both safety and correctness.
 
-\item \textbf{Removing $\Agent_\Pi$} (60 runs): all 12 pass validation, but 2--3 produce suboptimal reconstruction per trial---e.g., too few CT angles for target PSNR (64 instead of 128) or insufficient k-space coverage for MRI.  Mean PSNR drop: 2.1\,dB vs.\ full pipeline.
+\textbf{Removing $\Agent_\Pi$}: all 12 pass validation but 2--3 produce suboptimal reconstruction per trial (e.g., too few CT projections for target PSNR).  Mean PSNR drop: 2.1\,dB.
 
-\item \textbf{Removing $\Agent_P$} (60 runs): human experts write \texttt{spec.md} manually, averaging 52\,min per specification with format or physics errors in $\sim$14\% of cases.  The Plan Agent reduces specification time by $>10\times$ and eliminates format errors.
+\textbf{Removing $\Agent_P$}: human experts write \texttt{spec.md} manually, averaging 52\,min with physics or format errors in 14\% of cases.  The Plan Agent reduces specification time by ${>}10\times$.
 
-\item \textbf{Template only}: fixed templates cover only 3/12 modalities (CT, MRI, lensless); all others fail outright.
-\end{itemize}
+\textbf{Template only}: covers 3/12 modalities (CT, MRI, lensless); all others fail.
 
-The full pipeline is the only configuration achieving bounded-error success on all 12 modalities across all 5 trials.  No single agent is dispensable.
+% ------------------------------------------------------------------------
+\subsection{Judge and Performance Agents}
+\label{sec:agents}
+% ------------------------------------------------------------------------
+
+\textbf{Judge rejection accuracy} ($n{=}150$: 75 valid, 75 ill-posed, stratified by error category).  Precision: 96.0\% (95\% CI: [91\%, 99\%]).  Recall: 96.0\%.  By category: structural errors 25/25 detected; parametric 22/25 (3 subtle range violations of 1--5\% missed); noise/nonlinear 25/25.  False positives (3): conservative CFL checks on scattering modalities (Brillouin, DOT, Compton).  Mean redesign rounds on rejection: 1.4 (max 3).
+
+\textbf{Performance prediction} (36 modalities, 1,800 predictions).  Overall MAE: 1.8\,dB (95\% CI: [1.5, 2.1]), $R^2 = 0.91$ ([0.87, 0.94]).  By modality group: well-characterized ($n{=}20$) MAE 0.9\,dB; moderate ($n{=}10$) 2.1\,dB; scattering-dominated ($n{=}6$) 3.8\,dB.  The largest errors occur where lower-tier models introduce uncertainty the Performance Agent cannot account for analytically; tier-lifting to Tier-3 would reduce this gap.
 
 % ------------------------------------------------------------------------
 \subsection{Expert Comparison}
 \label{sec:expert}
 % ------------------------------------------------------------------------
 
-We compared the agent framework against expert manual design on 6 modalities, 3 with real measured data (Table~\ref{tab:expert}).  Expert setup times are measured from specification to first successful reconstruction, including literature review, code development, parameter tuning, and validation.  For CT and MRI, expert times are cross-validated against published development reports~\cite{aarle2016,ong2019sigpy}; for remaining modalities, times are estimated from published timelines and confirmed by domain experts.
-
 \begin{table}[htbp]
 \centering
-\caption{Agent framework vs.\ expert manual design.  ``Quality'': agent PSNR / expert PSNR.  Bold = real measured data.}
+\caption{Agent vs.\ expert manual design.  Bold = real measured data.  Expert times from specification to first successful reconstruction, cross-validated against~\cite{aarle2016,ong2019sigpy}; remaining estimated from published timelines (see Methods).}
 \label{tab:expert}
 \small
-\begin{tabularx}{\textwidth}{lcccccc}
+\begin{tabular}{@{}lcccccc@{}}
 \toprule
-& \multicolumn{2}{c}{\textbf{PSNR (dB)}} & \multicolumn{2}{c}{\textbf{Setup Time}} & & \\
+& \multicolumn{2}{c}{\textbf{PSNR (dB)}} & \multicolumn{2}{c}{\textbf{Setup}} & & \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 \textbf{Modality} & \textbf{Agent} & \textbf{Expert} & \textbf{Agent} & \textbf{Expert} & \textbf{Quality} & \textbf{LoC} \\
 \midrule
@@ -523,21 +429,21 @@ SIM & 32.1 & 32.8 & 15\,min & 3\,d & 97.9\% & 10 vs 210 \\
 OCT & 30.5 & 31.2 & 22\,min & 6\,d & 97.8\% & 13 vs 450 \\
 DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
-Across all 6 modalities, the agent achieves $97.6 \pm 1.1$\% of expert quality with $\rho_{\text{time}}$ ranging from 144 (DOT) to 420 (CT).  Expert code ranges from 210 to 680 lines; agent specifications are 10--15 lines.  The quality gap is largest for DOT (95.3\%), the most complex scattering chain, where operation at Tier-2 rather than Tier-3 contributes the largest $\eps_{\text{unmod}}$; this gap closes under tier-lifting (Table~\ref{tab:tierlift}).
+Mean quality ratio: $97.6 \pm 1.1$\%.  Quality gap largest for DOT (95.3\%), where Tier-2 operation contributes the largest $\eps_{\text{unmod}}$; this gap closes under tier-lifting (Table~\ref{tab:tierlift}).  Agent specifications: 10--15 lines; expert code: 210--680 lines.
 
 % ------------------------------------------------------------------------
-\subsection{Tier-Lifting: Cross-Tier Hybrid Reconstruction}
+\subsection{Cross-Tier Hybrid Reconstruction}
 \label{sec:tierlifting}
 % ------------------------------------------------------------------------
 
-Each of the 11 FPB primitives is implemented at all four fidelity tiers (Tier-0 through Tier-3), with dedicated adapter classes providing tier-specific forward models, adjoints, and validation checks (Table~\ref{tab:tiers}).  The framework automatically selects the appropriate tier via a \texttt{TierPolicy} based on compute budget and modality requirements---for example, CT defaults to Tier-1/2, while NeRF requires Tier-3.
+Each FPB primitive is implemented at all four fidelity tiers (Table~\ref{tab:tiers}), with dedicated adapter classes providing tier-specific validation.  A \texttt{TierPolicy} automatically selects the tier based on compute budget and modality requirements.
 
 \begin{table}[htbp]
 \centering
-\caption{Four-tier fidelity hierarchy.  Each tier has a dedicated adapter with tier-specific validation checks.  All 11 primitives are implemented at every tier; what changes is the physics model underlying each primitive.}
+\caption{Four-tier fidelity hierarchy.  All 11 primitives are implemented at every tier.}
 \label{tab:tiers}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}llXl@{}}
@@ -547,74 +453,55 @@ Each of the 11 FPB primitives is implemented at all four fidelity tiers (Tier-0 
 0 (geometric) & Ray optics, transforms & Invertibility, adjoint & LiDAR \\
 1 (Fourier) & Paraxial, angular spectrum & Parseval energy, adjoint & SIM, holography \\
 2 (shift-variant) & Radon, k-space, Mie & Positivity, reciprocity, cost & CT, MRI \\
-3 (full-physics) & FDTD, BPM, MC, NeRF & Agreement, uncertainty calib. & DOT, NeRF \\
+3 (full-physics) & FDTD, BPM, MC, NeRF & Agreement, uncertainty & DOT, NeRF \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-When a modality benefits from combining fidelity levels---e.g., using a fast Tier-1 adjoint for gradient steps but a Tier-3 forward model for accurate residual evaluation---the \emph{Tier-Lifting Protocol} provides hybrid reconstruction via a Hybrid Proximal-Gradient (HPG) method:
-
-\begin{proposition}[Tier-Lifting]
-\label{prop:tierlift}
-Let $A_{\text{low}}$ be the low-tier forward model and $A_{\text{high}}$ the high-tier model (same 11 primitives, different fidelity).  Define $\Gamma(x) = A_{\text{high}}(x) - A_{\text{low}}(x)$.  Then:
-\[
-\eps_{\text{unmod}} \leq \norm{\Gamma(x) - \hat{\Gamma}(x)} = \eps_{\text{lift}}
-\]
-where $\hat{\Gamma}$ is the correction used in reconstruction.  In full-correction mode ($\hat{\Gamma} = \Gamma$), $\eps_{\text{lift}} = 0$ and the five-term error bound reduces to four terms.
-\end{proposition}
-
-The HPG loop:
-\[
-x_{k+1} = \text{prox}_{\lambda R}\!\left(x_k - \gamma \cdot A_{\text{low}}^T\bigl(A_{\text{high}}(x_k) - y\bigr)\right)
-\]
-uses the fast low-tier adjoint $A_{\text{low}}^T$ for gradient computation and the high-tier forward $A_{\text{high}}$ for data fidelity.  Convergence follows from standard proximal-gradient theory under Lipschitz continuity of $\nabla f$.
-
-We validated the tier-lifting protocol on two cross-tier combinations (Table~\ref{tab:tierlift}).
+When a modality benefits from combining fidelity levels, the \emph{tier-lifting protocol} provides hybrid reconstruction via a Hybrid Proximal-Gradient (HPG) method (Proposition~\ref{prop:tierlift}, Methods).  We validated tier-lifting on two cross-tier combinations (Table~\ref{tab:tierlift}): DOT (Tier-2 P$_1$ diffusion $\to$ Tier-3 P$_3$ radiative transfer) and coherent imaging (Tier-1 angular spectrum $\to$ Tier-3 FDTD).  In both cases, $\eps_{\text{unmod}}$ reduces to machine precision ($<10^{-12}$).
 
 \begin{table}[htbp]
 \centering
-\caption{Tier-lifting validation: cross-tier hybrid reconstruction eliminates model mismatch for both scattering and wave-optics domains.}
+\caption{Tier-lifting validation on two cross-tier combinations.  Tier-lifting is demonstrated on these selected cases; broader Tier-3 validation is an important next step.}
 \label{tab:tierlift}
 \small
 \begin{tabular}{@{}llllcc@{}}
 \toprule
 \textbf{Domain} & \textbf{Low tier} & \textbf{High tier} & \textbf{Correction} & $\boldsymbol{\eps_{\text{unmod}}}$ & $\boldsymbol{\eps_{\text{lift}}}$ \\
 \midrule
-DOT & Tier-2 (P$_1$ diffusion) & Tier-3 (P$_3$ RT) & Higher-order moments & 7.8\% & $<10^{-12}$ \\
-Coherent & Tier-1 (angular spectrum) & Tier-3 (FDTD) & Evanescent + scatter & 147\% & $<10^{-12}$ \\
+DOT & Tier-2 (P$_1$) & Tier-3 (P$_3$ RT) & Higher-order moments & 7.8\% & $<10^{-12}$ \\
+Coherent & Tier-1 (ang.\ spec.) & Tier-3 (FDTD) & Evanescent + scatter & 147\% & $<10^{-12}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-For DOT, the P$_1$ diffusion approximation (Tier-2) neglects higher-order angular moments; the P$_3$ correction (Tier-3) captures these via a coupled system, reducing $\eps_{\text{unmod}}$ to machine precision.  For coherent imaging, the angular spectrum (Tier-1) misses evanescent waves and multiple scattering; FDTD (Tier-3) resolves all wave phenomena.
-
-The tier-lifting protocol preserves the FPB structure: the same 11 primitives, the same DAG topology, the same \texttt{spec.md}---only the fidelity level of each primitive changes.  The framework therefore natively spans all four tiers, from geometric optics to full-wave simulation and learned surrogates.
+The tier-lifting protocol preserves the FPB structure: the same 11 primitives, the same DAG, the same \texttt{spec.md}---only the fidelity of each primitive changes.  These two demonstrations show that the framework can in principle span all four tiers, but we emphasise that broader empirical validation across additional Tier-3 modalities is needed before claiming general Tier-3 coverage.
 
 % ========================================================================
 \section{Discussion}
 % ========================================================================
 
-\textbf{Limitations and caveats.}
-Before interpreting the results, we note four limitations.
+\textbf{Limitations.}
 (1)~Agent quality depends on current LLM capabilities; novel or under-documented modalities may be misspecified.
-(2)~Of 168+ modalities that compile, quantitative reconstruction is validated for 36; real-data validation covers 3 modalities (CT, MRI, CASSI).  The remaining 120+ modalities pass compiler gates but lack per-modality reconstruction benchmarks---compilation alone does not guarantee reconstruction quality.
-(3)~Expert comparison relies partly on estimated setup times from published timelines~\cite{aarle2016,ong2019sigpy}; prospective head-to-head studies would strengthen these claims.
-(4)~The Performance Agent's accuracy degrades for scattering-dominated systems (MAE 3.8\,dB vs.\ 0.9\,dB for well-characterized modalities).
+(2)~Of 168+ modalities that compile, quantitative reconstruction is validated for 36; real-data validation covers 3 modalities.  Compilation alone does not guarantee reconstruction quality.
+(3)~Expert comparison relies partly on published timeline estimates; prospective head-to-head studies would strengthen the claims.
+(4)~Performance Agent accuracy degrades for scattering-dominated systems (MAE 3.8\,dB vs.\ 0.9\,dB for well-characterised modalities).
+(5)~Tier-lifting is demonstrated on 2 cross-tier combinations; broader Tier-3 validation remains future work.
 
 \textbf{The specification as exchange standard.}
-Imaging forward models are currently communicated through code, prose, or block diagrams that are ambiguous, non-executable, and non-versionable.  The \texttt{spec.md} format addresses this by decoupling the \emph{what} (physical problem) from the \emph{how} (numerical method) in a structured 7-field document.  This enables non-expert scientists to design imaging systems via natural language, and makes specifications shareable, versionable, and peer-reviewable independently of code---a journal could require a \texttt{spec.md} alongside a methods section, analogous to how genomics journals require accession numbers.
+Imaging forward models are currently communicated through code, prose, or block diagrams that are ambiguous, non-executable, and non-versionable.  \texttt{spec.md} addresses this by decoupling the \emph{what} from the \emph{how} in a structured 7-field document, enabling non-expert scientists to design imaging systems via natural language.
 
 \textbf{Formal verification versus ad hoc design.}
-The Judge differentiates this framework from both expert manual design (no formal validation) and black-box AI design (no physical constraints).  A neural design tool might produce a plausible-looking system with no certificate; the Judge catches errors deterministically through the 6-gate compiler, including CFL stability, coercivity, and Lipschitz checks.  Its 96\% rejection precision on 150 test specifications indicates robust detection of structural, parametric, and noise-model errors, though subtle parameter range violations (1--5\% outside bounds) remain a gap.
+The Judge differentiates this framework from both expert manual design (no formal validation) and black-box AI design tools (no physical constraints).  Its 96\% rejection precision on 150 test specifications indicates robust detection of structural, parametric, and noise-model errors.
 
 \textbf{Bridging the reality gap.}
-Theorem~\ref{thm:design} converts the implicit, unmeasured gap between a designed model and reality into an explicit five-term error budget.  Because each term is independently measurable, the theorem provides a diagnostic protocol: the practitioner can identify which term dominates and take corrective action (calibration, specification refinement, or tier selection).  In practice, $\eps_{\text{FPB}}$ and $\eps_{\text{spec}}$ are negligible when the compiler certifies the design; $\eps_{\text{trans}} = 0$ for 86\% of validated modalities; $\eps_{\text{unmod}} = 0$ when operating at Tier-3 (full-physics) fidelity, and is reducible to machine precision via tier-lifting for lower tiers.  The dominant residual term is therefore $\eps_{\text{param}}$ (parameter mismatch), which is reducible by calibration.
+Theorem~\ref{thm:design} provides a diagnostic protocol: each $\eps$ term maps to a corrective action.  In practice, $\eps_{\text{spec}} = 0$ when the compiler certifies the design, $\eps_{\text{trans}} = 0$ for 86\% of validated modalities, and $\eps_{\text{unmod}} = 0$ at Tier-3.  The dominant residual is $\eps_{\text{param}}$, reducible by calibration.  The 4-scenario recovery protocol~\cite{paperII} confirms near-complete recovery for low-dimensional mismatch (CT, MRI) and 85--100\% for multi-parameter systems (CASSI, CACTI, SPC).
 
 \textbf{Relation to existing work.}
-AlphaFold~\cite{jumper2021alphafold} and GNoME~\cite{merchant2023gnome} apply AI to specific scientific problems at scale; SigPy~\cite{ong2019sigpy}, ODL~\cite{adler2017odl}, and DeepInverse~\cite{ongie2020deep} provide operator libraries for computational imaging.  Our framework provides the \emph{design} layer that precedes operator instantiation, with formal error guarantees absent from both data-driven discovery and existing operator libraries.
+AlphaFold~\cite{jumper2021alphafold} and GNoME~\cite{merchant2023gnome} apply AI to specific scientific problems at scale; SigPy~\cite{ong2019sigpy}, ODL~\cite{adler2017odl}, and DeepInverse~\cite{ongie2020deep} provide operator libraries.  Our framework provides the \emph{design} layer that precedes operator instantiation, with formal error guarantees absent from both data-driven discovery and existing libraries.
 
 \textbf{Outlook.}
-Extending real-data validation to additional modalities (ultrasound, OCT, PET), expanding the tier-lifting validation to more cross-tier combinations, improving Performance Agent calibration for scattering systems, and establishing a community benchmark for imaging system design are the natural next steps.
+Extending real-data validation to ultrasound, OCT, and PET; validating tier-lifting across more Tier-3 modalities; improving Performance Agent calibration for scattering systems; and establishing a community \texttt{spec.md} benchmark are concrete next steps.
 
 % ========================================================================
 \section{Methods}
@@ -624,72 +511,193 @@ Extending real-data validation to additional modalities (ultrasound, OCT, PET), 
 \subsection{Proof of Theorem~\ref{thm:design}}
 % ------------------------------------------------------------------------
 
-Let $x^*$ be the true object and $\hat{x}$ the reconstruction from the agent-designed system.  Define $x_{\text{ideal}}$ as the reconstruction using $\Atrue$ with optimal parameters.
+\textbf{Assumptions.}
+\begin{itemize}[nosep]
+\item[\textbf{A1.}] \textit{Coercivity.}  The data-fidelity term $f(x) = \|A(x) - y\|^2$ satisfies $\langle \nabla f(x) - \nabla f(x'), x - x'\rangle \geq \alpha\|x - x'\|^2$ with coercivity constant $\alpha = \sigma_{\min}^2(A) > 0$ (linear case) or $\alpha > 0$ from restricted strong convexity (nonlinear case).
+\item[\textbf{A2.}] \textit{Regularisation.}  $R(x)$ is proper, convex, lower-semicontinuous, and $\lambda > 0$.  The composite objective $F(x) = f(x) + \lambda R(x)$ is $\mu$-strongly convex with $\mu = \alpha + \lambda$.
+\item[\textbf{A3.}] \textit{Lipschitz parameters.}  Each FPB primitive $A_i(\cdot\,; \theta_i)$ is $L_i$-Lipschitz continuous in its parameters: $\|A_i(\cdot\,; \theta) - A_i(\cdot\,; \theta')\|_{\text{op}} \leq L_i\|\theta - \theta'\|$.  The DAG composition has Lipschitz constant $L_A \leq \prod_i L_i$, computed by Gate~4.
+\item[\textbf{A4.}] \textit{Bounded signal.}  $\|x^*\| \leq B$ for known bound $B$.
+\end{itemize}
 
-\textbf{Step 1 (Model approximation).}
-$\norm{\Aagent - \Atrue} \leq \eps_{\text{FPB}} + \eps_{\text{spec}} + \eps_{\text{trans}} + \eps_{\text{param}} + \eps_{\text{unmod}}$ by the chain of approximations: true physics $\to$ selected-tier model ($\eps_{\text{unmod}}$) $\to$ FPB decomposition ($\eps_{\text{FPB}}$) $\to$ specification ($\eps_{\text{spec}}$) $\to$ translated DAG ($\eps_{\text{trans}}$) $\to$ parameterized operator ($\eps_{\text{param}}$).
-
-\textbf{Step 2 (Reconstruction stability).}
-For a regularized reconstruction $\hat{x} = \arg\min_x \|\Aagent(x) - y\|^2 + \lambda\,\text{reg}(x)$, the perturbation bound gives:
+\textbf{Step 1: Operator decomposition.}
+The agent-designed operator differs from reality through a chain of approximations:
 \[
-\norm{\hat{x} - x_{\text{ideal}}} \leq \frac{1}{\alpha + \lambda}\norm{(\Aagent - \Atrue)(x^*)}
+\Atrue \;\xrightarrow{\delta_{\text{unmod}}}\; A_{\text{tier}} \;\xrightarrow{\delta_{\text{FPB}}}\; A_{\text{FPB}} \;\xrightarrow{\delta_{\text{spec}}}\; A_{\text{spec}} \;\xrightarrow{\delta_{\text{trans}}}\; A_{\text{DAG}} \;\xrightarrow{\delta_{\text{param}}}\; \Aagent
 \]
-where $\alpha$ is the coercivity constant of $A^T A$ and $\lambda$ is the regularization strength.
+where each $\delta_i = \|A_i - A_{i-1}\|_{\text{op}}$ is the operator-norm difference at that stage.  By the triangle inequality:
+\begin{equation}\label{eq:op_chain}
+\|\Aagent - \Atrue\|_{\text{op}} \leq \delta_{\text{FPB}} + \delta_{\text{spec}} + \delta_{\text{trans}} + \delta_{\text{param}} + \delta_{\text{unmod}}.
+\end{equation}
 
-\textbf{Step 3 (Composition).}
-$\norm{\hat{x} - x^*} \leq \norm{\hat{x} - x_{\text{ideal}}} + \norm{x_{\text{ideal}} - x^*}$.  The first term is bounded by Step~2; the second by the regularization bias.  The five $\eps$ terms propagate multiplicatively through the Lipschitz constants of each stage.
+\textbf{Step 2: Reconstruction perturbation.}
+Define $x_{\text{oracle}} = \arg\min_x \|\Atrue(x) - y\|^2 + \lambda R(x)$ (oracle reconstruction using $\Atrue$).
+Define $\hat{x} = \arg\min_x \|\Aagent(x) - y\|^2 + \lambda R(x)$ (agent reconstruction).
+By the $\mu$-strong convexity of $F$ (Assumptions A1--A2), the first-order optimality conditions and the Cauchy--Schwarz inequality yield:
+\begin{equation}\label{eq:stability}
+\|\hat{x} - x_{\text{oracle}}\| \leq \frac{2B}{\mu}\,\|\Aagent - \Atrue\|_{\text{op}} = \frac{2B}{\alpha + \lambda}\,\|\Aagent - \Atrue\|_{\text{op}}.
+\end{equation}
+This is the \emph{reconstruction stability bound}: the sensitivity of the reconstruction to operator perturbation, controlled by coercivity $\alpha$ and regularisation $\lambda$.
 
-\textbf{Step 4 (Bounding each term).}
-$\eps_{\text{FPB}} < 0.01$ by the FPB theorem~\cite{paperII}.
-$\eps_{\text{spec}} = 0$ when all 6 compiler gates pass.
-$\eps_{\text{trans}} = 0$ when canonical chain matches the registry.
-$\eps_{\text{param}} \leq L_A \cdot \norm{\theta_{\text{agent}} - \theta_{\text{true}}}$ where $L_A$ is computed by the compiler's Lipschitz analysis of nonlinear primitives.
-$\eps_{\text{unmod}} = 0$ at Tier-3; for lower tiers, estimated empirically per modality from cross-tier comparison (see Table~\ref{tab:tierlift}).
+\textbf{Step 3: Define effective error terms.}
+For each $i \in \{\text{FPB}, \text{spec}, \text{trans}, \text{param}, \text{unmod}\}$,
+set $\eps_i = 2B\,\delta_i/(\alpha + \lambda)$.  Then:
+\begin{equation}\label{eq:design_gap}
+\|\hat{x} - x_{\text{oracle}}\| \leq \eps_{\text{FPB}} + \eps_{\text{spec}} + \eps_{\text{trans}} + \eps_{\text{param}} + \eps_{\text{unmod}}.
+\end{equation}
+
+\textbf{Step 4: Total error.}
+$\|\hat{x} - x^*\| \leq \|\hat{x} - x_{\text{oracle}}\| + \|x_{\text{oracle}} - x^*\|$.
+The second term $\eps_{\text{recon}} = \|x_{\text{oracle}} - x^*\|$ is the irreducible reconstruction error (noise amplification $+$ regularisation bias), independent of the design.  Combining:
+\[
+\|\hat{x} - x^*\| \leq (\eps_{\text{FPB}} + \eps_{\text{spec}} + \eps_{\text{trans}} + \eps_{\text{param}} + \eps_{\text{unmod}}) + \eps_{\text{recon}}.
+\]
+
+\textbf{Step 5: Bounding each term.}
+\begin{enumerate}[nosep, label=(\alph*)]
+\item $\delta_{\text{FPB}} < 0.01$ by the FPB basis theorem~\cite{paperII}.  Verified by Gate~6 of the compiler: $\eps = \mathbb{E}[\|\Aagent(x) - \Atrue(x)\|/\|\Atrue(x)\|] < 0.01$ over 5 random test vectors.  Hence $\eps_{\text{FPB}} < 0.01 \cdot 2B/(\alpha + \lambda)$.
+
+\item $\delta_{\text{spec}} = 0$ when all 6 compiler gates pass.  \emph{Condition}: Gates~1--5 jointly verify that the \texttt{spec.md} fully and correctly specifies the FPB composition: DAG acyclicity (Gate~1), chain fidelity (Gate~2), complexity bounds (Gate~3), nonlinear family constraints (Gate~4), and adjoint consistency (Gate~5).  When all pass, $A_{\text{spec}} \equiv A_{\text{FPB}}$.
+
+\item $\delta_{\text{trans}} = 0$ when the natural-language-to-DAG translation produces a canonical chain that exactly matches one of the 36 entries in the validated registry.  \emph{Condition}: Gate~2 (chain fidelity) returns exact match.  This holds for 31/36 (86\%) of validated modalities.
+
+\item $\delta_{\text{param}} \leq L_A\|\theta_{\text{agent}} - \theta_{\text{true}}\|$ by Assumption A3.  $L_A$ is computed per primitive by Gate~4's Lipschitz analysis: each nonlinear primitive has at most 2 free parameters with VC dimension $\leq 3$, so $L_i$ is computable in closed form.
+
+\item $\delta_{\text{unmod}} = 0$ at Tier-3 by definition: $A_{\text{tier}} \equiv \Atrue$ when operating at full-physics fidelity.  For lower tiers, $\delta_{\text{unmod}}$ is estimated empirically via cross-tier comparison (Table~\ref{tab:tierlift}) and is reducible to machine precision via tier-lifting.
+\end{enumerate}
+
+This completes the proof: each $\eps_i$ is bounded, measurable, and linked to a specific compiler gate and corrective action. \qed
 
 % ------------------------------------------------------------------------
-\subsection{6-Gate Compiler Implementation}
+\subsection{Tier-Lifting Protocol}
 % ------------------------------------------------------------------------
 
-\textbf{Gate~1 (DAG).}  The agent's element list is compiled into an \texttt{OperatorGraphSpec} (typed Pydantic~v2 model).  DAG acyclicity is verified via Kahn's algorithm in $O(V+E)$.
+\begin{proposition}[Tier-Lifting]
+\label{prop:tierlift}
+Let $A_{\text{low}}$ be the low-tier and $A_{\text{high}}$ the high-tier forward model (same primitives, different fidelity).  Define $\Gamma(x) = A_{\text{high}}(x) - A_{\text{low}}(x)$.  Then $\eps_{\text{unmod}} \leq \|\Gamma(x) - \hat{\Gamma}(x)\| = \eps_{\text{lift}}$, where $\hat{\Gamma}$ is the correction used in reconstruction.  In full-correction mode ($\hat{\Gamma} = \Gamma$), $\eps_{\text{lift}} = 0$.
+\end{proposition}
 
-\textbf{Gate~2 (Chain).}  The canonical chain (sequence of primitive enums) is extracted and compared against the 36-modality registry.  Match is exact or within known equivalences (e.g., $\Sigma$ merged into $D$).
-
-\textbf{Gate~3 (Bounds).}  Node count $N \leq 20$, DAG depth $D \leq 10$.
-
-\textbf{Gate~4 (Nonlinear).}  For each nonlinear node (D, R, $\Lambda$): family enum resolved, parameter count $\leq 2$, values within physics-based bounds, Lipschitz constant computed.
-
-\textbf{Gate~5 (Adjoint).}  Randomized dot-product test: $|\langle Ax, y\rangle - \langle x, A^Ty\rangle| / \max(|\langle Ax, y\rangle|, 10^{-8}) < 10^{-4}$, 3 trials.
-
-\textbf{Gate~6 (Error).}  When reference $\Atrue$ is available: $\eps = \mathbb{E}[\norm{\Aagent(x) - \Atrue(x)} / \norm{\Atrue(x)}]$ over 5 random non-negative test vectors, threshold $< 0.01$.
+The Hybrid Proximal-Gradient (HPG) loop:
+\[
+x_{k+1} = \mathrm{prox}_{\lambda R}\!\left(x_k - \gamma\,A_{\text{low}}^T\bigl(A_{\text{high}}(x_k) - y\bigr)\right)
+\]
+uses the fast low-tier adjoint $A_{\text{low}}^T$ for gradient computation and the high-tier forward $A_{\text{high}}$ for data fidelity.  Convergence follows from standard proximal-gradient theory under Lipschitz continuity of $\nabla f$.
 
 % ------------------------------------------------------------------------
-\subsection{Recovery Ratio Protocol}
+\subsection{6-Gate Compiler}
 % ------------------------------------------------------------------------
 
-Four scenarios measure model mismatch impact:
+\textbf{Gate~1 (DAG).}  Compiled into a typed \texttt{OperatorGraphSpec} (Pydantic~v2).  Acyclicity verified via Kahn's algorithm, $O(V{+}E)$.
+
+\textbf{Gate~2 (Chain).}  Canonical chain extracted and compared against the 36-modality registry.  Match is exact or within known equivalences ($\Sigma$ merged into $D$).
+
+\textbf{Gate~3 (Bounds).}  $N \leq 20$ nodes, $D \leq 10$ depth.
+
+\textbf{Gate~4 (Nonlinear).}  For each nonlinear node ($D$, $R$, $\Lambda$): family resolved, parameter count $\leq 2$, values within physics bounds, Lipschitz constant $L_i$ computed.
+
+\textbf{Gate~5 (Adjoint).}  Randomised dot-product test: $|\langle Ax, y\rangle - \langle x, A^Ty\rangle| / \max(|\langle Ax, y\rangle|, 10^{-8}) < 10^{-4}$, 3 trials.
+
+\textbf{Gate~6 (Error).}  When reference available: $\eps = \mathbb{E}[\|(\Aagent - \Atrue)(x)\| / \|\Atrue(x)\|]$ over 5 random non-negative test vectors, threshold $< 0.01$.
+
+% ------------------------------------------------------------------------
+\subsection{4-Scenario Recovery Protocol}
+% ------------------------------------------------------------------------
+
+The recovery ratio $\rho_{\text{recov}}$ quantifies how well the framework compensates for model mismatch.  Following~\cite{paperII}, we define four scenarios validated on 6 representative modalities spanning 4 carrier families (CASSI, CACTI, SPC: photon; CT: X-ray; electron ptychography: electron; MRI: spin):
 \begin{align}
-\text{I (oracle):}\quad & y = \Atrue(x) + n; \quad \hat{x}_{\text{I}} = \arg\min_x \norm{\Atrue(x) - y}^2 + \lambda\,\text{reg}(x) \\
-\text{II (mismatch):}\quad & y = \Atrue(x) + n; \quad \hat{x}_{\text{II}} = \arg\min_x \norm{\Aagent(x) - y}^2 + \lambda\,\text{reg}(x) \\
-\text{III (auto-correct):}\quad & \hat{x}_{\text{III}} = \text{refine}(\hat{x}_{\text{II}}) \text{ with data-consistency} \\
-\text{IV (calibrated):}\quad & \hat{x}_{\text{IV}} = \arg\min_x \norm{\Aagent^{\text{cal}}(x) - y}^2 + \lambda\,\text{reg}(x)
+\text{Sc.\,I (oracle):}\quad & y = \Atrue(x) + n;\; \hat{x}_{\text{I}} = \arg\min_x \|\Atrue(x) - y\|^2 + \lambda\,\mathrm{reg}(x) \\
+\text{Sc.\,II (mismatch):}\quad & y = \Atrue(x) + n;\; \hat{x}_{\text{II}} = \arg\min_x \|\Aagent(x) - y\|^2 + \lambda\,\mathrm{reg}(x) \\
+\text{Sc.\,III (oracle correction):}\quad & \hat{x}_{\text{III}} = \mathrm{refine}(\hat{x}_{\text{II}}) \text{ with data-consistency} \\
+\text{Sc.\,IV (autonomous calibration):}\quad & \hat{x}_{\text{IV}} = \arg\min_x \|\Aagent^{\text{cal}}(x) - y\|^2 + \lambda\,\mathrm{reg}(x)
 \end{align}
+The recovery ratio $\rho_{\text{recov}} = (\text{PSNR}_{\text{IV}} - \text{PSNR}_{\text{II}}) / (\text{PSNR}_{\text{I}} - \text{PSNR}_{\text{II}})$ measures autonomous calibration effectiveness relative to the oracle correction.
 
-The recovery ratio $\rho_{\text{recov}} = (\text{PSNR}_{\text{III}} - \text{PSNR}_{\text{II}}) / (\text{PSNR}_{\text{I}} - \text{PSNR}_{\text{II}})$ measures auto-correction effectiveness.
+For modalities with low-dimensional parameter mismatch (CT, electron ptychography, MRI): Sc.\,IV $\approx$ Sc.\,III $\approx$ Sc.\,I, confirming near-complete recovery ($\rho_{\text{recov}} \approx 1.0$).  For multi-parameter mismatch: CASSI 85\%, CACTI 100\%, SPC 86\%.  Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$.
+
+% ------------------------------------------------------------------------
+\subsection{Expert Time Methodology}
+% ------------------------------------------------------------------------
+
+Expert setup times are defined as the interval from problem specification to first successful reconstruction, including literature review, code development, parameter tuning, and validation.  For CT and MRI, times are cross-validated against published development reports~\cite{aarle2016,ong2019sigpy} and confirmed by domain experts.  For the remaining modalities, times are estimated from published development timelines in the respective communities.  We acknowledge this is not a prospective head-to-head comparison; such a study would strengthen the claims.
 
 % ------------------------------------------------------------------------
 \subsection{Implementation}
 % ------------------------------------------------------------------------
 
-The framework is implemented in Python (Physics World Model platform).  Specifications are structured markdown parsed into typed Pydantic~v2 objects.  The primitive library contains 101 implementations covering all 11 canonical types across all 4 fidelity tiers, each with a dedicated adapter class: \texttt{Tier0Adapter} (geometric: invertibility checks, ray transforms), \texttt{Tier1Adapter} (Fourier: Parseval energy conservation, Fresnel propagation, OTF convolution), \texttt{Tier2Adapter} (shift-variant: positivity, reciprocity, Mie scattering, cost estimation), and \texttt{Tier3Adapter} (full-physics: FDTD, Monte Carlo, learned surrogates with uncertainty calibration and agreement validation).  A \texttt{TierPolicy} automatically selects the appropriate tier based on compute budget and modality-specific minimum requirements.  Agents are LLM pipelines with tool access to the compiler and primitive library.  Mean compilation time: 0.35\,ms.  The tier-lifting protocol is implemented as a generic \texttt{TierLiftingProtocol} class accepting any pair of low-tier/high-tier forward models, with validated cross-tier combinations for DOT (P$_1$/P$_3$) and coherent imaging (angular spectrum/FDTD).  The 36-modality registry, compiler, 4-tier adapter library, tier-lifting module, and test suite are publicly available.  Source code: \url{https://github.com/integritynoble/Physics_World_Model}.
+The framework is implemented in Python (Physics World Model platform).  Specifications are structured markdown parsed into typed Pydantic~v2 objects.  The primitive library contains 101 implementations covering all 11 canonical types across all 4 fidelity tiers, each with a dedicated adapter: \texttt{Tier0Adapter} (geometric: invertibility, ray transforms), \texttt{Tier1Adapter} (Fourier: Parseval energy, Fresnel, OTF), \texttt{Tier2Adapter} (shift-variant: positivity, reciprocity, Mie, cost), and \texttt{Tier3Adapter} (full-physics: FDTD, MC, learned surrogates, uncertainty calibration).  A \texttt{TierPolicy} selects the tier based on compute budget and modality requirements.  Agents are LLM pipelines with tool access to the compiler and primitive library.  Mean compilation time: 0.35\,ms.  The tier-lifting protocol is a generic \texttt{TierLiftingProtocol} class with validated cross-tier combinations for DOT and coherent imaging.  Source code: \url{https://github.com/integritynoble/Physics_World_Model}.
+
+% ========================================================================
+\section*{Extended Data}
+% ========================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Extended Data Table~1: Modality registry (36 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional 120+ modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
+\label{tab:ext_registry}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}llllclll@{}}
+\toprule
+\textbf{Modality} & \textbf{Domain} & \textbf{Carrier} & \textbf{Tier} & \textbf{Chain} & \textbf{Status} & \textbf{Real?} & \textbf{Dom.\ $\eps$} \\
+\midrule
+\multicolumn{8}{@{}l}{\textit{X-ray}} \\
+CT & Medical & X-ray & 1--2 & $\Pi \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
+CBCT & Medical & X-ray & 2 & $\Pi \to \Lambda \to D$ & T & No & $\eps_{\text{param}}$ \\
+CT (polychromatic) & Medical & X-ray & 2 & $\Pi \to \Lambda \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Phase contrast & Medical & X-ray & 1--2 & $\Pi \to P \to M \to D$ & HO & No & $\eps_{\text{param}}$ \\
+PET & Nuclear & X-ray & 2 & $\Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+SPECT & Nuclear & X-ray & 2 & $\Pi \to S \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+DEXA & Medical & X-ray & 2 & $M \to \Pi \to D$ & T & No & $\eps_{\text{param}}$ \\
+Compton & Nuclear & X-ray & 2 & $M \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Optical photons}} \\
+CASSI & Spectral & Photon & 2 & $M \to W \to \Sigma \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
+CACTI & Video & Photon & 2 & $M \to \Sigma \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
+SPC & Imaging & Photon & 2 & $M \to \Sigma \to D$ & FV & No & $\eps_{\text{param}}$ \\
+OCT & Ophthal. & Photon & 1--2 & $P{+}P \to \Sigma \to D$ & HO & No & $\eps_{\text{param}}$ \\
+SIM & Micro. & Photon & 1 & $M \to C \to D$ & HO & No & $\eps_{\text{param}}$ \\
+STED & Micro. & Photon & 1 & $M \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
+PALM/STORM & Micro. & Photon & 1 & $M \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
+TIRF & Micro. & Photon & 1 & $P \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
+Ptychography & Micro. & Photon & 1--2 & $M \to P \to D$ & FV & No & $\eps_{\text{param}}$ \\
+Lensless & Imaging & Photon & 1 & $C \to D$ & FV & No & $\eps_{\text{param}}$ \\
+DOT & Diffuse & Photon & 2--3 & $M \to R \to P \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
+Ghost imaging & Quantum & Photon & 2 & $M \to \Sigma \to D$ & HO & No & $\eps_{\text{param}}$ \\
+THz-TDS & Spectro. & Photon & 1 & $C \to D$ & HO & No & $\eps_{\text{param}}$ \\
+Light field & 3D & Photon & 1 & $M \to C \to S \to D$ & T & No & $\eps_{\text{param}}$ \\
+Raman & Spectro. & Photon & 2 & $M \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
+Fluorescence & Micro. & Photon & 2 & $M \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
+Fluorescence (sat.) & Micro. & Photon & 2 & $M \to R \to \Lambda \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Brillouin & Spectro. & Photon & 2 & $M \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Spin}} \\
+MRI & Medical & Spin & 1--2 & $M \to F \to S \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
+MRI (phase) & Medical & Spin & 2 & $M \to F \to S \to \Lambda \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Acoustic}} \\
+Ultrasound & Medical & Acoustic & 2 & $P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Doppler US & Medical & Acoustic & 2 & $P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Elastography & Medical & Acoustic & 2 & $P \to P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Photoacoustic & Medical & Acoustic & 2 & $M \to P \to D$ & HO & No & $\eps_{\text{param}}$ \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Electron}} \\
+SEM & Material & Electron & 2 & $M \to D$ & T & No & $\eps_{\text{param}}$ \\
+TEM & Material & Electron & 2 & $M \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
+E-ptychography & Material & Electron & 2 & $M \to P \to D$ & HO & No & $\eps_{\text{param}}$ \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Particle}} \\
+Muon tomography & Security & Particle & 2 & $R \to \Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Proton therapy & Medical & Particle & 2 & $\Lambda \to \Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 % ========================================================================
 \section*{Data Availability}
 
-The LoDoPaB-CT dataset is publicly available~\cite{leuschner2021}.  The M4Raw MRI dataset and KAIST TSA CASSI dataset are publicly available from their respective repositories.  The full modality registry (168+ modalities), canonical decomposition registry (36 validated), nonlinear family constraints (10 families), and validation datasets are included in the open-source repository.
+The LoDoPaB-CT dataset is publicly available~\cite{leuschner2021}.  The M4Raw MRI and KAIST TSA CASSI datasets are publicly available from their respective repositories.  The full modality registry, canonical decomposition registry, and validation datasets are in the open-source repository.
 
 \section*{Code Availability}
 
-All source code---Constrained Primitive Compiler, Agent-to-Graph Translator, three-agent pipeline, and the 101-primitive library---is available at \url{https://github.com/integritynoble/Physics_World_Model} under the MIT licence.
+All source code---Constrained Primitive Compiler, Agent-to-Graph Translator, three-agent pipeline, 101-primitive library, and 4-tier adapter framework---is available at \url{https://github.com/integritynoble/Physics_World_Model} under the MIT licence.
 
 % ========================================================================
 \begingroup
