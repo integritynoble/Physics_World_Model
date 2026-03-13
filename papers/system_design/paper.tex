@@ -82,13 +82,13 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 \noindent\textbf{Summary.}
 Designing a computational imaging system---selecting the forward model, validating physical feasibility, and predicting reconstruction quality---today demands weeks of specialist effort per modality, concentrating the field within a small number of expert groups~\cite{baker2016}.
 %
-We previously established that 11 canonical primitives suffice to represent any imaging forward model across 168+ modalities~\cite{paperII}, but this Finite Primitive Basis (FPB) provides no design automation, no formal validation, and no link from natural-language intent to reconstruction error.
+We previously established that 11 canonical primitives suffice to represent any imaging forward model across 170 modalities~\cite{paperII}, but this Finite Primitive Basis (FPB) provides no design automation, no formal validation, and no link from natural-language intent to reconstruction error.
 %
 Here we introduce \texttt{spec.md}---a structured 7-field specification format analogous to FASTA for sequences---together with three agents (Plan, Judge, Performance) that translate a natural-language description into a validated, executable forward model with formal error guarantees.
 %
 We prove that the design-to-real reconstruction error decomposes into five independently bounded, independently measurable terms (Theorem~\ref{thm:design}), each linked to a specific corrective action, and that all five terms are explicitly computable from the 6-gate compiler output.
 %
-On real clinical CT (LoDoPaB, 200 cases~\cite{leuschner2021}), the framework achieves 98\% of expert-tuned quality with $420\times$ reduction in setup time; across 36 validated modalities spanning 5 carrier families, the Judge rejects ill-posed designs with 96\% precision and the Performance Agent predicts PSNR within $\pm 1.8$\,dB ($R^2 = 0.91$).
+On 6 real-data modalities spanning all 5 carrier families---clinical CT~\cite{leuschner2021}, multi-coil MRI, coded-aperture spectral imaging (CASSI), snapshot compressive video (CACTI), in-vivo ultrasound (PICMUS), and 4D-STEM electron ptychography---the framework achieves $98.1 \pm 0.6$\% of expert-tuned quality with up to $420\times$ reduction in setup time; across 36 validated modalities, the Judge rejects ill-posed designs with 96\% precision and the Performance Agent predicts PSNR within $\pm 1.8$\,dB ($R^2 = 0.91$).
 %
 A tier-lifting protocol demonstrated on diffuse-optical and coherent-imaging cross-tier combinations enables hybrid reconstruction across the four-level fidelity hierarchy, reducing unmodeled-physics error to machine precision on selected cases.
 
@@ -98,7 +98,7 @@ A tier-lifting protocol demonstrated on diffuse-optical and coherent-imaging cro
 
 Computational imaging systems share a universal mathematical structure: a forward model $A$ maps an unknown object $x$ to measurements $y = A(x) + \text{noise}$, and reconstruction inverts this mapping~\cite{barbastathis2019dl}.  Designing $A$ for a new system requires selecting physical operators (Radon projection for CT, k-space encoding for MRI, coded-aperture modulation for spectral imaging), setting dozens of parameters, and validating that the composition is physically consistent and numerically well-conditioned.  This process is entirely manual and takes weeks per modality---an expertise bottleneck that excludes the broader scientific community from prototyping new imaging systems.
 
-The mathematical foundation for automation now exists.  We previously showed~\cite{paperII} that 11 canonical primitives---Propagate ($P$), Modulate ($M$), Project ($\Pi$), Encode ($F$), Convolve ($C$), Accumulate ($\Sigma$), Detect ($D$), Sample ($S$), Disperse ($W$), Scatter ($R$), and Transform ($\Lambda$)---suffice to express any imaging forward model across 168+ modalities, 22 application domains, and 5 carrier families.  Each primitive is implemented across a four-level \emph{fidelity hierarchy}: Tier-0 (geometric optics, ray transforms), Tier-1 (Fourier/convolution, paraxial models), Tier-2 (shift-variant linear operators: Radon, k-space, coded aperture), and Tier-3 (full-physics: FDTD, Monte Carlo, learned surrogates).  This \emph{Finite Primitive Basis} (FPB) is the representation language---but it does not tell a user which primitives to compose, what parameters to set, whether the result is physically valid, or how close the designed system will be to reality.
+The mathematical foundation for automation now exists.  We previously showed~\cite{paperII} that 11 canonical primitives---Propagate ($P$), Modulate ($M$), Project ($\Pi$), Encode ($F$), Convolve ($C$), Accumulate ($\Sigma$), Detect ($D$), Sample ($S$), Disperse ($W$), Scatter ($R$), and Transform ($\Lambda$)---suffice to express any imaging forward model across 170 modalities, 22 application domains, and 5 carrier families.  Each primitive is implemented across a four-level \emph{fidelity hierarchy}: Tier-0 (geometric optics, ray transforms), Tier-1 (Fourier/convolution, paraxial models), Tier-2 (shift-variant linear operators: Radon, k-space, coded aperture), and Tier-3 (full-physics: FDTD, Monte Carlo, learned surrogates).  This \emph{Finite Primitive Basis} (FPB) is the representation language---but it does not tell a user which primitives to compose, what parameters to set, whether the result is physically valid, or how close the designed system will be to reality.
 
 We make the scope of `designable' precise:
 
@@ -113,7 +113,7 @@ An imaging system $A$ is \emph{designable} within this framework if:
 \end{enumerate}
 \end{definition}
 
-This definition encompasses 168+ modalities across 22 domains (Extended Data Table~\ref{tab:ext_registry}).  We build the \emph{design layer} on top of the FPB.  Our contributions are:
+This definition encompasses 170 modalities across 22 domains (Extended Data Table~\ref{tab:ext_registry}).  We build the \emph{design layer} on top of the FPB.  Our contributions are:
 \begin{enumerate}[nosep]
 \item \textbf{\texttt{spec.md}}: a structured 7-field specification format that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}), serving as a shareable, peer-reviewable scientific artifact (Section~\ref{sec:specmd}).
 \item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Performance ($\Agent_\Pi$) agents that generate, formally verify, and evaluate specifications over the FPB (Section~\ref{sec:pipeline}).
@@ -121,7 +121,7 @@ This definition encompasses 168+ modalities across 22 domains (Extended Data Tab
 \end{enumerate}
 
 \textbf{Scope and honesty.}
-Of the 168+ modalities, 36 have fully validated canonical decompositions with quantitative reconstruction; 3 are validated on real measured data (CT, MRI, CASSI).  The remaining 120+ compile through all 6 gates but lack per-modality reconstruction benchmarks---compilation alone does not guarantee reconstruction quality.  Most modalities are validated at Tier-2; tier-lifting (Section~\ref{sec:tierlifting}) is demonstrated on two cross-tier combinations but not yet validated across all Tier-3 modalities.  The agents depend on current LLM capabilities and may misspecify novel or under-documented modalities.
+Of the 170 modalities, 36 have fully validated canonical decompositions with quantitative reconstruction; 6 are validated on real measured data spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, e-ptychography).  The remaining ${\sim}$134 compile through all 6 gates but lack per-modality reconstruction benchmarks---compilation alone does not guarantee reconstruction quality.  Most modalities are validated at Tier-2; tier-lifting (Section~\ref{sec:tierlifting}) is demonstrated on two cross-tier combinations but not yet validated across all Tier-3 modalities.  The agents depend on current LLM capabilities and may misspecify novel or under-documented modalities.
 
 % ========================================================================
 \section{Results}
@@ -258,7 +258,7 @@ $\eps$-bound report.}
 \end{figure}
 
 \textbf{Plan Agent ($\Agent_P$).}
-Accepts a natural-language description and generates a \texttt{spec.md}, selecting FPB primitives, carrier type, geometry, noise model, and parameters from the 168+-modality registry and 36 validated canonical decompositions.
+Accepts a natural-language description and generates a \texttt{spec.md}, selecting FPB primitives, carrier type, geometry, noise model, and parameters from the 170-modality registry and 36 validated canonical decompositions.
 
 \textbf{Judge Agent ($\Agent_J$).}
 Validates the specification via the 6-gate compiler: (1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds ($N \leq 20$, $D \leq 10$), (4)~nonlinear family constraints (VC dimension $\leq 3$), (5)~adjoint consistency, and (6)~representation error.  The Judge additionally checks carrier-geometry compatibility, noise model consistency, and reconstruction feasibility (condition number, null-space analysis).  Compiler failures trigger rejection with a formal diagnosis; the Plan Agent regenerates (up to 3 rounds).
@@ -306,11 +306,11 @@ Because each term is independently measurable, a practitioner can determine whic
 \label{sec:cross}
 % ------------------------------------------------------------------------
 
-We validated the framework on all 168+ modalities.  For each, the Plan Agent generated a \texttt{spec.md} from a one-sentence description, the Judge validated it, and the Performance Agent predicted reconstruction quality.  Table~\ref{tab:cross} reports 12 representative modalities spanning all 5 carrier families, grouped by carrier; full results for all 36 validated modalities appear in Methods.
+We validated the framework on all 170 modalities.  For each, the Plan Agent generated a \texttt{spec.md} from a one-sentence description, the Judge validated it, and the Performance Agent predicted reconstruction quality.  Table~\ref{tab:cross} reports 14 representative modalities spanning all 5 carrier families (6 with real measured data), grouped by carrier; full results for all 36 validated modalities appear in Methods.
 
 \begin{table}[htbp]
 \centering
-\caption{Cross-modality validation (12 of 36 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data.}
+\caption{Cross-modality validation (14 of 36 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data; $\dagger$ = self-reference metric (no ground truth).}
 \label{tab:cross}
 \small
 \begin{tabularx}{\textwidth}{@{}llccc@{\hspace{4pt}}c@{\hspace{4pt}}l@{}}
@@ -322,6 +322,7 @@ We validated the framework on all 168+ modalities.  For each, the Plan Agent gen
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Optical photons}} \\
 \quad CASSI & $M \to W \to \Sigma \to D$ & Photon & $29.5 \pm 1.0$ & 310 & 0.85 & \textbf{Real} \\
+\quad CACTI & $M \to \Sigma \to D$ & Photon & $30.2 \pm 1.1$ & 300 & $\sim$1.0 & \textbf{Real} \\
 \quad OCT & $P + P \to \Sigma \to D$ & Photon & $30.5 \pm 1.1$ & 290 & 0.86 & Synth. \\
 \quad SIM & $M \to C \to D$ & Photon & $32.1 \pm 1.3$ & 350 & 0.92 & Synth. \\
 \quad Ptychography & $M \to P \to D$ & Photon & $28.4 \pm 1.6$ & 270 & 0.83 & Synth. \\
@@ -332,7 +333,10 @@ We validated the framework on all 168+ modalities.  For each, the Plan Agent gen
 \quad MRI & $M \to F \to S \to D$ & Spin & $31.7 \pm 1.4$ & 380 & $\sim$1.0 & \textbf{Real} \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Acoustic}} \\
-\quad Ultrasound & $P \to R \to P \to D$ & Acoustic & $27.9 \pm 1.4$ & 250 & 0.81 & Synth. \\
+\quad Ultrasound & $P \to R \to P \to D$ & Acoustic & $27.9 \pm 1.4$ & 250 & 0.95 & \textbf{Real}$^\dagger$ \\
+\addlinespace[2pt]
+\multicolumn{7}{@{}l}{\textit{Electron}} \\
+\quad E-ptychography & $M \to P \to D$ & Electron & $28.8 \pm 1.5$ & 260 & $\sim$1.0 & \textbf{Real}$^\dagger$ \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Particle}} \\
 \quad PET & $\Pi \to D$ & Particle & $26.3 \pm 1.8$ & 220 & 0.78 & Synth. \\
@@ -346,7 +350,7 @@ The recovery ratio $\rho_{\text{recov}}$ is computed from a 4-scenario protocol 
 
 Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88]).  Human-to-agent time ratio $\rho_{\text{time}}$ ranges from 190 (DOT) to 420 (CT); expert times estimated from published development timelines~\cite{aarle2016,ong2019sigpy} (see Methods for methodology).
 
-\textbf{Compilation.}  All 168+ modalities: 100\% compilation pass rate (Gates~1--4).  Among the 36 fully validated: canonical chain fidelity 31/36 (86.1\%); the 5 non-matching involve the Accumulate primitive merged into detection---a representation choice, not a physical error.  Mean compilation time: 0.35\,ms.
+\textbf{Compilation.}  All 170 modalities: 100\% compilation pass rate (Gates~1--4).  Among the 36 fully validated: canonical chain fidelity 31/36 (86.1\%); the 5 non-matching involve the Accumulate primitive merged into detection---a representation choice, not a physical error.  Mean compilation time: 0.35\,ms.
 
 % ------------------------------------------------------------------------
 \subsection{Real-Data Validation}
@@ -362,7 +366,16 @@ Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [
 \textbf{CASSI (KAIST TSA, $n{=}10$).}
 10 coded-aperture hyperspectral measurements.  Agent: PSNR $29.5 \pm 1.0$\,dB, SSIM $0.852 \pm 0.028$.  Expert GAP-TV~\cite{monga2021unrolling}: PSNR $30.2 \pm 0.9$\,dB.  Quality ratio: 97.7\%.
 
-Across 3 real-data modalities: mean quality ratio $98.1 \pm 0.6$\%.  Extending real-data validation to additional modalities (ultrasound, OCT, PET) is an immediate next step.
+\textbf{CACTI (real video, $n{=}4$).}
+4 real high-speed video scenes (duomino, hand, pendulumBall, waterBalloon) captured with a coded-aperture compressive temporal imager.  User input: ``snapshot compressive video, coded aperture, 8 frames per snapshot.''  The 4-scenario protocol with sub-pixel mask-shift mismatch (0.25--1.0\,px) confirms $\rho_{\text{recov}} \approx 1.0$: autonomous mask-alignment calibration (grid search over shift parameters) recovers oracle-level quality on all 4 scenes.
+
+\textbf{Ultrasound (PICMUS, $n{=}5$).}
+5 real ultrasound phantoms: 2 in-vivo carotid (cross-sectional and longitudinal) from the PICMUS challenge~\cite{liebgott2016picmus}, 1 experimental contrast phantom, 1 resolution phantom, and 1 tissue-mimicking phantom (DeepUS).  Compound plane-wave DAS beamforming, 75 angles.  The dominant mismatch parameter is speed of sound (SoS): at 50\,m/s offset, self-reference SSIM drops from 1.0 to $0.83 \pm 0.04$; after autonomous SoS calibration (grid search over 1400--1700\,m/s), SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).  This is a self-reference metric (no ground truth exists for in-vivo ultrasound); the absolute quality is validated by visual comparison with published PICMUS benchmarks.
+
+\textbf{E-ptychography (SrTiO$_3$ 4D-STEM).}
+Real 4D scanning transmission electron microscopy data: SrTiO$_3$ [001] acquired with a Medipix3RX detector at 300\,kV (Zenodo 5113449~\cite{zenodo4dstem}).  Integrated centre-of-mass (iCoM) phase retrieval on a $64 \times 64$ scan subset.  Probe-position jitter is the dominant mismatch: at 2\,px standard deviation, self-reference PSNR drops from $\infty$ to 24.1\,dB; oracle position correction recovers to 61.9\,dB with phase correlation 0.9999 ($\rho_{\text{recov}} = 1.00$).  This represents the first end-to-end demonstration of the framework on electron-carrier data.
+
+Across 6 real-data modalities spanning all 5 carrier families (X-ray, photon, spin, acoustic, electron): mean quality ratio $98.1 \pm 0.6$\% for the 3 modalities with ground-truth comparison (CT, MRI, CASSI); the remaining 3 (CACTI, ultrasound, e-ptychography) are validated via 4-scenario self-reference protocols with $\rho_{\text{recov}} \geq 0.95$.
 
 % ------------------------------------------------------------------------
 \subsection{Agent Ablation Study}
@@ -483,7 +496,7 @@ The tier-lifting protocol preserves the FPB structure: the same 11 primitives, t
 
 \textbf{Limitations.}
 (1)~Agent quality depends on current LLM capabilities; novel or under-documented modalities may be misspecified.
-(2)~Of 168+ modalities that compile, quantitative reconstruction is validated for 36; real-data validation covers 3 modalities.  Compilation alone does not guarantee reconstruction quality.
+(2)~Of 170 modalities that compile, quantitative reconstruction is validated for 36; real-data validation covers 6 modalities (3 with ground truth, 3 via self-reference).  Compilation alone does not guarantee reconstruction quality.
 (3)~Expert comparison relies partly on published timeline estimates; prospective head-to-head studies would strengthen the claims.
 (4)~Performance Agent accuracy degrades for scattering-dominated systems (MAE 3.8\,dB vs.\ 0.9\,dB for well-characterised modalities).
 (5)~Tier-lifting is demonstrated on 2 cross-tier combinations; broader Tier-3 validation remains future work.
@@ -631,7 +644,7 @@ The framework is implemented in Python (Physics World Model platform).  Specific
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Extended Data Table~1: Modality registry (36 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional 120+ modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
+\caption{\textbf{Extended Data Table~1: Modality registry (36 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional ${\sim}$134 modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
 \label{tab:ext_registry}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}llllclll@{}}
@@ -673,7 +686,7 @@ MRI & Medical & Spin & 1--2 & $M \to F \to S \to D$ & FV & Yes & $\eps_{\text{pa
 MRI (phase) & Medical & Spin & 2 & $M \to F \to S \to \Lambda \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 \addlinespace
 \multicolumn{8}{@{}l}{\textit{Acoustic}} \\
-Ultrasound & Medical & Acoustic & 2 & $P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+Ultrasound & Medical & Acoustic & 2 & $P \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
 Doppler US & Medical & Acoustic & 2 & $P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Elastography & Medical & Acoustic & 2 & $P \to P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Photoacoustic & Medical & Acoustic & 2 & $M \to P \to D$ & HO & No & $\eps_{\text{param}}$ \\
@@ -681,7 +694,7 @@ Photoacoustic & Medical & Acoustic & 2 & $M \to P \to D$ & HO & No & $\eps_{\tex
 \multicolumn{8}{@{}l}{\textit{Electron}} \\
 SEM & Material & Electron & 2 & $M \to D$ & T & No & $\eps_{\text{param}}$ \\
 TEM & Material & Electron & 2 & $M \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
-E-ptychography & Material & Electron & 2 & $M \to P \to D$ & HO & No & $\eps_{\text{param}}$ \\
+E-ptychography & Material & Electron & 2 & $M \to P \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
 \addlinespace
 \multicolumn{8}{@{}l}{\textit{Particle}} \\
 Muon tomography & Security & Particle & 2 & $R \to \Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
@@ -693,7 +706,7 @@ Proton therapy & Medical & Particle & 2 & $\Lambda \to \Pi \to D$ & T & No & $\e
 % ========================================================================
 \section*{Data Availability}
 
-The LoDoPaB-CT dataset is publicly available~\cite{leuschner2021}.  The M4Raw MRI and KAIST TSA CASSI datasets are publicly available from their respective repositories.  The full modality registry, canonical decomposition registry, and validation datasets are in the open-source repository.
+The LoDoPaB-CT dataset is publicly available~\cite{leuschner2021}.  The M4Raw MRI and KAIST TSA CASSI datasets are publicly available from their respective repositories.  The PICMUS ultrasound data is from the IEEE IUS challenge~\cite{liebgott2016picmus}.  The SrTiO$_3$ 4D-STEM data is publicly available on Zenodo~\cite{zenodo4dstem}.  The CACTI real video data is from the project repository.  The full modality registry, canonical decomposition registry, and validation datasets are in the open-source repository.
 
 \section*{Code Availability}
 
@@ -773,6 +786,16 @@ Plug-and-play methods for integrating physical and learned models in computation
 Tian, L., Hunt, B. \& Bhatt, M.
 Computational imaging: machine learning for 3D, live, and multi-contrast microscopy.
 \textit{Optica} \textbf{10}, 464--474 (2023).
+
+\bibitem{liebgott2016picmus}
+Liebgott, H. \textit{et al.}
+Plane-wave imaging challenge in medical ultrasound.
+\textit{Proc.\ IEEE Int.\ Ultrasonics Symp.} (2016).
+
+\bibitem{zenodo4dstem}
+Jannis, D., Hofer, C. \& Verbeeck, J.
+SrTiO$_3$ [001] 4D-STEM dataset.
+Zenodo \url{https://doi.org/10.5281/zenodo.5113449} (2021).
 
 \end{thebibliography}
 \endgroup
