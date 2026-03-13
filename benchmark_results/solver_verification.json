@@ -1,0 +1,503 @@
+{
+  "timestamp": "2026-03-13T08:27:35",
+  "platform": "local_cpu",
+  "solvers": {
+    "ct__fbp_ramlak": {
+      "status": "verified",
+      "psnr_db": 12.94,
+      "ssim": 0.0406,
+      "exec_time": 0.26,
+      "shape": [
+        256,
+        256
+      ]
+    },
+    "ct__fbp_shepp_logan": {
+      "status": "verified",
+      "psnr_db": 13.78,
+      "ssim": 0.1064,
+      "exec_time": 0.165,
+      "shape": [
+        256,
+        256
+      ]
+    },
+    "ct__sart_10iter": {
+      "status": "verified",
+      "psnr_db": 13.75,
+      "ssim": 0.4289,
+      "exec_time": 52.844,
+      "shape": [
+        256,
+        256
+      ]
+    },
+    "mri__zero_filled_manual": {
+      "status": "verified",
+      "psnr_db": 18.43,
+      "ssim": 0.2961,
+      "exec_time": 0.001,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "mri__zero_filled_solver": {
+      "status": "verified",
+      "psnr_db": 18.43,
+      "ssim": 0.2961,
+      "exec_time": 0.079,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "mri__cs_wavelet": {
+      "status": "verified",
+      "psnr_db": 23.78,
+      "ssim": 0.6524,
+      "exec_time": 0.045,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "mri__sense": {
+      "status": "verified",
+      "psnr_db": 18.42,
+      "ssim": 0.2971,
+      "exec_time": 0.062,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "rl__20iter": {
+      "status": "verified",
+      "psnr_db": 22.0,
+      "ssim": 0.5723,
+      "exec_time": 0.032,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "rl__50iter": {
+      "status": "verified",
+      "psnr_db": 22.01,
+      "ssim": 0.5681,
+      "exec_time": 0.085,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "fista__l2": {
+      "status": "verified",
+      "psnr_db": 18.41,
+      "ssim": 0.2289,
+      "exec_time": 0.117,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "classical__least_squares": {
+      "status": "verified",
+      "psnr_db": 21.03,
+      "ssim": 0.6004,
+      "exec_time": 0.262,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "cs__tval3": {
+      "status": "verified",
+      "psnr_db": -Infinity,
+      "ssim": NaN,
+      "exec_time": 0.714,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "cs__ista": {
+      "status": "verified",
+      "psnr_db": 13.04,
+      "ssim": 0.1233,
+      "exec_time": 1.215,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "cs__fista": {
+      "status": "verified",
+      "psnr_db": 9.76,
+      "ssim": -0.0158,
+      "exec_time": 1.207,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "cs__admm_tv": {
+      "status": "verified",
+      "psnr_db": 7.04,
+      "ssim": -0.0043,
+      "exec_time": 1.01,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "lensless__wiener_manual": {
+      "status": "verified",
+      "psnr_db": 13.42,
+      "ssim": 0.2582,
+      "exec_time": 0.0,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "lensless__tikhonov": {
+      "status": "verified",
+      "psnr_db": -3.65,
+      "ssim": 0.0108,
+      "exec_time": 0.0,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "lensless__admm_tv": {
+      "status": "verified",
+      "psnr_db": 11.81,
+      "ssim": 0.1653,
+      "exec_time": 0.058,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "holography__angular_spectrum": {
+      "status": "verified",
+      "psnr_db": 18.46,
+      "ssim": 0.2702,
+      "exec_time": 0.0,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "phase_retrieval__gs": {
+      "status": "verified",
+      "psnr_db": 56.64,
+      "ssim": 0.9997,
+      "exec_time": 0.037,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "phase_retrieval__gs_support": {
+      "status": "verified",
+      "psnr_db": 8.71,
+      "ssim": 0.0537,
+      "exec_time": 0.045,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "pnp__hqs": {
+      "status": "verified",
+      "psnr_db": 19.47,
+      "ssim": 0.5138,
+      "exec_time": 0.003,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "pnp__admm": {
+      "status": "verified",
+      "psnr_db": 21.38,
+      "ssim": 0.4938,
+      "exec_time": 0.002,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "pnp__fista": {
+      "status": "verified",
+      "psnr_db": 15.93,
+      "ssim": 0.4451,
+      "exec_time": 0.001,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "pnp__hqs_nlm": {
+      "status": "verified",
+      "psnr_db": 21.12,
+      "ssim": 0.6824,
+      "exec_time": 0.044,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "dot__born_approx": {
+      "status": "verified",
+      "psnr_db": 10.77,
+      "ssim": 0.0387,
+      "exec_time": 0.001,
+      "shape": [
+        16,
+        16
+      ]
+    },
+    "photoacoustic__backprojection": {
+      "status": "verified",
+      "psnr_db": 13.78,
+      "ssim": 0.2623,
+      "exec_time": 0.005,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "oct__fft_recon": {
+      "status": "verified",
+      "psnr_db": 14.26,
+      "ssim": 0.1652,
+      "exec_time": 0.0,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "gap_tv__cacti": {
+      "status": "verified",
+      "psnr_db": 6.91,
+      "ssim": -1.0,
+      "exec_time": 0.018,
+      "shape": [
+        4,
+        32,
+        32
+      ]
+    },
+    "spc__admm": {
+      "status": "verified",
+      "psnr_db": 11.46,
+      "ssim": 0.2589,
+      "exec_time": 0.034,
+      "shape": [
+        16,
+        16
+      ]
+    },
+    "spc__fista_l1": {
+      "status": "error",
+      "error": "expected scalar type Double but found Float",
+      "exec_time": 0.01
+    },
+    "sim__wiener": {
+      "status": "verified",
+      "psnr_db": 6.66,
+      "ssim": 0.038,
+      "exec_time": 0.005,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "ptychography__epie": {
+      "status": "verified",
+      "psnr_db": 2.35,
+      "ssim": 0.0693,
+      "exec_time": 0.044,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "fpm__sequential": {
+      "status": "verified",
+      "psnr_db": 13.21,
+      "ssim": 0.3441,
+      "exec_time": 0.054,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "flim__phasor": {
+      "status": "verified",
+      "psnr_db": 22.38,
+      "ssim": 0.9788,
+      "exec_time": 0.001,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "flim__mle": {
+      "status": "verified",
+      "psnr_db": 17.31,
+      "ssim": 0.9701,
+      "exec_time": 0.022,
+      "shape": [
+        32,
+        32
+      ]
+    },
+    "integral__depth": {
+      "status": "error",
+      "error": "too many values to unpack (expected 2)",
+      "exec_time": 0.0
+    },
+    "light_field__shift_sum": {
+      "status": "verified",
+      "psnr_db": 13.43,
+      "ssim": 0.2602,
+      "exec_time": 1.364,
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "lightsheet__fourier_notch": {
+      "status": "verified",
+      "psnr_db": 14.54,
+      "ssim": 0.1245,
+      "exec_time": 0.0,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "lightsheet__wavelet": {
+      "status": "verified",
+      "psnr_db": 21.21,
+      "ssim": 0.2333,
+      "exec_time": 0.001,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "lightsheet__vsnr": {
+      "status": "verified",
+      "psnr_db": 17.78,
+      "ssim": 0.1344,
+      "exec_time": 0.062,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "panorama__laplacian_fusion": {
+      "status": "verified",
+      "psnr_db": 37.52,
+      "ssim": 0.9972,
+      "exec_time": 0.007,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "panorama__guided_fusion": {
+      "status": "verified",
+      "psnr_db": 20.94,
+      "ssim": 0.8163,
+      "exec_time": 0.002,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "denoising__gaussian_sigma1": {
+      "status": "verified",
+      "psnr_db": 24.28,
+      "ssim": 0.4305,
+      "exec_time": 0.001,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "denoising__gaussian_sigma2": {
+      "status": "verified",
+      "psnr_db": 22.07,
+      "ssim": 0.5292,
+      "exec_time": 0.0,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "denoising__median_3x3": {
+      "status": "verified",
+      "psnr_db": 25.1,
+      "ssim": 0.3515,
+      "exec_time": 0.003,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "denoising__nlm": {
+      "status": "verified",
+      "psnr_db": 30.84,
+      "ssim": 0.7142,
+      "exec_time": 0.017,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "denoising__bm3d": {
+      "status": "verified",
+      "psnr_db": 30.84,
+      "ssim": 0.7142,
+      "exec_time": 0.022,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "wiener__motion_blur": {
+      "status": "verified",
+      "psnr_db": 10.1,
+      "ssim": 0.0088,
+      "exec_time": 0.001,
+      "shape": [
+        128,
+        128
+      ]
+    },
+    "precomputed__baseline_pattern": {
+      "status": "verified",
+      "psnr_db": 26.09,
+      "ssim": 0.5901,
+      "exec_time": 0.0,
+      "shape": [
+        64,
+        64
+      ]
+    }
+  },
+  "summary": {
+    "verified": 48,
+    "errors": 2,
+    "skipped": 0,
+    "total_solvers": 50
+  }
+}
