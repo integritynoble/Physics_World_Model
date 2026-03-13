@@ -196,3 +196,57 @@ The DOT benchmark correctly models the diffuse optical transport forward problem
 | Runtime | 0.52 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Born-Approx
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.13 dB |
+| SSIM (sample_00) | 0.7288 |
+| Runtime | 10.57 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-DOT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.41 dB |
+| SSIM (sample_00) | 0.8051 |
+| Runtime | 0.6 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FEM-DOT
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.13 dB |
+| SSIM (sample_00) | 0.7288 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**

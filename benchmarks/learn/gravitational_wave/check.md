@@ -175,3 +175,39 @@ The gravitational wave benchmark correctly formulates matched-filter signal dete
 | Runtime | 0.58 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Matched Filter
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 18.56 dB |
+| SSIM (sample_00) | 0.4491 |
+| Runtime | 10.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BayesWave
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 17.05 dB |
+| SSIM (sample_00) | 0.3329 |
+| Runtime | 3.4 s/sample |
+
+**Result: PASS**

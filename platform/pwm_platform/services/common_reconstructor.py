@@ -455,9 +455,16 @@ def _fbp_reconstruct(
         from skimage.restoration import denoise_tv_chambolle
         from skimage.transform import iradon
 
-        sino_denoised = gaussian_filter(
-            sinogram.astype(np.float64), sigma=[0.5, 2.0]
-        )
+        sino_arr = sinogram.astype(np.float64)
+        n_views_fbp, n_det_fbp = sino_arr.shape
+        # Adaptive filtering: use lighter smoothing for many-view (less sparse) sinograms
+        if n_views_fbp >= 90:
+            det_sigma, tv_wt = 0.5, 0.05
+        elif n_views_fbp >= 50:
+            det_sigma, tv_wt = 1.0, 0.08
+        else:
+            det_sigma, tv_wt = 2.0, 0.12
+        sino_denoised = gaussian_filter(sino_arr, sigma=[0.5, det_sigma])
         iradon_kwargs = {"theta": angles, "filter_name": "ramp", "interpolation": "linear"}
         if output_size is not None:
             iradon_kwargs["output_size"] = output_size
@@ -467,7 +474,7 @@ def _fbp_reconstruct(
         lo, hi = recon.min(), recon.max()
         if hi - lo > 1e-12:
             recon_norm = (recon - lo) / (hi - lo)
-            recon_tv = denoise_tv_chambolle(recon_norm, weight=0.15, max_num_iter=200)
+            recon_tv = denoise_tv_chambolle(recon_norm, weight=tv_wt, max_num_iter=200)
             recon = recon_tv * (hi - lo) + lo
 
         return np.clip(recon, 0, None)
@@ -655,7 +662,11 @@ def _mri_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
     - Zero-filled iFFT + RSS (root-sum-of-squares) for multi-coil
     - Optional TV post-processing for CS algorithms
     """
-    y = data["y"]  # (n_coils, H, W) complex or (H, W) complex
+    # Support canonical MRI dataset format (kspace_undersampled key)
+    y = data.get("y")
+    if y is None:
+        y = data.get("kspace_undersampled")
+    coil_maps = data.get("coil_maps")
     algo_lower = algo_name.lower()
 
     if np.iscomplexobj(y):
@@ -1079,6 +1090,21 @@ def _dispatch_reconstruction(
     H = data.get("H_ideal")
     angles = data.get("angles")
 
+    # Handle alternative key names used by some canonical datasets
+    if y is None:
+        alt = data.get("sinogram_measured")
+        if alt is None:
+            alt = data.get("sinogram_ideal")
+        y = alt
+    if y is None:
+        # MRI canonical datasets use kspace_undersampled
+        y = data.get("kspace_undersampled")
+    if angles is None:
+        angles = data.get("angles_nominal")
+    if H is None and angles is None:
+        # Some datasets store angles directly as H_ideal alias
+        pass
+
     if y is None:
         raise ValueError("No measurement data found")
 
@@ -1126,10 +1152,9 @@ def _dispatch_reconstruction(
             if algo_name in _RUNNABLE_PHYSICS_INFORMED:
                 return _piner_ct_reconstruct(y, angle_arr)
             # TV-ADMM, TV-CS, PnP-ADMM for CT: iterative TV reconstruction
-            # Only use iterative TV when n_views is sufficient (≥90) for stable POCS;
-            # for very sparse views (< 90), FBP is more reliable
+            # Use iterative TV for ≥30 views; for fewer views FBP is more reliable
             n_views_sino = y.shape[0]
-            if (n_views_sino >= 90 and
+            if (n_views_sino >= 30 and
                     any(kw in algo_lower_s for kw in ("tv-admm", "tv_admm", "tv-cs", "tv_cs",
                                                        "pnp-admm", "pnp_admm", "admm",
                                                        "sart", "sart-tv", "art"))):

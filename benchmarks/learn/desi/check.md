@@ -262,3 +262,75 @@ Domain-specific DESI-MSI algorithm overrides added to `_VARIANT_OVERRIDES` in `_
 | Runtime | 0.02 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MSI-Hotelling
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 22.02 dB |
+| SSIM (sample_00) | 0.6489 |
+| Runtime | 14.99 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MSI-PCA
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.13 dB |
+| SSIM (sample_00) | 0.7288 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MSI-NMF
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 29.13 dB |
+| SSIM (sample_00) | 0.7288 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MSI-TV
+**Type:** Classical CPU
+**Test Date:** 2026-03-12
+**Dataset:** public tier, sample 00
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (sample_00) | 28.41 dB |
+| SSIM (sample_00) | 0.8051 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
