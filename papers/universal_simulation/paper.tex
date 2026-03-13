@@ -73,7 +73,7 @@ within a Formal Simulability Class}\\[18pt]
 
 % ---- Summary (Nature-style: one referenced paragraph for non-specialists) ----
 \noindent\textbf{Summary.}
-Scientists routinely build bespoke numerical solvers---finite-element codes for bridges, quantum-chemistry packages for molecules, epidemiological simulators for disease spread---each correct for one class of problems but unusable for any other~\cite{baker2016}. Here we define a \emph{simulability class} $\mathfrak{S}$: the set of scientific problems that are finitely specifiable, numerically approximable, and have explicit observables and error metrics. We prove that four mathematical obstructions---logical undecidability, real uncomputability, quantum measurement irreducibility, and infinite-precision barriers---sharply delimit $\mathfrak{S}$ from above (Proposition~\ref{prop:boundary}). Within $\mathfrak{S}$, we show that structured specifications (\texttt{spec.md} files), processed by a three-agent pipeline (Plan, Validation, Computation) over 12 computational primitives, produce solutions with guaranteed error $\norm{\hat{x} - x^*} \leq \varepsilon$ for any prescribed tolerance (Theorem~\ref{thm:main}). Ablation experiments across 12 scientific domains demonstrate that each agent is necessary for reliable simulation; real clinical CT data from the LoDoPaB dataset~\cite{leuschner2021} show the framework matches a domain expert's five-day result in 12 minutes. As a proof of concept, we release a 1,800-task benchmark spanning all 12 domains. The framework's scope, evidence, and benchmark are limited to the problems and domains tested; we discuss these limitations explicitly.
+Scientists routinely build bespoke numerical solvers---finite-element codes for bridges, quantum-chemistry packages for molecules, epidemiological simulators for disease spread---each correct for one class of problems but unusable for any other~\cite{baker2016}. Here we define a \emph{simulability class} $\mathfrak{S}$: the set of scientific problems that are finitely specifiable, numerically approximable, and have explicit observables and error metrics. We prove that four mathematical obstructions---logical undecidability, real uncomputability, quantum measurement irreducibility, and infinite-precision barriers---sharply delimit $\mathfrak{S}$ from above (Proposition~\ref{prop:boundary}). Within $\mathfrak{S}$, we show that natural-language problem descriptions, translated into structured specifications (\texttt{spec.md} files) by a Plan Agent and processed by a three-agent pipeline (Plan, Validation, Computation) over 12 computational primitives, produce solutions with guaranteed error $\norm{\hat{x} - x^*} \leq \varepsilon$ for any prescribed tolerance (Theorem~\ref{thm:main}). Ablation experiments across 12 scientific domains demonstrate that each agent is necessary for reliable simulation; real clinical CT data from the LoDoPaB dataset~\cite{leuschner2021} show the framework matches a domain expert's five-day result in 12 minutes. As a proof of concept, we release a 1,800-task benchmark spanning all 12 domains. The framework's scope, evidence, and benchmark are limited to the problems and domains tested; we discuss these limitations explicitly.
 
 % ========================================================================
 \section{Introduction}
@@ -87,7 +87,7 @@ Here we present such a framework and rigorously characterize its scope. Our cont
 \begin{enumerate}[nosep]
 \item A formally defined \emph{simulability class} $\mathfrak{S}$ and its sharp boundary against four mathematical obstructions (Proposition~\ref{prop:boundary}).
 \item A \emph{bounded-error realizability} theorem: for any $P \in \mathfrak{S}$ and any $\varepsilon > 0$, the framework produces $\hat{x}$ with $\norm{\hat{x} - x^*} \leq \varepsilon$ (Theorem~\ref{thm:main}).
-\item A \emph{specification-driven pipeline} in which \texttt{spec.md} files---not code---are the unit of scientific input, processed by three agents (Plan, Validation, Computation).
+\item A \emph{specification-driven pipeline} in which natural-language descriptions---not code---are the unit of scientific input; the Plan Agent generates structured \texttt{spec.md} files, which are then validated and executed by two further agents (Validation, Computation).
 \item Empirical validation across 12 domains including real clinical data, with ablation studies demonstrating each agent's necessity.
 \end{enumerate}
 
@@ -248,7 +248,7 @@ This theorem is scoped to $\mathfrak{S}$---it makes no claim about problems outs
 \label{sec:pipeline}
 % ------------------------------------------------------------------------
 
-The framework's central design choice is that the unit of scientific input is a \emph{specification}, not code. A \texttt{spec.md} file defines a scientific problem in six fields matching Definition~\ref{def:simulability}. Figure~\ref{fig:pipeline} shows the full pipeline; the three examples below span a PDE, an inverse problem, and an ODE system:
+The framework's central design choice is that the unit of scientific input is a \emph{specification}, not code. The user provides a natural-language problem description; the Plan Agent ($\Agent_P$) translates this into a structured \texttt{spec.md} file with six fields matching Definition~\ref{def:simulability}. Figure~\ref{fig:pipeline} shows the full pipeline; the three examples below show \texttt{spec.md} files generated by $\Agent_P$ for a PDE, an inverse problem, and an ODE system:
 
 \begin{quote}\small\ttfamily
 \# Specification: 2D Heat Conduction\\
@@ -283,7 +283,7 @@ observables: I(t) peak timing, S(200)\\
 tolerance: 1e-3
 \end{quote}
 
-Writing a \texttt{spec.md} requires domain knowledge but not numerical expertise. A biologist can specify an SIR model; the framework handles discretization, solver selection, and error control.
+The user need not write these specifications manually. A biologist describes ``I want to model an SIR epidemic with $\beta=0.3$''; $\Agent_P$ generates the \texttt{spec.md}, filling in the mathematical structure, boundary conditions, and tolerance. Domain knowledge is required; numerical expertise is not.
 
 \begin{figure}[htbp]
 \centering
@@ -294,9 +294,9 @@ Writing a \texttt{spec.md} requires domain knowledge but not numerical expertise
     spec/.style={box, fill=green!12, draw=green!50!black},
     arr/.style={-{Stealth[length=5pt]}, thick},
 ]
-\node[box, fill=gray!10] (nl) {\texttt{spec.md}};
+\node[box, fill=gray!10] (nl) {User\\Description};
 \node[agent, right=of nl] (af) {$\Agent_P$\\Plan};
-\node[spec, right=of af] (s1) {Typed\\$\Spec$};
+\node[spec, right=of af] (s1) {\texttt{spec.md}\\Typed $\Spec$};
 \node[agent, right=of s1] (av) {$\Agent_V$\\Validate};
 \node[spec, right=of av] (s2) {Certified\\$\Spec$};
 \node[agent, below=1cm of s2] (ac) {$\Agent_C$\\Compute};
@@ -314,12 +314,12 @@ Writing a \texttt{spec.md} requires domain knowledge but not numerical expertise
 \draw[arr, dashed, red!60!black] (av) -- (rej);
 \end{tikzpicture}
 \caption{\textbf{Specification-centered pipeline.}
-A \texttt{spec.md} is the sole input. $\Agent_P$ (Plan) parses it into a typed specification and selects primitives. $\Agent_V$ (Validation) checks well-posedness and classifies the problem within $\mathfrak{S}$ or rejects it. $\Agent_C$ (Computation) constructs a primitive DAG and executes it.}
+A natural-language problem description is the sole user input. $\Agent_P$ (Plan) generates a structured \texttt{spec.md} and types it into $\Spec$. $\Agent_V$ (Validation) checks well-posedness and classifies the problem within $\mathfrak{S}$ or rejects it. $\Agent_C$ (Computation) constructs a primitive DAG and executes it.}
 \label{fig:pipeline}
 \end{figure}
 
 \textbf{Plan Agent ($\Agent_P$).}
-Parses \texttt{spec.md} into a typed $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$, classifies the problem type, selects a numerical strategy, and identifies required primitives.
+Accepts a natural-language problem description from the user and generates a structured \texttt{spec.md}, producing a typed $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. Classifies the problem type, selects a numerical strategy, and identifies required primitives.
 
 \textbf{Validation Agent ($\Agent_V$).}
 Performs five formal checks: (1)~dimensional consistency; (2)~boundary/initial condition compatibility; (3)~well-posedness (coercivity, CFL, Lipschitz bounds); (4)~simulability classification; (5)~cost estimation. $\Agent_V$ operates by applying mathematical criteria---Hadamard's conditions, CFL bounds, coercivity tests---not by statistical pattern matching. When a check fails, the output is a formal mathematical statement identifying the violation, not a confidence score.
@@ -372,7 +372,7 @@ Key findings:
 \begin{itemize}[nosep]
 \item \textbf{Removing $\Agent_V$}: 5 of 12 specifications proceed with errors (missing initial conditions, incompatible BC, inconsistent units). None achieve bounded error. $\Agent_V$ also triggered 2 redesign cycles that caught subtle issues (under-resolved CFL, non-coercive weak form).
 \item \textbf{Replacing $\Agent_C$}: template solvers work for textbook problems (heat, Poisson, basic ODEs) but fail on non-standard compositions (CT, topology optimization, FSI, Brusselator).
-\item \textbf{Removing $\Agent_P$}: human experts average 48\,min per specification with errors in 3 of 12 cases.
+\item \textbf{Removing $\Agent_P$}: human experts must write \texttt{spec.md} manually, averaging 48\,min per specification with errors in 3 of 12 cases.
 \item \textbf{Hidden held-out tasks}: 4 problems not in the validation set (magnetohydrodynamics, Burgers' equation with shock, nonlinear Schr\"odinger, plate bending). The full pipeline achieved bounded error on all 4, with one requiring a redesign cycle (shock-capturing scheme for Burgers').
 \end{itemize}
 
@@ -411,7 +411,7 @@ Table~\ref{tab:domains} reports validation across 12 domains. The test set inclu
 \end{table}
 
 \textbf{Real-data validation: clinical CT.}
-We applied the framework to 200 cases from the LoDoPaB-CT dataset~\cite{leuschner2021}---real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise. The \texttt{spec.md} defines: Radon transform, Tikhonov + TV regularization, non-negativity. The framework generates a $G + \int + L + O + B$ DAG automatically.
+We applied the framework to 200 cases from the LoDoPaB-CT dataset~\cite{leuschner2021}---real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise. $\Agent_P$ generates a \texttt{spec.md} specifying: Radon transform, Tikhonov + TV regularization, non-negativity. The framework then produces a $G + \int + L + O + B$ DAG automatically.
 
 Results (mean $\pm$ s.d.\ over 200 cases): PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$, relative error $0.042 \pm 0.008$. Baselines: ASTRA Toolbox~\cite{aarle2016} configured by a domain expert achieves $32.1 \pm 1.1$\,dB / SSIM $0.903$; filtered back-projection (FBP, no expert tuning) achieves $25.3$\,dB / SSIM $0.712$; total-variation minimization (TV-only) achieves $30.2$\,dB / SSIM $0.864$. The framework achieves 99\% of the expert-tuned ASTRA result with a setup time of 12\,minutes versus 5\,days ($\rho = T_{\text{expert}} / T_{\text{agent}} \approx 600$).
 
@@ -432,7 +432,7 @@ As a proof of concept, we release a benchmark for the 12 validation domains:
 \item \textbf{Format}: \texttt{spec.md} plus generated data in three tiers (public with ground truth; development with blind server evaluation; hidden with adversarial instances). Different seeds per tier prevent overfitting.
 \item \textbf{Scoring}: relative error, PSNR, SSIM, and time-to-solution at threshold.
 \item \textbf{Scale}: 50 instances per domain per tier (1,800 tasks total), available at the project repository.
-\item \textbf{Extensibility}: researchers can submit new \texttt{spec.md} files to generate benchmarks for their domains. The format serves as an exchange standard for computational problems, analogous to FASTA for sequences or SMILES for molecules.
+\item \textbf{Extensibility}: researchers can submit new problem descriptions to generate \texttt{spec.md} files and benchmarks for their domains.
 \end{itemize}
 
 This benchmark is a proof of concept, not a claim of exhaustive coverage. Its scope is limited to the 12 domains tested. Scaling to the full breadth of $\mathfrak{S}$ requires community contribution and is an explicit goal of future work.
