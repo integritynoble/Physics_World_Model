@@ -55,17 +55,20 @@ def test_modality(mod_dir):
                 for key in sorted(f.keys()):
                     if not key.startswith("sample_"):
                         continue
-                    s = f[key]
-                    if "x_true" not in s or "reconstruction_baseline" not in s:
-                        continue
-                    x = s["x_true"][:]
-                    bl = s["reconstruction_baseline"][:]
-                    if x.shape != bl.shape:
-                        continue
-                    p = psnr(x, bl)
-                    s_val = ssim_simple(x, bl)
-                    psnr_vals.append(p)
-                    ssim_vals.append(s_val)
+                    try:
+                        s = f[key]
+                        if "x_true" not in s or "reconstruction_baseline" not in s:
+                            continue
+                        x = s["x_true"][:]
+                        bl = s["reconstruction_baseline"][:]
+                        if x.shape != bl.shape:
+                            continue
+                        p = psnr(x, bl)
+                        s_val = ssim_simple(x, bl)
+                        psnr_vals.append(p)
+                        ssim_vals.append(s_val)
+                    except Exception:
+                        continue  # Skip corrupted samples, not the whole file
         except Exception:
             continue
 

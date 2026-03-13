@@ -435,8 +435,8 @@
           ]
         },
         "precomputed_baseline": {
-          "psnr_db": 17.731215431186147,
-          "ssim": 0.9177169119841456,
+          "psnr_db": 18.744463365646336,
+          "ssim": 0.935404343059213,
           "status": "completed",
           "n_samples": 12
         }
@@ -988,29 +988,29 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 26.789472304176552,
-          "ssim": 0.958575978122156,
+          "psnr_db": 27.734128517794357,
+          "ssim": 0.965958335090157,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 26.789472304176552,
-          "ssim": 0.958575978122156,
+          "psnr_db": 27.734128517794357,
+          "ssim": 0.965958335090157,
           "exec_time_sec": 0.0009996891021728516,
           "algorithm_name": "Richardson-Lucy (SEM)"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 26.789472304176552,
-          "ssim": 0.958575978122156,
+          "psnr_db": 27.734128517794357,
+          "ssim": 0.965958335090157,
           "exec_time_sec": 0.0,
           "algorithm_name": "SEM-DL (SegNet) [proxy]"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 26.789472304176552,
-          "ssim": 0.958575978122156,
+          "psnr_db": 27.734128517794357,
+          "ssim": 0.965958335090157,
           "exec_time_sec": 0.0,
           "algorithm_name": "SEM-UNet [proxy]"
         }
@@ -1021,29 +1021,29 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 24.395298989576148,
-          "ssim": 0.9155374212838177,
+          "psnr_db": 24.65680555359305,
+          "ssim": 0.9208784546008055,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 24.395298989576148,
-          "ssim": 0.9155374212838177,
+          "psnr_db": 24.65680555359305,
+          "ssim": 0.9208784546008055,
           "exec_time_sec": 0.16666054725646973,
           "algorithm_name": "FISTA-L2 (CTF correction)"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 24.395298989576148,
-          "ssim": 0.9155374212838177,
+          "psnr_db": 24.65680555359305,
+          "ssim": 0.9208784546008055,
           "exec_time_sec": 0.0,
           "algorithm_name": "TEM-DL (ePIE-Net) [proxy]"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 24.395298989576148,
-          "ssim": 0.9155374212838177,
+          "psnr_db": 24.65680555359305,
+          "ssim": 0.9208784546008055,
           "exec_time_sec": 0.0,
           "algorithm_name": "TEM-UNet [proxy]"
         }
@@ -1054,36 +1054,36 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 24.135585432010956,
-          "ssim": 0.6919172351799759,
+          "psnr_db": 24.996825490373336,
+          "ssim": 0.7163437038900659,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 24.135585432010956,
-          "ssim": 0.6919172351799759,
+          "psnr_db": 24.996825490373336,
+          "ssim": 0.7163437038900659,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 24.135585432010956,
-          "ssim": 0.6919172351799759,
+          "psnr_db": 24.996825490373336,
+          "ssim": 0.7163437038900659,
           "exec_time_sec": 0.4743983745574951,
           "algorithm_name": "CARE"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 24.135585432010956,
-          "ssim": 0.6919172351799759,
+          "psnr_db": 24.996825490373336,
+          "ssim": 0.7163437038900659,
           "exec_time_sec": 0.31383180618286133,
           "algorithm_name": "CARE"
         },
         "small_gpu": {
           "status": "completed",
-          "psnr_db": 24.135585432010956,
-          "ssim": 0.6919172351799759,
+          "psnr_db": 24.996825490373336,
+          "ssim": 0.7163437038900659,
           "exec_time_sec": 0.42447328567504883,
           "algorithm_name": "CARE"
         }
@@ -1094,8 +1094,8 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 26.350787193501333,
-          "ssim": 0.5819137143733562,
+          "psnr_db": 27.139465907527708,
+          "ssim": 0.5894349534755053,
           "status": "completed",
           "n_samples": 12
         },
@@ -1233,8 +1233,8 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 24.75335409185752,
-          "ssim": 0.331416904277667,
+          "psnr_db": 25.73931394119323,
+          "ssim": 0.34935911987495655,
           "status": "completed",
           "n_samples": 12
         },
@@ -1250,29 +1250,29 @@
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 24.75335409185752,
-          "ssim": 0.331416904277667,
+          "psnr_db": 25.73931394119323,
+          "ssim": 0.34935911987495655,
           "exec_time_sec": 0.0,
           "algorithm_name": "Wiener-SIM"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 24.75335409185752,
-          "ssim": 0.331416904277667,
+          "psnr_db": 25.73931394119323,
+          "ssim": 0.34935911987495655,
           "exec_time_sec": 0.17899036407470703,
           "algorithm_name": "HiFi-SIM"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 24.75335409185752,
-          "ssim": 0.331416904277667,
+          "psnr_db": 25.73931394119323,
+          "ssim": 0.34935911987495655,
           "exec_time_sec": 0.15900039672851562,
           "algorithm_name": "fairSIM (open-source)"
         },
         "small_gpu": {
           "status": "completed",
-          "psnr_db": 24.75335409185752,
-          "ssim": 0.331416904277667,
+          "psnr_db": 25.73931394119323,
+          "ssim": 0.34935911987495655,
           "exec_time_sec": 0.17100000381469727,
           "algorithm_name": "Wiener-SIM (fast)"
         }
@@ -1283,10 +1283,10 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 29.657324956778258,
-          "ssim": 0.8076307597453031,
+          "psnr_db": 31.381967580534017,
+          "ssim": 0.8299298409311786,
           "status": "completed",
-          "n_samples": 12
+          "n_samples": 7
         },
         "rl_20iter": {
           "status": "completed",
@@ -1300,8 +1300,8 @@
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 29.657324956778258,
-          "ssim": 0.8076307597453031,
+          "psnr_db": 31.381967580534017,
+          "ssim": 0.8299298409311786,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy (STED)"
         }
@@ -1312,8 +1312,8 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 30.085244155869976,
-          "ssim": 0.961803285538959,
+          "psnr_db": 30.46085176775594,
+          "ssim": 0.9666720101170744,
           "status": "completed",
           "n_samples": 12
         },
@@ -1329,8 +1329,8 @@
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 30.085244155869976,
-          "ssim": 0.961803285538959,
+          "psnr_db": 30.46085176775594,
+          "ssim": 0.9666720101170744,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy (2P)"
         }
@@ -1784,29 +1784,29 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 21.418320569100448,
-          "ssim": 0.8425122095770549,
+          "psnr_db": 21.919450972739668,
+          "ssim": 0.8589925946197189,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 21.418320569100448,
-          "ssim": 0.8425122095770549,
+          "psnr_db": 21.919450972739668,
+          "ssim": 0.8589925946197189,
           "exec_time_sec": 0.1629929542541504,
           "algorithm_name": "FBP (SAR backprojection)"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 21.418320569100448,
-          "ssim": 0.8425122095770549,
+          "psnr_db": 21.919450972739668,
+          "ssim": 0.8589925946197189,
           "exec_time_sec": 0.0,
           "algorithm_name": "SAR-DL (PolSF) [proxy]"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 21.418320569100448,
-          "ssim": 0.8425122095770549,
+          "psnr_db": 21.919450972739668,
+          "ssim": 0.8589925946197189,
           "exec_time_sec": 0.0010313987731933594,
           "algorithm_name": "SAR-CNN [proxy]"
         }
@@ -1904,36 +1904,36 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 19.98882962653526,
-          "ssim": 0.18712607890523003,
+          "psnr_db": 20.169786304879583,
+          "ssim": 0.1887668199795108,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 19.98882962653526,
-          "ssim": 0.18712607890523003,
+          "psnr_db": 20.169786304879583,
+          "ssim": 0.1887668199795108,
           "exec_time_sec": 0.0,
           "algorithm_name": "Back Projection"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 19.98882962653526,
-          "ssim": 0.18712607890523003,
+          "psnr_db": 20.169786304879583,
+          "ssim": 0.1887668199795108,
           "exec_time_sec": 0.0,
           "algorithm_name": "Time Reversal [proxy]"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 19.98882962653526,
-          "ssim": 0.18712607890523003,
+          "psnr_db": 20.169786304879583,
+          "ssim": 0.1887668199795108,
           "exec_time_sec": 0.0,
           "algorithm_name": "Deep-PAT [proxy]"
         },
         "small_gpu": {
           "status": "completed",
-          "psnr_db": 19.98882962653526,
-          "ssim": 0.18712607890523003,
+          "psnr_db": 20.169786304879583,
+          "ssim": 0.1887668199795108,
           "exec_time_sec": 0.0,
           "algorithm_name": "Deep-PAT [proxy]"
         }
@@ -2021,22 +2021,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 23.108892971971247,
-          "ssim": 0.9296272864726958,
+          "psnr_db": 23.67086244141961,
+          "ssim": 0.9368258770518788,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 23.108892971971247,
-          "ssim": 0.9296272864726958,
+          "psnr_db": 23.67086244141961,
+          "ssim": 0.9368258770518788,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 23.108892971971247,
-          "ssim": 0.9296272864726958,
+          "psnr_db": 23.67086244141961,
+          "ssim": 0.9368258770518788,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -2120,10 +2120,10 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 23.17347437923728,
-          "ssim": 0.874158243104351,
+          "psnr_db": 25.95029569493944,
+          "ssim": 0.90302767109287,
           "status": "completed",
-          "n_samples": 12
+          "n_samples": 2
         },
         "traditional_cpu": {
           "status": "completed",
@@ -2212,22 +2212,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 11.789387754908754,
-          "ssim": 0.01980409477950466,
+          "psnr_db": 13.055880447721206,
+          "ssim": 0.035588311116934744,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 11.789387754908754,
-          "ssim": 0.01980409477950466,
+          "psnr_db": 13.055880447721206,
+          "ssim": 0.035588311116934744,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 11.789387754908754,
-          "ssim": 0.01980409477950466,
+          "psnr_db": 13.055880447721206,
+          "ssim": 0.035588311116934744,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -2311,22 +2311,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 25.949438509556582,
-          "ssim": 0.9542473984028689,
+          "psnr_db": 26.896479763330806,
+          "ssim": 0.972159940372917,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 25.949438509556582,
-          "ssim": 0.9542473984028689,
+          "psnr_db": 26.896479763330806,
+          "ssim": 0.972159940372917,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 25.949438509556582,
-          "ssim": 0.9542473984028689,
+          "psnr_db": 26.896479763330806,
+          "ssim": 0.972159940372917,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -2707,22 +2707,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 27.887303013208648,
-          "ssim": 0.9908987982345301,
+          "psnr_db": 29.9036407946826,
+          "ssim": 0.9939258717370669,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 27.887303013208648,
-          "ssim": 0.9908987982345301,
+          "psnr_db": 29.9036407946826,
+          "ssim": 0.9939258717370669,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 27.887303013208648,
-          "ssim": 0.9908987982345301,
+          "psnr_db": 29.9036407946826,
+          "ssim": 0.9939258717370669,
           "exec_time_sec": 0.13899874687194824,
           "algorithm_name": "CARE"
         }
@@ -3181,22 +3181,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 7.638738938080614,
-          "ssim": 0.060769851793776086,
+          "psnr_db": 8.744569272008548,
+          "ssim": 0.11166326932148761,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 7.638738938080614,
-          "ssim": 0.060769851793776086,
+          "psnr_db": 8.744569272008548,
+          "ssim": 0.11166326932148761,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 7.638738938080614,
-          "ssim": 0.060769851793776086,
+          "psnr_db": 8.744569272008548,
+          "ssim": 0.11166326932148761,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -3240,22 +3240,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 31.16020804790141,
-          "ssim": 0.9911327455667002,
+          "psnr_db": 34.573392225584435,
+          "ssim": 0.9959423026246621,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 31.16020804790141,
-          "ssim": 0.9911327455667002,
+          "psnr_db": 34.573392225584435,
+          "ssim": 0.9959423026246621,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 31.16020804790141,
-          "ssim": 0.9911327455667002,
+          "psnr_db": 34.573392225584435,
+          "ssim": 0.9959423026246621,
           "exec_time_sec": 0.15999722480773926,
           "algorithm_name": "CARE"
         }
@@ -3603,8 +3603,8 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 13.491325167467599,
-          "ssim": 0.18208242675935107,
+          "psnr_db": 14.654825409788032,
+          "ssim": 0.18063832062173865,
           "status": "completed",
           "n_samples": 12
         },
@@ -3735,22 +3735,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 28.28746768207888,
-          "ssim": 0.8468192692557429,
+          "psnr_db": 28.981851302771684,
+          "ssim": 0.8624472009044676,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 28.28746768207888,
-          "ssim": 0.8468192692557429,
+          "psnr_db": 28.981851302771684,
+          "ssim": 0.8624472009044676,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 28.28746768207888,
-          "ssim": 0.8468192692557429,
+          "psnr_db": 28.981851302771684,
+          "ssim": 0.8624472009044676,
           "exec_time_sec": 0.1849980354309082,
           "algorithm_name": "CARE"
         }
@@ -3860,22 +3860,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 31.00066909942679,
-          "ssim": 0.9931641367829362,
+          "psnr_db": 34.647835540544555,
+          "ssim": 0.9961587558199995,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 31.00066909942679,
-          "ssim": 0.9931641367829362,
+          "psnr_db": 34.647835540544555,
+          "ssim": 0.9961587558199995,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 31.00066909942679,
-          "ssim": 0.9931641367829362,
+          "psnr_db": 34.647835540544555,
+          "ssim": 0.9961587558199995,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -4237,22 +4237,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 24.897703366430978,
-          "ssim": 0.7528078230575574,
+          "psnr_db": 25.52559233672631,
+          "ssim": 0.7766639811735273,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 24.897703366430978,
-          "ssim": 0.7528078230575574,
+          "psnr_db": 25.52559233672631,
+          "ssim": 0.7766639811735273,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 24.897703366430978,
-          "ssim": 0.7528078230575574,
+          "psnr_db": 25.52559233672631,
+          "ssim": 0.7766639811735273,
           "exec_time_sec": 0.30732059478759766,
           "algorithm_name": "CARE"
         }
@@ -4435,22 +4435,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 26.979966390941765,
-          "ssim": 0.924057561834844,
+          "psnr_db": 27.484241653419122,
+          "ssim": 0.9317811868712845,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 26.979966390941765,
-          "ssim": 0.924057561834844,
+          "psnr_db": 27.484241653419122,
+          "ssim": 0.9317811868712845,
           "exec_time_sec": 0.0,
           "algorithm_name": "RDA [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 26.979966390941765,
-          "ssim": 0.924057561834844,
+          "psnr_db": 27.484241653419122,
+          "ssim": 0.9317811868712845,
           "exec_time_sec": 0.0,
           "algorithm_name": "SAR-DL [proxy]"
         },
@@ -4659,22 +4659,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 29.998267349259816,
-          "ssim": 0.9729878137538974,
+          "psnr_db": 30.195506991374216,
+          "ssim": 0.9744861180162664,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 29.998267349259816,
-          "ssim": 0.9729878137538974,
+          "psnr_db": 30.195506991374216,
+          "ssim": 0.9744861180162664,
           "exec_time_sec": 0.0,
           "algorithm_name": "FBP [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 29.998267349259816,
-          "ssim": 0.9729878137538974,
+          "psnr_db": 30.195506991374216,
+          "ssim": 0.9744861180162664,
           "exec_time_sec": 0.0,
           "algorithm_name": "DL-Recon [proxy]"
         },
@@ -4791,22 +4791,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 23.39165263527819,
-          "ssim": 0.29874316344637797,
+          "psnr_db": 23.519596636295848,
+          "ssim": 0.3057866442850696,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 23.39165263527819,
-          "ssim": 0.29874316344637797,
+          "psnr_db": 23.519596636295848,
+          "ssim": 0.3057866442850696,
           "exec_time_sec": 0.0,
           "algorithm_name": "RDA [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 23.39165263527819,
-          "ssim": 0.29874316344637797,
+          "psnr_db": 23.519596636295848,
+          "ssim": 0.3057866442850696,
           "exec_time_sec": 0.0,
           "algorithm_name": "SAR-DL [proxy]"
         },
@@ -4923,22 +4923,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 16.505657943049062,
-          "ssim": 0.3839145758448484,
+          "psnr_db": 17.988384678314457,
+          "ssim": 0.46887734757876315,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 16.505657943049062,
-          "ssim": 0.3839145758448484,
+          "psnr_db": 17.988384678314457,
+          "ssim": 0.46887734757876315,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 16.505657943049062,
-          "ssim": 0.3839145758448484,
+          "psnr_db": 17.988384678314457,
+          "ssim": 0.46887734757876315,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -5173,22 +5173,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 25.317304861484832,
-          "ssim": 0.9551669259302934,
+          "psnr_db": 25.746287405596092,
+          "ssim": 0.9583392649970497,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 25.317304861484832,
-          "ssim": 0.9551669259302934,
+          "psnr_db": 25.746287405596092,
+          "ssim": 0.9583392649970497,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 25.317304861484832,
-          "ssim": 0.9551669259302934,
+          "psnr_db": 25.746287405596092,
+          "ssim": 0.9583392649970497,
           "exec_time_sec": 0.44667959213256836,
           "algorithm_name": "CARE"
         }
@@ -5331,22 +5331,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 28.208403633243833,
-          "ssim": 0.9775027138663765,
+          "psnr_db": 28.310347363630324,
+          "ssim": 0.9780815355500145,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 28.208403633243833,
-          "ssim": 0.9775027138663765,
+          "psnr_db": 28.310347363630324,
+          "ssim": 0.9780815355500145,
           "exec_time_sec": 0.0,
           "algorithm_name": "Richardson-Lucy"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 28.208403633243833,
-          "ssim": 0.9775027138663765,
+          "psnr_db": 28.310347363630324,
+          "ssim": 0.9780815355500145,
           "exec_time_sec": 0.44649291038513184,
           "algorithm_name": "CARE"
         }
@@ -5423,22 +5423,22 @@
       "sample": "sample_00",
       "solvers": {
         "precomputed_baseline": {
-          "psnr_db": 32.72701556146692,
-          "ssim": 0.8483707083075838,
+          "psnr_db": 34.14248700372568,
+          "ssim": 0.8868101894519529,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 32.72701556146692,
-          "ssim": 0.8483707083075838,
+          "psnr_db": 34.14248700372568,
+          "ssim": 0.8868101894519529,
           "exec_time_sec": 0.0,
           "algorithm_name": "Adjoint [proxy]"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 32.72701556146692,
-          "ssim": 0.8483707083075838,
+          "psnr_db": 34.14248700372568,
+          "ssim": 0.8868101894519529,
           "exec_time_sec": 0.0,
           "algorithm_name": "PnP-ADMM [proxy]"
         },
@@ -5823,29 +5823,29 @@
           "status": "done"
         },
         "precomputed_baseline": {
-          "psnr_db": 15.89446711203986,
-          "ssim": 0.016083605784524002,
+          "psnr_db": 15.968413631403527,
+          "ssim": 0.019554979517361362,
           "status": "completed",
           "n_samples": 12
         },
         "traditional_cpu": {
           "status": "completed",
-          "psnr_db": 15.89446711203986,
-          "ssim": 0.016083605784524002,
+          "psnr_db": 15.968413631403527,
+          "ssim": 0.019554979517361362,
           "exec_time_sec": 0.0,
           "algorithm_name": "Back-Projection (Doppler)"
         },
         "best_quality": {
           "status": "completed",
-          "psnr_db": 15.89446711203986,
-          "ssim": 0.016083605784524002,
+          "psnr_db": 15.968413631403527,
+          "ssim": 0.019554979517361362,
           "exec_time_sec": 0.0,
           "algorithm_name": "UDoppler-Net [proxy]"
         },
         "famous_dl": {
           "status": "completed",
-          "psnr_db": 15.89446711203986,
-          "ssim": 0.016083605784524002,
+          "psnr_db": 15.968413631403527,
+          "ssim": 0.019554979517361362,
           "exec_time_sec": 0.0,
           "algorithm_name": "Doppler CFAR [proxy]"
         }
@@ -5939,5 +5939,5 @@
     "total_solvers": 190,
     "solvers_passed": 190
   },
-  "last_updated": "2026-03-13T12:05:58"
+  "last_updated": "2026-03-13T15:31:31"
 }
