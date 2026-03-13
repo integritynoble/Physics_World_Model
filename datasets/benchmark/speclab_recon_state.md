@@ -42,9 +42,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| TSR | Classical | 22.0 dB | 0.62 | done |
-| PCT | Classical | 24.0 dB | 0.69 | done |
-| PnP-ADMM | PnP | 27.0 dB | 0.79 | done |
+| TSR | Classical | 22.0 dB | 0.62 |  |
+| PCT | Classical | 24.0 dB | 0.69 |  |
+| PnP-ADMM | PnP | 27.0 dB | 0.79 |  |
 | ThermoNet | Deep Learning | 30.0 dB | 0.87 |  |
 | PINN-Thermo | Physics-Informed | 33.0 dB | 0.92 |  |
 | U-Net Thermo | Deep Learning | 32.0 dB | 0.905 |  |
@@ -150,8 +150,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Lorentzian-Fit | Classical | 26.2 dB | 0.785 | done |
-| SG-Baseline | Classical | 27.8 dB | 0.812 | done |
+| Lorentzian-Fit | Classical | 26.2 dB | 0.785 |  |
+| SG-Baseline | Classical | 27.8 dB | 0.812 |  |
 | CNN-Spectra | Deep Learning | 31.5 dB | 0.872 |  |
 | DnCNN-Brillouin | Deep Learning | 33.2 dB | 0.901 |  |
 | CDAE | Deep Learning | 34.8 dB | 0.918 |  |
@@ -164,9 +164,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Variational |  |  | done |
-| DeSCI | PnP |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| GAP-TV | Variational |  |  |  |
+| DeSCI | PnP |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | DGSMP | Deep Unrolling |  |  |  |
 | GAP-CCoT | Transformer |  |  |  |
 | STFormer | Transformer |  |  |  |
@@ -178,8 +178,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| KK-Retrieval | Classical | 24.5 dB | 0.762 | done |
-| MEM-CARS | Classical | 26.2 dB | 0.798 | done |
+| KK-Retrieval | Classical | 24.5 dB | 0.762 |  |
+| MEM-CARS | Classical | 26.2 dB | 0.798 |  |
 | CNN-NRB | Deep Learning | 30.8 dB | 0.865 |  |
 | U-Net-CARS | Deep Learning | 33.5 dB | 0.902 |  |
 | PINN-CARS | Physics-Informed | 34.8 dB | 0.918 |  |
@@ -192,7 +192,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-CL | Classical | 25.2 dB | 0.771 | done |
+| Wiener-CL | Classical | 25.2 dB | 0.771 |  |
 | Richardson-Lucy | Classical | 27.5 dB | 0.812 |  |
 | DnCNN-CL | Deep Learning | 31.8 dB | 0.875 |  |
 | U-Net-CL | Deep Learning | 34.2 dB | 0.908 |  |
@@ -220,9 +220,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| MTR-asym | Classical | 24.8 dB | 0.761 | done |
-| Lorentzian-Fit | Classical | 27.2 dB | 0.808 | done |
-| WASSR | Classical | 28.5 dB | 0.831 | done |
+| MTR-asym | Classical | 24.8 dB | 0.761 |  |
+| Lorentzian-Fit | Classical | 27.2 dB | 0.808 |  |
+| WASSR | Classical | 28.5 dB | 0.831 |  |
 | DnCNN-CEST | Deep Learning | 32.1 dB | 0.878 |  |
 | U-Net-CEST | Deep Learning | 34.8 dB | 0.912 |  |
 | PINN-CEST | Physics-Informed | 35.9 dB | 0.925 |  |
@@ -321,7 +321,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | ADI | Classical | 22.5 dB | 0.721 | done |
 | KLIP | Classical | 27.5 dB | 0.815 | done |
 | LOCI | Classical | 24.8 dB | 0.762 | done |
-| PCA-ADI | Classical | 26.2 dB | 0.791 | done |
+| PCA-ADI | Classical | 26.2 dB | 0.791 |  |
 | ANDROMEDA | Statistical | 28.8 dB | 0.838 |  |
 | CNN-Coronagraph | Deep Learning | 32.1 dB | 0.878 |  |
 | SpeckleLearn | Deep Learning | 34.5 dB | 0.91 |  |
@@ -346,7 +346,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| WBP | Classical | 20.5 dB | 0.682 | done |
+| WBP | Classical | 20.5 dB | 0.682 |  |
 | SART-ET | Classical | 23.8 dB | 0.741 |  |
 | IMOD | Classical | 25.2 dB | 0.774 |  |
 | IsoNet | Deep Learning | 29.4 dB | 0.842 |  |
@@ -459,12 +459,12 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DIC-Deconv | Classical | 24.1 dB | 0.731 | done |
-| TV-DIC | Variational | 27.8 dB | 0.793 | done |
-| Phase-DLSIM | Classical | 25.9 dB | 0.762 | done |
+| DIC-Deconv | Classical | 24.1 dB | 0.731 |  |
+| TV-DIC | Variational | 27.8 dB | 0.793 |  |
+| Phase-DLSIM | Classical | 25.9 dB | 0.762 |  |
 | DIC-CNN | Deep Learning | 31.4 dB | 0.856 |  |
 | PhaseNet-DIC | Deep Learning | 33.7 dB | 0.884 |  |
-| PnP-DIC | PnP | 32.2 dB | 0.869 | done |
+| PnP-DIC | PnP | 32.2 dB | 0.869 |  |
 | SwinDIC | Transformer | 36.1 dB | 0.921 |  |
 | PhysPhase-Net | Physics-Informed | 37.4 dB | 0.935 |  |
 | DiffusionDIC | Diffusion | 39.2 dB | 0.95 |  |
@@ -515,9 +515,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CF-Doppler | Classical | 22.5 dB | 0.712 | done |
-| VENC-Flow | Classical | 24.1 dB | 0.738 | done |
-| MV-Doppler | Variational | 26.8 dB | 0.778 | done |
+| CF-Doppler | Classical | 22.5 dB | 0.712 |  |
+| VENC-Flow | Classical | 24.1 dB | 0.738 |  |
+| MV-Doppler | Variational | 26.8 dB | 0.778 |  |
 | DnCNN-Doppler | Deep Learning | 29.5 dB | 0.832 |  |
 | FlowNet-US | Deep Learning | 32.4 dB | 0.872 |  |
 | TransFlow | Transformer | 35.1 dB | 0.914 |  |
@@ -531,7 +531,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Born-Approx | Classical | 20.8 dB | 0.681 | done |
 | TV-DOT | Variational | 23.5 dB | 0.729 | done |
-| FEM-DOT | Classical | 25.9 dB | 0.771 | done |
+| FEM-DOT | Classical | 25.9 dB | 0.771 |  |
 | DnCNN-DOT | Deep Learning | 28.7 dB | 0.825 |  |
 | DOT-Net | Deep Unrolling | 31.4 dB | 0.868 |  |
 | TransDOT | Transformer | 34.2 dB | 0.91 |  |
@@ -543,9 +543,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Hough-EBSD | Classical | 21.5 dB | 0.698 | done |
-| DI-EBSD | Classical | 24.2 dB | 0.741 | done |
-| TV-EBSD | Variational | 26.8 dB | 0.779 | done |
+| Hough-EBSD | Classical | 21.5 dB | 0.698 |  |
+| DI-EBSD | Classical | 24.2 dB | 0.741 |  |
+| TV-EBSD | Variational | 26.8 dB | 0.779 |  |
 | DnCNN-EBSD | Deep Learning | 29.6 dB | 0.834 |  |
 | PointEBSD | Deep Learning | 32.3 dB | 0.874 |  |
 | TransEBSD | Transformer | 34.9 dB | 0.913 |  |
@@ -557,9 +557,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| EC-Deconv | Classical | 22.1 dB | 0.705 | done |
-| TV-EC | Variational | 24.8 dB | 0.748 | done |
-| MUSIC-EC | Classical | 27.3 dB | 0.789 | done |
+| EC-Deconv | Classical | 22.1 dB | 0.705 |  |
+| TV-EC | Variational | 24.8 dB | 0.748 |  |
+| MUSIC-EC | Classical | 27.3 dB | 0.789 |  |
 | DnCNN-EC | Deep Learning | 30.1 dB | 0.84 |  |
 | ECNN-Defect | Deep Learning | 32.9 dB | 0.88 |  |
 | TransEC | Transformer | 35.4 dB | 0.918 |  |
@@ -614,8 +614,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | LFE-Elasto | Classical | 22.3 dB | 0.71 | done |
-| DI-Elasto | Variational | 24.8 dB | 0.752 | done |
-| AIDE | Variational | 26.9 dB | 0.787 | done |
+| DI-Elasto | Variational | 24.8 dB | 0.752 |  |
+| AIDE | Variational | 26.9 dB | 0.787 |  |
 | DnCNN-Elasto | Deep Learning | 29.7 dB | 0.838 |  |
 | ElastoNet | Deep Unrolling | 32.5 dB | 0.876 |  |
 | TransElasto | Transformer | 35.0 dB | 0.915 |  |
@@ -683,7 +683,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Coincidence-Count | Classical | 19.8 dB | 0.658 | done |
+| Coincidence-Count | Classical | 19.8 dB | 0.658 |  |
 | CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 |  |
 | SVD-Ghost | Statistical | 25.1 dB | 0.748 |  |
 | DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 |  |
@@ -739,9 +739,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| MLE-SPAD | Classical | 22.8 dB | 0.718 | done |
-| Coates-Hist | Classical | 24.5 dB | 0.748 | done |
-| NL-Means-LiDAR | Classical | 27.2 dB | 0.789 | done |
+| MLE-SPAD | Classical | 22.8 dB | 0.718 |  |
+| Coates-Hist | Classical | 24.5 dB | 0.748 |  |
+| NL-Means-LiDAR | Classical | 27.2 dB | 0.789 |  |
 | DnCNN-LiDAR | Deep Learning | 30.1 dB | 0.84 |  |
 | SPADnet | Deep Learning | 32.8 dB | 0.878 |  |
 | TransLiDAR | Transformer | 35.3 dB | 0.916 |  |
@@ -753,9 +753,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Phasor-FLIM | Classical | 23.2 dB | 0.722 | done |
+| Phasor-FLIM | Classical | 23.2 dB | 0.722 |  |
 | MLE-FLIM | Statistical | 25.8 dB | 0.762 |  |
-| RLD-FLIM | Classical | 27.9 dB | 0.798 | done |
+| RLD-FLIM | Classical | 27.9 dB | 0.798 |  |
 | DnCNN-FLIM | Deep Learning | 30.7 dB | 0.845 |  |
 | FLIMJ | Deep Learning | 33.1 dB | 0.882 |  |
 | TransFLIM | Transformer | 35.5 dB | 0.918 |  |
@@ -856,7 +856,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | L-BFGS FWI | Classical | 23.5 dB | 0.65 | done |
-| TV-Reg FWI | Classical | 26.8 dB | 0.78 | done |
+| TV-Reg FWI | Classical | 26.8 dB | 0.78 |  |
 | InversionNet | Deep Learning | 30.5 dB | 0.88 |  |
 | VelocityGAN | Deep Learning | 32.2 dB | 0.91 |  |
 
@@ -864,8 +864,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| COLMAP+MVS | Classical |  |  | done |
-| Photogrammetry | Classical |  |  | done |
+| COLMAP+MVS | Classical |  |  |  |
+| Photogrammetry | Classical |  |  |  |
 | NeRF | Deep Learning |  |  |  |
 | Mip-NeRF 360 | Deep Learning |  |  |  |
 | Instant-NGP | Deep Learning |  |  |  |
@@ -880,10 +880,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| G(2)-Corr | Classical |  |  | done |
-| Photon Counting | Classical |  |  | done |
-| CS-TVAL3 | PnP |  |  | done |
-| Bayesian CS | PnP |  |  | done |
+| G(2)-Corr | Classical |  |  |  |
+| Photon Counting | Classical |  |  |  |
+| CS-TVAL3 | PnP |  |  |  |
+| Bayesian CS | PnP |  |  |  |
 | DRU-Net | Deep Learning |  |  |  |
 | Quantum-CNN | Deep Learning |  |  |  |
 | Ghost-ViT | Vision Transformer |  |  |  |
@@ -904,7 +904,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical | 20.0 dB | 0.52 | done |
+| Matched Filter | Classical | 20.0 dB | 0.52 |  |
 | BayesWave | PnP | 24.5 dB | 0.71 |  |
 | GW-CNN | Deep Learning | 28.8 dB | 0.85 |  |
 | WaveFormer | Transformer | 30.5 dB | 0.895 |  |
@@ -913,11 +913,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-Deconv | Classical |  |  | done |
-| Laplacian Pyramid | Classical |  |  | done |
-| Lucy-Richardson | Classical |  |  | done |
-| PnP-FFDNet | PnP |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
+| Wiener-Deconv | Classical |  |  |  |
+| Laplacian Pyramid | Classical |  |  |  |
+| Lucy-Richardson | Classical |  |  |  |
+| PnP-FFDNet | PnP |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
 | HDR-CNN | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
 | LaplacianFormer | Deep Learning |  |  |  |
@@ -932,9 +932,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Gerchberg-Saxton | Classical |  |  | done |
-| GS/HIO | Classical |  |  | done |
-| Error Reduction | Classical |  |  | done |
+| Gerchberg-Saxton | Classical |  |  |  |
+| GS/HIO | Classical |  |  |  |
+| Error Reduction | Classical |  |  |  |
 | prDeep | Deep Unrolling |  |  |  |
 | PhaseNet | Deep Learning |  |  |  |
 | deep-PR | Deep Learning |  |  |  |
@@ -961,7 +961,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Gauss-Newton | Classical | 21.0 dB | 0.55 | done |
-| TV-ADMM | PnP | 24.5 dB | 0.7 | done |
+| TV-ADMM | PnP | 24.5 dB | 0.7 |  |
 | D-bar CNN | Deep Learning | 28.5 dB | 0.84 |  |
 | EIT-Former | Transformer | 30.0 dB | 0.88 |  |
 
@@ -1014,11 +1014,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DAS | Classical |  |  | done |
-| DAS-CF | Classical |  |  | done |
-| PW-DAS | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
-| PnP-TV | PnP |  |  | done |
+| DAS | Classical |  |  |  |
+| DAS-CF | Classical |  |  |  |
+| PW-DAS | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
+| PnP-TV | PnP |  |  |  |
 | ABLE | Deep Learning |  |  |  |
 | MU-Net | Deep Learning |  |  |  |
 | Phase-ADMM-Net | Deep Unrolling |  |  |  |
@@ -1076,8 +1076,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Bilateral Filter | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
+| Bilateral Filter | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
 | RandLA-Net | Deep Learning |  |  |  |
 | Point Transformer | Transformer |  |  |  |
 
@@ -1130,11 +1130,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov | Classical |  |  | done |
-| Wiener Filter | Classical |  |  | done |
-| Matched Filter | Classical |  |  | done |
-| PnP-RED | PnP |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
+| Tikhonov | Classical |  |  |  |
+| Wiener Filter | Classical |  |  |  |
+| Matched Filter | Classical |  |  |  |
+| PnP-RED | PnP |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
 | ResUNet | Deep Learning |  |  |  |
 | Domain-Adapted-CNN | Deep Learning |  |  |  |
 | SwinIR | Vision Transformer |  |  |  |
@@ -1162,10 +1162,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  | done |
-| TV-ADMM | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| FBP | Classical |  |  |  |
+| TV-ADMM | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | FBPConvNet | Deep Learning |  |  |  |
 | RED-CNN | Deep Learning |  |  |  |
 | Learned Primal-Dual | Deep Unrolling |  |  |  |
@@ -1180,10 +1180,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical |  |  | done |
-| FISTA-TV | Classical |  |  | done |
-| TVAL3 | Classical |  |  | done |
-| PnP-FFDNet | PnP |  |  | done |
+| GAP-TV | Classical |  |  |  |
+| FISTA-TV | Classical |  |  |  |
+| TVAL3 | Classical |  |  |  |
+| PnP-FFDNet | PnP |  |  |  |
 | MST-L | Transformer |  |  |  |
 | EfficientSCI | Deep Learning |  |  |  |
 | Restormer | Vision Transformer |  |  |  |
@@ -1199,10 +1199,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| BTR | Classical |  |  | done |
-| MLE Reconstruction | Classical |  |  | done |
-| Reg-Deconv | PnP |  |  | done |
-| TV-Deconvolution | PnP |  |  | done |
+| BTR | Classical |  |  |  |
+| MLE Reconstruction | Classical |  |  |  |
+| Reg-Deconv | PnP |  |  |  |
+| TV-Deconvolution | PnP |  |  |  |
 | DeepSPM | Deep Learning |  |  |  |
 | U-Net-SPM | Deep Learning |  |  |  |
 | E2E-BTR | Deep Learning |  |  |  |
@@ -1223,17 +1223,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  | done |
-| SENSE | Classical |  |  | done |
-| GRAPPA | Classical |  |  | done |
+| Zero-Filled IFFT | Classical |  |  |  |
+| SENSE | Classical |  |  |  |
+| GRAPPA | Classical |  |  |  |
 | L1-Wavelet | Compressed Sensing |  |  |  |
 | k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
 | ESPIRiT | Compressed Sensing |  |  |  |
 | LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  | done |
-| ALOHA | Low-Rank |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
-| PnP-DnCNN-Pro | PnP |  |  | done |
+| BM3D-MRI | PnP |  |  |  |
+| ALOHA | Low-Rank |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
+| PnP-DnCNN-Pro | PnP |  |  |  |
 | Deep-ADMM-Net | Deep Unrolling |  |  |  |
 | DCCNN | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
@@ -1272,17 +1272,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  | done |
-| SENSE | Classical |  |  | done |
-| GRAPPA | Classical |  |  | done |
+| Zero-Filled IFFT | Classical |  |  |  |
+| SENSE | Classical |  |  |  |
+| GRAPPA | Classical |  |  |  |
 | L1-Wavelet | Compressed Sensing |  |  |  |
 | k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
 | ESPIRiT | Compressed Sensing |  |  |  |
 | LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  | done |
-| ALOHA | Low-Rank |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
-| PnP-DnCNN-Pro | PnP |  |  | done |
+| BM3D-MRI | PnP |  |  |  |
+| ALOHA | Low-Rank |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
+| PnP-DnCNN-Pro | PnP |  |  |  |
 | Deep-ADMM-Net | Deep Unrolling |  |  |  |
 | DCCNN | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
@@ -1352,17 +1352,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  | done |
-| SENSE | Classical |  |  | done |
-| GRAPPA | Classical |  |  | done |
+| Zero-Filled IFFT | Classical |  |  |  |
+| SENSE | Classical |  |  |  |
+| GRAPPA | Classical |  |  |  |
 | L1-Wavelet | Compressed Sensing |  |  |  |
 | k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
 | ESPIRiT | Compressed Sensing |  |  |  |
 | LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  | done |
-| ALOHA | Low-Rank |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
-| PnP-DnCNN-Pro | PnP |  |  | done |
+| BM3D-MRI | PnP |  |  |  |
+| ALOHA | Low-Rank |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
+| PnP-DnCNN-Pro | PnP |  |  |  |
 | Deep-ADMM-Net | Deep Unrolling |  |  |  |
 | DCCNN | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
@@ -1410,11 +1410,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  | done |
-| OSEM | Classical |  |  | done |
-| ML-EM | Classical |  |  | done |
-| MAPEM-RDP | PnP |  |  | done |
-| OS-EM | Classical |  |  | done |
+| FBP-PET | Classical |  |  |  |
+| OSEM | Classical |  |  |  |
+| ML-EM | Classical |  |  |  |
+| MAPEM-RDP | PnP |  |  |  |
+| OS-EM | Classical |  |  |  |
 | DeepPET | Deep Learning |  |  |  |
 | U-Net-PET | Deep Learning |  |  |  |
 | TransEM | Transformer |  |  |  |
@@ -1441,8 +1441,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Rietveld-GSAS | Classical | 23.0 dB | 0.64 | done |
-| Le Bail Fit | Classical | 26.5 dB | 0.76 | done |
+| Rietveld-GSAS | Classical | 23.0 dB | 0.64 |  |
+| Le Bail Fit | Classical | 26.5 dB | 0.76 |  |
 | NeutronNet | Deep Learning | 30.5 dB | 0.88 |  |
 | DiffFormer | Transformer | 32.5 dB | 0.915 |  |
 
@@ -1450,11 +1450,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  | done |
-| OSEM | Classical |  |  | done |
-| ML-EM | Classical |  |  | done |
-| MAPEM-RDP | PnP |  |  | done |
-| OS-EM | Classical |  |  | done |
+| FBP-PET | Classical |  |  |  |
+| OSEM | Classical |  |  |  |
+| ML-EM | Classical |  |  |  |
+| MAPEM-RDP | PnP |  |  |  |
+| OS-EM | Classical |  |  |  |
 | DeepPET | Deep Learning |  |  |  |
 | U-Net-PET | Deep Learning |  |  |  |
 | TransEM | Transformer |  |  |  |
@@ -1506,7 +1506,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Gordon AC | Classical | 22.5 dB | 0.61 | done |
-| MUMM | Classical | 26.0 dB | 0.74 | done |
+| MUMM | Classical | 26.0 dB | 0.74 |  |
 | OC-Net | Deep Learning | 30.5 dB | 0.87 |  |
 | AquaFormer | Transformer | 32.5 dB | 0.91 |  |
 
@@ -1514,11 +1514,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FFT-OCT | Classical |  |  | done |
-| Speckle-Lee | Classical |  |  | done |
-| TV-Denoising | Classical |  |  | done |
-| BM4D | PnP |  |  | done |
-| NLM-OCT | PnP |  |  | done |
+| FFT-OCT | Classical |  |  |  |
+| Speckle-Lee | Classical |  |  |  |
+| TV-Denoising | Classical |  |  |  |
+| BM4D | PnP |  |  |  |
+| NLM-OCT | PnP |  |  |  |
 | Speckle-DenoiseNet | Deep Learning |  |  |  |
 | U-Net-OCT | Deep Learning |  |  |  |
 | OCTA-Net | Deep Learning |  |  |  |
@@ -1532,11 +1532,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FFT-OCT | Classical |  |  | done |
-| Speckle-Lee | Classical |  |  | done |
-| TV-Denoising | Classical |  |  | done |
-| BM4D | PnP |  |  | done |
-| NLM-OCT | PnP |  |  | done |
+| FFT-OCT | Classical |  |  |  |
+| Speckle-Lee | Classical |  |  |  |
+| TV-Denoising | Classical |  |  |  |
+| BM4D | PnP |  |  |  |
+| NLM-OCT | PnP |  |  |  |
 | Speckle-DenoiseNet | Deep Learning |  |  |  |
 | U-Net-OCT | Deep Learning |  |  |  |
 | OCTA-Net | Deep Learning |  |  |  |
@@ -1559,8 +1559,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| ThunderSTORM | Classical |  |  | done |
-| FALCON | PnP |  |  | done |
+| ThunderSTORM | Classical |  |  |  |
+| FALCON | PnP |  |  |  |
 | Deep-STORM | Deep Learning |  |  |  |
 | DECODE | Deep Learning |  |  |  |
 
@@ -1568,7 +1568,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SIFT-RANSAC | Classical | 26.0 dB | 0.74 | done |
+| SIFT-RANSAC | Classical | 26.0 dB | 0.74 |  |
 | APAP | Classical | 29.5 dB | 0.85 |  |
 | UDIS | Deep Learning | 33.0 dB | 0.92 |  |
 | PanoFormer | Transformer | 35.0 dB | 0.95 |  |
@@ -1595,11 +1595,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  | done |
-| OSEM | Classical |  |  | done |
-| ML-EM | Classical |  |  | done |
-| MAPEM-RDP | PnP |  |  | done |
-| OS-EM | Classical |  |  | done |
+| FBP-PET | Classical |  |  |  |
+| OSEM | Classical |  |  |  |
+| ML-EM | Classical |  |  |  |
+| MAPEM-RDP | PnP |  |  |  |
+| OS-EM | Classical |  |  |  |
 | DeepPET | Deep Learning |  |  |  |
 | U-Net-PET | Deep Learning |  |  |  |
 | TransEM | Transformer |  |  |  |
@@ -1610,10 +1610,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  | done |
-| TV-ADMM | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| FBP | Classical |  |  |  |
+| TV-ADMM | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | FBPConvNet | Deep Learning |  |  |  |
 | RED-CNN | Deep Learning |  |  |  |
 | Learned Primal-Dual | Deep Unrolling |  |  |  |
@@ -1628,11 +1628,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  | done |
-| OSEM | Classical |  |  | done |
-| ML-EM | Classical |  |  | done |
-| MAPEM-RDP | PnP |  |  | done |
-| OS-EM | Classical |  |  | done |
+| FBP-PET | Classical |  |  |  |
+| OSEM | Classical |  |  |  |
+| ML-EM | Classical |  |  |  |
+| MAPEM-RDP | PnP |  |  |  |
+| OS-EM | Classical |  |  |  |
 | DeepPET | Deep Learning |  |  |  |
 | U-Net-PET | Deep Learning |  |  |  |
 | TransEM | Transformer |  |  |  |
@@ -1652,9 +1652,9 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Gerchberg-Saxton | Classical |  |  | done |
-| GS/HIO | Classical |  |  | done |
-| Error Reduction | Classical |  |  | done |
+| Gerchberg-Saxton | Classical |  |  |  |
+| GS/HIO | Classical |  |  |  |
+| Error Reduction | Classical |  |  |  |
 | prDeep | Deep Unrolling |  |  |  |
 | PhaseNet | Deep Learning |  |  |  |
 | deep-PR | Deep Learning |  |  |  |
@@ -1680,8 +1680,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| LS Normal Est. | Classical | 25.0 dB | 0.7 | done |
-| Robust PCA | Classical | 28.5 dB | 0.82 | done |
+| LS Normal Est. | Classical | 25.0 dB | 0.7 |  |
+| Robust PCA | Classical | 28.5 dB | 0.82 |  |
 | CNN-PS | Deep Learning | 32.5 dB | 0.915 |  |
 | PS-Transformer | Transformer | 34.2 dB | 0.945 |  |
 
@@ -1689,11 +1689,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical |  |  | done |
-| Wiener Filter | Classical |  |  | done |
-| TV-Deconvolution | Classical |  |  | done |
-| PnP-FISTA | PnP |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| Richardson-Lucy | Classical |  |  |  |
+| Wiener Filter | Classical |  |  |  |
+| TV-Deconvolution | Classical |  |  |  |
+| PnP-FISTA | PnP |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | CARE | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
 | ResUNet | Deep Learning |  |  |  |
@@ -1707,11 +1707,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical |  |  | done |
-| Range-Doppler | Classical |  |  | done |
-| Chirp Scaling | Classical |  |  | done |
-| SAR-BM3D | PnP |  |  | done |
-| Lee Filter | PnP |  |  | done |
+| Matched Filter | Classical |  |  |  |
+| Range-Doppler | Classical |  |  |  |
+| Chirp Scaling | Classical |  |  |  |
+| SAR-BM3D | PnP |  |  |  |
+| Lee Filter | PnP |  |  |  |
 | SAR-DRN | Deep Learning |  |  |  |
 | SAR-ResNet | Deep Learning |  |  |  |
 | SAR-CAM | Transformer |  |  |  |
@@ -1779,8 +1779,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SVD-GlobFit | Classical | 22.5 dB | 0.6 | done |
-| MCR-ALS | Classical | 26.0 dB | 0.74 | done |
+| SVD-GlobFit | Classical | 22.5 dB | 0.6 |  |
+| MCR-ALS | Classical | 26.0 dB | 0.74 |  |
 | TAS-Net | Deep Learning | 30.0 dB | 0.87 |  |
 | DynFormer | Transformer | 32.0 dB | 0.905 |  |
 
@@ -1788,8 +1788,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| OPA Receiver | Classical | 18.0 dB | 0.42 | done |
-| FF-SFG | Classical | 22.0 dB | 0.6 | done |
+| OPA Receiver | Classical | 18.0 dB | 0.42 |  |
+| FF-SFG | Classical | 22.0 dB | 0.6 |  |
 | QI-Net | Deep Learning | 26.5 dB | 0.78 |  |
 | QuantumFormer | Transformer | 28.5 dB | 0.84 |  |
 
@@ -1797,8 +1797,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CLEAN | Classical |  |  | done |
-| AIRI | PnP |  |  | done |
+| CLEAN | Classical |  |  |  |
+| AIRI | PnP |  |  |  |
 | R2D2 | Deep Learning |  |  |  |
 | PRIMO | Deep Learning |  |  |  |
 
@@ -1806,8 +1806,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CLEAN | Classical |  |  | done |
-| AIRI | PnP |  |  | done |
+| CLEAN | Classical |  |  |  |
+| AIRI | PnP |  |  |  |
 | R2D2 | Deep Learning |  |  |  |
 | PRIMO | Deep Learning |  |  |  |
 
@@ -1815,10 +1815,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SG-ALS | Classical |  |  | done |
-| Baseline Correction | Classical |  |  | done |
-| SVD | Classical |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| SG-ALS | Classical |  |  |  |
+| Baseline Correction | Classical |  |  |  |
+| SVD | Classical |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | CDAE | Deep Learning |  |  |  |
 | U-Net-Spectra | Deep Learning |  |  |  |
 | Cascade-UNet | Deep Learning |  |  |  |
@@ -1831,11 +1831,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical |  |  | done |
-| Range-Doppler | Classical |  |  | done |
-| Chirp Scaling | Classical |  |  | done |
-| SAR-BM3D | PnP |  |  | done |
-| Lee Filter | PnP |  |  | done |
+| Matched Filter | Classical |  |  |  |
+| Range-Doppler | Classical |  |  |  |
+| Chirp Scaling | Classical |  |  |  |
+| SAR-BM3D | PnP |  |  |  |
+| Lee Filter | PnP |  |  |  |
 | SAR-DRN | Deep Learning |  |  |  |
 | SAR-ResNet | Deep Learning |  |  |  |
 | SAR-CAM | Transformer |  |  |  |
@@ -1849,8 +1849,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| PyFAI-Integrate | Classical | 24.0 dB | 0.67 | done |
-| McSAS | Classical | 27.5 dB | 0.79 | done |
+| PyFAI-Integrate | Classical | 24.0 dB | 0.67 |  |
+| McSAS | Classical | 27.5 dB | 0.79 |  |
 | ScatterNet | Deep Learning | 31.5 dB | 0.895 |  |
 | ScatterFormer | Transformer | 33.5 dB | 0.925 |  |
 
@@ -1858,8 +1858,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical |  |  | done |
-| PnP-HSICNN | PnP |  |  | done |
+| GAP-TV | Classical |  |  |  |
+| PnP-HSICNN | PnP |  |  |  |
 | HDNet | Deep Learning |  |  |  |
 | MST-L | Transformer |  |  |  |
 
@@ -1867,11 +1867,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov | Classical |  |  | done |
-| Wiener Filter | Classical |  |  | done |
-| Matched Filter | Classical |  |  | done |
-| PnP-RED | PnP |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
+| Tikhonov | Classical |  |  |  |
+| Wiener Filter | Classical |  |  |  |
+| Matched Filter | Classical |  |  |  |
+| PnP-RED | PnP |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
 | ResUNet | Deep Learning |  |  |  |
 | Domain-Adapted-CNN | Deep Learning |  |  |  |
 | SwinIR | Vision Transformer |  |  |  |
@@ -1901,11 +1901,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical |  |  | done |
-| Wiener Filter | Classical |  |  | done |
-| TV-Deconvolution | Classical |  |  | done |
-| PnP-FISTA | PnP |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| Richardson-Lucy | Classical |  |  |  |
+| Wiener Filter | Classical |  |  |  |
+| TV-Deconvolution | Classical |  |  |  |
+| PnP-FISTA | PnP |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | CARE | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
 | ResUNet | Deep Learning |  |  |  |
@@ -1962,8 +1962,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FISTA-TV | Classical |  |  | done |
-| PnP-DRUNet | PnP |  |  | done |
+| FISTA-TV | Classical |  |  |  |
+| PnP-DRUNet | PnP |  |  |  |
 | HATNet | Deep Learning |  |  |  |
 | ISTA-Net | Deep Unfolding |  |  |  |
 
@@ -1971,8 +1971,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FISTA-TV | Classical |  |  | done |
-| PnP-DRUNet | PnP |  |  | done |
+| FISTA-TV | Classical |  |  |  |
+| PnP-DRUNet | PnP |  |  |  |
 | HATNet | Deep Learning |  |  |  |
 | ISTA-Net | Deep Unfolding |  |  |  |
 
@@ -1995,19 +1995,19 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| OSEM | Classical |  |  | done |
-| AC-OSEM | Classical |  |  | done |
-| MAP-OSEM | PnP |  |  | done |
+| OSEM | Classical |  |  |  |
+| AC-OSEM | Classical |  |  |  |
+| MAP-OSEM | PnP |  |  |  |
 | DL-SPECT | Deep Learning |  |  |  |
 
 ## Spectral CT (`spectral_ct`) — medical
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  | done |
-| TV-ADMM | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| FBP | Classical |  |  |  |
+| TV-ADMM | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | FBPConvNet | Deep Learning |  |  |  |
 | RED-CNN | Deep Learning |  |  |  |
 | Learned Primal-Dual | Deep Unrolling |  |  |  |
@@ -2040,10 +2040,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SG-ALS | Classical |  |  | done |
-| Baseline Correction | Classical |  |  | done |
-| SVD | Classical |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
+| SG-ALS | Classical |  |  |  |
+| Baseline Correction | Classical |  |  |  |
+| SVD | Classical |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
 | CDAE | Deep Learning |  |  |  |
 | U-Net-Spectra | Deep Learning |  |  |  |
 | Cascade-UNet | Deep Learning |  |  |  |
@@ -2098,10 +2098,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| TwIST | Classical |  |  | done |
-| Temporal Filtering | Classical |  |  | done |
-| PnP-FFDNet | PnP |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
+| TwIST | Classical |  |  |  |
+| Temporal Filtering | Classical |  |  |  |
+| PnP-FFDNet | PnP |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
 | CUP-Net | Deep Learning |  |  |  |
 | Temporal-U-Net | Deep Learning |  |  |  |
 | AL-DL | Deep Unrolling |  |  |  |
@@ -2114,8 +2114,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Phase Shifting | Classical |  |  | done |
-| Gray Code | Classical |  |  | done |
+| Phase Shifting | Classical |  |  |  |
+| Gray Code | Classical |  |  |  |
 | FPP-Net | Deep Learning |  |  |  |
 | PhaseFormer | Transformer |  |  |  |
 
@@ -2123,17 +2123,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  | done |
-| SENSE | Classical |  |  | done |
-| GRAPPA | Classical |  |  | done |
+| Zero-Filled IFFT | Classical |  |  |  |
+| SENSE | Classical |  |  |  |
+| GRAPPA | Classical |  |  |  |
 | L1-Wavelet | Compressed Sensing |  |  |  |
 | k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
 | ESPIRiT | Compressed Sensing |  |  |  |
 | LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  | done |
-| ALOHA | Low-Rank |  |  | done |
-| PnP-DnCNN | PnP |  |  | done |
-| PnP-DnCNN-Pro | PnP |  |  | done |
+| BM3D-MRI | PnP |  |  |  |
+| ALOHA | Low-Rank |  |  |  |
+| PnP-DnCNN | PnP |  |  |  |
+| PnP-DnCNN-Pro | PnP |  |  |  |
 | Deep-ADMM-Net | Deep Unrolling |  |  |  |
 | DCCNN | Deep Learning |  |  |  |
 | U-Net | Deep Learning |  |  |  |
@@ -2163,8 +2163,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Phase Stepping | Classical |  |  | done |
-| PCA Retrieval | Classical |  |  | done |
+| Phase Stepping | Classical |  |  |  |
+| PCA Retrieval | Classical |  |  |  |
 | DPC-Net | Deep Learning |  |  |  |
 | GratingFormer | Transformer |  |  |  |
 
@@ -2172,8 +2172,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener Filter | Classical |  |  | done |
-| BM3D | PnP |  |  | done |
+| Wiener Filter | Classical |  |  |  |
+| BM3D | PnP |  |  |  |
 | Noise2Void | Deep Learning |  |  |  |
 | SwinIR | Transformer |  |  |  |
 
@@ -2253,8 +2253,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| TFM | Classical | 25.0 dB | 0.71 | done |
-| SAFT | Classical | 28.0 dB | 0.81 | done |
+| TFM | Classical | 25.0 dB | 0.71 |  |
+| SAFT | Classical | 28.0 dB | 0.81 |  |
 | UTPA-Net | Deep Learning | 32.5 dB | 0.905 |  |
 | FMC-Former | Transformer | 34.5 dB | 0.94 |  |
 
@@ -2262,11 +2262,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DAS | Classical |  |  | done |
-| DAS-CF | Classical |  |  | done |
-| PW-DAS | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
-| PnP-TV | PnP |  |  | done |
+| DAS | Classical |  |  |  |
+| DAS-CF | Classical |  |  |  |
+| PW-DAS | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
+| PnP-TV | PnP |  |  |  |
 | ABLE | Deep Learning |  |  |  |
 | MU-Net | Deep Learning |  |  |  |
 | Phase-ADMM-Net | Deep Unrolling |  |  |  |
@@ -2281,8 +2281,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Demons | Classical |  |  | done |
-| B-spline FFD | Classical |  |  | done |
+| Demons | Classical |  |  |  |
+| B-spline FFD | Classical |  |  |  |
 | VoxelMorph | Deep Learning |  |  |  |
 | TransMorph | Transformer |  |  |  |
 
@@ -2290,8 +2290,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| PyFAI-Integrate | Classical | 23.5 dB | 0.65 | done |
-| Rietveld-WAXS | Classical | 27.0 dB | 0.78 | done |
+| PyFAI-Integrate | Classical | 23.5 dB | 0.65 |  |
+| Rietveld-WAXS | Classical | 27.0 dB | 0.78 |  |
 | WAXS-Net | Deep Learning | 31.0 dB | 0.89 |  |
 | CrystalFormer | Transformer | 33.0 dB | 0.92 |  |
 
@@ -2300,7 +2300,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Pulse-Pair Doppler | Classical | 24.0 dB | 0.67 | done |
-| CLEAN-AP | Classical | 27.5 dB | 0.79 | done |
+| CLEAN-AP | Classical | 27.5 dB | 0.79 |  |
 | RainNet | Deep Learning | 31.8 dB | 0.9 |  |
 | Earthformer | Transformer | 33.5 dB | 0.935 |  |
 
@@ -2344,8 +2344,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CrystFEL | Classical |  |  | done |
-| EMC | Classical |  |  | done |
+| CrystFEL | Classical |  |  |  |
+| EMC | Classical |  |  |  |
 | CNN Hit-Finder | Deep Learning |  |  |  |
 | CrysFormer | Transformer |  |  |  |
 
@@ -2353,8 +2353,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Molecular Replacement | Classical | 22.0 dB | 0.59 | done |
-| SHELXD | Classical | 26.0 dB | 0.74 | done |
+| Molecular Replacement | Classical | 22.0 dB | 0.59 |  |
+| SHELXD | Classical | 26.0 dB | 0.74 |  |
 | DL-Phase | Deep Learning | 30.5 dB | 0.88 |  |
 | CrystFormer | Transformer | 32.5 dB | 0.915 |  |
 
@@ -2362,8 +2362,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  | done |
-| PnP-ADMM | PnP |  |  | done |
+| FBP | Classical |  |  |  |
+| PnP-ADMM | PnP |  |  |  |
 | FBPConvNet | Deep Learning |  |  |  |
 | DR-GAN | Deep Learning |  |  |  |
 
@@ -2398,11 +2398,11 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Deconv | Classical |  |  | done |
-| Calibration-Lookup | Classical |  |  | done |
-| Peak Fitting | Classical |  |  | done |
-| PnP-BM3D | PnP |  |  | done |
-| PnP-NLM | PnP |  |  | done |
+| Deconv | Classical |  |  |  |
+| Calibration-Lookup | Classical |  |  |  |
+| Peak Fitting | Classical |  |  |  |
+| PnP-BM3D | PnP |  |  |  |
+| PnP-NLM | PnP |  |  |  |
 | ResNet-Calib | Deep Learning |  |  |  |
 | Instrument-CNN | Deep Learning |  |  |  |
 | CalibFormer | Vision Transformer |  |  |  |
