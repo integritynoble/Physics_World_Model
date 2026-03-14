@@ -1,0 +1,121 @@
+name: sim
+display_name: "Structured Illumination Microscopy (SIM)"
+aliases: ["structured_illumination", "sim_microscopy", "sr_sim"]
+category: super_resolution_microscopy
+physics_class: coherent_modulation
+wave_model: wave
+sensor_type: emccd
+geometry: multi_frame
+
+forward_elements:
+  - id: source
+    name: "Laser Illumination (488 nm)"
+    type: source
+    parameters:
+      wavelength_nm: 488
+      power_mw: 50
+      coherence: partially_coherent
+    noise: []
+    mismatch: []
+
+  - id: illumination_pattern
+    name: "Sinusoidal Structured Illumination"
+    type: modulation
+    parameters:
+      type: sinusoidal_grating
+      n_orientations: 3
+      n_phases: 3
+      pattern_period_nm: 200
+      modulation_depth: 0.9
+    noise: []
+    mismatch:
+      - type: pattern_frequency_error
+        description: "Grating frequency deviates from design due to SLM calibration"
+        severity: medium
+        correction_method: "Cross-correlation peak fitting in Fourier domain"
+      - type: pattern_phase_error
+        description: "Phase steps deviate from ideal 0/120/240 degrees"
+        severity: medium
+        correction_method: "Iterative parameter estimation from raw frames"
+    connects_to: [sample]
+
+  - id: sample
+    name: "Fluorescent Sample"
+    type: object
+    parameters:
+      type: fluorescent_2d
+      emission_wavelength_nm: 520
+    noise: []
+    mismatch: []
+    connects_to: [objective]
+
+  - id: objective
+    name: "High-NA Objective (1.4 NA oil)"
+    type: optics
+    parameters:
+      type: microscope_objective
+      magnification: 100
+      NA: 1.4
+      immersion: oil
+      psf_model: airy_disk
+    noise: []
+    mismatch:
+      - type: optical_aberration
+        description: "Residual spherical and chromatic aberration"
+        severity: low
+        correction_method: "Deconvolution with measured PSF"
+    connects_to: [detector]
+
+  - id: detector
+    name: "sCMOS Camera"
+    type: detector
+    parameters:
+      type: scmos
+      pixels: [256, 256]
+      pixel_size_um: 6.5
+      quantum_efficiency: 0.82
+      well_depth_electrons: 30000
+    noise:
+      - type: poisson
+        parameters:
+          mean_photons: 10000
+      - type: gaussian
+        parameters:
+          sigma_electrons: 1.5
+    mismatch:
+      - type: non_uniform_illumination
+        description: "Gaussian illumination profile causes uneven brightness"
+        severity: low
+        correction_method: "Flat-field normalization"
+    connects_to: [digitization]
+
+  - id: digitization
+    name: "ADC / Digitization"
+    type: digitization
+    parameters:
+      bit_depth: 16
+      dynamic_range_db: 90
+
+mismatch_sources:
+  - pattern_frequency_error
+  - pattern_phase_error
+  - optical_aberration
+  - non_uniform_illumination
+  - photobleaching
+
+algorithms:
+  - wiener_sim
+  - fista_tv
+  - richardson_lucy
+  - pnp_admm_tv
+  - fairsim
+
+budget_estimate:
+  equipment_k_usd: 150
+  per_scan_usd: 5
+  annual_maintenance_k_usd: 15
+
+references:
+  - "Gustafsson, Surpassing the lateral resolution limit by a factor of two using SIM, J. Microsc. 198(2), 2000"
+  - "Gustafsson et al., Three-dimensional resolution doubling by SIM, Biophys. J. 94(12), 2008"
+  - "Muller et al., Open-source image reconstruction of super-resolution SIM data, Nat. Commun. 7, 2016"

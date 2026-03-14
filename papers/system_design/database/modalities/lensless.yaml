@@ -1,0 +1,101 @@
+name: lensless
+display_name: "Lensless Imaging (Diffuser Camera)"
+aliases: ["lensless_camera", "diffuser_camera", "mask_camera"]
+category: computational_photography
+physics_class: incoherent_imaging
+wave_model: ray
+sensor_type: cmos_bare
+geometry: single_shot
+
+forward_elements:
+  - id: source
+    name: "Broadband LED Illumination"
+    type: source
+    parameters:
+      wavelength_nm_range: [400, 700]
+      power_mw: 100
+      illumination: incoherent_flood
+    noise: []
+    mismatch: []
+
+  - id: object
+    name: "2D Planar Object"
+    type: object
+    parameters:
+      type: planar_scene
+      distance_mm: 50
+    noise: []
+    mismatch: []
+    connects_to: [diffuser]
+
+  - id: diffuser
+    name: "Phase Diffuser / Coded Mask"
+    type: optics
+    parameters:
+      type: diffuser
+      psf_type: diffuse_caustic
+      psf_support_px: [256, 256]
+      model: convolution
+    noise: []
+    mismatch:
+      - type: psf_calibration_error
+        description: "Measured PSF differs from true PSF due to calibration noise"
+        severity: medium
+        correction_method: "In-situ PSF measurement with point source"
+      - type: depth_dependent_psf
+        description: "PSF varies with object distance (non-isoplanatic)"
+        severity: low
+        correction_method: "Depth-sectioned reconstruction"
+    connects_to: [detector]
+
+  - id: detector
+    name: "Bare CMOS Sensor"
+    type: detector
+    parameters:
+      type: cmos
+      pixels: [256, 256]
+      pixel_pitch_um: 5.5
+      quantum_efficiency: 0.6
+      well_depth_electrons: 10000
+    noise:
+      - type: poisson
+        parameters:
+          mean_photons: 5000
+      - type: gaussian
+        parameters:
+          sigma_electrons: 3.0
+    mismatch:
+      - type: fixed_pattern_noise
+        description: "Per-pixel dark current variations"
+        severity: low
+        correction_method: "Dark frame subtraction"
+    connects_to: [digitization]
+
+  - id: digitization
+    name: "ADC / Digitization"
+    type: digitization
+    parameters:
+      bit_depth: 12
+      dynamic_range_db: 66
+
+mismatch_sources:
+  - psf_calibration_error
+  - depth_dependent_psf
+  - fixed_pattern_noise
+
+algorithms:
+  - wiener_deconv
+  - fista_tv
+  - admm_tikhonov
+  - pnp_admm_tv
+  - richardson_lucy
+
+budget_estimate:
+  equipment_k_usd: 0.5
+  per_scan_usd: 0.01
+  annual_maintenance_k_usd: 0.1
+
+references:
+  - "Antipa et al., DiffuserCam: Lensless Single-exposure 3D Imaging, Optica 5(1), 2018"
+  - "Boominathan et al., Lensless Imaging: A computational renaissance, IEEE SPM 39(2), 2022"
+  - "Monakhova et al., Learned reconstructions for practical mask-based lensless imaging, Opt. Express 27(20), 2019"

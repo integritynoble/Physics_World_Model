@@ -81,7 +81,7 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 % ---- Summary (Nature: ≤150 words) ----
 \noindent\textbf{Summary.}
-Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a compiler gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework matches expert-tuned quality ($99.6 \pm 3.1$\%) with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study on 5 modalities---including two novel system designs (lensless imaging, structured illumination microscopy)---confirms that forward-model selection dominates reconstruction algorithm choice (inter-method PSNR CoV $< 5.7$\%).  Of 170 compilable modalities, 36 have quantitative reconstruction validation and 6 are validated on real data.
+Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem and its three diagnostic gates (the Triad)~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  The Judge validates designs via a 6-gate compiler plus the 3 Triad gates (recoverability, carrier budget, operator mismatch).  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a compiler gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework matches expert-tuned quality ($99.6 \pm 3.1$\%) with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study on 5 modalities---including two novel system designs (lensless imaging, structured illumination microscopy)---confirms that forward-model selection dominates reconstruction algorithm choice (inter-method PSNR CoV $< 5.7$\%).  Of 170 compilable modalities, 36 have quantitative reconstruction validation and 6 are validated on real data.
 
 % ========================================================================
 \section{Introduction}
@@ -228,12 +228,16 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 \node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
 
 % Compiler gates (below judge)
-\node[gate, below=0.5cm of judge, xshift=-1.2cm] (g1) {DAG};
-\node[gate, right=0.25cm of g1] (g2) {Chain};
-\node[gate, right=0.25cm of g2] (g3) {Bounds};
-\node[gate, right=0.25cm of g3] (g4) {NL};
-\node[gate, right=0.25cm of g4] (g5) {Adj.};
-\node[gate, right=0.25cm of g5] (g6) {Err.};
+\node[gate, below=0.5cm of judge, xshift=-1.8cm] (g1) {DAG};
+\node[gate, right=0.18cm of g1] (g2) {Chain};
+\node[gate, right=0.18cm of g2] (g3) {Bnd.};
+\node[gate, right=0.18cm of g3] (g4) {NL};
+\node[gate, right=0.18cm of g4] (g5) {Adj.};
+\node[gate, right=0.18cm of g5] (g6) {Err.};
+% Triad gates (below compiler gates)
+\node[gate, fill=red!8, draw=red!40!black, below=0.35cm of g1, xshift=0.6cm] (t1) {G1};
+\node[gate, fill=red!8, draw=red!40!black, right=0.18cm of t1] (t2) {G2};
+\node[gate, fill=red!8, draw=red!40!black, right=0.18cm of t2] (t3) {G3};
 
 % Certified spec
 \node[spec, right=of judge] (cert) {DAG\\$+$ cert.};
@@ -248,7 +252,7 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 \node[err, below=0.6cm of out] (errbox) {$\eps$ bounds\\report};
 
 % Reject
-\node[box, fill=red!8, draw=red!50!black, dashed, below=1.8cm of judge, xshift=-1.5cm] (rej) {\scriptsize Reject};
+\node[box, fill=red!8, draw=red!50!black, dashed, below=2.6cm of judge, xshift=-1.5cm] (rej) {\scriptsize Reject};
 
 % Arrows
 \draw[arr] (nl) -- (plan);
@@ -265,12 +269,14 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 
 % Compiler bracket
 \draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-2pt]g1.south west) -- ([yshift=-2pt]g6.south east) node[midway, below=4pt, font=\scriptsize] {6-Gate Compiler};
+% Triad bracket
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-2pt]t1.south west) -- ([yshift=-2pt]t3.south east) node[midway, below=4pt, font=\scriptsize] {Triad~\cite{paperII}};
 \draw[arr, gray] (judge.south) -- ++(0,-0.15) -| (g3.north);
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
-$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates it via a 6-gate compiler
-(Gates~1--3 from FPB compiler~\cite{paperII}; Gates~4--6 new to this work; mapping to Theorem~\ref{thm:design}: DAG${\to}\eps_{\text{spec}}$, Chain${\to}\eps_{\text{trans}}$, Bounds${\to}$complexity, NL${\to}\eps_{\text{param}}$, Adj.${\to}$consistency, Err.${\to}\eps_{\text{FPB}}$); rejected designs trigger
+$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in two stages: a 6-gate compiler
+(DAG${\to}\eps_{\text{spec}}$, Chain${\to}\eps_{\text{trans}}$, Bounds${\to}$complexity, NL${\to}\eps_{\text{param}}$, Adj.${\to}$consistency, Err.${\to}\eps_{\text{FPB}}$) plus 3 Triad gates~\cite{paperII} (G1: recoverability, G2: carrier budget, G3: operator mismatch); rejected designs trigger
 redesign (dashed blue, up to 3 rounds).
 $\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
 $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
@@ -279,11 +285,14 @@ $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error b
 
 \textbf{Plan Agent ($\Agent_P$)} generates a \texttt{spec.md} from natural language, selecting FPB primitives, parameters, and noise models from the 170-modality registry.
 
-\textbf{Judge Agent ($\Agent_J$)} validates via a 6-gate compiler that combines 3 gates inherited from the FPB compiler~\cite{paperII}----(1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds---with 3 new agent-validation gates: (4)~nonlinear constraints (VC dimension $\leq 3$), (5)~adjoint consistency, (6)~representation error.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
+\textbf{Judge Agent ($\Agent_J$)} performs two-stage validation.
+\emph{Stage~1}: a 6-gate compiler checks DAG acyclicity, canonical chain fidelity, complexity bounds, nonlinear constraints (VC $\leq 3$), adjoint consistency, and representation error.
+\emph{Stage~2}: the 3 Triad gates~\cite{paperII} check recoverability (G1---is the sampling sufficient?), carrier budget (G2---is the SNR above the noise floor?), and operator mismatch (G3---does the model match the intended physics?).
+Failures at either stage trigger rejection; the Plan Agent regenerates (up to 3 rounds).
 
 \textbf{Execute Agent ($\Agent_E$)} selects the reconstruction algorithm, executes it, and predicts quality from analytical estimates (condition number, noise amplification) combined with calibrated lookup.
 
-The Judge executes \emph{deterministic verification}, not prediction.  If certified, every term in Theorem~\ref{thm:design} is explicitly bounded---a formal contract independent of LLM quality.  Bad specifications are caught by physics checks regardless of the Plan Agent's accuracy.
+The Judge executes \emph{deterministic verification}, not prediction.  The 6-gate compiler certifies specification correctness (every $\eps$ term in Theorem~\ref{thm:design} is bounded); the 3 Triad gates certify design quality (the measurement is recoverable, the carrier budget is sufficient, and the forward model is faithful).  Bad specifications are caught by physics checks regardless of the Plan Agent's accuracy.
 
 % ------------------------------------------------------------------------
 \subsection{Design-to-Real Error Bound}
@@ -635,12 +644,12 @@ x_{k+1} = \mathrm{prox}_{\lambda R}\!\left(x_k - \gamma\,A_{\text{low}}^T\bigl(A
 uses the fast low-tier adjoint $A_{\text{low}}^T$ for gradient computation and the high-tier forward $A_{\text{high}}$ for data fidelity.  Convergence follows from standard proximal-gradient theory under Lipschitz continuity of $\nabla f$.
 
 % ------------------------------------------------------------------------
-\subsection{6-Gate Compiler}
+\subsection{Two-Stage Judge Validation}
 % ------------------------------------------------------------------------
 
-The compiler combines 3 gates from the FPB compiler~\cite{paperII} with 3 new agent-validation gates.
+The Judge Agent performs two-stage validation: a 6-gate compiler for specification correctness, followed by 3 Triad gates~\cite{paperII} for design quality.
 
-\medskip\noindent\textit{Gates inherited from the FPB compiler~\cite{paperII}:}
+\subsubsection{6-Gate Compiler}
 
 \textbf{Gate~1 (DAG).}  Compiled into a typed \texttt{OperatorGraphSpec} (Pydantic~v2).  Acyclicity verified via Kahn's algorithm, $O(V{+}E)$.
 
@@ -648,13 +657,21 @@ The compiler combines 3 gates from the FPB compiler~\cite{paperII} with 3 new ag
 
 \textbf{Gate~3 (Bounds).}  $N \leq 20$ nodes, $D \leq 10$ depth.
 
-\medskip\noindent\textit{New agent-validation gates (this work):}
-
 \textbf{Gate~4 (Nonlinear).}  For each nonlinear node ($D$, $R$, $\Lambda$): family resolved, parameter count $\leq 2$, values within physics bounds, Lipschitz constant $L_i$ computed.
 
 \textbf{Gate~5 (Adjoint).}  Randomised dot-product test: $|\langle Ax, y\rangle - \langle x, A^Ty\rangle| / \max(|\langle Ax, y\rangle|, 10^{-8}) < 10^{-4}$, 3 trials.
 
 \textbf{Gate~6 (Error).}  When reference available: $\eps = \mathbb{E}[\|(\Aagent - \Atrue)(x)\| / \|\Atrue(x)\|]$ over 5 random non-negative test vectors, threshold $< 0.01$.
+
+\subsubsection{Triad Gates}
+
+After compilation, the Judge evaluates the 3 Triad gates from~\cite{paperII}---the same diagnostic law that governs existing instruments now applied prospectively to agent-designed specifications:
+
+\textbf{Triad Gate~1 (Recoverability).}  Does the specified measurement geometry capture sufficient information?  The Judge checks that the null-space dimension of the forward operator is compatible with the target reconstruction quality: $\dim(\mathcal{N}(A)) / n < \tau_1$ (threshold $\tau_1$ depends on regularization strength).  \emph{Design action if violated}: increase sampling density or add complementary views.
+
+\textbf{Triad Gate~2 (Carrier Budget).}  Is the specified SNR above the noise floor?  The Judge estimates measurement SNR from the noise model in \texttt{spec.md}: $\text{SNR}_{\text{spec}} > \text{SNR}_{\min}$ (typically 5\,dB).  \emph{Design action if violated}: increase source power, integration time, or detector quantum efficiency.
+
+\textbf{Triad Gate~3 (Operator Mismatch).}  Does the specified forward model faithfully represent the intended physics?  The Judge cross-checks the \texttt{spec.md} mismatch sources against the canonical mismatch catalog for the modality, and verifies that calibration strategies are specified for all high-severity sources.  \emph{Design action if violated}: add missing mismatch correction or increase fidelity tier.
 
 % ------------------------------------------------------------------------
 \subsection{4-Scenario Recovery Protocol}
