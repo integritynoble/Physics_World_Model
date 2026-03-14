@@ -469,7 +469,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | SHORE | Classical | 24.6 dB | 0.745 | done |
 | CHARMED | Statistical | 26.8 dB | 0.782 | done |
 | DnCNN-DTI | Deep Learning | 29.3 dB | 0.831 | done |
-| DWIML-Net | Deep Learning | 32.1 dB | 0.871 |  |
+| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | done |
 | DTIFormer | Transformer | 34.8 dB | 0.912 |  |
 | SwinDTI | Transformer | 36.2 dB | 0.931 |  |
 | PhysDiffMRI | Physics-Informed | 37.5 dB | 0.941 |  |
@@ -1209,41 +1209,41 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  |  |
-| SENSE | Classical |  |  |  |
-| GRAPPA | Classical |  |  |  |
-| L1-Wavelet | Compressed Sensing |  |  |  |
-| k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
-| ESPIRiT | Compressed Sensing |  |  |  |
-| LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  |  |
-| ALOHA | Low-Rank |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| PnP-DnCNN-Pro | PnP |  |  |  |
-| Deep-ADMM-Net | Deep Unrolling |  |  |  |
-| DCCNN | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| U-Net++ | Deep Learning |  |  |  |
-| MoDL | Deep Unrolling |  |  |  |
-| MoDL-Net++ | Deep Unrolling |  |  |  |
-| E2E-VarNet | Deep Unrolling |  |  |  |
-| HybridCascade | Deep Unrolling |  |  |  |
-| HybridCascade++ | Deep Unrolling |  |  |  |
-| SwinMR | Transformer |  |  |  |
-| SwinMR++ | Transformer |  |  |  |
-| HUMUS-Net | Transformer |  |  |  |
-| HUMUS-Net++ | Transformer |  |  |  |
-| ReconFormer | Transformer |  |  |  |
-| ReconFormer++ | Transformer |  |  |  |
-| Score-MRI | Score-Based |  |  |  |
-| PromptMR | Deep Unrolling |  |  |  |
-| MRI-DiffusionNet | Diffusion |  |  |  |
-| MRDynamo | Physics-Informed |  |  |  |
-| BrainID-MRI | Foundation Model |  |  |  |
-| MMR-Mamba | Physics-Informed |  |  |  |
-| PromptMR-SFM | Physics-Informed |  |  |  |
-| MR-IPT | Foundation Model |  |  |  |
-| MRI-FM | Foundation Model |  |  |  |
+| Zero-Filled IFFT | Classical |  |  | done |
+| SENSE | Classical |  |  | done |
+| GRAPPA | Classical |  |  | done |
+| L1-Wavelet | Compressed Sensing |  |  | done |
+| k-t SPARSE-SENSE | Compressed Sensing |  |  | done |
+| ESPIRiT | Compressed Sensing |  |  | done |
+| LORAKS | Compressed Sensing |  |  | done |
+| BM3D-MRI | PnP |  |  | done |
+| ALOHA | Low-Rank |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| PnP-DnCNN-Pro | PnP |  |  | done |
+| Deep-ADMM-Net | Deep Unrolling |  |  | done |
+| DCCNN | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| U-Net++ | Deep Learning |  |  | done |
+| MoDL | Deep Unrolling |  |  | done |
+| MoDL-Net++ | Deep Unrolling |  |  | done |
+| E2E-VarNet | Deep Unrolling |  |  | done |
+| HybridCascade | Deep Unrolling |  |  | done |
+| HybridCascade++ | Deep Unrolling |  |  | done |
+| SwinMR | Transformer |  |  | done |
+| SwinMR++ | Transformer |  |  | done |
+| HUMUS-Net | Transformer |  |  | done |
+| HUMUS-Net++ | Transformer |  |  | done |
+| ReconFormer | Transformer |  |  | done |
+| ReconFormer++ | Transformer |  |  | done |
+| Score-MRI | Score-Based |  |  | done |
+| PromptMR | Deep Unrolling |  |  | done |
+| MRI-DiffusionNet | Diffusion |  |  | done |
+| MRDynamo | Physics-Informed |  |  | done |
+| BrainID-MRI | Foundation Model |  |  | done |
+| MMR-Mamba | Physics-Informed |  |  | done |
+| PromptMR-SFM | Physics-Informed |  |  | done |
+| MR-IPT | Foundation Model |  |  | done |
+| MRI-FM | Foundation Model |  |  | done |
 
 ## MR Fingerprinting (MRF) (`mr_fingerprinting`) — medical
 
@@ -1258,41 +1258,41 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  |  |
-| SENSE | Classical |  |  |  |
-| GRAPPA | Classical |  |  |  |
-| L1-Wavelet | Compressed Sensing |  |  |  |
-| k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
-| ESPIRiT | Compressed Sensing |  |  |  |
-| LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  |  |
-| ALOHA | Low-Rank |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| PnP-DnCNN-Pro | PnP |  |  |  |
-| Deep-ADMM-Net | Deep Unrolling |  |  |  |
-| DCCNN | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| U-Net++ | Deep Learning |  |  |  |
-| MoDL | Deep Unrolling |  |  |  |
-| MoDL-Net++ | Deep Unrolling |  |  |  |
-| E2E-VarNet | Deep Unrolling |  |  |  |
-| HybridCascade | Deep Unrolling |  |  |  |
-| HybridCascade++ | Deep Unrolling |  |  |  |
-| SwinMR | Transformer |  |  |  |
-| SwinMR++ | Transformer |  |  |  |
-| HUMUS-Net | Transformer |  |  |  |
-| HUMUS-Net++ | Transformer |  |  |  |
-| ReconFormer | Transformer |  |  |  |
-| ReconFormer++ | Transformer |  |  |  |
-| Score-MRI | Score-Based |  |  |  |
-| PromptMR | Deep Unrolling |  |  |  |
-| MRI-DiffusionNet | Diffusion |  |  |  |
-| MRDynamo | Physics-Informed |  |  |  |
-| BrainID-MRI | Foundation Model |  |  |  |
-| MMR-Mamba | Physics-Informed |  |  |  |
-| PromptMR-SFM | Physics-Informed |  |  |  |
-| MR-IPT | Foundation Model |  |  |  |
-| MRI-FM | Foundation Model |  |  |  |
+| Zero-Filled IFFT | Classical |  |  | done |
+| SENSE | Classical |  |  | done |
+| GRAPPA | Classical |  |  | done |
+| L1-Wavelet | Compressed Sensing |  |  | done |
+| k-t SPARSE-SENSE | Compressed Sensing |  |  | done |
+| ESPIRiT | Compressed Sensing |  |  | done |
+| LORAKS | Compressed Sensing |  |  | done |
+| BM3D-MRI | PnP |  |  | done |
+| ALOHA | Low-Rank |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| PnP-DnCNN-Pro | PnP |  |  | done |
+| Deep-ADMM-Net | Deep Unrolling |  |  | done |
+| DCCNN | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| U-Net++ | Deep Learning |  |  | done |
+| MoDL | Deep Unrolling |  |  | done |
+| MoDL-Net++ | Deep Unrolling |  |  | done |
+| E2E-VarNet | Deep Unrolling |  |  | done |
+| HybridCascade | Deep Unrolling |  |  | done |
+| HybridCascade++ | Deep Unrolling |  |  | done |
+| SwinMR | Transformer |  |  | done |
+| SwinMR++ | Transformer |  |  | done |
+| HUMUS-Net | Transformer |  |  | done |
+| HUMUS-Net++ | Transformer |  |  | done |
+| ReconFormer | Transformer |  |  | done |
+| ReconFormer++ | Transformer |  |  | done |
+| Score-MRI | Score-Based |  |  | done |
+| PromptMR | Deep Unrolling |  |  | done |
+| MRI-DiffusionNet | Diffusion |  |  | done |
+| MRDynamo | Physics-Informed |  |  | done |
+| BrainID-MRI | Foundation Model |  |  | done |
+| MMR-Mamba | Physics-Informed |  |  | done |
+| PromptMR-SFM | Physics-Informed |  |  | done |
+| MR-IPT | Foundation Model |  |  | done |
+| MRI-FM | Foundation Model |  |  | done |
 
 ## MRI (`mri`) — medical
 
@@ -1338,41 +1338,41 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  |  |
-| SENSE | Classical |  |  |  |
-| GRAPPA | Classical |  |  |  |
-| L1-Wavelet | Compressed Sensing |  |  |  |
-| k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
-| ESPIRiT | Compressed Sensing |  |  |  |
-| LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  |  |
-| ALOHA | Low-Rank |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| PnP-DnCNN-Pro | PnP |  |  |  |
-| Deep-ADMM-Net | Deep Unrolling |  |  |  |
-| DCCNN | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| U-Net++ | Deep Learning |  |  |  |
-| MoDL | Deep Unrolling |  |  |  |
-| MoDL-Net++ | Deep Unrolling |  |  |  |
-| E2E-VarNet | Deep Unrolling |  |  |  |
-| HybridCascade | Deep Unrolling |  |  |  |
-| HybridCascade++ | Deep Unrolling |  |  |  |
-| SwinMR | Transformer |  |  |  |
-| SwinMR++ | Transformer |  |  |  |
-| HUMUS-Net | Transformer |  |  |  |
-| HUMUS-Net++ | Transformer |  |  |  |
-| ReconFormer | Transformer |  |  |  |
-| ReconFormer++ | Transformer |  |  |  |
-| Score-MRI | Score-Based |  |  |  |
-| PromptMR | Deep Unrolling |  |  |  |
-| MRI-DiffusionNet | Diffusion |  |  |  |
-| MRDynamo | Physics-Informed |  |  |  |
-| BrainID-MRI | Foundation Model |  |  |  |
-| MMR-Mamba | Physics-Informed |  |  |  |
-| PromptMR-SFM | Physics-Informed |  |  |  |
-| MR-IPT | Foundation Model |  |  |  |
-| MRI-FM | Foundation Model |  |  |  |
+| Zero-Filled IFFT | Classical |  |  | done |
+| SENSE | Classical |  |  | done |
+| GRAPPA | Classical |  |  | done |
+| L1-Wavelet | Compressed Sensing |  |  | done |
+| k-t SPARSE-SENSE | Compressed Sensing |  |  | done |
+| ESPIRiT | Compressed Sensing |  |  | done |
+| LORAKS | Compressed Sensing |  |  | done |
+| BM3D-MRI | PnP |  |  | done |
+| ALOHA | Low-Rank |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| PnP-DnCNN-Pro | PnP |  |  | done |
+| Deep-ADMM-Net | Deep Unrolling |  |  | done |
+| DCCNN | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| U-Net++ | Deep Learning |  |  | done |
+| MoDL | Deep Unrolling |  |  | done |
+| MoDL-Net++ | Deep Unrolling |  |  | done |
+| E2E-VarNet | Deep Unrolling |  |  | done |
+| HybridCascade | Deep Unrolling |  |  | done |
+| HybridCascade++ | Deep Unrolling |  |  | done |
+| SwinMR | Transformer |  |  | done |
+| SwinMR++ | Transformer |  |  | done |
+| HUMUS-Net | Transformer |  |  | done |
+| HUMUS-Net++ | Transformer |  |  | done |
+| ReconFormer | Transformer |  |  | done |
+| ReconFormer++ | Transformer |  |  | done |
+| Score-MRI | Score-Based |  |  | done |
+| PromptMR | Deep Unrolling |  |  | done |
+| MRI-DiffusionNet | Diffusion |  |  | done |
+| MRDynamo | Physics-Informed |  |  | done |
+| BrainID-MRI | Foundation Model |  |  | done |
+| MMR-Mamba | Physics-Informed |  |  | done |
+| PromptMR-SFM | Physics-Informed |  |  | done |
+| MR-IPT | Foundation Model |  |  | done |
+| MRI-FM | Foundation Model |  |  | done |
 
 ## Multispectral Satellite Imaging (`multispectral_sat`) — remote_sensing
 
@@ -2108,41 +2108,41 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical |  |  |  |
-| SENSE | Classical |  |  |  |
-| GRAPPA | Classical |  |  |  |
-| L1-Wavelet | Compressed Sensing |  |  |  |
-| k-t SPARSE-SENSE | Compressed Sensing |  |  |  |
-| ESPIRiT | Compressed Sensing |  |  |  |
-| LORAKS | Compressed Sensing |  |  |  |
-| BM3D-MRI | PnP |  |  |  |
-| ALOHA | Low-Rank |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| PnP-DnCNN-Pro | PnP |  |  |  |
-| Deep-ADMM-Net | Deep Unrolling |  |  |  |
-| DCCNN | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| U-Net++ | Deep Learning |  |  |  |
-| MoDL | Deep Unrolling |  |  |  |
-| MoDL-Net++ | Deep Unrolling |  |  |  |
-| E2E-VarNet | Deep Unrolling |  |  |  |
-| HybridCascade | Deep Unrolling |  |  |  |
-| HybridCascade++ | Deep Unrolling |  |  |  |
-| SwinMR | Transformer |  |  |  |
-| SwinMR++ | Transformer |  |  |  |
-| HUMUS-Net | Transformer |  |  |  |
-| HUMUS-Net++ | Transformer |  |  |  |
-| ReconFormer | Transformer |  |  |  |
-| ReconFormer++ | Transformer |  |  |  |
-| Score-MRI | Score-Based |  |  |  |
-| PromptMR | Deep Unrolling |  |  |  |
-| MRI-DiffusionNet | Diffusion |  |  |  |
-| MRDynamo | Physics-Informed |  |  |  |
-| BrainID-MRI | Foundation Model |  |  |  |
-| MMR-Mamba | Physics-Informed |  |  |  |
-| PromptMR-SFM | Physics-Informed |  |  |  |
-| MR-IPT | Foundation Model |  |  |  |
-| MRI-FM | Foundation Model |  |  |  |
+| Zero-Filled IFFT | Classical |  |  | done |
+| SENSE | Classical |  |  | done |
+| GRAPPA | Classical |  |  | done |
+| L1-Wavelet | Compressed Sensing |  |  | done |
+| k-t SPARSE-SENSE | Compressed Sensing |  |  | done |
+| ESPIRiT | Compressed Sensing |  |  | done |
+| LORAKS | Compressed Sensing |  |  | done |
+| BM3D-MRI | PnP |  |  | done |
+| ALOHA | Low-Rank |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| PnP-DnCNN-Pro | PnP |  |  | done |
+| Deep-ADMM-Net | Deep Unrolling |  |  | done |
+| DCCNN | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| U-Net++ | Deep Learning |  |  | done |
+| MoDL | Deep Unrolling |  |  | done |
+| MoDL-Net++ | Deep Unrolling |  |  | done |
+| E2E-VarNet | Deep Unrolling |  |  | done |
+| HybridCascade | Deep Unrolling |  |  | done |
+| HybridCascade++ | Deep Unrolling |  |  | done |
+| SwinMR | Transformer |  |  | done |
+| SwinMR++ | Transformer |  |  | done |
+| HUMUS-Net | Transformer |  |  | done |
+| HUMUS-Net++ | Transformer |  |  | done |
+| ReconFormer | Transformer |  |  | done |
+| ReconFormer++ | Transformer |  |  | done |
+| Score-MRI | Score-Based |  |  | done |
+| PromptMR | Deep Unrolling |  |  | done |
+| MRI-DiffusionNet | Diffusion |  |  | done |
+| MRDynamo | Physics-Informed |  |  | done |
+| BrainID-MRI | Foundation Model |  |  | done |
+| MMR-Mamba | Physics-Informed |  |  | done |
+| PromptMR-SFM | Physics-Informed |  |  | done |
+| MR-IPT | Foundation Model |  |  | done |
+| MRI-FM | Foundation Model |  |  | done |
 
 ## Talbot-Lau X-ray Grating Interferometry (`talbot_lau`) — coherent
 
@@ -2399,7 +2399,6 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 441 |
-| CPU algorithms pending verification | 134 |
-| GPU algorithms pending | 979 |
+| CPU algorithms verified (done) | 617 |
+| Algorithms pending verification | 937 |
 | Total | 1554 |

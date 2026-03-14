@@ -687,7 +687,7 @@ def _mri_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
         recon = _to_2d_display(y)
 
     # TV post-processing for CS/regularized algorithms
-    if any(kw in algo_lower for kw in ("tv", "l1", "wavelet", "sparse", "admm")):
+    if any(kw in algo_lower for kw in ("tv", "l1", "wavelet", "sparse", "admm", "dwiml")):
         try:
             from skimage.restoration import denoise_tv_chambolle
 
@@ -1361,7 +1361,13 @@ def _run_common_sync(
         # For DL methods, run the best available CPU baseline:
         # sinogram modalities → PINER-CT (better than plain FBP)
         recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
-        effective_algo = "PINER-CT" if recon_type_for_baseline == "sinogram" else ""
+        if recon_type_for_baseline == "sinogram":
+            effective_algo = "PINER-CT"
+        elif recon_type_for_baseline == "mri":
+            # Pass algorithm name so keyword-based MRI post-processing (TV, ADMM, etc.) applies
+            effective_algo = algorithm_name
+        else:
+            effective_algo = ""
     x_recon = _dispatch_reconstruction(
         sample_data, variant_key, category, effective_algo
     )
