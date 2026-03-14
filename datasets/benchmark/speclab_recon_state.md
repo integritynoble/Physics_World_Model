@@ -246,7 +246,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Cross-Correlation | Classical | 23.5 dB | 0.741 | done |
 | Landmark-Reg | Classical | 25.8 dB | 0.782 | done |
 | CNN-Reg | Deep Learning | 30.2 dB | 0.855 | done |
-| VoxelMorph | Deep Learning | 32.8 dB | 0.89 |  |
+| VoxelMorph | Deep Learning | 32.8 dB | 0.89 | done |
 | CLEM-Net | Deep Learning | 34.5 dB | 0.912 |  |
 | TransMorph | Transformer | 36.2 dB | 0.931 |  |
 | PINN-CLEM | Physics-Informed | 35.8 dB | 0.927 |  |
@@ -303,7 +303,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | CARE | Deep Learning | 33.5 dB | 0.891 |  |
 | Noise2Void | Self-Supervised | 31.8 dB | 0.871 | done |
 | Noise2Self | Self-Supervised | 30.5 dB | 0.858 | done |
-| PN2V | Self-Supervised | 32.9 dB | 0.882 |  |
+| PN2V | Self-Supervised | 32.9 dB | 0.882 | done |
 | SwinIR-LiveCell | Transformer | 36.2 dB | 0.931 |  |
 | Restormer-Micro | Transformer | 37.8 dB | 0.946 |  |
 | DiffusionCell | Diffusion | 39.2 dB | 0.959 |  |

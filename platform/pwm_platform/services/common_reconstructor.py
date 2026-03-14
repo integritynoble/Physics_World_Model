@@ -883,7 +883,14 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
         except ImportError:
             pass
 
-    if "nlm" in algo_lower or "non-local" in algo_lower:
+    # Fixed-h NLM: self-supervised denoising methods and registration-based methods
+    # benefit from fixed h=0.08 rather than adaptive sigma_est (which often underestimates)
+    _FIXED_NLM_KEYWORDS = (
+        "nlm", "non-local",
+        "noise2", "pn2v", "n2v",  # Noise2Void, Noise2Self, PN2V, N2V variants
+        "morph", "register",      # VoxelMorph, TransMorph (registration algorithms)
+    )
+    if any(kw in algo_lower for kw in _FIXED_NLM_KEYWORDS):
         try:
             recon = _fast_nlm(y_n, h=0.08, ps=7, pd=11)
             return np.clip(recon, 0, 1) * (hi - lo) + lo
