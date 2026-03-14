@@ -346,21 +346,45 @@ For the streak camera variant, replace `m_t · ...` with the streak-to-time mapp
 | **4D Spectral-Depth** | W→C→Σ→D | depth + spectral | **Yes** | $400 | 64:1 | 10–15 dB | **High** |
 | **4D Temporal-Depth** | M→C→Σ→D | depth + temporal | No | $1,200 | 64:1 | 12–16 dB | **High** |
 | **5D Full (DMD)** | M→W→C→Σ→D | depth + spectral + temporal | No | $1,500 | 64:1 (4³) | 8–12 dB | **Medium** |
-| **5D Full (Streak)** | W→C→Σ→D_streak | depth + spectral + streak | No | $150,000 | 64:1 (4³) | 10–14 dB | **Low (cost)** |
+| **5D Full (Streak)** | W_λ→W_t→C→Σ→D | depth + spectral + temporal | No | $150,000 | 64:1 (4³) | 10–14 dB | **Low (cost)** |
 
-### Key Insight
+### Key Insight: W is a General Dispersion Primitive
 
-The progression from 3D to 5D follows a clear pattern:
-- Each additional physical dimension adds one diversity mechanism to the chain
-- The compression ratio multiplies: 8 → 64 → 64 (at reduced per-dim resolution)
-- The reconstruction difficulty grows, but the forward model remains **linear** in all cases
-- All systems share the same `Σ → D` (accumulate → detect) back-end
+A crucial observation: **the streak camera and the spectral disperser are the same primitive W** — both are shift operators that map a non-spatial dimension onto a spatial axis of the detector:
+
+| Device | Primitive | Coordinate | Forward operator | Adjoint |
+|--------|-----------|-----------|-----------------|---------|
+| Prism / Grating | W_λ | wavelength | x(r) → x(r + d(λ)) | x(r) → x(r - d(λ)) |
+| Streak camera | W_t | time | x(r) → x(r + v·t) | x(r) → x(r - v·t) |
+
+Mathematically, both are parameterized shift operators: `W_ξ : x(r) → x(r + f(ξ))` where ξ ∈ {λ, t}. The physics differs (refractive dispersion vs. electrostatic deflection) but the linear algebra is identical. This means:
+
+1. **No new primitive is needed** — the existing W primitive covers both spectral and temporal dispersion
+2. **The 5D streak system** is simply two W's in series: `W_λ → W_t → C → Σ → D`
+3. **The reconstruction algorithm** is the same — just apply the adjoint shift in the appropriate dimension
+4. **The DMD alternative** replaces W_t with M (modulation instead of dispersion), trading ultrafast resolution for lower cost
+
+This unification strengthens the FPB framework: the 11 primitives B = {P, M, Π, F, C, Σ, D, S, W, R, Λ} are sufficient to describe even the most ambitious multidimensional systems without inventing new operators.
+
+### Progression Pattern
+
+Each additional physical dimension adds exactly one primitive to the chain:
+
+```
+3D (x,y,z):           C  → Σ → D           depth via PSF diversity
+4D (x,y,z,λ):     W_λ → C  → Σ → D         + spectral dispersion
+4D (x,y,z,t):      M  → C  → Σ → D         + temporal modulation
+5D (x,y,z,λ,t): W_λ → W_t → C → Σ → D     + both dispersions (passive)
+5D (x,y,z,λ,t):  M → W_λ → C → Σ → D      + modulation + spectral (active)
+```
+
+The compression ratio multiplies: 8 → 64 → 64 (at reduced per-dim resolution). The forward model remains **linear** in all cases. All systems share the same `Σ → D` back-end.
 
 ### Recommendation
 
-1. **Build the 4D Spectral-Depth first** — it's completely passive ($400), needs no active electronics, and the calibration protocol is straightforward (scan a narrowband point source across depths)
-2. **Add temporal modulation second** — upgrading to 5D requires only adding a DMD (+$800) and synchronization electronics
-3. **The streak camera option** is for ultrafast applications only (femtosecond dynamics) — not recommended for general imaging due to cost
+1. **Build the 4D Spectral-Depth first** — completely passive ($400), no active electronics, calibration is straightforward (scan a narrowband point source across depths)
+2. **Add temporal dispersion second** — the streak camera option gives `W_λ → W_t → C → Σ → D`, a fully passive 5D system (no mask, no DMD — just optics)
+3. **The DMD alternative** (`M → W_λ → C → Σ → D`) trades ultrafast resolution for $1,500 total cost vs. $150,000 for streak
 
 ---
 
@@ -368,12 +392,13 @@ The progression from 3D to 5D follows a clear pattern:
 
 Using the 11 primitives B = {P, M, Π, F, C, Σ, D, S, W, R, Λ}:
 
-| System | FPB Chain | Primitives used |
-|--------|----------|----------------|
-| 3D Lensless | C → Σ → D | C, Σ, D |
-| 4D Spectral-Depth | W → C → Σ → D | W, C, Σ, D |
-| 4D Temporal-Depth | M → C → Σ → D | M, C, Σ, D |
-| 5D Full (DMD) | M → W → C → Σ → D | M, W, C, Σ, D |
-| 5D Full (Streak) | W → C → Σ → D | W, C, Σ, D + streak detector |
+| System | FPB Chain | Primitives used | Active? |
+|--------|----------|----------------|---------|
+| 3D Lensless | C → Σ → D | C, Σ, D | Passive |
+| 4D Spectral-Depth | W_λ → C → Σ → D | W, C, Σ, D | Passive |
+| 4D Temporal-Depth (DMD) | M → C → Σ → D | M, C, Σ, D | Active |
+| 4D Temporal-Depth (Streak) | W_t → C → Σ → D | W, C, Σ, D | Passive |
+| 5D Full (DMD) | M → W_λ → C → Σ → D | M, W, C, Σ, D | Active |
+| 5D Full (Streak) | W_λ → W_t → C → Σ → D | W, W, C, Σ, D | **Passive** |
 
-Note: The streak camera is a special detector that maps time→space, so it could be modeled as a modified D primitive (D_streak) or as an additional Σ_t primitive.
+The streak-based 5D system `W_λ → W_t → C → Σ → D` is remarkable: it is a **fully passive** 5D imaging system — no electronics, no masks, no modulators. Just a prism, a streak tube, a diffuser, and a bare sensor. All 5 dimensions are encoded by physics alone.
