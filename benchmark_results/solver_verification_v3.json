@@ -1,0 +1,4074 @@
+{
+  "timestamp": "2026-03-14T15:24:47",
+  "platform": "local_cpu",
+  "stats": {
+    "verified": 532,
+    "skipped_gpu": 0,
+    "error": 0,
+    "import_error": 0,
+    "bad_return": 0,
+    "bad_return_type": 0
+  },
+  "modalities": {
+    "acoustic_emission": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "dl_localizer": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "acoustic_microscopy": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "saft_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "active_thermography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "pulsed_phase_tv": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "adaptive_optics": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "deep_ao": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "afm": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 1.116
+      },
+      "afm_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.afm_solvers",
+        "function": "afm_unet_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.106
+      }
+    },
+    "angiography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.41
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "asl_mri": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "asl_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.696
+      }
+    },
+    "atom_probe": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "apt_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "bioluminescence_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "blt_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "brachytherapy_img": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "brachy_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "brillouin": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "brillouin_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "cacti": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.gap_tv",
+        "function": "run_gap_tv",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.65
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.efficientsci",
+        "function": "run_efficientsci",
+        "message": "shape=(32,)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.elp_unfolding",
+        "function": "run_elp_unfolding",
+        "message": "shape=(32,)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.efficientsci",
+        "function": "run_efficientsci",
+        "message": "shape=(32,)",
+        "exec_time": 0.0
+      }
+    },
+    "cars": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "cars_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "cassi": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.gap_tv",
+        "function": "run_gap_tv",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.476
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.gap_tv",
+        "function": "run_gap_tv",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.47
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.gap_tv",
+        "function": "run_gap_tv",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.478
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.gap_tv",
+        "function": "run_gap_tv",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.464
+      }
+    },
+    "cathodoluminescence": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "cl_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "cbct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.014
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.cbct_solvers",
+        "function": "fdk_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.102
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.cbct_solvers",
+        "function": "cbct_unet_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.098
+      }
+    },
+    "cest_mri": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "cest_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ceus": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "us_dl_enhance": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "clem": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "clem_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "coded_exposure": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.073
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "coded_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "confocal_3d": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.115
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.11
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.1
+      }
+    },
+    "confocal_endomicroscopy": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "cle_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "confocal_livecell": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.103
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.118
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.115
+      }
+    },
+    "coronagraphy": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "speckle_null_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "cryo_em": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "relion_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "cryo_et": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.099
+      },
+      "cryo_et_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.cryoet_solvers",
+        "function": "cryocare_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.099
+      }
+    },
+    "ct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.014
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.pnp",
+        "function": "run_pnp",
+        "message": "shape=(64, 64)",
+        "exec_time": 3.835
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.redcnn",
+        "function": "run_redcnn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.135
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.redcnn",
+        "function": "run_redcnn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.065
+      }
+    },
+    "ct_fluorescence": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "xfct_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "cup": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "e2e_cup": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "dark_field": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.242
+      },
+      "df_unet": {
+        "status": "verified",
+        "module": "pwm_core.recon.darkfield_solvers",
+        "function": "df_unet_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.18
+      }
+    },
+    "desi": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "desi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "dexa": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.02
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "dic": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.2
+      },
+      "dic_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.dic_solvers",
+        "function": "dic_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.195
+      }
+    },
+    "diffusion_mri": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "digital_breast_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "dbt_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "dna_paint": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(32,)",
+        "exec_time": 0.124
+      },
+      "dna_paint_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.smlm_solvers",
+        "function": "decode_smlm_recon",
+        "message": "shape=(32,)",
+        "exec_time": 0.109
+      }
+    },
+    "doppler_ultrasound": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.photoacoustic_solver",
+        "function": "run_photoacoustic",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "dot": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.dot_solver",
+        "function": "run_dot",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "dot_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ebsd": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "eddy_current": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "ec_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "edx_mapping": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "edx_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "eels": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "eels_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "eht_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "eht_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "elastography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "electron_diffraction": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ptychography_solver",
+        "function": "run_epie",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "electron_holography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.phase_retrieval_solver",
+        "function": "run_phase_retrieval",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.231
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "electron_tomography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.015
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "endoscopy": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.endoscopy_solvers",
+        "function": "endomapper_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.131
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.endoscopy_solvers",
+        "function": "af_sfm_learner_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.127
+      }
+    },
+    "entangled_photon": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "qgi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "event_camera": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "event_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.003
+      }
+    },
+    "expansion": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.139
+      },
+      "exm_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.expansion_solvers",
+        "function": "expansion_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.136
+      }
+    },
+    "fib_sem": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.126
+      },
+      "fibsem_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.fibsem_solvers",
+        "function": "fibsem_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.134
+      }
+    },
+    "flash_lidar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "flash_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "flim": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.flim_solver",
+        "function": "run_flim",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.flim_solver",
+        "function": "run_flim",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.flim_solver",
+        "function": "run_flim",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.flim_solver",
+        "function": "run_flim",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "fluoroscopy": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.022
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "fmri": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "fpm": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.fpm_solver",
+        "function": "run_fpm",
+        "message": "shape=(64,)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.fpm_solver",
+        "function": "run_fpm",
+        "message": "shape=(64,)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.fpm_solver",
+        "function": "run_fpm",
+        "message": "shape=(64,)",
+        "exec_time": 0.0
+      }
+    },
+    "ftir_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "ftir_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "fundus": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.fundus_solvers",
+        "function": "retfound_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.128
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.fundus_solvers",
+        "function": "dr_grade_net_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.124
+      }
+    },
+    "fwi": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "fwi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "gaussian_splatting": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.gaussian_splatting_solver",
+        "function": "run_gaussian_splatting",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.gaussian_splatting_solver",
+        "function": "run_gaussian_splatting",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.nerf_solver",
+        "function": "run_nerf",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 140.397
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.gaussian_splatting_solver",
+        "function": "run_gaussian_splatting",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ghost_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "gi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "gpr": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "gpr_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "gravitational_wave": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "matched_filter_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "hdr_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.003
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.003
+      },
+      "hdr_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "holography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.holography_solver",
+        "function": "run_holography_reconstruction",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.138
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.phasenet",
+        "function": "run_phasenet",
+        "message": "shape=(64, 64, 2)",
+        "exec_time": 0.339
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.phasenet",
+        "function": "run_phasenet",
+        "message": "shape=(64, 64, 2)",
+        "exec_time": 0.047
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.phasenet",
+        "function": "run_phasenet",
+        "message": "shape=(64, 64, 2)",
+        "exec_time": 0.045
+      }
+    },
+    "hyperspectral_remote": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "hyper_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "impedance_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "eit_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "industrial_ct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "ict_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.015
+      }
+    },
+    "insar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "insar_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "integral": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.integral_solver",
+        "function": "run_integral",
+        "message": "shape=(64, 64, 16)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ism": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.123
+      },
+      "ism_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.ism_solvers",
+        "function": "ism_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.101
+      }
+    },
+    "ivus": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "ivus_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "lattice_lightsheet": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.104
+      },
+      "llsm_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.llsm_solvers",
+        "function": "llsm_care_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.122
+      }
+    },
+    "lensless": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.lensless_solver",
+        "function": "run_lensless",
+        "message": "shape=(4096,)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.flatnet",
+        "function": "run_flatnet",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 0.323
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.flatnet",
+        "function": "run_flatnet",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 0.247
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.flatnet",
+        "function": "run_flatnet",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 0.238
+      }
+    },
+    "libs": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "libs_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "lidar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "light_field": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.light_field_solver",
+        "function": "run_light_field",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.light_field_solver",
+        "function": "lfbm5d_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.light_field_solver",
+        "function": "lfssr_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.light_field_solver",
+        "function": "lfssr_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "lightsheet": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.lightsheet_solver",
+        "function": "run_lightsheet",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.03
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.lightsheet_solver",
+        "function": "run_lightsheet",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.036
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.destripe_net",
+        "function": "run_destripe",
+        "message": "shape=(64, 64)",
+        "exec_time": 4.441
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.destripe_net",
+        "function": "run_destripe",
+        "message": "shape=(64, 64)",
+        "exec_time": 4.244
+      }
+    },
+    "lucky_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "lucky_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "machine_vision": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "mv_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "magnetic_particle": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "mpi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "maldi_msi": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "msi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "mammography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.015
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "matrix": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.024
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.026
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.lista",
+        "function": "run_lista",
+        "message": "shape=(4096,)",
+        "exec_time": 1.676
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.lista",
+        "function": "run_lista",
+        "message": "shape=(4096,)",
+        "exec_time": 1.409
+      }
+    },
+    "mfm": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.175
+      },
+      "mfm_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mfm_solvers",
+        "function": "mfm_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.158
+      }
+    },
+    "minflux": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.13
+      },
+      "minflux_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.minflux_solvers",
+        "function": "minflux_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.165
+      }
+    },
+    "mr_elastography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "mre_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "mr_fingerprinting": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "mrf_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "mra": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "mra_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "mri": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_cs_mri",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.016
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.modl",
+        "function": "run_modl",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.078
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.modl",
+        "function": "run_modl",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.064
+      }
+    },
+    "mrs": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "multispectral_sat": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "ms_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "muon_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.015
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "nerf": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.nerf_solver",
+        "function": "run_nerf",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 139.281
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.nerf_solver",
+        "function": "run_nerf",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 144.285
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.nerf_solver",
+        "function": "run_nerf",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 147.647
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.nerf_solver",
+        "function": "run_nerf",
+        "message": "shape=(64, 64, 3)",
+        "exec_time": 145.928
+      },
+      "rl_proxy": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "fista_proxy": {
+        "status": "verified",
+        "module": "pwm_core.recon.cs_solvers",
+        "function": "run_ista",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "neutron_diffraction": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "nd_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "neutron_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.018
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "nirs_brain": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "nirs_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "nsom": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.134
+      },
+      "nsom_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.nsom_solvers",
+        "function": "nsom_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.111
+      }
+    },
+    "ocean_acoustic_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "oat_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ocean_color": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "oc_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "oct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.oct_solver",
+        "function": "run_oct",
+        "message": "shape=(64, 32)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.oct_solver",
+        "function": "spectral_estimation_recon",
+        "message": "shape=(64, 32)",
+        "exec_time": 0.064
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.oct_solver",
+        "function": "oct_denoising_net_recon",
+        "message": "shape=(64, 32)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.oct_solver",
+        "function": "oct_denoising_net_recon",
+        "message": "shape=(64, 32)",
+        "exec_time": 0.0
+      }
+    },
+    "octa": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.oct_solver",
+        "function": "run_oct",
+        "message": "shape=(64, 32)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "odt": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "odt_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "palm_storm": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.smlm_solvers",
+        "function": "decode_smlm_recon",
+        "message": "shape=(32,)",
+        "exec_time": 0.111
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.smlm_solvers",
+        "function": "deep_storm_recon",
+        "message": "shape=(32,)",
+        "exec_time": 0.105
+      }
+    },
+    "panorama": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.panorama_solver",
+        "function": "run_panorama_fusion",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.panorama_solver",
+        "function": "run_panorama_fusion",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.ifcnn",
+        "function": "run_ifcnn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ifcnn",
+        "function": "run_ifcnn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "particle_calorimetry": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "cal_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "passive_microwave": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "pm_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "pet": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.015
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.pet_solvers",
+        "function": "neurolF_pet_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.117
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.pet_solvers",
+        "function": "pet_unet_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.106
+      }
+    },
+    "pet_ct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "petct_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "pet_mr": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "petmr_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "phase_contrast": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.109
+      },
+      "pc_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.phase_contrast_solvers",
+        "function": "phase_net_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.122
+      }
+    },
+    "phase_retrieval": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.phase_retrieval_solver",
+        "function": "run_phase_retrieval",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.243
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "photoacoustic": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.photoacoustic_solver",
+        "function": "run_photoacoustic",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "photometric_stereo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "ps_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "polarization": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.pnp",
+        "function": "run_pnp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.343
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "polsar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "polsar_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "portal_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "portal_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "proton_radiography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.021
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "proton_therapy_img": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "proton_therapy_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ptychography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ptychography_solver",
+        "function": "run_epie",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.ptychonn",
+        "function": "run_ptychonn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.ptychonn",
+        "function": "run_ptychonn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ptychonn",
+        "function": "run_ptychonn",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "pump_probe": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "pp_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "quantum_illumination": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.003
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.003
+      },
+      "qi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "radio_astronomy": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "clean_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "radio_interferometry": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "ri_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "raman_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "raman_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "sar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.023
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "saxs": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "saxs_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "seismic_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "seismic_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "sem": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "shearography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "shear_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "shg": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.128
+      },
+      "shg_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.shg_solvers",
+        "function": "shg_care_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.119
+      }
+    },
+    "sim": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.sim_solver",
+        "function": "run_sim_reconstruction",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.sim_solver",
+        "function": "run_sim_reconstruction",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.sim_solver",
+        "function": "run_sim_reconstruction",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.sim_solver",
+        "function": "run_sim_reconstruction",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "sims": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "sims_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "solar_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "solar_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "sonar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "spc": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.cs_solvers",
+        "function": "run_tval3",
+        "message": "shape=(64, 64)",
+        "exec_time": 1.866
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.spc_solvers",
+        "function": "run_admm_spc",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.244
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.spc_solvers",
+        "function": "run_fista_l1_spc",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.035
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.spc_solvers",
+        "function": "run_fista_l1_spc",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.022
+      }
+    },
+    "spect": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.022
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.spect_solvers",
+        "function": "spect_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.138
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.spect_solvers",
+        "function": "spect_unet_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.13
+      }
+    },
+    "spect_ct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "spectct_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "spectral_ct": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "spectral_ct_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "spinning_disk": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.137
+      },
+      "sd_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.spinning_disk_solvers",
+        "function": "sd_care_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.147
+      }
+    },
+    "srs": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "srs_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "sted": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.sted_solvers",
+        "function": "sted_care_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.134
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.sted_solvers",
+        "function": "rcan_sted_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.144
+      }
+    },
+    "stem": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "stm": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.152
+      },
+      "stm_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.stm_solvers",
+        "function": "stm_dl_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.148
+      }
+    },
+    "streak_camera": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      },
+      "streak_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "structured_light": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "swi": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "swi_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      }
+    },
+    "talbot_lau": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "talbot_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "tem": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "terahertz": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "thz_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "three_photon": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.153
+      },
+      "3p_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.three_photon_solvers",
+        "function": "three_photon_care_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.138
+      }
+    },
+    "tirf": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "tof_camera": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.classical",
+        "function": "run_fista_l2",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "two_photon": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.two_photon_solvers",
+        "function": "two_photon_care_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.137
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.two_photon_solvers",
+        "function": "deep_interp_recon",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.207
+      }
+    },
+    "ultrasonic_phased_array": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "upa_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "ultrasound": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "us_mri": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "us_mri_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_zero_filled",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.002
+      }
+    },
+    "waxs": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "waxs_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "weather_radar": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "weather_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "widefield": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.139
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.139
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.141
+      }
+    },
+    "widefield_lowdose": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.care_unet",
+        "function": "run_care",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.141
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.noise2void",
+        "function": "noise2void_denoise",
+        "message": "shape=(64, 64)",
+        "exec_time": 2.021
+      },
+      "small_gpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.noise2void",
+        "function": "noise2void_denoise",
+        "message": "shape=(64, 64)",
+        "exec_time": 1.871
+      }
+    },
+    "xfel_sfx": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.001
+      },
+      "sfx_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "xray_crystallography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "xtal_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "xray_ndt": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "ndt_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "xray_radiography": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.ct_solvers",
+        "function": "run_fbp",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.016
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "famous_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "xrf_imaging": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "xrf_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    },
+    "xrf_tomo": {
+      "traditional_cpu": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "best_quality": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      },
+      "xrft_dl": {
+        "status": "verified",
+        "module": "pwm_core.recon.richardson_lucy",
+        "function": "run_richardson_lucy",
+        "message": "shape=(64, 64)",
+        "exec_time": 0.0
+      }
+    }
+  }
+}

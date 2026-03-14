@@ -46,8 +46,8 @@ data_source:
   dataset_url: https://zenodo.org/record/5764540
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: Spahn et al., DeepBacs for multi-task bacterial image analysis using open-source deep learning approaches, Communications
-    Biology 2022
+  citation: Spahn et al., DeepBacs for multi-task bacterial image analysis using open-source
+    deep learning approaches, Communications Biology 2022
   license: CC-BY-4.0
 mismatch_params:
 - name: PSF sigma
@@ -85,21 +85,21 @@ solvers:
   best_quality:
     name: CARE
     module: pwm_core.recon.care_unet
-    function: care_restore_2d
+    function: run_care
     params: 2M
     gpu: true
     reference: ''
   famous_dl:
     name: CARE
     module: pwm_core.recon.care_unet
-    function: care_restore_2d
+    function: run_care
     params: 2M
     gpu: false
     reference: ''
   small_gpu:
     name: CARE
     module: pwm_core.recon.care_unet
-    function: care_restore_2d
+    function: run_care
     params: '0'
     gpu: false
     reference: ''
@@ -114,8 +114,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Spahn et al., DeepBacs for multi-task bacterial image analysis using open-source deep learning approaches,
-      Communications Biology 2022
+    reference: Spahn et al., DeepBacs for multi-task bacterial image analysis using
+      open-source deep learning approaches, Communications Biology 2022
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / confocal_livecell_graph_v1

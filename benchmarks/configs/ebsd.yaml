@@ -42,7 +42,7 @@ solvers:
   traditional_cpu:
     name: FISTA-L2 (Hough baseline)
     module: pwm_core.recon.classical
-    function: fista_l2
+    function: run_fista_l2
     params: '0'
     gpu: false
     reference: ''

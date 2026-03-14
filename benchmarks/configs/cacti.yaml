@@ -44,7 +44,8 @@ data_source:
   dataset_url: https://github.com/liuyang12/SCI/tree/master/data
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE TPAMI 2019
+  citation: Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE TPAMI
+    2019
   license: BSD-3-Clause
 mismatch_params:
 - name: Spatial shift x,y
@@ -81,7 +82,7 @@ solvers:
   traditional_cpu:
     name: GAP-TV
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cacti
+    function: run_gap_tv
     params:
       iterations: 50
       lam: 0.05
@@ -90,21 +91,21 @@ solvers:
   best_quality:
     name: EfficientSCI
     module: pwm_core.recon.efficientsci
-    function: efficientsci_recon
+    function: run_efficientsci
     params: 12.05M
     gpu: false
     reference: Wang et al. CVPR 2023
   famous_dl:
     name: ELP-Unfolding
     module: pwm_core.recon.elp_unfolding
-    function: elp_recon
+    function: run_elp_unfolding
     params: 10M
     gpu: false
     reference: Yang et al. ECCV 2022
   small_gpu:
     name: EfficientSCI-T
     module: pwm_core.recon.efficientsci
-    function: efficientsci_recon
+    function: run_efficientsci
     params: 3.78M
     gpu: false
     reference: ''
@@ -120,7 +121,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE TPAMI 2019
+    reference: Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE
+      TPAMI 2019
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / cacti_graph_v1

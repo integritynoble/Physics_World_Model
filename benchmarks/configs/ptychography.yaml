@@ -49,7 +49,8 @@ data_source:
   dataset_url: https://github.com/mcherukara/PtychoNN/tree/master/data
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Cherukara et al., AI-enabled high-resolution scanning coherent diffraction imaging, Applied Physics Letters 2020
+  citation: Cherukara et al., AI-enabled high-resolution scanning coherent diffraction
+    imaging, Applied Physics Letters 2020
   license: BSD-2-Clause
 mismatch_params:
 - name: Probe position error
@@ -81,21 +82,21 @@ solvers:
   best_quality:
     name: PtychoNN
     module: pwm_core.recon.ptychonn
-    function: ptychonn_reconstruct
+    function: run_ptychonn
     params: 4.7M
     gpu: false
     reference: Cherukara et al. 2020
   famous_dl:
     name: PtychoNN
     module: pwm_core.recon.ptychonn
-    function: ptychonn_reconstruct
+    function: run_ptychonn
     params: 4.7M
     gpu: false
     reference: ''
   small_gpu:
     name: PtychoNN 2.0
     module: pwm_core.recon.ptychonn
-    function: ptychonn_reconstruct
+    function: run_ptychonn
     params: 0.7M
     gpu: false
     reference: ''
@@ -110,8 +111,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Cherukara et al., AI-enabled high-resolution scanning coherent diffraction imaging, Applied Physics Letters
-      2020
+    reference: Cherukara et al., AI-enabled high-resolution scanning coherent diffraction
+      imaging, Applied Physics Letters 2020
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / ptychography_graph_v1

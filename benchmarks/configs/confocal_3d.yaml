@@ -45,8 +45,8 @@ data_source:
   dataset_url: https://publications.mpi-cbg.de/publications-sites/7207/
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: 'Weigert et al., Content-aware image restoration: pushing the limits of fluorescence microscopy, Nature Methods
-    2018'
+  citation: 'Weigert et al., Content-aware image restoration: pushing the limits of
+    fluorescence microscopy, Nature Methods 2018'
   license: CC-BY-4.0
 mismatch_params:
 - name: Axial PSF sigma
@@ -84,21 +84,21 @@ solvers:
   best_quality:
     name: 3D CARE
     module: pwm_core.recon.care_unet
-    function: care_restore_3d
+    function: run_care
     params: 2M
     gpu: true
     reference: ''
   famous_dl:
     name: CARE-3D
     module: pwm_core.recon.care_unet
-    function: care_restore_3d
+    function: run_care
     params: 2M
     gpu: false
     reference: ''
   small_gpu:
     name: CARE-3D (slice-wise)
     module: pwm_core.recon.care_unet
-    function: care_restore_3d
+    function: run_care
     params: '0'
     gpu: false
     reference: ''
@@ -114,8 +114,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Weigert et al., Content-aware image restoration: pushing the limits of fluorescence microscopy, Nature Methods
-      2018'
+    reference: 'Weigert et al., Content-aware image restoration: pushing the limits
+      of fluorescence microscopy, Nature Methods 2018'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / confocal_3d_graph_v1

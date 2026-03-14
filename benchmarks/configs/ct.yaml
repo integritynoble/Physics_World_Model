@@ -44,8 +44,8 @@ data_source:
   dataset_url: https://zenodo.org/record/3384092
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Leuschner et al., LoDoPaB-CT, a benchmark dataset for low-dose computed tomography reconstruction, Scientific
-    Data 2021
+  citation: Leuschner et al., LoDoPaB-CT, a benchmark dataset for low-dose computed
+    tomography reconstruction, Scientific Data 2021
   license: CC-BY-4.0
 mismatch_params:
 - name: Center-of-rotation offset
@@ -99,14 +99,14 @@ solvers:
   famous_dl:
     name: RED-CNN
     module: pwm_core.recon.redcnn
-    function: redcnn_denoise
+    function: run_redcnn
     params: 1.5M
     gpu: false
     reference: Chen et al. 2017, IEEE TMI
   small_gpu:
     name: RED-CNN
     module: pwm_core.recon.redcnn
-    function: redcnn_denoise
+    function: run_redcnn
     params: '0'
     gpu: false
     reference: ''
@@ -121,8 +121,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Leuschner et al., LoDoPaB-CT, a benchmark dataset for low-dose computed tomography reconstruction, Scientific
-      Data 2021
+    reference: Leuschner et al., LoDoPaB-CT, a benchmark dataset for low-dose computed
+      tomography reconstruction, Scientific Data 2021
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / ct_graph_v1

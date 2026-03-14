@@ -77,21 +77,21 @@ solvers:
   best_quality:
     name: PhaseNet
     module: pwm_core.recon.phasenet
-    function: phasenet_reconstruct
+    function: run_phasenet
     params: 2M
     gpu: false
     reference: 'Rivenson et al. 2018, Light: S&A'
   famous_dl:
     name: PhaseNet
     module: pwm_core.recon.phasenet
-    function: phasenet_reconstruct
+    function: run_phasenet
     params: 2M
     gpu: false
     reference: ''
   small_gpu:
     name: PhaseNet
     module: pwm_core.recon.phasenet
-    function: phasenet_reconstruct
+    function: run_phasenet
     params: '0'
     gpu: false
     reference: ''

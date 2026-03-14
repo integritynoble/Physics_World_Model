@@ -62,7 +62,7 @@ solvers:
   best_quality:
     name: CARE
     module: pwm_core.recon.care_unet
-    function: care_restore_2d
+    function: run_care
     params: 2M
     gpu: true
     reference: Weigert et al. 2018

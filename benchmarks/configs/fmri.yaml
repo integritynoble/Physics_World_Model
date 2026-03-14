@@ -46,21 +46,21 @@ solvers:
   traditional_cpu:
     name: SENSE (fMRI)
     module: pwm_core.recon.mri_solvers
-    function: zero_filled_reconstruction
+    function: run_zero_filled
     params: '0'
     gpu: false
     reference: ''
   best_quality:
     name: fMRI-Transformer [proxy]
     module: pwm_core.recon.mri_solvers
-    function: zero_filled_reconstruction
+    function: run_zero_filled
     params: &id001 {}
     gpu: false
     reference: ''
   famous_dl:
     name: DeepBold [proxy]
     module: pwm_core.recon.mri_solvers
-    function: zero_filled_reconstruction
+    function: run_zero_filled
     params: *id001
     gpu: false
     reference: ''

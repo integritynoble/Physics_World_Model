@@ -58,7 +58,8 @@ data_source:
   dataset_url: https://zenodo.org/record/8139025
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime imaging, Scientific Data 2023
+  citation: Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime imaging,
+    Scientific Data 2023
   license: CC-BY-4.0
 mismatch_params:
 - name: IRF width
@@ -96,7 +97,7 @@ solvers:
   best_quality:
     name: MLE Fit
     module: pwm_core.recon.flim_solver
-    function: mle_fit_recon
+    function: run_flim
     params: '0'
     gpu: false
     reference: Becker 2012, J. Microscopy
@@ -129,7 +130,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime imaging, Scientific Data 2023
+    reference: Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime
+      imaging, Scientific Data 2023
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / flim_graph_v1

@@ -854,7 +854,14 @@ def run_nerf(
             info.update(train_info)
 
         # ---- Render requested view ----------------------------------------
-        render_pose = poses[min(render_idx, len(poses) - 1)]
+        # Check for explicit render_pose from physics or cfg
+        render_pose = cfg.get("render_pose", None)
+        if render_pose is None and hasattr(physics, "info"):
+            op_info = physics.info()
+            if isinstance(op_info, dict) and "render_pose" in op_info:
+                render_pose = np.array(op_info["render_pose"])
+        if render_pose is None:
+            render_pose = poses[min(render_idx, len(poses) - 1)]
         rendered = nerf_render(
             model=net,
             pose=render_pose,

@@ -51,7 +51,8 @@ data_source:
   dataset_url: https://github.com/caiyuanhao1998/MST/tree/main/simulation/test_datasets
   fallback: generated
   synthetic_generator: spectral_scene
-  citation: Cai et al., Mask-guided Spectral-wise Transformer for Efficient Hyperspectral Image Reconstruction, CVPR 2022
+  citation: Cai et al., Mask-guided Spectral-wise Transformer for Efficient Hyperspectral
+    Image Reconstruction, CVPR 2022
   license: MIT
 mismatch_params:
 - name: Mask shift dx
@@ -100,7 +101,7 @@ solvers:
   traditional_cpu:
     name: GAP-TV
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cassi
+    function: run_gap_tv
     params:
       n_bands: 28
       iterations: 50
@@ -111,7 +112,7 @@ solvers:
   best_quality:
     name: GAP-TV (guided)
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cassi
+    function: run_gap_tv
     params:
       n_bands: 28
       iterations: 100
@@ -122,7 +123,7 @@ solvers:
   famous_dl:
     name: GAP-TV (fast)
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cassi
+    function: run_gap_tv
     params:
       n_bands: 28
       iterations: 50
@@ -132,7 +133,7 @@ solvers:
   small_gpu:
     name: GAP-TV (small)
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cassi
+    function: run_gap_tv
     params:
       n_bands: 28
       iterations: 30
@@ -151,7 +152,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Cai et al., Mask-guided Spectral-wise Transformer for Efficient Hyperspectral Image Reconstruction, CVPR 2022
+    reference: Cai et al., Mask-guided Spectral-wise Transformer for Efficient Hyperspectral
+      Image Reconstruction, CVPR 2022
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / cassi_graph_v1

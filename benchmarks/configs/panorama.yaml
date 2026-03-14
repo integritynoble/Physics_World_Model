@@ -46,7 +46,8 @@ data_source:
   dataset_url: https://data.vision.ee.ethz.ch/cvl/DIV2K/
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: 'Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution: Dataset and Study, CVPRW 2017'
+  citation: 'Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution:
+    Dataset and Study, CVPRW 2017'
   license: Research use
 mismatch_params: []
 solvers:
@@ -68,14 +69,14 @@ solvers:
   famous_dl:
     name: IFCNN
     module: pwm_core.recon.ifcnn
-    function: ifcnn_fuse
+    function: run_ifcnn
     params: 0.3M
     gpu: false
     reference: Zhang et al. 2020
   small_gpu:
     name: IFCNN
     module: pwm_core.recon.ifcnn
-    function: ifcnn_fuse
+    function: run_ifcnn
     params: '0'
     gpu: false
     reference: ''
@@ -91,7 +92,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution: Dataset and Study, CVPRW 2017'
+    reference: 'Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution:
+      Dataset and Study, CVPRW 2017'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / panorama_graph_v1

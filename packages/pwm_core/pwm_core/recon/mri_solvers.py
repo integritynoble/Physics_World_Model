@@ -558,3 +558,35 @@ def run_cs_mri(
     cfg = dict(cfg)
     cfg['method'] = 'cs'
     return run_espirit_recon(y, physics, cfg)
+
+
+def run_zero_filled(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run zero-filled MRI reconstruction (portfolio-compatible interface).
+
+    Args:
+        y: k-space measurements.
+        physics: Physics operator (may contain mask info).
+        cfg: Configuration dict with optional 'device' key.
+
+    Returns:
+        Tuple of (reconstructed_image, info_dict).
+    """
+    info: Dict[str, Any] = {"solver": "zero_filled"}
+    try:
+        device = cfg.get("device", None)
+        mask = None
+        if hasattr(physics, 'mask'):
+            mask = physics.mask
+        elif hasattr(physics, 'info') and callable(physics.info):
+            pi = physics.info()
+            if isinstance(pi, dict):
+                mask = pi.get('mask', None)
+        result = zero_filled_reconstruction(y, mask=mask, device=device)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return y.astype(np.float32), info

@@ -63,7 +63,7 @@ def _estimate_operator_norm_torch(A, iterations, dev):
 
     A_t = to_torch(A, dev)
     m, n = A_t.shape
-    v = torch.randn(n, device=dev) / (n ** 0.5)
+    v = torch.randn(n, device=dev, dtype=A_t.dtype) / (n ** 0.5)
 
     for _ in range(iterations):
         u = A_t @ v
@@ -463,3 +463,55 @@ def solve_spc(
         raise ValueError(f"Unknown method: {method}. Available: {list(SOLVERS.keys())}")
 
     return SOLVERS[method](y, A, **kwargs)
+
+
+def run_admm_spc(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run ADMM SPC reconstruction (portfolio-compatible interface)."""
+    info: Dict[str, Any] = {"solver": "admm_spc"}
+    try:
+        device = cfg.get("device", None)
+        A = None
+        if hasattr(physics, 'A'):
+            A = physics.A
+        elif hasattr(physics, 'forward'):
+            A = physics.forward
+        else:
+            A = physics
+        rho = cfg.get("rho", 1.0)
+        iters = cfg.get("iterations", 100)
+        result = admm_spc(y, A, rho=rho, iterations=iters, device=device)
+        x_shape = getattr(physics, 'x_shape', y.shape)
+        return result.reshape(x_shape).astype(np.float32), info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return y.astype(np.float32), info
+
+
+def run_fista_l1_spc(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run FISTA-L1 SPC reconstruction (portfolio-compatible interface)."""
+    info: Dict[str, Any] = {"solver": "fista_l1_spc"}
+    try:
+        device = cfg.get("device", None)
+        A = None
+        if hasattr(physics, 'A'):
+            A = physics.A
+        elif hasattr(physics, 'forward'):
+            A = physics.forward
+        else:
+            A = physics
+        lam = cfg.get("lambda_l1", 0.01)
+        iters = cfg.get("iterations", 100)
+        result = fista_l1(y, A, lambda_l1=lam, iterations=iters, device=device)
+        x_shape = getattr(physics, 'x_shape', y.shape)
+        return result.reshape(x_shape).astype(np.float32), info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return y.astype(np.float32), info

@@ -48,8 +48,8 @@ data_source:
   dataset_url: https://figshare.com/articles/dataset/BioSR/13744429
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
-    Nature Methods 2021
+  citation: Qiao et al., Evaluation and development of deep neural networks for image
+    super-resolution in optical microscopy, Nature Methods 2021
   license: CC-BY-4.0
 mismatch_params:
 - name: Pattern frequency
@@ -87,14 +87,14 @@ solvers:
   best_quality:
     name: HiFi-SIM
     module: pwm_core.recon.sim_solver
-    function: hifi_sim_2d
+    function: run_sim_reconstruction
     params: '0'
     gpu: false
     reference: 'Wen et al. 2021, Light: S&A'
   famous_dl:
     name: fairSIM (open-source)
     module: pwm_core.recon.sim_solver
-    function: fairsim_reconstruction
+    function: run_sim_reconstruction
     params:
       wiener_param: 0.001
     gpu: false
@@ -102,7 +102,7 @@ solvers:
   small_gpu:
     name: Wiener-SIM (fast)
     module: pwm_core.recon.sim_solver
-    function: wiener_sim_2d
+    function: run_sim_reconstruction
     params:
       wiener_param: 0.005
     gpu: false
@@ -120,8 +120,8 @@ expected_psnr_range:
 source_attribution:
   ground_truth:
     type: web
-    reference: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
-      Nature Methods 2021
+    reference: Qiao et al., Evaluation and development of deep neural networks for
+      image super-resolution in optical microscopy, Nature Methods 2021
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / sim_graph_v1

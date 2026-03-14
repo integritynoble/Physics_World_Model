@@ -35,7 +35,8 @@ data_source:
   dataset_url: https://github.com/pwm-project/shepp-logan-synth
   fallback: generated
   synthetic_generator: spectral_scene
-  citation: Shepp and Logan, The Fourier reconstruction of a head section, IEEE TNS 1974
+  citation: Shepp and Logan, The Fourier reconstruction of a head section, IEEE TNS
+    1974
   license: Public domain
 mismatch_params:
 - name: Matrix perturbation
@@ -54,7 +55,7 @@ solvers:
   traditional_cpu:
     name: FISTA-L1
     module: pwm_core.recon.classical
-    function: fista_l2
+    function: run_fista_l2
     params:
       lam: 0.001
       iters: 50
@@ -63,7 +64,7 @@ solvers:
   best_quality:
     name: FISTA-L1 (high quality)
     module: pwm_core.recon.classical
-    function: fista_l2
+    function: run_fista_l2
     params:
       lam: 0.0001
       iters: 200
@@ -72,14 +73,14 @@ solvers:
   famous_dl:
     name: LISTA
     module: pwm_core.recon.lista
-    function: lista_reconstruct
+    function: run_lista
     params: 0.5M
     gpu: false
     reference: Gregor & LeCun, ICML 2010
   small_gpu:
     name: LISTA
     module: pwm_core.recon.lista
-    function: lista_reconstruct
+    function: run_lista
     params: '0'
     gpu: false
     reference: ''
@@ -94,7 +95,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Shepp and Logan, The Fourier reconstruction of a head section, IEEE TNS 1974
+    reference: Shepp and Logan, The Fourier reconstruction of a head section, IEEE
+      TNS 1974
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / matrix_graph_v1

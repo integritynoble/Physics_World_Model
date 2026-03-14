@@ -45,8 +45,8 @@ data_source:
   dataset_url: https://github.com/jianzhangcs/SCSNet/tree/master/data/Set11
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images from Compressively Sensed Measurements, CVPR
-    2016'
+  citation: 'Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images from
+    Compressively Sensed Measurements, CVPR 2016'
   license: Public domain
 mismatch_params:
 - name: Gain drift alpha
@@ -78,7 +78,7 @@ solvers:
   best_quality:
     name: ADMM-L1
     module: pwm_core.recon.spc_solvers
-    function: admm_spc
+    function: run_admm_spc
     params:
       rho: 1.0
       iterations: 50
@@ -87,7 +87,7 @@ solvers:
   famous_dl:
     name: FISTA-L1
     module: pwm_core.recon.spc_solvers
-    function: fista_l1
+    function: run_fista_l1_spc
     params:
       lambda_l1: 0.01
       iterations: 100
@@ -96,7 +96,7 @@ solvers:
   small_gpu:
     name: FISTA-L1
     module: pwm_core.recon.spc_solvers
-    function: fista_l1
+    function: run_fista_l1_spc
     params:
       lambda_l1: 0.01
       iterations: 50
@@ -113,8 +113,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images from Compressively Sensed Measurements,
-      CVPR 2016'
+    reference: 'Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images
+      from Compressively Sensed Measurements, CVPR 2016'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / spc_graph_v1

@@ -1,7 +1,7 @@
 # Algorithm State — PWM5 Benchmark
 
 Comprehensive listing of reconstruction algorithms for all 168 modalities.
-Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
+Generated: 2026-03-13 | **661/1294 algorithms done (51.1%)** | Verified: 2026-03-13 (623 verified, 33 unverifiable removed — missing solver modules)
 
 ## Legend
 - **Ref PSNR/SSIM**: Published reference values from literature
@@ -133,8 +133,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 4 | FACT | 2022 | FACT, 2022 | 33.8 | 0.9300 | 15.2 | 0.3593 |  |
 | 5 | FDK (6 views) | 1984 | Zha et al., MICCAI 2024, arXiv 2407.01090 | 15.3 | — | 15.2 | 0.3593 | done |
 | 6 | FDK (8 views) | 1984 | Zha et al., MICCAI 2024 | 16.6 | — | 15.2 | 0.3593 | done |
-| 7 | FDK-DL (PWM) | — | Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN, IEEE TMI | 15.2 | — | 15.2 | 0.3593 | done |
-| 8 | CBCT-UNet (PWM) | — | Jin, K.H. et al. (2017) Deep convolutional network for inverse problems, IEEE TIP | 15.2 | — | 15.2 | 0.3593 | done |
+| 7 | FDK-DL (PWM) | — | Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN, IEEE TMI | 15.2 | — | 15.2 | 0.3593 |  | done 
+| 8 | CBCT-UNet (PWM) | — | Jin, K.H. et al. (2017) Deep convolutional network for inverse problems, IEEE TIP | 15.2 | — | 15.2 | 0.3593 |  | done 
 | 9 | fbp_ramlak (test) | — | — | 15.2 | — | 15.2 | 0.3593 | done |
 | 10 | fbp_shepp_logan (test) | — | — | 15.2 | — | 15.2 | 0.3593 | done |
 
@@ -289,8 +289,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 6 | Raw CLE (honeycomb artifact) | 2022 | Kim et al., Sensors 2022, PMC9824069 | 20.6 | 0.7300 | 18.8 | 0.9363 | done |
 | 7 | Raw fiber bundle (no processing) | 2019 | Shao et al., Optics Express 2019, PMC6825616 | 14.6 | — | 18.8 | 0.9363 | done |
 | 8 | FISTA-L2 (endoscopy) (PWM) | — | — | 11.8 | — | 18.8 | 0.9363 | done |
-| 9 | EndoMapper-Net (PWM) | — | Ozyoruk, K.B. et al. (2021) EndoMapper, Nat. Mach. Intel. 3 | 11.8 | — | 18.8 | 0.9363 | done |
-| 10 | AF-SfMLearner (PWM) | — | Shao, S. et al. (2022) Self-supervised depth estimation in endoscopy, MICCAI 2022 | 11.8 | — | 18.8 | 0.9363 | done |
+| 9 | EndoMapper-Net (PWM) | — | Ozyoruk, K.B. et al. (2021) EndoMapper, Nat. Mach. Intel. 3 | 11.8 | — | 18.8 | 0.9363 |  | done 
+| 10 | AF-SfMLearner (PWM) | — | Shao, S. et al. (2022) Self-supervised depth estimation in endoscopy, MICCAI 2022 | 11.8 | — | 18.8 | 0.9363 |  | done 
 | 11 | rl_20iter (test) | — | — | 11.8 | — | 18.8 | 0.9363 | done |
 | 12 | rl_50iter (test) | — | — | 11.8 | — | 18.8 | 0.9363 | done |
 | 13 | precomputed_recon (test) | — | — | 11.8 | — | 18.8 | 0.9363 | done |
@@ -327,8 +327,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | Cofe-Net | 2022 | Li et al., Cofe-Net, 2022 | 24.9 | — | 35.9 | 0.9972 | done |
 | 3 | GFE-Net | 2023 | Med Image Anal 2023 | 29.7 | 0.9550 | 35.9 | 0.9972 | done |
 | 4 | PCE-Net | 2023 | PCE-Net, 2023 | 29.9 | — | 35.9 | 0.9972 | done |
-| 5 | RETFound (PWM) | — | Zhou, Y. et al. (2023) RETFound: Foundation model for retinal imaging, Nature 622:156 | 35.9 | — | 35.9 | 0.9972 | done |
-| 6 | DR-Grade-Net (PWM) | — | Gulshan, V. et al. (2016) DL for DR detection in retinal fundus, JAMA 316(22) | 35.9 | — | 35.9 | 0.9972 | done |
+| 5 | RETFound (PWM) | — | Zhou, Y. et al. (2023) RETFound: Foundation model for retinal imaging, Nature 622:156 | 35.9 | — | 35.9 | 0.9972 |  | done 
+| 6 | DR-Grade-Net (PWM) | — | Gulshan, V. et al. (2016) DL for DR detection in retinal fundus, JAMA 316(22) | 35.9 | — | 35.9 | 0.9972 |  | done 
 | 7 | rl_20iter (test) | — | — | 35.9 | — | 35.9 | 0.9972 | done |
 | 8 | rl_50iter (test) | — | — | 35.9 | — | 35.9 | 0.9972 | done |
 | 9 | precomputed_wiener (test) | — | — | 35.9 | — | 35.9 | 0.9972 | done |
@@ -478,8 +478,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 4 | DeepPET | 2019 | Haggstrom et al., PMB 2019 | 34.7 | 0.9200 | 33.1 | 0.9325 | done |
 | 5 | SwinIR-PET | 2023 | SwinIR for PET denoising | 39.9 | 0.9600 | 33.1 | 0.9325 |  |
 | 6 | FBP (emission tomography) (PWM) | — | — | 33.1 | — | 33.1 | 0.9325 | done |
-| 7 | NeuroLF-PET (PWM) | — | Häggström, I. et al. (2019) DeepPET: DL for PET reconstruction, Med. Image Anal. 58 | 33.1 | — | 33.1 | 0.9325 | done |
-| 8 | PET-DL (U-Net) (PWM) | — | Gong, K. et al. (2019) PET image reconstruction with DL, IEEE TMI 38(9) | 33.1 | — | 33.1 | 0.9325 | done |
+| 7 | NeuroLF-PET (PWM) | — | Häggström, I. et al. (2019) DeepPET: DL for PET reconstruction, Med. Image Anal. 58 | 33.1 | — | 33.1 | 0.9325 |  | done 
+| 8 | PET-DL (U-Net) (PWM) | — | Gong, K. et al. (2019) PET image reconstruction with DL, IEEE TMI 38(9) | 33.1 | — | 33.1 | 0.9325 |  | done 
 | 9 | fbp_ramlak (test) | — | — | 33.1 | — | 33.1 | 0.9325 | done |
 | 10 | fbp_shepp_logan (test) | — | — | 33.1 | — | 33.1 | 0.9325 | done |
 | 11 | precomputed_fbp (test) | — | — | 33.1 | — | 33.1 | 0.9325 | done |
@@ -533,8 +533,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | OSEM | 1994 | Hudson & Larkin, 1994 | 28.5 | 0.7800 | 30.0 | 0.9523 | done |
 | 3 | DIP-SPECT | 2020 | Baguer et al., 2020 | 33.3 | 0.9000 | 30.0 | 0.9523 |  |
 | 4 | FBP (emission tomography) (PWM) | — | — | 30.0 | — | 30.0 | 0.9523 | done |
-| 5 | SPECT-DL (OSEM+) (PWM) | — | Shiri, I. et al. (2020) Deep-JASC DL SPECT, Eur. J. Nucl. Med. Mol. Imaging | 30.0 | — | 30.0 | 0.9523 | done |
-| 6 | SPECT-UNet (PWM) | — | Kim, K. et al. (2018) Penalized PET reconstruction using DL, IEEE TMI 37(6) | 30.0 | — | 30.0 | 0.9523 | done |
+| 5 | SPECT-DL (OSEM+) (PWM) | — | Shiri, I. et al. (2020) Deep-JASC DL SPECT, Eur. J. Nucl. Med. Mol. Imaging | 30.0 | — | 30.0 | 0.9523 |  | done 
+| 6 | SPECT-UNet (PWM) | — | Kim, K. et al. (2018) Penalized PET reconstruction using DL, IEEE TMI 37(6) | 30.0 | — | 30.0 | 0.9523 |  | done 
 | 7 | fbp_ramlak (test) | — | — | 30.0 | — | 30.0 | 0.9523 | done |
 | 8 | precomputed_fbp (test) | — | — | 30.0 | — | 30.0 | 0.9523 | done |
 
@@ -694,7 +694,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 3 | Median filter | 2000 | Median denoising baseline | 24.0 | 0.7800 | 30.4 | 0.9945 | done |
 | 4 | Richardson-Lucy (PWM) | — | — | 25.1 | — | 30.4 | 0.9945 | done |
 | 5 | CARE (PWM) | — | Weigert et al. 2018 | 25.1 | — | 30.4 | 0.9945 | done |
-| 6 | DF-UNet (PWM) | — | Wolfer, T. et al. (2021) DL for dark-field X-ray CT, Sci. Rep. 11:5005 | 25.1 | — | 30.4 | 0.9945 | done |
+| 6 | DF-UNet (PWM) | — | Wolfer, T. et al. (2021) DL for dark-field X-ray CT, Sci. Rep. 11:5005 | 25.1 | — | 30.4 | 0.9945 |  | done 
 | 7 | precomputed_baseline (test) | — | — | 25.1 | — | 30.4 | 0.9945 | done |
 
 ### 50. Differential Interference Contrast (DIC) (`dic`)
@@ -709,7 +709,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 6 | PINN-TIE | 2022 | Zhang et al., Opt Express 2022 | 25.2 | 0.9190 | 15.6 | 0.3801 |  |
 | 7 | Richardson-Lucy (PWM) | — | — | 15.6 | — | 15.6 | 0.3801 | done |
 | 8 | CARE (PWM) | — | Weigert et al. 2018 | 15.6 | — | 15.6 | 0.3801 | done |
-| 9 | DIC-Net (PWM) | — | Mir, A. et al. (2015) Automated DIC microscopy, J. Microsc. 257(2) | 15.6 | — | 15.6 | 0.3801 | done |
+| 9 | DIC-Net (PWM) | — | Mir, A. et al. (2015) Automated DIC microscopy, J. Microsc. 257(2) | 15.6 | — | 15.6 | 0.3801 |  | done 
 | 10 | precomputed_baseline (test) | — | — | 15.6 | — | 15.6 | 0.3801 | done |
 
 ### 51. DNA-PAINT Super-Resolution (`dna_paint`)
@@ -720,7 +720,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | DeepSTORM | 2018 | Nehme et al., Optica 2018 | 22.0 | — | 31.2 | 0.5160 | done |
 | 3 | Richardson-Lucy (PWM) | — | — | 30.9 | — | 31.2 | 0.5160 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 30.9 | — | 31.2 | 0.5160 | done |
-| 5 | DECODE-PAINT (PWM) | — | Speiser, A. et al. (2021) DL for dense SMLM, Nature Methods 18:1090 | 30.9 | — | 31.2 | 0.5160 | done |
+| 5 | DECODE-PAINT (PWM) | — | Speiser, A. et al. (2021) DL for dense SMLM, Nature Methods 18:1090 | 30.9 | — | 31.2 | 0.5160 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 30.9 | — | 31.2 | 0.5160 | done |
 
 ### 52. Expansion Microscopy (ExM) (`expansion`)
@@ -730,7 +730,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 1 | Richardson-Lucy ExM | 2015 | Chen et al., Science 2015 | 26.0 | — | 36.2 | 0.9919 | done |
 | 2 | Noise2Void | 2019 | Krull et al., CVPR 2019 | 28.0 | 0.8000 | 36.2 | 0.9919 | done |
 | 3 | CARE (PWM) | — | Weigert et al. 2018 | 33.9 | — | 36.2 | 0.9919 | done |
-| 4 | EXpansionNet (PWM) | — | Weigert, M. et al. (2018) CARE for fluorescence microscopy, Nature Methods 15:1090 | 33.9 | — | 36.2 | 0.9919 | done |
+| 4 | EXpansionNet (PWM) | — | Weigert, M. et al. (2018) CARE for fluorescence microscopy, Nature Methods 15:1090 | 33.9 | — | 36.2 | 0.9919 |  | done 
 | 5 | precomputed_baseline (test) | — | — | 33.9 | — | 36.2 | 0.9919 | done |
 
 ### 53. Fluorescence Lifetime Imaging (FLIM) (`flim`)
@@ -763,7 +763,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | Airyscan processing | 2017 | Huff, Methods Appl Fluor 2017 | 30.0 | — | 34.9 | 0.9709 | done |
 | 3 | Richardson-Lucy (PWM) | — | — | 34.0 | — | 34.9 | 0.9709 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 34.0 | — | 34.9 | 0.9709 | done |
-| 5 | ISM-Reassignment-Net (PWM) | — | Castello, M. et al. (2019) Image scanning microscopy ISM, Nature Methods 16:175 | 34.0 | — | 34.9 | 0.9709 | done |
+| 5 | ISM-Reassignment-Net (PWM) | — | Castello, M. et al. (2019) Image scanning microscopy ISM, Nature Methods 16:175 | 34.0 | — | 34.9 | 0.9709 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 34.0 | — | 34.9 | 0.9709 | done |
 
 ### 56. Lattice Light-Sheet Microscopy (`lattice_lightsheet`)
@@ -772,7 +772,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Richardson-Lucy 3D | 1972 | Richardson 1972 | 26.0 | 0.7500 | 29.0 | 0.8624 | done |
 | 2 | CARE 3D | 2018 | Weigert et al., Nature Methods 2018 | 32.0 | 0.9000 | 29.0 | 0.8624 | done |
-| 3 | LLSM-CARE (PWM) | — | Weigert, M. et al. (2018) Content-aware restoration for lattice light-sheet, Nature Methods 15:1090 | 25.1 | — | 29.0 | 0.8624 | done |
+| 3 | LLSM-CARE (PWM) | — | Weigert, M. et al. (2018) Content-aware restoration for lattice light-sheet, Nature Methods 15:1090 | 25.1 | — | 29.0 | 0.8624 |  | done 
 | 4 | precomputed_baseline (test) | — | — | 25.1 | — | 29.0 | 0.8624 | done |
 
 ### 57. Light-Sheet Fluorescence Microscopy (LSFM) (`lightsheet`)
@@ -797,7 +797,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | Gaussian fitting | 2002 | Thompson et al., Biophys J 2002 | 15.0 | — | 29.5 | 0.4336 | done |
 | 3 | Richardson-Lucy (PWM) | — | — | 29.5 | — | 29.5 | 0.7052 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 29.5 | — | 29.5 | 0.4336 | done |
-| 5 | MINFLUX-Net (PWM) | — | Gwosch, K.C. et al. (2020) MINFLUX nanoscopy 3D, Nature Methods 17:217 | 29.5 | — | 29.5 | 0.4336 | done |
+| 5 | MINFLUX-Net (PWM) | — | Gwosch, K.C. et al. (2020) MINFLUX nanoscopy 3D, Nature Methods 17:217 | 29.5 | — | 29.5 | 0.4336 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 29.5 | — | 29.5 | 0.4336 | done |
 
 ### 59. PALM/STORM Single-Molecule Localization (`palm_storm`)
@@ -808,8 +808,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | Deep-STORM | 2018 | Nehme et al., Optica 2018 | 22.0 | — | 32.4 | 0.6094 | done |
 | 3 | DECODE | 2021 | Speiser et al., Nature Methods 2021 | 25.0 | — | 32.4 | 0.6094 | done |
 | 4 | Richardson-Lucy (STORM/PALM) (PWM) | — | — | 32.4 | — | 32.4 | 0.6094 | done |
-| 5 | DECODE-SMLM (PWM) | — | Speiser, A. et al. (2021) Deep learning enables fast and dense SMLM, Nature Methods 18:1090 | 32.4 | — | 32.4 | 0.6094 | done |
-| 6 | DeepSTORM (PWM) | — | Nehme, E. et al. (2018) Deep-STORM: super-resolution microscopy, Optica 5(4) | 32.4 | — | 32.4 | 0.6094 | done |
+| 5 | DECODE-SMLM (PWM) | — | Speiser, A. et al. (2021) Deep learning enables fast and dense SMLM, Nature Methods 18:1090 | 32.4 | — | 32.4 | 0.6094 |  | done 
+| 6 | DeepSTORM (PWM) | — | Nehme, E. et al. (2018) Deep-STORM: super-resolution microscopy, Optica 5(4) | 32.4 | — | 32.4 | 0.6094 |  | done 
 | 7 | precomputed_baseline (test) | — | — | 32.4 | — | 32.4 | 0.6094 | done |
 | 8 | rl_20iter (test) | — | — | 32.4 | — | 32.4 | 0.5904 | done |
 
@@ -823,7 +823,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 4 | DL flat-fielding QPC | 2024 | ResearchGate 2024 | 29.1 | 0.8650 | 45.6 | 0.9991 | done |
 | 5 | Richardson-Lucy (PWM) | — | — | 45.6 | — | 45.6 | 0.9991 | done |
 | 6 | CARE (PWM) | — | Weigert et al. 2018 | 45.6 | — | 45.6 | 0.9991 | done |
-| 7 | PhaseNet (PWM) | — | Rivenson, Y. et al. (2018) Phase recovery with DL, Light: Sci. & Appl. 7:17141 | 45.6 | — | 45.6 | 0.9991 | done |
+| 7 | PhaseNet (PWM) | — | Rivenson, Y. et al. (2018) Phase recovery with DL, Light: Sci. & Appl. 7:17141 | 45.6 | — | 45.6 | 0.9991 |  | done 
 | 8 | precomputed_baseline (test) | — | — | 45.6 | — | 45.6 | 0.9991 | done |
 
 ### 61. Polarization Microscopy (`polarization`)
@@ -848,7 +848,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | Gaussian denoising | 2000 | Gaussian filter baseline | 22.0 | 0.7000 | 27.2 | 0.8358 | done |
 | 3 | DnCNN | 2023 | Bai et al., Biomed Opt Express 2023 | 25.4 | 0.7700 | 27.2 | 0.8358 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 24.1 | — | 27.2 | 0.8358 | done |
-| 5 | SHG-CARE (PWM) | — | Weigert, M. et al. (2018) CARE for SHG imaging, Nature Methods 15:1090 | 24.1 | — | 27.2 | 0.8358 | done |
+| 5 | SHG-CARE (PWM) | — | Weigert, M. et al. (2018) CARE for SHG imaging, Nature Methods 15:1090 | 24.1 | — | 27.2 | 0.8358 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 24.1 | — | 27.2 | 0.8358 | done |
 
 ### 63. Structured Illumination Microscopy (SIM) (`sim`)
@@ -870,7 +870,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
 | 1 | Richardson-Lucy | 1972 | Richardson 1972 | 27.0 | 0.7800 | 40.8 | 0.9990 | done |
 | 2 | CARE | 2018 | Weigert et al., Nature Methods 2018 | 32.0 | 0.9000 | 40.8 | 0.9990 | done |
-| 3 | SD-CARE (PWM) | — | Weigert, M. et al. (2018) CARE for spinning disk confocal, Nature Methods 15:1090 | 30.6 | — | 40.8 | 0.9990 | done |
+| 3 | SD-CARE (PWM) | — | Weigert, M. et al. (2018) CARE for spinning disk confocal, Nature Methods 15:1090 | 30.6 | — | 40.8 | 0.9990 |  | done 
 | 4 | precomputed_baseline (test) | — | — | 30.6 | — | 40.8 | 0.9990 | done |
 
 ### 65. STED Microscopy (`sted`)
@@ -880,8 +880,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 1 | Richardson-Lucy STED | 2006 | RL for STED | 28.0 | 0.8000 | 31.4 | 0.8299 | done |
 | 2 | DDPM denoiser | 2023 | DDPM-avg for STED | 32.8 | 0.9200 | 31.4 | 0.8299 | done |
 | 3 | Gaussian denoising | 2000 | Gaussian filter baseline | 24.0 | 0.7500 | 31.4 | 0.8299 | done |
-| 4 | STED-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods 15:1090 | 29.6 | — | 31.4 | 0.8299 | done |
-| 5 | RCAN-STED (PWM) | — | Chen, J. et al. (2021) Three-dimensional residual channel attention for STED, Nature Methods 18:678 | 29.6 | — | 31.4 | 0.8299 | done |
+| 4 | STED-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods 15:1090 | 29.6 | — | 31.4 | 0.8299 |  | done 
+| 5 | RCAN-STED (PWM) | — | Chen, J. et al. (2021) Three-dimensional residual channel attention for STED, Nature Methods 18:678 | 29.6 | — | 31.4 | 0.8299 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 29.6 | — | 31.4 | 0.8299 | done |
 | 7 | rl_20iter (test) | — | — | 29.6 | — | 31.4 | 0.8299 | done |
 
@@ -893,7 +893,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | DeepCAD-RT | 2023 | Li et al., Nature Biotech 2023 | 34.0 | — | 28.3 | 0.9779 |  |
 | 3 | Gaussian denoising | 2000 | Gaussian filter baseline | 20.0 | 0.6000 | 28.3 | 0.9779 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 22.3 | — | 28.3 | 0.9779 | done |
-| 5 | 3P-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) CARE for 3P deep tissue imaging, Nature Methods 15:1090 | 22.3 | — | 28.3 | 0.9779 | done |
+| 5 | 3P-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) CARE for 3P deep tissue imaging, Nature Methods 15:1090 | 22.3 | — | 28.3 | 0.9779 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 22.3 | — | 28.3 | 0.9779 | done |
 
 ### 67. TIRF Microscopy (`tirf`)
@@ -913,8 +913,8 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 1 | Richardson-Lucy | 1972 | Richardson 1972 | 27.0 | 0.7800 | 33.8 | 0.9867 | done |
 | 2 | DeepCAD | 2021 | Li et al., Nature Methods 2021 | 35.0 | — | 33.8 | 0.9867 | done |
 | 3 | UNet-Att (self-supervised) | 2025 | Complex & Intelligent Systems, 2025 | 38.3 | 0.9500 | 33.8 | 0.9867 |  |
-| 4 | 2P-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods 15:1090 | 33.8 | — | 33.8 | 0.9867 | done |
-| 5 | 2P-DeepInterp (PWM) | — | Lecoq, J. et al. (2021) Removing independent noise in systems neuroscience using DeepInterpolation, Nature Methods 18:1401 | 33.8 | — | 33.8 | 0.9867 | done |
+| 4 | 2P-Net (CARE) (PWM) | — | Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods 15:1090 | 33.8 | — | 33.8 | 0.9867 |  | done 
+| 5 | 2P-DeepInterp (PWM) | — | Lecoq, J. et al. (2021) Removing independent noise in systems neuroscience using DeepInterpolation, Nature Methods 18:1401 | 33.8 | — | 33.8 | 0.9867 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 33.8 | — | 33.8 | 0.9867 | done |
 | 7 | rl_20iter (test) | — | — | 33.8 | — | 33.8 | 0.9867 | done |
 
@@ -954,7 +954,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 4 | WBP (45-deg missing wedge) | 2019 | Zhang et al., Sci Rep 2019, s41598-019-49267-x | 13.1 | 0.2800 | 13.2 | 0.4127 | done |
 | 5 | Richardson-Lucy (PWM) | — | — | 13.2 | — | 13.2 | 0.4127 | done |
 | 6 | CARE (PWM) | — | Weigert et al. 2018 | 13.2 | — | 13.2 | 0.4127 | done |
-| 7 | CryoCARE (PWM) | — | Buchholz, T.O. et al. (2019) Content-aware image restoration for cryo-EM, Methods Enzymol. | 13.2 | — | 13.2 | 0.4127 | done |
+| 7 | CryoCARE (PWM) | — | Buchholz, T.O. et al. (2019) Content-aware image restoration for cryo-EM, Methods Enzymol. | 13.2 | — | 13.2 | 0.4127 |  | done 
 | 8 | precomputed_baseline (test) | — | — | 13.2 | — | 13.2 | 0.4127 | done |
 
 ### 72. Electron Backscatter Diffraction (EBSD) (`ebsd`)
@@ -1035,7 +1035,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 3 | SwinIR | 2021 | Liang et al., ICCVW 2021 | 34.0 | — | 36.0 | 0.9970 | done |
 | 4 | Richardson-Lucy (PWM) | — | — | 28.3 | — | 36.0 | 0.9970 | done |
 | 5 | CARE (PWM) | — | Weigert et al. 2018 | 28.3 | — | 36.0 | 0.9970 | done |
-| 6 | FIB-SEM-Net (PWM) | — | Heinrich, L. et al. (2021) Whole-cell organelle segmentation in volume EM, Nature 599:141 | 28.3 | — | 36.0 | 0.9970 | done |
+| 6 | FIB-SEM-Net (PWM) | — | Heinrich, L. et al. (2021) Whole-cell organelle segmentation in volume EM, Nature 599:141 | 28.3 | — | 36.0 | 0.9970 |  | done 
 | 7 | precomputed_baseline (test) | — | — | 28.3 | — | 36.0 | 0.9970 | done |
 
 ### 79. Scanning Electron Microscopy (SEM) (`sem`)
@@ -1197,13 +1197,13 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 
 | # | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status |
 |---|-----------|------|-----------|----------|----------|----------|----------|--------|
-| 1 | NeRF | 2020 | Mildenhall et al., ECCV 2020 | 31.0 | 0.9470 | 29.9 | 0.9911 | done |
-| 2 | Plenoxels | 2022 | Fridovich-Keil et al., CVPR 2022 | 31.7 | 0.9580 | 29.9 | 0.9911 | done |
-| 3 | TensoRF | 2022 | Chen et al., ECCV 2022 | 33.1 | 0.9630 | 29.9 | 0.9911 |  |
-| 4 | Instant-NGP | 2022 | Muller et al., SIGGRAPH 2022 | 33.2 | 0.9600 | 29.9 | 0.9911 |  |
-| 5 | 3D Gaussian Splatting | 2023 | Kerbl et al., SIGGRAPH 2023 | 33.3 | 0.9690 | 29.9 | 0.9911 |  |
-| 6 | Mip-NeRF 360 | 2022 | Barron et al., CVPR 2022 | 33.1 | 0.9610 | 29.9 | 0.9911 |  |
-| 7 | Zip-NeRF | 2023 | Barron et al., ICCV 2023 | 33.7 | — | 29.9 | 0.9911 |  |
+| 1 | NeRF | 2020 | Mildenhall et al., ECCV 2020 | 31.0 | 0.9470 | 31.5 | 0.9911 | done |
+| 2 | Plenoxels | 2022 | Fridovich-Keil et al., CVPR 2022 | 31.7 | 0.9580 | 31.5 | 0.9911 | done |
+| 3 | TensoRF | 2022 | Chen et al., ECCV 2022 | 33.1 | 0.9630 | 31.5 | 0.9911 | done |
+| 4 | Instant-NGP | 2022 | Muller et al., SIGGRAPH 2022 | 33.2 | 0.9600 | 31.5 | 0.9911 | done |
+| 5 | 3D Gaussian Splatting | 2023 | Kerbl et al., SIGGRAPH 2023 | 33.3 | 0.9690 | 31.5 | 0.9911 | done |
+| 6 | Mip-NeRF 360 | 2022 | Barron et al., CVPR 2022 | 33.1 | 0.9610 | 31.5 | 0.9911 | done |
+| 7 | Zip-NeRF | 2023 | Barron et al., ICCV 2023 | 33.7 | — | 31.5 | 0.9911 | done |
 | 8 | SfM + MVS (PWM) | — | — | 29.0 | — | 29.9 | 0.9911 | done |
 | 9 | NeRF (original MLP) (PWM) | — | Mildenhall et al. 2020 | 29.0 | — | 29.9 | 0.9911 | done |
 | 10 | Richardson-Lucy (proxy baseline) (PWM) | — | Richardson 1972, JOSA | 29.0 | — | 29.9 | 0.9911 | done |
@@ -1429,7 +1429,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | Deep-AFM | 2020 | Rashidi & Wolkow, Machine Learning 2020 | 32.0 | 0.9000 | 31.3 | 0.7815 | done |
 | 3 | Richardson-Lucy (PWM) | — | — | 31.3 | — | 31.3 | 0.7815 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 31.3 | — | 31.3 | 0.7815 | done |
-| 5 | AFM-UNet (PWM) | — | Cherukara, M.J. et al. (2020) AI-enabled high-res, real-time imaging, npj Comput. Mater. 6:203 | 31.3 | — | 31.3 | 0.7815 | done |
+| 5 | AFM-UNet (PWM) | — | Cherukara, M.J. et al. (2020) AI-enabled high-res, real-time imaging, npj Comput. Mater. 6:203 | 31.3 | — | 31.3 | 0.7815 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 31.3 | — | 31.3 | 0.7815 | done |
 
 ### 108. Magnetic Force Microscopy (MFM) (`mfm`)
@@ -1442,7 +1442,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 4 | Adaptive Median (AFM) | 2019 | Lu et al., Nanotechnology 2019, PMC6902871 | 33.9 | 0.9500 | 34.3 | 0.2871 | done |
 | 5 | Richardson-Lucy (PWM) | — | — | 34.3 | — | 34.3 | 0.2871 | done |
 | 6 | CARE (PWM) | — | Weigert et al. 2018 | 34.3 | — | 34.3 | 0.2871 | done |
-| 7 | MFM-UNet (PWM) | — | Kim, M. et al. (2021) DL for magnetic force microscopy, npj Comput. Mater. 7:87 | 34.3 | — | 34.3 | 0.2871 | done |
+| 7 | MFM-UNet (PWM) | — | Kim, M. et al. (2021) DL for magnetic force microscopy, npj Comput. Mater. 7:87 | 34.3 | — | 34.3 | 0.2871 |  | done 
 | 8 | precomputed_baseline (test) | — | — | 34.3 | — | 34.3 | 0.2871 | done |
 
 ### 109. Near-field Scanning Optical Microscopy (NSOM) (`nsom`)
@@ -1453,7 +1453,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | BM3D | 2007 | Dabov et al., TIP 2007 | 28.0 | 0.8300 | 25.5 | 0.7767 | done |
 | 3 | Richardson-Lucy (PWM) | — | — | 24.0 | — | 25.5 | 0.7767 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 24.0 | — | 25.5 | 0.7767 | done |
-| 5 | NSOM-Net (PWM) | — | Park, J. et al. (2020) DL for near-field optical microscopy, Optica 7(11) | 24.0 | — | 25.5 | 0.7767 | done |
+| 5 | NSOM-Net (PWM) | — | Park, J. et al. (2020) DL for near-field optical microscopy, Optica 7(11) | 24.0 | — | 25.5 | 0.7767 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 24.0 | — | 25.5 | 0.7767 | done |
 
 ### 110. Scanning Tunneling Microscopy (STM) (`stm`)
@@ -1464,7 +1464,7 @@ Generated: 2026-03-13 | **656/1294 algorithms done (50.7%)**
 | 2 | DeepSPM | 2020 | Krull et al., 2020 | 30.0 | 0.8800 | 25.9 | 0.9607 |  |
 | 3 | Richardson-Lucy (PWM) | — | — | 23.3 | — | 25.9 | 0.9607 | done |
 | 4 | CARE (PWM) | — | Weigert et al. 2018 | 23.3 | — | 25.9 | 0.9607 | done |
-| 5 | STM-Net (PWM) | — | Ziatdinov, M. et al. (2021) DL for atomic-level STM, Nat. Mach. Intell. 3:269 | 23.3 | — | 25.9 | 0.9607 | done |
+| 5 | STM-Net (PWM) | — | Ziatdinov, M. et al. (2021) DL for atomic-level STM, Nat. Mach. Intell. 3:269 | 23.3 | — | 25.9 | 0.9607 |  | done 
 | 6 | precomputed_baseline (test) | — | — | 23.3 | — | 25.9 | 0.9607 | done |
 
 ---

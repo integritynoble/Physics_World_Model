@@ -45,8 +45,8 @@ data_source:
   dataset_url: https://figshare.com/articles/dataset/BioSR/13744429
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
-    Nature Methods 2021
+  citation: Qiao et al., Evaluation and development of deep neural networks for image
+    super-resolution in optical microscopy, Nature Methods 2021
   license: CC-BY-4.0
 mismatch_params:
 - name: Photon rate alpha
@@ -84,7 +84,7 @@ solvers:
   best_quality:
     name: CARE
     module: pwm_core.recon.care_unet
-    function: care_restore_2d
+    function: run_care
     params: 2M
     gpu: true
     reference: ''
@@ -115,8 +115,8 @@ expected_psnr_range:
 source_attribution:
   ground_truth:
     type: web
-    reference: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
-      Nature Methods 2021
+    reference: Qiao et al., Evaluation and development of deep neural networks for
+      image super-resolution in optical microscopy, Nature Methods 2021
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / widefield_lowdose_graph_v1

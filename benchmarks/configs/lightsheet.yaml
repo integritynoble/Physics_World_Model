@@ -50,7 +50,8 @@ data_source:
   dataset_url: https://openspim.org/downloads
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: 'Pitrone et al., OpenSPIM: an open-access light-sheet microscopy platform, Nature Methods 2013'
+  citation: 'Pitrone et al., OpenSPIM: an open-access light-sheet microscopy platform,
+    Nature Methods 2013'
   license: CC-BY-SA-4.0
 mismatch_params:
 - name: Sheet thickness
@@ -88,21 +89,21 @@ solvers:
   best_quality:
     name: VSNR
     module: pwm_core.recon.lightsheet_solver
-    function: vsnr_destripe
+    function: run_lightsheet
     params: '0'
     gpu: false
     reference: ''
   famous_dl:
     name: DeStripe
     module: pwm_core.recon.destripe_net
-    function: destripe_denoise
+    function: run_destripe
     params: 2M
     gpu: false
     reference: Liang et al. 2022
   small_gpu:
     name: DeStripe
     module: pwm_core.recon.destripe_net
-    function: destripe_denoise
+    function: run_destripe
     params: '0'
     gpu: false
     reference: ''
@@ -118,7 +119,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Pitrone et al., OpenSPIM: an open-access light-sheet microscopy platform, Nature Methods 2013'
+    reference: 'Pitrone et al., OpenSPIM: an open-access light-sheet microscopy platform,
+      Nature Methods 2013'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / lightsheet_graph_v1

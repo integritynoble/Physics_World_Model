@@ -57,21 +57,21 @@ solvers:
   best_quality:
     name: FlatNet
     module: pwm_core.recon.flatnet
-    function: flatnet_reconstruct
+    function: run_flatnet
     params: 59M
     gpu: false
     reference: Khan et al. TPAMI 2020
   famous_dl:
     name: FlatNet
     module: pwm_core.recon.flatnet
-    function: flatnet_reconstruct
+    function: run_flatnet
     params: 59M
     gpu: false
     reference: ''
   small_gpu:
     name: FlatNet-Lite
     module: pwm_core.recon.flatnet
-    function: flatnet_reconstruct
+    function: run_flatnet
     params: '0'
     gpu: false
     reference: ''

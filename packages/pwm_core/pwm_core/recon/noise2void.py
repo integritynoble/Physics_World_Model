@@ -406,3 +406,7 @@ def run_noise2void(
     except Exception as e:
         info["error"] = str(e)
         return y.astype(np.float32), info
+
+
+# Alias for YAML configs that reference noise2void_denoise
+noise2void_denoise = run_noise2void

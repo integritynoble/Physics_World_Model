@@ -1,0 +1,552 @@
+{
+  "timestamp": "2026-03-14T06:22:15",
+  "gpu": "NVIDIA GeForce GTX 1660 Ti",
+  "stats": {
+    "verified": 23,
+    "error": 0,
+    "import_error": 33,
+    "oom": 0,
+    "bad_return": 0
+  },
+  "entries": {
+    "afm/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "exec_time": 0.374,
+      "modality": "afm",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "afm/afm_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.afm_solvers'",
+      "exec_time": 0,
+      "modality": "afm",
+      "solver_key": "afm_dl",
+      "module": "pwm_core.recon.afm_solvers",
+      "function": "afm_unet_recon",
+      "category": "microscopy_psf"
+    },
+    "cbct/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.cbct_solvers'",
+      "exec_time": 0,
+      "modality": "cbct",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.cbct_solvers",
+      "function": "fdk_dl_recon",
+      "category": "medical_ct_radon"
+    },
+    "cbct/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.cbct_solvers'",
+      "exec_time": 0,
+      "modality": "cbct",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.cbct_solvers",
+      "function": "cbct_unet_recon",
+      "category": "medical_ct_radon"
+    },
+    "confocal_3d/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "confocal_3d",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "confocal_livecell/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "confocal_livecell",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "cryo_et/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "cryo_et",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "medical_ct_radon"
+    },
+    "cryo_et/cryo_et_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.cryoet_solvers'",
+      "exec_time": 0,
+      "modality": "cryo_et",
+      "solver_key": "cryo_et_dl",
+      "module": "pwm_core.recon.cryoet_solvers",
+      "function": "cryocare_recon",
+      "category": "medical_ct_radon"
+    },
+    "dark_field/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "dark_field",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "dark_field/df_unet": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.darkfield_solvers'",
+      "exec_time": 0,
+      "modality": "dark_field",
+      "solver_key": "df_unet",
+      "module": "pwm_core.recon.darkfield_solvers",
+      "function": "df_unet_recon",
+      "category": "microscopy_psf"
+    },
+    "dic/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "dic",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "dic/dic_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.dic_solvers'",
+      "exec_time": 0,
+      "modality": "dic",
+      "solver_key": "dic_dl",
+      "module": "pwm_core.recon.dic_solvers",
+      "function": "dic_dl_recon",
+      "category": "microscopy_psf"
+    },
+    "dna_paint/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "dna_paint",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "compressive_mask"
+    },
+    "dna_paint/dna_paint_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.smlm_solvers'",
+      "exec_time": 0,
+      "modality": "dna_paint",
+      "solver_key": "dna_paint_dl",
+      "module": "pwm_core.recon.smlm_solvers",
+      "function": "decode_smlm_recon",
+      "category": "compressive_mask"
+    },
+    "endoscopy/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.endoscopy_solvers'",
+      "exec_time": 0,
+      "modality": "endoscopy",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.endoscopy_solvers",
+      "function": "endomapper_recon",
+      "category": "medical_ct_radon"
+    },
+    "endoscopy/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.endoscopy_solvers'",
+      "exec_time": 0,
+      "modality": "endoscopy",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.endoscopy_solvers",
+      "function": "af_sfm_learner_recon",
+      "category": "medical_ct_radon"
+    },
+    "expansion/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "expansion",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "expansion/exm_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.expansion_solvers'",
+      "exec_time": 0,
+      "modality": "expansion",
+      "solver_key": "exm_dl",
+      "module": "pwm_core.recon.expansion_solvers",
+      "function": "expansion_dl_recon",
+      "category": "microscopy_psf"
+    },
+    "fib_sem/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "fib_sem",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "electron_ctf"
+    },
+    "fib_sem/fibsem_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.fibsem_solvers'",
+      "exec_time": 0,
+      "modality": "fib_sem",
+      "solver_key": "fibsem_dl",
+      "module": "pwm_core.recon.fibsem_solvers",
+      "function": "fibsem_dl_recon",
+      "category": "electron_ctf"
+    },
+    "fundus/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.fundus_solvers'",
+      "exec_time": 0,
+      "modality": "fundus",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.fundus_solvers",
+      "function": "retfound_recon",
+      "category": "microscopy_psf"
+    },
+    "fundus/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.fundus_solvers'",
+      "exec_time": 0,
+      "modality": "fundus",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.fundus_solvers",
+      "function": "dr_grade_net_recon",
+      "category": "microscopy_psf"
+    },
+    "gaussian_splatting/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=0MB, time=0.00s",
+      "exec_time": 0.0,
+      "modality": "gaussian_splatting",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.gaussian_splatting_solver",
+      "function": "run_gaussian_splatting",
+      "category": "microscopy_psf"
+    },
+    "ism/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "ism",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "ism/ism_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.ism_solvers'",
+      "exec_time": 0,
+      "modality": "ism",
+      "solver_key": "ism_dl",
+      "module": "pwm_core.recon.ism_solvers",
+      "function": "ism_dl_recon",
+      "category": "microscopy_psf"
+    },
+    "lattice_lightsheet/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "lattice_lightsheet",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "lattice_lightsheet/llsm_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.llsm_solvers'",
+      "exec_time": 0,
+      "modality": "lattice_lightsheet",
+      "solver_key": "llsm_dl",
+      "module": "pwm_core.recon.llsm_solvers",
+      "function": "llsm_care_recon",
+      "category": "microscopy_psf"
+    },
+    "mfm/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "mfm",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "scanning_probe"
+    },
+    "mfm/mfm_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.mfm_solvers'",
+      "exec_time": 0,
+      "modality": "mfm",
+      "solver_key": "mfm_dl",
+      "module": "pwm_core.recon.mfm_solvers",
+      "function": "mfm_dl_recon",
+      "category": "scanning_probe"
+    },
+    "minflux/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "minflux",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "minflux/minflux_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.minflux_solvers'",
+      "exec_time": 0,
+      "modality": "minflux",
+      "solver_key": "minflux_dl",
+      "module": "pwm_core.recon.minflux_solvers",
+      "function": "minflux_dl_recon",
+      "category": "microscopy_psf"
+    },
+    "nerf/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64, 3), vram=467MB, time=140.01s",
+      "exec_time": 140.008,
+      "modality": "nerf",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.nerf_solver",
+      "function": "run_nerf",
+      "category": "microscopy_psf"
+    },
+    "nsom/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "nsom",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "scanning_probe"
+    },
+    "nsom/nsom_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.nsom_solvers'",
+      "exec_time": 0,
+      "modality": "nsom",
+      "solver_key": "nsom_dl",
+      "module": "pwm_core.recon.nsom_solvers",
+      "function": "nsom_dl_recon",
+      "category": "scanning_probe"
+    },
+    "palm_storm/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.smlm_solvers'",
+      "modality": "palm_storm",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.smlm_solvers",
+      "function": "decode_smlm_recon",
+      "category": "compressive_mask"
+    },
+    "palm_storm/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.smlm_solvers'",
+      "exec_time": 0,
+      "modality": "palm_storm",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.smlm_solvers",
+      "function": "deep_storm_recon",
+      "category": "compressive_mask"
+    },
+    "pet/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.pet_solvers'",
+      "exec_time": 0,
+      "modality": "pet",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.pet_solvers",
+      "function": "neurolF_pet_recon",
+      "category": "medical_ct_radon"
+    },
+    "pet/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.pet_solvers'",
+      "exec_time": 0,
+      "modality": "pet",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.pet_solvers",
+      "function": "pet_unet_recon",
+      "category": "medical_ct_radon"
+    },
+    "phase_contrast/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "phase_contrast",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "phase_contrast/pc_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.phase_contrast_solvers'",
+      "exec_time": 0,
+      "modality": "phase_contrast",
+      "solver_key": "pc_dl",
+      "module": "pwm_core.recon.phase_contrast_solvers",
+      "function": "phase_net_recon",
+      "category": "microscopy_psf"
+    },
+    "shg/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "shg",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "shg/shg_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.shg_solvers'",
+      "exec_time": 0,
+      "modality": "shg",
+      "solver_key": "shg_dl",
+      "module": "pwm_core.recon.shg_solvers",
+      "function": "shg_care_recon",
+      "category": "microscopy_psf"
+    },
+    "spect/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.spect_solvers'",
+      "exec_time": 0,
+      "modality": "spect",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.spect_solvers",
+      "function": "spect_dl_recon",
+      "category": "medical_ct_radon"
+    },
+    "spect/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.spect_solvers'",
+      "exec_time": 0,
+      "modality": "spect",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.spect_solvers",
+      "function": "spect_unet_recon",
+      "category": "medical_ct_radon"
+    },
+    "spinning_disk/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "spinning_disk",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "spinning_disk/sd_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.spinning_disk_solvers'",
+      "exec_time": 0,
+      "modality": "spinning_disk",
+      "solver_key": "sd_dl",
+      "module": "pwm_core.recon.spinning_disk_solvers",
+      "function": "sd_care_recon",
+      "category": "microscopy_psf"
+    },
+    "sted/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.sted_solvers'",
+      "exec_time": 0,
+      "modality": "sted",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.sted_solvers",
+      "function": "sted_care_recon",
+      "category": "microscopy_psf"
+    },
+    "sted/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.sted_solvers'",
+      "exec_time": 0,
+      "modality": "sted",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.sted_solvers",
+      "function": "rcan_sted_recon",
+      "category": "microscopy_psf"
+    },
+    "stm/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "stm",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "stm/stm_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.stm_solvers'",
+      "exec_time": 0,
+      "modality": "stm",
+      "solver_key": "stm_dl",
+      "module": "pwm_core.recon.stm_solvers",
+      "function": "stm_dl_recon",
+      "category": "microscopy_psf"
+    },
+    "three_photon/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "three_photon",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "three_photon/3p_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.three_photon_solvers'",
+      "exec_time": 0,
+      "modality": "three_photon",
+      "solver_key": "3p_dl",
+      "module": "pwm_core.recon.three_photon_solvers",
+      "function": "three_photon_care_recon",
+      "category": "microscopy_psf"
+    },
+    "two_photon/best_quality": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.two_photon_solvers'",
+      "exec_time": 0,
+      "modality": "two_photon",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.two_photon_solvers",
+      "function": "two_photon_care_recon",
+      "category": "microscopy_psf"
+    },
+    "two_photon/famous_dl": {
+      "status": "import_error",
+      "message": "No module named 'pwm_core.recon.two_photon_solvers'",
+      "exec_time": 0,
+      "modality": "two_photon",
+      "solver_key": "famous_dl",
+      "module": "pwm_core.recon.two_photon_solvers",
+      "function": "deep_interp_recon",
+      "category": "microscopy_psf"
+    },
+    "widefield/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "widefield",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    },
+    "widefield_lowdose/best_quality": {
+      "status": "verified",
+      "message": "shape=(64, 64), vram=128MB, time=0.37s",
+      "modality": "widefield_lowdose",
+      "solver_key": "best_quality",
+      "module": "pwm_core.recon.care_unet",
+      "function": "run_care",
+      "category": "microscopy_psf"
+    }
+  }
+}
