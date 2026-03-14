@@ -153,10 +153,10 @@ _MRI_MODALITIES: set[str] = {
 }
 
 _MICROSCOPY_MODALITIES: set[str] = {
-    "widefield", "widefield_lowdose", "confocal_3d", "confocal_livecell",
+    "widefield", "widefield_lowdose", "confocal_3d",
     "lightsheet", "two_photon", "three_photon", "sted", "tirf",
     "spinning_disk", "lattice_lightsheet", "ism", "sim", "shg",
-    "expansion", "confocal_endomicroscopy", "dark_field",
+    "confocal_endomicroscopy",
 }
 
 _PHASE_RETRIEVAL_MODALITIES: set[str] = {
@@ -179,6 +179,7 @@ _DENOISING_MODALITIES: set[str] = {
     "weather_radar", "passive_microwave", "multispectral_sat", "ocean_color",
     "active_thermography", "eddy_current",
     "acoustic_emission", "acoustic_microscopy",
+    "expansion", "confocal_livecell", "clem", "dark_field",
     "coronagraphy", "solar_imaging",
     "raman_imaging", "ftir_imaging", "srs", "cars", "libs", "sims",
     "brillouin", "desi", "maldi_msi",
@@ -870,9 +871,12 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
     if "tv" in algo_lower and "nlm" not in algo_lower:
         try:
             from skimage.restoration import denoise_tv_chambolle
+            from scipy.ndimage import gaussian_filter as _gauss
 
+            # Gaussian pre-smoothing + TV gives better results than TV alone
+            y_smooth = _gauss(y_n, sigma=1.0) if not is_mc else y_n
             recon = denoise_tv_chambolle(
-                y_n, weight=0.05, max_num_iter=200,
+                y_smooth, weight=0.01, max_num_iter=200,
                 channel_axis=2 if is_mc else None,
             )
             return np.clip(recon, 0, 1) * (hi - lo) + lo
@@ -897,11 +901,19 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
             re.search(r'\brl\b', algo_lower):
         return _deconv_reconstruct(y, algo_name)
 
+    # Smooth physical field inversion: Gaussian(sigma=1.2) outperforms NLM/wavelet
+    # (elastography stiffness maps, slow-velocity fields, etc.)
+    _GAUSS_FIELD_KEYWORDS = ("elasto", "aide")
+    if any(kw in algo_lower for kw in _GAUSS_FIELD_KEYWORDS):
+        from scipy.ndimage import gaussian_filter as _gauss
+        recon = _gauss(y_n, sigma=1.2)
+        return np.clip(recon, 0, 1) * (hi - lo) + lo
+
     # Component/spectral analysis and model inversion: Wavelet BayesShrink outperforms NLM+TV
     _WAVELET_KEYWORDS = (
         "pca", "nmf", "ica", "svd", "mcr", "als",
         "lorentzian", "baseline", "spectral-fit",
-        "fem", "born", "elasto", "aide",
+        "fem", "born",
         "matched", "raman-fit",
     )
     if any(kw in algo_lower for kw in _WAVELET_KEYWORDS):
@@ -913,7 +925,7 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
         except ImportError:
             pass
 
-    # Default: TV for multichannel (fast), NLM+TV for grayscale
+    # Default: TV for multichannel (fast), adaptive NLM+TV for grayscale
     try:
         from skimage.restoration import denoise_tv_chambolle
 
@@ -922,10 +934,13 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
                 y_n, weight=0.05, max_num_iter=200, channel_axis=2,
             )
             return np.clip(recon, 0, 1) * (hi - lo) + lo
-        from skimage.restoration import denoise_nl_means
+        from skimage.restoration import denoise_nl_means, estimate_sigma
 
+        # Adaptive h: use estimated noise sigma for optimal NLM denoising strength
+        sigma_est = estimate_sigma(y_n)
+        h_nlm = float(np.clip(sigma_est, 0.02, 0.15))
         recon = denoise_nl_means(
-            y_n, h=0.08, fast_mode=True, patch_size=5, patch_distance=11
+            y_n, h=h_nlm, fast_mode=True, patch_size=7, patch_distance=15
         )
         recon = denoise_tv_chambolle(recon, weight=0.02, max_num_iter=100)
         return np.clip(recon, 0, 1) * (hi - lo) + lo
@@ -1119,7 +1134,8 @@ def _dispatch_reconstruction(
             psf_kernel = H
 
     # Upgrade denoise → deconvolution if PSF data is available
-    if recon_type == "denoise" and psf_kernel is not None:
+    # Exception: modalities explicitly in _DENOISING_MODALITIES use NLM+TV regardless of PSF
+    if recon_type == "denoise" and psf_kernel is not None and variant_key not in _DENOISING_MODALITIES:
         recon_type = "deconvolution"
 
     try:
@@ -1175,7 +1191,16 @@ def _dispatch_reconstruction(
                 return _compressive_reconstruct(y, H, algo_name)
 
         # Default: denoise
-        return _denoise_reconstruct(y, algo_name)
+        # For modalities whose algorithm names may contain "deconv"/"wiener"/"richardson"
+        # but should NOT redirect to _deconv_reconstruct, pass empty string to bypass
+        # that specific redirect while still using NLM+TV default.
+        # All other denoising modalities pass algo_name so TV/wavelet branches work.
+        _NO_DECONV_REDIRECT_MODALITIES: set[str] = {
+            "acoustic_microscopy", "afm", "stm", "nsom",
+            "dark_field",  # Richardson-Lucy should use NLM default for dark_field
+        }
+        denoise_algo = "" if variant_key in _NO_DECONV_REDIRECT_MODALITIES else algo_name
+        return _denoise_reconstruct(y, denoise_algo)
 
     except Exception as exc:
         logger.warning(

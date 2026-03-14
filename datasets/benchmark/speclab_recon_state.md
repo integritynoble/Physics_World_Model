@@ -32,8 +32,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 | SAFT | Classical | 21.5 dB | 0.6 | done |
 | Wiener Deconv | Classical | 23.0 dB | 0.65 | done |
 | PnP-ADMM | PnP | 26.5 dB | 0.77 | done |
-| SAM-Net | Deep Learning | 29.5 dB | 0.86 |  |
-| Self-Sup Deconv | Self-Supervised | 31.0 dB | 0.89 |  |
+| SAM-Net | Deep Learning | 29.5 dB | 0.86 | done |
+| Self-Sup Deconv | Self-Supervised | 31.0 dB | 0.89 | done |
 | PINN-SAM | Physics-Informed | 32.5 dB | 0.915 |  |
 | AcousticFormer | Transformer | 34.0 dB | 0.935 |  |
 | DiffusionSAM | Diffusion | 35.0 dB | 0.948 |  |
@@ -73,8 +73,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 | PnP-ADMM | PnP | 26.5 dB | 0.77 | done |
 | DeepAFM | Deep Learning | 30.0 dB | 0.87 | done |
 | Self-Sup AFM | Self-Supervised | 31.5 dB | 0.895 | done |
-| SPM-Former | Transformer | 33.0 dB | 0.92 |  |
-| DiffusionAFM | Diffusion | 34.5 dB | 0.94 |  |
+| SPM-Former | Transformer | 33.0 dB | 0.92 | done |
+| DiffusionAFM | Diffusion | 34.5 dB | 0.94 | done |
 ## X-ray Angiography (`angiography`) — medical
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
@@ -301,7 +301,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | VST-Denoise | Classical | 24.2 dB | 0.751 | done |
 | NLM-Fluorescence | Classical | 26.8 dB | 0.795 | done |
 | CARE | Deep Learning | 33.5 dB | 0.891 |  |
-| Noise2Void | Self-Supervised | 31.8 dB | 0.871 |  |
+| Noise2Void | Self-Supervised | 31.8 dB | 0.871 | done |
 | Noise2Self | Self-Supervised | 30.5 dB | 0.858 | done |
 | PN2V | Self-Supervised | 32.9 dB | 0.882 |  |
 | SwinIR-LiveCell | Transformer | 36.2 dB | 0.931 |  |
@@ -409,7 +409,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical | 24.5 dB | 0.744 |  |
+| Richardson-Lucy | Classical | 24.5 dB | 0.744 | done |
 | Wiener-DF | Classical | 27.2 dB | 0.793 |  |
 | TV-DF | Variational | 29.8 dB | 0.836 |  |
 | BM3D-DF | Classical | 32.4 dB | 0.871 |  |
@@ -603,8 +603,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | LFE-Elasto | Classical | 22.3 dB | 0.71 | done |
-| DI-Elasto | Variational | 24.8 dB | 0.752 |  |
-| AIDE | Variational | 26.9 dB | 0.787 |  |
+| DI-Elasto | Variational | 24.8 dB | 0.752 | done |
+| AIDE | Variational | 26.9 dB | 0.787 | done |
 | DnCNN-Elasto | Deep Learning | 29.7 dB | 0.838 |  |
 | ElastoNet | Deep Unrolling | 32.5 dB | 0.876 |  |
 | TransElasto | Transformer | 35.0 dB | 0.915 |  |
@@ -689,7 +689,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Event-Integration | Classical | 22.1 dB | 0.702 | done |
 | Complementary | Classical | 24.8 dB | 0.748 | done |
 | E2VID | Recurrent | 27.9 dB | 0.798 | done |
-| FireNet | Recurrent | 30.4 dB | 0.843 |  |
+| FireNet | Recurrent | 30.4 dB | 0.843 | done |
 | SPADE-E2VID | Deep Learning | 32.8 dB | 0.878 |  |
 | TransEvent | Transformer | 35.2 dB | 0.914 |  |
 | SwinEvent | Transformer | 36.9 dB | 0.933 |  |
@@ -702,7 +702,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Deconv-Exp | Classical | 24.5 dB | 0.742 | done |
 | RL-ExM | Classical | 26.9 dB | 0.778 | done |
 | TV-ExM | Variational | 29.1 dB | 0.819 | done |
-| DnCNN-ExM | Deep Learning | 31.8 dB | 0.86 |  |
+| DnCNN-ExM | Deep Learning | 31.8 dB | 0.86 | done |
 | DeepInterp-ExM | Deep Learning | 34.2 dB | 0.898 |  |
 | TransExM | Transformer | 36.3 dB | 0.927 |  |
 | SwinExM | Transformer | 37.7 dB | 0.941 |  |
@@ -836,13 +836,13 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Richardson-Lucy | Classical | 24.5 dB | 0.68 | done |
 | PnP-BM3D | PnP | 28.8 dB | 0.83 | done |
 | cofe-Net | Deep Learning | 32.5 dB | 0.91 | done |
-| Swin-Fundus | Transformer | 34.2 dB | 0.94 | done |
+| Swin-Fundus | Transformer | 34.2 dB | 0.94 |  |
 ## Full-Waveform Inversion (FWI) (`fwi`) — experimental_science
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | L-BFGS FWI | Classical | 23.5 dB | 0.65 | done |
-| TV-Reg FWI | Classical | 26.8 dB | 0.78 |  |
+| TV-Reg FWI | Classical | 26.8 dB | 0.78 | done |
 | InversionNet | Deep Learning | 30.5 dB | 0.88 |  |
 | VelocityGAN | Deep Learning | 32.2 dB | 0.91 |  |
 
@@ -938,8 +938,8 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | CNMF | Classical | 26.0 dB | 0.72 | done |
-| PnP-LTTR | PnP | 30.0 dB | 0.85 |  |
-| DBIN | Deep Learning | 34.5 dB | 0.93 |  |
+| PnP-LTTR | PnP | 30.0 dB | 0.85 | done |
+| DBIN | Deep Learning | 34.5 dB | 0.93 | done |
 | MST++ | Transformer | 36.8 dB | 0.955 |  |
 
 ## Electrical Impedance Tomography (EIT) (`impedance_tomo`) — experimental_science
@@ -947,7 +947,7 @@ Last updated: 2026-03-13 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Gauss-Newton | Classical | 21.0 dB | 0.55 | done |
-| TV-ADMM | PnP | 24.5 dB | 0.7 |  |
+| TV-ADMM | PnP | 24.5 dB | 0.7 | done |
 | D-bar CNN | Deep Learning | 28.5 dB | 0.84 |  |
 | EIT-Former | Transformer | 30.0 dB | 0.88 |  |
 
