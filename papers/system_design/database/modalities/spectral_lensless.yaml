@@ -1,0 +1,176 @@
+name: spectral_lensless
+display_name: "Snapshot Spectral Lensless Imaging"
+aliases: ["spectral_diffuser_cam", "hyperspectral_lensless"]
+category: computational_spectroscopy
+physics_class: incoherent_imaging
+wave_model: ray
+sensor_type: cmos_bare
+geometry: single_shot_spectral
+
+forward_elements:
+  - id: source
+    name: "Broadband LED Illumination"
+    type: source
+    parameters:
+      wavelength_nm_range: [400, 700]
+      power_mw: 150
+      illumination: incoherent_flood
+    noise: []
+    mismatch: []
+
+  - id: object
+    name: "Spectral Object (Hyperspectral Cube)"
+    type: object
+    parameters:
+      type: spectral_scene
+      n_bands: 8
+      spatial_size: [256, 256]
+    noise: []
+    mismatch: []
+    connects_to: [coded_mask]
+
+  - id: coded_mask
+    name: "Binary Coded Aperture"
+    type: modulation
+    parameters:
+      type: binary_random
+      fill_factor: 0.5
+      pixel_pitch_um: 5.5
+      size: [256, 256]
+    noise: []
+    mismatch:
+      - type: mask_misalignment
+        description: "Lateral shift between mask and sensor"
+        severity: medium
+        correction_method: "Cross-correlation registration"
+    connects_to: [disperser]
+
+  - id: disperser
+    name: "Prism / Diffraction Grating"
+    type: optics
+    parameters:
+      type: dispersive_element
+      dispersion_model: linear
+      max_shift_px: 20
+      n_bands: 8
+    noise: []
+    mismatch:
+      - type: dispersion_calibration_error
+        description: "Wavelength-to-shift mapping differs from nominal"
+        severity: medium
+        correction_method: "Spectral calibration with known narrowband sources"
+    connects_to: [diffuser]
+
+  - id: diffuser
+    name: "Phase Diffuser"
+    type: optics
+    parameters:
+      type: diffuse_caustic
+      psf_support_px: [256, 256]
+      model: convolution
+    noise: []
+    mismatch:
+      - type: psf_calibration_error
+        description: "Measured PSF differs from true PSF"
+        severity: medium
+        correction_method: "In-situ point source calibration"
+    connects_to: [accumulator]
+
+  - id: accumulator
+    name: "Spectral Accumulation"
+    type: processing
+    parameters:
+      type: sum
+      n_bands: 8
+    noise: []
+    mismatch: []
+    connects_to: [detector]
+
+  - id: detector
+    name: "Bare CMOS Sensor"
+    type: detector
+    parameters:
+      type: cmos
+      pixels: [256, 256]
+      pixel_pitch_um: 5.5
+      quantum_efficiency: 0.55
+      well_depth_electrons: 10000
+    noise:
+      - type: poisson
+        parameters:
+          mean_photons: 2000
+      - type: gaussian
+        parameters:
+          sigma_electrons: 3.0
+    mismatch:
+      - type: fixed_pattern_noise
+        description: "Per-pixel dark current variations"
+        severity: low
+        correction_method: "Dark frame subtraction"
+    connects_to: [digitization]
+
+  - id: digitization
+    name: "ADC / Digitization"
+    type: digitization
+    parameters:
+      bit_depth: 12
+      dynamic_range_db: 66
+
+system_elements:
+  source:
+    type: broadband_led
+    power_mw: 150
+    wavelength_range_nm: [400, 700]
+  optics:
+    - type: binary_coded_aperture
+      fill_factor: 0.5
+      size_mm: [1.4, 1.4]
+    - type: dispersive_prism
+      material: BK7
+      dispersion_nm_per_px: 37.5
+    - type: phase_diffuser
+      type: ground_glass
+  detector:
+    type: cmos_sensor
+    pixels: [256, 256]
+    pixel_pitch_um: 5.5
+    qe: 0.55
+  calibration:
+    mask_alignment:
+      sensitivity_db_per_px: 8.0
+      tolerance_px: 0.5
+    dispersion_calibration:
+      sensitivity_db_per_nm: 0.5
+      tolerance_nm: 2.0
+    psf_calibration:
+      sensitivity_db_per_percent: 1.5
+      tolerance_percent: 3.0
+
+canonical_chain: "M -> W -> C -> Sigma -> D"
+
+compression_ratio: 8.0
+measurement_dimensions: [256, 256]
+object_dimensions: [8, 256, 256]
+
+mismatch_sources:
+  - mask_misalignment
+  - dispersion_calibration_error
+  - psf_calibration_error
+  - fixed_pattern_noise
+
+algorithms:
+  - wiener
+  - gap_tv
+  - fista_tv
+  - admm_tv
+  - twostep_demix
+
+budget_estimate:
+  equipment_k_usd: 1.2
+  per_scan_usd: 0.01
+  annual_maintenance_k_usd: 0.2
+
+references:
+  - "Sahoo et al., Hyperspectral DiffuserCam, Optica 4(10), 2017"
+  - "Monakhova et al., Spectral DiffuserCam, Optica 7(10), 2020"
+  - "Arguello et al., Shift-variant coded aperture snapshot spectral imaging, Optica 8(2), 2021"

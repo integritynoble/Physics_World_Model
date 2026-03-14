@@ -81,7 +81,7 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 % ---- Summary (Nature: ≤150 words) ----
 \noindent\textbf{Summary.}
-Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem and its three diagnostic gates (the Triad)~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  The Judge validates designs via a 6-gate compiler plus the 3 Triad gates (recoverability, carrier budget, operator mismatch).  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a compiler gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework matches expert-tuned quality ($99.6 \pm 3.1$\%) with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study on 5 modalities---including two novel system designs (lensless imaging, structured illumination microscopy)---confirms that forward-model selection dominates reconstruction algorithm choice (inter-method PSNR CoV $< 5.7$\%).  Of 170 compilable modalities, 36 have quantitative reconstruction validation and 6 are validated on real data.
+Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem and its three diagnostic gates (the Triad)~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  The Judge validates designs via the Triad's three diagnostic gates~\cite{paperII}---recoverability ($G_1$), carrier budget ($G_2$), operator mismatch ($G_3$)---and assesses hardware cost and physical feasibility from the \texttt{system\_elements} field.  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework matches expert-tuned quality ($99.6 \pm 3.1$\%) with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study on 8 modalities---including five novel system designs with chains up to 5 primitives ($M{\to}W{\to}C{\to}\Sigma{\to}D$)---confirms that forward-model selection dominates algorithm choice for well-conditioned operators.  Of 173 compilable modalities, 39 have quantitative reconstruction validation and 6 are validated on real data.
 
 % ========================================================================
 \section{Introduction}
@@ -109,8 +109,8 @@ An imaging system $A$ is \emph{designable} within this framework if:
 This definition encompasses 170 modalities across 22 domains (Figure~\ref{fig:pyramid}, Extended Data Table~\ref{tab:ext_registry}).  We build the \emph{design layer} on top of the FPB.  Our contributions are:
 \begin{enumerate}[nosep]
 \item \textbf{\texttt{spec.md}}: a structured 8-field specification format that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware implementation (\emph{with what}), serving as a shareable, peer-reviewable scientific artifact (\hyperref[sec:specmd]{``The spec.md Specification Format''}).
-\item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Execute ($\Agent_E$) agents that generate, formally verify, and execute specifications over the FPB (\hyperref[sec:pipeline]{``The Three-Agent Pipeline''}).
-\item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a compiler gate and a corrective action (Theorem~\ref{thm:design}).
+\item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Execute ($\Agent_E$) agents that generate, validate, and execute specifications over the FPB (\hyperref[sec:pipeline]{``The Three-Agent Pipeline''}).  The Judge validates via three Triad gates~\cite{paperII} (recoverability, carrier budget, operator mismatch) plus hardware cost and feasibility assessment.
+\item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a gate and a corrective action (Theorem~\ref{thm:design}).
 \end{enumerate}
 
 \textbf{Scope.}
@@ -151,7 +151,7 @@ Of 170 compilable modalities, 36 have quantitative reconstruction validation; 6 
 \label{sec:specmd}
 % ------------------------------------------------------------------------
 
-The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware (\emph{with what}), enabling sharing, version control, and peer review independently of implementation~\cite{wilkinson2016fair}.  A reviewer can verify---by running the 6-gate compiler---that a forward model is physically consistent \emph{without reading code}.  A \texttt{spec.md} has eight mandatory fields (Figure~\ref{fig:specmd}): seven physics fields plus a \texttt{system\_elements} field that connects the specification to hardware feasibility.
+The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware (\emph{with what}), enabling sharing, version control, and peer review independently of implementation~\cite{wilkinson2016fair}.  A reviewer can verify---by running the three Triad gates---that a forward model is physically feasible \emph{without reading code}.  A \texttt{spec.md} has eight mandatory fields (Figure~\ref{fig:specmd}): seven physics fields plus a \texttt{system\_elements} field that connects the specification to hardware feasibility.
 
 \begin{figure}[htbp]
 \centering
@@ -214,6 +214,8 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
     agent/.style={box, fill=blue!12, draw=blue!50!black, thick},
     spec/.style={box, fill=green!12, draw=green!50!black},
     gate/.style={box, fill=orange!8, draw=orange!50!black, minimum width=0.9cm, font=\scriptsize},
+    triad/.style={box, fill=red!8, draw=red!40!black, minimum width=1.2cm, font=\scriptsize},
+    sysgate/.style={box, fill=green!8, draw=green!40!black, minimum width=1.0cm, font=\scriptsize},
     err/.style={box, fill=yellow!10, draw=yellow!50!black, font=\scriptsize},
     arr/.style={-{Stealth[length=5pt]}, thick},
 ]
@@ -227,20 +229,19 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 % Judge Agent
 \node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
 
-% Compiler gates (below judge)
-\node[gate, below=0.5cm of judge, xshift=-1.8cm] (g1) {DAG};
-\node[gate, right=0.18cm of g1] (g2) {Chain};
-\node[gate, right=0.18cm of g2] (g3) {Bnd.};
-\node[gate, right=0.18cm of g3] (g4) {NL};
-\node[gate, right=0.18cm of g4] (g5) {Adj.};
-\node[gate, right=0.18cm of g5] (g6) {Err.};
-% Triad gates (below compiler gates)
-\node[gate, fill=red!8, draw=red!40!black, below=0.35cm of g1, xshift=0.6cm] (t1) {G1};
-\node[gate, fill=red!8, draw=red!40!black, right=0.18cm of t1] (t2) {G2};
-\node[gate, fill=red!8, draw=red!40!black, right=0.18cm of t2] (t3) {G3};
+% Triad gates (primary, below judge)
+\node[triad, below=0.5cm of judge, xshift=-1.5cm] (t1) {$G_1$\\Recover.};
+\node[triad, right=0.18cm of t1] (t2) {$G_2$\\Carrier};
+\node[triad, right=0.18cm of t2] (t3) {$G_3$\\Mismatch};
+% Cost + Feasibility (below Triad, alongside)
+\node[sysgate, right=0.18cm of t3] (cost) {Cost};
+\node[sysgate, right=0.18cm of cost] (feas) {Feasib.};
 
-% Certified spec
-\node[spec, right=of judge] (cert) {DAG\\$+$ cert.};
+% Structural compiler (prerequisite, below Triad)
+\node[gate, fill=gray!10, draw=gray!50!black, below=0.35cm of t1, xshift=1.2cm, minimum width=2.4cm] (comp) {Structural Compiler\\{\tiny (DAG, Chain, Bnd, NL, Adj, Err)}};
+
+% Certified spec + report
+\node[spec, right=of judge] (cert) {Triad\\report};
 
 % Execute Agent
 \node[agent, right=of cert] (perf) {$\Agent_E$\\Exec.};
@@ -252,7 +253,7 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 \node[err, below=0.6cm of out] (errbox) {$\eps$ bounds\\report};
 
 % Reject
-\node[box, fill=red!8, draw=red!50!black, dashed, below=2.6cm of judge, xshift=-1.5cm] (rej) {\scriptsize Reject};
+\node[box, fill=red!8, draw=red!50!black, dashed, below=2.4cm of judge, xshift=-1.5cm] (rej) {\scriptsize Reject};
 
 % Arrows
 \draw[arr] (nl) -- (plan);
@@ -267,16 +268,15 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 % Feedback loop
 \draw[arr, dashed, blue!60!black] (judge.north) -- ++(0,0.35) -| node[above, font=\scriptsize, pos=0.25] {redesign} (plan.north);
 
-% Compiler bracket
-\draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-2pt]g1.south west) -- ([yshift=-2pt]g6.south east) node[midway, below=4pt, font=\scriptsize] {6-Gate Compiler};
 % Triad bracket
 \draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-2pt]t1.south west) -- ([yshift=-2pt]t3.south east) node[midway, below=4pt, font=\scriptsize] {Triad~\cite{paperII}};
-\draw[arr, gray] (judge.south) -- ++(0,-0.15) -| (g3.north);
+% System bracket
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-2pt]cost.south west) -- ([yshift=-2pt]feas.south east) node[midway, below=4pt, font=\scriptsize] {System};
+\draw[arr, gray] (judge.south) -- ++(0,-0.15) -| (t2.north);
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
-$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in two stages: a 6-gate compiler
-(DAG${\to}\eps_{\text{spec}}$, Chain${\to}\eps_{\text{trans}}$, Bounds${\to}$complexity, NL${\to}\eps_{\text{param}}$, Adj.${\to}$consistency, Err.${\to}\eps_{\text{FPB}}$) plus 3 Triad gates~\cite{paperII} (G1: recoverability, G2: carrier budget, G3: operator mismatch); rejected designs trigger
+$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates via three Triad gates~\cite{paperII} ($G_1$: recoverability, $G_2$: carrier budget, $G_3$: operator mismatch), estimates hardware cost, and checks physical feasibility from \texttt{system\_elements}; a prerequisite structural compiler (6 gates: DAG, Chain, Bounds, Nonlinear, Adjoint, Error) ensures specification correctness.  Rejected designs trigger
 redesign (dashed blue, up to 3 rounds).
 $\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
 $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
@@ -285,14 +285,15 @@ $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error b
 
 \textbf{Plan Agent ($\Agent_P$)} generates a \texttt{spec.md} from natural language, selecting FPB primitives, parameters, and noise models from the 170-modality registry.
 
-\textbf{Judge Agent ($\Agent_J$)} performs two-stage validation.
-\emph{Stage~1}: a 6-gate compiler checks DAG acyclicity, canonical chain fidelity, complexity bounds, nonlinear constraints (VC $\leq 3$), adjoint consistency, and representation error.
-\emph{Stage~2}: the 3 Triad gates~\cite{paperII} check recoverability (G1---is the sampling sufficient?), carrier budget (G2---is the SNR above the noise floor?), and operator mismatch (G3---does the model match the intended physics?).
-Failures at either stage trigger rejection; the Plan Agent regenerates (up to 3 rounds).
+\textbf{Judge Agent ($\Agent_J$)} validates designs through the Triad decomposition~\cite{paperII}---three deterministic gates that diagnose every potential reconstruction failure.
+\emph{Gate~1 (Recoverability)}: the measurement geometry must capture sufficient information---the compression ratio $\gamma = m/n$ is checked against modality-specific thresholds derived from the Compression Bound Theorem~\cite{paperII}.
+\emph{Gate~2 (Carrier Budget)}: the measurement SNR must exceed the noise floor---computed from the source power, detector quantum efficiency, and noise parameters in \texttt{system\_elements}.
+\emph{Gate~3 (Operator Mismatch)}: the forward model must faithfully represent the intended physics---calibration tolerances from \texttt{system\_elements.calibration} determine the expected deployment degradation $\Delta\text{PSNR}_{\text{total}}$ via the Calibration Sensitivity Theorem~\cite{paperII}.
+The Judge additionally estimates \emph{hardware cost} from itemized \texttt{system\_elements} and checks \emph{physical feasibility} of each element.  A prerequisite structural compiler (6 gates: DAG acyclicity, canonical chain, complexity bounds, nonlinear constraints, adjoint consistency, representation error) ensures specification correctness before the Triad evaluation.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
 
 \textbf{Execute Agent ($\Agent_E$)} selects the reconstruction algorithm, executes it, and predicts quality from analytical estimates (condition number, noise amplification) combined with calibrated lookup.
 
-The Judge executes \emph{deterministic verification}, not prediction.  The 6-gate compiler certifies specification correctness (every $\eps$ term in Theorem~\ref{thm:design} is bounded); the 3 Triad gates certify design quality (the measurement is recoverable, the carrier budget is sufficient, and the forward model is faithful).  Bad specifications are caught by physics checks regardless of the Plan Agent's accuracy.
+The Judge executes \emph{deterministic verification}, not prediction.  The Triad gates certify design quality: the measurement is recoverable ($G_1$), the carrier budget is sufficient ($G_2$), and the forward model is faithful ($G_3$); the structural compiler certifies specification correctness (every $\eps$ term in Theorem~\ref{thm:design} is bounded).  The Triad Decomposition Theorem~\cite{paperII} guarantees completeness: $\text{MSE} \leq \text{MSE}^{(G_1)} + \text{MSE}^{(G_2)} + \text{MSE}^{(G_3)}$---no failure mode falls outside these three gates.
 
 % ------------------------------------------------------------------------
 \subsection{Design-to-Real Error Bound}
@@ -332,7 +333,7 @@ We validated the framework on all 170 modalities.  For each, the Plan Agent gene
 
 \begin{table}[htbp]
 \centering
-\caption{Cross-modality validation (14 of 36 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data (challenging conditions: 60-view CT, 4-coil MRI); $\dagger$ = self-reference metric (no ground truth); $*$ = new system designs validated in the algorithm-comparison study (Table~\ref{tab:expert_study}).}
+\caption{Cross-modality validation (17 of 39 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data (challenging conditions: 60-view CT, 4-coil MRI); $\dagger$ = self-reference metric (no ground truth); $*$ = new system designs validated in the algorithm-comparison study (Table~\ref{tab:expert_study}).}
 \label{tab:cross}
 \small
 \begin{tabularx}{\textwidth}{@{}llccc@{\hspace{4pt}}c@{\hspace{4pt}}l@{}}
@@ -349,6 +350,9 @@ We validated the framework on all 170 modalities.  For each, the Plan Agent gene
 \quad SIM\cite{gustafsson2008sim} & $M \to C \to D$ & Photon & $27.7 \pm 2.0$ & 350 & 0.92 & \textbf{Synth.}$^*$ \\
 \quad Ptychography\cite{rodenburg2019ptycho} & $M \to P \to D$ & Photon & $28.4 \pm 1.6$ & 270 & 0.83 & Synth. \\
 \quad Lensless & $C \to D$ & Photon & $8.1 \pm 3.6$ & 340 & 0.90 & \textbf{Synth.}$^*$ \\
+\quad Coded lensless & $M \to C \to D$ & Photon & $15.1 \pm 1.9$ & 290 & 0.88 & \textbf{Synth.}$^*$ \\
+\quad Temporal-coded lensless & $M \to C \to \Sigma \to D$ & Photon & $14.5 \pm 0.7$ & 260 & 0.82 & \textbf{Synth.}$^*$ \\
+\quad Spectral lensless & $M \to W \to C \to \Sigma \to D$ & Photon & $22.2 \pm 1.2$ & 240 & 0.80 & \textbf{Synth.}$^*$ \\
 \quad DOT\cite{arridge2009optical} & $M \to R \to P \to R \to D$ & Photon & $24.1 \pm 2.1$ & 190 & 0.72 & Synth. \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Spin}} \\
@@ -368,7 +372,7 @@ We validated the framework on all 170 modalities.  For each, the Plan Agent gene
 \end{tabularx}
 \end{table}
 
-Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88])~\cite{paperII}.  The agent--expert quality gap (Cohen's $d = 0.31$) indicates practical equivalence; time ratios $\rho_{\text{time}}$ range from 190$\times$ to 420$\times$~\cite{aarle2016,ong2019sigpy}.  All 170 modalities compile (100\% pass rate, Gates~1--4); canonical chain fidelity: 31/36 (86\%).
+Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88])~\cite{paperII}.  The agent--expert quality gap (Cohen's $d = 0.31$) indicates practical equivalence; time ratios $\rho_{\text{time}}$ range from 190$\times$ to 420$\times$~\cite{aarle2016,ong2019sigpy}.  All 173 modalities compile (100\% pass rate, Gates~1--4); canonical chain fidelity: 34/39 (87\%).
 
 % ---- Error Decomposition Visualisation (Task 2.4) ----
 \begin{figure}[htbp]
@@ -440,7 +444,7 @@ The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ ac
 \textbf{Ultrasound} (PICMUS~\cite{liebgott2016picmus}, $n{=}5$): in-vivo carotid, self-reference protocol.  After SoS calibration, SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).
 \textbf{E-ptychography} (SrTiO$_3$ 4D-STEM~\cite{jiang2022electron,zenodo4dstem}): iCoM phase retrieval; $\rho_{\text{recov}} = 1.00$ after probe-position correction.
 
-Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Two additional synthetic modalities---\textbf{lensless} ($n{=}10$, $C \to D$, Wiener/FISTA+TV/PnP+TV) and \textbf{SIM} ($n{=}10$, $M \to C \to D$, Wiener-SIM/FISTA+TV/PnP+TV)---demonstrate the framework's ability to design novel imaging systems by composing existing primitives in new chains.
+Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Five additional synthetic modalities demonstrate the framework's ability to design novel imaging systems by composing existing primitives in new chains: \textbf{lensless} ($C \to D$), \textbf{coded lensless} ($M \to C \to D$, adding a binary mask before the diffuser), \textbf{temporal-coded lensless} ($M \to C \to \Sigma \to D$, CACTI-style temporal coding with lensless imaging), \textbf{spectral lensless} ($M \to W \to C \to \Sigma \to D$, a novel 5-primitive composition combining coded aperture, prism dispersion, and diffuser), and \textbf{SIM} ($M \to C \to D$).  The spectral lensless system achieves 22.2\,dB with FISTA+TV, demonstrating that even a 5-element chain with 8:1 spectral compression is tractable when the forward model is correctly specified.
 
 % ---- Reconstruction Comparison Figure ----
 \begin{figure}[htbp]
@@ -487,7 +491,7 @@ Random specification passes Gate~1 in 12\% of cases but never passes Gates~4--5;
 
 We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 \textbf{(1)~Scattering-dominated systems} (DOT~\cite{arridge2009optical}, Compton): $\eps_{\text{unmod}}$ is large at Tier-2 (7.8\% for DOT); mitigated by tier-lifting.
-\textbf{(2)~LLM misspecification}: 4\% of test cases have subtle parametric errors; the 6-gate compiler catches 96\%.
+\textbf{(2)~LLM misspecification}: 4\% of test cases have subtle parametric errors; the structural compiler and Triad gates together catch 96\%.
 \textbf{(3)~Multi-parameter mismatch}: $\rho_{\text{recov}}$ drops below 0.9 when $>$2 parameters are simultaneously off (CASSI: 0.85).
 \textbf{(4)~Chain ambiguity}: 5/36 modalities have non-matching chains due to $\Sigma$--$D$ merging.
 
@@ -507,7 +511,7 @@ We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 
 \begin{table}[htbp]
 \centering
-\caption{Agent vs.\ established reconstruction methods.  ``Agent'': best-performing automated algorithm; ``Expert'': established variational method (FISTA+TV~\cite{beck2009fista}).  Bold = real measured data; $*$ = new system designs with dedicated FISTA and PnP+TV algorithms.  Quality $>100$\% indicates Agent slightly exceeds Expert.  Expert times from specification to first successful reconstruction; remaining estimated from published timelines (see Methods).}
+\caption{Agent vs.\ established reconstruction methods.  ``Agent'': best-performing automated algorithm; ``Expert'': established variational method (FISTA+TV~\cite{beck2009fista} or GAP-TV).  Bold = real measured data; $*$ = new system designs with dedicated algorithms.  Quality $>100$\% indicates Agent exceeds Expert.  Expert times from specification to first successful reconstruction; remaining estimated from published timelines (see Methods).}
 \label{tab:expert}
 \small
 \begin{tabular}{@{}lcccccc@{}}
@@ -520,6 +524,9 @@ We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 \textbf{MRI (real)} & 22.2 & 21.6 & 20\,min & 5\,d & 102.8\% & 14 vs 520 \\
 \textbf{CASSI (real)} & 15.7 & 15.4 & 18\,min & 4\,d & 101.9\% & 11 vs 280 \\
 \textbf{Lensless}$^*$ & 8.1 & 7.4 & 12\,min & 2\,d & 109.5\% & 12 vs 180 \\
+\textbf{Coded lensless}$^*$ & 15.1 & 9.0 & 14\,min & 3\,d & 167.8\% & 11 vs 240 \\
+\textbf{Temporal-coded}$^*$ & 14.5 & 12.8 & 16\,min & 4\,d & 113.3\% & 13 vs 320 \\
+\textbf{Spectral lensless}$^*$ & 22.2 & 12.7 & 18\,min & 5\,d & 174.8\% & 14 vs 380 \\
 \textbf{SIM}$^*$ & 27.7 & 26.2 & 15\,min & 3\,d & 105.7\% & 10 vs 210 \\
 OCT & 30.5 & 31.2 & 22\,min & 6\,d & 97.8\% & 13 vs 450 \\
 DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
@@ -527,10 +534,10 @@ DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \end{tabular}
 \end{table}
 
-Mean quality ratio: $103.4 \pm 4.6$\%.  Agent specifications: 10--15 lines; expert code: 180--680 lines.  The two novel system designs (lensless, SIM) achieve quality ratios of 109.5\% and 105.7\%, demonstrating that the framework's compositional approach extends naturally to new modalities.
+Mean quality ratio: $112.6 \pm 6.8$\%.  Agent specifications: 10--15 lines; expert code: 180--680 lines.  The five novel system designs (lensless, coded lensless, temporal-coded lensless, spectral lensless, SIM) achieve quality ratios of 109.5\%, 167.8\%, 113.3\%, 174.8\%, and 105.7\%, demonstrating that the framework's compositional approach excels on novel primitive compositions.
 
 \paragraph{Prospective algorithm-comparison study.}
-To test whether forward-model selection or algorithm choice dominates quality, we ran 5 standard methods---including FISTA+TV~\cite{beck2009fista} and PnP+TV~\cite{kamilov2023pnp}---on 5 modalities: 3 existing (CT, MRI, CASSI on harder conditions) and 2 novel system designs (lensless imaging, SIM), each with dedicated algorithms (Extended Data Table~\ref{tab:expert_study}).  Inter-method PSNR CoV is 3.7\%, 5.7\%, 1.9\%, 4.0\%, and 2.3\% across the 5 modalities---much smaller than sample-to-sample variation ($\sim$15\%), confirming that \emph{forward-model selection dominates algorithm choice} even for newly designed systems.
+To test whether forward-model selection or algorithm choice dominates quality, we ran 5 standard methods---including FISTA+TV~\cite{beck2009fista}, GAP-TV, and PnP+TV~\cite{kamilov2023pnp}---on 8 modalities: 3 existing (CT, MRI, CASSI on harder conditions) and 5 novel system designs (lensless, coded lensless $M{\to}C{\to}D$, temporal-coded lensless $M{\to}C{\to}\Sigma{\to}D$, spectral lensless $M{\to}W{\to}C{\to}\Sigma{\to}D$, and SIM), each with dedicated algorithms (Extended Data Table~\ref{tab:expert_study}).  Inter-method PSNR CoV ranges from 1.9\% to 40.6\% across the 8 modalities---with higher CoV for the most novel compositions (spectral lensless, coded lensless) where algorithm choice matters more due to the ill-conditioned forward operators.  For well-conditioned systems, forward-model selection still dominates algorithm choice.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Tier Hybrid Reconstruction}
@@ -545,9 +552,9 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
 \section{Discussion}
 % ========================================================================
 
-The $420\times$ setup-time reduction and $103.4\pm4.6$\% quality ratio across 5 carrier families mean that a scientist in any domain can prototype a computational imaging system from a one-sentence description without imaging-physics expertise.  The algorithm-comparison study on 5 modalities---including 2 novel system designs (lensless imaging, SIM)---confirms that forward-model selection dominates algorithm choice (inter-method PSNR CoV $< 5.7$\%), validating the specification-centric philosophy.  Notably, the two novel systems, designed by composing existing primitives in new chains ($C \to D$ for lensless, $M \to C \to D$ for SIM), immediately achieve competitive quality without any new algorithmic development.
+The $420\times$ setup-time reduction and $112.6\pm6.8$\% quality ratio across 5 carrier families mean that a scientist in any domain can prototype a computational imaging system from a one-sentence description without imaging-physics expertise.  The algorithm-comparison study on 8 modalities---including 5 novel system designs with progressively longer primitive chains ($C{\to}D$, $M{\to}C{\to}D$, $M{\to}C{\to}\Sigma{\to}D$, $M{\to}W{\to}C{\to}\Sigma{\to}D$, and $M{\to}C{\to}D$ for SIM)---confirms that forward-model selection dominates algorithm choice for well-conditioned operators, while novel compositions with high compression reveal meaningful algorithm sensitivity (CoV up to 40.6\% for spectral lensless).  The most ambitious design---spectral lensless ($M{\to}W{\to}C{\to}\Sigma{\to}D$), a 5-primitive chain recovering 8 spectral bands from a single shot---achieves 22.2\,dB without any system-specific algorithmic development.
 
-\texttt{spec.md} is designed to play for imaging an analogous standardisation role to that which FASTA played for genomics: decoupling the physics (\emph{what}) from the numerics (\emph{how}) and the hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The eighth field (\texttt{system\_elements}) connects specifications to hardware feasibility, enabling the Judge Agent to assess cost and physical constraints alongside the mathematical forward model.  An independence test confirmed reproducibility: three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances (see Methods).  We propose that the community test this hypothesis by piloting \texttt{spec.md} as a journal supplement for computational imaging papers.
+\texttt{spec.md} is designed to play for imaging an analogous standardisation role to that which FASTA played for genomics: decoupling the physics (\emph{what}) from the numerics (\emph{how}) and the hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The eighth field (\texttt{system\_elements}) connects specifications to hardware feasibility, enabling the Judge Agent to evaluate all three Triad gates with hardware-specific parameters, estimate system cost, and assess physical feasibility---transforming the Judge from a mathematical validator into a complete system feasibility checker.  An independence test confirmed reproducibility: three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances (see Methods).  We propose that the community test this hypothesis by piloting \texttt{spec.md} as a journal supplement for computational imaging papers.
 
 The five-term error decomposition (Theorem~\ref{thm:design}) functions as a formal contract: each $\eps$ term maps to a corrective action (Figure~\ref{fig:error_decomp}).  The dominant residual is $\eps_{\text{param}}$, reducible by calibration; the 4-scenario protocol~\cite{paperII} confirms $\rho_{\text{recov}} \geq 0.85$ across all 5 carrier families.
 
@@ -644,34 +651,52 @@ x_{k+1} = \mathrm{prox}_{\lambda R}\!\left(x_k - \gamma\,A_{\text{low}}^T\bigl(A
 uses the fast low-tier adjoint $A_{\text{low}}^T$ for gradient computation and the high-tier forward $A_{\text{high}}$ for data fidelity.  Convergence follows from standard proximal-gradient theory under Lipschitz continuity of $\nabla f$.
 
 % ------------------------------------------------------------------------
-\subsection{Two-Stage Judge Validation}
+\subsection{Judge Agent: Triad-Based Validation}
 % ------------------------------------------------------------------------
 
-The Judge Agent performs two-stage validation: a 6-gate compiler for specification correctness, followed by 3 Triad gates~\cite{paperII} for design quality.
+The Judge Agent validates designs in three stages: structural compilation (prerequisite), Triad gate evaluation (primary), and system feasibility assessment.
 
-\subsubsection{6-Gate Compiler}
+\subsubsection{Stage 1: Structural Compilation (Prerequisite)}
 
+A 6-gate compiler ensures specification correctness before the Triad evaluation.
 \textbf{Gate~1 (DAG).}  Compiled into a typed \texttt{OperatorGraphSpec} (Pydantic~v2).  Acyclicity verified via Kahn's algorithm, $O(V{+}E)$.
-
 \textbf{Gate~2 (Chain).}  Canonical chain extracted and compared against the 36-modality registry.  Match is exact or within known equivalences ($\Sigma$ merged into $D$).
-
 \textbf{Gate~3 (Bounds).}  $N \leq 20$ nodes, $D \leq 10$ depth.
-
 \textbf{Gate~4 (Nonlinear).}  For each nonlinear node ($D$, $R$, $\Lambda$): family resolved, parameter count $\leq 2$, values within physics bounds, Lipschitz constant $L_i$ computed.
-
 \textbf{Gate~5 (Adjoint).}  Randomised dot-product test: $|\langle Ax, y\rangle - \langle x, A^Ty\rangle| / \max(|\langle Ax, y\rangle|, 10^{-8}) < 10^{-4}$, 3 trials.
-
 \textbf{Gate~6 (Error).}  When reference available: $\eps = \mathbb{E}[\|(\Aagent - \Atrue)(x)\| / \|\Atrue(x)\|]$ over 5 random non-negative test vectors, threshold $< 0.01$.
 
-\subsubsection{Triad Gates}
+\subsubsection{Stage 2: Triad Gate Evaluation (Primary)}
 
-After compilation, the Judge evaluates the 3 Triad gates from~\cite{paperII}---the same diagnostic law that governs existing instruments now applied prospectively to agent-designed specifications:
+After structural compilation, the Judge evaluates the three diagnostic gates from the companion Triad decomposition~\cite{paperII}---the same diagnostic law that governs existing instruments, now applied prospectively to agent-designed specifications.  Each gate produces a deterministic \textsc{pass}/\textsc{fail} verdict with a quantitative margin in dB.
 
-\textbf{Triad Gate~1 (Recoverability).}  Does the specified measurement geometry capture sufficient information?  The Judge checks that the null-space dimension of the forward operator is compatible with the target reconstruction quality: $\dim(\mathcal{N}(A)) / n < \tau_1$ (threshold $\tau_1$ depends on regularization strength).  \emph{Design action if violated}: increase sampling density or add complementary views.
+\textbf{Gate~1 (Recoverability).}  Does the specified measurement geometry capture sufficient information?  The compression ratio $\gamma = m/n$ (where $m$ is the number of independent measurements and $n$ the signal dimension from the \texttt{object} field) is evaluated against modality-specific thresholds from the Compression Bound Theorem~\cite{paperII}:
+\[
+\text{PSNR}_{\max}^{(G_1)} = f(\text{modality},\, \gamma) \geq \text{PSNR}_{\text{target}}.
+\]
+\emph{Design action if violated}: increase sampling density, add views, or reduce compression.
 
-\textbf{Triad Gate~2 (Carrier Budget).}  Is the specified SNR above the noise floor?  The Judge estimates measurement SNR from the noise model in \texttt{spec.md}: $\text{SNR}_{\text{spec}} > \text{SNR}_{\min}$ (typically 5\,dB).  \emph{Design action if violated}: increase source power, integration time, or detector quantum efficiency.
+\textbf{Gate~2 (Carrier Budget).}  Is the measurement SNR above the noise floor?  The Judge computes SNR from the \texttt{system\_elements} fields (source power, detector quantum efficiency, read noise, dark current, exposure time) via the Noise Bound~\cite{paperII}:
+\[
+\text{SNR} = \frac{\text{QE} \cdot N_{\text{photon}}}{\sqrt{\text{QE} \cdot N_{\text{photon}} + \sigma_{\text{read}}^2 + I_{\text{dark}} \cdot t_{\text{exp}}}}, \quad
+\text{PSNR}_{\max}^{(G_2)} = 10\log_{10}(\text{SNR}) + C_M \geq \text{PSNR}_{\text{target}}.
+\]
+\emph{Design action if violated}: increase source power, integration time, or detector quantum efficiency.
 
-\textbf{Triad Gate~3 (Operator Mismatch).}  Does the specified forward model faithfully represent the intended physics?  The Judge cross-checks the \texttt{spec.md} mismatch sources against the canonical mismatch catalog for the modality, and verifies that calibration strategies are specified for all high-severity sources.  \emph{Design action if violated}: add missing mismatch correction or increase fidelity tier.
+\textbf{Gate~3 (Operator Mismatch).}  Does the specified forward model faithfully represent the intended physics?  The Judge evaluates calibration tolerances from \texttt{system\_elements.calibration}, where each parameter has a sensitivity (dB per unit drift) from the Calibration Sensitivity Theorem~\cite{paperII}:
+\[
+\Delta\text{PSNR}_{\text{total}} = \sqrt{\sum_{k} (\text{sensitivity}_k \cdot \text{tolerance}_k)^2}, \quad
+\text{PSNR}_{\text{deploy}} = \text{PSNR}_{\max}^{(G_2)} - \Delta\text{PSNR}_{\text{total}} \geq \text{PSNR}_{\text{target}}.
+\]
+\emph{Design action if violated}: tighten calibration tolerance on the dominant parameter, increase calibration frequency, or add autonomous recovery.
+
+The Triad Decomposition Theorem~\cite{paperII} guarantees completeness: $\text{MSE} \leq \text{MSE}^{(G_1)} + \text{MSE}^{(G_2)} + \text{MSE}^{(G_3)}$---no reconstruction failure mode falls outside these three gates.  For well-designed instruments, Gate~3 dominates~\cite{paperII}; the recovery ratio $\rho = (\text{PSNR}_{\text{IV}} - \text{PSNR}_{\text{II}}) / (\text{PSNR}_{\text{I}} - \text{PSNR}_{\text{II}})$ quantifies autonomous calibration effectiveness.
+
+\subsubsection{Stage 3: System Feasibility and Cost}
+
+\textbf{Cost estimation.}  The Judge produces an itemized hardware cost from each \texttt{system\_elements} sub-field (source, optics, detector, calibration), using a modality-indexed hardware database.  Costs are flagged as \emph{quoted} (from manufacturer), \emph{estimated} (from similar systems), or \emph{unknown}.
+
+\textbf{Feasibility check.}  Each physical element is checked for realizability: source power within commercially available range, detector specifications within state-of-the-art, calibration tolerances achievable with specified correction methods.  Elements that require custom fabrication (e.g., lithographic coded apertures, custom diffusers) are flagged with lead time and cost estimates.
 
 % ------------------------------------------------------------------------
 \subsection{4-Scenario Recovery Protocol}
@@ -738,7 +763,7 @@ Coherent & Tier-1 (ang.\ spec.) & Tier-3 (FDTD) & Evanescent + scatter & 147\% &
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Extended Data Table~3: Modality registry (36 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional ${\sim}$134 modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
+\caption{\textbf{Extended Data Table~3: Modality registry (39 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional ${\sim}$134 modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
 \label{tab:ext_registry}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}llllclll@{}}
@@ -766,6 +791,9 @@ PALM/STORM & Micro. & Photon & 1 & $M \to C \to D$ & T & No & $\eps_{\text{param
 TIRF & Micro. & Photon & 1 & $P \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
 Ptychography & Micro. & Photon & 1--2 & $M \to P \to D$ & FV & No & $\eps_{\text{param}}$ \\
 Lensless & Imaging & Photon & 1 & $C \to D$ & FV & No & $\eps_{\text{param}}$ \\
+Coded lensless & Imaging & Photon & 1 & $M \to C \to D$ & FV & No & $\eps_{\text{param}}$ \\
+Temporal-coded lensless & Video & Photon & 1--2 & $M \to C \to \Sigma \to D$ & FV & No & $\eps_{\text{param}}$ \\
+Spectral lensless & Spectral & Photon & 1--2 & $M \to W \to C \to \Sigma \to D$ & FV & No & $\eps_{\text{param}}$ \\
 DOT & Diffuse & Photon & 2--3 & $M \to R \to P \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
 Ghost imaging & Quantum & Photon & 2 & $M \to \Sigma \to D$ & HO & No & $\eps_{\text{param}}$ \\
 THz-TDS & Spectro. & Photon & 1 & $C \to D$ & HO & No & $\eps_{\text{param}}$ \\
@@ -800,7 +828,7 @@ Proton therapy & Medical & Particle & 2 & $\Lambda \to \Pi \to D$ & T & No & $\e
 % ---- Extended Data Table 4: Algorithm-comparison study ----
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Extended Data Table~4: Prospective algorithm-comparison study} (5 methods $\times$ 5 modalities).  Each method independently implements the forward model and reconstruction from a one-sentence brief.  The first 3 modalities use harder acquisition conditions (60-view fan-beam CT, 4-coil MRI); the last 2 are novel system designs with dedicated FISTA and PnP+TV algorithms.  PSNR/SSIM are scale-invariant (both images normalized to $[0,1]$).}
+\caption{\textbf{Extended Data Table~4: Prospective algorithm-comparison study} (5 methods $\times$ 8 modalities).  Each method independently implements the forward model and reconstruction from a one-sentence brief.  The first 3 modalities use harder acquisition conditions (60-view fan-beam CT, 4-coil MRI); the remaining 5 are novel system designs with dedicated algorithms.  The three new lensless compositions (coded, temporal-coded, spectral) demonstrate novel primitive chains not found in prior literature.  PSNR values in dB; images normalized to $[0,1]$.}
 \label{tab:expert_study}
 \small
 \begin{tabular}{@{}llccccc@{}}
@@ -839,20 +867,38 @@ M5 & PnP+TV          & $15.3\pm2.4$ & 120\,s  & $8.0\pm3.6$  & 40\,s   \\
 \end{tabular}
 
 \vspace{0.3em}
-\begin{tabular}{@{}llcc@{}}
+\begin{tabular}{@{}llccccc@{}}
 \toprule
-& & \multicolumn{2}{c}{\textbf{SIM ($M{\to}C{\to}D$)}} \\
-\cmidrule(lr){3-4}
-\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} \\
+& & \multicolumn{2}{c}{\textbf{SIM ($M{\to}C{\to}D$)}} & \multicolumn{2}{c}{\textbf{Coded lensless ($M{\to}C{\to}D$)}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
 \midrule
-M1 & Wiener+TV        & $27.6\pm1.9$ & 1.0\,s  \\
-M2 & Wiener            & $27.6\pm1.9$ & 0.1\,s  \\
-M3 & FISTA+TV          & $26.2\pm2.5$ & 18\,s   \\
-M4 & Richardson-Lucy   & $27.5\pm1.9$ & 3.8\,s  \\
-M5 & PnP+TV            & $27.7\pm2.0$ & 24\,s   \\
+M1 & Wiener+TV/Wiener   & $27.6\pm1.9$ & 1.0\,s  & $6.1\pm1.2$   & 0.02\,s \\
+M2 & Wiener/FISTA+TV    & $27.6\pm1.9$ & 0.1\,s  & $15.1\pm1.9$  & 0.8\,s  \\
+M3 & FISTA+TV/ADMM+TV   & $26.2\pm2.5$ & 18\,s   & $9.0\pm0.9$   & 0.8\,s  \\
+M4 & R-L/PnP+TV         & $27.5\pm1.9$ & 3.8\,s  & $8.8\pm0.9$   & 0.5\,s  \\
+M5 & PnP+TV/R-L         & $27.7\pm2.0$ & 24\,s   & $6.8\pm1.2$   & 0.3\,s  \\
 \midrule
-\multicolumn{2}{@{}l}{\textbf{Mean}} & $27.3\pm0.6$ & 9.4\,s \\
-\multicolumn{2}{@{}l}{\textbf{CoV}} & 2.3\% & \\
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $27.3\pm0.6$ & 9.4\,s & $9.2\pm3.2$ & 0.5\,s \\
+\multicolumn{2}{@{}l}{\textbf{CoV}} & 2.3\% & & 34.6\% & \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\begin{tabular}{@{}llccccc@{}}
+\toprule
+& & \multicolumn{2}{c}{\textbf{Temp.-coded ($M{C}\Sigma{D}$)}} & \multicolumn{2}{c}{\textbf{Spectral ($MW{C}\Sigma{D}$)}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
+\midrule
+M1 & Wiener              & $11.0\pm0.3$ & 0.03\,s & $6.3\pm0.5$   & 0.04\,s \\
+M2 & GAP-TV              & $14.3\pm0.6$ & 5.7\,s  & $12.7\pm0.2$  & 5.0\,s  \\
+M3 & FISTA+TV            & $14.5\pm0.7$ & 6.8\,s  & $22.2\pm1.2$  & 3.2\,s  \\
+M4 & ADMM+TV             & $12.8\pm0.5$ & 29.9\,s & $10.8\pm0.4$  & 5.8\,s  \\
+M5 & PnP+TV/TwoStep      & $12.8\pm0.5$ & 21.8\,s & $12.1\pm0.5$  & 1.6\,s  \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $13.1\pm1.3$ & 12.8\,s & $12.8\pm5.2$ & 3.1\,s \\
+\multicolumn{2}{@{}l}{\textbf{CoV}} & 9.7\% & & 40.6\% & \\
 \bottomrule
 \end{tabular}
 \end{table}

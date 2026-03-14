@@ -7,7 +7,15 @@ from .plan import (
     MismatchSpec,
     AlgorithmStep,
 )
-from .judgment import JudgmentResult
+from .judgment import (
+    JudgmentResult,
+    TriadGateResult,
+    TriadReport,
+    CostItem,
+    CostEstimate,
+    FeasibilityItem,
+    FeasibilityReport,
+)
 
 __all__ = [
     "PlanDocument",
@@ -18,4 +26,10 @@ __all__ = [
     "MismatchSpec",
     "AlgorithmStep",
     "JudgmentResult",
+    "TriadGateResult",
+    "TriadReport",
+    "CostItem",
+    "CostEstimate",
+    "FeasibilityItem",
+    "FeasibilityReport",
 ]
