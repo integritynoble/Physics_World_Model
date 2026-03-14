@@ -66,6 +66,7 @@ checkpoint/
 datasets/benchmark/**/public/
 datasets/benchmark/**/dev/
 datasets/benchmark/**/hidden/
+datasets/benchmark/**/standard/
 datasets/inversenet_cacti/
 datasets/inversenet_cassi/
 datasets/inversenet_spc/
