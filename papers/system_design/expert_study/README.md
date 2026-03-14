@@ -34,28 +34,48 @@ All MRI methods use **CG-SENSE** (conjugate gradient with coil sensitivity maps)
 
 All CASSI methods use **GAP-TV** (Generalized Alternating Projection with Total Variation) except E2 which uses Landweber iterations. They differ in iteration count, TV weight, and optional NLM post-processing.
 
-## Three Real-Data Modalities
+## Reconstruction Task
 
-### CT (X-ray carrier)
+The task is identical for all three modalities: **given raw measurements and calibration metadata, reconstruct the original object without access to ground truth.**
+
+Each expert receives only a one-sentence design brief (from `data_loader.py:get_design_brief()`), for example:
+
+> *"Design a computational imaging system for parallel-beam CT with Poisson noise. Specify the forward model, select appropriate reconstruction algorithm, and produce reconstructed images."*
+
+The expert must independently: (1) derive the forward model from this description, (2) implement reconstruction, and (3) produce results -- all without seeing `x_true`.
+
+### CT -- Recover a 2D attenuation image from a sparse-view sinogram
+
+- **Task**: Reconstruct a 362x362 attenuation map from a 60-view fan-beam sinogram (60 x 736)
+- **Input**: sinogram in nepers (line integrals of attenuation), projection angles (60 uniformly spaced)
+- **Output**: 2D attenuation image
 - **Dataset**: LoDoPaB-CT (GCS: `datasets/Benchmark/ct/public/`)
-- **Acquisition**: 60-view fan-beam, 736 detectors, 362x362 images
-- **Geometry**: Source-to-isocenter 800 px, isocenter-to-detector 568 px
+- **Geometry**: Fan-beam, source-to-isocenter 800 px, isocenter-to-detector 568 px, 736 detector channels
 - **Samples**: n=10
-- **Challenge**: Severely limited-angle (60 views vs typical 720+)
+- **Design brief**: *"Design a computational imaging system for parallel-beam CT with Poisson noise."*
+- **Challenge**: Only 60 views (clinical CT uses 720+), so the system is severely underdetermined. The expert must choose how to regularize the ill-posed inverse problem.
 
-### MRI (Spin carrier)
+### MRI -- Recover a 2D image from undersampled multi-coil k-space
+
+- **Task**: Reconstruct a 256x256 image from 4-coil undersampled k-space data
+- **Input**: complex k-space (4 x 256 x 256, ~3.5x Cartesian undersampling), coil sensitivity maps, sampling mask
+- **Output**: 2D magnitude image
 - **Dataset**: M4Raw (GCS: `datasets/Benchmark/mri/public/`)
-- **Acquisition**: 4 coils, 256x256, ~3.5x Cartesian undersampling
-- **Forward model**: Multi-coil SENSE with centered FFT
+- **Forward model**: Multi-coil SENSE -- each coil modulates the image by its sensitivity map, then applies masked 2D FFT
 - **Samples**: n=10
-- **Challenge**: Few coils (4 vs typical 8-32) with moderate undersampling
+- **Design brief**: *"Design a computational imaging system for multi-coil MRI with 4x Cartesian undersampling."*
+- **Challenge**: Few coils (4 vs typical 8-32) with moderate undersampling, providing limited redundancy for filling missing k-space lines.
 
-### CASSI (Photon carrier)
+### CASSI -- Recover a 3D spectral cube from a single 2D snapshot
+
+- **Task**: Reconstruct a 256x256x28 spectral data cube from a single 2D compressed measurement (256 x ~310)
+- **Input**: 2D measurement (coded aperture snapshot), binary coded aperture mask (256 x 256)
+- **Output**: 3D spectral cube (256 x 256 spatial, 28 wavelength bands)
 - **Dataset**: KAIST TSA (GCS: `datasets/Benchmark/sd_cassi/public/`)
-- **Acquisition**: 256x256x28 spectral cubes, coded aperture mask, dispersion step=2
-- **Forward model**: Coded aperture + spectral dispersion
+- **Forward model**: Each spectral band is modulated by the coded aperture mask, then shifted along the detector by `band_index * step` (dispersion step=2 pixels), and all bands are summed into a single 2D measurement
 - **Samples**: n=5
-- **Challenge**: Extreme compression (28 bands collapsed to single 2D measurement)
+- **Design brief**: *"Design a computational imaging system for coded-aperture snapshot spectral imaging (CASSI)."*
+- **Challenge**: Extreme compression ratio -- 28 spectral bands (1.8M voxels) collapsed into a single 2D measurement (~79K pixels). The expert must exploit the coded aperture structure and spectral smoothness priors to separate the overlapping bands.
 
 ## Results
 
