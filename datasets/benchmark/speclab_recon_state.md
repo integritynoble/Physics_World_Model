@@ -223,10 +223,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical | 26.83 dB | 0.754 |  |
-| FISTA-TV | Classical | 28.42 dB | 0.821 |  |
-| TVAL3 | Classical | 29.15 dB | 0.845 |  |
-| PnP-FFDNet | PnP | 29.65 dB | 0.852 |  |
+| GAP-TV | Classical | 26.83 dB | 0.754 | done |
+| FISTA-TV | Classical | 28.42 dB | 0.821 | done |
+| TVAL3 | Classical | 29.15 dB | 0.845 | done |
+| PnP-FFDNet | PnP | 29.65 dB | 0.852 | done |
 | EfficientSCI | Deep Learning | 34.21 dB | 0.949 |  |
 | MST-L | Transformer | 35.4 dB | 0.96 |  |
 | Restormer | Vision Transformer | 35.68 dB | 0.962 |  |
@@ -419,7 +419,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | MSI-PCA | Classical | 24.8 dB | 0.749 | done |
 | MSI-NMF | Classical | 26.3 dB | 0.782 | done |
 | MSI-TV | Variational | 28.9 dB | 0.821 | done |
-| DeepMSI | Deep Learning | 32.4 dB | 0.871 |  |
+| DeepMSI | Deep Learning | 32.4 dB | 0.871 | done |
 | MSI-GAN | Generative | 33.7 dB | 0.888 |  |
 | SpaMSI-Net | Deep Learning | 34.8 dB | 0.904 |  |
 | MSIFormer | Transformer | 36.1 dB | 0.921 |  |
@@ -431,8 +431,8 @@ Last updated: 2026-03-14 | Total modalities: 168
 |-----------|------|----------|----------|--------|
 | STORM-2D | Classical | 21.3 dB | 0.695 | done |
 | PALM | Classical | 22.8 dB | 0.718 | done |
-| DAOSTORM | Classical | 25.4 dB | 0.762 |  |
-| DeepSTORM | Deep Learning | 29.1 dB | 0.831 |  |
+| DAOSTORM | Classical | 25.4 dB | 0.762 | done |
+| DeepSTORM | Deep Learning | 29.1 dB | 0.831 | done |
 | DECODE | Deep Learning | 32.6 dB | 0.878 |  |
 | TransPAINT | Transformer | 35.2 dB | 0.918 |  |
 | SwinSTORM | Transformer | 36.8 dB | 0.934 |  |
@@ -444,7 +444,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Richardson-Lucy | Classical | 24.5 dB | 0.744 | done |
-| Wiener-DF | Classical | 27.2 dB | 0.793 |  |
+| Wiener-DF | Classical | 27.2 dB | 0.793 | done |
 | TV-DF | Variational | 29.8 dB | 0.836 |  |
 | BM3D-DF | Classical | 32.4 dB | 0.871 |  |
 | Noise2Void-DF | Self-Supervised | 33.7 dB | 0.889 |  |
@@ -643,7 +643,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 | done |
 | SVD-Ghost | Statistical | 25.1 dB | 0.748 | done |
 | DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 | done |
-| GAN-Ghost | Generative | 31.0 dB | 0.852 |  |
+| GAN-Ghost | Generative | 31.0 dB | 0.852 | done |
 | TransGhost | Transformer | 33.8 dB | 0.897 |  |
 | SwinGhost | Transformer | 35.6 dB | 0.92 |  |
 | PhysGhost | Physics-Informed | 37.1 dB | 0.936 |  |
@@ -1587,8 +1587,8 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| TIE Solver | Classical | 25.5 dB | 0.72 |  |
-| DPC-ADMM | PnP | 29.0 dB | 0.84 |  |
+| TIE Solver | Classical | 25.5 dB | 0.72 | done |
+| DPC-ADMM | PnP | 29.0 dB | 0.84 | done |
 | QPI-Net | Deep Learning | 33.0 dB | 0.92 |  |
 | PhaseFormer | Transformer | 35.0 dB | 0.945 |  |
 
@@ -1964,10 +1964,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical | 26.83 dB | 0.754 |  |
-| FISTA-TV | Classical | 28.42 dB | 0.821 |  |
-| TVAL3 | Classical | 29.15 dB | 0.845 |  |
-| PnP-FFDNet | PnP | 29.65 dB | 0.852 |  |
+| GAP-TV | Classical | 26.83 dB | 0.754 | done |
+| FISTA-TV | Classical | 28.42 dB | 0.821 | done |
+| TVAL3 | Classical | 29.15 dB | 0.845 | done |
+| PnP-FFDNet | PnP | 29.65 dB | 0.852 | done |
 | EfficientSCI | Deep Learning | 34.21 dB | 0.949 |  |
 | MST-L | Transformer | 35.4 dB | 0.96 |  |
 | Restormer | Vision Transformer | 35.68 dB | 0.962 |  |
