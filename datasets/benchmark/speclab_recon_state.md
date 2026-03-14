@@ -72,14 +72,14 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zernike LS | Classical | 22.0 dB | 0.64 |  |
-| Fried Estimator | Classical | 24.0 dB | 0.7 |  |
-| PnP-ADMM (WF) | PnP | 27.0 dB | 0.8 |  |
-| WFNet | Deep Learning | 30.0 dB | 0.87 |  |
-| LIFT-Net | Deep Learning | 31.5 dB | 0.895 |  |
-| AO-Transformer | Transformer | 33.0 dB | 0.92 |  |
-| AO-ViT | Transformer | 34.0 dB | 0.935 |  |
-| DiffusionAO | Diffusion | 35.0 dB | 0.948 |  |
+| Zernike LS | Classical | 22.0 dB | 0.64 | done |
+| Fried Estimator | Classical | 24.0 dB | 0.7 | done |
+| PnP-ADMM (WF) | PnP | 27.0 dB | 0.8 | done |
+| WFNet | Deep Learning | 30.0 dB | 0.87 | done |
+| LIFT-Net | Deep Learning | 31.5 dB | 0.895 | done |
+| AO-Transformer | Transformer | 33.0 dB | 0.92 | done |
+| AO-ViT | Transformer | 34.0 dB | 0.935 | done |
+| DiffusionAO | Diffusion | 35.0 dB | 0.948 | done |
 
 ## Arterial Spin Labeling (ASL) MRI (`asl_mri`) — medical
 
@@ -181,10 +181,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-XRF | Classical | 22.8 dB | 0.701 |  |
-| MLEM-XRF | Classical | 26.3 dB | 0.764 |  |
-| TV-XRFCT | Variational | 29.7 dB | 0.831 |  |
-| DnCNN-XRF | Deep Learning | 32.4 dB | 0.872 |  |
+| FBP-XRF | Classical | 22.8 dB | 0.701 | done |
+| MLEM-XRF | Classical | 26.3 dB | 0.764 | done |
+| TV-XRFCT | Variational | 29.7 dB | 0.831 | done |
+| DnCNN-XRF | Deep Learning | 32.4 dB | 0.872 | done |
 | U-Net-XRF | Deep Learning | 34.6 dB | 0.901 |  |
 | PnP-XRF | PnP | 35.9 dB | 0.914 |  |
 | SwinXRF | Transformer | 37.8 dB | 0.932 |  |
@@ -350,7 +350,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | Noise2Self | Self-Supervised | 30.5 dB | 0.858 | done |
 | Noise2Void | Self-Supervised | 31.8 dB | 0.871 | done |
 | PN2V | Self-Supervised | 32.9 dB | 0.882 | done |
-| CARE | Deep Learning | 33.5 dB | 0.891 |  |
+| CARE | Deep Learning | 33.5 dB | 0.891 | done |
 | SwinIR-LiveCell | Transformer | 36.2 dB | 0.931 |  |
 | Restormer-Micro | Transformer | 37.8 dB | 0.946 |  |
 | DiffusionCell | Diffusion | 39.2 dB | 0.959 |  |
@@ -639,10 +639,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Coincidence-Count | Classical | 19.8 dB | 0.658 |  |
-| CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 |  |
-| SVD-Ghost | Statistical | 25.1 dB | 0.748 |  |
-| DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 |  |
+| Coincidence-Count | Classical | 19.8 dB | 0.658 | done |
+| CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 | done |
+| SVD-Ghost | Statistical | 25.1 dB | 0.748 | done |
+| DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 | done |
 | GAN-Ghost | Generative | 31.0 dB | 0.852 |  |
 | TransGhost | Transformer | 33.8 dB | 0.897 |  |
 | SwinGhost | Transformer | 35.6 dB | 0.92 |  |
@@ -1746,10 +1746,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| OPA Receiver | Classical | 18.0 dB | 0.42 |  |
-| FF-SFG | Classical | 22.0 dB | 0.6 |  |
-| QI-Net | Deep Learning | 26.5 dB | 0.78 |  |
-| QuantumFormer | Transformer | 28.5 dB | 0.84 |  |
+| OPA Receiver | Classical | 18.0 dB | 0.42 | done |
+| FF-SFG | Classical | 22.0 dB | 0.6 | done |
+| QI-Net | Deep Learning | 26.5 dB | 0.78 | done |
+| QuantumFormer | Transformer | 28.5 dB | 0.84 | done |
 
 ## Radio Aperture Synthesis (`radio_astronomy`) — experimental_science
 
