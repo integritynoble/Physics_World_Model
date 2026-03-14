@@ -711,10 +711,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Histogram-Eq | Classical | 24.1 dB | 0.738 |  |
-| CLAHE-Endo | Classical | 26.5 dB | 0.772 |  |
-| BM3D-Endo | Classical | 28.9 dB | 0.812 |  |
-| DnCNN-Endo | Deep Learning | 31.4 dB | 0.855 |  |
+| Histogram-Eq | Classical | 24.1 dB | 0.738 | done |
+| CLAHE-Endo | Classical | 26.5 dB | 0.772 | done |
+| BM3D-Endo | Classical | 28.9 dB | 0.812 | done |
+| DnCNN-Endo | Deep Learning | 31.4 dB | 0.855 | done |
 | EndoSLAM-Net | Deep Learning | 33.8 dB | 0.889 |  |
 | TransEndo | Transformer | 35.9 dB | 0.921 |  |
 | SwinEndo | Transformer | 37.3 dB | 0.937 |  |

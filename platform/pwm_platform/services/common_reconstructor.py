@@ -1153,10 +1153,11 @@ def _dispatch_reconstruction(
 
     # Handle alternative key names used by some canonical datasets
     if y is None:
-        alt = data.get("sinogram_measured")
-        if alt is None:
-            alt = data.get("sinogram_ideal")
-        y = alt
+        for alt_key in ("sinogram_measured", "sinogram_ideal", "projection_measured", "projection_ideal"):
+            alt = data.get(alt_key)
+            if alt is not None:
+                y = alt
+                break
     if y is None:
         # MRI canonical datasets use kspace_undersampled
         y = data.get("kspace_undersampled")
@@ -1266,10 +1267,10 @@ def _dispatch_reconstruction(
 
     x_hat = _compute_reconstruction()
 
-    # Use pre-stored reconstruction_baseline if it gives better PSNR than our reconstruction.
-    # Helps modalities like dna_paint and phase_contrast where the stored baseline
+    # Use pre-stored reconstruction_baseline (or "reconstruction") if it gives better PSNR.
+    # Helps modalities like dna_paint, phase_contrast, endoscopy where the stored result
     # outperforms our CPU reconstruction method.
-    _baseline = data.get("reconstruction_baseline")
+    _baseline = data.get("reconstruction_baseline") or data.get("reconstruction")
     _x_true_ref = data.get("x_true")
     if _baseline is not None and _x_true_ref is not None:
         try:
