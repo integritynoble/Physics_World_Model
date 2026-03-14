@@ -81,7 +81,7 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 % ---- Summary (Nature: ≤150 words) ----
 \noindent\textbf{Summary.}
-Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem and its three diagnostic gates (the Triad)~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  The Judge validates designs via the Triad's three diagnostic gates~\cite{paperII}---recoverability ($G_1$), carrier budget ($G_2$), operator mismatch ($G_3$)---and assesses hardware cost and physical feasibility from the \texttt{system\_elements} field.  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework matches expert-tuned quality ($99.6 \pm 3.1$\%) with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study on 8 modalities---including five novel system designs with chains up to 5 primitives ($M{\to}W{\to}C{\to}\Sigma{\to}D$)---confirms that forward-model selection dominates algorithm choice for well-conditioned operators.  Of 173 compilable modalities, 39 have quantitative reconstruction validation and 6 are validated on real data.
+Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem and its three diagnostic gates (the Triad)~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  The Judge validates designs via the Triad's three diagnostic gates~\cite{paperII}---recoverability ($G_1$), carrier budget ($G_2$), operator mismatch ($G_3$)---and assesses hardware cost and physical feasibility from the \texttt{system\_elements} field.  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework matches expert-tuned quality ($99.6 \pm 3.1$\%) with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study on 8 modalities---including five novel system designs recovering depth, time, and wavelength from single shots (chains up to 5 primitives)---confirms that forward-model selection dominates algorithm choice for well-conditioned operators.  Of 173 compilable modalities, 39 have quantitative reconstruction validation and 6 are validated on real data.
 
 % ========================================================================
 \section{Introduction}
@@ -350,9 +350,9 @@ We validated the framework on all 170 modalities.  For each, the Plan Agent gene
 \quad SIM\cite{gustafsson2008sim} & $M \to C \to D$ & Photon & $27.7 \pm 2.0$ & 350 & 0.92 & \textbf{Synth.}$^*$ \\
 \quad Ptychography\cite{rodenburg2019ptycho} & $M \to P \to D$ & Photon & $28.4 \pm 1.6$ & 270 & 0.83 & Synth. \\
 \quad Lensless & $C \to D$ & Photon & $8.1 \pm 3.6$ & 340 & 0.90 & \textbf{Synth.}$^*$ \\
-\quad Coded lensless & $M \to C \to D$ & Photon & $15.1 \pm 1.9$ & 290 & 0.88 & \textbf{Synth.}$^*$ \\
-\quad Temporal-coded lensless & $M \to C \to \Sigma \to D$ & Photon & $14.5 \pm 0.7$ & 260 & 0.82 & \textbf{Synth.}$^*$ \\
-\quad Spectral lensless & $M \to W \to C \to \Sigma \to D$ & Photon & $22.2 \pm 1.2$ & 240 & 0.80 & \textbf{Synth.}$^*$ \\
+\quad 3D Lensless & $C \to \Sigma \to D$ & Photon & $8.7 \pm 0.6$ & 280 & 0.85 & \textbf{Synth.}$^*$ \\
+\quad Temporal-coded lensless & $M \to C \to \Sigma \to D$ & Photon & $14.3 \pm 0.8$ & 260 & 0.82 & \textbf{Synth.}$^*$ \\
+\quad Spectral lensless & $M \to W \to C \to \Sigma \to D$ & Photon & $14.8 \pm 0.6$ & 240 & 0.80 & \textbf{Synth.}$^*$ \\
 \quad DOT\cite{arridge2009optical} & $M \to R \to P \to R \to D$ & Photon & $24.1 \pm 2.1$ & 190 & 0.72 & Synth. \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Spin}} \\
@@ -444,7 +444,7 @@ The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ ac
 \textbf{Ultrasound} (PICMUS~\cite{liebgott2016picmus}, $n{=}5$): in-vivo carotid, self-reference protocol.  After SoS calibration, SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).
 \textbf{E-ptychography} (SrTiO$_3$ 4D-STEM~\cite{jiang2022electron,zenodo4dstem}): iCoM phase retrieval; $\rho_{\text{recov}} = 1.00$ after probe-position correction.
 
-Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Five additional synthetic modalities demonstrate the framework's ability to design novel imaging systems by composing existing primitives in new chains: \textbf{lensless} ($C \to D$), \textbf{coded lensless} ($M \to C \to D$, adding a binary mask before the diffuser), \textbf{temporal-coded lensless} ($M \to C \to \Sigma \to D$, CACTI-style temporal coding with lensless imaging), \textbf{spectral lensless} ($M \to W \to C \to \Sigma \to D$, a novel 5-primitive composition combining coded aperture, prism dispersion, and diffuser), and \textbf{SIM} ($M \to C \to D$).  The spectral lensless system achieves 22.2\,dB with FISTA+TV, demonstrating that even a 5-element chain with 8:1 spectral compression is tractable when the forward model is correctly specified.
+Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Five additional synthetic modalities demonstrate the framework's ability to design novel imaging systems by composing existing primitives in new chains: \textbf{lensless} ($C \to D$, 2D), \textbf{3D lensless} ($C \to \Sigma \to D$, recovering 8 depth planes from a single shot via depth-dependent PSFs), \textbf{temporal-coded lensless} ($M \to C \to \Sigma \to D$, recovering 8 video frames from a single coded exposure), \textbf{spectral lensless} ($M \to W \to C \to \Sigma \to D$, recovering 8 spectral bands via prism dispersion), and \textbf{SIM} ($M \to C \to D$).  Each of the three new lensless variants exploits a different physical dimension---depth, time, wavelength---achieving 8:1 compression with PSNR 8.7, 14.3, and 14.8\,dB respectively via FISTA+TV.
 
 % ---- Reconstruction Comparison Figure ----
 \begin{figure}[htbp]
@@ -524,9 +524,9 @@ We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 \textbf{MRI (real)} & 22.2 & 21.6 & 20\,min & 5\,d & 102.8\% & 14 vs 520 \\
 \textbf{CASSI (real)} & 15.7 & 15.4 & 18\,min & 4\,d & 101.9\% & 11 vs 280 \\
 \textbf{Lensless}$^*$ & 8.1 & 7.4 & 12\,min & 2\,d & 109.5\% & 12 vs 180 \\
-\textbf{Coded lensless}$^*$ & 15.1 & 9.0 & 14\,min & 3\,d & 167.8\% & 11 vs 240 \\
-\textbf{Temporal-coded}$^*$ & 14.5 & 12.8 & 16\,min & 4\,d & 113.3\% & 13 vs 320 \\
-\textbf{Spectral lensless}$^*$ & 22.2 & 12.7 & 18\,min & 5\,d & 174.8\% & 14 vs 380 \\
+\textbf{3D Lensless}$^*$ & 8.7 & 8.6 & 14\,min & 3\,d & 101.2\% & 13 vs 240 \\
+\textbf{Temporal-coded}$^*$ & 14.3 & 12.5 & 16\,min & 4\,d & 114.4\% & 13 vs 320 \\
+\textbf{Spectral lensless}$^*$ & 14.8 & 12.2 & 18\,min & 5\,d & 121.3\% & 14 vs 380 \\
 \textbf{SIM}$^*$ & 27.7 & 26.2 & 15\,min & 3\,d & 105.7\% & 10 vs 210 \\
 OCT & 30.5 & 31.2 & 22\,min & 6\,d & 97.8\% & 13 vs 450 \\
 DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
@@ -534,10 +534,10 @@ DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \end{tabular}
 \end{table}
 
-Mean quality ratio: $112.6 \pm 6.8$\%.  Agent specifications: 10--15 lines; expert code: 180--680 lines.  The five novel system designs (lensless, coded lensless, temporal-coded lensless, spectral lensless, SIM) achieve quality ratios of 109.5\%, 167.8\%, 113.3\%, 174.8\%, and 105.7\%, demonstrating that the framework's compositional approach excels on novel primitive compositions.
+Mean quality ratio: $105.2 \pm 3.8$\%.  Agent specifications: 10--15 lines; expert code: 180--680 lines.  The five novel system designs (lensless $C{\to}D$, 3D lensless $C{\to}\Sigma{\to}D$, temporal-coded $M{\to}C{\to}\Sigma{\to}D$, spectral lensless $M{\to}W{\to}C{\to}\Sigma{\to}D$, SIM $M{\to}C{\to}D$) achieve quality ratios of 109.5\%, 101.2\%, 114.4\%, 121.3\%, and 105.7\%, demonstrating that the framework's compositional approach extends naturally to novel primitive compositions.
 
 \paragraph{Prospective algorithm-comparison study.}
-To test whether forward-model selection or algorithm choice dominates quality, we ran 5 standard methods---including FISTA+TV~\cite{beck2009fista}, GAP-TV, and PnP+TV~\cite{kamilov2023pnp}---on 8 modalities: 3 existing (CT, MRI, CASSI on harder conditions) and 5 novel system designs (lensless, coded lensless $M{\to}C{\to}D$, temporal-coded lensless $M{\to}C{\to}\Sigma{\to}D$, spectral lensless $M{\to}W{\to}C{\to}\Sigma{\to}D$, and SIM), each with dedicated algorithms (Extended Data Table~\ref{tab:expert_study}).  Inter-method PSNR CoV ranges from 1.9\% to 40.6\% across the 8 modalities---with higher CoV for the most novel compositions (spectral lensless, coded lensless) where algorithm choice matters more due to the ill-conditioned forward operators.  For well-conditioned systems, forward-model selection still dominates algorithm choice.
+To test whether forward-model selection or algorithm choice dominates quality, we ran 5 standard methods---including FISTA+TV~\cite{beck2009fista}, GAP-TV, and PnP+TV~\cite{kamilov2023pnp}---on 8 modalities: 3 existing (CT, MRI, CASSI on harder conditions) and 5 novel system designs (lensless $C{\to}D$, 3D lensless $C{\to}\Sigma{\to}D$, temporal-coded $M{\to}C{\to}\Sigma{\to}D$, spectral $M{\to}W{\to}C{\to}\Sigma{\to}D$, and SIM $M{\to}C{\to}D$), each with dedicated algorithms (Extended Data Table~\ref{tab:expert_study}).  Inter-method PSNR CoV ranges from 1.9\% to 24.3\% across the 8 modalities---with higher CoV for longer chains with more ill-conditioned operators (spectral lensless).  For well-conditioned systems, forward-model selection still dominates algorithm choice.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Tier Hybrid Reconstruction}
@@ -552,7 +552,7 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
 \section{Discussion}
 % ========================================================================
 
-The $420\times$ setup-time reduction and $112.6\pm6.8$\% quality ratio across 5 carrier families mean that a scientist in any domain can prototype a computational imaging system from a one-sentence description without imaging-physics expertise.  The algorithm-comparison study on 8 modalities---including 5 novel system designs with progressively longer primitive chains ($C{\to}D$, $M{\to}C{\to}D$, $M{\to}C{\to}\Sigma{\to}D$, $M{\to}W{\to}C{\to}\Sigma{\to}D$, and $M{\to}C{\to}D$ for SIM)---confirms that forward-model selection dominates algorithm choice for well-conditioned operators, while novel compositions with high compression reveal meaningful algorithm sensitivity (CoV up to 40.6\% for spectral lensless).  The most ambitious design---spectral lensless ($M{\to}W{\to}C{\to}\Sigma{\to}D$), a 5-primitive chain recovering 8 spectral bands from a single shot---achieves 22.2\,dB without any system-specific algorithmic development.
+The $420\times$ setup-time reduction and $105.2\pm3.8$\% quality ratio across 5 carrier families mean that a scientist in any domain can prototype a computational imaging system from a one-sentence description without imaging-physics expertise.  The algorithm-comparison study on 8 modalities---including 5 novel system designs that compose primitives into chains recovering depth ($C{\to}\Sigma{\to}D$), time ($M{\to}C{\to}\Sigma{\to}D$), and wavelength ($M{\to}W{\to}C{\to}\Sigma{\to}D$)---confirms that forward-model selection dominates algorithm choice for well-conditioned operators (CoV 4.4\% for 3D lensless), while operators with higher compression and more primitives show meaningful algorithm sensitivity (CoV 24.3\% for spectral lensless).  Importantly, all three new lensless compositions achieve 8:1 compression---recovering 3D volumes, video, or hyperspectral cubes from a single 2D shot---without any system-specific algorithmic development.
 
 \texttt{spec.md} is designed to play for imaging an analogous standardisation role to that which FASTA played for genomics: decoupling the physics (\emph{what}) from the numerics (\emph{how}) and the hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The eighth field (\texttt{system\_elements}) connects specifications to hardware feasibility, enabling the Judge Agent to evaluate all three Triad gates with hardware-specific parameters, estimate system cost, and assess physical feasibility---transforming the Judge from a mathematical validator into a complete system feasibility checker.  An independence test confirmed reproducibility: three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances (see Methods).  We propose that the community test this hypothesis by piloting \texttt{spec.md} as a journal supplement for computational imaging papers.
 
@@ -791,7 +791,7 @@ PALM/STORM & Micro. & Photon & 1 & $M \to C \to D$ & T & No & $\eps_{\text{param
 TIRF & Micro. & Photon & 1 & $P \to C \to D$ & T & No & $\eps_{\text{param}}$ \\
 Ptychography & Micro. & Photon & 1--2 & $M \to P \to D$ & FV & No & $\eps_{\text{param}}$ \\
 Lensless & Imaging & Photon & 1 & $C \to D$ & FV & No & $\eps_{\text{param}}$ \\
-Coded lensless & Imaging & Photon & 1 & $M \to C \to D$ & FV & No & $\eps_{\text{param}}$ \\
+3D Lensless & Imaging & Photon & 1--2 & $C \to \Sigma \to D$ & FV & No & $\eps_{\text{param}}$ \\
 Temporal-coded lensless & Video & Photon & 1--2 & $M \to C \to \Sigma \to D$ & FV & No & $\eps_{\text{param}}$ \\
 Spectral lensless & Spectral & Photon & 1--2 & $M \to W \to C \to \Sigma \to D$ & FV & No & $\eps_{\text{param}}$ \\
 DOT & Diffuse & Photon & 2--3 & $M \to R \to P \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
@@ -869,36 +869,36 @@ M5 & PnP+TV          & $15.3\pm2.4$ & 120\,s  & $8.0\pm3.6$  & 40\,s   \\
 \vspace{0.3em}
 \begin{tabular}{@{}llccccc@{}}
 \toprule
-& & \multicolumn{2}{c}{\textbf{SIM ($M{\to}C{\to}D$)}} & \multicolumn{2}{c}{\textbf{Coded lensless ($M{\to}C{\to}D$)}} \\
+& & \multicolumn{2}{c}{\textbf{SIM ($M{\to}C{\to}D$)}} & \multicolumn{2}{c}{\textbf{3D Lensless ($C{\to}\Sigma{\to}D$)}} \\
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}
 \textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
 \midrule
-M1 & Wiener+TV/Wiener   & $27.6\pm1.9$ & 1.0\,s  & $6.1\pm1.2$   & 0.02\,s \\
-M2 & Wiener/FISTA+TV    & $27.6\pm1.9$ & 0.1\,s  & $15.1\pm1.9$  & 0.8\,s  \\
-M3 & FISTA+TV/ADMM+TV   & $26.2\pm2.5$ & 18\,s   & $9.0\pm0.9$   & 0.8\,s  \\
-M4 & R-L/PnP+TV         & $27.5\pm1.9$ & 3.8\,s  & $8.8\pm0.9$   & 0.5\,s  \\
-M5 & PnP+TV/R-L         & $27.7\pm2.0$ & 24\,s   & $6.8\pm1.2$   & 0.3\,s  \\
+M1 & Wiener+TV/Wiener   & $27.6\pm1.9$ & 1.0\,s  & $7.8\pm1.1$   & 0.04\,s \\
+M2 & Wiener/GAP-TV      & $27.6\pm1.9$ & 0.1\,s  & $8.6\pm0.5$   & 59.7\,s \\
+M3 & FISTA+TV           & $26.2\pm2.5$ & 18\,s   & $8.7\pm0.6$   & 12.5\,s \\
+M4 & R-L/ADMM+TV        & $27.5\pm1.9$ & 3.8\,s  & $8.6\pm0.5$   & 42.2\,s \\
+M5 & PnP+TV/R-L         & $27.7\pm2.0$ & 24\,s   & $7.9\pm1.1$   & 1.2\,s  \\
 \midrule
-\multicolumn{2}{@{}l}{\textbf{Mean}} & $27.3\pm0.6$ & 9.4\,s & $9.2\pm3.2$ & 0.5\,s \\
-\multicolumn{2}{@{}l}{\textbf{CoV}} & 2.3\% & & 34.6\% & \\
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $27.3\pm0.6$ & 9.4\,s & $8.3\pm0.4$ & 23.1\,s \\
+\multicolumn{2}{@{}l}{\textbf{CoV}} & 2.3\% & & 4.4\% & \\
 \bottomrule
 \end{tabular}
 
 \vspace{0.3em}
 \begin{tabular}{@{}llccccc@{}}
 \toprule
-& & \multicolumn{2}{c}{\textbf{Temp.-coded ($M{C}\Sigma{D}$)}} & \multicolumn{2}{c}{\textbf{Spectral ($MW{C}\Sigma{D}$)}} \\
+& & \multicolumn{2}{c}{\textbf{Temp.-coded ($MC\Sigma D$)}} & \multicolumn{2}{c}{\textbf{Spectral ($MWC\Sigma D$)}} \\
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}
 \textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
 \midrule
-M1 & Wiener              & $11.0\pm0.3$ & 0.03\,s & $6.3\pm0.5$   & 0.04\,s \\
-M2 & GAP-TV              & $14.3\pm0.6$ & 5.7\,s  & $12.7\pm0.2$  & 5.0\,s  \\
-M3 & FISTA+TV            & $14.5\pm0.7$ & 6.8\,s  & $22.2\pm1.2$  & 3.2\,s  \\
-M4 & ADMM+TV             & $12.8\pm0.5$ & 29.9\,s & $10.8\pm0.4$  & 5.8\,s  \\
-M5 & PnP+TV/TwoStep      & $12.8\pm0.5$ & 21.8\,s & $12.1\pm0.5$  & 1.6\,s  \\
+M1 & Wiener              & $10.8\pm0.6$ & 0.03\,s & $6.7\pm1.0$   & 0.04\,s \\
+M2 & GAP-TV              & $14.1\pm0.9$ & 5.0\,s  & $12.2\pm0.5$  & 5.2\,s  \\
+M3 & FISTA+TV            & $14.3\pm0.8$ & 8.1\,s  & $14.8\pm0.6$  & 4.3\,s  \\
+M4 & ADMM+TV             & $12.5\pm0.8$ & 26.6\,s & $10.0\pm0.6$  & 31.2\,s \\
+M5 & PnP+TV/TwoStep      & $12.5\pm0.8$ & 22.5\,s & $11.4\pm0.7$  & 1.7\,s  \\
 \midrule
-\multicolumn{2}{@{}l}{\textbf{Mean}} & $13.1\pm1.3$ & 12.8\,s & $12.8\pm5.2$ & 3.1\,s \\
-\multicolumn{2}{@{}l}{\textbf{CoV}} & 9.7\% & & 40.6\% & \\
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $12.8\pm1.3$ & 12.4\,s & $11.0\pm2.7$ & 8.5\,s \\
+\multicolumn{2}{@{}l}{\textbf{CoV}} & 10.1\% & & 24.3\% & \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -1,9 +1,9 @@
 """Run reconstruction algorithms for new system-design modalities.
 
-New modalities:
-  1. Coded Lensless (M -> C -> D): binary mask + diffuser PSF
-  2. Temporal-Coded Lensless Video (M -> C -> Sigma -> D): temporal mask + diffuser + accumulation
-  3. Snapshot Spectral Lensless (M -> W -> C -> Sigma -> D): coded mask + dispersion + diffuser + accumulation
+New modalities (each recovers a different physical dimension from a single 2D shot):
+  1. 3D Lensless (C -> Sigma -> D): depth-dependent PSFs, recovers Nz=8 depth planes (8:1)
+  2. Temporal-Coded Lensless Video (M -> C -> Sigma -> D): temporal mask + diffuser (8:1)
+  3. Snapshot Spectral Lensless (M -> W -> C -> Sigma -> D): mask + dispersion + diffuser (8:1)
 
 Each modality runs 5 algorithms with PSNR/SSIM evaluation.
 """
@@ -103,144 +103,241 @@ def wiener_deconv_fft(y, H_fft, snr=200):
 
 
 # ============================================================================
-# Modality 1: Coded Lensless (M -> C -> D)
+# Modality 1: 3D Lensless (C -> Sigma -> D)
+#   Depth-dependent PSFs: y = sum_z H_z * x_z + noise
+#   Recovers Nz depth planes from a single 2D measurement (Nz:1 compression)
 # ============================================================================
 
-def coded_lensless_forward(x, mask, psf):
-    """Forward model: y = H * (M ⊙ x) + noise."""
-    coded = mask * x
-    y_clean = fft_convolve2d(coded, psf)
+N_DEPTHS = 8  # Number of depth planes to recover
+
+
+def generate_depth_psfs(n_depths=8, size=128, base_spread=15):
+    """Generate depth-dependent PSFs for a diffuser camera.
+
+    Each depth plane has a different PSF because the diffuser's caustic
+    pattern changes with object distance (defocus + magnification shift).
+    """
+    psfs = []
+    for z in range(n_depths):
+        # Spread increases with depth (defocus)
+        spread = base_spread + z * 3
+        psf = np.random.RandomState(42 + z).rand(size, size) ** 2
+        psf = ndimage.gaussian_filter(psf, sigma=spread)
+        # Add depth-specific caustic structure
+        rng = np.random.RandomState(100 + z)
+        for _ in range(4):
+            cx, cy = rng.randint(20, size - 20, 2)
+            sx, sy = rng.uniform(3, 8 + z, 2)
+            yy, xx = np.mgrid[0:size, 0:size]
+            caustic = np.exp(-((xx - cx) ** 2 / (2 * sx ** 2) + (yy - cy) ** 2 / (2 * sy ** 2)))
+            psf += caustic * rng.uniform(0.3, 1.5)
+        # Add lateral shift (magnification changes with depth)
+        shift_px = (z - n_depths / 2) * 2.0
+        psf = ndimage.shift(psf, (shift_px, shift_px * 0.5), order=1, mode='wrap')
+        psf = psf / psf.sum()
+        psfs.append(psf)
+    return psfs
+
+
+def generate_3d_volumes(n_depths=8, size=128, n_samples=1):
+    """Generate 3D volumes with objects at different depth planes."""
+    volumes = []
+    for s in range(n_samples):
+        vol = np.zeros((n_depths, size, size))
+        rng = np.random.RandomState(200 + s)
+
+        # Place objects at random depth planes (sparse in z)
+        n_objects = rng.randint(4, 8)
+        for j in range(n_objects):
+            z = rng.randint(0, n_depths)
+            cx = rng.randint(20, size - 20)
+            cy = rng.randint(20, size - 20)
+            rx = rng.randint(8, 30)
+            ry = rng.randint(8, 30)
+            yy, xx = np.mgrid[0:size, 0:size]
+            obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
+            vol[z] += obj * rng.uniform(0.3, 0.9)
+
+        # Add faint background across a few planes
+        for z in range(n_depths):
+            bg = rng.rand(size, size) * 0.05
+            vol[z] += ndimage.gaussian_filter(bg, sigma=5)
+            vol[z] = np.clip(vol[z] / max(vol[z].max(), 1e-10), 0, 1)
+        volumes.append(vol)
+    return volumes
+
+
+def lensless3d_forward(volume, psfs):
+    """Forward model: y = sum_z H_z * x_z + noise.
+
+    C -> Sigma -> D chain:
+      C: each depth plane convolved with its depth-dependent PSF
+      Sigma: all depth planes accumulate on the detector
+      D: detector adds noise
+    """
+    n_depths = volume.shape[0]
+    y_clean = np.zeros((N, N))
+    for z in range(n_depths):
+        y_clean += fft_convolve2d(volume[z], psfs[z])
+    y_clean /= n_depths
     y_noisy = add_noise(y_clean, mean_photons=5000, read_noise=3.0)
     return y_noisy, y_clean
 
 
-def coded_lensless_wiener(y, mask, psf, snr=150):
-    """Wiener deconvolution for coded lensless."""
-    # Effective operator in FFT domain: H * diag(M)
-    # First deconvolve PSF, then divide by mask
-    H_fft = sp_fft.fft2(psf, s=y.shape)
-    x_deconv = wiener_deconv_fft(y, H_fft, snr=snr)
-    # Unmask (avoid division by zero)
-    x_rec = np.where(mask > 0.5, x_deconv / np.clip(mask, 0.5, 1.0), 0.0)
-    return np.clip(x_rec, 0, 1)
+def lensless3d_wiener(y, psfs, n_depths=8, snr=80):
+    """Per-depth Wiener deconvolution (naive baseline)."""
+    vol = np.zeros((n_depths, N, N))
+    for z in range(n_depths):
+        H_fft = sp_fft.fft2(psfs[z], s=(N, N))
+        vol[z] = wiener_deconv_fft(y, H_fft, snr=snr) / n_depths
+    return np.clip(vol, 0, 1)
 
 
-def coded_lensless_fista_tv(y, mask, psf, n_iter=80, tv_weight=0.005):
-    """FISTA+TV for coded lensless."""
-    H_fft = sp_fft.fft2(psf, s=y.shape)
-    HT_fft = np.conj(H_fft)
-    L = np.max(np.abs(H_fft) ** 2) + 1e-8
-    step = 1.0 / L
+def lensless3d_gap_tv(y, psfs, n_depths=8, n_iter=60, tv_weight=0.01):
+    """GAP-TV for 3D lensless depth recovery."""
+    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
+    HT_ffts = [np.conj(h) for h in H_ffts]
 
-    # Initialize with Wiener
-    x = coded_lensless_wiener(y, mask, psf, snr=150)
-    z = x.copy()
-    z_prev = x.copy()
-    t = 1.0
+    # Initialize with back-projection
+    vol = np.zeros((n_depths, N, N))
+    for z in range(n_depths):
+        vol[z] = np.real(sp_fft.ifft2(HT_ffts[z] * sp_fft.fft2(y))) / n_depths
 
     for _ in range(n_iter):
-        # Gradient: M ⊙ H^T(H(M⊙x) - y)
-        Mx = mask * x
-        HMx = np.real(sp_fft.ifft2(H_fft * sp_fft.fft2(Mx)))
-        residual = HMx - y
-        grad = mask * np.real(sp_fft.ifft2(HT_fft * sp_fft.fft2(residual)))
+        # Forward projection
+        y_est = np.zeros((N, N))
+        for z in range(n_depths):
+            y_est += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(vol[z])))
+        y_est /= n_depths
 
-        # Proximal step (TV)
-        v = x - step * grad
-        z = denoise_tv_chambolle(np.clip(v, 0, None), weight=tv_weight)
+        # GAP update per depth
+        residual = y - y_est
+        Y_res_fft = sp_fft.fft2(residual)
+        for z in range(n_depths):
+            v = vol[z] + np.real(sp_fft.ifft2(HT_ffts[z] * Y_res_fft)) / n_depths
+            vol[z] = denoise_tv_chambolle(np.clip(v, 0, None), weight=tv_weight)
 
-        # FISTA momentum
-        t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2
-        x = z + ((t - 1) / t_new) * (z - z_prev)
-        z_prev = z.copy()
-        t = t_new
-
-    return np.clip(z, 0, 1)
+    return np.clip(vol, 0, 1)
 
 
-def coded_lensless_admm(y, mask, psf, n_iter=60, rho=0.5, tv_weight=0.005):
-    """ADMM with TV denoiser for coded lensless."""
-    H_fft = sp_fft.fft2(psf, s=y.shape)
-    HT_fft = np.conj(H_fft)
-    Y_fft = sp_fft.fft2(y)
+def lensless3d_fista_tv(y, psfs, n_depths=8, n_iter=60, tv_weight=0.006):
+    """FISTA+TV for 3D lensless depth recovery."""
+    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
+    HT_ffts = [np.conj(h) for h in H_ffts]
+    L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / n_depths + 1e-8
+    step = 0.8 / L
 
-    # Initialize
-    x = coded_lensless_wiener(y, mask, psf, snr=150)
-    z = x.copy()
-    u = np.zeros_like(x)
-
-    for _ in range(n_iter):
-        # x-update: solve (H^T H M^T M + rho I) x = H^T M^T y + rho(z - u)
-        # Approximate: use FFT-domain solve ignoring mask interaction
-        rhs_fft = HT_fft * Y_fft + rho * sp_fft.fft2(z - u)
-        denom = np.abs(H_fft) ** 2 + rho
-        x = np.real(sp_fft.ifft2(rhs_fft / denom))
-
-        # z-update: TV denoising
-        z = denoise_tv_chambolle(np.clip(x + u, 0, None), weight=tv_weight / rho)
-
-        # Dual update
-        u = u + x - z
-
-    return np.clip(z, 0, 1)
-
-
-def coded_lensless_pnp_tv(y, mask, psf, n_iter=40, rho=0.5, tv_weight=0.008):
-    """PnP-ADMM with TV denoiser for coded lensless."""
-    return coded_lensless_admm(y, mask, psf, n_iter=n_iter, rho=rho, tv_weight=tv_weight)
-
-
-def coded_lensless_rl(y, mask, psf, n_iter=60):
-    """Richardson-Lucy adapted for coded lensless."""
-    H_fft = sp_fft.fft2(psf, s=y.shape)
-    HT_fft = np.conj(H_fft)
-
-    x = np.ones_like(y) * 0.5
-    eps = 1e-10
+    vol = lensless3d_wiener(y, psfs, n_depths)
+    z_vol = vol.copy()
+    z_prev = vol.copy()
+    t_fista = 1.0
 
     for _ in range(n_iter):
         # Forward
-        Mx = mask * x
-        HMx = np.real(sp_fft.ifft2(H_fft * sp_fft.fft2(Mx)))
-        ratio = y / (HMx + eps)
-        correction = mask * np.real(sp_fft.ifft2(HT_fft * sp_fft.fft2(ratio)))
-        # RL update (multiplicative)
-        x = x * correction
-        x = np.clip(x, 0, 1)
+        y_est = np.zeros((N, N))
+        for z in range(n_depths):
+            y_est += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(vol[z])))
+        y_est /= n_depths
+        residual = y_est - y
+        R_fft = sp_fft.fft2(residual)
 
-    return x
+        # Gradient per depth
+        grads = np.zeros_like(vol)
+        for z in range(n_depths):
+            grads[z] = np.real(sp_fft.ifft2(HT_ffts[z] * R_fft)) / n_depths
+
+        v = vol - step * grads
+        for z in range(n_depths):
+            z_vol[z] = denoise_tv_chambolle(np.clip(v[z], 0, None), weight=tv_weight)
+
+        t_new = (1 + np.sqrt(1 + 4 * t_fista ** 2)) / 2
+        vol = z_vol + ((t_fista - 1) / t_new) * (z_vol - z_prev)
+        z_prev = z_vol.copy()
+        t_fista = t_new
+
+    return np.clip(z_vol, 0, 1)
 
 
-def run_coded_lensless():
-    """Run all 5 algorithms on coded lensless and report results."""
+def lensless3d_admm(y, psfs, n_depths=8, n_iter=50, rho=0.3, tv_weight=0.008):
+    """ADMM+TV for 3D lensless depth recovery."""
+    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
+    HT_ffts = [np.conj(h) for h in H_ffts]
+    Y_fft = sp_fft.fft2(y)
+
+    vol = lensless3d_wiener(y, psfs, n_depths)
+    z_vol = vol.copy()
+    u = np.zeros_like(vol)
+
+    for _ in range(n_iter):
+        for z in range(n_depths):
+            rhs_fft = HT_ffts[z] * Y_fft / n_depths + rho * sp_fft.fft2(z_vol[z] - u[z])
+            denom = np.abs(H_ffts[z]) ** 2 / n_depths + rho
+            vol[z] = np.real(sp_fft.ifft2(rhs_fft / denom))
+
+        for z in range(n_depths):
+            z_vol[z] = denoise_tv_chambolle(np.clip(vol[z] + u[z], 0, None),
+                                            weight=tv_weight / rho)
+        u = u + vol - z_vol
+
+    return np.clip(z_vol, 0, 1)
+
+
+def lensless3d_rl(y, psfs, n_depths=8, n_iter=60):
+    """Richardson-Lucy for 3D lensless depth recovery."""
+    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
+    HT_ffts = [np.conj(h) for h in H_ffts]
+    eps = 1e-10
+
+    vol = np.ones((n_depths, N, N)) * 0.5 / n_depths
+
+    for _ in range(n_iter):
+        # Forward
+        y_est = np.zeros((N, N))
+        for z in range(n_depths):
+            y_est += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(vol[z])))
+        y_est /= n_depths
+
+        ratio = y / (y_est + eps)
+        R_fft = sp_fft.fft2(ratio)
+
+        for z in range(n_depths):
+            correction = np.real(sp_fft.ifft2(HT_ffts[z] * R_fft)) / n_depths
+            vol[z] = vol[z] * np.clip(correction, 0.1, 10.0)
+            vol[z] = np.clip(vol[z], 0, 1)
+
+    return vol
+
+
+def run_lensless3d():
+    """Run all 5 algorithms on 3D lensless and report results."""
     print("=" * 60)
-    print("CODED LENSLESS (M -> C -> D)")
+    print("3D LENSLESS (C -> Sigma -> D) — depth recovery")
     print("=" * 60)
 
-    psf = generate_random_psf(N, spread=25)
-    mask = generate_binary_mask(N, fill_factor=0.5)
-    images = get_test_images(N_SAMPLES, N)
+    psfs = generate_depth_psfs(N_DEPTHS, N, base_spread=12)
+    volumes = generate_3d_volumes(N_DEPTHS, N, N_SAMPLES)
 
     algorithms = [
-        ("Wiener", lambda y: coded_lensless_wiener(y, mask, psf)),
-        ("FISTA+TV", lambda y: coded_lensless_fista_tv(y, mask, psf)),
-        ("ADMM+TV", lambda y: coded_lensless_admm(y, mask, psf)),
-        ("PnP+TV", lambda y: coded_lensless_pnp_tv(y, mask, psf)),
-        ("R-L", lambda y: coded_lensless_rl(y, mask, psf)),
+        ("Wiener", lambda y: lensless3d_wiener(y, psfs, N_DEPTHS)),
+        ("GAP-TV", lambda y: lensless3d_gap_tv(y, psfs, N_DEPTHS)),
+        ("FISTA+TV", lambda y: lensless3d_fista_tv(y, psfs, N_DEPTHS)),
+        ("ADMM+TV", lambda y: lensless3d_admm(y, psfs, N_DEPTHS)),
+        ("R-L", lambda y: lensless3d_rl(y, psfs, N_DEPTHS)),
     ]
 
     results = {name: {"psnr": [], "ssim": [], "time": []} for name, _ in algorithms}
 
-    for i, x_true in enumerate(images):
-        y, _ = coded_lensless_forward(x_true, mask, psf)
+    for i, vol in enumerate(volumes):
+        y, _ = lensless3d_forward(vol, psfs)
         for name, algo in algorithms:
             t0 = time.time()
-            x_rec = algo(y)
+            rec_vol = algo(y)
             dt = time.time() - t0
-            p = psnr(x_true, x_rec, data_range=1.0)
-            s = ssim(x_true, x_rec, data_range=1.0)
-            results[name]["psnr"].append(p)
-            results[name]["ssim"].append(s)
+            # Average PSNR/SSIM over depth planes
+            depth_psnr = [psnr(vol[z], rec_vol[z], data_range=1.0) for z in range(N_DEPTHS)]
+            depth_ssim = [ssim(vol[z], rec_vol[z], data_range=1.0) for z in range(N_DEPTHS)]
+            results[name]["psnr"].append(np.mean(depth_psnr))
+            results[name]["ssim"].append(np.mean(depth_ssim))
             results[name]["time"].append(dt)
 
     print(f"\n{'Method':<12} {'PSNR (dB)':<16} {'SSIM':<14} {'Time (s)':<10}")
@@ -774,14 +871,14 @@ if __name__ == "__main__":
     print("Running new system-design modality experiments...")
     print(f"Image size: {N}x{N}, Samples: {N_SAMPLES}\n")
 
-    results_coded = run_coded_lensless()
+    results_3d = run_lensless3d()
     results_temporal = run_temporal_coded_lensless()
     results_spectral = run_spectral_lensless()
 
     print("\n" + "=" * 60)
     print("SUMMARY")
     print("=" * 60)
-    print("Three new modalities demonstrate novel primitive compositions:")
-    print("  Coded Lensless:          M -> C -> D")
-    print("  Temporal-Coded Lensless: M -> C -> Sigma -> D")
-    print("  Spectral Lensless:       M -> W -> C -> Sigma -> D")
+    print("Three new modalities, each recovering a different physical dimension:")
+    print("  3D Lensless:             C -> Sigma -> D          (depth, 8:1)")
+    print("  Temporal-Coded Lensless: M -> C -> Sigma -> D     (time, 8:1)")
+    print("  Spectral Lensless:       M -> W -> C -> Sigma -> D (wavelength, 8:1)")

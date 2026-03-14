@@ -1,0 +1,142 @@
+name: lensless_3d
+display_name: "3D Lensless Imaging (Diffuser Camera)"
+aliases: ["3d_diffuser_cam", "lensless_3d", "depth_lensless"]
+category: computational_photography
+physics_class: incoherent_imaging
+wave_model: ray
+sensor_type: cmos_bare
+geometry: single_shot_3d
+
+forward_elements:
+  - id: source
+    name: "Broadband LED Illumination"
+    type: source
+    parameters:
+      wavelength_nm_range: [400, 700]
+      power_mw: 100
+      illumination: incoherent_flood
+    noise: []
+    mismatch: []
+
+  - id: object
+    name: "3D Volume (multi-plane)"
+    type: object
+    parameters:
+      type: volumetric_scene
+      n_depth_planes: 8
+      depth_range_mm: [30, 100]
+      spatial_size: [256, 256]
+    noise: []
+    mismatch: []
+    connects_to: [diffuser]
+
+  - id: diffuser
+    name: "Phase Diffuser (depth-dependent PSF)"
+    type: optics
+    parameters:
+      type: diffuse_caustic
+      psf_support_px: [256, 256]
+      model: depth_varying_convolution
+      n_depth_planes: 8
+    noise: []
+    mismatch:
+      - type: psf_calibration_error
+        description: "Per-depth PSF differs from calibrated PSF"
+        severity: medium
+        correction_method: "Per-depth point source calibration"
+      - type: depth_discretization
+        description: "Continuous depth approximated by discrete planes"
+        severity: low
+        correction_method: "Finer depth sampling or continuous model"
+    connects_to: [accumulator]
+
+  - id: accumulator
+    name: "Depth Accumulation"
+    type: processing
+    parameters:
+      type: sum
+      n_depth_planes: 8
+    noise: []
+    mismatch: []
+    connects_to: [detector]
+
+  - id: detector
+    name: "Bare CMOS Sensor"
+    type: detector
+    parameters:
+      type: cmos
+      pixels: [256, 256]
+      pixel_pitch_um: 5.5
+      quantum_efficiency: 0.6
+      well_depth_electrons: 10000
+    noise:
+      - type: poisson
+        parameters:
+          mean_photons: 5000
+      - type: gaussian
+        parameters:
+          sigma_electrons: 3.0
+    mismatch:
+      - type: fixed_pattern_noise
+        description: "Per-pixel dark current variations"
+        severity: low
+        correction_method: "Dark frame subtraction"
+    connects_to: [digitization]
+
+  - id: digitization
+    name: "ADC / Digitization"
+    type: digitization
+    parameters:
+      bit_depth: 12
+      dynamic_range_db: 66
+
+system_elements:
+  source:
+    type: broadband_led
+    power_mw: 100
+    wavelength_range_nm: [400, 700]
+  optics:
+    - type: phase_diffuser
+      material: ground_glass
+      diameter_mm: 25.4
+  detector:
+    type: cmos_sensor
+    pixels: [256, 256]
+    pixel_pitch_um: 5.5
+    qe: 0.6
+  calibration:
+    psf_per_depth:
+      sensitivity_db_per_percent: 1.5
+      tolerance_percent: 3.0
+      n_calibration_depths: 8
+    depth_discretization:
+      sensitivity_db_per_plane: 0.5
+      tolerance_planes: 1
+
+canonical_chain: "C -> Sigma -> D"
+
+compression_ratio: 8.0
+measurement_dimensions: [256, 256]
+object_dimensions: [8, 256, 256]
+
+mismatch_sources:
+  - psf_calibration_error
+  - depth_discretization
+  - fixed_pattern_noise
+
+algorithms:
+  - wiener
+  - gap_tv
+  - fista_tv
+  - admm_tv
+  - richardson_lucy
+
+budget_estimate:
+  equipment_k_usd: 0.5
+  per_scan_usd: 0.01
+  annual_maintenance_k_usd: 0.1
+
+references:
+  - "Antipa et al., DiffuserCam: Lensless Single-exposure 3D Imaging, Optica 5(1), 2018"
+  - "Boominathan et al., Lensless Imaging: A computational renaissance, IEEE SPM 39(2), 2022"
+  - "Adams et al., Single-frame 3D fluorescence microscopy with ultraminiature lensless FlatScope, Science Advances 3(12), 2017"
