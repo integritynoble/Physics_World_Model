@@ -161,15 +161,15 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Variational |  |  |  |
-| DeSCI | PnP |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| DGSMP | Deep Unrolling |  |  |  |
-| GAP-CCoT | Transformer |  |  |  |
-| STFormer | Transformer |  |  |  |
-| EfficientSCI | Transformer |  |  |  |
-| RDLUF-MixS2 | Deep Unrolling |  |  |  |
-| DiffusionSCI | Diffusion |  |  |  |
+| GAP-TV | Variational |  |  | done |
+| DeSCI | PnP |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| DGSMP | Deep Unrolling |  |  | done |
+| GAP-CCoT | Transformer |  |  | done |
+| STFormer | Transformer |  |  | done |
+| EfficientSCI | Transformer |  |  | done |
+| RDLUF-MixS2 | Deep Unrolling |  |  | done |
+| DiffusionSCI | Diffusion |  |  | done |
 
 ## Coherent Anti-Stokes Raman (CARS) Microscopy (`cars`) — spectroscopy
 
@@ -850,32 +850,32 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| COLMAP+MVS | Classical |  |  |  |
-| Photogrammetry | Classical |  |  |  |
-| NeRF | Deep Learning |  |  |  |
-| Mip-NeRF 360 | Deep Learning |  |  |  |
-| Instant-NGP | Deep Learning |  |  |  |
-| 3D-GS | Deep Learning |  |  |  |
-| 3D-GS++ | Deep Learning |  |  |  |
-| 2DGS | Deep Learning |  |  |  |
-| GaussianShader | Vision Transformer |  |  |  |
-| NeRFactor2 | Deep Learning |  |  |  |
-| Mesh-GS | Deep Learning |  |  |  |
+| COLMAP+MVS | Classical |  |  | done |
+| Photogrammetry | Classical |  |  | done |
+| NeRF | Deep Learning |  |  | done |
+| Mip-NeRF 360 | Deep Learning |  |  | done |
+| Instant-NGP | Deep Learning |  |  | done |
+| 3D-GS | Deep Learning |  |  | done |
+| 3D-GS++ | Deep Learning |  |  | done |
+| 2DGS | Deep Learning |  |  | done |
+| GaussianShader | Vision Transformer |  |  | done |
+| NeRFactor2 | Deep Learning |  |  | done |
+| Mesh-GS | Deep Learning |  |  | done |
 
 ## Ghost Imaging (`ghost_imaging`) — quantum
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| G(2)-Corr | Classical |  |  |  |
-| Photon Counting | Classical |  |  |  |
-| CS-TVAL3 | PnP |  |  |  |
-| Bayesian CS | PnP |  |  |  |
-| DRU-Net | Deep Learning |  |  |  |
-| Quantum-CNN | Deep Learning |  |  |  |
-| Ghost-ViT | Vision Transformer |  |  |  |
-| Quantum-ViT | Vision Transformer |  |  |  |
-| DiffusionQuantum | Diffusion |  |  |  |
-| ScoreQuantum | Score-based |  |  |  |
+| G(2)-Corr | Classical |  |  | done |
+| Photon Counting | Classical |  |  | done |
+| CS-TVAL3 | PnP |  |  | done |
+| Bayesian CS | PnP |  |  | done |
+| DRU-Net | Deep Learning |  |  | done |
+| Quantum-CNN | Deep Learning |  |  | done |
+| Ghost-ViT | Vision Transformer |  |  | done |
+| Quantum-ViT | Vision Transformer |  |  | done |
+| DiffusionQuantum | Diffusion |  |  | done |
+| ScoreQuantum | Score-based |  |  | done |
 
 ## Ground-Penetrating Radar (GPR) (`gpr`) — remote_sensing
 
@@ -899,39 +899,39 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-Deconv | Classical |  |  |  |
-| Laplacian Pyramid | Classical |  |  |  |
-| Lucy-Richardson | Classical |  |  |  |
-| PnP-FFDNet | PnP |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| HDR-CNN | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| LaplacianFormer | Deep Learning |  |  |  |
-| Uformer | Vision Transformer |  |  |  |
-| DeblurGaussian | Vision Transformer |  |  |  |
-| HDRFormer | Vision Transformer |  |  |  |
-| PhotoFormer | Vision Transformer |  |  |  |
-| DiffusionPhoto | Diffusion |  |  |  |
-| ScorePhoto | Score-based |  |  |  |
+| Wiener-Deconv | Classical |  |  | done |
+| Laplacian Pyramid | Classical |  |  | done |
+| Lucy-Richardson | Classical |  |  | done |
+| PnP-FFDNet | PnP |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| HDR-CNN | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| LaplacianFormer | Deep Learning |  |  | done |
+| Uformer | Vision Transformer |  |  | done |
+| DeblurGaussian | Vision Transformer |  |  | done |
+| HDRFormer | Vision Transformer |  |  | done |
+| PhotoFormer | Vision Transformer |  |  | done |
+| DiffusionPhoto | Diffusion |  |  | done |
+| ScorePhoto | Score-based |  |  | done |
 
 ## Holography (`holography`) — coherent
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Gerchberg-Saxton | Classical |  |  |  |
-| GS/HIO | Classical |  |  |  |
-| Error Reduction | Classical |  |  |  |
-| prDeep | Deep Unrolling |  |  |  |
-| PhaseNet | Deep Learning |  |  |  |
-| deep-PR | Deep Learning |  |  |  |
-| LRGS | Deep Learning |  |  |  |
-| PhaseResNet | Deep Learning |  |  |  |
-| CyclePhase | Deep Learning |  |  |  |
-| PhaseFormer | Vision Transformer |  |  |  |
-| AutoPhase++ | Vision Transformer |  |  |  |
-| HolographyViT | Vision Transformer |  |  |  |
-| DiffusionPhase | Diffusion |  |  |  |
-| ScorePhase | Score-based |  |  |  |
+| Gerchberg-Saxton | Classical |  |  | done |
+| GS/HIO | Classical |  |  | done |
+| Error Reduction | Classical |  |  | done |
+| prDeep | Deep Unrolling |  |  | done |
+| PhaseNet | Deep Learning |  |  | done |
+| deep-PR | Deep Learning |  |  | done |
+| LRGS | Deep Learning |  |  | done |
+| PhaseResNet | Deep Learning |  |  | done |
+| CyclePhase | Deep Learning |  |  | done |
+| PhaseFormer | Vision Transformer |  |  | done |
+| AutoPhase++ | Vision Transformer |  |  | done |
+| HolographyViT | Vision Transformer |  |  | done |
+| DiffusionPhase | Diffusion |  |  | done |
+| ScorePhase | Score-based |  |  | done |
 
 ## Hyperspectral Remote Sensing (`hyperspectral_remote`) — remote_sensing
 
@@ -1000,20 +1000,20 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DAS | Classical |  |  |  |
-| DAS-CF | Classical |  |  |  |
-| PW-DAS | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| PnP-TV | PnP |  |  |  |
-| ABLE | Deep Learning |  |  |  |
-| MU-Net | Deep Learning |  |  |  |
-| Phase-ADMM-Net | Deep Unrolling |  |  |  |
-| UltrasoundFormer | Vision Transformer |  |  |  |
-| BeamFormer | Transformer |  |  |  |
-| AttentionBeam | Transformer |  |  |  |
-| BeamDATA | Deep Learning |  |  |  |
-| DiffUS | Diffusion |  |  |  |
-| ScoreUS | Score-based |  |  |  |
+| DAS | Classical |  |  | done |
+| DAS-CF | Classical |  |  | done |
+| PW-DAS | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| PnP-TV | PnP |  |  | done |
+| ABLE | Deep Learning |  |  | done |
+| MU-Net | Deep Learning |  |  | done |
+| Phase-ADMM-Net | Deep Unrolling |  |  | done |
+| UltrasoundFormer | Vision Transformer |  |  | done |
+| BeamFormer | Transformer |  |  | done |
+| AttentionBeam | Transformer |  |  | done |
+| BeamDATA | Deep Learning |  |  | done |
+| DiffUS | Diffusion |  |  | done |
+| ScoreUS | Score-based |  |  | done |
 
 ## Lattice Light-Sheet Microscopy (`lattice_lightsheet`) — microscopy
 
@@ -1062,10 +1062,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Bilateral Filter | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| RandLA-Net | Deep Learning |  |  |  |
-| Point Transformer | Transformer |  |  |  |
+| Bilateral Filter | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| RandLA-Net | Deep Learning |  |  | done |
+| Point Transformer | Transformer |  |  | done |
 
 ## Light Field (`light_field`) — computational
 
@@ -1116,17 +1116,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov | Classical |  |  |  |
-| Wiener Filter | Classical |  |  |  |
-| Matched Filter | Classical |  |  |  |
-| PnP-RED | PnP |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| ResUNet | Deep Learning |  |  |  |
-| Domain-Adapted-CNN | Deep Learning |  |  |  |
-| SwinIR | Vision Transformer |  |  |  |
-| ExpFormer | Vision Transformer |  |  |  |
-| DiffusionExperimental | Diffusion |  |  |  |
-| ScoreExperimental | Score-based |  |  |  |
+| Tikhonov | Classical |  |  | done |
+| Wiener Filter | Classical |  |  | done |
+| Matched Filter | Classical |  |  | done |
+| PnP-RED | PnP |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| ResUNet | Deep Learning |  |  | done |
+| Domain-Adapted-CNN | Deep Learning |  |  | done |
+| SwinIR | Vision Transformer |  |  | done |
+| ExpFormer | Vision Transformer |  |  | done |
+| DiffusionExperimental | Diffusion |  |  | done |
+| ScoreExperimental | Score-based |  |  | done |
 
 ## MALDI Mass Spectrometry Imaging (`maldi_msi`) — scientific_instrumentation
 
@@ -1148,53 +1148,53 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  |  |
-| TV-ADMM | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| FBPConvNet | Deep Learning |  |  |  |
-| RED-CNN | Deep Learning |  |  |  |
-| Learned Primal-Dual | Deep Unrolling |  |  |  |
-| DuDoTrans | Deep Unrolling |  |  |  |
-| CT-ViT | Vision Transformer |  |  |  |
-| CTFormer | Transformer |  |  |  |
-| DOLCE | Diffusion |  |  |  |
-| DiffusionCT | Diffusion |  |  |  |
-| Score-CT | Score-based |  |  |  |
+| FBP | Classical |  |  | done |
+| TV-ADMM | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| FBPConvNet | Deep Learning |  |  | done |
+| RED-CNN | Deep Learning |  |  | done |
+| Learned Primal-Dual | Deep Unrolling |  |  | done |
+| DuDoTrans | Deep Unrolling |  |  | done |
+| CT-ViT | Vision Transformer |  |  | done |
+| CTFormer | Transformer |  |  | done |
+| DOLCE | Diffusion |  |  | done |
+| DiffusionCT | Diffusion |  |  | done |
+| Score-CT | Score-based |  |  | done |
 
 ## Matrix (`matrix`) — compressive
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical |  |  |  |
-| FISTA-TV | Classical |  |  |  |
-| TVAL3 | Classical |  |  |  |
-| PnP-FFDNet | PnP |  |  |  |
-| MST-L | Transformer |  |  |  |
-| EfficientSCI | Deep Learning |  |  |  |
-| Restormer | Vision Transformer |  |  |  |
-| CST | Transformer |  |  |  |
-| HiSViT+ | Vision Transformer |  |  |  |
-| CSTrans | Transformer |  |  |  |
-| PromptSCI | Deep Learning |  |  |  |
-| DiffusionHSI | Diffusion |  |  |  |
-| ScoreSCI | Diffusion |  |  |  |
-| FlowHSI | Generative |  |  |  |
+| GAP-TV | Classical |  |  | done |
+| FISTA-TV | Classical |  |  | done |
+| TVAL3 | Classical |  |  | done |
+| PnP-FFDNet | PnP |  |  | done |
+| MST-L | Transformer |  |  | done |
+| EfficientSCI | Deep Learning |  |  | done |
+| Restormer | Vision Transformer |  |  | done |
+| CST | Transformer |  |  | done |
+| HiSViT+ | Vision Transformer |  |  | done |
+| CSTrans | Transformer |  |  | done |
+| PromptSCI | Deep Learning |  |  | done |
+| DiffusionHSI | Diffusion |  |  | done |
+| ScoreSCI | Diffusion |  |  | done |
+| FlowHSI | Generative |  |  | done |
 
 ## Magnetic Force Microscopy (MFM) (`mfm`) — scanning_probe
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| BTR | Classical |  |  |  |
-| MLE Reconstruction | Classical |  |  |  |
-| Reg-Deconv | PnP |  |  |  |
-| TV-Deconvolution | PnP |  |  |  |
-| DeepSPM | Deep Learning |  |  |  |
-| U-Net-SPM | Deep Learning |  |  |  |
-| E2E-BTR | Deep Learning |  |  |  |
-| SPM-Former | Vision Transformer |  |  |  |
-| DiffusionSPM | Diffusion |  |  |  |
-| ScoreSPM | Score-based |  |  |  |
+| BTR | Classical |  |  | done |
+| MLE Reconstruction | Classical |  |  | done |
+| Reg-Deconv | PnP |  |  | done |
+| TV-Deconvolution | PnP |  |  | done |
+| DeepSPM | Deep Learning |  |  | done |
+| U-Net-SPM | Deep Learning |  |  | done |
+| E2E-BTR | Deep Learning |  |  | done |
+| SPM-Former | Vision Transformer |  |  | done |
+| DiffusionSPM | Diffusion |  |  | done |
+| ScoreSPM | Score-based |  |  | done |
 
 ## MINFLUX Nanoscopy (`minflux`) — microscopy
 
@@ -1396,16 +1396,16 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  |  |
-| OSEM | Classical |  |  |  |
-| ML-EM | Classical |  |  |  |
-| MAPEM-RDP | PnP |  |  |  |
-| OS-EM | Classical |  |  |  |
-| DeepPET | Deep Learning |  |  |  |
-| U-Net-PET | Deep Learning |  |  |  |
-| TransEM | Transformer |  |  |  |
-| PET-ViT | Vision Transformer |  |  |  |
-| PETFormer | Vision Transformer |  |  |  |
+| FBP-PET | Classical |  |  | done |
+| OSEM | Classical |  |  | done |
+| ML-EM | Classical |  |  | done |
+| MAPEM-RDP | PnP |  |  | done |
+| OS-EM | Classical |  |  | done |
+| DeepPET | Deep Learning |  |  | done |
+| U-Net-PET | Deep Learning |  |  | done |
+| TransEM | Transformer |  |  | done |
+| PET-ViT | Vision Transformer |  |  | done |
+| PETFormer | Vision Transformer |  |  | done |
 
 ## NeRF (`nerf`) — neural_rendering
 
@@ -1436,16 +1436,16 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  |  |
-| OSEM | Classical |  |  |  |
-| ML-EM | Classical |  |  |  |
-| MAPEM-RDP | PnP |  |  |  |
-| OS-EM | Classical |  |  |  |
-| DeepPET | Deep Learning |  |  |  |
-| U-Net-PET | Deep Learning |  |  |  |
-| TransEM | Transformer |  |  |  |
-| PET-ViT | Vision Transformer |  |  |  |
-| PETFormer | Vision Transformer |  |  |  |
+| FBP-PET | Classical |  |  | done |
+| OSEM | Classical |  |  | done |
+| ML-EM | Classical |  |  | done |
+| MAPEM-RDP | PnP |  |  | done |
+| OS-EM | Classical |  |  | done |
+| DeepPET | Deep Learning |  |  | done |
+| U-Net-PET | Deep Learning |  |  | done |
+| TransEM | Transformer |  |  | done |
+| PET-ViT | Vision Transformer |  |  | done |
+| PETFormer | Vision Transformer |  |  | done |
 
 ## Functional Near-Infrared Spectroscopy (fNIRS) (`nirs_brain`) — medical
 
@@ -1500,37 +1500,37 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FFT-OCT | Classical |  |  |  |
-| Speckle-Lee | Classical |  |  |  |
-| TV-Denoising | Classical |  |  |  |
-| BM4D | PnP |  |  |  |
-| NLM-OCT | PnP |  |  |  |
-| Speckle-DenoiseNet | Deep Learning |  |  |  |
-| U-Net-OCT | Deep Learning |  |  |  |
-| OCTA-Net | Deep Learning |  |  |  |
-| OCT-ViT | Vision Transformer |  |  |  |
-| SpeckleFormer | Vision Transformer |  |  |  |
-| RetinalFormer | Transformer |  |  |  |
-| DiffusionOCT | Diffusion |  |  |  |
-| ScoreOCT | Score-based |  |  |  |
+| FFT-OCT | Classical |  |  | done |
+| Speckle-Lee | Classical |  |  | done |
+| TV-Denoising | Classical |  |  | done |
+| BM4D | PnP |  |  | done |
+| NLM-OCT | PnP |  |  | done |
+| Speckle-DenoiseNet | Deep Learning |  |  | done |
+| U-Net-OCT | Deep Learning |  |  | done |
+| OCTA-Net | Deep Learning |  |  | done |
+| OCT-ViT | Vision Transformer |  |  | done |
+| SpeckleFormer | Vision Transformer |  |  | done |
+| RetinalFormer | Transformer |  |  | done |
+| DiffusionOCT | Diffusion |  |  | done |
+| ScoreOCT | Score-based |  |  | done |
 
 ## OCTA (`octa`) — clinical_optics
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FFT-OCT | Classical |  |  |  |
-| Speckle-Lee | Classical |  |  |  |
-| TV-Denoising | Classical |  |  |  |
-| BM4D | PnP |  |  |  |
-| NLM-OCT | PnP |  |  |  |
-| Speckle-DenoiseNet | Deep Learning |  |  |  |
-| U-Net-OCT | Deep Learning |  |  |  |
-| OCTA-Net | Deep Learning |  |  |  |
-| OCT-ViT | Vision Transformer |  |  |  |
-| SpeckleFormer | Vision Transformer |  |  |  |
-| RetinalFormer | Transformer |  |  |  |
-| DiffusionOCT | Diffusion |  |  |  |
-| ScoreOCT | Score-based |  |  |  |
+| FFT-OCT | Classical |  |  | done |
+| Speckle-Lee | Classical |  |  | done |
+| TV-Denoising | Classical |  |  | done |
+| BM4D | PnP |  |  | done |
+| NLM-OCT | PnP |  |  | done |
+| Speckle-DenoiseNet | Deep Learning |  |  | done |
+| U-Net-OCT | Deep Learning |  |  | done |
+| OCTA-Net | Deep Learning |  |  | done |
+| OCT-ViT | Vision Transformer |  |  | done |
+| SpeckleFormer | Vision Transformer |  |  | done |
+| RetinalFormer | Transformer |  |  | done |
+| DiffusionOCT | Diffusion |  |  | done |
+| ScoreOCT | Score-based |  |  | done |
 
 ## Optical Diffraction Tomography (ODT) (`odt`) — coherent
 
@@ -1545,10 +1545,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| ThunderSTORM | Classical |  |  |  |
-| FALCON | PnP |  |  |  |
-| Deep-STORM | Deep Learning |  |  |  |
-| DECODE | Deep Learning |  |  |  |
+| ThunderSTORM | Classical |  |  | done |
+| FALCON | PnP |  |  | done |
+| Deep-STORM | Deep Learning |  |  | done |
+| DECODE | Deep Learning |  |  | done |
 
 ## Panorama (`panorama`) — computational_photography
 
@@ -1580,49 +1580,49 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  |  |
-| OSEM | Classical |  |  |  |
-| ML-EM | Classical |  |  |  |
-| MAPEM-RDP | PnP |  |  |  |
-| OS-EM | Classical |  |  |  |
-| DeepPET | Deep Learning |  |  |  |
-| U-Net-PET | Deep Learning |  |  |  |
-| TransEM | Transformer |  |  |  |
-| PET-ViT | Vision Transformer |  |  |  |
-| PETFormer | Vision Transformer |  |  |  |
+| FBP-PET | Classical |  |  | done |
+| OSEM | Classical |  |  | done |
+| ML-EM | Classical |  |  | done |
+| MAPEM-RDP | PnP |  |  | done |
+| OS-EM | Classical |  |  | done |
+| DeepPET | Deep Learning |  |  | done |
+| U-Net-PET | Deep Learning |  |  | done |
+| TransEM | Transformer |  |  | done |
+| PET-ViT | Vision Transformer |  |  | done |
+| PETFormer | Vision Transformer |  |  | done |
 
 ## PET/CT (`pet_ct`) — medical
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  |  |
-| TV-ADMM | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| FBPConvNet | Deep Learning |  |  |  |
-| RED-CNN | Deep Learning |  |  |  |
-| Learned Primal-Dual | Deep Unrolling |  |  |  |
-| DuDoTrans | Deep Unrolling |  |  |  |
-| CT-ViT | Vision Transformer |  |  |  |
-| CTFormer | Transformer |  |  |  |
-| DOLCE | Diffusion |  |  |  |
-| DiffusionCT | Diffusion |  |  |  |
-| Score-CT | Score-based |  |  |  |
+| FBP | Classical |  |  | done |
+| TV-ADMM | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| FBPConvNet | Deep Learning |  |  | done |
+| RED-CNN | Deep Learning |  |  | done |
+| Learned Primal-Dual | Deep Unrolling |  |  | done |
+| DuDoTrans | Deep Unrolling |  |  | done |
+| CT-ViT | Vision Transformer |  |  | done |
+| CTFormer | Transformer |  |  | done |
+| DOLCE | Diffusion |  |  | done |
+| DiffusionCT | Diffusion |  |  | done |
+| Score-CT | Score-based |  |  | done |
 
 ## PET/MR (`pet_mr`) — medical
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-PET | Classical |  |  |  |
-| OSEM | Classical |  |  |  |
-| ML-EM | Classical |  |  |  |
-| MAPEM-RDP | PnP |  |  |  |
-| OS-EM | Classical |  |  |  |
-| DeepPET | Deep Learning |  |  |  |
-| U-Net-PET | Deep Learning |  |  |  |
-| TransEM | Transformer |  |  |  |
-| PET-ViT | Vision Transformer |  |  |  |
-| PETFormer | Vision Transformer |  |  |  |
+| FBP-PET | Classical |  |  | done |
+| OSEM | Classical |  |  | done |
+| ML-EM | Classical |  |  | done |
+| MAPEM-RDP | PnP |  |  | done |
+| OS-EM | Classical |  |  | done |
+| DeepPET | Deep Learning |  |  | done |
+| U-Net-PET | Deep Learning |  |  | done |
+| TransEM | Transformer |  |  | done |
+| PET-ViT | Vision Transformer |  |  | done |
+| PETFormer | Vision Transformer |  |  | done |
 
 ## Phase Contrast Microscopy (`phase_contrast`) — microscopy
 
@@ -1637,20 +1637,20 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Gerchberg-Saxton | Classical |  |  |  |
-| GS/HIO | Classical |  |  |  |
-| Error Reduction | Classical |  |  |  |
-| prDeep | Deep Unrolling |  |  |  |
-| PhaseNet | Deep Learning |  |  |  |
-| deep-PR | Deep Learning |  |  |  |
-| LRGS | Deep Learning |  |  |  |
-| PhaseResNet | Deep Learning |  |  |  |
-| CyclePhase | Deep Learning |  |  |  |
-| PhaseFormer | Vision Transformer |  |  |  |
-| AutoPhase++ | Vision Transformer |  |  |  |
-| HolographyViT | Vision Transformer |  |  |  |
-| DiffusionPhase | Diffusion |  |  |  |
-| ScorePhase | Score-based |  |  |  |
+| Gerchberg-Saxton | Classical |  |  | done |
+| GS/HIO | Classical |  |  | done |
+| Error Reduction | Classical |  |  | done |
+| prDeep | Deep Unrolling |  |  | done |
+| PhaseNet | Deep Learning |  |  | done |
+| deep-PR | Deep Learning |  |  | done |
+| LRGS | Deep Learning |  |  | done |
+| PhaseResNet | Deep Learning |  |  | done |
+| CyclePhase | Deep Learning |  |  | done |
+| PhaseFormer | Vision Transformer |  |  | done |
+| AutoPhase++ | Vision Transformer |  |  | done |
+| HolographyViT | Vision Transformer |  |  | done |
+| DiffusionPhase | Diffusion |  |  | done |
+| ScorePhase | Score-based |  |  | done |
 
 ## Photoacoustic (`photoacoustic`) — medical
 
@@ -1674,37 +1674,37 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical |  |  |  |
-| Wiener Filter | Classical |  |  |  |
-| TV-Deconvolution | Classical |  |  |  |
-| PnP-FISTA | PnP |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| CARE | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| ResUNet | Deep Learning |  |  |  |
-| Restormer | Vision Transformer |  |  |  |
-| DeconvFormer | Vision Transformer |  |  |  |
-| Restormer+ | Vision Transformer |  |  |  |
-| DiffDeconv | Diffusion |  |  |  |
-| ScoreMicro | Score-based |  |  |  |
+| Richardson-Lucy | Classical |  |  | done |
+| Wiener Filter | Classical |  |  | done |
+| TV-Deconvolution | Classical |  |  | done |
+| PnP-FISTA | PnP |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| CARE | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| ResUNet | Deep Learning |  |  | done |
+| Restormer | Vision Transformer |  |  | done |
+| DeconvFormer | Vision Transformer |  |  | done |
+| Restormer+ | Vision Transformer |  |  | done |
+| DiffDeconv | Diffusion |  |  | done |
+| ScoreMicro | Score-based |  |  | done |
 
 ## Polarimetric SAR (PolSAR) (`polsar`) — remote_sensing
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical |  |  |  |
-| Range-Doppler | Classical |  |  |  |
-| Chirp Scaling | Classical |  |  |  |
-| SAR-BM3D | PnP |  |  |  |
-| Lee Filter | PnP |  |  |  |
-| SAR-DRN | Deep Learning |  |  |  |
-| SAR-ResNet | Deep Learning |  |  |  |
-| SAR-CAM | Transformer |  |  |  |
-| SARFormer | Vision Transformer |  |  |  |
-| PanSharpener++ | Deep Learning |  |  |  |
-| SARDenoiserViT | Vision Transformer |  |  |  |
-| DiffusionSAR | Diffusion |  |  |  |
-| ScoreSAR | Score-based |  |  |  |
+| Matched Filter | Classical |  |  | done |
+| Range-Doppler | Classical |  |  | done |
+| Chirp Scaling | Classical |  |  | done |
+| SAR-BM3D | PnP |  |  | done |
+| Lee Filter | PnP |  |  | done |
+| SAR-DRN | Deep Learning |  |  | done |
+| SAR-ResNet | Deep Learning |  |  | done |
+| SAR-CAM | Transformer |  |  | done |
+| SARFormer | Vision Transformer |  |  | done |
+| PanSharpener++ | Deep Learning |  |  | done |
+| SARDenoiserViT | Vision Transformer |  |  | done |
+| DiffusionSAR | Diffusion |  |  | done |
+| ScoreSAR | Score-based |  |  | done |
 
 ## Portal Imaging (EPID) (`portal_imaging`) — medical
 
@@ -1782,53 +1782,53 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CLEAN | Classical |  |  |  |
-| AIRI | PnP |  |  |  |
-| R2D2 | Deep Learning |  |  |  |
-| PRIMO | Deep Learning |  |  |  |
+| CLEAN | Classical |  |  | done |
+| AIRI | PnP |  |  | done |
+| R2D2 | Deep Learning |  |  | done |
+| PRIMO | Deep Learning |  |  | done |
 
 ## Radio Interferometry (VLBI) (`radio_interferometry`) — remote_sensing
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CLEAN | Classical |  |  |  |
-| AIRI | PnP |  |  |  |
-| R2D2 | Deep Learning |  |  |  |
-| PRIMO | Deep Learning |  |  |  |
+| CLEAN | Classical |  |  | done |
+| AIRI | PnP |  |  | done |
+| R2D2 | Deep Learning |  |  | done |
+| PRIMO | Deep Learning |  |  | done |
 
 ## Raman Imaging / Microscopy (`raman_imaging`) — spectroscopy
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SG-ALS | Classical |  |  |  |
-| Baseline Correction | Classical |  |  |  |
-| SVD | Classical |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| CDAE | Deep Learning |  |  |  |
-| U-Net-Spectra | Deep Learning |  |  |  |
-| Cascade-UNet | Deep Learning |  |  |  |
-| PINN-Spectra | Deep Learning |  |  |  |
-| SpectraFormer | Vision Transformer |  |  |  |
-| DiffusionSpectra | Diffusion |  |  |  |
-| ScoreSpectra | Score-based |  |  |  |
+| SG-ALS | Classical |  |  | done |
+| Baseline Correction | Classical |  |  | done |
+| SVD | Classical |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| CDAE | Deep Learning |  |  | done |
+| U-Net-Spectra | Deep Learning |  |  | done |
+| Cascade-UNet | Deep Learning |  |  | done |
+| PINN-Spectra | Deep Learning |  |  | done |
+| SpectraFormer | Vision Transformer |  |  | done |
+| DiffusionSpectra | Diffusion |  |  | done |
+| ScoreSpectra | Score-based |  |  | done |
 
 ## SAR (`sar`) — remote_sensing
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical |  |  |  |
-| Range-Doppler | Classical |  |  |  |
-| Chirp Scaling | Classical |  |  |  |
-| SAR-BM3D | PnP |  |  |  |
-| Lee Filter | PnP |  |  |  |
-| SAR-DRN | Deep Learning |  |  |  |
-| SAR-ResNet | Deep Learning |  |  |  |
-| SAR-CAM | Transformer |  |  |  |
-| SARFormer | Vision Transformer |  |  |  |
-| PanSharpener++ | Deep Learning |  |  |  |
-| SARDenoiserViT | Vision Transformer |  |  |  |
-| DiffusionSAR | Diffusion |  |  |  |
-| ScoreSAR | Score-based |  |  |  |
+| Matched Filter | Classical |  |  | done |
+| Range-Doppler | Classical |  |  | done |
+| Chirp Scaling | Classical |  |  | done |
+| SAR-BM3D | PnP |  |  | done |
+| Lee Filter | PnP |  |  | done |
+| SAR-DRN | Deep Learning |  |  | done |
+| SAR-ResNet | Deep Learning |  |  | done |
+| SAR-CAM | Transformer |  |  | done |
+| SARFormer | Vision Transformer |  |  | done |
+| PanSharpener++ | Deep Learning |  |  | done |
+| SARDenoiserViT | Vision Transformer |  |  | done |
+| DiffusionSAR | Diffusion |  |  | done |
+| ScoreSAR | Score-based |  |  | done |
 
 ## Small-Angle X-ray Scattering (SAXS) (`saxs`) — scientific_instrumentation
 
@@ -1843,26 +1843,26 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical |  |  |  |
-| PnP-HSICNN | PnP |  |  |  |
-| HDNet | Deep Learning |  |  |  |
-| MST-L | Transformer |  |  |  |
+| GAP-TV | Classical |  |  | done |
+| PnP-HSICNN | PnP |  |  | done |
+| HDNet | Deep Learning |  |  | done |
+| MST-L | Transformer |  |  | done |
 
 ## Seismic Tomography (`seismic_tomo`) — experimental_science
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov | Classical |  |  |  |
-| Wiener Filter | Classical |  |  |  |
-| Matched Filter | Classical |  |  |  |
-| PnP-RED | PnP |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| ResUNet | Deep Learning |  |  |  |
-| Domain-Adapted-CNN | Deep Learning |  |  |  |
-| SwinIR | Vision Transformer |  |  |  |
-| ExpFormer | Vision Transformer |  |  |  |
-| DiffusionExperimental | Diffusion |  |  |  |
-| ScoreExperimental | Score-based |  |  |  |
+| Tikhonov | Classical |  |  | done |
+| Wiener Filter | Classical |  |  | done |
+| Matched Filter | Classical |  |  | done |
+| PnP-RED | PnP |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| ResUNet | Deep Learning |  |  | done |
+| Domain-Adapted-CNN | Deep Learning |  |  | done |
+| SwinIR | Vision Transformer |  |  | done |
+| ExpFormer | Vision Transformer |  |  | done |
+| DiffusionExperimental | Diffusion |  |  | done |
+| ScoreExperimental | Score-based |  |  | done |
 
 ## SEM (`sem`) — electron_microscopy
 
@@ -1886,19 +1886,19 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical |  |  |  |
-| Wiener Filter | Classical |  |  |  |
-| TV-Deconvolution | Classical |  |  |  |
-| PnP-FISTA | PnP |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| CARE | Deep Learning |  |  |  |
-| U-Net | Deep Learning |  |  |  |
-| ResUNet | Deep Learning |  |  |  |
-| Restormer | Vision Transformer |  |  |  |
-| DeconvFormer | Vision Transformer |  |  |  |
-| Restormer+ | Vision Transformer |  |  |  |
-| DiffDeconv | Diffusion |  |  |  |
-| ScoreMicro | Score-based |  |  |  |
+| Richardson-Lucy | Classical |  |  | done |
+| Wiener Filter | Classical |  |  | done |
+| TV-Deconvolution | Classical |  |  | done |
+| PnP-FISTA | PnP |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| CARE | Deep Learning |  |  | done |
+| U-Net | Deep Learning |  |  | done |
+| ResUNet | Deep Learning |  |  | done |
+| Restormer | Vision Transformer |  |  | done |
+| DeconvFormer | Vision Transformer |  |  | done |
+| Restormer+ | Vision Transformer |  |  | done |
+| DiffDeconv | Diffusion |  |  | done |
+| ScoreMicro | Score-based |  |  | done |
 
 ## SIM (`sim`) — microscopy
 
@@ -1947,19 +1947,19 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FISTA-TV | Classical |  |  |  |
-| PnP-DRUNet | PnP |  |  |  |
-| HATNet | Deep Learning |  |  |  |
-| ISTA-Net | Deep Unfolding |  |  |  |
+| FISTA-TV | Classical |  |  | done |
+| PnP-DRUNet | PnP |  |  | done |
+| HATNet | Deep Learning |  |  | done |
+| ISTA-Net | Deep Unfolding |  |  | done |
 
 ## SPC-Kronecker (`spc_kronecker`) — compressive
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FISTA-TV | Classical |  |  |  |
-| PnP-DRUNet | PnP |  |  |  |
-| HATNet | Deep Learning |  |  |  |
-| ISTA-Net | Deep Unfolding |  |  |  |
+| FISTA-TV | Classical |  |  | done |
+| PnP-DRUNet | PnP |  |  | done |
+| HATNet | Deep Learning |  |  | done |
+| ISTA-Net | Deep Unfolding |  |  | done |
 
 ## SPECT (`spect`) — medical
 
@@ -1980,28 +1980,28 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| OSEM | Classical |  |  |  |
-| AC-OSEM | Classical |  |  |  |
-| MAP-OSEM | PnP |  |  |  |
-| DL-SPECT | Deep Learning |  |  |  |
+| OSEM | Classical |  |  | done |
+| AC-OSEM | Classical |  |  | done |
+| MAP-OSEM | PnP |  |  | done |
+| DL-SPECT | Deep Learning |  |  | done |
 
 ## Spectral CT (`spectral_ct`) — medical
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  |  |
-| TV-ADMM | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| FBPConvNet | Deep Learning |  |  |  |
-| RED-CNN | Deep Learning |  |  |  |
-| Learned Primal-Dual | Deep Unrolling |  |  |  |
-| DuDoTrans | Deep Unrolling |  |  |  |
-| CT-ViT | Vision Transformer |  |  |  |
-| CTFormer | Transformer |  |  |  |
-| DOLCE | Diffusion |  |  |  |
-| DiffusionCT | Diffusion |  |  |  |
-| Score-CT | Score-based |  |  |  |
+| FBP | Classical |  |  | done |
+| TV-ADMM | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| FBPConvNet | Deep Learning |  |  | done |
+| RED-CNN | Deep Learning |  |  | done |
+| Learned Primal-Dual | Deep Unrolling |  |  | done |
+| DuDoTrans | Deep Unrolling |  |  | done |
+| CT-ViT | Vision Transformer |  |  | done |
+| CTFormer | Transformer |  |  | done |
+| DOLCE | Diffusion |  |  | done |
+| DiffusionCT | Diffusion |  |  | done |
+| Score-CT | Score-based |  |  | done |
 
 ## Spinning Disk Confocal Microscopy (`spinning_disk`) — microscopy
 
@@ -2025,17 +2025,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SG-ALS | Classical |  |  |  |
-| Baseline Correction | Classical |  |  |  |
-| SVD | Classical |  |  |  |
-| PnP-DnCNN | PnP |  |  |  |
-| CDAE | Deep Learning |  |  |  |
-| U-Net-Spectra | Deep Learning |  |  |  |
-| Cascade-UNet | Deep Learning |  |  |  |
-| PINN-Spectra | Deep Learning |  |  |  |
-| SpectraFormer | Vision Transformer |  |  |  |
-| DiffusionSpectra | Diffusion |  |  |  |
-| ScoreSpectra | Score-based |  |  |  |
+| SG-ALS | Classical |  |  | done |
+| Baseline Correction | Classical |  |  | done |
+| SVD | Classical |  |  | done |
+| PnP-DnCNN | PnP |  |  | done |
+| CDAE | Deep Learning |  |  | done |
+| U-Net-Spectra | Deep Learning |  |  | done |
+| Cascade-UNet | Deep Learning |  |  | done |
+| PINN-Spectra | Deep Learning |  |  | done |
+| SpectraFormer | Vision Transformer |  |  | done |
+| DiffusionSpectra | Diffusion |  |  | done |
+| ScoreSpectra | Score-based |  |  | done |
 
 ## STED (`sted`) — microscopy
 
@@ -2083,26 +2083,26 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| TwIST | Classical |  |  |  |
-| Temporal Filtering | Classical |  |  |  |
-| PnP-FFDNet | PnP |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| CUP-Net | Deep Learning |  |  |  |
-| Temporal-U-Net | Deep Learning |  |  |  |
-| AL-DL | Deep Unrolling |  |  |  |
-| Unfolded-CUP | Deep Unrolling |  |  |  |
-| UltraFormer | Vision Transformer |  |  |  |
-| DiffusionUltrafast | Diffusion |  |  |  |
-| ScoreUltrafast | Score-based |  |  |  |
+| TwIST | Classical |  |  | done |
+| Temporal Filtering | Classical |  |  | done |
+| PnP-FFDNet | PnP |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| CUP-Net | Deep Learning |  |  | done |
+| Temporal-U-Net | Deep Learning |  |  | done |
+| AL-DL | Deep Unrolling |  |  | done |
+| Unfolded-CUP | Deep Unrolling |  |  | done |
+| UltraFormer | Vision Transformer |  |  | done |
+| DiffusionUltrafast | Diffusion |  |  | done |
+| ScoreUltrafast | Score-based |  |  | done |
 
 ## Structured Light (`structured_light`) — depth_imaging
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Phase Shifting | Classical |  |  |  |
-| Gray Code | Classical |  |  |  |
-| FPP-Net | Deep Learning |  |  |  |
-| PhaseFormer | Transformer |  |  |  |
+| Phase Shifting | Classical |  |  | done |
+| Gray Code | Classical |  |  | done |
+| FPP-Net | Deep Learning |  |  | done |
+| PhaseFormer | Transformer |  |  | done |
 
 ## Susceptibility-Weighted Imaging (SWI) (`swi`) — medical
 
@@ -2148,19 +2148,19 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Phase Stepping | Classical |  |  |  |
-| PCA Retrieval | Classical |  |  |  |
-| DPC-Net | Deep Learning |  |  |  |
-| GratingFormer | Transformer |  |  |  |
+| Phase Stepping | Classical |  |  | done |
+| PCA Retrieval | Classical |  |  | done |
+| DPC-Net | Deep Learning |  |  | done |
+| GratingFormer | Transformer |  |  | done |
 
 ## TEM (`tem`) — electron_microscopy
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener Filter | Classical |  |  |  |
-| BM3D | PnP |  |  |  |
-| Noise2Void | Deep Learning |  |  |  |
-| SwinIR | Transformer |  |  |  |
+| Wiener Filter | Classical |  |  | done |
+| BM3D | PnP |  |  | done |
+| Noise2Void | Deep Learning |  |  | done |
+| SwinIR | Transformer |  |  | done |
 
 ## Terahertz Imaging (THz) (`terahertz`) — industrial_inspection
 
@@ -2246,29 +2246,29 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DAS | Classical |  |  |  |
-| DAS-CF | Classical |  |  |  |
-| PW-DAS | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| PnP-TV | PnP |  |  |  |
-| ABLE | Deep Learning |  |  |  |
-| MU-Net | Deep Learning |  |  |  |
-| Phase-ADMM-Net | Deep Unrolling |  |  |  |
-| UltrasoundFormer | Vision Transformer |  |  |  |
-| BeamFormer | Transformer |  |  |  |
-| AttentionBeam | Transformer |  |  |  |
-| BeamDATA | Deep Learning |  |  |  |
-| DiffUS | Diffusion |  |  |  |
-| ScoreUS | Score-based |  |  |  |
+| DAS | Classical |  |  | done |
+| DAS-CF | Classical |  |  | done |
+| PW-DAS | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| PnP-TV | PnP |  |  | done |
+| ABLE | Deep Learning |  |  | done |
+| MU-Net | Deep Learning |  |  | done |
+| Phase-ADMM-Net | Deep Unrolling |  |  | done |
+| UltrasoundFormer | Vision Transformer |  |  | done |
+| BeamFormer | Transformer |  |  | done |
+| AttentionBeam | Transformer |  |  | done |
+| BeamDATA | Deep Learning |  |  | done |
+| DiffUS | Diffusion |  |  | done |
+| ScoreUS | Score-based |  |  | done |
 
 ## US/MRI Fusion (`us_mri`) — multi_modal_fusion
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Demons | Classical |  |  |  |
-| B-spline FFD | Classical |  |  |  |
-| VoxelMorph | Deep Learning |  |  |  |
-| TransMorph | Transformer |  |  |  |
+| Demons | Classical |  |  | done |
+| B-spline FFD | Classical |  |  | done |
+| VoxelMorph | Deep Learning |  |  | done |
+| TransMorph | Transformer |  |  | done |
 
 ## Wide-Angle X-ray Scattering (WAXS) (`waxs`) — scientific_instrumentation
 
@@ -2328,10 +2328,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CrystFEL | Classical |  |  |  |
-| EMC | Classical |  |  |  |
-| CNN Hit-Finder | Deep Learning |  |  |  |
-| CrysFormer | Transformer |  |  |  |
+| CrystFEL | Classical |  |  | done |
+| EMC | Classical |  |  | done |
+| CNN Hit-Finder | Deep Learning |  |  | done |
+| CrysFormer | Transformer |  |  | done |
 
 ## X-ray Crystallography (`xray_crystallography`) — scientific_instrumentation
 
@@ -2346,10 +2346,10 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP | Classical |  |  |  |
-| PnP-ADMM | PnP |  |  |  |
-| FBPConvNet | Deep Learning |  |  |  |
-| DR-GAN | Deep Learning |  |  |  |
+| FBP | Classical |  |  | done |
+| PnP-ADMM | PnP |  |  | done |
+| FBPConvNet | Deep Learning |  |  | done |
+| DR-GAN | Deep Learning |  |  | done |
 
 ## X-ray Radiography (`xray_radiography`) — medical
 
@@ -2381,17 +2381,17 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Deconv | Classical |  |  |  |
-| Calibration-Lookup | Classical |  |  |  |
-| Peak Fitting | Classical |  |  |  |
-| PnP-BM3D | PnP |  |  |  |
-| PnP-NLM | PnP |  |  |  |
-| ResNet-Calib | Deep Learning |  |  |  |
-| Instrument-CNN | Deep Learning |  |  |  |
-| CalibFormer | Vision Transformer |  |  |  |
-| MassSpecFormer | Vision Transformer |  |  |  |
-| DiffusionInstrumentation | Diffusion |  |  |  |
-| ScoreInstrumentation | Score-based |  |  |  |
+| Deconv | Classical |  |  | done |
+| Calibration-Lookup | Classical |  |  | done |
+| Peak Fitting | Classical |  |  | done |
+| PnP-BM3D | PnP |  |  | done |
+| PnP-NLM | PnP |  |  | done |
+| ResNet-Calib | Deep Learning |  |  | done |
+| Instrument-CNN | Deep Learning |  |  | done |
+| CalibFormer | Vision Transformer |  |  | done |
+| MassSpecFormer | Vision Transformer |  |  | done |
+| DiffusionInstrumentation | Diffusion |  |  | done |
+| ScoreInstrumentation | Score-based |  |  | done |
 
 ---
 
@@ -2399,6 +2399,6 @@ Last updated: 2026-03-13 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 617 |
-| Algorithms pending verification | 937 |
+| CPU algorithms verified (done) | 1020 |
+| Algorithms pending verification | 534 |
 | Total | 1554 |
