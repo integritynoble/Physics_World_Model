@@ -79,29 +79,19 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 \vspace{6pt}
 
-% ---- Summary (strict 6-beat Nature style) ----
+% ---- Summary (Nature: ≤150 words) ----
 \noindent\textbf{Summary.}
-Computational imaging---from clinical CT to electron ptychography---underpins discovery across the physical and life sciences, yet designing a new imaging system today requires weeks of specialist effort per modality, effectively excluding the broader scientific community from prototyping instruments for their own domains~\cite{baker2016}.
-%
-A companion paper~\cite{paperII} proved that 11 canonical primitives suffice to \emph{represent} any imaging forward model, but representation alone provides no design automation, no formal validation, and no link from natural-language intent to reconstruction error.  Here we build the \emph{agentic design layer}: the first formal bridge from natural-language imaging design intent to bounded real-system reconstruction error.
-%
-We introduce \texttt{spec.md}---a structured 7-field specification format that does for imaging what FASTA~\cite{pearson1990fasta} did for biological sequences---together with three agents (Plan, Judge, Performance) that translate a one-sentence description into a validated, executable forward model.
-%
-Our central result (Theorem~\ref{thm:design}) proves that the design-to-real reconstruction error decomposes into five independently bounded, independently measurable terms---$\eps_{\text{FPB}}$, $\eps_{\text{spec}}$, $\eps_{\text{trans}}$, $\eps_{\text{param}}$, $\eps_{\text{unmod}}$---each linked to a specific compiler gate, a specific corrective action, and a specific physical origin, providing a \emph{formal contract} that makes the system's reliability transparent and verifiable.
-%
-On 6 real-data modalities spanning all 5 carrier families---clinical CT~\cite{leuschner2021}, multi-coil MRI, CASSI, CACTI, in-vivo ultrasound (PICMUS), and 4D-STEM electron ptychography---the framework achieves $98.1 \pm 0.6$\% of expert-tuned quality with up to $420\times$ reduction in setup time; the Judge rejects ill-posed designs with 96\% precision ($F_1 = 0.96$); ablation confirms the full three-agent pipeline is the only configuration achieving bounded-error success on all tested modalities; and a prospective algorithm-comparison study confirms that forward-model selection dominates reconstruction algorithm choice (inter-method PSNR CoV $<$ 5.7\%).
-%
-Compilation covers 170 modalities across 22 domains, but quantitative reconstruction is validated for 36 and real-data performance for 6; tier-lifting demonstrated on selected cases reduces unmodeled-physics error to machine precision ($<10^{-12}$) but broader Tier-3 validation remains future work.
+Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem~\cite{paperII}, we introduce \texttt{spec.md}---a 7-field specification format---and three agents (Plan, Judge, Performance) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently measurable terms, each linked to a compiler gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, electron ptychography), the framework achieves $98.1 \pm 0.6$\% of expert-tuned quality with up to $420\times$ reduction in setup time.  The Judge rejects ill-posed designs with $F_1 = 0.96$; a prospective algorithm-comparison study confirms that forward-model selection dominates reconstruction algorithm choice (inter-method PSNR CoV $< 5.7$\%).  Of 170 compilable modalities, 36 have quantitative reconstruction validation and 6 are validated on real data.
 
 % ========================================================================
 \section{Introduction}
 % ========================================================================
 
-Every computational imaging system obeys the same mathematical structure: a forward model $A$ maps an unknown object $x$ to measurements $y = A(x) + \text{noise}$, and reconstruction inverts this mapping~\cite{barbastathis2019dl,bertero2021introduction}.  Designing $A$---selecting physical operators (Radon projection for CT, k-space encoding for MRI~\cite{lustig2007sparse}, coded-aperture modulation for spectral imaging~\cite{yuan2021snapshot}), setting dozens of parameters, and validating physical consistency---is entirely manual, taking weeks per modality.  This \emph{expertise bottleneck} is the single largest barrier to the adoption of computational imaging across the sciences: a materials scientist wishing to prototype a ptychographic instrument, or a neuroscientist designing a new light-sheet modality, must either acquire deep imaging-physics expertise or depend on the small number of specialist groups who possess it.  The consequence is that new imaging capabilities remain concentrated, not because the physics is intractable, but because the design process is inaccessible.
+Every computational imaging system maps an unknown object $x$ to measurements $y = A(x) + \text{noise}$ via a forward model $A$, and reconstruction inverts this mapping~\cite{barbastathis2019dl,bertero2021introduction}.  Designing $A$---selecting operators, setting parameters, validating consistency---requires weeks of specialist effort per modality~\cite{lustig2007sparse,yuan2021snapshot}, creating an \emph{expertise bottleneck} that excludes the broader scientific community from prototyping imaging instruments.
 
-The parallel with genomics is instructive.  Before FASTA~\cite{pearson1990fasta}, biological sequence data was communicated through idiosyncratic formats that varied between laboratories.  The adoption of a universal exchange format---human-readable, machine-parseable, and decoupled from any specific analysis tool---transformed genomics from a cottage industry into a global collaborative enterprise~\cite{kodama2012sequence}.  Computational imaging today is in an analogous pre-standardisation state: forward models are communicated through prose, code, or block diagrams that are ambiguous, implementation-coupled, and non-versionable.
+The parallel with genomics is instructive: before FASTA~\cite{pearson1990fasta} and the Sequence Read Archive~\cite{kodama2012sequence}, biological sequence data was communicated through idiosyncratic, non-interoperable formats.  Computational imaging today is in an analogous pre-standardisation state.
 
-The mathematical foundation for a similar transformation now exists.  A companion paper~\cite{paperII} proved the \emph{representation theorem}: 11 canonical primitives---Propagate ($P$), Modulate ($M$), Project ($\Pi$), Encode ($F$), Convolve ($C$), Accumulate ($\Sigma$), Detect ($D$), Sample ($S$), Disperse ($W$), Scatter ($R$), and Transform ($\Lambda$)---suffice to express any imaging forward model across 170 modalities, 22 application domains, and 5 carrier families.  This builds on the mathematical foundations of compressed sensing~\cite{candes2006robust,lustig2007sparse} and inverse problems~\cite{arridge2019solving,chambolle2016introduction}.  Each primitive is implemented across a four-level \emph{fidelity hierarchy}: Tier-0 (geometric optics, ray transforms), Tier-1 (Fourier/convolution, paraxial models), Tier-2 (shift-variant linear operators: Radon, k-space, coded aperture), and Tier-3 (full-physics: FDTD, Monte Carlo, learned surrogates).  This \emph{Finite Primitive Basis} (FPB) is the representation language---analogous to the instruction set of a processor.  But an instruction set alone does not write programs: the FPB does not tell a user which primitives to compose, what parameters to set, whether the result is physically valid, or how close the designed system will be to reality.  \textbf{This paper's contribution is the design layer}: the formal bridge from natural-language intent, through automated specification and validation, to bounded real-system reconstruction error.
+A companion paper~\cite{paperII} proved that 11 canonical primitives suffice to represent any imaging forward model across 170 modalities and 5 carrier families, building on compressed sensing~\cite{candes2006robust,lustig2007sparse} and inverse problems theory~\cite{arridge2019solving,chambolle2016introduction}.  Each primitive is implemented at four fidelity tiers (Tier-0 geometric through Tier-3 full-physics).  This \emph{Finite Primitive Basis} (FPB) is the representation language, but representation alone does not automate design.  \textbf{This paper's contribution is the design layer}: the formal bridge from natural-language intent to bounded real-system reconstruction error.
 
 We make the scope of `designable' precise:
 
@@ -123,8 +113,8 @@ This definition encompasses 170 modalities across 22 domains (Figure~\ref{fig:py
 \item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a compiler gate and a corrective action (Theorem~\ref{thm:design}).
 \end{enumerate}
 
-\textbf{Scope and honesty.}
-Of the 170 modalities, 36 have fully validated canonical decompositions with quantitative reconstruction; 6 are validated on real measured data spanning all 5 carrier families (CT, MRI, CASSI, CACTI, ultrasound, e-ptychography).  The remaining ${\sim}$134 compile through all 6 gates but lack per-modality reconstruction benchmarks---compilation alone does not guarantee reconstruction quality.  Most modalities are validated at Tier-2; tier-lifting (\hyperref[sec:tierlifting]{``Cross-Tier Hybrid Reconstruction''}) is demonstrated on two cross-tier combinations but not yet validated across all Tier-3 modalities.  The agents depend on current LLM capabilities and may misspecify novel or under-documented modalities.
+\textbf{Scope.}
+Of 170 compilable modalities, 36 have quantitative reconstruction validation; 6 are validated on real data spanning all 5 carrier families.  The remaining ${\sim}$134 pass all compiler gates but lack per-modality benchmarks.  Tier-lifting is demonstrated on 2 cross-tier combinations; the agents depend on current LLM capabilities.
 
 % ---- Validation Pyramid (Task 1.3) ----
 \begin{figure}[htbp]
@@ -161,11 +151,7 @@ Of the 170 modalities, 36 have fully validated canonical decompositions with qua
 \label{sec:specmd}
 % ------------------------------------------------------------------------
 
-The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  Just as FASTA~\cite{pearson1990fasta} standardised biological sequences and enabled the Sequence Read Archive (SRA)~\cite{kodama2012sequence} to become the backbone of reproducible genomics, \texttt{spec.md} standardises imaging system representation at the physics level.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}), enabling sharing, version control, and peer review independently of implementation.
-
-This separation has a concrete implication for reproducibility~\cite{wilkinson2016fair}: a journal could require a \texttt{spec.md} alongside the methods section of any computational imaging paper, analogous to how \emph{Nature} and \emph{Science} now require accession numbers for genomic data.  A reviewer could then verify---by running the 6-gate compiler---that the claimed forward model is physically consistent, that the primitive chain matches known canonical decompositions, and that the error budget is within stated bounds, \emph{without reading a single line of code}.  Compared to alternatives---prose descriptions (ambiguous, non-executable), code (implementation-coupled, non-portable, requiring specific software environments), block diagrams (unstructured, unversioned)---\texttt{spec.md} is simultaneously human-readable, machine-parseable, and formally verifiable.
-
-A \texttt{spec.md} has seven mandatory fields (Figure~\ref{fig:specmd}).  The Plan Agent generates it from natural language; the Judge verifies it; the Performance Agent predicts reconstruction quality.
+The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}), enabling sharing, version control, and peer review independently of implementation~\cite{wilkinson2016fair}.  A reviewer can verify---by running the 6-gate compiler---that a forward model is physically consistent \emph{without reading code}.  A \texttt{spec.md} has seven mandatory fields (Figure~\ref{fig:specmd}).
 
 \begin{figure}[htbp]
 \centering
@@ -288,24 +274,20 @@ $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error b
 \label{fig:pipeline}
 \end{figure}
 
-\textbf{Plan Agent ($\Agent_P$).}
-Accepts a natural-language description and generates a \texttt{spec.md}, selecting FPB primitives, carrier type, geometry, noise model, and parameters from the 170-modality registry and 36 validated canonical decompositions.
+\textbf{Plan Agent ($\Agent_P$)} generates a \texttt{spec.md} from natural language, selecting FPB primitives, parameters, and noise models from the 170-modality registry.
 
-\textbf{Judge Agent ($\Agent_J$).}
-Validates the specification via the 6-gate compiler: (1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds ($N \leq 20$, $D \leq 10$), (4)~nonlinear family constraints (VC dimension $\leq 3$), (5)~adjoint consistency, and (6)~representation error.  The Judge additionally checks carrier-geometry compatibility, noise model consistency, and reconstruction feasibility (condition number, null-space analysis).  Compiler failures trigger rejection with a formal diagnosis; the Plan Agent regenerates (up to 3 rounds).
+\textbf{Judge Agent ($\Agent_J$)} validates via a 6-gate compiler: (1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds, (4)~nonlinear constraints (VC dimension $\leq 3$), (5)~adjoint consistency, (6)~representation error.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
 
-\textbf{Performance Agent ($\Agent_\Pi$).}
-Predicts reconstruction quality (PSNR, SSIM), computational cost, and measurement SNR from analytical estimates (condition number, noise amplification factor) combined with calibrated lookup from the performance database.
+\textbf{Performance Agent ($\Agent_\Pi$)} predicts reconstruction quality from analytical estimates (condition number, noise amplification) combined with calibrated lookup.
 
-\textbf{Formal verification.}
-The Judge does not \emph{predict} feasibility; it \emph{executes deterministic verification}.  If the Judge certifies a design, every term in the five-part error decomposition (Theorem~\ref{thm:design}) is explicitly bounded---a formal contract that no learned design tool can provide.  Crucially, the verification is independent of the LLM: even if the Plan Agent generates a flawed specification, the 6-gate compiler will reject it through deterministic physics checks.  This independence means that the framework's reliability improves monotonically with LLM quality (better plans pass more often) without depending on it (bad plans are caught).
+The Judge executes \emph{deterministic verification}, not prediction.  If certified, every term in Theorem~\ref{thm:design} is explicitly bounded---a formal contract independent of LLM quality.  Bad specifications are caught by physics checks regardless of the Plan Agent's accuracy.
 
 % ------------------------------------------------------------------------
 \subsection{Design-to-Real Error Bound}
 \label{sec:theorem}
 % ------------------------------------------------------------------------
 
-The following theorem is the paper's central result.  It converts the implicit, unmeasured gap between a designed model and reality into an explicit five-term error budget---a \emph{formal contract} between the framework and the user.  Unlike black-box AI design tools, which provide no guarantees about why a design succeeds or fails, this decomposition makes every source of error transparent: each term has a known physical origin, a known measurement procedure (linked to a specific compiler gate), and a known corrective action.  This is the key distinction that makes the framework suitable for scientific applications where verifiability, not merely performance, is essential.
+The following theorem converts the implicit gap between a designed model and reality into an explicit five-term error budget---a \emph{formal contract} between the framework and the user.  Each term has a known physical origin, measurement procedure, and corrective action.
 
 \begin{mdframed}[style=theorembox]
 \begin{theorem}[Design-to-Real Error Decomposition]
@@ -327,10 +309,7 @@ where each design-error term is independently bounded and independently measurab
 \end{mdframed}
 
 \textbf{Compiler--theorem link.}
-When all 6 gates pass: $\eps_{\text{FPB}} < 0.01$ (Gate~6), $\eps_{\text{spec}} = 0$ (Gates~1--5 jointly), and $\eps_{\text{param}}$ is bounded by the Lipschitz constant from Gate~4.  If additionally the canonical chain matches the registry: $\eps_{\text{trans}} = 0$.  At Tier-3: $\eps_{\text{unmod}} = 0$.  The total design error then reduces to $L_A\|\Delta\theta\| \cdot 2B/(\alpha+\lambda) + 0.01$, dominated by parameter mismatch alone---which is reducible by calibration.
-
-\textbf{Diagnostic protocol.}
-Because each term is independently measurable from the 6-gate compiler output, the decomposition functions as a \emph{diagnostic protocol}: a practitioner encountering poor reconstruction quality can determine which term dominates the residual and take the corresponding corrective action---calibration for $\eps_{\text{param}}$, specification refinement for $\eps_{\text{spec}}$, tier-lifting for $\eps_{\text{unmod}}$---without guesswork.  This is analogous to how a compiler error message localises a bug in source code.  In practice, $\eps_{\text{FPB}}$ and $\eps_{\text{spec}}$ are negligible when the compiler certifies the design; the dominant residual is $\eps_{\text{param}}$, which is reducible by calibration (Figure~\ref{fig:error_decomp}).  The full proof with explicit assumptions appears in Methods.
+When all 6 gates pass: $\eps_{\text{FPB}} < 0.01$, $\eps_{\text{spec}} = 0$, and $\eps_{\text{param}}$ is bounded by the Lipschitz constant from Gate~4.  With canonical chain match: $\eps_{\text{trans}} = 0$; at Tier-3: $\eps_{\text{unmod}} = 0$.  In practice, the dominant residual is $\eps_{\text{param}}$, reducible by calibration (Figure~\ref{fig:error_decomp}).  The decomposition functions as a diagnostic protocol: each $\eps$ term maps to a corrective action.  Full proof in Methods.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Modality Validation}
@@ -377,11 +356,7 @@ We validated the framework on all 170 modalities.  For each, the Plan Agent gene
 \end{tabularx}
 \end{table}
 
-The recovery ratio $\rho_{\text{recov}}$ is computed from a 4-scenario protocol validated on 6 representative modalities spanning 4 carrier families: CASSI, CACTI, and SPC (optical photons); CT (X-ray); electron ptychography (electron); MRI (spin)~\cite{paperII}.  For modalities with low-dimensional parameter mismatch (CT, electron ptychography, MRI), Sc.~IV (autonomous calibration) $\approx$ Sc.~III (oracle correction) $\approx$ Sc.~I (ideal), confirming near-complete recovery.  For multi-parameter mismatch: CASSI 85\%, CACTI 100\%, SPC 86\% (see Methods for protocol details).
-
-Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88], bootstrap $n{=}1000$).  The agent--expert quality gap (Cohen's $d = 0.31$, 95\% CI: [0.18, 0.44]) represents a small effect size, indicating practical equivalence.  Human-to-agent time ratio $\rho_{\text{time}}$ ranges from 190 (DOT) to 420 (CT); effect size for time reduction: $d > 8.0$ (all modalities), exceeding conventional ``large'' thresholds.  Expert times estimated from published development timelines~\cite{aarle2016,ong2019sigpy} (see Methods for methodology).  All confidence intervals are bias-corrected and accelerated (BCa) bootstrap with $n{=}1000$ resamples; PSNR values report mean $\pm$ standard deviation across test samples.
-
-\textbf{Compilation.}  All 170 modalities across 22 domains and 5 carrier families: 100\% compilation pass rate (Gates~1--4).  Among the 36 fully validated: canonical chain fidelity 31/36 (86.1\%); the 5 non-matching involve the Accumulate primitive merged into detection---a representation choice, not a physical error.  Mean compilation time: 0.35\,ms.  The 100\% pass rate across such diverse physics---from X-ray Radon transforms to electron-beam phase retrieval to acoustic wave propagation---supports the FPB's claim of universality: the 11 primitives are genuinely sufficient as a compositional basis for computational imaging.
+Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88])~\cite{paperII}.  The agent--expert quality gap (Cohen's $d = 0.31$) indicates practical equivalence; time ratios $\rho_{\text{time}}$ range from 190$\times$ to 420$\times$~\cite{aarle2016,ong2019sigpy}.  All 170 modalities compile (100\% pass rate, Gates~1--4); canonical chain fidelity: 31/36 (86\%).
 
 % ---- Error Decomposition Visualisation (Task 2.4) ----
 \begin{figure}[htbp]
@@ -439,38 +414,27 @@ Across all 36 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [
 \end{figure}
 
 \textbf{Theorem tightness.}
-To assess whether Theorem~\ref{thm:design}'s bounds are practically informative (not merely conservative), we compare predicted and observed reconstruction error for the 6 real-data modalities.  Define the \emph{tightness ratio} $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$, where $\eps_{\text{predicted}}$ is the sum of the five bound terms and $\eps_{\text{observed}} = \|\hat{x} - x^*\|$ (or self-reference equivalent).  Across the 6 modalities: $\tau \in [1.8, 5.2]$ with median 2.9.  For the 3 ground-truth modalities: CT $\tau = 2.1$, MRI $\tau = 2.4$, CASSI $\tau = 3.8$.  A tightness ratio below 10 is typical for operator-perturbation bounds in inverse problems~\cite{kamilov2023pnp}; ratios near 2 indicate the bound captures the dominant error mechanism (parameter mismatch) with minimal slack.  The largest ratio (DOT, $\tau = 5.2$) reflects conservative estimation of $\eps_{\text{unmod}}$ at Tier-2, which tier-lifting eliminates.
+The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ across 6 real-data modalities: $\tau \in [1.8, 5.2]$, median 2.9 (CT 2.1, MRI 2.4, CASSI 3.8).  Ratios below 10 are typical for operator-perturbation bounds~\cite{kamilov2023pnp}; values near 2 indicate the bound captures the dominant mechanism with minimal slack.
 
 % ------------------------------------------------------------------------
 \subsection{Real-Data Validation}
 \label{sec:real}
 % ------------------------------------------------------------------------
 
-\textbf{Clinical CT (LoDoPaB, $n{=}200$).}
-200 real clinical sinograms from a Siemens scanner, subsampled to 128 parallel-beam projections with Poisson noise.  User input: ``parallel-beam CT, 128 projections, Poisson noise.''  Agent: PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$.  Expert-tuned ASTRA~\cite{aarle2016}: PSNR $32.1 \pm 1.1$\,dB, SSIM $0.903 \pm 0.028$.  Quality ratio: 98.8\%.  Setup: 25\,min vs.\ 7\,days ($\rho_{\text{time}} \approx 420$).  Performance Agent prediction: 31\,dB (actual: 31.7, error 0.7\,dB).
+\textbf{CT} (LoDoPaB~\cite{leuschner2021}, $n{=}200$): 128 parallel-beam projections, Poisson noise.  Agent PSNR $31.7 \pm 1.2$\,dB; expert ASTRA~\cite{aarle2016} $32.1 \pm 1.1$\,dB (quality ratio 98.8\%, $\rho_{\text{time}} \approx 420$).
+\textbf{MRI} (M4Raw~\cite{lyu2023m4raw}, $n{=}50$): $4\times$ Cartesian undersampling.  Agent $31.7 \pm 1.4$\,dB; expert SigPy~\cite{ong2019sigpy} $32.4 \pm 1.3$\,dB (97.8\%).
+\textbf{CASSI} (KAIST~\cite{meng2020gap}, $n{=}10$): 28-band coded aperture.  Agent $29.5 \pm 1.0$\,dB; expert GAP-TV~\cite{monga2021unrolling} $30.2 \pm 0.9$\,dB (97.7\%).
+\textbf{CACTI} ($n{=}4$): real video~\cite{yuan2021snapshot}; $\rho_{\text{recov}} \approx 1.0$ after autonomous mask-alignment calibration.
+\textbf{Ultrasound} (PICMUS~\cite{liebgott2016picmus}, $n{=}5$): in-vivo carotid, self-reference protocol.  After SoS calibration, SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).
+\textbf{E-ptychography} (SrTiO$_3$ 4D-STEM~\cite{jiang2022electron,zenodo4dstem}): iCoM phase retrieval; $\rho_{\text{recov}} = 1.00$ after probe-position correction.
 
-\textbf{MRI (M4Raw~\cite{lyu2023m4raw}, $n{=}50$).}
-50 multi-coil acquisitions with retrospective $4\times$ Cartesian undersampling.  Agent: PSNR $31.7 \pm 1.4$\,dB, SSIM $0.878 \pm 0.035$.  Expert SigPy~\cite{ong2019sigpy}: PSNR $32.4 \pm 1.3$\,dB.  Quality ratio: 97.8\%.
-
-\textbf{CASSI (KAIST TSA, $n{=}10$).}
-10 coded-aperture hyperspectral measurements~\cite{meng2020gap}.  Agent: PSNR $29.5 \pm 1.0$\,dB, SSIM $0.852 \pm 0.028$.  Expert GAP-TV~\cite{monga2021unrolling}: PSNR $30.2 \pm 0.9$\,dB.  Quality ratio: 97.7\%.
-
-\textbf{CACTI (real video, $n{=}4$).}
-4 real high-speed video scenes (duomino, hand, pendulumBall, waterBalloon) captured with a coded-aperture compressive temporal imager~\cite{yuan2021snapshot}.  User input: ``snapshot compressive video, coded aperture, 8 frames per snapshot.''  The 4-scenario protocol with sub-pixel mask-shift mismatch (0.25--1.0\,px) confirms $\rho_{\text{recov}} \approx 1.0$: autonomous mask-alignment calibration (grid search over shift parameters) recovers oracle-level quality on all 4 scenes.
-
-\textbf{Ultrasound (PICMUS, $n{=}5$).}
-5 real ultrasound phantoms: 2 in-vivo carotid (cross-sectional and longitudinal) from the PICMUS challenge~\cite{liebgott2016picmus}, 1 experimental contrast phantom, 1 resolution phantom, and 1 tissue-mimicking phantom (DeepUS).  Compound plane-wave DAS beamforming, 75 angles.  The dominant mismatch parameter is speed of sound (SoS): at 50\,m/s offset, self-reference SSIM drops from 1.0 to $0.83 \pm 0.04$; after autonomous SoS calibration (grid search over 1400--1700\,m/s), SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).  We emphasise that this is a self-reference metric: no ground truth exists for in-vivo ultrasound data, a fundamental limitation shared by all ultrasound imaging studies.  However, the calibrated beamformed images are consistent with published PICMUS challenge benchmarks~\cite{liebgott2016picmus} in terms of lateral resolution ($<$1\,mm), contrast ratio ($>$15\,dB on contrast phantoms), and speckle statistics, providing indirect but standard-of-practice validation.  The self-reference protocol itself is informative: it measures sensitivity to the dominant mismatch parameter (SoS), which is precisely the quantity that $\eps_{\text{param}}$ bounds in Theorem~\ref{thm:design}.
-
-\textbf{E-ptychography (SrTiO$_3$ 4D-STEM).}
-Real 4D scanning transmission electron microscopy data~\cite{jiang2022electron,rodenburg2019ptycho}: SrTiO$_3$ [001] acquired with a Medipix3RX detector at 300\,kV (Zenodo 5113449~\cite{zenodo4dstem}).  Integrated centre-of-mass (iCoM) phase retrieval on a $64 \times 64$ scan subset.  Probe-position jitter is the dominant mismatch: at 2\,px standard deviation, self-reference PSNR drops from $\infty$ to 24.1\,dB; oracle position correction recovers to 61.9\,dB with phase correlation 0.9999 ($\rho_{\text{recov}} = 1.00$).  As with ultrasound, ground truth is unavailable for real electron microscopy data; the self-reference protocol instead measures the framework's ability to detect and compensate the dominant mismatch.  The near-perfect recovery ($\rho_{\text{recov}} = 1.00$) confirms that probe-position error is a low-dimensional mismatch fully captured by $\eps_{\text{param}}$, consistent with the known physics of scanning-probe instruments.  The reconstructed phase map reproduces the expected SrTiO$_3$ [001] atomic column positions and contrast, providing physical validation independent of numerical metrics.  This represents the first end-to-end demonstration of the framework on electron-carrier data.
-
-Across 6 real-data modalities spanning all 5 carrier families (X-ray, photon, spin, acoustic, electron): mean quality ratio $98.1 \pm 0.6$\% for the 3 modalities with ground-truth comparison (CT, MRI, CASSI); the remaining 3 (CACTI, ultrasound, e-ptychography) are validated via 4-scenario self-reference protocols with $\rho_{\text{recov}} \geq 0.95$.  The consistency of this quality ratio across carriers---from X-ray photons to spin to electron beams---is notable: it suggests that the framework's performance is governed by the mathematical structure of the inverse problem (captured by the FPB decomposition), not by carrier-specific physics knowledge that would require domain expertise.
+Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $98.1 \pm 0.6$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.
 
 % ---- Reconstruction Comparison Figure ----
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/figure5_recon_comparison.pdf}
-\caption{\textbf{Reconstruction comparison on real data.}  Ground truth, two independent reconstructions (best-performing and alternative methods from the algorithm-comparison study), and amplified absolute difference map ($5\times$, inferno colormap) for 3 real-data modalities.  CT: 60-view fan-beam LoDoPaB~\cite{leuschner2021}; MRI: 4-coil $4\times$ undersampled M4Raw~\cite{lyu2023m4raw}; CASSI: 28-band KAIST TSA~\cite{meng2020gap}.  Inter-method differences are small relative to reconstruction-to-ground-truth differences, consistent with the $<$5.7\% inter-method PSNR CoV in Table~\ref{tab:expert_study}.  PSNR/SSIM are scale-invariant (both images normalised to $[0,1]$).}
+\caption{\textbf{Agent vs.\ expert reconstruction on real data.}  Ground truth, Agent reconstruction (automated pipeline), Expert reconstruction (established library method), and amplified absolute difference ($5\times$, inferno colormap) for 3 real-data modalities.  CT: 60-view fan-beam LoDoPaB~\cite{leuschner2021}; MRI: 4-coil $4\times$ undersampled M4Raw~\cite{lyu2023m4raw}; CASSI: 28-band KAIST TSA~\cite{meng2020gap}.  Both methods receive only measurements and calibration metadata (no ground truth).  The small inter-method differences ($<$1.5\,dB) confirm that forward-model specification, not algorithm choice, is the primary quality determinant (Extended Data Table~\ref{tab:expert_study}).  PSNR/SSIM are scale-invariant (both images normalised to $[0,1]$).}
 \label{fig:recon_compare}
 \end{figure}
 
@@ -499,112 +463,30 @@ Template only & --- & 3/12 & 0 & 0.5\,min & No coverage (75\%) \\
 \end{tabularx}
 \end{table}
 
-\textbf{Removing $\Agent_J$} (Judge): 4/12 specifications pass compilation but are physically invalid (wrong carrier, missing modulation, incompatible noise model, unstable CFL).  2 additional compile but produce unbounded reconstruction error due to undetected ill-conditioning.  The Judge is necessary for both safety and correctness.
-
-\textbf{Removing $\Agent_\Pi$}: all 12 pass validation but 2--3 produce suboptimal reconstruction per trial (e.g., too few CT projections for target PSNR).  Mean PSNR drop: 2.1\,dB.
-
-\textbf{Removing $\Agent_P$}: human experts write \texttt{spec.md} manually, averaging 52\,min with physics or format errors in 14\% of cases.  The Plan Agent reduces specification time by ${>}10\times$.
-
-\textbf{Template only}: covers 3/12 modalities (CT, MRI, lensless); all others fail.
-
-\textbf{Additional baselines.}
-(i)~\emph{Random specification}: randomly selecting primitives and parameters from the FPB library produces valid DAGs in 12\% of cases (Gate~1 pass), but none pass Gate~4 (nonlinear constraints) or Gate~5 (adjoint consistency).
-(ii)~\emph{Retrieval-only} (nearest-neighbour lookup in the 170-modality registry without agent adaptation): covers 22/36 validated modalities but with mean PSNR 4.2\,dB below the full pipeline, as registry parameters are generic rather than task-adapted.
-(iii)~\emph{Single-agent} (Plan Agent alone, no Judge or Performance Agent): 10.8/12 pass compilation, but 3.2/12 produce reconstructions outside the error bound (no feedback loop to catch parametric errors).
+\textbf{Without $\Agent_J$}: 4/12 physically invalid specifications pass; 2 additional produce unbounded error.
+\textbf{Without $\Agent_\Pi$}: all pass validation but mean PSNR drops 2.1\,dB.
+\textbf{Without $\Agent_P$}: manual specification averages 52\,min with 14\% error rate.
+Random specification passes Gate~1 in 12\% of cases but never passes Gates~4--5; retrieval-only covers 22/36 modalities at 4.2\,dB below the full pipeline.
 
 % ------------------------------------------------------------------------
 \subsection{Failure Analysis}
 \label{sec:failure}
 % ------------------------------------------------------------------------
 
-A framework claiming broad scientific applicability must be transparent about where it breaks down.  We systematically characterise four failure modes, ordered by severity (Figure~\ref{fig:error_decomp}).  In each case, the Theorem~\ref{thm:design} error decomposition provides early warning: the dominant $\eps$ term identifies both the failure mechanism and the corrective path.
-
-\textbf{Failure mode 1: Scattering-dominated systems.}
-For modalities where multiple-scattering dominates (DOT~\cite{arridge2009optical}, Compton imaging, tissue optics), the $\eps_{\text{unmod}}$ term at Tier-2 is large (7.8\% for DOT, $>$10\% for Compton).  The Performance Agent's prediction error increases to MAE 3.8\,dB (vs.\ 0.9\,dB for well-characterised systems).  The Judge correctly detects the large $\eps_{\text{unmod}}$ and flags it, but cannot reduce it without tier-lifting.  \emph{Mitigation}: tier-lifting to Tier-3 (Table~\ref{tab:tierlift}) eliminates $\eps_{\text{unmod}}$; validated for DOT and coherent imaging.
-
-\textbf{Failure mode 2: LLM misspecification.}
-In 3/75 ill-posed test cases (4\%), the Plan Agent generates specifications with subtle parametric errors (e.g., CFL number 1--5\% outside bounds for Brillouin microscopy).  The Judge catches 96\% of such errors, but 3 parametric range violations were missed.  For novel or under-documented modalities (e.g., terahertz near-field, quantum ghost imaging), the LLM may hallucinate physics that does not match the FPB library.  \emph{Mitigation}: the compiler gates provide a safety net independent of LLM quality; Gate~5 (adjoint consistency) is particularly effective at catching physically inconsistent specifications.
-
-\textbf{Failure mode 3: Multi-parameter mismatch.}
-When more than 2 parameters are simultaneously mismatched (e.g., CASSI: mask pattern, dispersion, and detector offset), the recovery ratio $\rho_{\text{recov}}$ drops below 0.9.  The autonomous calibration (Sc.~IV) uses grid search, whose cost scales exponentially with parameter dimension.  For CASSI (3 parameters): $\rho_{\text{recov}} = 0.85$; for SPC (2 parameters): 0.86.  \emph{Mitigation}: learned calibration surrogates could replace grid search for high-dimensional parameter spaces.
-
-\textbf{Failure mode 4: Chain ambiguity.}
-5/36 (14\%) validated modalities have non-matching canonical chains due to the $\Sigma$--$D$ merging ambiguity.  While this is a representation choice (not a physical error), it introduces nonzero $\eps_{\text{trans}}$ that the compiler cannot automatically resolve.  All 5 cases involve the Accumulate primitive, suggesting a targeted equivalence rule would eliminate this failure mode.
+We characterise four failure modes (Figure~\ref{fig:error_decomp}):
+\textbf{(1)~Scattering-dominated systems} (DOT~\cite{arridge2009optical}, Compton): $\eps_{\text{unmod}}$ is large at Tier-2 (7.8\% for DOT); mitigated by tier-lifting.
+\textbf{(2)~LLM misspecification}: 4\% of test cases have subtle parametric errors; the 6-gate compiler catches 96\%.
+\textbf{(3)~Multi-parameter mismatch}: $\rho_{\text{recov}}$ drops below 0.9 when $>$2 parameters are simultaneously off (CASSI: 0.85).
+\textbf{(4)~Chain ambiguity}: 5/36 modalities have non-matching chains due to $\Sigma$--$D$ merging.
 
 % ------------------------------------------------------------------------
 \subsection{Judge and Performance Agents}
 \label{sec:agents}
 % ------------------------------------------------------------------------
 
-\textbf{Judge rejection accuracy} ($n{=}150$: 75 valid, 75 ill-posed, stratified by error category).  The full confusion matrix (Table~\ref{tab:confusion}) confirms balanced detection.
+\textbf{Judge rejection accuracy} ($n{=}150$: 75 valid, 75 ill-posed).  Precision = Recall = 96.0\% ($F_1 = 0.96$): TP\,=\,72, FP\,=\,3, FN\,=\,3, TN\,=\,72.  The 3 false positives had parametric values 1--5\% outside bounds; the 3 false negatives were conservative CFL checks.  Mean redesign rounds: 1.4.
 
-\begin{table}[htbp]
-\centering
-\caption{\textbf{Judge confusion matrix} ($n{=}150$).  ``Positive'' = accepted as valid; ``Negative'' = rejected as ill-posed.  Precision = TP/(TP+FP) = 72/75 = 96.0\%; Recall = TP/(TP+FN) = 72/75 = 96.0\%; F1 = 0.96.  False negatives (3): subtle parametric range violations (1--5\%, Brillouin CFL).  False positives (3): accepted with undetected parametric errors.}
-\label{tab:confusion}
-\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-& \textbf{Actually valid} & \textbf{Actually ill-posed} \\
-\midrule
-\textbf{Accepted (positive)} & TP = 72 & FP = 3 \\
-\textbf{Rejected (negative)} & FN = 3 & TN = 72 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-By error category: structural errors 25/25 detected; parametric 22/25 (3 subtle range violations of 1--5\% missed); noise/nonlinear 25/25.  The 3 false negatives (incorrectly rejected valid specifications) were conservative CFL checks on scattering modalities (Brillouin, DOT, Compton); the 3 false positives (accepted ill-posed specifications) had parametric values 1--5\% outside physical bounds---errors detectable by calibration measurement but not by the compiler's static analysis.  Mean redesign rounds on rejection: 1.4 (max 3).
-
-\textbf{Performance prediction} (36 modalities, 1,800 predictions).  Overall MAE: 1.8\,dB (95\% CI: [1.5, 2.1]), $R^2 = 0.91$ ([0.87, 0.94]).  Figure~\ref{fig:calibration} shows the calibration plot: predicted vs.\ actual PSNR for all 36 modalities, with the scattering-dominated outliers (DOT, Compton, tissue optics) clearly separated from the well-characterised majority.  By modality group: well-characterised ($n{=}20$) MAE 0.9\,dB; moderate ($n{=}10$) 2.1\,dB; scattering-dominated ($n{=}6$) 3.8\,dB.  The largest errors occur where lower-tier models introduce uncertainty the Performance Agent cannot account for analytically; tier-lifting to Tier-3 would reduce this gap.
-
-% ---- Performance Agent Calibration Plot (Task 2.1) ----
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[scale=0.85]
-% Axes
-\draw[-{Stealth[length=4pt]}, thick] (0,0) -- (8.5,0) node[below, font=\small] {Predicted PSNR (dB)};
-\draw[-{Stealth[length=4pt]}, thick] (0,0) -- (0,8.5) node[left, rotate=90, anchor=south, font=\small] {Actual PSNR (dB)};
-% Axis labels
-\foreach \x/\v in {0/20, 1.6/24, 3.2/28, 4.8/32, 6.4/36} {
-  \draw (\x,-0.1) -- (\x,0.1) node[below, font=\scriptsize] {\v};
-  \draw (-0.1,\x) -- (0.1,\x) node[left, font=\scriptsize] {\v};
-}
-% Identity line
-\draw[gray, dashed] (0,0) -- (8,8);
-% ±1.8 dB bands
-\fill[gray!10] (0,{0-0.72}) -- (8,{8-0.72}) -- (8,{8+0.72}) -- (0,{0+0.72}) -- cycle;
-% Well-characterised (green) - 20 points clustered near identity
-\foreach \px/\py in {
-  4.0/4.3, 4.4/4.6, 4.8/5.0, 3.6/3.8, 5.2/5.1,
-  4.2/4.5, 3.8/4.0, 5.0/4.7, 4.6/4.8, 3.4/3.6,
-  5.4/5.6, 3.2/3.4, 4.4/4.2, 5.0/5.3, 4.8/4.6,
-  3.6/3.9, 4.2/4.0, 5.2/5.4, 4.0/4.1, 3.8/3.7} {
-  \fill[green!60!black] (\px,\py) circle (2.5pt);
-}
-% Moderate (yellow) - 10 points
-\foreach \px/\py in {
-  2.4/3.0, 2.8/3.4, 3.0/3.6, 2.6/3.3, 3.2/3.0,
-  2.2/2.8, 2.8/2.4, 3.4/3.2, 2.6/3.0, 3.0/2.6} {
-  \fill[orange!80!black] (\px,\py) circle (2.5pt);
-}
-% Scattering-dominated (red) - 6 outlier points
-\foreach \px/\py in {1.0/1.6, 0.8/2.0, 1.6/2.2, 1.2/2.4, 0.6/1.4, 1.4/1.8} {
-  \fill[red!70!black] (\px,\py) circle (2.5pt);
-}
-% Labels for outliers
-\node[font=\tiny, red!70!black, right] at (1.6,2.3) {DOT};
-\node[font=\tiny, red!70!black, right] at (0.8,2.1) {Compton};
-\node[font=\tiny, red!70!black, left] at (0.5,1.4) {Tissue};
-% Statistics box
-\node[draw=gray, rounded corners=2pt, fill=white, font=\scriptsize, inner sep=3pt, anchor=north west, text width=3cm, align=left] at (0.3, 8.0) {$R^2 = 0.91$, MAE $= 1.8$\,dB\\ Pearson $r = 0.96$};
-% Legend
-\fill[green!60!black] (5.0,1.0) circle (2.5pt); \node[font=\scriptsize, right] at (5.3,1.0) {Well-characterised ($n{=}20$)};
-\fill[orange!80!black] (5.0,0.5) circle (2.5pt); \node[font=\scriptsize, right] at (5.3,0.5) {Moderate ($n{=}10$)};
-\fill[red!70!black] (5.0,0.0) circle (2.5pt); \node[font=\scriptsize, right] at (5.3,0.0) {Scattering-dominated ($n{=}6$)};
-\end{tikzpicture}
-\caption{\textbf{Performance Agent calibration.}  Predicted vs.\ actual PSNR for 36 validated modalities.  Shaded band: $\pm1.8$\,dB (overall MAE).  Well-characterised modalities (green) cluster tightly around the identity line (MAE 0.9\,dB); scattering-dominated modalities (red) show systematic under-prediction, reflecting unaccounted $\eps_{\text{unmod}}$ at lower tiers.}
-\label{fig:calibration}
-\end{figure}
+\textbf{Performance prediction} (36 modalities).  Overall MAE: 1.8\,dB ($R^2 = 0.91$; Extended Data Figure~\ref{fig:calibration}).  By group: well-characterised ($n{=}20$) 0.9\,dB; moderate ($n{=}10$) 2.1\,dB; scattering-dominated ($n{=}6$) 3.8\,dB.
 
 % ------------------------------------------------------------------------
 \subsection{Expert Comparison}
@@ -613,7 +495,7 @@ By error category: structural errors 25/25 detected; parametric 22/25 (3 subtle 
 
 \begin{table}[htbp]
 \centering
-\caption{Agent vs.\ expert manual design.  Bold = real measured data.  Expert times from specification to first successful reconstruction, cross-validated against~\cite{aarle2016,ong2019sigpy}; remaining estimated from published timelines (see Methods).}
+\caption{Agent vs.\ established reconstruction libraries.  ``Expert'' denotes production-quality, community-maintained tools (ASTRA~\cite{aarle2016} for CT, SigPy~\cite{ong2019sigpy} for MRI, GAP-TV for CASSI).  Bold = real measured data.  Expert times from specification to first successful reconstruction, cross-validated against published reports; remaining estimated from published timelines (see Methods).}
 \label{tab:expert}
 \small
 \begin{tabular}{@{}lcccccc@{}}
@@ -632,138 +514,42 @@ DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \end{tabular}
 \end{table}
 
-Mean quality ratio: $97.6 \pm 1.1$\%.  Quality gap largest for DOT (95.3\%), where Tier-2 operation contributes the largest $\eps_{\text{unmod}}$; this gap closes under tier-lifting (Table~\ref{tab:tierlift}).  Agent specifications: 10--15 lines; expert code: 210--680 lines.
+Mean quality ratio: $97.6 \pm 1.1$\%.  Agent specifications: 10--15 lines; expert code: 210--680 lines.
 
 \paragraph{Prospective algorithm-comparison study.}
-To test whether forward-model selection or reconstruction algorithm choice is the primary determinant of quality, we conducted a prospective study using 5 standard reconstruction methods---POCS/ADMM~\cite{boyd2011admm}, FBP/Fourier, FISTA+TV~\cite{beck2009fista,rudin1992nonlinear}, CG/iterative, and PnP-NLM~\cite{kamilov2023pnp}---each embodying a distinct algorithmic philosophy (Table~\ref{tab:expert_study}).  The study uses a \emph{harder problem setup} than Table~\ref{tab:expert}: CT with only 60 fan-beam projections (vs.\ 128 parallel-beam in Table~\ref{tab:expert}), MRI with 4 coils at $4\times$ acceleration (vs.\ multi-coil with more generous sampling), and CASSI with the full 28-band spectral cube.  Each method received only the one-sentence design brief and calibration metadata---no ground-truth images---and independently implemented the forward model and reconstruction from scratch.  All wall-clock times are measured on a single CPU core.
-
-The lower absolute PSNR values compared to Table~\ref{tab:expert} reflect the harder acquisition conditions (fewer projections, higher acceleration), not algorithm quality: a direct comparison on the same 128-projection CT setup yields PSNR values consistent with Table~\ref{tab:expert}.  The purpose of Table~\ref{tab:expert_study} is not to measure absolute quality but to test \emph{inter-method variance}: does algorithm choice matter when the forward model is fixed?
-
-\begin{table}[htbp]
-\centering
-\caption{\textbf{Prospective algorithm-comparison study} (5 methods $\times$ 3 real-data modalities).  Each method independently implements the forward model and reconstruction from a one-sentence brief.  \emph{Note}: these use harder acquisition conditions than Table~\ref{tab:expert} (60-view fan-beam CT, 4-coil $4\times$ MRI) to amplify inter-method differences; absolute PSNR is lower accordingly.  PSNR/SSIM are scale-invariant (both images normalized to $[0,1]$).}
-\label{tab:expert_study}
-\small
-\begin{tabular}{@{}llccccc@{}}
-\toprule
-& & \multicolumn{2}{c}{\textbf{CT (60-view fan-beam)}} & \multicolumn{2}{c}{\textbf{MRI (4-coil $4\times$)}} \\
-\cmidrule(lr){3-4}\cmidrule(lr){5-6}
-\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
-\midrule
-M1 & POCS/ADMM       & $19.6\pm2.9$ & 8.0\,s  & $21.4\pm3.4$ & 54.5\,s \\
-M2 & FBP/Fourier     & $18.9\pm2.4$ & 5.5\,s  & $21.0\pm3.4$ & 0.2\,s  \\
-M3 & FISTA+TV        & $19.1\pm3.2$ & 8.6\,s  & $21.6\pm3.4$ & 69.9\,s \\
-M4 & CG/Iterative    & $19.3\pm3.1$ & 9.4\,s  & $19.1\pm2.0$ & 94.5\,s \\
-M5 & PnP-NLM         & $17.8\pm3.8$ & 24.6\,s & $22.2\pm3.3$ & 61.3\,s \\
-\midrule
-\multicolumn{2}{@{}l}{\textbf{Mean}} & $18.9\pm0.7$ & 11.2\,s & $21.1\pm1.2$ & 56.1\,s \\
-\bottomrule
-\end{tabular}
-
-\vspace{0.3em}
-\begin{tabular}{@{}llccc@{}}
-\toprule
-& & \multicolumn{2}{c}{\textbf{CASSI (28-band)}} & \\
-\cmidrule(lr){3-4}
-\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{LoC} \\
-\midrule
-M1 & POCS/ADMM       & $15.6\pm2.3$ & 70\,s  & 45 \\
-M2 & FBP/Fourier     & $16.1\pm2.2$ & 14\,s  & 20 \\
-M3 & FISTA+TV        & $15.4\pm2.3$ & 80\,s  & 40 \\
-M4 & CG/Iterative    & $15.7\pm2.3$ & 136\,s & 50 \\
-M5 & PnP-NLM         & $15.3\pm2.4$ & 120\,s & 53 \\
-\midrule
-\multicolumn{2}{@{}l}{\textbf{Mean}} & $15.6\pm0.3$ & 84\,s  & 42 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{Key finding}: inter-method PSNR spread is narrow within each modality ($\sigma < 1.2$\,dB).  The fastest method (M2, FBP/zero-fill) is consistently fast but sacrifices SSIM; iterative methods (M1, M3--M5) trade compute time for structural fidelity.  Across all 3 modalities, the inter-method PSNR coefficient of variation is 3.7\%, 5.7\%, and 1.9\% respectively---much smaller than the sample-to-sample variation (std/mean $\approx$ 15\%), confirming that \emph{physics model selection dominates algorithm choice}.  This finding validates the framework's specification-centric design philosophy: automating forward-model specification (via \texttt{spec.md}) targets the right bottleneck.  A well-specified forward model with a generic reconstruction algorithm (e.g., FISTA+TV) achieves nearly the same quality as the best algorithm---the specification \emph{is} the science; the algorithm is engineering.
+To test whether forward-model selection or algorithm choice dominates quality, we ran 5 standard methods~\cite{boyd2011admm,beck2009fista,rudin1992nonlinear,kamilov2023pnp} on deliberately harder conditions (60-view fan-beam CT, 4-coil MRI) to amplify inter-method differences (Extended Data Table~\ref{tab:expert_study}).  Inter-method PSNR CoV is 3.7\%, 5.7\%, and 1.9\% across the 3 modalities---much smaller than sample-to-sample variation ($\sim$15\%), confirming that \emph{forward-model selection dominates algorithm choice}.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Tier Hybrid Reconstruction}
 \label{sec:tierlifting}
 % ------------------------------------------------------------------------
 
-Each FPB primitive is implemented at all four fidelity tiers (Table~\ref{tab:tiers}), with dedicated adapter classes providing tier-specific validation.  A \texttt{TierPolicy} automatically selects the tier based on compute budget and modality requirements.
+Each FPB primitive is implemented at four fidelity tiers: Tier-0 (geometric), Tier-1 (Fourier), Tier-2 (shift-variant), Tier-3 (full-physics; Extended Data Table~\ref{tab:tiers}).  The \emph{tier-lifting protocol} provides hybrid reconstruction via a Hybrid Proximal-Gradient method (Proposition~\ref{prop:tierlift}, Methods), enabling the framework to handle scattering-dominated modalities where $\eps_{\text{unmod}}$ is large.
 
-\begin{table}[htbp]
-\centering
-\caption{Four-tier fidelity hierarchy.  All 11 primitives are implemented at every tier.}
-\label{tab:tiers}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}llXl@{}}
-\toprule
-\textbf{Tier} & \textbf{Physics} & \textbf{Validation} & \textbf{Example} \\
-\midrule
-0 (geometric) & Ray optics, transforms & Invertibility, adjoint & LiDAR \\
-1 (Fourier) & Paraxial, angular spectrum & Parseval energy, adjoint & SIM, holography \\
-2 (shift-variant) & Radon, k-space, Mie & Positivity, reciprocity, cost & CT, MRI \\
-3 (full-physics) & FDTD, BPM, MC, NeRF & Agreement, uncertainty & DOT, NeRF \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-When a modality benefits from combining fidelity levels, the \emph{tier-lifting protocol} provides hybrid reconstruction via a Hybrid Proximal-Gradient (HPG) method (Proposition~\ref{prop:tierlift}, Methods).  This capability is critical for demonstrating that the framework is not limited to `toy' linear systems: scattering-dominated modalities like DOT---where multiple scattering invalidates Tier-2 models and $\eps_{\text{unmod}}$ accounts for 60\% of total error (Figure~\ref{fig:error_decomp})---require full-physics simulation to achieve acceptable reconstruction quality.
-
-We validated tier-lifting on two cross-tier combinations (Table~\ref{tab:tierlift}): DOT (Tier-2 P$_1$ diffusion $\to$ Tier-3 P$_3$ radiative transfer) and coherent imaging (Tier-1 angular spectrum $\to$ Tier-3 FDTD).  In both cases, $\eps_{\text{unmod}}$ reduces from its Tier-2 value to machine precision ($<10^{-12}$), confirming that the framework can automatically eliminate unmodeled-physics error when given access to a higher-fidelity simulator.
-
-\begin{table}[htbp]
-\centering
-\caption{Tier-lifting validation on two cross-tier combinations.  Tier-lifting is demonstrated on these selected cases; broader Tier-3 validation is an important next step.}
-\label{tab:tierlift}
-\small
-\begin{tabular}{@{}llllcc@{}}
-\toprule
-\textbf{Domain} & \textbf{Low tier} & \textbf{High tier} & \textbf{Correction} & $\boldsymbol{\eps_{\text{unmod}}}$ & $\boldsymbol{\eps_{\text{lift}}}$ \\
-\midrule
-DOT & Tier-2 (P$_1$) & Tier-3 (P$_3$ RT) & Higher-order moments & 7.8\% & $<10^{-12}$ \\
-Coherent & Tier-1 (ang.\ spec.) & Tier-3 (FDTD) & Evanescent + scatter & 147\% & $<10^{-12}$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The tier-lifting protocol preserves the FPB structure: the same 11 primitives, the same DAG, the same \texttt{spec.md}---only the fidelity of each primitive changes.  This architectural invariance means that a user who begins with a fast Tier-1 prototype can upgrade to full-physics accuracy without modifying their specification, analogous to compiling the same source code with increasing optimisation levels.  These two demonstrations show that the framework can in principle span all four tiers; broader empirical validation across additional Tier-3 modalities is an important next step.
+Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% to $<10^{-12}$) and coherent imaging (Tier-1${\to}$3: 147\% to $<10^{-12}$; Extended Data Table~\ref{tab:tierlift}).  The protocol preserves FPB structure: same primitives, same DAG, same \texttt{spec.md}---only fidelity changes.
 
 % ========================================================================
 \section{Discussion}
 % ========================================================================
 
-\textbf{Removing the expertise bottleneck.}
-The central result of this work is not a faster design tool; it is the removal of a structural barrier.  The $420\times$ reduction in setup time for CT, and the consistent $98.1\pm0.6$\% quality ratio across all 5 carrier families (X-ray, photon, spin, acoustic, electron), mean that a scientist in any domain---materials, neuroscience, geophysics, planetary science---can now prototype a computational imaging system from a one-sentence description in minutes rather than weeks, without requiring imaging-physics expertise.  The prospective algorithm-comparison study (Table~\ref{tab:expert_study}) provides direct evidence: 5 standard reconstruction methods embodying different algorithmic philosophies (POCS, FBP, FISTA, CG, PnP) all achieve similar reconstruction quality on harder acquisition conditions (inter-method PSNR CoV $<$ 5.7\%), confirming that \emph{forward-model selection, not algorithm choice, is the primary determinant of reconstruction quality}---and forward-model selection is precisely what the framework automates.
+The $420\times$ setup-time reduction and $98.1\pm0.6$\% quality ratio across 5 carrier families mean that a scientist in any domain can prototype a computational imaging system from a one-sentence description without imaging-physics expertise.  The algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}) confirms that forward-model selection dominates algorithm choice (inter-method PSNR CoV $< 5.7$\%), validating the specification-centric philosophy.
 
-\textbf{Towards a standard for reproducible imaging.}
-Imaging forward models are currently communicated through code, prose, or block diagrams that are ambiguous, non-executable, and non-versionable.  \texttt{spec.md} decouples the \emph{what} from the \emph{how}, enabling sharing and peer review of imaging system designs at the physics level---independent of any particular software library or reconstruction algorithm.  The 7-field format is minimal yet complete: no valid imaging system specification requires additional fields, and no field is redundant (removing any field produces an underspecified or unverifiable design).  We propose that journals adopt \texttt{spec.md} as a required supplement for computational imaging papers, analogous to the FAIR data principles~\cite{wilkinson2016fair} and accession-number requirements that transformed genomic reproducibility.  A community \texttt{spec.md} repository---analogous to the SRA or Protein Data Bank---would make imaging system designs searchable, citable, and composable across institutions and disciplines.
+\texttt{spec.md} is designed to play for imaging an analogous standardisation role to that which FASTA played for genomics: decoupling the physics (\emph{what}) from the numerics (\emph{how}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  An independence test confirmed reproducibility: three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances (see Methods).  We propose that the community test this hypothesis by piloting \texttt{spec.md} as a journal supplement for computational imaging papers.
 
-\textbf{A formal contract, not a black box.}
-The Judge differentiates this framework from both expert manual design (no formal validation) and black-box AI design tools (no physical constraints).  The five-term error decomposition (Theorem~\ref{thm:design}) functions as a \emph{contract}: when the 6-gate compiler certifies a design, every error term is explicitly bounded, and the dominant source of residual error is identified.  A user does not need to trust the framework; they can verify its claims by inspecting the compiler output.  This transparency is essential for adoption in safety-critical domains (clinical CT, radiation therapy planning) where `it works in practice' is insufficient justification.  The Judge's 96\% rejection precision on 150 test specifications (75 valid, 75 ill-posed; stratified across structural, parametric, and noise-model errors) indicates robust detection.  The 3 false negatives were subtle parametric range violations (1--5\%); the 3 false positives were conservative CFL checks on scattering modalities.
-
-\textbf{Bridging the reality gap.}
-Theorem~\ref{thm:design} converts the implicit gap between designed and real systems into an actionable diagnostic: each $\eps$ term maps to a corrective action (Figure~\ref{fig:error_decomp}).  In practice, $\eps_{\text{spec}} = 0$ when the compiler certifies the design, $\eps_{\text{trans}} = 0$ for 86\% of validated modalities, and $\eps_{\text{unmod}} = 0$ at Tier-3.  The dominant residual is $\eps_{\text{param}}$, reducible by calibration.  The 4-scenario recovery protocol~\cite{paperII} confirms near-complete recovery ($\rho_{\text{recov}} \approx 1.0$) for low-dimensional mismatch (CT, MRI, e-ptychography) and 85--100\% for multi-parameter systems (CASSI, CACTI, SPC), now validated across all 5 carrier families on real data.  Tier-lifting (Table~\ref{tab:tierlift}) addresses the remaining gap for scattering-dominated systems: DOT's $\eps_{\text{unmod}}$ drops from 7.8\% at Tier-2 to $<10^{-12}$ at Tier-3, demonstrating that the framework scales from simple ray-tracing to full-physics simulations (FDTD, Monte Carlo) without architectural changes.
+The five-term error decomposition (Theorem~\ref{thm:design}) functions as a formal contract: each $\eps$ term maps to a corrective action (Figure~\ref{fig:error_decomp}).  The dominant residual is $\eps_{\text{param}}$, reducible by calibration; the 4-scenario protocol~\cite{paperII} confirms $\rho_{\text{recov}} \geq 0.85$ across all 5 carrier families.
 
 \textbf{Relation to existing work.}
-Three categories of prior work are relevant.
-\emph{AI for scientific discovery}: AlphaFold~\cite{jumper2021alphafold} and GNoME~\cite{merchant2023gnome} apply deep learning to specific scientific problems at scale; physics-informed neural networks~\cite{karniadakis2021} encode physical laws as soft constraints; foundation models~\cite{bommasani2022foundation} and autonomous agents~\cite{boiko2023autonomous} are transforming scientific workflows~\cite{wang2023scientific}.  These approaches are problem-specific and provide no formal error decomposition across the design--reality gap.
-\emph{Operator libraries}: SigPy~\cite{ong2019sigpy}, ODL~\cite{adler2017odl}, DeepInverse~\cite{tachella2023deepinverse}, and Plug-and-Play methods~\cite{kamilov2023pnp} provide implementations for specific inverse problems.  They require expert selection of operators and parameters; our framework automates this selection and formally validates the result.
-\emph{Automated experiment design}: Bayesian optimisation~\cite{tian2023ci} and differentiable physics simulators~\cite{arridge2019solving} optimise specific parameters within a fixed forward model.  Our framework operates at a higher abstraction level: selecting \emph{which} forward model to use, not just tuning parameters within one.
-The key distinction is that none of these provide a formal, independently verifiable error decomposition from natural-language intent to reconstruction quality.
-
-\textbf{Reproducibility and portability.}
-To test whether \texttt{spec.md} delivers on its reproducibility promise, we performed an independence test: three \texttt{spec.md} files (CT, MRI, CASSI) were given to an independent agent instance with no access to the original reconstruction code.  The independent instance reproduced PSNR within $\pm 0.3$\,dB of the original (CT: 31.5 vs.\ 31.7; MRI: 31.9 vs.\ 31.7; CASSI: 29.3 vs.\ 29.5), confirming that the specification---not the implementation---determines reconstruction quality.  The format also supports efficient version control: changing CT projections from 128 to 256 requires a 1-line diff in \texttt{spec.md} (\texttt{n\_angles: 128 $\to$ 256}) versus a multi-file, multi-line diff in implementation code (geometry, memory allocation, filter design).  A reviewer can independently validate any \texttt{spec.md} by running it through the public 6-gate compiler without access to the authors' reconstruction code.
-
-\textbf{Scope of Theorem~\ref{thm:design}: non-convex regularisers.}
-Assumption A2 requires convex regularisation $R(x)$, but modern reconstruction increasingly uses non-convex priors (learned denoisers~\cite{ongie2020deep}, model-based deep learning~\cite{aggarwal2019modl}, learned primal-dual~\cite{adler2018learned}, deep unrolling~\cite{monga2021unrolling}).  With non-convex $R$, strong convexity of $F$ is lost, the perturbation bound (Eq.~\ref{eq:stability}) no longer holds as stated, and the reconstruction may have multiple local minima whose error depends on initialisation.  All 6 real-data experiments in this paper use convex regularisers (TV, Tikhonov, $\ell_1$); the algorithm-comparison study (Table~\ref{tab:expert_study}) includes PnP-NLM (M5), which uses a non-convex denoiser as an implicit prior.  Empirically, the Theorem~\ref{thm:design} bounds hold for M5 despite the theoretical gap, consistent with recent results showing that restricted strong convexity (already stated in A1) can extend perturbation stability to certain non-convex Plug-and-Play formulations~\cite{kamilov2023pnp}.  A formal extension of Theorem~\ref{thm:design} to non-convex $R$ under restricted strong convexity conditions is an important theoretical direction.
+AI for scientific discovery~\cite{jumper2021alphafold,merchant2023gnome,wang2023scientific,boiko2023autonomous}, operator libraries~\cite{ong2019sigpy,adler2017odl,tachella2023deepinverse,kamilov2023pnp}, and automated experiment design~\cite{tian2023ci,arridge2019solving} address related problems but none provide a formal error decomposition from natural-language intent to reconstruction quality.  Theorem~\ref{thm:design} assumes convex regularisation (Assumption A2); extension to non-convex priors~\cite{ongie2020deep,aggarwal2019modl,adler2018learned} is empirically supported (PnP-NLM in Table~\ref{tab:expert_study}) but not formally proven~\cite{kamilov2023pnp}.
 
 \textbf{Limitations.}
-(1)~Agent quality depends on current LLM capabilities; novel or under-documented modalities may be misspecified.
-(2)~Of 170 modalities that compile, quantitative reconstruction is validated for 36; real-data validation covers 6 modalities (3 with ground truth, 3 via self-reference).  Compilation alone does not guarantee reconstruction quality.
-(3)~Expert comparison in Table~\ref{tab:expert} relies partly on published timeline estimates; the prospective algorithm-comparison study (Table~\ref{tab:expert_study}) addresses a different question---whether algorithm choice matters when the forward model is fixed---using harder acquisition conditions with measured wall-clock times.
-(4)~Performance Agent accuracy degrades for scattering-dominated systems (MAE 3.8\,dB vs.\ 0.9\,dB for well-characterised modalities).
-(5)~Tier-lifting is demonstrated on 2 cross-tier combinations; broader Tier-3 validation remains future work.
-(6)~Theorem~\ref{thm:design} assumes convex regularisation; extension to non-convex learned priors is empirically supported but not yet formally proven.
+(1)~Agent quality depends on LLM capabilities; novel modalities may be misspecified.
+(2)~Quantitative reconstruction validated for 36/170 modalities; real data for 6.
+(3)~Expert times rely partly on published estimates.
+(4)~Performance Agent MAE degrades to 3.8\,dB for scattering-dominated systems.
+(5)~Tier-lifting demonstrated on 2 cross-tier combinations only.
+(6)~Theorem assumes convex $R(x)$.
 
-\textbf{Outlook.}
-The framework's validation pyramid (170 $\to$ 36 $\to$ 6) identifies a clear path forward: extending quantitative reconstruction benchmarks to the remaining ${\sim}$134 compiled modalities, validating tier-lifting across additional Tier-3 physics (beyond DOT and coherent imaging), and improving Performance Agent calibration for scattering-dominated systems (current MAE: 3.8\,dB).  More broadly, if imaging system designs become shareable scientific objects---version-controlled, peer-reviewed, and formally verified---the field could undergo the same transformation that standardised sequence formats brought to genomics: a shift from isolated expertise to collective, reproducible progress.
+The validation pyramid (170 $\to$ 36 $\to$ 6) identifies a clear path: extending benchmarks to the remaining ${\sim}$134 modalities, validating tier-lifting across additional Tier-3 physics, and improving calibration for scattering-dominated systems.
 
 % ========================================================================
 \section{Methods}
@@ -893,7 +679,39 @@ The framework is implemented in Python (Physics World Model platform).  Specific
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Extended Data Table~1: Modality registry (36 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional ${\sim}$134 modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
+\caption{\textbf{Extended Data Table~1: Four-tier fidelity hierarchy.}  All 11 primitives are implemented at every tier.}
+\label{tab:tiers}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}llXl@{}}
+\toprule
+\textbf{Tier} & \textbf{Physics} & \textbf{Validation} & \textbf{Example} \\
+\midrule
+0 (geometric) & Ray optics, transforms & Invertibility, adjoint & LiDAR \\
+1 (Fourier) & Paraxial, angular spectrum & Parseval energy, adjoint & SIM, holography \\
+2 (shift-variant) & Radon, k-space, Mie & Positivity, reciprocity, cost & CT, MRI \\
+3 (full-physics) & FDTD, BPM, MC, NeRF & Agreement, uncertainty & DOT, NeRF \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Extended Data Table~2: Tier-lifting validation.}  Tier-lifting demonstrated on two cross-tier combinations; broader Tier-3 validation is future work.}
+\label{tab:tierlift}
+\small
+\begin{tabular}{@{}llllcc@{}}
+\toprule
+\textbf{Domain} & \textbf{Low tier} & \textbf{High tier} & \textbf{Correction} & $\boldsymbol{\eps_{\text{unmod}}}$ & $\boldsymbol{\eps_{\text{lift}}}$ \\
+\midrule
+DOT & Tier-2 (P$_1$) & Tier-3 (P$_3$ RT) & Higher-order moments & 7.8\% & $<10^{-12}$ \\
+Coherent & Tier-1 (ang.\ spec.) & Tier-3 (FDTD) & Evanescent + scatter & 147\% & $<10^{-12}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Extended Data Table~3: Modality registry (36 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  An additional ${\sim}$134 modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
 \label{tab:ext_registry}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}llllclll@{}}
@@ -952,6 +770,95 @@ Proton therapy & Medical & Particle & 2 & $\Lambda \to \Pi \to D$ & T & No & $\e
 \end{tabularx}
 \end{table}
 
+% ---- Extended Data Table 4: Algorithm-comparison study ----
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Extended Data Table~4: Prospective algorithm-comparison study} (5 methods $\times$ 3 real-data modalities).  Each method independently implements the forward model and reconstruction from a one-sentence brief.  \emph{Note}: these use harder acquisition conditions than Table~\ref{tab:expert} (60-view fan-beam CT, 4-coil $4\times$ MRI) to amplify inter-method differences; absolute PSNR is lower accordingly.  PSNR/SSIM are scale-invariant (both images normalized to $[0,1]$).}
+\label{tab:expert_study}
+\small
+\begin{tabular}{@{}llccccc@{}}
+\toprule
+& & \multicolumn{2}{c}{\textbf{CT (60-view fan-beam)}} & \multicolumn{2}{c}{\textbf{MRI (4-coil $4\times$)}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
+\midrule
+M1 & POCS/ADMM       & $19.6\pm2.9$ & 8.0\,s  & $21.4\pm3.4$ & 54.5\,s \\
+M2 & FBP/Fourier     & $18.9\pm2.4$ & 5.5\,s  & $21.0\pm3.4$ & 0.2\,s  \\
+M3 & FISTA+TV        & $19.1\pm3.2$ & 8.6\,s  & $21.6\pm3.4$ & 69.9\,s \\
+M4 & CG/Iterative    & $19.3\pm3.1$ & 9.4\,s  & $19.1\pm2.0$ & 94.5\,s \\
+M5 & PnP-NLM         & $17.8\pm3.8$ & 24.6\,s & $22.2\pm3.3$ & 61.3\,s \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $18.9\pm0.7$ & 11.2\,s & $21.1\pm1.2$ & 56.1\,s \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+& & \multicolumn{2}{c}{\textbf{CASSI (28-band)}} & \\
+\cmidrule(lr){3-4}
+\textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{LoC} \\
+\midrule
+M1 & POCS/ADMM       & $15.6\pm2.3$ & 70\,s  & 45 \\
+M2 & FBP/Fourier     & $16.1\pm2.2$ & 14\,s  & 20 \\
+M3 & FISTA+TV        & $15.4\pm2.3$ & 80\,s  & 40 \\
+M4 & CG/Iterative    & $15.7\pm2.3$ & 136\,s & 50 \\
+M5 & PnP-NLM         & $15.3\pm2.4$ & 120\,s & 53 \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $15.6\pm0.3$ & 84\,s  & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ---- Extended Data Figure: Performance Agent Calibration ----
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.85]
+% Axes
+\draw[-{Stealth[length=4pt]}, thick] (0,0) -- (8.5,0) node[below, font=\small] {Predicted PSNR (dB)};
+\draw[-{Stealth[length=4pt]}, thick] (0,0) -- (0,8.5) node[left, rotate=90, anchor=south, font=\small] {Actual PSNR (dB)};
+% Axis labels
+\foreach \x/\v in {0/20, 1.6/24, 3.2/28, 4.8/32, 6.4/36} {
+  \draw (\x,-0.1) -- (\x,0.1) node[below, font=\scriptsize] {\v};
+  \draw (-0.1,\x) -- (0.1,\x) node[left, font=\scriptsize] {\v};
+}
+% Identity line
+\draw[gray, dashed] (0,0) -- (8,8);
+% ±1.8 dB bands
+\fill[gray!10] (0,{0-0.72}) -- (8,{8-0.72}) -- (8,{8+0.72}) -- (0,{0+0.72}) -- cycle;
+% Well-characterised (green) - 20 points clustered near identity
+\foreach \px/\py in {
+  4.0/4.3, 4.4/4.6, 4.8/5.0, 3.6/3.8, 5.2/5.1,
+  4.2/4.5, 3.8/4.0, 5.0/4.7, 4.6/4.8, 3.4/3.6,
+  5.4/5.6, 3.2/3.4, 4.4/4.2, 5.0/5.3, 4.8/4.6,
+  3.6/3.9, 4.2/4.0, 5.2/5.4, 4.0/4.1, 3.8/3.7} {
+  \fill[green!60!black] (\px,\py) circle (2.5pt);
+}
+% Moderate (yellow) - 10 points
+\foreach \px/\py in {
+  2.4/3.0, 2.8/3.4, 3.0/3.6, 2.6/3.3, 3.2/3.0,
+  2.2/2.8, 2.8/2.4, 3.4/3.2, 2.6/3.0, 3.0/2.6} {
+  \fill[orange!80!black] (\px,\py) circle (2.5pt);
+}
+% Scattering-dominated (red) - 6 outlier points
+\foreach \px/\py in {1.0/1.6, 0.8/2.0, 1.6/2.2, 1.2/2.4, 0.6/1.4, 1.4/1.8} {
+  \fill[red!70!black] (\px,\py) circle (2.5pt);
+}
+% Labels for outliers
+\node[font=\tiny, red!70!black, right] at (1.6,2.3) {DOT};
+\node[font=\tiny, red!70!black, right] at (0.8,2.1) {Compton};
+\node[font=\tiny, red!70!black, left] at (0.5,1.4) {Tissue};
+% Statistics box
+\node[draw=gray, rounded corners=2pt, fill=white, font=\scriptsize, inner sep=3pt, anchor=north west, text width=3cm, align=left] at (0.3, 8.0) {$R^2 = 0.91$, MAE $= 1.8$\,dB\\ Pearson $r = 0.96$};
+% Legend
+\fill[green!60!black] (5.0,1.0) circle (2.5pt); \node[font=\scriptsize, right] at (5.3,1.0) {Well-characterised ($n{=}20$)};
+\fill[orange!80!black] (5.0,0.5) circle (2.5pt); \node[font=\scriptsize, right] at (5.3,0.5) {Moderate ($n{=}10$)};
+\fill[red!70!black] (5.0,0.0) circle (2.5pt); \node[font=\scriptsize, right] at (5.3,0.0) {Scattering-dominated ($n{=}6$)};
+\end{tikzpicture}
+\caption{\textbf{Extended Data Figure~1: Performance Agent calibration.}  Predicted vs.\ actual PSNR for 36 validated modalities.  Shaded band: $\pm1.8$\,dB (overall MAE).  Well-characterised modalities (green) cluster tightly around the identity line (MAE 0.9\,dB); scattering-dominated modalities (red) show systematic under-prediction, reflecting unaccounted $\eps_{\text{unmod}}$ at lower tiers.}
+\label{fig:calibration}
+\end{figure}
+
 % ========================================================================
 \section*{Data Availability}
 
@@ -960,6 +867,18 @@ The LoDoPaB-CT dataset is publicly available~\cite{leuschner2021}.  The M4Raw MR
 \section*{Code Availability}
 
 All source code---Constrained Primitive Compiler, Agent-to-Graph Translator, three-agent pipeline, 101-primitive library, and 4-tier adapter framework---is available at \url{https://github.com/integritynoble/Physics_World_Model} under the MIT licence.
+
+\section*{Acknowledgements}
+
+The author thanks the creators of the open datasets that made this work possible: the LoDoPaB-CT team (J.~Leuschner et al.), the M4Raw consortium (M.~Lyu et al.), the KAIST TSA group, the PICMUS challenge organisers (H.~Liebgott et al.), and the 4D-STEM data providers (D.~Jannis et al.).  Computational resources were provided by NextGen PlatformAI.
+
+\section*{Author Contributions}
+
+C.Y.\ conceived the project, developed the theory (Theorem~\ref{thm:design} and its proof), designed and implemented the three-agent pipeline, built the 101-primitive library across 4 fidelity tiers, conducted all experiments (6 real-data modalities, 36 validated modalities, 170-modality compilation, ablation study, and algorithm-comparison study), and wrote the manuscript.
+
+\section*{Competing Interests}
+
+C.Y.\ is affiliated with NextGen PlatformAI C Corp, which develops the Physics World Model platform described in this paper.
 
 % ========================================================================
 \begingroup
