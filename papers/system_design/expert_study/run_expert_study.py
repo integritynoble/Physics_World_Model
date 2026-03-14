@@ -32,10 +32,12 @@ from papers.system_design.expert_study.expert_reconstructors import (
     _radon_forward, _radon_adjoint,
     _mri_forward, _mri_adjoint,
     _cassi_forward, _cassi_adjoint,
+    _lensless_forward, _lensless_adjoint,
+    _sim_forward, _sim_adjoint,
 )
 from papers.system_design.expert_study.evaluate import compute_metrics
 
-MODALITIES = ["ct", "mri", "sd_cassi"]
+MODALITIES = ["ct", "mri", "sd_cassi", "lensless", "sim"]
 N_SAMPLES = 10
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
@@ -70,6 +72,18 @@ def run_adjoint_validation(modality: str, samples: list[dict]) -> dict:
         A = lambda x: _cassi_forward(x, mask)
         At = lambda y: _cassi_adjoint(y, mask, n_bands)
         err, passed = _adjoint_test(A, At, (ny, nx, n_bands), (ny, w_meas_fwd))
+    elif modality == "lensless":
+        psf = s["calibration"]["psf"]
+        ny, nx = s["x_true"].shape
+        A = lambda x: _lensless_forward(x, psf)
+        At = lambda y: _lensless_adjoint(y, psf)
+        err, passed = _adjoint_test(A, At, (ny, nx), (ny, nx))
+    elif modality == "sim":
+        psf = s["calibration"]["psf"]
+        ny, nx = s["x_true"].shape
+        A = lambda x: _sim_forward(x, psf)
+        At = lambda y: _sim_adjoint(y, psf)
+        err, passed = _adjoint_test(A, At, (ny, nx), (ny, nx))
     else:
         return {"error": 0, "passed": False}
 

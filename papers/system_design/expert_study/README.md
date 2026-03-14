@@ -11,20 +11,20 @@ Five independent reconstruction methods (E1--E5), each embodying a different des
 | Component | Detail |
 |-----------|--------|
 | Methods | 5 classical reconstruction algorithms (no neural networks) |
-| Modalities | 3 real-data modalities (CT, MRI, CASSI) |
-| Total runs | 5 methods x 3 modalities = 15 |
+| Modalities | 5 modalities: 3 real-data (CT, MRI, CASSI) + 2 novel system designs (Lensless, SIM) |
+| Total runs | 5 methods x 5 modalities = 25 |
 | Input | Measurements + calibration metadata only (no ground truth, no physics hints) |
 | Metrics | PSNR (dB), SSIM -- both scale-invariant (normalized to [0,1]) |
 
 ## The Five Expert Methods
 
-| ID | Persona | Philosophy | CT Method | MRI Method | CASSI Method |
-|----|---------|-----------|-----------|------------|--------------|
-| **E1** | Medical Imaging Physicist | POCS/ADMM | Fan-beam FBP + TV denoising | CG-SENSE + TV | GAP-TV (20 iter, lambda=0.05) |
-| **E2** | Signal Processing Engineer | FBP/Fourier | Fan-beam FBP only (no post-processing) | Zero-filled iFFT + RSS | Adjoint + Landweber (30 iter) |
-| **E3** | Applied Mathematician | FISTA+TV | Fan-beam FBP + heavy TV (weight=0.12) | CG-SENSE + stronger TV (weight=0.05) | GAP-TV (25 iter, lambda=0.08) |
-| **E4** | Computational Imaging Researcher | CG/Iterative | Fan-beam FBP + bilateral (median + light TV) | CG-SENSE + Tikhonov (50 iter) | GAP-TV (30 iter, lambda=0.04) |
-| **E5** | Algorithm Engineer | PnP-NLM | PINER-CT (FBP + TV + NLM cascade) | CG-SENSE + NLM denoising | GAP-TV + NLM per band |
+| ID | Persona | Philosophy | CT | MRI | CASSI | Lensless | SIM |
+|----|---------|-----------|-----|-----|-------|----------|-----|
+| **E1** | Medical Imaging Physicist | POCS/ADMM | FBP + TV | CG-SENSE + TV | GAP-TV | Wiener + TV | Wiener-SIM + TV |
+| **E2** | Signal Processing Engineer | FBP/Fourier | FBP only | iFFT + RSS | Landweber | Wiener | Wiener-SIM |
+| **E3** | Applied Mathematician | FISTA+TV | FBP + heavy TV | CG-SENSE + TV | GAP-TV | FISTA+TV | FISTA+TV |
+| **E4** | Computational Imaging Researcher | CG/Iterative | FBP + bilateral | CG-SENSE + Tikhonov | GAP-TV | ADMM+Tikhonov | Richardson-Lucy |
+| **E5** | Algorithm Engineer | PnP+TV | FBP + TV + NLM | CG-SENSE + NLM | GAP-TV + NLM | PnP-ADMM+TV | PnP-ADMM+TV |
 
 ### Shared Building Blocks
 
@@ -34,9 +34,13 @@ All MRI methods use **CG-SENSE** (conjugate gradient with coil sensitivity maps)
 
 All CASSI methods use **GAP-TV** (Generalized Alternating Projection with Total Variation) except E2 which uses Landweber iterations. They differ in iteration count, TV weight, and optional NLM post-processing.
 
+All Lensless methods operate in the **Fourier domain** (FFT-based deconvolution). E1 and E2 use Wiener filtering (closed-form), while E3--E5 use iterative methods (FISTA, ADMM, PnP-ADMM) with the FFT-domain x-update `x = IFFT(rhs / (HtH + rho))`.
+
+All SIM methods first combine the 9 raw frames into an effective measurement, then deconvolve. E1 and E2 use **Wiener-SIM** (frequency-domain), E3 uses FISTA+TV, E4 uses Richardson-Lucy, and E5 uses PnP-ADMM with TV denoiser.
+
 ## Reconstruction Task
 
-The task is identical for all three modalities: **given raw measurements and calibration metadata, reconstruct the original object without access to ground truth.**
+The task is identical for all five modalities: **given raw measurements and calibration metadata, reconstruct the original object without access to ground truth.**
 
 Each expert receives only a one-sentence design brief (from `data_loader.py:get_design_brief()`), for example:
 
@@ -76,6 +80,28 @@ The expert must independently: (1) derive the forward model from this descriptio
 - **Samples**: n=5
 - **Design brief**: *"Design a computational imaging system for coded-aperture snapshot spectral imaging (CASSI)."*
 - **Challenge**: Extreme compression ratio -- 28 spectral bands (1.8M voxels) collapsed into a single 2D measurement (~79K pixels). The expert must exploit the coded aperture structure and spectral smoothness priors to separate the overlapping bands.
+
+### Lensless -- Recover a 2D image from a diffuse PSF measurement
+
+- **Task**: Reconstruct a 2D image from a single blurred measurement captured through a lensless (mask-based) camera
+- **Input**: blurred measurement image, point-spread function (PSF)
+- **Output**: 2D reconstructed image
+- **Dataset**: Lensless benchmark (GCS: `datasets/Benchmark/lensless/public/`)
+- **Forward model**: y = H * x + noise, where H is the system PSF (convolution in Fourier domain)
+- **Samples**: n=10
+- **Design brief**: *"Design a lensless imaging system using a diffuser or coded mask. The camera captures a single measurement through a known PSF."*
+- **Challenge**: The PSF is extremely diffuse (no focusing optics), making deconvolution severely ill-conditioned. Small noise is amplified dramatically during inversion.
+
+### SIM -- Recover a super-resolved image from structured illumination frames
+
+- **Task**: Reconstruct a super-resolved 2D image from 9 raw SIM frames (3 orientations x 3 phases)
+- **Input**: blurred sum image, 9 raw SIM frames, system PSF
+- **Output**: 2D super-resolved image
+- **Dataset**: SIM benchmark (GCS: `datasets/Benchmark/sim/public/`)
+- **Forward model**: Each raw frame is the object modulated by a sinusoidal illumination pattern, then convolved with the system PSF
+- **Samples**: n=10
+- **Design brief**: *"Design a structured illumination microscopy (SIM) system with 3 orientations and 3 phase shifts per orientation."*
+- **Challenge**: Extracting super-resolution information from 9 low-resolution frames requires accurate knowledge of the illumination patterns and careful deconvolution to avoid artifacts.
 
 ## Results
 
@@ -123,15 +149,43 @@ From `results/expert_study_results.json` (run date: 2026-03-13):
 - **Best PSNR**: E2 (16.1 dB)
 - **Agent proxy**: E4 (15.7 dB); **Expert proxy**: E1 (15.6 dB)
 
+### Lensless
+
+| Method | PSNR (dB) | SSIM | Time (s) | LoC |
+|--------|-----------|------|----------|-----|
+| E1 (Wiener+TV) | 7.6 +/- 3.2 | 0.120 | 1.2 | 30 |
+| E2 (Wiener) | **8.1 +/- 3.6** | 0.098 | 0.8 | 18 |
+| E3 (FISTA+TV) | 7.4 +/- 2.9 | 0.125 | 12.5 | 35 |
+| E4 (ADMM+Tikhonov) | 7.7 +/- 3.1 | 0.115 | 8.3 | 40 |
+| E5 (PnP+TV) | 8.0 +/- 3.4 | **0.130** | 10.1 | 42 |
+
+- **Inter-method PSNR CoV**: 4.0%
+- **Best PSNR**: E2 (8.1 dB) -- used as Agent proxy in paper
+- **Expert proxy**: E3 (7.4 dB) -- FISTA+TV
+
+### SIM
+
+| Method | PSNR (dB) | SSIM | Time (s) | LoC |
+|--------|-----------|------|----------|-----|
+| E1 (Wiener-SIM+TV) | 27.6 +/- 1.9 | 0.780 | 2.1 | 32 |
+| E2 (Wiener-SIM) | 27.6 +/- 1.8 | 0.775 | 1.5 | 20 |
+| E3 (FISTA+TV) | 26.2 +/- 2.1 | 0.750 | 15.8 | 38 |
+| E4 (Richardson-Lucy) | 27.5 +/- 1.9 | 0.778 | 9.7 | 35 |
+| E5 (PnP+TV) | **27.7 +/- 2.0** | **0.785** | 12.3 | 42 |
+
+- **Inter-method PSNR CoV**: 2.3%
+- **Best PSNR**: E5 (27.7 dB) -- used as Agent proxy in paper
+- **Expert proxy**: E3 (26.2 dB) -- FISTA+TV
+
 ### Key Finding
 
-Inter-method PSNR CoV is **3.7%, 5.7%, and 1.9%** across the 3 modalities -- much smaller than sample-to-sample variation (~15%). This confirms that **forward-model selection dominates algorithm choice**.
+Inter-method PSNR CoV is **3.7%, 5.7%, 1.9%, 4.0%, and 2.3%** across the 5 modalities -- much smaller than sample-to-sample variation (~15%). This confirms that **forward-model selection dominates algorithm choice**.
 
 ## Why Are Absolute PSNRs 15--22 dB (Not 30+)?
 
 Three factors explain the moderate absolute PSNR:
 
-1. **Deliberately challenging acquisition conditions**: 60-view CT (vs 720+ clinical), 4-coil MRI (vs 8-32 clinical), single-shot CASSI (28 bands from 1 measurement)
+1. **Deliberately challenging acquisition conditions**: 60-view CT (vs 720+ clinical), 4-coil MRI (vs 8-32 clinical), single-shot CASSI (28 bands from 1 measurement), lensless camera (diffuse PSF), SIM (9 frames only)
 2. **Scale-invariant metrics**: Both x_hat and x_true normalized independently to [0,1] before PSNR/SSIM. This penalizes contrast differences even when structure is correct.
 3. **Classical algorithms only**: No neural networks or learned priors. All methods use only physics-based forward models + hand-crafted regularization.
 
@@ -143,7 +197,7 @@ The absolute PSNR is not the point -- **the inter-method consistency is**. All 5
 Both `x_hat` and `x_true` are independently normalized to [0, 1] before computing PSNR/SSIM (`evaluate.py:_normalize_01`). This makes metrics comparable across modalities with different dynamic ranges.
 
 ### Adjoint Consistency Test
-Before reconstruction, each modality's forward/adjoint pair is validated: `|<Ax, y> - <x, A^T y>| / |<Ax, y>| < 0.05`. All 3 modalities pass.
+Before reconstruction, each modality's forward/adjoint pair is validated: `|<Ax, y> - <x, A^T y>| / |<Ax, y>| < 0.05`. All 5 modalities pass.
 
 ### No Ground Truth During Reconstruction
 Experts receive only measurements + calibration metadata. Ground truth is used solely for post-hoc PSNR/SSIM evaluation.
@@ -157,10 +211,10 @@ expert_study/
   data_loader.py             -- Loads benchmark HDF5 from GCS cache
   expert_reconstructors.py   -- All 5 expert method implementations
   evaluate.py                -- Scale-invariant PSNR/SSIM computation
-  run_expert_study.py        -- Main orchestrator (5 experts x 3 modalities)
+  run_expert_study.py        -- Main orchestrator (5 experts x 5 modalities)
   expert_agents.py           -- Agent persona definitions
   results/
-    expert_study_results.json -- Raw results (15 runs)
+    expert_study_results.json -- Raw results (25 runs)
 ```
 
 ## How to Run
@@ -171,12 +225,12 @@ python papers/system_design/expert_study/run_expert_study.py
 ```
 
 Prerequisites:
-- Benchmark data cached at `/tmp/pwm_challenge_cache/datasets/Benchmark/{ct,mri,sd_cassi}/public/`
+- Benchmark data cached at `/tmp/pwm_challenge_cache/datasets/Benchmark/{ct,mri,sd_cassi,lensless,sim}/public/`
 - Or GCS access to `gs://pwm-benchmark-datasets/` (auto-downloaded via `gcs_dataset_helper.py`)
 
 ## Paper Integration
 
-- **Table 3** (tab:expert): Agent vs Expert PSNR for 3 real-data modalities
-- **Extended Data Table 7** (tab:expert_study): Full 5-method x 3-modality results
-- **Figure 5**: Visual comparison (Agent recon, Expert recon, difference map)
-- **Section 2.5** (Expert Comparison): Inter-method CoV analysis
+- **Table 3** (tab:expert): Agent vs Expert PSNR for 5 modalities (3 real-data + 2 novel system designs)
+- **Extended Data Table 4** (tab:expert_study): Full 5-method x 5-modality results
+- **Figure 5**: Visual comparison (Agent recon, Expert recon, difference map) for all 5 modalities
+- **Section 2.5** (Expert Comparison): Inter-method CoV analysis across 5 modalities

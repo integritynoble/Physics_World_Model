@@ -33,8 +33,9 @@ from papers.system_design.expert_study.evaluate import compute_metrics, _normali
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-MODALITIES = ["ct", "mri", "sd_cassi"]
-ROW_LABELS = {"ct": "CT", "mri": "MRI", "sd_cassi": "CASSI"}
+MODALITIES = ["ct", "mri", "sd_cassi", "lensless", "sim"]
+ROW_LABELS = {"ct": "CT", "mri": "MRI", "sd_cassi": "CASSI",
+              "lensless": "Lensless", "sim": "SIM"}
 COL_HEADERS = [
     r"Ground truth $\mathbf{x}^*$",
     "Agent recon.",
@@ -43,13 +44,16 @@ COL_HEADERS = [
 ]
 
 # Agent-proxy (highest PSNR method) and Expert-proxy (established method)
-AGENT_EXPERT = {"ct": "E1", "mri": "E5", "sd_cassi": "E4"}
-HUMAN_EXPERT = {"ct": "E3", "mri": "E3", "sd_cassi": "E1"}
+AGENT_EXPERT = {"ct": "E1", "mri": "E5", "sd_cassi": "E4",
+                "lensless": "E2", "sim": "E5"}
+HUMAN_EXPERT = {"ct": "E3", "mri": "E3", "sd_cassi": "E1",
+                "lensless": "E3", "sim": "E3"}
 
 # Display settings
 CASSI_BAND = 14
 N_SAMPLES = 5  # Load fewer samples, pick best
-SAMPLE_IDX = {"ct": 3, "mri": 1, "sd_cassi": 1}  # Pre-selected good samples
+SAMPLE_IDX = {"ct": 3, "mri": 1, "sd_cassi": 1,
+              "lensless": 1, "sim": 0}  # Pre-selected good samples
 
 FIGURES_DIR = ROOT / "papers" / "system_design" / "figures"
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -146,14 +150,15 @@ def generate_figure():
     fig_w = 7.2
     sample_h, sample_w = rows_data[0]["gt"].shape
     panel_aspect = sample_h / sample_w
+    n_rows = len(rows_data)
     panel_w = (fig_w - 0.6) / 4.0
     panel_h = panel_w * panel_aspect
-    fig_h = panel_h * 3 + 0.7
+    fig_h = panel_h * n_rows + 0.7
 
     fig = plt.figure(figsize=(fig_w, fig_h), dpi=300)
 
     gs = GridSpec(
-        3, 4, figure=fig,
+        n_rows, 4, figure=fig,
         left=0.07, right=0.99, bottom=0.01, top=0.93,
         wspace=0.04, hspace=0.08,
     )

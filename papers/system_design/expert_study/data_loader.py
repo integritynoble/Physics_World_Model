@@ -51,6 +51,10 @@ def _load_modality_sample(modality: str, grp: h5py.Group) -> dict:
         return _load_mri(grp)
     elif modality == "sd_cassi":
         return _load_cassi(grp)
+    elif modality == "lensless":
+        return _load_lensless(grp)
+    elif modality == "sim":
+        return _load_sim(grp)
     else:
         raise ValueError(f"Unsupported modality: {modality}")
 
@@ -125,6 +129,41 @@ def _load_cassi(grp: h5py.Group) -> dict:
     }
 
 
+def _load_lensless(grp: h5py.Group) -> dict:
+    x_true = np.array(grp["x_true"])
+    y = np.array(grp["y"])
+    psf = np.array(grp["H_ideal"])
+    return {
+        "measurements": y,
+        "calibration": {"psf": psf},
+        "x_true": x_true,
+        "shape_info": (
+            f"measurement shape: {y.shape} (blurred image), "
+            f"PSF: {psf.shape}, "
+            f"image size to reconstruct: {x_true.shape}"
+        ),
+    }
+
+
+def _load_sim(grp: h5py.Group) -> dict:
+    x_true = np.array(grp["x_true"])
+    y = np.array(grp["y"])
+    psf = np.array(grp["H_ideal"])
+    raw_frames = np.array(grp["raw_frames"])
+    return {
+        "measurements": y,
+        "calibration": {"psf": psf, "raw_frames": raw_frames},
+        "x_true": x_true,
+        "shape_info": (
+            f"measurement shape: {y.shape} (blurred sum image), "
+            f"raw SIM frames: {raw_frames.shape} "
+            f"(n_frames={raw_frames.shape[0]}, 3 orientations × 3 phases), "
+            f"PSF: {psf.shape}, "
+            f"image size to reconstruct: {x_true.shape}"
+        ),
+    }
+
+
 def get_design_brief(modality: str) -> str:
     """Return the one-sentence design brief for a modality."""
     briefs = {
@@ -145,6 +184,18 @@ def get_design_brief(modality: str) -> str:
             "snapshot spectral imaging (CASSI). Specify the forward model, "
             "select appropriate reconstruction algorithm, and produce "
             "reconstructed images."
+        ),
+        "lensless": (
+            "Design a computational imaging system for lensless imaging "
+            "with a known point-spread function. Specify the forward model, "
+            "select appropriate reconstruction algorithm, and produce "
+            "reconstructed images."
+        ),
+        "sim": (
+            "Design a computational imaging system for structured illumination "
+            "microscopy (SIM) with 3 orientations × 3 phases. Specify the "
+            "forward model, select appropriate reconstruction algorithm, "
+            "and produce super-resolved images."
         ),
     }
     return briefs[modality]

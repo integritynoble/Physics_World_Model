@@ -683,6 +683,277 @@ def expert_e5_cassi(samples):
 
 
 # ======================================================================
+# Lensless -- PSF deconvolution (C -> D)
+# ======================================================================
+
+def _lensless_fft_ops(psf):
+    """Return FFT-domain forward/adjoint for PSF convolution."""
+    H = np.fft.fft2(psf.astype(np.float64))
+    Hconj = np.conj(H)
+    HtH = np.abs(H) ** 2
+    L = float(np.max(HtH))
+
+    def fwd(x):
+        return np.real(np.fft.ifft2(H * np.fft.fft2(x)))
+
+    def adj(r):
+        return np.real(np.fft.ifft2(Hconj * np.fft.fft2(r)))
+
+    return fwd, adj, H, Hconj, HtH, L
+
+
+def _lensless_forward(x, psf):
+    """Lensless forward: convolution with PSF."""
+    H = np.fft.fft2(psf.astype(np.float64))
+    return np.real(np.fft.ifft2(H * np.fft.fft2(x.astype(np.float64))))
+
+
+def _lensless_adjoint(y, psf):
+    """Lensless adjoint: correlation with PSF."""
+    Hconj = np.conj(np.fft.fft2(psf.astype(np.float64)))
+    return np.real(np.fft.ifft2(Hconj * np.fft.fft2(y.astype(np.float64))))
+
+
+def expert_e1_lensless(samples):
+    """E1: Wiener deconvolution + TV denoising for lensless."""
+    from skimage.restoration import denoise_tv_chambolle
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        _, _, H, Hconj, HtH, _ = _lensless_fft_ops(psf)
+        Y = np.fft.fft2(y)
+        snr = 200.0
+        X_hat = Hconj / (HtH + 1.0 / snr) * Y
+        x_hat = np.real(np.fft.ifft2(X_hat))
+        x_hat = np.clip(x_hat, 0, None)
+        x_hat = denoise_tv_chambolle(x_hat, weight=0.005, max_num_iter=30)
+        results.append(np.clip(x_hat, 0, None))
+    return results
+
+
+def expert_e2_lensless(samples):
+    """E2: Pure Wiener deconvolution (no post-processing) for lensless."""
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        _, _, H, Hconj, HtH, _ = _lensless_fft_ops(psf)
+        Y = np.fft.fft2(y)
+        snr = 500.0
+        X_hat = Hconj / (HtH + 1.0 / snr) * Y
+        x_hat = np.real(np.fft.ifft2(X_hat))
+        results.append(np.clip(x_hat, 0, None))
+    return results
+
+
+def expert_e3_lensless(samples):
+    """E3: FISTA + TV for lensless (proximal gradient)."""
+    from skimage.restoration import denoise_tv_chambolle
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        fwd, adj_op, _, _, _, L = _lensless_fft_ops(psf)
+        step = 1.0 / L
+        x = adj_op(y)
+        z = x.copy()
+        t = 1.0
+        for _ in range(80):
+            grad = adj_op(fwd(z) - y)
+            x_new = z - step * grad
+            x_new = denoise_tv_chambolle(x_new, weight=0.003, max_num_iter=15)
+            x_new = np.clip(x_new, 0, None)
+            t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2
+            z = x_new + (t - 1) / t_new * (x_new - x)
+            x = x_new
+            t = t_new
+        results.append(x)
+    return results
+
+
+def expert_e4_lensless(samples):
+    """E4: ADMM with Tikhonov for lensless."""
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        _, _, H, Hconj, HtH, _ = _lensless_fft_ops(psf)
+        Y = np.fft.fft2(y)
+        rho = 0.01
+        x = np.zeros_like(y)
+        z = x.copy()
+        u = np.zeros_like(x)
+        for _ in range(50):
+            rhs = Hconj * Y + rho * np.fft.fft2(z - u)
+            x = np.real(np.fft.ifft2(rhs / (HtH + rho)))
+            v = x + u
+            # Tikhonov-like soft thresholding
+            z = v / (1.0 + 0.005 / rho)
+            z = np.clip(z, 0, None)
+            u = u + x - z
+        results.append(z)
+    return results
+
+
+def expert_e5_lensless(samples):
+    """E5: PnP-ADMM + TV denoiser for lensless."""
+    from skimage.restoration import denoise_tv_chambolle
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        _, _, H, Hconj, HtH, _ = _lensless_fft_ops(psf)
+        Y = np.fft.fft2(y)
+        rho = 0.01
+        x = np.zeros_like(y)
+        z = x.copy()
+        u = np.zeros_like(x)
+        for _ in range(40):
+            rhs = Hconj * Y + rho * np.fft.fft2(z - u)
+            x = np.real(np.fft.ifft2(rhs / (HtH + rho)))
+            v = x + u
+            z = denoise_tv_chambolle(v, weight=0.002 / rho, max_num_iter=20)
+            z = np.clip(z, 0, None)
+            u = u + x - z
+        results.append(z)
+    return results
+
+
+# ======================================================================
+# SIM -- Structured Illumination Microscopy (M -> C -> D)
+# ======================================================================
+
+def _sim_fft_ops(psf):
+    """Return FFT-domain forward/adjoint for SIM (single-frame deconv)."""
+    H = np.fft.fft2(psf.astype(np.float64))
+    Hconj = np.conj(H)
+    HtH = np.abs(H) ** 2
+    L = float(np.max(HtH))
+
+    def fwd(x):
+        return np.real(np.fft.ifft2(H * np.fft.fft2(x)))
+
+    def adj(r):
+        return np.real(np.fft.ifft2(Hconj * np.fft.fft2(r)))
+
+    return fwd, adj, H, Hconj, HtH, L
+
+
+def _sim_forward(x, psf):
+    """SIM forward model (single-frame): PSF convolution."""
+    H = np.fft.fft2(psf.astype(np.float64))
+    return np.real(np.fft.ifft2(H * np.fft.fft2(x.astype(np.float64))))
+
+
+def _sim_adjoint(y, psf):
+    """SIM adjoint (single-frame): correlation with PSF."""
+    Hconj = np.conj(np.fft.fft2(psf.astype(np.float64)))
+    return np.real(np.fft.ifft2(Hconj * np.fft.fft2(y.astype(np.float64))))
+
+
+def _sim_wiener(y, psf, snr=50.0):
+    """Wiener deconvolution for SIM."""
+    H = np.fft.fft2(psf.astype(np.float64))
+    Y = np.fft.fft2(y.astype(np.float64))
+    X_hat = np.conj(H) / (np.abs(H) ** 2 + 1.0 / snr) * Y
+    return np.clip(np.real(np.fft.ifft2(X_hat)), 0, None)
+
+
+def expert_e1_sim(samples):
+    """E1: Wiener-SIM + TV denoising."""
+    from skimage.restoration import denoise_tv_chambolle
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        x_hat = _sim_wiener(y, psf, snr=50.0)
+        x_hat = denoise_tv_chambolle(x_hat, weight=0.8, max_num_iter=30)
+        results.append(np.clip(x_hat, 0, None))
+    return results
+
+
+def expert_e2_sim(samples):
+    """E2: Pure Wiener-SIM (no post-processing)."""
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        x_hat = _sim_wiener(y, psf, snr=50.0)
+        results.append(x_hat)
+    return results
+
+
+def expert_e3_sim(samples):
+    """E3: FISTA + TV for SIM (proximal gradient)."""
+    from skimage.restoration import denoise_tv_chambolle
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        fwd, adj_op, _, _, _, L = _sim_fft_ops(psf)
+        step = 1.0 / L
+        x = adj_op(y)
+        z = x.copy()
+        t = 1.0
+        for _ in range(50):
+            grad = adj_op(fwd(z) - y)
+            x_new = z - step * grad
+            x_new = denoise_tv_chambolle(x_new, weight=2.0, max_num_iter=15)
+            x_new = np.clip(x_new, 0, None)
+            t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2
+            z = x_new + (t - 1) / t_new * (x_new - x)
+            x = x_new
+            t = t_new
+        results.append(x)
+    return results
+
+
+def expert_e4_sim(samples):
+    """E4: Richardson-Lucy + Tikhonov for SIM."""
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        fwd, adj_op, _, _, _, _ = _sim_fft_ops(psf)
+        # Richardson-Lucy iterations
+        x = np.ones_like(y) * np.mean(y)
+        eps = 1e-12
+        for _ in range(40):
+            fwd_x = fwd(x) + eps
+            ratio = y / fwd_x
+            correction = adj_op(ratio)
+            x = x * correction
+            x = np.clip(x, eps, None)
+        results.append(x)
+    return results
+
+
+def expert_e5_sim(samples):
+    """E5: PnP-ADMM + TV denoiser for SIM."""
+    from skimage.restoration import denoise_tv_chambolle
+    results = []
+    for s in samples:
+        y = s["measurements"].astype(np.float64)
+        psf = s["calibration"]["psf"].astype(np.float64)
+        _, _, H, Hconj, HtH, _ = _sim_fft_ops(psf)
+        Y = np.fft.fft2(y)
+        rho = 0.5
+        x = np.zeros_like(y)
+        z = x.copy()
+        u = np.zeros_like(x)
+        for _ in range(40):
+            rhs = Hconj * Y + rho * np.fft.fft2(z - u)
+            x = np.real(np.fft.ifft2(rhs / (HtH + rho)))
+            v = x + u
+            z = denoise_tv_chambolle(v, weight=1.0 / rho, max_num_iter=20)
+            z = np.clip(z, 0, None)
+            u = u + x - z
+        results.append(z)
+    return results
+
+
+# ======================================================================
 # Dispatch table
 # ======================================================================
 
@@ -702,17 +973,34 @@ EXPERT_DISPATCH = {
     ("E5", "ct"): expert_e5_ct,
     ("E5", "mri"): expert_e5_mri,
     ("E5", "sd_cassi"): expert_e5_cassi,
+    # Lensless
+    ("E1", "lensless"): expert_e1_lensless,
+    ("E2", "lensless"): expert_e2_lensless,
+    ("E3", "lensless"): expert_e3_lensless,
+    ("E4", "lensless"): expert_e4_lensless,
+    ("E5", "lensless"): expert_e5_lensless,
+    # SIM
+    ("E1", "sim"): expert_e1_sim,
+    ("E2", "sim"): expert_e2_sim,
+    ("E3", "sim"): expert_e3_sim,
+    ("E4", "sim"): expert_e4_sim,
+    ("E5", "sim"): expert_e5_sim,
 }
 
 EXPERT_LOC = {
     "E1": {"name": "Medical Imaging Physicist", "philosophy": "POCS/ADMM",
-            "loc": {"ct": 45, "mri": 38, "sd_cassi": 52}},
+            "loc": {"ct": 45, "mri": 38, "sd_cassi": 52,
+                    "lensless": 25, "sim": 28}},
     "E2": {"name": "Signal Processing Engineer", "philosophy": "FBP/Fourier",
-            "loc": {"ct": 18, "mri": 12, "sd_cassi": 30}},
+            "loc": {"ct": 18, "mri": 12, "sd_cassi": 30,
+                    "lensless": 12, "sim": 10}},
     "E3": {"name": "Applied Mathematician", "philosophy": "FISTA+TV",
-            "loc": {"ct": 22, "mri": 42, "sd_cassi": 55}},
+            "loc": {"ct": 22, "mri": 42, "sd_cassi": 55,
+                    "lensless": 30, "sim": 32}},
     "E4": {"name": "Computational Imaging Researcher", "philosophy": "CG/Iterative",
-            "loc": {"ct": 48, "mri": 45, "sd_cassi": 58}},
+            "loc": {"ct": 48, "mri": 45, "sd_cassi": 58,
+                    "lensless": 28, "sim": 25}},
     "E5": {"name": "Algorithm Engineer", "philosophy": "PnP-NLM",
-            "loc": {"ct": 52, "mri": 42, "sd_cassi": 65}},
+            "loc": {"ct": 52, "mri": 42, "sd_cassi": 65,
+                    "lensless": 35, "sim": 38}},
 }
