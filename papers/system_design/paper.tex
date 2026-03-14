@@ -270,7 +270,7 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
 $\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates it via a 6-gate compiler
-(Gates~1--6 map to Theorem~\ref{thm:design} error terms: DAG${\to}\eps_{\text{spec}}$, Chain${\to}\eps_{\text{trans}}$, Bounds${\to}$complexity, NL${\to}\eps_{\text{param}}$, Adj.${\to}$consistency, Err.${\to}\eps_{\text{FPB}}$); rejected designs trigger
+(Gates~1--3 from FPB compiler~\cite{paperII}; Gates~4--6 new to this work; mapping to Theorem~\ref{thm:design}: DAG${\to}\eps_{\text{spec}}$, Chain${\to}\eps_{\text{trans}}$, Bounds${\to}$complexity, NL${\to}\eps_{\text{param}}$, Adj.${\to}$consistency, Err.${\to}\eps_{\text{FPB}}$); rejected designs trigger
 redesign (dashed blue, up to 3 rounds).
 $\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
 $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
@@ -279,7 +279,7 @@ $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error b
 
 \textbf{Plan Agent ($\Agent_P$)} generates a \texttt{spec.md} from natural language, selecting FPB primitives, parameters, and noise models from the 170-modality registry.
 
-\textbf{Judge Agent ($\Agent_J$)} validates via a 6-gate compiler: (1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds, (4)~nonlinear constraints (VC dimension $\leq 3$), (5)~adjoint consistency, (6)~representation error.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
+\textbf{Judge Agent ($\Agent_J$)} validates via a 6-gate compiler that combines 3 gates inherited from the FPB compiler~\cite{paperII}----(1)~DAG acyclicity, (2)~canonical chain fidelity, (3)~complexity bounds---with 3 new agent-validation gates: (4)~nonlinear constraints (VC dimension $\leq 3$), (5)~adjoint consistency, (6)~representation error.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
 
 \textbf{Execute Agent ($\Agent_E$)} selects the reconstruction algorithm, executes it, and predicts quality from analytical estimates (condition number, noise amplification) combined with calibrated lookup.
 
@@ -638,11 +638,17 @@ uses the fast low-tier adjoint $A_{\text{low}}^T$ for gradient computation and t
 \subsection{6-Gate Compiler}
 % ------------------------------------------------------------------------
 
+The compiler combines 3 gates from the FPB compiler~\cite{paperII} with 3 new agent-validation gates.
+
+\medskip\noindent\textit{Gates inherited from the FPB compiler~\cite{paperII}:}
+
 \textbf{Gate~1 (DAG).}  Compiled into a typed \texttt{OperatorGraphSpec} (Pydantic~v2).  Acyclicity verified via Kahn's algorithm, $O(V{+}E)$.
 
 \textbf{Gate~2 (Chain).}  Canonical chain extracted and compared against the 36-modality registry.  Match is exact or within known equivalences ($\Sigma$ merged into $D$).
 
 \textbf{Gate~3 (Bounds).}  $N \leq 20$ nodes, $D \leq 10$ depth.
+
+\medskip\noindent\textit{New agent-validation gates (this work):}
 
 \textbf{Gate~4 (Nonlinear).}  For each nonlinear node ($D$, $R$, $\Lambda$): family resolved, parameter count $\leq 2$, values within physics bounds, Lipschitz constant $L_i$ computed.
 
