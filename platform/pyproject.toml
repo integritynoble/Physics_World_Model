@@ -55,6 +55,9 @@ dependencies = [
     # GCS signed URLs
     "google-cloud-storage>=2.14.0",
 
+    # Modal GPU inference (DL algorithm execution)
+    "modal>=0.73.0",
+
     # Payments
     "stripe>=10.0.0",
 ]
