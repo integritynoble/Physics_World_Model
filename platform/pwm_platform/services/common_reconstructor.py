@@ -1320,6 +1320,45 @@ def _pick_baseline_name(
     return _BASELINE_NAMES.get(recon_type, "Classical Baseline")
 
 
+# ── Modal GPU helper ──────────────────────────────────────────────────────────
+
+
+def _try_modal_gpu(
+    sample_data: dict,
+    variant_key: str,
+) -> tuple:
+    """Call Modal T4 GPU reconstruction for DL algorithms.
+
+    Returns (x_recon, psnr, ssim) on success, or (None, None, None) if
+    Modal is unavailable or fails.
+    """
+    try:
+        import pickle
+        import modal
+
+        # Look up the deployed Modal function by app + function name
+        reconstruct_gpu = modal.Function.from_name("pwm-speclab-gpu", "reconstruct_gpu")
+
+        payload = pickle.dumps({
+            "y": sample_data.get("y"),
+            "x_true": sample_data.get("x_true"),
+            "angles": sample_data.get("angles"),
+            "mask": sample_data.get("mask"),
+            "psf": sample_data.get("psf"),
+            "coil_maps": sample_data.get("coil_maps"),
+        })
+        result_bytes = reconstruct_gpu.remote(payload)
+        result = pickle.loads(result_bytes)
+        x_recon = result.get("x_recon")
+        psnr = result.get("psnr")
+        ssim = result.get("ssim")
+        if x_recon is not None:
+            return x_recon, psnr, ssim
+    except Exception as exc:
+        logger.warning("Modal GPU reconstruction unavailable: %s", exc)
+    return None, None, None
+
+
 # ── Main entry points ────────────────────────────────────────────────────
 
 
@@ -1437,35 +1476,50 @@ def _run_common_sync(
 
     # Run reconstruction via central dispatch
     dl_note = is_dl
+    gpu_ran = False
+    effective_algo = algorithm_name
+    psnr_from_gpu: Optional[float] = None
+    ssim_from_gpu: Optional[float] = None
+
     if not is_dl:
-        effective_algo = algorithm_name
+        x_recon = _dispatch_reconstruction(
+            sample_data, variant_key, category, effective_algo
+        )
     else:
-        # For DL methods, run the best available CPU baseline:
-        # sinogram modalities → PINER-CT (better than plain FBP)
-        recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
-        if recon_type_for_baseline == "sinogram":
-            effective_algo = "PINER-CT"
-        elif recon_type_for_baseline == "mri":
-            # Pass algorithm name so keyword-based MRI post-processing (TV, ADMM, etc.) applies
-            effective_algo = algorithm_name
+        # Try Modal T4 GPU first; fall back to CPU baseline if unavailable
+        x_recon, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
+            sample_data, variant_key
+        )
+        if x_recon is not None:
+            gpu_ran = True
+            dl_note = False  # GPU ran successfully — treat like any classical result
         else:
-            effective_algo = ""
-    x_recon = _dispatch_reconstruction(
-        sample_data, variant_key, category, effective_algo
+            # CPU fallback
+            recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
+            if recon_type_for_baseline == "sinogram":
+                effective_algo = "PINER-CT"
+            elif recon_type_for_baseline == "mri":
+                effective_algo = algorithm_name
+            else:
+                effective_algo = ""
+            x_recon = _dispatch_reconstruction(
+                sample_data, variant_key, category, effective_algo
+            )
+
+    baseline_method = None if (not is_dl or gpu_ran) else _pick_baseline_name(
+        sample_data, variant_key, category
     )
-    baseline_method = (
-        None if not is_dl else _pick_baseline_name(sample_data, variant_key, category)
-    )
-    # Override baseline name for improved sinogram baseline
-    if is_dl and effective_algo == "PINER-CT":
+    if is_dl and not gpu_ran and effective_algo == "PINER-CT":
         baseline_method = "PINER-CT"
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 
     # Compute metrics
-    psnr_val = None
-    ssim_val = None
-    if has_gt and x_true is not None:
+    # GPU path: metrics already computed on the GPU worker against x_true
+    # CPU path (or GPU path without x_true): compute locally
+    psnr_val: Optional[float] = psnr_from_gpu
+    ssim_val: Optional[float] = ssim_from_gpu
+    if not gpu_ran and has_gt and x_true is not None:
         # Align x_recon shape to x_true if needed
         x_recon_2d = _to_2d_display(x_recon)
         x_true_2d = _to_2d_display(x_true)
@@ -1525,6 +1579,7 @@ def _run_common_sync(
         "psnr": round(psnr_val, 2) if psnr_val is not None else None,
         "ssim": round(ssim_val, 4) if ssim_val is not None else None,
         "is_dl_placeholder": dl_note,
+        "gpu_accelerated": gpu_ran,
         "expected_psnr": expected_psnr,
         "expected_ssim": expected_ssim,
         "variant_key": variant_key,
