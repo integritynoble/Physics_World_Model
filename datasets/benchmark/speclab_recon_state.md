@@ -489,7 +489,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | SHORE | Classical | 24.6 dB | 0.745 | done |
 | CHARMED | Statistical | 26.8 dB | 0.782 | done |
 | DnCNN-DTI | Deep Learning | 29.3 dB | 0.831 | done |
-| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | done |
+| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | |
 | DTIFormer | Transformer | 34.8 dB | 0.912 |  |
 | SwinDTI | Transformer | 36.2 dB | 0.931 |  |
 | PhysDiffMRI | Physics-Informed | 37.5 dB | 0.941 |  |
@@ -643,7 +643,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 | done |
 | SVD-Ghost | Statistical | 25.1 dB | 0.748 | done |
 | DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 | done |
-| GAN-Ghost | Generative | 31.0 dB | 0.852 | done |
+| GAN-Ghost | Generative | 31.0 dB | 0.852 | |
 | TransGhost | Transformer | 33.8 dB | 0.897 |  |
 | SwinGhost | Transformer | 35.6 dB | 0.92 |  |
 | PhysGhost | Physics-Informed | 37.1 dB | 0.936 |  |
@@ -1493,18 +1493,18 @@ Last updated: 2026-03-14 | Total modalities: 168
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | FFT-OCT | Classical | 25.6 dB | 0.72 | done |
-| Speckle-Lee | Classical | 27.85 dB | 0.79 | done |
-| TV-Denoising | Classical | 28.5 dB | 0.815 | done |
-| BM4D | PnP | 29.3 dB | 0.85 | done |
-| NLM-OCT | PnP | 30.2 dB | 0.87 | done |
-| Speckle-DenoiseNet | Deep Learning | 33.1 dB | 0.925 | done |
-| U-Net-OCT | Deep Learning | 33.85 dB | 0.935 | done |
-| OCTA-Net | Deep Learning | 34.6 dB | 0.942 | done |
-| OCT-ViT | Vision Transformer | 36.12 dB | 0.958 | done |
-| RetinalFormer | Transformer | 36.35 dB | 0.96 | done |
-| SpeckleFormer | Vision Transformer | 36.85 dB | 0.964 | done |
-| DiffusionOCT | Diffusion | 37.52 dB | 0.97 | done |
-| ScoreOCT | Score-based | 37.95 dB | 0.973 | done |
+| Speckle-Lee | Classical | 27.85 dB | 0.79 | |
+| TV-Denoising | Classical | 28.5 dB | 0.815 | |
+| BM4D | PnP | 29.3 dB | 0.85 | |
+| NLM-OCT | PnP | 30.2 dB | 0.87 | |
+| Speckle-DenoiseNet | Deep Learning | 33.1 dB | 0.925 | |
+| U-Net-OCT | Deep Learning | 33.85 dB | 0.935 | |
+| OCTA-Net | Deep Learning | 34.6 dB | 0.942 | |
+| OCT-ViT | Vision Transformer | 36.12 dB | 0.958 | |
+| RetinalFormer | Transformer | 36.35 dB | 0.96 | |
+| SpeckleFormer | Vision Transformer | 36.85 dB | 0.964 | |
+| DiffusionOCT | Diffusion | 37.52 dB | 0.97 | |
+| ScoreOCT | Score-based | 37.95 dB | 0.973 | |
 
 ## Optical Diffraction Tomography (ODT) (`odt`) — coherent
 
