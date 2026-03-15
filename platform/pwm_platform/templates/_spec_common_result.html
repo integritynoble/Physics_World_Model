@@ -74,13 +74,13 @@
             <p class="text-lg font-bold text-blue-800 font-mono">{{ result.ssim }}</p>
         </div>
         {% endif %}
-        {% if result.is_dl_placeholder and result.expected_psnr is not none %}
+        {% if result.expected_psnr is not none %}
         <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-center">
             <p class="text-xs text-indigo-600 font-medium">Expected PSNR</p>
             <p class="text-lg font-bold text-indigo-800 font-mono">{{ result.expected_psnr }} dB</p>
         </div>
         {% endif %}
-        {% if result.is_dl_placeholder and result.expected_ssim is not none %}
+        {% if result.expected_ssim is not none %}
         <div class="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-center">
             <p class="text-xs text-purple-600 font-medium">Expected SSIM</p>
             <p class="text-lg font-bold text-purple-800 font-mono">{{ result.expected_ssim }}</p>

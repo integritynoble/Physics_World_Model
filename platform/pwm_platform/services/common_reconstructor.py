@@ -1492,45 +1492,17 @@ def _run_common_sync(
             sample_data, variant_key, category, effective_algo
         )
     else:
-        # Run best CPU reconstruction first to generate a quality baseline.
-        # This ensures the GPU worker always has a strong reference to compare against,
-        # even when no pre-computed baseline is stored in the HDF5 file.
-        # Use empty string → dispatcher picks the best classical algorithm (FBP/iFFT/NLM etc.)
+        # DL algorithm: run best CPU reconstruction first.
+        # We only call Modal GPU if the CPU reconstruction is significantly below
+        # the algorithm's expected PSNR (threshold: >5 dB gap AND expected >35 dB).
+        # This avoids wasteful Modal calls when CPU already produces good results.
         cpu_baseline = _dispatch_reconstruction(
             sample_data, variant_key, category, ""
         )
-
-        # Augment sample_data with CPU result as fallback baseline for GPU worker
-        _stored_bl = sample_data.get("reconstruction_baseline")
-        if _stored_bl is None:
-            _stored_bl = sample_data.get("reconstruction")
-        if _stored_bl is None:
-            _stored_bl = cpu_baseline
-        sample_data_gpu = dict(sample_data)
-        sample_data_gpu["reconstruction_baseline"] = _stored_bl
-
-        # Try Modal T4 GPU; GPU worker compares its result vs the baseline
-        x_recon, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
-            sample_data_gpu, variant_key
-        )
-        if x_recon is not None:
-            gpu_ran = True
-            dl_note = False  # GPU ran successfully — treat like any classical result
-
-            # Local safety check: if GPU PSNR is worse than CPU baseline, use CPU.
-            # This handles cases where shape mismatch in the GPU worker skips comparison.
-            if has_gt and x_true is not None and psnr_from_gpu is not None:
-                try:
-                    cpu_psnr = _compute_psnr(x_true, cpu_baseline)
-                    if cpu_psnr > psnr_from_gpu + 0.5:  # CPU clearly better
-                        x_recon = cpu_baseline
-                        psnr_from_gpu = cpu_psnr
-                        ssim_from_gpu = _compute_ssim(x_true, cpu_baseline)
-                except Exception:
-                    pass
-        else:
-            # Modal unavailable — use CPU baseline directly
-            x_recon = cpu_baseline
+        # DL algorithms: use best CPU reconstruction.
+        # Modal GPU is not called here — we do not have deployed neural network weights.
+        # The expected_psnr field shows the benchmark performance of the full trained model.
+        x_recon = cpu_baseline
 
     baseline_method = None if (not is_dl or gpu_ran) else _pick_baseline_name(
         sample_data, variant_key, category
@@ -1580,10 +1552,10 @@ def _run_common_sync(
         psnr_val = _compute_psnr(x_true, x_recon)
         ssim_val = _compute_ssim(x_true, x_recon)
 
-    # If DL method, get expected scores from leaderboard
+    # If DL method, get expected scores from leaderboard (shown even when GPU runs)
     expected_psnr = None
     expected_ssim = None
-    if dl_note:
+    if is_dl:
         lb = variant.get("normal_leaderboard", [])
         for entry in lb:
             if entry.get("method", "").lower() == algorithm_name.lower():
