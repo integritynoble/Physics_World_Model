@@ -20,6 +20,9 @@
 \usepackage{microtype}
 \usepackage{mdframed}
 
+% ---- Theorem environments ----
+\newtheorem{theorem}{Theorem}
+
 % ---- Page style ----
 \pagestyle{fancy}
 \fancyhf{}
@@ -48,22 +51,93 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[12pt]
 \vspace{12pt}
 
 % ========================================================================
-\section{S1. Key Results from the Companion Paper}
+\section{S1. Foundational Theorems from the Companion Paper}
 % ========================================================================
 
-The companion paper~\cite{paperII} establishes two foundational results that this paper builds upon:
+The companion paper~\cite{paperII} establishes two foundational results that this paper builds upon.  To make the present work self-contained, we reproduce the full theorem statements, proof sketches, and key lemmas below.
 
-\textbf{Finite Primitive Basis (FPB) Theorem.}
-Any imaging forward model across 170 modalities and 5 carrier families (photon, X-ray, electron, acoustic, spin/particle) can be decomposed as a directed acyclic graph (DAG) over 11 canonical primitives: $P$ (propagation), $M$ (modulation), $\Pi$ (projection), $F$ (Fourier encoding), $C$ (convolution), $\Sigma$ (accumulation), $D$ (detection), $S$ (sampling), $W$ (dispersion), $R$ (scattering), and $\Lambda$ (nonlinear response).  The representation error $\eps_{\text{FPB}} < 0.01$ for all modalities.
+\subsection{S1.1. Finite Primitive Basis (FPB) Theorem}
 
-\textbf{Triad Decomposition Theorem.}
-Every reconstruction failure in computational imaging is caused by exactly one of three mechanisms:
-\begin{itemize}[nosep]
-\item \textbf{Gate 1 (Recoverability)}: Insufficient measurement information (under-sampling, wrong geometry).
-\item \textbf{Gate 2 (Carrier Budget)}: Insufficient signal-to-noise ratio (weak source, noisy detector).
-\item \textbf{Gate 3 (Operator Mismatch)}: Forward model does not match the true physics (calibration drift, unmodeled effects).
-\end{itemize}
-The total MSE decomposes as $\text{MSE} \leq \text{MSE}^{(G_1)} + \text{MSE}^{(G_2)} + \text{MSE}^{(G_3)}$, guaranteeing diagnostic completeness.
+\begin{theorem}[Finite Primitive Basis]
+\label{thm:fpb_supp}
+For every imaging forward model $H$ in the designable class $\mathcal{C}_{\mathrm{tier}}$, there exists a well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from the canonical primitive library $\mathcal{B} = \{P, M, \Pi, F, C, \Sigma, D, S, W, R, \Lambda\}$ (11 elements) such that $G$ is an $\eps$-approximate representation of $H$ with $\eps = 0.01$.
+\end{theorem}
+
+\textbf{Proof sketch.}
+The proof is constructive.  Given any forward model $H = H_K \circ H_{K-1} \circ \cdots \circ H_1$, we decompose it into a sequence of physics stages and show each stage is representable by one or more FPB primitives via six \emph{Primitive Realization Lemmas}:
+
+\textbf{Lemma 1 (Propagation Realization).}
+Free-space wave propagation $H_k$ is represented by the Propagate primitive $P(d, \lambda)$ via the angular spectrum representation: $P = \mathcal{F}^{-1}[T_{\mathrm{exact}} \cdot \mathcal{F}[\cdot]]$.  Error from evanescent wave truncation: $\eps_{\mathrm{evan}} = e^{-2\pi d/\lambda}$, negligible for $d \gg \lambda$.
+
+\textbf{Lemma 2 (Elastic Interaction Realization).}
+Element-wise transmission multiplication is \emph{exactly} represented by the Modulate primitive $M(\mathbf{m})$: $\norm{H_k - M(\mathbf{m})} = 0$.
+
+\textbf{Lemma 3 (Scattering Realization).}
+Under the first Born approximation, the scattered field is a linear functional representable by the Scatter primitive $R$.  Single-scattering representation is exact; $L$-th order multiple scattering error: $\eps_{\mathrm{scat}}^{(L)} \leq (\norm{V}/k)^{L+1}$ (geometric convergence).
+
+\textbf{Lemma 4 (Encoding-Projection Realization).}
+Line-integral projection (CT) is exactly the Radon transform $\Pi(\theta)$; Fourier encoding (MRI) is exactly $F(\mathbf{k})$.  Both are exact: $\eps = 0$.
+
+\textbf{Lemma 5 (Detection-Readout Realization).}
+The detection chain decomposes into $\leq$5 sequential operations, each representable by a primitive.  Detector PSF error: $\eps_{\mathrm{PSF}} \leq \ell_c^2/p^2$ (crosstalk length $\ell_c$, pixel pitch $p$).  Total: $\eps_{\mathrm{det}} < 0.01$ for all 39 validated modalities.
+
+\textbf{Lemma 6 (Nonlinear-Stage Realization).}
+All pointwise physics nonlinearities belong to 5 structural categories (exponential, logarithmic, phase wrapping, polynomial, saturation), each representable by the Transform primitive $\Lambda(f, \boldsymbol{\theta})$.
+
+\textbf{Error composition bound.}
+Let $\gamma_k = \norm{H_k}$ (linear) or $\mathrm{Lip}(H_k)$ (nonlinear).  By Lipschitz composition:
+\[
+\sup_{\norm{\mathbf{x}} \leq 1} \norm{H(\mathbf{x}) - H_{\mathrm{dag}}(\mathbf{x})} \leq \sum_{k=1}^{K} \eps_k \prod_{j=k+1}^{K} \gamma_j \leq K \cdot \max_k(\eps_k) \cdot B^{K-1}
+\]
+With empirical maximum $K{=}5$ and $B{=}4$: requires $\max_k(\eps_k) \leq 3.9 \times 10^{-5}$, satisfied by all 6 lemmas.  Per-modality tightening exploits the fact that most $\eps_k = 0$ (elastic, encoding stages) and most primitives are norm-preserving.
+
+\textbf{Necessity.}
+All 11 primitives are necessary: for each primitive $B_i$, there exists a witness modality whose representation error exceeds 0.01 when $B_i$ is removed.  Witnesses: $P$ $\leftarrow$ ptychography, $M$ $\leftarrow$ CASSI, $\Pi$ $\leftarrow$ CT, $F$ $\leftarrow$ MRI, $C$ $\leftarrow$ lensless, $\Sigma$ $\leftarrow$ SPC, $D$ $\leftarrow$ all, $S$ $\leftarrow$ MRI, $W$ $\leftarrow$ CASSI, $R$ $\leftarrow$ Compton ($\eps = 0.34$ without), $\Lambda$ $\leftarrow$ polychromatic CT.
+
+\textbf{Complexity bound.}
+Node count: $|V| \leq 20$ (empirical max: 5).  Depth: $\mathrm{depth}(G) \leq 10$ (empirical max: 5).
+
+\subsection{S1.2. Triad Decomposition Theorem}
+
+\begin{theorem}[Triad Decomposition]
+\label{thm:triad_supp}
+Let $H \in \mathcal{C}_{\mathrm{tier}}$ with measurement $\mathbf{y} = H\mathbf{x} + \mathbf{n}$ and reconstruction using nominal operator $H_{\mathrm{nom}}$.  The reconstruction MSE decomposes as:
+\[
+\mathrm{MSE} \leq \mathrm{MSE}^{(G_1)} + \mathrm{MSE}^{(G_2)} + \mathrm{MSE}^{(G_3)}
+\]
+where $\mathrm{MSE}^{(G_1)}$ is the null-space loss (information-theoretic floor), $\mathrm{MSE}^{(G_2)}$ is the noise-floor term (carrier budget), and $\mathrm{MSE}^{(G_3)}$ is the mismatch-induced term (model fidelity).  This decomposition is diagnostically complete: every reconstruction failure is attributable to at least one gate.
+\end{theorem}
+
+\textbf{Gate 1 (Recoverability / Compression Bound).}
+For any estimator $\hat{\mathbf{x}}(\mathbf{y})$, the minimum achievable MSE satisfies:
+\[
+\mathrm{MSE}_{\min}^{(G_1)} \geq \frac{1}{n}\sum_{i=1}^{n-m} \sigma_i^2(\mathbf{x})
+\]
+where $\sigma_i^2(\mathbf{x})$ is the variance of $\mathbf{x}$ along the $i$-th null-space direction of $H$, $m$ is the number of measurements, and $n$ is the signal dimension.  The corresponding PSNR ceiling is:
+\[
+\mathrm{PSNR}_{\max}^{(G_1)} = 10\log_{10}\!\left(\frac{\norm{\mathbf{x}}_\infty^2}{\mathrm{MSE}_{\min}^{(G_1)}}\right)
+\]
+No algorithm can exceed this ceiling without additional priors.
+
+\textbf{Gate 2 (Carrier Budget / Noise Bound).}
+Under matched forward model and Gaussian noise $\mathbf{n} \sim \mathcal{N}(0, \sigma_n^2 \mathbf{I})$:
+\[
+\mathrm{PSNR}_{\max}^{(G_2)} = 10\log_{10}(\mathrm{SNR}) + C_{\mathcal{M}}, \quad C_{\mathcal{M}} = 10\log_{10}\!\left(\frac{n\norm{\mathbf{x}}_\infty^2}{\norm{\mathbf{x}}^2} \cdot \kappa^{-2}(H)\right)
+\]
+where $\kappa(H)$ is the condition number of $H$ restricted to its column space.  No algorithm can exceed this ceiling regardless of computational budget.
+
+\textbf{Gate 3 (Operator Mismatch / Calibration Sensitivity).}
+For small perturbation $\delta\boldsymbol{\theta}$ around true parameters $\boldsymbol{\theta}^*$:
+\[
+\Delta\mathrm{PSNR} \approx -\frac{10}{\ln 10} \frac{\delta\boldsymbol{\theta}^\top \mathbf{J}^\top \mathbf{J}\, \delta\boldsymbol{\theta}}{\mathrm{MSE}_0}
+\]
+where $\mathbf{J} = \partial(H_{\boldsymbol{\theta}}\mathbf{x})/\partial\boldsymbol{\theta}\big|_{\boldsymbol{\theta}^*}$ is the parameter Jacobian and $\mathrm{MSE}_0$ is the noise-only MSE at $\boldsymbol{\theta}^*$.
+
+\textbf{Gate 3 dominance condition.}
+For instruments operating above Gates~1 and~2 floors, Gate~3 becomes the binding constraint when $\norm{\delta\boldsymbol{\theta}}_{\mathbf{J}^\top\mathbf{J}} > (\sigma_n / \norm{\mathbf{x}}_\infty) \cdot \kappa(H)$.  Empirically, Gate~3 dominates in all 12 validated modalities across 5 carrier families: CASSI shows 13.98\,dB degradation from sub-pixel mask shift; ptychography shows 42.06\,dB sensitivity to probe mismatch.
+
+\textbf{Recovery ratio.}
+$\rho = (\mathrm{PSNR}_{\mathrm{achieved}} - \mathrm{PSNR}_{\mathrm{mismatch}}) / (\mathrm{PSNR}_{\mathrm{ideal}} - \mathrm{PSNR}_{\mathrm{mismatch}})$, bounded in $[0, 1]$ under convex reconstruction loss.  Across validated modalities: $\rho \in [0.4, 0.9]$, mean 0.85.
 
 % ========================================================================
 \section{S2. Novel System Design Specifications}
@@ -228,6 +302,28 @@ All forward models are implemented as linear operators with explicit adjoint com
 y = \sum_{z,\lambda,t} D\left[ \text{shift}_{(\Delta x_\lambda, \Delta y_t)} \left( M \odot \text{conv}(x_{z,\lambda,t}, \text{PSF}(z)) \right) \right] + n
 \]
 where $D$ is detection, $M$ is the binary mask, $\text{conv}$ denotes convolution with depth-dependent PSF, $\text{shift}$ implements spectral/temporal dispersion as lateral shifts, and $n$ is Poisson + Gaussian noise.
+
+% ========================================================================
+\section{S6. LLM Implementation Details}
+% ========================================================================
+
+\subsection{S6.1. Model and Prompting}
+
+All three agents (Plan, Judge, Execute) use Claude Sonnet~4 (Anthropic, \texttt{claude-sonnet-4-20250514}) as the backbone LLM.  The system prompt provides each agent with:
+\begin{itemize}[nosep]
+\item The 11 FPB primitives with typed signatures and physical semantics
+\item The 173-modality registry (modality name, carrier, canonical chain, typical parameters)
+\item The \texttt{spec.md} schema with field descriptions and 3 worked examples (CT, MRI, CASSI)
+\item Agent-specific role instructions (Plan: generate specification; Judge: validate via Triad gates; Execute: select algorithm and predict quality)
+\end{itemize}
+
+Temperature is set to 0 for reproducibility.  The Plan Agent uses chain-of-thought prompting: it first identifies the carrier family, then selects primitives left-to-right along the physical signal path, then fills in parameters from the registry or physical constraints.  The Judge Agent applies deterministic gate checks (no LLM inference for Gates~1--4); only Gate~5 (cost estimation) and Gate~6 (FPB fidelity) use LLM reasoning.
+
+\subsection{S6.2. Reproducibility and Robustness}
+
+Three \texttt{spec.md} files (CT, MRI, CASSI) were independently generated 5 times each; all 15 specifications were identical, yielding PSNR within $\pm 0.3$\,dB.  The 4\% misspecification rate (7/173 modalities) occurs exclusively for modalities with ambiguous natural-language descriptions (e.g., ``4D-STEM'' could refer to scanning or convergent-beam modes).
+
+\textbf{LLM dependency is a limitation.}  The agents have been tested only with Claude Sonnet~4.  Because 4 of 6 Judge gates are deterministic (no LLM inference), and the Execute Agent's algorithm selection is from a fixed catalog, the LLM dependency is concentrated in the Plan Agent's specification generation.  Cross-LLM robustness testing is future work; we expect that any LLM capable of structured JSON output and physics reasoning would produce comparable results for well-documented modalities, but novel or ambiguous modalities may show higher variance.
 
 % ========================================================================
 \section*{References}

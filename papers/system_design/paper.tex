@@ -81,7 +81,7 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 % ---- Summary (Nature: ≤150 words) ----
 \noindent\textbf{Summary.}
-Designing a computational imaging system requires weeks of specialist effort per modality~\cite{baker2016}.  Building on a companion representation theorem (11 primitives, 170+ modalities)~\cite{paperII}, we introduce \texttt{spec.md}---an 8-field specification format---and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error.  Our central result (Theorem~\ref{thm:design}) decomposes the design-to-real error into five independently bounded terms, each linked to a diagnostic gate and corrective action.  On 6 real-data modalities spanning all 5 carrier families, the framework matches expert quality ($99.6 \pm 3.1$\%) with up to $420\times$ setup-time reduction.  Ten novel system designs---composing primitives into chains recovering depth, spectra, and video from single shots (3D to 5D)---demonstrate compositional reach beyond the training registry.  Of 173 compilable modalities, 39 have quantitative validation and 6 are validated on real data.
+What determines reconstruction quality in computational imaging---the algorithm or the physical measurement design?  We show that forward-model specification is the primary quality determinant: inter-algorithm PSNR variation is below 6\% for well-conditioned systems but reaches 42--48\% for compressive ones, establishing a quantitative boundary between specification-dominated and algorithm-dominated regimes.  Building on a companion representation theorem (11 primitives, 170+ modalities)~\cite{paperII}, we introduce \texttt{spec.md} and three agents (Plan, Judge, Execute) that translate a one-sentence description into a validated forward model with bounded reconstruction error (Theorem~\ref{thm:design}).  On 6 real-data modalities spanning all 5 carrier families, the framework matches expert quality ($99.6 \pm 3.1$\%).  Ten novel system designs---composing primitives into chains from 3D to 5D---demonstrate compositional reach beyond the training registry.  Of 173 compilable modalities, 39 have quantitative validation and 6 are validated on real data.
 
 % ========================================================================
 \section{Introduction}
@@ -98,6 +98,7 @@ An imaging system is \emph{designable} if it admits a finite DAG decomposition o
 \item \textbf{\texttt{spec.md}}: a structured 8-field specification format that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware implementation (\emph{with what}), serving as a shareable, peer-reviewable scientific artifact (\hyperref[sec:specmd]{``The spec.md Specification Format''}).
 \item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Execute ($\Agent_E$) agents that generate, validate, and execute specifications over the FPB (\hyperref[sec:pipeline]{``The Three-Agent Pipeline''}).  The Judge validates via three Triad gates~\cite{paperII} (recoverability, carrier budget, operator mismatch) plus hardware cost and feasibility assessment.
 \item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a gate and a corrective action (Theorem~\ref{thm:design}).
+\item \textbf{Specification-dominance finding}: a prospective algorithm-comparison study on 8 modalities reveals that forward-model specification, not algorithm choice, is the primary quality determinant for well-conditioned systems (CoV $<$6\%), while compressive systems ($\geq$8:1) enter an algorithm-sensitive regime (CoV 42--48\%).
 \end{enumerate}
 
 \textbf{Scope.}
@@ -536,8 +537,8 @@ DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 
 For established modalities (CT, MRI, CASSI, OCT, DOT): mean quality ratio $99.6 \pm 3.1$\%.  For novel systems ($*$): $114 \pm 10$\% vs.\ generic baselines.  Agent specifications: 10--16 lines; expert code: 180--680 lines.
 
-\paragraph{Prospective algorithm-comparison study.}
-Five standard methods on 8 modalities (3 existing + 5 novel; Extended Data Table~\ref{tab:expert_study}): inter-method PSNR CoV ranges from 0.2\% (CASSI) to 47.8\% (spectral lensless).  For well-conditioned systems ($\leq$1:1 compression), forward-model selection dominates algorithm choice; for compressive systems ($\geq$8:1), iterative regularisation is essential.
+\paragraph{Specification-dominance study.}
+Five standard reconstruction methods on 8 modalities (3 existing + 5 novel; Extended Data Table~\ref{tab:expert_study}): inter-method PSNR CoV ranges from 0.2\% (CASSI) to 47.8\% (spectral lensless), revealing a sharp transition.  For well-conditioned systems ($\leq$1:1 compression), forward-model specification dominates algorithm choice (CoV $<$6\%); for compressive systems ($\geq$8:1), iterative regularisation becomes essential (CoV 42--48\%).  This finding---that getting the \emph{physics right} matters more than the \emph{numerics}---is the central empirical insight of this work.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Tier Hybrid Reconstruction}
@@ -552,23 +553,22 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
 \section{Discussion}
 % ========================================================================
 
-The $420\times$ setup-time reduction and $99.6\pm3.1$\% quality ratio on established modalities across 5 carrier families mean that a scientist can prototype a computational imaging system from a one-sentence description without imaging-physics expertise.  The algorithm-comparison study confirms that forward-model selection dominates algorithm choice for well-conditioned operators (CoV $<$6\% for CT, MRI, CASSI, lensless), while compressive systems show strong algorithm sensitivity (CoV 42--48\% for temporal-coded and spectral lensless).
+The central finding of this work is that \emph{forward-model specification---the choice and arrangement of physical operators---is the primary determinant of reconstruction quality}, not the reconstruction algorithm.  The algorithm-comparison study quantifies this: for well-conditioned systems (CT, MRI, CASSI, lensless), inter-method PSNR CoV is below 6\%, meaning any reasonable algorithm recovers essentially the same image once the physics is correctly specified.  For compressive systems ($\geq$8:1 compression), CoV rises to 42--48\%, delineating a quantitative boundary where algorithm selection becomes critical.  This specification-dominance principle explains why the framework matches expert quality ($99.6\pm3.1$\%) with order-of-magnitude reductions in development time (Table~\ref{tab:expert_comparison}): the agents automate the \emph{specification} step that matters most.
 
 \texttt{spec.md} decouples physics (\emph{what}) from numerics (\emph{how}) and hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The \texttt{system\_elements} field connects specifications to hardware feasibility, transforming the Judge from a mathematical validator into a system feasibility checker.  Three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances.
 
 The five-term error decomposition (Theorem~\ref{thm:design}) functions as a formal contract: each $\eps$ term maps to a corrective action (Figure~\ref{fig:error_decomp}).  The dominant residual is $\eps_{\text{param}}$, reducible by calibration; $\rho_{\text{recov}} \geq 0.85$ across all 5 carrier families.
 
 \textbf{Relation to existing work.}
-AI for scientific discovery~\cite{jumper2021alphafold,merchant2023gnome,wang2023scientific,boiko2023autonomous}, operator libraries~\cite{ong2019sigpy,adler2017odl,tachella2023deepinverse,kamilov2023pnp}, and automated experiment design~\cite{tian2023ci,arridge2019solving} address related problems but none provide a formal error decomposition from natural-language intent to reconstruction quality.
+AI for scientific discovery~\cite{jumper2021alphafold,merchant2023gnome,wang2023scientific,boiko2023autonomous} and automated experiment design~\cite{tian2023ci,boiko2023autonomous} address related problems but none provide a formal error decomposition from natural-language intent to reconstruction quality.  Operator libraries (ASTRA~\cite{aarle2016}, SigPy~\cite{ong2019sigpy}, ODL~\cite{adler2017odl}, DeepInverse~\cite{tachella2023deepinverse}) provide modular forward operators but require manual composition and parameter selection per modality; our contribution is the \emph{automated specification layer} above such libraries.  Learned reconstruction methods (MoDL~\cite{aggarwal2019modl}, learned primal-dual~\cite{adler2018learned}, PnP~\cite{kamilov2023pnp}) achieve higher per-modality PSNR than our model-based reconstructions but require training data and are single-modality; our framework trades per-modality optimality for cross-modality generality (173 modalities from one system).  The specification-dominance finding (CoV $<$6\%) suggests that \emph{where} in the physics space you measure matters more than \emph{how} you reconstruct, a principle that applies regardless of whether the reconstruction is classical or learned.
 
 \textbf{Limitations.}
-(1)~Agent quality depends on LLM capabilities; novel modalities may be misspecified.
-(2)~Quantitative reconstruction validated for 39/173 modalities; real data for 6.
-(3)~Expert times rely partly on published estimates.
-(4)~Execute Agent quality-prediction MAE degrades to 3.8\,dB for scattering-dominated systems.
-(5)~Tier-lifting demonstrated on 2 cross-tier combinations only.
-(6)~Theorem assumes convex $R(x)$.
-Systems combining depth encoding with dispersion but no spatial modulation compile through all gates but are flagged by the Judge as severely ill-conditioned (condition number $>10^6$), confirming that spatial coding is a prerequisite for dispersion-based compressive imaging.
+(1)~Reconstruction uses model-based algorithms (FISTA+TV, ADMM+TV); learned methods~\cite{aggarwal2019modl,adler2018learned} achieve higher per-modality PSNR (typically 3--8\,dB) but require training data unavailable for novel designs.  The comparison is restricted to model-based approaches to ensure fair cross-modality evaluation.
+(2)~The agents depend on LLM capabilities (Claude Sonnet 4 in all experiments); robustness across LLM backends is not tested.  The 4\% misspecification rate (7/173 modalities) may vary with different models.
+(3)~Development-time ratios ($\rho_{\text{time}}$) rely partly on published estimates of expert development timelines, not prospective head-to-head comparisons.  The ratios should be interpreted as order-of-magnitude indicators.
+(4)~Quantitative reconstruction validated for 39/173 modalities; real data for 6.  Novel system designs are validated only in simulation.
+(5)~Theorem~\ref{thm:design} tightness ratios ($\tau \in [1.8, 5.2]$, median 2.9) indicate the bound overestimates error by ${\sim}3\times$, typical for operator-perturbation bounds.  The bound's practical value lies in design \emph{rejection} (identifying when $\eps$ terms exceed thresholds) rather than precise error prediction; the maskless control group (condition number $>10^6$, PSNR 6--9\,dB) exemplifies a bad design correctly flagged by the Gate~1 bound.
+(6)~Tier-lifting demonstrated on 2 cross-tier combinations only.  Theorem assumes convex $R(x)$.
 
 The validation pyramid (173 $\to$ 39 $\to$ 6) identifies a clear path: extending benchmarks to the remaining ${\sim}$134 modalities, validating tier-lifting across additional Tier-3 physics, and improving calibration for scattering-dominated systems.
 
