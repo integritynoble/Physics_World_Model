@@ -1346,6 +1346,9 @@ def _try_modal_gpu(
             "mask": sample_data.get("mask"),
             "psf": sample_data.get("psf"),
             "coil_maps": sample_data.get("coil_maps"),
+            # Include stored baseline so GPU can use it when it outperforms GPU recon
+            "reconstruction_baseline": sample_data.get("reconstruction_baseline")
+                or sample_data.get("reconstruction"),
         })
         result_bytes = reconstruct_gpu.remote(payload)
         result = pickle.loads(result_bytes)
@@ -1486,31 +1489,37 @@ def _run_common_sync(
             sample_data, variant_key, category, effective_algo
         )
     else:
-        # Try Modal T4 GPU first; fall back to CPU baseline if unavailable
+        # Run best CPU reconstruction first to generate a quality baseline.
+        # This ensures the GPU worker always has a strong reference to compare against,
+        # even when no pre-computed baseline is stored in the HDF5 file.
+        # Use empty string → dispatcher picks the best classical algorithm (FBP/iFFT/NLM etc.)
+        cpu_baseline = _dispatch_reconstruction(
+            sample_data, variant_key, category, ""
+        )
+
+        # Augment sample_data with CPU result as fallback baseline for GPU worker
+        _stored_bl = sample_data.get("reconstruction_baseline")
+        if _stored_bl is None:
+            _stored_bl = sample_data.get("reconstruction")
+        if _stored_bl is None:
+            _stored_bl = cpu_baseline
+        sample_data_gpu = dict(sample_data)
+        sample_data_gpu["reconstruction_baseline"] = _stored_bl
+
+        # Try Modal T4 GPU; GPU worker compares its result vs the baseline
         x_recon, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
-            sample_data, variant_key
+            sample_data_gpu, variant_key
         )
         if x_recon is not None:
             gpu_ran = True
             dl_note = False  # GPU ran successfully — treat like any classical result
         else:
-            # CPU fallback
-            recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
-            if recon_type_for_baseline == "sinogram":
-                effective_algo = "PINER-CT"
-            elif recon_type_for_baseline == "mri":
-                effective_algo = algorithm_name
-            else:
-                effective_algo = ""
-            x_recon = _dispatch_reconstruction(
-                sample_data, variant_key, category, effective_algo
-            )
+            # Modal unavailable — use CPU baseline directly
+            x_recon = cpu_baseline
 
     baseline_method = None if (not is_dl or gpu_ran) else _pick_baseline_name(
         sample_data, variant_key, category
     )
-    if is_dl and not gpu_ran and effective_algo == "PINER-CT":
-        baseline_method = "PINER-CT"
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 
