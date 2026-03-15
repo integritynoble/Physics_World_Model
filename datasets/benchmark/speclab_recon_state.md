@@ -857,20 +857,20 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| GAP-TV | Classical | 26.83 dB | 0.754 | done |
-| FISTA-TV | Classical | 28.42 dB | 0.821 | done |
-| TVAL3 | Classical | 29.15 dB | 0.845 | done |
-| PnP-FFDNet | PnP | 29.65 dB | 0.852 | done |
-| EfficientSCI | Deep Learning | 34.21 dB | 0.949 | done |
-| MST-L | Transformer | 35.4 dB | 0.96 | done |
-| Restormer | Vision Transformer | 35.68 dB | 0.962 | done |
-| CST | Transformer | 35.92 dB | 0.965 | done |
-| HiSViT+ | Vision Transformer | 36.85 dB | 0.971 | done |
-| CSTrans | Transformer | 37.12 dB | 0.973 | done |
-| PromptSCI | Deep Learning | 37.35 dB | 0.975 | done |
-| DiffusionHSI | Diffusion | 37.95 dB | 0.978 | done |
-| ScoreSCI | Diffusion | 38.22 dB | 0.98 | done |
-| FlowHSI | Generative | 38.58 dB | 0.982 | done |
+| GAP-TV | Classical | 26.83 dB | 0.754 |  |
+| FISTA-TV | Classical | 28.42 dB | 0.821 |  |
+| TVAL3 | Classical | 29.15 dB | 0.845 |  |
+| PnP-FFDNet | PnP | 29.65 dB | 0.852 |  |
+| EfficientSCI | Deep Learning | 34.21 dB | 0.949 |  |
+| MST-L | Transformer | 35.4 dB | 0.96 |  |
+| Restormer | Vision Transformer | 35.68 dB | 0.962 |  |
+| CST | Transformer | 35.92 dB | 0.965 |  |
+| HiSViT+ | Vision Transformer | 36.85 dB | 0.971 |  |
+| CSTrans | Transformer | 37.12 dB | 0.973 |  |
+| PromptSCI | Deep Learning | 37.35 dB | 0.975 |  |
+| DiffusionHSI | Diffusion | 37.95 dB | 0.978 |  |
+| ScoreSCI | Diffusion | 38.22 dB | 0.98 |  |
+| FlowHSI | Generative | 38.58 dB | 0.982 |  |
 
 ## Ghost Imaging (`ghost_imaging`) — quantum
 
@@ -909,20 +909,20 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Laplacian Pyramid | Classical | 26.42 dB | 0.843 | done |
-| Lucy-Richardson | Classical | 26.61 dB | 0.848 | done |
-| Wiener-Deconv | Classical | 27.8 dB | 0.78 | done |
-| PnP-FFDNet | PnP | 31.45 dB | 0.885 | done |
-| PnP-ADMM | PnP | 31.89 dB | 0.941 | done |
-| LaplacianFormer | Deep Learning | 33.16 dB | 0.954 | done |
-| HDR-CNN | Deep Learning | 34.9 dB | 0.945 | done |
-| U-Net | Deep Learning | 35.1 dB | 0.968 | done |
-| ScorePhoto | Score-based | 35.49 dB | 0.971 | done |
-| Uformer | Vision Transformer | 36.2 dB | 0.96 | done |
-| PhotoFormer | Vision Transformer | 36.48 dB | 0.976 | done |
-| DeblurGaussian | Vision Transformer | 37.68 dB | 0.968 | done |
-| HDRFormer | Vision Transformer | 38.15 dB | 0.972 | done |
-| DiffusionPhoto | Diffusion | 38.82 dB | 0.978 | done |
+| Laplacian Pyramid | Classical | 26.42 dB | 0.843 |  |
+| Lucy-Richardson | Classical | 26.61 dB | 0.848 |  |
+| Wiener-Deconv | Classical | 27.8 dB | 0.78 |  |
+| PnP-FFDNet | PnP | 31.45 dB | 0.885 |  |
+| PnP-ADMM | PnP | 31.89 dB | 0.941 |  |
+| LaplacianFormer | Deep Learning | 33.16 dB | 0.954 |  |
+| HDR-CNN | Deep Learning | 34.9 dB | 0.945 |  |
+| U-Net | Deep Learning | 35.1 dB | 0.968 |  |
+| ScorePhoto | Score-based | 35.49 dB | 0.971 |  |
+| Uformer | Vision Transformer | 36.2 dB | 0.96 |  |
+| PhotoFormer | Vision Transformer | 36.48 dB | 0.976 |  |
+| DeblurGaussian | Vision Transformer | 37.68 dB | 0.968 |  |
+| HDRFormer | Vision Transformer | 38.15 dB | 0.972 |  |
+| DiffusionPhoto | Diffusion | 38.82 dB | 0.978 |  |
 
 ## Hyperspectral Remote Sensing (`hyperspectral_remote`) — remote_sensing
 
@@ -982,20 +982,20 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DAS | Classical | 24.5 dB | 0.68 | done |
-| DAS-CF | Classical | 25.8 dB | 0.72 | done |
-| PW-DAS | Classical | 26.15 dB | 0.735 | done |
-| PnP-ADMM | PnP | 28.12 dB | 0.81 | done |
-| ABLE | Deep Learning | 31.85 dB | 0.905 | done |
-| PnP-TV | PnP | 33.1 dB | 0.953 | done |
-| MU-Net | Deep Learning | 33.2 dB | 0.928 | done |
-| Phase-ADMM-Net | Deep Unrolling | 33.95 dB | 0.94 | done |
-| UltrasoundFormer | Vision Transformer | 34.85 dB | 0.945 | done |
-| BeamFormer | Transformer | 35.15 dB | 0.948 | done |
-| BeamDATA | Deep Learning | 35.32 dB | 0.951 | done |
-| AttentionBeam | Transformer | 35.52 dB | 0.952 | done |
-| DiffUS | Diffusion | 35.95 dB | 0.958 | done |
-| ScoreUS | Score-based | 36.28 dB | 0.962 | done |
+| DAS | Classical | 24.5 dB | 0.68 |  |
+| DAS-CF | Classical | 25.8 dB | 0.72 |  |
+| PW-DAS | Classical | 26.15 dB | 0.735 |  |
+| PnP-ADMM | PnP | 28.12 dB | 0.81 |  |
+| ABLE | Deep Learning | 31.85 dB | 0.905 |  |
+| PnP-TV | PnP | 33.1 dB | 0.953 |  |
+| MU-Net | Deep Learning | 33.2 dB | 0.928 |  |
+| Phase-ADMM-Net | Deep Unrolling | 33.95 dB | 0.94 |  |
+| UltrasoundFormer | Vision Transformer | 34.85 dB | 0.945 |  |
+| BeamFormer | Transformer | 35.15 dB | 0.948 |  |
+| BeamDATA | Deep Learning | 35.32 dB | 0.951 |  |
+| AttentionBeam | Transformer | 35.52 dB | 0.952 |  |
+| DiffUS | Diffusion | 35.95 dB | 0.958 |  |
+| ScoreUS | Score-based | 36.28 dB | 0.962 |  |
 
 ## Laser-Induced Breakdown Spectroscopy (LIBS) Imaging (`libs`) — spectroscopy
 
@@ -1044,10 +1044,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Bilateral Filter | Classical | 27.41 dB | 0.868 | done |
-| PnP-ADMM | PnP | 29.1 dB | 0.84 | done |
-| RandLA-Net | Deep Learning | 31.91 dB | 0.942 | done |
-| Point Transformer | Transformer | 33.13 dB | 0.954 | done |
+| Bilateral Filter | Classical | 27.41 dB | 0.868 |  |
+| PnP-ADMM | PnP | 29.1 dB | 0.84 |  |
+| RandLA-Net | Deep Learning | 31.91 dB | 0.942 |  |
+| Point Transformer | Transformer | 33.13 dB | 0.954 |  |
 
 ## Light Field Imaging (`light_field`) — computational
 
@@ -1261,41 +1261,41 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Template Match | Classical | 27.59 dB | 0.872 | done |
-| PnP-ADMM | PnP | 29.7 dB | 0.855 | done |
-| PatchCore | Deep Learning | 31.24 dB | 0.934 | done |
-| UniAD | Transformer | 34.61 dB | 0.965 | done |
+| Template Match | Classical | 27.59 dB | 0.872 |  |
+| PnP-ADMM | PnP | 29.7 dB | 0.855 |  |
+| PatchCore | Deep Learning | 31.24 dB | 0.934 |  |
+| UniAD | Transformer | 34.61 dB | 0.965 |  |
 
 ## Magnetic Force Microscopy (MFM) (`mfm`) — scanning_probe
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| BTR | Classical | 23.2 dB | 0.63 | done |
-| MLE Reconstruction | Classical | 24.12 dB | 0.773 | done |
-| Reg-Deconv | PnP | 26.8 dB | 0.77 | done |
-| TV-Deconvolution | PnP | 27.38 dB | 0.867 | done |
-| ScoreSPM | Score-based | 28.85 dB | 0.898 | done |
-| DiffusionSPM | Diffusion | 30.01 dB | 0.917 | done |
-| U-Net-SPM | Deep Learning | 30.29 dB | 0.921 | done |
-| DeepSPM | Deep Learning | 30.4 dB | 0.88 | done |
-| E2E-BTR | Deep Learning | 31.8 dB | 0.908 | done |
-| SPM-Former | Vision Transformer | 33.79 dB | 0.959 | done |
+| BTR | Classical | 23.2 dB | 0.63 |  |
+| MLE Reconstruction | Classical | 24.12 dB | 0.773 |  |
+| Reg-Deconv | PnP | 26.8 dB | 0.77 |  |
+| TV-Deconvolution | PnP | 27.38 dB | 0.867 |  |
+| ScoreSPM | Score-based | 28.85 dB | 0.898 |  |
+| DiffusionSPM | Diffusion | 30.01 dB | 0.917 |  |
+| U-Net-SPM | Deep Learning | 30.29 dB | 0.921 |  |
+| DeepSPM | Deep Learning | 30.4 dB | 0.88 |  |
+| E2E-BTR | Deep Learning | 31.8 dB | 0.908 |  |
+| SPM-Former | Vision Transformer | 33.79 dB | 0.959 |  |
 
 ## Magnetic Particle Imaging (MPI) (`magnetic_particle`) — experimental_science
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical | 24.65 dB | 0.791 | done |
-| Tikhonov | Classical | 25.4 dB | 0.71 | done |
-| Wiener Filter | Classical | 27.39 dB | 0.867 | done |
-| PnP-RED | PnP | 28.9 dB | 0.835 | done |
-| PnP-ADMM | PnP | 29.57 dB | 0.91 | done |
-| DiffusionExperimental | Diffusion | 30.6 dB | 0.926 | done |
-| Domain-Adapted-CNN | Deep Learning | 32.16 dB | 0.944 | done |
-| ExpFormer | Vision Transformer | 32.23 dB | 0.945 | done |
-| ResUNet | Deep Learning | 32.6 dB | 0.915 | done |
-| ScoreExperimental | Score-based | 33.54 dB | 0.957 | done |
-| SwinIR | Vision Transformer | 34.1 dB | 0.942 | done |
+| Matched Filter | Classical | 24.65 dB | 0.791 |  |
+| Tikhonov | Classical | 25.4 dB | 0.71 |  |
+| Wiener Filter | Classical | 27.39 dB | 0.867 |  |
+| PnP-RED | PnP | 28.9 dB | 0.835 |  |
+| PnP-ADMM | PnP | 29.57 dB | 0.91 |  |
+| DiffusionExperimental | Diffusion | 30.6 dB | 0.926 |  |
+| Domain-Adapted-CNN | Deep Learning | 32.16 dB | 0.944 |  |
+| ExpFormer | Vision Transformer | 32.23 dB | 0.945 |  |
+| ResUNet | Deep Learning | 32.6 dB | 0.915 |  |
+| ScoreExperimental | Score-based | 33.54 dB | 0.957 |  |
+| SwinIR | Vision Transformer | 34.1 dB | 0.942 |  |
 
 ## Magnetic Resonance Imaging (MRI) (`mri`) — medical
 
@@ -1359,19 +1359,19 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov | Classical | 26.5 dB | 0.74 | done |
-| LSQR | Classical | 27.8 dB | 0.785 | done |
-| ART | Classical | 28.2 dB | 0.8 | done |
-| Plug-and-Play | Deep Learning | 29.11 dB | 0.902 | done |
-| PnP-RED | PnP | 30.18 dB | 0.865 | done |
-| PnP-ADMM | PnP | 30.85 dB | 0.88 | done |
-| Deep Image Prior | Deep Learning | 33.72 dB | 0.932 | done |
-| SwinIR | Vision Transformer | 35.1 dB | 0.955 | done |
-| NAFNet | Vision Transformer | 35.75 dB | 0.962 | done |
-| Restormer | Vision Transformer | 36.28 dB | 0.968 | done |
-| CompFormer | Vision Transformer | 37.15 dB | 0.972 | done |
-| DiffusionCompute | Diffusion | 37.95 dB | 0.978 | done |
-| FlowCompute | Generative | 38.35 dB | 0.98 | done |
+| Tikhonov | Classical | 26.5 dB | 0.74 |  |
+| LSQR | Classical | 27.8 dB | 0.785 |  |
+| ART | Classical | 28.2 dB | 0.8 |  |
+| Plug-and-Play | Deep Learning | 29.11 dB | 0.902 |  |
+| PnP-RED | PnP | 30.18 dB | 0.865 |  |
+| PnP-ADMM | PnP | 30.85 dB | 0.88 |  |
+| Deep Image Prior | Deep Learning | 33.72 dB | 0.932 |  |
+| SwinIR | Vision Transformer | 35.1 dB | 0.955 |  |
+| NAFNet | Vision Transformer | 35.75 dB | 0.962 |  |
+| Restormer | Vision Transformer | 36.28 dB | 0.968 |  |
+| CompFormer | Vision Transformer | 37.15 dB | 0.972 |  |
+| DiffusionCompute | Diffusion | 37.95 dB | 0.978 |  |
+| FlowCompute | Generative | 38.35 dB | 0.98 |  |
 
 ## Muon Tomography (`muon_tomo`) — scientific_instrumentation
 
@@ -1449,35 +1449,35 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FFT-OCT | Classical | 25.6 dB | 0.72 | done |
-| Speckle-Lee | Classical | 27.85 dB | 0.79 | done |
-| TV-Denoising | Classical | 28.5 dB | 0.815 | done |
-| BM4D | PnP | 29.3 dB | 0.85 | done |
-| NLM-OCT | PnP | 30.2 dB | 0.87 | done |
-| Speckle-DenoiseNet | Deep Learning | 33.1 dB | 0.925 | done |
-| U-Net-OCT | Deep Learning | 33.85 dB | 0.935 | done |
-| OCTA-Net | Deep Learning | 34.6 dB | 0.942 | done |
-| OCT-ViT | Vision Transformer | 36.12 dB | 0.958 | done |
-| RetinalFormer | Transformer | 36.35 dB | 0.96 | done |
-| SpeckleFormer | Vision Transformer | 36.85 dB | 0.964 | done |
-| DiffusionOCT | Diffusion | 37.52 dB | 0.97 | done |
-| ScoreOCT | Score-based | 37.95 dB | 0.973 | done |
+| FFT-OCT | Classical | 25.6 dB | 0.72 |  |
+| Speckle-Lee | Classical | 27.85 dB | 0.79 |  |
+| TV-Denoising | Classical | 28.5 dB | 0.815 |  |
+| BM4D | PnP | 29.3 dB | 0.85 |  |
+| NLM-OCT | PnP | 30.2 dB | 0.87 |  |
+| Speckle-DenoiseNet | Deep Learning | 33.1 dB | 0.925 |  |
+| U-Net-OCT | Deep Learning | 33.85 dB | 0.935 |  |
+| OCTA-Net | Deep Learning | 34.6 dB | 0.942 |  |
+| OCT-ViT | Vision Transformer | 36.12 dB | 0.958 |  |
+| RetinalFormer | Transformer | 36.35 dB | 0.96 |  |
+| SpeckleFormer | Vision Transformer | 36.85 dB | 0.964 |  |
+| DiffusionOCT | Diffusion | 37.52 dB | 0.97 |  |
+| ScoreOCT | Score-based | 37.95 dB | 0.973 |  |
 
 ## Ocean Acoustic Tomography (`ocean_acoustic_tomo`) — experimental_science
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov | Classical | 25.4 dB | 0.71 | done |
-| Wiener Filter | Classical | 25.62 dB | 0.821 | done |
-| Matched Filter | Classical | 25.7 dB | 0.823 | done |
-| PnP-RED | PnP | 28.9 dB | 0.835 | done |
-| PnP-ADMM | PnP | 29.4 dB | 0.907 | done |
-| ExpFormer | Vision Transformer | 31.88 dB | 0.941 | done |
-| ResUNet | Deep Learning | 32.6 dB | 0.915 | done |
-| Domain-Adapted-CNN | Deep Learning | 33.58 dB | 0.958 | done |
-| ScoreExperimental | Score-based | 33.76 dB | 0.959 | done |
-| SwinIR | Vision Transformer | 34.1 dB | 0.942 | done |
-| DiffusionExperimental | Diffusion | 34.23 dB | 0.963 | done |
+| Tikhonov | Classical | 25.4 dB | 0.71 |  |
+| Wiener Filter | Classical | 25.62 dB | 0.821 |  |
+| Matched Filter | Classical | 25.7 dB | 0.823 |  |
+| PnP-RED | PnP | 28.9 dB | 0.835 |  |
+| PnP-ADMM | PnP | 29.4 dB | 0.907 |  |
+| ExpFormer | Vision Transformer | 31.88 dB | 0.941 |  |
+| ResUNet | Deep Learning | 32.6 dB | 0.915 |  |
+| Domain-Adapted-CNN | Deep Learning | 33.58 dB | 0.958 |  |
+| ScoreExperimental | Score-based | 33.76 dB | 0.959 |  |
+| SwinIR | Vision Transformer | 34.1 dB | 0.942 |  |
+| DiffusionExperimental | Diffusion | 34.23 dB | 0.963 |  |
 
 ## Ocean Color Remote Sensing (`ocean_color`) — remote_sensing
 
@@ -1632,37 +1632,37 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical | 23.5 dB | 0.64 | done |
-| Chirp Scaling | Classical | 24.82 dB | 0.796 | done |
-| Lee Filter | PnP | 25.62 dB | 0.821 | done |
-| Range-Doppler | Classical | 25.87 dB | 0.828 | done |
-| SAR-BM3D | PnP | 27.2 dB | 0.79 | done |
-| SAR-DRN | Deep Learning | 30.6 dB | 0.882 | done |
-| SAR-ResNet | Deep Learning | 30.88 dB | 0.929 | done |
-| SAR-CAM | Transformer | 32.1 dB | 0.912 | done |
-| SARDenoiserViT | Vision Transformer | 32.31 dB | 0.946 | done |
-| ScoreSAR | Score-based | 32.44 dB | 0.947 | done |
-| SARFormer | Vision Transformer | 33.85 dB | 0.932 | done |
-| PanSharpener++ | Deep Learning | 34.58 dB | 0.945 | done |
-| DiffusionSAR | Diffusion | 35.42 dB | 0.955 | done |
+| Matched Filter | Classical | 23.5 dB | 0.64 |  |
+| Chirp Scaling | Classical | 24.82 dB | 0.796 |  |
+| Lee Filter | PnP | 25.62 dB | 0.821 |  |
+| Range-Doppler | Classical | 25.87 dB | 0.828 |  |
+| SAR-BM3D | PnP | 27.2 dB | 0.79 |  |
+| SAR-DRN | Deep Learning | 30.6 dB | 0.882 |  |
+| SAR-ResNet | Deep Learning | 30.88 dB | 0.929 |  |
+| SAR-CAM | Transformer | 32.1 dB | 0.912 |  |
+| SARDenoiserViT | Vision Transformer | 32.31 dB | 0.946 |  |
+| ScoreSAR | Score-based | 32.44 dB | 0.947 |  |
+| SARFormer | Vision Transformer | 33.85 dB | 0.932 |  |
+| PanSharpener++ | Deep Learning | 34.58 dB | 0.945 |  |
+| DiffusionSAR | Diffusion | 35.42 dB | 0.955 |  |
 
 ## Polarization Microscopy (`polarization`) — microscopy
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical | 27.1 dB | 0.77 | done |
-| Wiener Filter | Classical | 28.35 dB | 0.805 | done |
-| TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
-| PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
-| PnP-DnCNN | PnP | 31.2 dB | 0.89 | done |
-| CARE | Deep Learning | 34.5 dB | 0.948 | done |
-| U-Net | Deep Learning | 35.15 dB | 0.956 | done |
-| Restormer | Vision Transformer | 35.8 dB | 0.962 | done |
-| ResUNet | Deep Learning | 35.85 dB | 0.964 | done |
-| DeconvFormer | Vision Transformer | 37.25 dB | 0.972 | done |
-| Restormer+ | Vision Transformer | 37.65 dB | 0.975 | done |
-| DiffDeconv | Diffusion | 38.12 dB | 0.979 | done |
-| ScoreMicro | Score-based | 38.48 dB | 0.981 | done |
+| Richardson-Lucy | Classical | 27.1 dB | 0.77 |  |
+| Wiener Filter | Classical | 28.35 dB | 0.805 |  |
+| TV-Deconvolution | Classical | 29.5 dB | 0.845 |  |
+| PnP-FISTA | PnP | 30.42 dB | 0.872 |  |
+| PnP-DnCNN | PnP | 31.2 dB | 0.89 |  |
+| CARE | Deep Learning | 34.5 dB | 0.948 |  |
+| U-Net | Deep Learning | 35.15 dB | 0.956 |  |
+| Restormer | Vision Transformer | 35.8 dB | 0.962 |  |
+| ResUNet | Deep Learning | 35.85 dB | 0.964 |  |
+| DeconvFormer | Vision Transformer | 37.25 dB | 0.972 |  |
+| Restormer+ | Vision Transformer | 37.65 dB | 0.975 |  |
+| DiffDeconv | Diffusion | 38.12 dB | 0.979 |  |
+| ScoreMicro | Score-based | 38.48 dB | 0.981 |  |
 
 ## Portal Imaging (EPID) (`portal_imaging`) — medical
 
@@ -1773,17 +1773,17 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Baseline Correction | Classical | 24.29 dB | 0.779 | done |
-| SG-ALS | Classical | 24.3 dB | 0.67 | done |
-| SVD | Classical | 26.39 dB | 0.843 | done |
-| PnP-DnCNN | PnP | 27.9 dB | 0.8 | done |
-| SpectraFormer | Vision Transformer | 30.64 dB | 0.926 | done |
-| ScoreSpectra | Score-based | 30.84 dB | 0.929 | done |
-| DiffusionSpectra | Diffusion | 31.04 dB | 0.931 | done |
-| CDAE | Deep Learning | 31.5 dB | 0.895 | done |
-| U-Net-Spectra | Deep Learning | 31.86 dB | 0.941 | done |
-| Cascade-UNet | Deep Learning | 33.0 dB | 0.922 | done |
-| PINN-Spectra | Deep Learning | 33.54 dB | 0.957 | done |
+| Baseline Correction | Classical | 24.29 dB | 0.779 |  |
+| SG-ALS | Classical | 24.3 dB | 0.67 |  |
+| SVD | Classical | 26.39 dB | 0.843 |  |
+| PnP-DnCNN | PnP | 27.9 dB | 0.8 |  |
+| SpectraFormer | Vision Transformer | 30.64 dB | 0.926 |  |
+| ScoreSpectra | Score-based | 30.84 dB | 0.929 |  |
+| DiffusionSpectra | Diffusion | 31.04 dB | 0.931 |  |
+| CDAE | Deep Learning | 31.5 dB | 0.895 |  |
+| U-Net-Spectra | Deep Learning | 31.86 dB | 0.941 |  |
+| Cascade-UNet | Deep Learning | 33.0 dB | 0.922 |  |
+| PINN-Spectra | Deep Learning | 33.54 dB | 0.957 |  |
 
 ## SPECT/CT Fusion (`spect_ct`) — multi_modal_fusion
 
@@ -2042,33 +2042,33 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SG-ALS | Classical | 24.3 dB | 0.67 | done |
-| SVD | Classical | 24.99 dB | 0.802 | done |
-| Baseline Correction | Classical | 25.07 dB | 0.804 | done |
-| PnP-DnCNN | PnP | 27.9 dB | 0.8 | done |
-| U-Net-Spectra | Deep Learning | 29.37 dB | 0.907 | done |
-| ScoreSpectra | Score-based | 30.2 dB | 0.92 | done |
-| DiffusionSpectra | Diffusion | 30.37 dB | 0.922 | done |
-| SpectraFormer | Vision Transformer | 30.48 dB | 0.924 | done |
-| CDAE | Deep Learning | 31.5 dB | 0.895 | done |
-| PINN-Spectra | Deep Learning | 32.88 dB | 0.951 | done |
-| Cascade-UNet | Deep Learning | 33.0 dB | 0.922 | done |
+| SG-ALS | Classical | 24.3 dB | 0.67 |  |
+| SVD | Classical | 24.99 dB | 0.802 |  |
+| Baseline Correction | Classical | 25.07 dB | 0.804 |  |
+| PnP-DnCNN | PnP | 27.9 dB | 0.8 |  |
+| U-Net-Spectra | Deep Learning | 29.37 dB | 0.907 |  |
+| ScoreSpectra | Score-based | 30.2 dB | 0.92 |  |
+| DiffusionSpectra | Diffusion | 30.37 dB | 0.922 |  |
+| SpectraFormer | Vision Transformer | 30.48 dB | 0.924 |  |
+| CDAE | Deep Learning | 31.5 dB | 0.895 |  |
+| PINN-Spectra | Deep Learning | 32.88 dB | 0.951 |  |
+| Cascade-UNet | Deep Learning | 33.0 dB | 0.922 |  |
 
 ## Streak Camera Imaging (`streak_camera`) — ultrafast
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| TwIST | Classical | 24.6 dB | 0.68 | done |
-| PnP-ADMM | PnP | 26.91 dB | 0.856 | done |
-| Temporal Filtering | Classical | 26.94 dB | 0.857 | done |
-| PnP-FFDNet | PnP | 28.3 dB | 0.82 | done |
-| ScoreUltrafast | Score-based | 29.43 dB | 0.908 | done |
-| Unfolded-CUP | Deep Unrolling | 29.78 dB | 0.913 | done |
-| DiffusionUltrafast | Diffusion | 30.14 dB | 0.919 | done |
-| CUP-Net | Deep Learning | 31.9 dB | 0.9 | done |
-| Temporal-U-Net | Deep Learning | 32.94 dB | 0.952 | done |
-| AL-DL | Deep Unrolling | 33.4 dB | 0.93 | done |
-| UltraFormer | Vision Transformer | 34.63 dB | 0.965 | done |
+| TwIST | Classical | 24.6 dB | 0.68 |  |
+| PnP-ADMM | PnP | 26.91 dB | 0.856 |  |
+| Temporal Filtering | Classical | 26.94 dB | 0.857 |  |
+| PnP-FFDNet | PnP | 28.3 dB | 0.82 |  |
+| ScoreUltrafast | Score-based | 29.43 dB | 0.908 |  |
+| Unfolded-CUP | Deep Unrolling | 29.78 dB | 0.913 |  |
+| DiffusionUltrafast | Diffusion | 30.14 dB | 0.919 |  |
+| CUP-Net | Deep Learning | 31.9 dB | 0.9 |  |
+| Temporal-U-Net | Deep Learning | 32.94 dB | 0.952 |  |
+| AL-DL | Deep Unrolling | 33.4 dB | 0.93 |  |
+| UltraFormer | Vision Transformer | 34.63 dB | 0.965 |  |
 
 ## Structured Illumination Microscopy (SIM) (`sim`) — microscopy
 
@@ -2083,10 +2083,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Phase Shifting | Classical | 24.87 dB | 0.798 | done |
-| Gray Code | Classical | 25.72 dB | 0.824 | done |
-| FPP-Net | Deep Learning | 33.13 dB | 0.954 | done |
-| PhaseFormer | Transformer | 34.25 dB | 0.963 | done |
+| Phase Shifting | Classical | 24.87 dB | 0.798 |  |
+| Gray Code | Classical | 25.72 dB | 0.824 |  |
+| FPP-Net | Deep Learning | 33.13 dB | 0.954 |  |
+| PhaseFormer | Transformer | 34.25 dB | 0.963 |  |
 
 ## Susceptibility-Weighted Imaging (SWI) (`swi`) — medical
 
@@ -2213,10 +2213,10 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener Filter | Classical | 24.8 dB | 0.68 | done |
-| BM3D | PnP | 28.5 dB | 0.82 | done |
-| Noise2Void | Deep Learning | 31.6 dB | 0.895 | done |
-| SwinIR | Transformer | 33.4 dB | 0.93 | done |
+| Wiener Filter | Classical | 24.8 dB | 0.68 |  |
+| BM3D | PnP | 28.5 dB | 0.82 |  |
+| Noise2Void | Deep Learning | 31.6 dB | 0.895 |  |
+| SwinIR | Transformer | 33.4 dB | 0.93 |  |
 
 ## Two-Photon / Multiphoton Microscopy (`two_photon`) — microscopy
 
@@ -2258,26 +2258,26 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| DAS | Classical | 24.5 dB | 0.68 | done |
-| DAS-CF | Classical | 25.8 dB | 0.72 | done |
-| PW-DAS | Classical | 26.15 dB | 0.735 | done |
-| PnP-ADMM | PnP | 28.12 dB | 0.81 | done |
-| PnP-TV | PnP | 29.5 dB | 0.909 | done |
-| ABLE | Deep Learning | 31.85 dB | 0.905 | done |
-| MU-Net | Deep Learning | 33.2 dB | 0.928 | done |
-| Phase-ADMM-Net | Deep Unrolling | 33.95 dB | 0.94 | done |
-| UltrasoundFormer | Vision Transformer | 34.85 dB | 0.945 | done |
-| BeamFormer | Transformer | 35.15 dB | 0.948 | done |
-| BeamDATA | Deep Learning | 35.32 dB | 0.951 | done |
-| AttentionBeam | Transformer | 35.52 dB | 0.952 | done |
-| DiffUS | Diffusion | 35.95 dB | 0.958 | done |
-| ScoreUS | Score-based | 36.28 dB | 0.962 | done |
+| DAS | Classical | 24.5 dB | 0.68 |  |
+| DAS-CF | Classical | 25.8 dB | 0.72 |  |
+| PW-DAS | Classical | 26.15 dB | 0.735 |  |
+| PnP-ADMM | PnP | 28.12 dB | 0.81 |  |
+| PnP-TV | PnP | 29.5 dB | 0.909 |  |
+| ABLE | Deep Learning | 31.85 dB | 0.905 |  |
+| MU-Net | Deep Learning | 33.2 dB | 0.928 |  |
+| Phase-ADMM-Net | Deep Unrolling | 33.95 dB | 0.94 |  |
+| UltrasoundFormer | Vision Transformer | 34.85 dB | 0.945 |  |
+| BeamFormer | Transformer | 35.15 dB | 0.948 |  |
+| BeamDATA | Deep Learning | 35.32 dB | 0.951 |  |
+| AttentionBeam | Transformer | 35.52 dB | 0.952 |  |
+| DiffUS | Diffusion | 35.95 dB | 0.958 |  |
+| ScoreUS | Score-based | 36.28 dB | 0.962 |  |
 
 ## Weather / Doppler Radar (`weather_radar`) — remote_sensing
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Pulse-Pair Doppler | Classical | 24.0 dB | 0.67 | done |
+| Pulse-Pair Doppler | Classical | 24.0 dB | 0.67 |  |
 | CLEAN-AP | Classical | 27.5 dB | 0.79 |  |
 | RainNet | Deep Learning | 31.8 dB | 0.9 |  |
 | Earthformer | Transformer | 33.5 dB | 0.935 |  |
