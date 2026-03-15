@@ -130,7 +130,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | PnP-ADMM (BLT) | PnP | 25.6 dB | 0.73 | done |
 | BLT-CNN | Deep Learning | 29.1 dB | 0.838 | done |
 | LISTA-BLT | Deep Unrolling | 30.4 dB | 0.864 | done |
-| DiffusionPINN-BLT | Physics-Informed | 32.9 dB | 0.902 |  |
+| DiffusionPINN-BLT | Physics-Informed | 32.9 dB | 0.902 | done |
 | BLT-Former | Transformer | 34.8 dB | 0.929 |  |
 | ScoreBLT | Diffusion | 36.5 dB | 0.952 |  |
 | PhysDiff-BLT | Diffusion | 38.1 dB | 0.967 |  |
@@ -1544,7 +1544,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| MLAA | Classical | 25.6 dB | 0.72 |  |
+| MLAA | Classical | 25.6 dB | 0.72 | done |
 | Image Registration | Classical | 27.64 dB | 0.873 |  |
 | Guided Reconstruction | PnP | 28.62 dB | 0.893 |  |
 | MR-Guided | PnP | 29.2 dB | 0.848 |  |
@@ -2035,7 +2035,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 | ANDROMEDA | Statistical | 28.8 dB | 0.838 | done |
 | CNN-Coronagraph | Deep Learning | 32.1 dB | 0.878 | done |
 | SpeckleLearn | Deep Learning | 34.5 dB | 0.91 | done |
-| CoronFormer | Transformer | 36.8 dB | 0.935 |  |
+| CoronFormer | Transformer | 36.8 dB | 0.935 | done |
 | DiffusionCoron | Diffusion | 38.9 dB | 0.955 |  |
 
 ## Stimulated Raman Scattering (SRS) Microscopy (`srs`) — spectroscopy

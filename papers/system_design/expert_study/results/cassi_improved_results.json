@@ -1,0 +1,67 @@
+[
+  {
+    "agent_id": "E1",
+    "agent_name": "POCS/ADMM",
+    "philosophy": "POCS/ADMM",
+    "modality": "sd_cassi",
+    "psnr_mean": 18.92,
+    "psnr_std": 3.1,
+    "ssim_mean": 0.5187,
+    "ssim_std": 0.1056,
+    "wall_clock_s": 1246.52,
+    "n_samples_success": 5,
+    "success": true
+  },
+  {
+    "agent_id": "E2",
+    "agent_name": "FBP/Fourier",
+    "philosophy": "FBP/Fourier",
+    "modality": "sd_cassi",
+    "psnr_mean": 18.92,
+    "psnr_std": 3.1,
+    "ssim_mean": 0.5186,
+    "ssim_std": 0.1057,
+    "wall_clock_s": 807.87,
+    "n_samples_success": 5,
+    "success": true
+  },
+  {
+    "agent_id": "E3",
+    "agent_name": "FISTA+TV",
+    "philosophy": "FISTA+TV",
+    "modality": "sd_cassi",
+    "psnr_mean": 18.89,
+    "psnr_std": 3.1,
+    "ssim_mean": 0.5168,
+    "ssim_std": 0.1055,
+    "wall_clock_s": 1264.37,
+    "n_samples_success": 5,
+    "success": true
+  },
+  {
+    "agent_id": "E4",
+    "agent_name": "CG/Iterative",
+    "philosophy": "CG/Iterative",
+    "modality": "sd_cassi",
+    "psnr_mean": 18.92,
+    "psnr_std": 3.1,
+    "ssim_mean": 0.5189,
+    "ssim_std": 0.1056,
+    "wall_clock_s": 1239.4,
+    "n_samples_success": 5,
+    "success": true
+  },
+  {
+    "agent_id": "E5",
+    "agent_name": "PnP-NLM",
+    "philosophy": "PnP-NLM",
+    "modality": "sd_cassi",
+    "psnr_mean": 19.01,
+    "psnr_std": 3.09,
+    "ssim_mean": 0.564,
+    "ssim_std": 0.0989,
+    "wall_clock_s": 1265.9,
+    "n_samples_success": 5,
+    "success": true
+  }
+]

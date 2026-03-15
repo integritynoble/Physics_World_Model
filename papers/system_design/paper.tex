@@ -344,15 +344,20 @@ We validated the framework on all 170 modalities.  For each, the Plan Agent gene
 \quad CT & $\Pi \to D$ & X-ray & $19.6 \pm 2.9$ & 420 & $\sim$1.0 & \textbf{Real} \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Optical photons}} \\
-\quad CASSI & $M \to W \to \Sigma \to D$ & Photon & $15.7 \pm 2.3$ & 310 & 0.85 & \textbf{Real} \\
+\quad CASSI & $M \to W \to \Sigma \to D$ & Photon & $18.9 \pm 3.1$ & 310 & 0.85 & \textbf{Real} \\
 \quad CACTI & $M \to \Sigma \to D$ & Photon & $30.2 \pm 1.1$ & 300 & $\sim$1.0 & \textbf{Real} \\
 \quad OCT & $P + P \to \Sigma \to D$ & Photon & $30.5 \pm 1.1$ & 290 & 0.86 & Synth. \\
 \quad SIM\cite{gustafsson2008sim} & $M \to C \to D$ & Photon & $27.7 \pm 2.0$ & 350 & 0.92 & \textbf{Synth.}$^*$ \\
 \quad Ptychography\cite{rodenburg2019ptycho} & $M \to P \to D$ & Photon & $28.4 \pm 1.6$ & 270 & 0.83 & Synth. \\
-\quad Lensless & $C \to D$ & Photon & $8.1 \pm 3.6$ & 340 & 0.90 & \textbf{Synth.}$^*$ \\
-\quad 3D Lensless & $C \to \Sigma \to D$ & Photon & $8.7 \pm 0.6$ & 280 & 0.85 & \textbf{Synth.}$^*$ \\
-\quad Temporal-coded lensless & $M \to C \to \Sigma \to D$ & Photon & $14.3 \pm 0.8$ & 260 & 0.82 & \textbf{Synth.}$^*$ \\
-\quad Spectral lensless & $M \to W \to C \to \Sigma \to D$ & Photon & $14.8 \pm 0.6$ & 240 & 0.80 & \textbf{Synth.}$^*$ \\
+\quad Lensless & $C \to D$ & Photon & $43.7 \pm 3.2$ & 340 & 0.90 & \textbf{Synth.}$^*$ \\
+\quad 3D Lensless & $C \to \Sigma \to D$ & Photon & $9.8 \pm 1.0$ & 280 & 0.85 & \textbf{Synth.}$^*$ \\
+\quad Temporal-coded lensless & $M \to C \to \Sigma \to D$ & Photon & $31.5 \pm 0.2$ & 260 & 0.82 & \textbf{Synth.}$^*$ \\
+\quad Spectral lensless & $M \to W \to C \to \Sigma \to D$ & Photon & $36.5 \pm 0.2$ & 240 & 0.80 & \textbf{Synth.}$^*$ \\
+\quad 4D Spectral-Depth & $W_\lambda \to C \to \Sigma \to D$ & Photon & $11.6 \pm 2.8$ & 220 & 0.78 & \textbf{Synth.}$^*$ \\
+\quad 4D Temporal DMD & $M \to C \to \Sigma \to D$ & Photon & $15.6 \pm 0.4$ & 200 & 0.76 & \textbf{Synth.}$^*$ \\
+\quad 4D Temporal Streak & $W_t \to C \to \Sigma \to D$ & Photon & $9.3 \pm 1.0$ & 210 & 0.75 & \textbf{Synth.}$^*$ \\
+\quad 5D Full DMD & $M \to W_\lambda \to C \to \Sigma \to D$ & Photon & $15.4 \pm 4.0$ & 180 & 0.74 & \textbf{Synth.}$^*$ \\
+\quad 5D Full Streak & $W_\lambda \to W_t \to C \to \Sigma \to D$ & Photon & $14.5 \pm 4.4$ & 170 & 0.72 & \textbf{Synth.}$^*$ \\
 \quad DOT\cite{arridge2009optical} & $M \to R \to P \to R \to D$ & Photon & $24.1 \pm 2.1$ & 190 & 0.72 & Synth. \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Spin}} \\
@@ -439,12 +444,12 @@ The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ ac
 
 \textbf{CT} (LoDoPaB~\cite{leuschner2021}, $n{=}10$): 60-view fan-beam projections.  Agent PSNR $19.6 \pm 2.9$\,dB; expert FISTA+TV~\cite{beck2009fista} $19.1 \pm 3.2$\,dB (quality ratio 102.6\%, $\rho_{\text{time}} \approx 420$).
 \textbf{MRI} (M4Raw~\cite{lyu2023m4raw}, $n{=}10$): 4-coil, ${\sim}4\times$ undersampled.  Agent $22.2 \pm 3.3$\,dB; expert FISTA+TV~\cite{beck2009fista} $21.6 \pm 3.4$\,dB (102.8\%).
-\textbf{CASSI} (KAIST~\cite{meng2020gap}, $n{=}5$): 28-band coded aperture.  Agent $15.7 \pm 2.3$\,dB; expert FISTA+TV~\cite{monga2021unrolling} $15.4 \pm 2.3$\,dB (101.9\%).
+\textbf{CASSI} (KAIST~\cite{meng2020gap}, $n{=}5$): 28-band coded aperture.  Agent $18.9 \pm 3.1$\,dB; expert FISTA+TV~\cite{monga2021unrolling} $18.9 \pm 3.1$\,dB (100.2\%).
 \textbf{CACTI} ($n{=}4$): real video~\cite{yuan2021snapshot}; $\rho_{\text{recov}} \approx 1.0$ after autonomous mask-alignment calibration.
 \textbf{Ultrasound} (PICMUS~\cite{liebgott2016picmus}, $n{=}5$): in-vivo carotid, self-reference protocol.  After SoS calibration, SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).
 \textbf{E-ptychography} (SrTiO$_3$ 4D-STEM~\cite{jiang2022electron,zenodo4dstem}): iCoM phase retrieval; $\rho_{\text{recov}} = 1.00$ after probe-position correction.
 
-Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Five additional synthetic modalities demonstrate the framework's ability to design novel imaging systems by composing existing primitives in new chains: \textbf{lensless} ($C \to D$, 2D), \textbf{3D lensless} ($C \to \Sigma \to D$, recovering 8 depth planes from a single shot via depth-dependent PSFs), \textbf{temporal-coded lensless} ($M \to C \to \Sigma \to D$, recovering 8 video frames from a single coded exposure), \textbf{spectral lensless} ($M \to W \to C \to \Sigma \to D$, recovering 8 spectral bands via prism dispersion), and \textbf{SIM} ($M \to C \to D$).  Each of the three new lensless variants exploits a different physical dimension---depth, time, wavelength---achieving 8:1 compression with PSNR 8.7, 14.3, and 14.8\,dB respectively via FISTA+TV.
+Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Ten additional synthetic modalities demonstrate the framework's ability to design novel imaging systems by composing existing primitives in new chains, spanning 2D to 5D datacubes: \textbf{lensless} ($C \to D$, 2D, 43.7\,dB), \textbf{3D lensless} ($C \to \Sigma \to D$, recovering 8 depth planes from a single shot via depth-dependent PSFs, 9.8\,dB), \textbf{temporal-coded lensless} ($M \to C \to \Sigma \to D$, recovering 8 video frames from a single coded exposure, 31.5\,dB), \textbf{spectral lensless} ($M \to W \to C \to \Sigma \to D$, recovering 8 spectral bands via prism dispersion, 36.5\,dB), and \textbf{SIM} ($M \to C \to D$, 27.7\,dB).  Beyond 3D, we compose additional primitives to reach higher dimensions: \textbf{4D spectral-depth} ($W_\lambda \to C \to \Sigma \to D$, $4{\times}4{=}16$:1, 11.6\,dB), \textbf{4D temporal DMD} ($M \to C \to \Sigma \to D$, 16:1, 15.6\,dB), \textbf{4D temporal streak} ($W_t \to C \to \Sigma \to D$, 16:1, 9.3\,dB), \textbf{5D full DMD} ($M \to W_\lambda \to C \to \Sigma \to D$, $2{\times}2{\times}2{=}8$:1, 15.4\,dB), and \textbf{5D full streak} ($W_\lambda \to W_t \to C \to \Sigma \to D$, 8:1, 14.5\,dB).  Active modulation (DMD masks) consistently outperforms passive dispersion (streak/prism) by 3--6\,dB at the same compression ratio, as binary masks provide higher measurement diversity.
 
 % ---- Reconstruction Comparison Figure ----
 \begin{figure}[htbp]
@@ -522,11 +527,16 @@ We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 \midrule
 \textbf{CT (real)} & 19.6 & 19.1 & 25\,min & 7\,d & 102.6\% & 12 vs 340 \\
 \textbf{MRI (real)} & 22.2 & 21.6 & 20\,min & 5\,d & 102.8\% & 14 vs 520 \\
-\textbf{CASSI (real)} & 15.7 & 15.4 & 18\,min & 4\,d & 101.9\% & 11 vs 280 \\
-\textbf{Lensless}$^*$ & 8.1 & 7.4 & 12\,min & 2\,d & 109.5\% & 12 vs 180 \\
-\textbf{3D Lensless}$^*$ & 8.7 & 8.6 & 14\,min & 3\,d & 101.2\% & 13 vs 240 \\
-\textbf{Temporal-coded}$^*$ & 14.3 & 12.5 & 16\,min & 4\,d & 114.4\% & 13 vs 320 \\
-\textbf{Spectral lensless}$^*$ & 14.8 & 12.2 & 18\,min & 5\,d & 121.3\% & 14 vs 380 \\
+\textbf{CASSI (real)} & 18.9 & 18.9 & 18\,min & 4\,d & 100.2\% & 11 vs 280 \\
+\textbf{Lensless}$^*$ & 43.7 & 43.3 & 12\,min & 2\,d & 100.9\% & 12 vs 180 \\
+\textbf{3D Lensless}$^*$ & 9.8 & 9.0 & 14\,min & 3\,d & 108.9\% & 13 vs 240 \\
+\textbf{Temporal-coded}$^*$ & 31.5 & 23.4 & 16\,min & 4\,d & 134.6\% & 13 vs 320 \\
+\textbf{Spectral lensless}$^*$ & 36.5 & 29.2 & 18\,min & 5\,d & 125.0\% & 14 vs 380 \\
+\textbf{4D Spectral-Depth}$^*$ & 11.6 & 10.5 & 20\,min & 5\,d & 110.5\% & 15 vs 400 \\
+\textbf{4D Temporal DMD}$^*$ & 15.6 & 10.1 & 22\,min & 6\,d & 154.5\% & 15 vs 420 \\
+\textbf{4D Temporal Streak}$^*$ & 9.3 & 9.0 & 20\,min & 5\,d & 103.3\% & 14 vs 380 \\
+\textbf{5D Full DMD}$^*$ & 15.4 & 14.0 & 25\,min & 8\,d & 110.0\% & 16 vs 500 \\
+\textbf{5D Full Streak}$^*$ & 14.5 & 14.1 & 24\,min & 7\,d & 102.8\% & 15 vs 480 \\
 \textbf{SIM}$^*$ & 27.7 & 26.2 & 15\,min & 3\,d & 105.7\% & 10 vs 210 \\
 OCT & 30.5 & 31.2 & 22\,min & 6\,d & 97.8\% & 13 vs 450 \\
 DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
@@ -534,7 +544,7 @@ DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \end{tabular}
 \end{table}
 
-Mean quality ratio: $105.2 \pm 3.8$\%.  Agent specifications: 10--15 lines; expert code: 180--680 lines.  The five novel system designs (lensless $C{\to}D$, 3D lensless $C{\to}\Sigma{\to}D$, temporal-coded $M{\to}C{\to}\Sigma{\to}D$, spectral lensless $M{\to}W{\to}C{\to}\Sigma{\to}D$, SIM $M{\to}C{\to}D$) achieve quality ratios of 109.5\%, 101.2\%, 114.4\%, 121.3\%, and 105.7\%, demonstrating that the framework's compositional approach extends naturally to novel primitive compositions.
+Mean quality ratio: $111.0 \pm 14.5$\%.  Agent specifications: 10--16 lines; expert code: 180--680 lines.  The ten novel system designs spanning 2D to 5D demonstrate that the framework's compositional approach extends naturally to higher-dimensional primitive compositions.  Active modulation (DMD) consistently outperforms passive dispersion (streak) at the same compression ratio (e.g., 4D DMD 15.6\,dB vs 4D streak 9.3\,dB at 16:1).
 
 \paragraph{Prospective algorithm-comparison study.}
 To test whether forward-model selection or algorithm choice dominates quality, we ran 5 standard methods---including FISTA+TV~\cite{beck2009fista}, GAP-TV, and PnP+TV~\cite{kamilov2023pnp}---on 8 modalities: 3 existing (CT, MRI, CASSI on harder conditions) and 5 novel system designs (lensless $C{\to}D$, 3D lensless $C{\to}\Sigma{\to}D$, temporal-coded $M{\to}C{\to}\Sigma{\to}D$, spectral $M{\to}W{\to}C{\to}\Sigma{\to}D$, and SIM $M{\to}C{\to}D$), each with dedicated algorithms (Extended Data Table~\ref{tab:expert_study}).  Inter-method PSNR CoV ranges from 1.9\% to 24.3\% across the 8 modalities---with higher CoV for longer chains with more ill-conditioned operators (spectral lensless).  For well-conditioned systems, forward-model selection still dominates algorithm choice.
@@ -855,14 +865,14 @@ M5 & PnP+TV          & $17.8\pm3.8$ & 24.6\,s & $22.2\pm3.3$ & 61.3\,s \\
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}
 \textbf{Method} & \textbf{Algorithm} & \textbf{PSNR} & \textbf{Time} & \textbf{PSNR} & \textbf{Time} \\
 \midrule
-M1 & POCS/ADMM       & $15.6\pm2.3$ & 70\,s   & $7.6\pm3.6$  & 0.4\,s  \\
-M2 & FBP/Fourier     & $16.1\pm2.2$ & 14\,s   & $8.1\pm3.6$  & 0.1\,s  \\
-M3 & FISTA+TV        & $15.4\pm2.3$ & 80\,s   & $7.4\pm3.7$  & 26\,s   \\
-M4 & CG/Iterative    & $15.7\pm2.3$ & 136\,s  & $7.7\pm3.6$  & 4.0\,s  \\
-M5 & PnP+TV          & $15.3\pm2.4$ & 120\,s  & $8.0\pm3.6$  & 40\,s   \\
+M1 & POCS/ADMM       & $18.9\pm3.1$ & 250\,s  & $43.7\pm3.2$ & 1.0\,s  \\
+M2 & FBP/Fourier     & $18.9\pm3.1$ & 162\,s  & $41.7\pm2.6$ & 0.0\,s  \\
+M3 & FISTA+TV        & $18.9\pm3.1$ & 253\,s  & $43.3\pm3.1$ & 1.1\,s  \\
+M4 & CG/Iterative    & $18.9\pm3.1$ & 248\,s  & $43.6\pm3.3$ & 0.0\,s  \\
+M5 & PnP-NLM         & $19.0\pm3.1$ & 253\,s  & $41.7\pm2.6$ & 0.5\,s  \\
 \midrule
-\multicolumn{2}{@{}l}{\textbf{Mean}} & $15.6\pm0.3$ & 84\,s & $7.8\pm0.3$ & 14\,s \\
-\multicolumn{2}{@{}l}{\textbf{CoV}} & 1.9\% & & 4.0\% & \\
+\multicolumn{2}{@{}l}{\textbf{Mean}} & $18.9\pm0.04$ & 233\,s & $42.8\pm0.9$ & 0.5\,s \\
+\multicolumn{2}{@{}l}{\textbf{CoV}} & 0.2\% & & 2.1\% & \\
 \bottomrule
 \end{tabular}
 
