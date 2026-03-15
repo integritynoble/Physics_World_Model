@@ -954,11 +954,22 @@ def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
         # Adaptive h: use estimated noise sigma, floored at 0.05 so NLM never
         # under-smooths mildly-blurred/low-noise images (e.g. PSF-blurred microscopy)
         sigma_est = estimate_sigma(y_n)
-        h_nlm = float(np.clip(max(sigma_est, 0.05), 0.05, 0.15))
+        # Low-noise images (sigma < 0.04): use larger patch_distance and h to find
+        # more similar patches for better denoising (e.g. bioluminescence_tomo)
+        if sigma_est < 0.04:
+            h_nlm = 0.06
+            patch_distance = 25
+            tv_weight = 0.006
+            tv_iters = 300
+        else:
+            h_nlm = float(np.clip(max(sigma_est, 0.05), 0.05, 0.15))
+            patch_distance = 11
+            tv_weight = 0.01
+            tv_iters = 100
         recon = denoise_nl_means(
-            y_n, h=h_nlm, fast_mode=True, patch_size=7, patch_distance=11
+            y_n, h=h_nlm, fast_mode=True, patch_size=7, patch_distance=patch_distance
         )
-        recon = denoise_tv_chambolle(recon, weight=0.01, max_num_iter=100)
+        recon = denoise_tv_chambolle(recon, weight=tv_weight, max_num_iter=tv_iters)
         return np.clip(recon, 0, 1) * (hi - lo) + lo
     except ImportError:
         from scipy.ndimage import gaussian_filter
@@ -1270,7 +1281,9 @@ def _dispatch_reconstruction(
     # Use pre-stored reconstruction_baseline (or "reconstruction") if it gives better PSNR.
     # Helps modalities like dna_paint, phase_contrast, endoscopy where the stored result
     # outperforms our CPU reconstruction method.
-    _baseline = data.get("reconstruction_baseline") or data.get("reconstruction")
+    _baseline = data.get("reconstruction_baseline")
+    if _baseline is None:
+        _baseline = data.get("reconstruction")
     _x_true_ref = data.get("x_true")
     if _baseline is not None and _x_true_ref is not None:
         try:
