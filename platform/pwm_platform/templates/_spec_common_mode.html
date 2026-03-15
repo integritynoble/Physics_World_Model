@@ -190,6 +190,8 @@
                         algorithmEl.innerHTML = html;
                     }
                 });
+            // Also refresh sample list to show real samples for this modality
+            refreshSamples(modalityEl.value);
         }
     }
 

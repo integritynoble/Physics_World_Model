@@ -219,10 +219,11 @@ def _load_sample(h5_path: Path, sample_idx: int = 0, variant_key: str = "") -> d
     with h5py.File(h5_path, "r") as f:
         sample_key = f"sample_{sample_idx:02d}"
         if sample_key not in f:
-            samples = [k for k in f.keys() if k.startswith("sample_")]
+            samples = sorted([k for k in f.keys() if k.startswith("sample_")])
             if not samples:
                 raise ValueError(f"No samples in {h5_path}")
-            sample_key = sorted(samples)[0]
+            # Use modular indexing so each sample button shows a different sample
+            sample_key = samples[sample_idx % len(samples)]
 
         grp = f[sample_key]
         available = set(grp.keys())
@@ -1339,6 +1340,10 @@ def _try_modal_gpu(
         # Look up the deployed Modal function by app + function name
         reconstruct_gpu = modal.Function.from_name("pwm-speclab-gpu", "reconstruct_gpu")
 
+        # Build baseline — use explicit None checks (numpy arrays are not bool-testable)
+        _bl = sample_data.get("reconstruction_baseline")
+        if _bl is None:
+            _bl = sample_data.get("reconstruction")
         payload = pickle.dumps({
             "y": sample_data.get("y"),
             "x_true": sample_data.get("x_true"),
@@ -1346,9 +1351,7 @@ def _try_modal_gpu(
             "mask": sample_data.get("mask"),
             "psf": sample_data.get("psf"),
             "coil_maps": sample_data.get("coil_maps"),
-            # Include stored baseline so GPU can use it when it outperforms GPU recon
-            "reconstruction_baseline": sample_data.get("reconstruction_baseline")
-                or sample_data.get("reconstruction"),
+            "reconstruction_baseline": _bl,
         })
         result_bytes = reconstruct_gpu.remote(payload)
         result = pickle.loads(result_bytes)
@@ -1513,6 +1516,18 @@ def _run_common_sync(
         if x_recon is not None:
             gpu_ran = True
             dl_note = False  # GPU ran successfully — treat like any classical result
+
+            # Local safety check: if GPU PSNR is worse than CPU baseline, use CPU.
+            # This handles cases where shape mismatch in the GPU worker skips comparison.
+            if has_gt and x_true is not None and psnr_from_gpu is not None:
+                try:
+                    cpu_psnr = _compute_psnr(x_true, cpu_baseline)
+                    if cpu_psnr > psnr_from_gpu + 0.5:  # CPU clearly better
+                        x_recon = cpu_baseline
+                        psnr_from_gpu = cpu_psnr
+                        ssim_from_gpu = _compute_ssim(x_true, cpu_baseline)
+                except Exception:
+                    pass
         else:
             # Modal unavailable — use CPU baseline directly
             x_recon = cpu_baseline
