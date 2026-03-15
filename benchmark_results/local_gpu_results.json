@@ -1,0 +1,46 @@
+{
+  "nerf": {
+    "modality": "nerf",
+    "samples_tested": 6,
+    "improvements": 0,
+    "details": {
+      "nerf_challenge_dev.h5:sample_00": {
+        "old_psnr": 28.88,
+        "best_psnr": 28.88,
+        "best_solver": "baseline",
+        "improved": false
+      },
+      "nerf_challenge_dev.h5:sample_01": {
+        "old_psnr": 28.22,
+        "best_psnr": 28.22,
+        "best_solver": "baseline",
+        "improved": false
+      },
+      "nerf_challenge_dev.h5:sample_02": {
+        "old_psnr": 30.9,
+        "best_psnr": 30.9,
+        "best_solver": "baseline",
+        "improved": false
+      },
+      "nerf_challenge_hidden.h5:sample_00": {
+        "old_psnr": 25.76,
+        "best_psnr": 25.76,
+        "best_solver": "baseline",
+        "improved": false
+      },
+      "nerf_challenge_hidden.h5:sample_01": {
+        "old_psnr": 28.44,
+        "best_psnr": 28.44,
+        "best_solver": "baseline",
+        "improved": false
+      },
+      "nerf_challenge_hidden.h5:sample_02": {
+        "old_psnr": 31.53,
+        "best_psnr": 31.53,
+        "best_solver": "baseline",
+        "improved": false
+      }
+    },
+    "improvement_list": []
+  }
+}

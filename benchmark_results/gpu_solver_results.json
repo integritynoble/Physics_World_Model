@@ -1,0 +1,13 @@
+{
+  "cup": {
+    "modality": "cup",
+    "device": "cuda",
+    "solvers": {
+      "dncnn": {
+        "psnr_db": 6.2,
+        "ssim": 0.3079,
+        "status": "completed"
+      }
+    }
+  }
+}

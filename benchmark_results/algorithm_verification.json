@@ -1,0 +1,165 @@
+{
+  "timestamp": "2026-03-13T18:08:24",
+  "platform": "local_cpu",
+  "modalities": {
+    "ct": {
+      "fbp_ramlak": {
+        "status": "verified",
+        "psnr_db": 12.94,
+        "ssim": 0.0406,
+        "exec_time": 0.266,
+        "shape": [
+          256,
+          256
+        ]
+      },
+      "fbp_shepp_logan": {
+        "status": "verified",
+        "psnr_db": 13.78,
+        "ssim": 0.1064,
+        "exec_time": 0.174,
+        "shape": [
+          256,
+          256
+        ]
+      },
+      "sart_10iter": {
+        "status": "verified",
+        "psnr_db": 13.75,
+        "ssim": 0.4289,
+        "exec_time": 69.892,
+        "shape": [
+          256,
+          256
+        ]
+      }
+    },
+    "mri": {
+      "zero_filled": {
+        "status": "verified",
+        "psnr_db": 18.43,
+        "ssim": 0.2961,
+        "exec_time": 0.0,
+        "shape": [
+          128,
+          128
+        ]
+      }
+    },
+    "microscopy_rl": {
+      "rl_20iter": {
+        "status": "verified",
+        "psnr_db": 22.0,
+        "ssim": 0.5723,
+        "exec_time": 0.051,
+        "shape": [
+          128,
+          128
+        ]
+      },
+      "rl_50iter": {
+        "status": "verified",
+        "psnr_db": 22.01,
+        "ssim": 0.5681,
+        "exec_time": 0.117,
+        "shape": [
+          128,
+          128
+        ]
+      }
+    },
+    "fista": {
+      "fista_l2": {
+        "status": "error",
+        "error": "expected scalar type Double but found Float",
+        "exec_time": 1.006
+      }
+    },
+    "least_squares": {
+      "least_squares": {
+        "status": "verified",
+        "psnr_db": 21.03,
+        "ssim": 0.4856,
+        "exec_time": 0.113,
+        "shape": [
+          1024
+        ]
+      }
+    },
+    "lensless": {
+      "wiener": {
+        "status": "verified",
+        "psnr_db": 10.81,
+        "ssim": 0.0109,
+        "exec_time": 0.001,
+        "shape": [
+          128,
+          128
+        ]
+      }
+    },
+    "holography": {
+      "angular_spectrum": {
+        "status": "verified",
+        "psnr_db": 20.02,
+        "ssim": 0.281,
+        "exec_time": 0.0,
+        "shape": [
+          128,
+          128
+        ]
+      }
+    },
+    "phase_retrieval": {
+      "gerchberg_saxton": {
+        "status": "error",
+        "error": "gerchberg_saxton() got an unexpected keyword argument 'iterations'",
+        "exec_time": 0.0
+      }
+    },
+    "pnp": {
+      "status": "import_error"
+    },
+    "dot": {
+      "born_approx": {
+        "status": "error",
+        "error": "operands could not be broadcast together with shapes (2,) (1024,1024) ",
+        "exec_time": 0.026
+      }
+    },
+    "photoacoustic": {
+      "backprojection": {
+        "status": "error",
+        "error": "too many indices for array: array is 1-dimensional, but 2 were indexed",
+        "exec_time": 0.0
+      }
+    },
+    "oct": {
+      "fft_recon": {
+        "status": "verified",
+        "psnr_db": 14.34,
+        "ssim": 0.1415,
+        "exec_time": 0.082,
+        "shape": [
+          128,
+          128
+        ]
+      }
+    },
+    "gap_tv": {
+      "gap_tv_cacti": {
+        "status": "error",
+        "error": "The size of tensor a (64) must match the size of tensor b (8) at non-singleton dimension 0",
+        "exec_time": 0.087
+      }
+    },
+    "spc": {
+      "status": "import_error"
+    }
+  },
+  "summary": {
+    "verified": 10,
+    "errors": 5,
+    "skipped": 2
+  }
+}

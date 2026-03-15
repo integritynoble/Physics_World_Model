@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-14T15:24:47",
+  "timestamp": "2026-03-14T19:20:07",
   "platform": "local_cpu",
   "stats": {
     "verified": 532,
@@ -23,7 +23,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "dl_localizer": {
         "status": "verified",
@@ -53,7 +53,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "active_thermography": {
@@ -69,7 +69,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "pulsed_phase_tv": {
         "status": "verified",
@@ -99,7 +99,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "afm": {
@@ -115,14 +115,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 1.116
+        "exec_time": 1.137
       },
       "afm_dl": {
         "status": "verified",
         "module": "pwm_core.recon.afm_solvers",
         "function": "afm_unet_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.106
+        "exec_time": 0.107
       }
     },
     "angiography": {
@@ -131,7 +131,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.41
+        "exec_time": 0.394
       },
       "best_quality": {
         "status": "verified",
@@ -168,7 +168,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.696
+        "exec_time": 0.606
       }
     },
     "atom_probe": {
@@ -269,7 +269,7 @@
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "message": "shape=(64, 64)",
-        "exec_time": 0.65
+        "exec_time": 0.635
       },
       "best_quality": {
         "status": "verified",
@@ -313,7 +313,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       }
     },
     "cassi": {
@@ -322,28 +322,28 @@
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "message": "shape=(64, 64)",
-        "exec_time": 0.476
+        "exec_time": 0.485
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "message": "shape=(64, 64)",
-        "exec_time": 0.47
+        "exec_time": 0.46
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "message": "shape=(64, 64)",
-        "exec_time": 0.478
+        "exec_time": 0.496
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "message": "shape=(64, 64)",
-        "exec_time": 0.464
+        "exec_time": 0.504
       }
     },
     "cathodoluminescence": {
@@ -352,7 +352,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -375,21 +375,21 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.014
+        "exec_time": 0.019
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.cbct_solvers",
         "function": "fdk_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.102
+        "exec_time": 0.109
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.cbct_solvers",
         "function": "cbct_unet_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.098
+        "exec_time": 0.104
       }
     },
     "cest_mri": {
@@ -412,7 +412,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       }
     },
     "ceus": {
@@ -467,7 +467,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.073
+        "exec_time": 0.02
       },
       "best_quality": {
         "status": "verified",
@@ -481,7 +481,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.002
       }
     },
     "confocal_3d": {
@@ -497,21 +497,21 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.115
+        "exec_time": 0.103
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.11
+        "exec_time": 0.104
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.1
+        "exec_time": 0.112
       }
     },
     "confocal_endomicroscopy": {
@@ -550,21 +550,21 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.103
+        "exec_time": 0.108
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.118
+        "exec_time": 0.105
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.115
+        "exec_time": 0.106
       }
     },
     "coronagraphy": {
@@ -580,7 +580,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "speckle_null_dl": {
         "status": "verified",
@@ -603,7 +603,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "relion_dl": {
         "status": "verified",
@@ -626,14 +626,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.099
+        "exec_time": 0.116
       },
       "cryo_et_dl": {
         "status": "verified",
         "module": "pwm_core.recon.cryoet_solvers",
         "function": "cryocare_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.099
+        "exec_time": 0.114
       }
     },
     "ct": {
@@ -642,28 +642,28 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.014
+        "exec_time": 0.015
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.pnp",
         "function": "run_pnp",
         "message": "shape=(64, 64)",
-        "exec_time": 3.835
+        "exec_time": 4.22
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.redcnn",
         "function": "run_redcnn",
         "message": "shape=(64, 64)",
-        "exec_time": 0.135
+        "exec_time": 0.2
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.redcnn",
         "function": "run_redcnn",
         "message": "shape=(64, 64)",
-        "exec_time": 0.065
+        "exec_time": 0.092
       }
     },
     "ct_fluorescence": {
@@ -672,7 +672,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -702,7 +702,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.002
       },
       "e2e_cup": {
         "status": "verified",
@@ -725,14 +725,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.242
+        "exec_time": 0.167
       },
       "df_unet": {
         "status": "verified",
         "module": "pwm_core.recon.darkfield_solvers",
         "function": "df_unet_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.18
+        "exec_time": 0.104
       }
     },
     "desi": {
@@ -748,7 +748,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "desi_dl": {
         "status": "verified",
@@ -764,7 +764,7 @@
         "module": "pwm_core.recon.classical",
         "function": "run_fista_l2",
         "message": "shape=(64, 64)",
-        "exec_time": 0.02
+        "exec_time": 0.017
       },
       "best_quality": {
         "status": "verified",
@@ -794,14 +794,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.2
+        "exec_time": 0.114
       },
       "dic_dl": {
         "status": "verified",
         "module": "pwm_core.recon.dic_solvers",
         "function": "dic_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.195
+        "exec_time": 0.101
       }
     },
     "diffusion_mri": {
@@ -810,7 +810,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -824,7 +824,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "digital_breast_tomo": {
@@ -856,21 +856,21 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(32,)",
-        "exec_time": 0.124
+        "exec_time": 0.1
       },
       "dna_paint_dl": {
         "status": "verified",
         "module": "pwm_core.recon.smlm_solvers",
         "function": "decode_smlm_recon",
         "message": "shape=(32,)",
-        "exec_time": 0.109
+        "exec_time": 0.103
       }
     },
     "doppler_ultrasound": {
@@ -886,7 +886,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "famous_dl": {
         "status": "verified",
@@ -909,7 +909,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "dot_dl": {
         "status": "verified",
@@ -925,7 +925,7 @@
         "module": "pwm_core.recon.classical",
         "function": "run_fista_l2",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -1093,7 +1093,7 @@
         "module": "pwm_core.recon.phase_retrieval_solver",
         "function": "run_phase_retrieval",
         "message": "shape=(64, 64)",
-        "exec_time": 0.231
+        "exec_time": 0.312
       },
       "best_quality": {
         "status": "verified",
@@ -1146,14 +1146,14 @@
         "module": "pwm_core.recon.endoscopy_solvers",
         "function": "endomapper_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.131
+        "exec_time": 0.108
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.endoscopy_solvers",
         "function": "af_sfm_learner_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.127
+        "exec_time": 0.129
       }
     },
     "entangled_photon": {
@@ -1162,7 +1162,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -1199,7 +1199,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.003
+        "exec_time": 0.001
       }
     },
     "expansion": {
@@ -1208,14 +1208,14 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.139
+        "exec_time": 0.136
       },
       "exm_dl": {
         "status": "verified",
@@ -1238,14 +1238,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.126
+        "exec_time": 0.139
       },
       "fibsem_dl": {
         "status": "verified",
         "module": "pwm_core.recon.fibsem_solvers",
         "function": "fibsem_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.134
+        "exec_time": 0.18
       }
     },
     "flash_lidar": {
@@ -1307,7 +1307,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.022
+        "exec_time": 0.016
       },
       "best_quality": {
         "status": "verified",
@@ -1330,7 +1330,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.002
       },
       "best_quality": {
         "status": "verified",
@@ -1344,7 +1344,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       }
     },
     "fpm": {
@@ -1413,14 +1413,14 @@
         "module": "pwm_core.recon.fundus_solvers",
         "function": "retfound_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.128
+        "exec_time": 0.139
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.fundus_solvers",
         "function": "dr_grade_net_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.124
+        "exec_time": 0.131
       }
     },
     "fwi": {
@@ -1466,7 +1466,7 @@
         "module": "pwm_core.recon.nerf_solver",
         "function": "run_nerf",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 140.397
+        "exec_time": 141.269
       },
       "small_gpu": {
         "status": "verified",
@@ -1482,7 +1482,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.002
       },
       "best_quality": {
         "status": "verified",
@@ -1496,7 +1496,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.002
       }
     },
     "gpr": {
@@ -1551,14 +1551,14 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.003
+        "exec_time": 0.002
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.003
+        "exec_time": 0.002
       },
       "hdr_dl": {
         "status": "verified",
@@ -1574,28 +1574,28 @@
         "module": "pwm_core.recon.holography_solver",
         "function": "run_holography_reconstruction",
         "message": "shape=(64, 64)",
-        "exec_time": 0.138
+        "exec_time": 0.12
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.phasenet",
         "function": "run_phasenet",
         "message": "shape=(64, 64, 2)",
-        "exec_time": 0.339
+        "exec_time": 0.11
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.phasenet",
         "function": "run_phasenet",
         "message": "shape=(64, 64, 2)",
-        "exec_time": 0.047
+        "exec_time": 0.054
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.phasenet",
         "function": "run_phasenet",
         "message": "shape=(64, 64, 2)",
-        "exec_time": 0.045
+        "exec_time": 0.048
       }
     },
     "hyperspectral_remote": {
@@ -1634,7 +1634,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       },
       "eit_dl": {
         "status": "verified",
@@ -1664,7 +1664,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.015
+        "exec_time": 0.017
       }
     },
     "insar": {
@@ -1733,14 +1733,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.123
+        "exec_time": 0.12
       },
       "ism_dl": {
         "status": "verified",
         "module": "pwm_core.recon.ism_solvers",
         "function": "ism_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.101
+        "exec_time": 0.124
       }
     },
     "ivus": {
@@ -1779,14 +1779,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.104
+        "exec_time": 0.103
       },
       "llsm_dl": {
         "status": "verified",
         "module": "pwm_core.recon.llsm_solvers",
         "function": "llsm_care_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.122
+        "exec_time": 0.103
       }
     },
     "lensless": {
@@ -1802,21 +1802,21 @@
         "module": "pwm_core.recon.flatnet",
         "function": "run_flatnet",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 0.323
+        "exec_time": 0.332
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.flatnet",
         "function": "run_flatnet",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 0.247
+        "exec_time": 0.253
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.flatnet",
         "function": "run_flatnet",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 0.238
+        "exec_time": 0.275
       }
     },
     "libs": {
@@ -1848,7 +1848,7 @@
         "module": "pwm_core.recon.classical",
         "function": "run_fista_l2",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -1901,28 +1901,28 @@
         "module": "pwm_core.recon.lightsheet_solver",
         "function": "run_lightsheet",
         "message": "shape=(64, 64)",
-        "exec_time": 0.03
+        "exec_time": 0.032
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.lightsheet_solver",
         "function": "run_lightsheet",
         "message": "shape=(64, 64)",
-        "exec_time": 0.036
+        "exec_time": 0.03
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.destripe_net",
         "function": "run_destripe",
         "message": "shape=(64, 64)",
-        "exec_time": 4.441
+        "exec_time": 4.842
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.destripe_net",
         "function": "run_destripe",
         "message": "shape=(64, 64)",
-        "exec_time": 4.244
+        "exec_time": 4.807
       }
     },
     "lucky_imaging": {
@@ -2007,7 +2007,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "msi_dl": {
         "status": "verified",
@@ -2023,7 +2023,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.015
+        "exec_time": 0.018
       },
       "best_quality": {
         "status": "verified",
@@ -2046,28 +2046,28 @@
         "module": "pwm_core.recon.classical",
         "function": "run_fista_l2",
         "message": "shape=(64, 64)",
-        "exec_time": 0.024
+        "exec_time": 0.033
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.classical",
         "function": "run_fista_l2",
         "message": "shape=(64, 64)",
-        "exec_time": 0.026
+        "exec_time": 0.029
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.lista",
         "function": "run_lista",
         "message": "shape=(4096,)",
-        "exec_time": 1.676
+        "exec_time": 1.749
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.lista",
         "function": "run_lista",
         "message": "shape=(4096,)",
-        "exec_time": 1.409
+        "exec_time": 1.614
       }
     },
     "mfm": {
@@ -2083,14 +2083,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.175
+        "exec_time": 0.201
       },
       "mfm_dl": {
         "status": "verified",
         "module": "pwm_core.recon.mfm_solvers",
         "function": "mfm_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.158
+        "exec_time": 0.299
       }
     },
     "minflux": {
@@ -2106,14 +2106,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.13
+        "exec_time": 0.169
       },
       "minflux_dl": {
         "status": "verified",
         "module": "pwm_core.recon.minflux_solvers",
         "function": "minflux_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.165
+        "exec_time": 0.119
       }
     },
     "mr_elastography": {
@@ -2159,7 +2159,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       }
     },
     "mra": {
@@ -2182,7 +2182,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "mri": {
@@ -2205,14 +2205,14 @@
         "module": "pwm_core.recon.modl",
         "function": "run_modl",
         "message": "shape=(64, 64)",
-        "exec_time": 0.078
+        "exec_time": 0.039
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.modl",
         "function": "run_modl",
         "message": "shape=(64, 64)",
-        "exec_time": 0.064
+        "exec_time": 0.024
       }
     },
     "mrs": {
@@ -2221,7 +2221,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -2244,7 +2244,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.003
       },
       "best_quality": {
         "status": "verified",
@@ -2258,7 +2258,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.003
       }
     },
     "muon_tomo": {
@@ -2267,7 +2267,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.015
+        "exec_time": 0.021
       },
       "best_quality": {
         "status": "verified",
@@ -2290,28 +2290,28 @@
         "module": "pwm_core.recon.nerf_solver",
         "function": "run_nerf",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 139.281
+        "exec_time": 149.433
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.nerf_solver",
         "function": "run_nerf",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 144.285
+        "exec_time": 150.648
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.nerf_solver",
         "function": "run_nerf",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 147.647
+        "exec_time": 149.702
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.nerf_solver",
         "function": "run_nerf",
         "message": "shape=(64, 64, 3)",
-        "exec_time": 145.928
+        "exec_time": 151.615
       },
       "rl_proxy": {
         "status": "verified",
@@ -2357,21 +2357,21 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.018
+        "exec_time": 0.021
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "nirs_brain": {
@@ -2380,7 +2380,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -2410,14 +2410,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.134
+        "exec_time": 0.162
       },
       "nsom_dl": {
         "status": "verified",
         "module": "pwm_core.recon.nsom_solvers",
         "function": "nsom_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.111
+        "exec_time": 0.114
       }
     },
     "ocean_acoustic_tomo": {
@@ -2449,14 +2449,14 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.003
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       },
       "oc_dl": {
         "status": "verified",
@@ -2472,21 +2472,21 @@
         "module": "pwm_core.recon.oct_solver",
         "function": "run_oct",
         "message": "shape=(64, 32)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.oct_solver",
         "function": "spectral_estimation_recon",
         "message": "shape=(64, 32)",
-        "exec_time": 0.064
+        "exec_time": 0.069
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.oct_solver",
         "function": "oct_denoising_net_recon",
         "message": "shape=(64, 32)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "small_gpu": {
         "status": "verified",
@@ -2555,14 +2555,14 @@
         "module": "pwm_core.recon.smlm_solvers",
         "function": "decode_smlm_recon",
         "message": "shape=(32,)",
-        "exec_time": 0.111
+        "exec_time": 0.123
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.smlm_solvers",
         "function": "deep_storm_recon",
         "message": "shape=(32,)",
-        "exec_time": 0.105
+        "exec_time": 0.113
       }
     },
     "panorama": {
@@ -2615,7 +2615,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       }
     },
     "passive_microwave": {
@@ -2647,21 +2647,21 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.015
+        "exec_time": 0.02
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.pet_solvers",
         "function": "neurolF_pet_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.117
+        "exec_time": 0.124
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.pet_solvers",
         "function": "pet_unet_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.106
+        "exec_time": 0.122
       }
     },
     "pet_ct": {
@@ -2693,7 +2693,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -2723,14 +2723,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.109
+        "exec_time": 0.146
       },
       "pc_dl": {
         "status": "verified",
         "module": "pwm_core.recon.phase_contrast_solvers",
         "function": "phase_net_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.122
+        "exec_time": 0.115
       }
     },
     "phase_retrieval": {
@@ -2739,7 +2739,7 @@
         "module": "pwm_core.recon.phase_retrieval_solver",
         "function": "run_phase_retrieval",
         "message": "shape=(64, 64)",
-        "exec_time": 0.243
+        "exec_time": 0.324
       },
       "best_quality": {
         "status": "verified",
@@ -2790,7 +2790,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "photometric_stereo": {
@@ -2806,7 +2806,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "ps_dl": {
         "status": "verified",
@@ -2822,7 +2822,7 @@
         "module": "pwm_core.recon.pnp",
         "function": "run_pnp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.343
+        "exec_time": 0.299
       },
       "best_quality": {
         "status": "verified",
@@ -2859,7 +2859,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       }
     },
     "portal_imaging": {
@@ -2891,7 +2891,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.021
+        "exec_time": 0.023
       },
       "best_quality": {
         "status": "verified",
@@ -2937,7 +2937,7 @@
         "module": "pwm_core.recon.ptychography_solver",
         "function": "run_epie",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -2951,7 +2951,7 @@
         "module": "pwm_core.recon.ptychonn",
         "function": "run_ptychonn",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "small_gpu": {
         "status": "verified",
@@ -2990,21 +2990,21 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.003
+        "exec_time": 0.002
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.003
+        "exec_time": 0.002
       },
       "qi_dl": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.003
       }
     },
     "radio_astronomy": {
@@ -3036,7 +3036,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -3082,14 +3082,14 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.023
+        "exec_time": 0.021
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "famous_dl": {
         "status": "verified",
@@ -3105,7 +3105,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -3135,7 +3135,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "seismic_dl": {
         "status": "verified",
@@ -3151,7 +3151,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "best_quality": {
         "status": "verified",
@@ -3204,14 +3204,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.128
+        "exec_time": 0.129
       },
       "shg_dl": {
         "status": "verified",
         "module": "pwm_core.recon.shg_solvers",
         "function": "shg_care_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.119
+        "exec_time": 0.139
       }
     },
     "sim": {
@@ -3319,28 +3319,28 @@
         "module": "pwm_core.recon.cs_solvers",
         "function": "run_tval3",
         "message": "shape=(64, 64)",
-        "exec_time": 1.866
+        "exec_time": 2.298
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.spc_solvers",
         "function": "run_admm_spc",
         "message": "shape=(64, 64)",
-        "exec_time": 0.244
+        "exec_time": 0.229
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.spc_solvers",
         "function": "run_fista_l1_spc",
         "message": "shape=(64, 64)",
-        "exec_time": 0.035
+        "exec_time": 0.028
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.spc_solvers",
         "function": "run_fista_l1_spc",
         "message": "shape=(64, 64)",
-        "exec_time": 0.022
+        "exec_time": 0.024
       }
     },
     "spect": {
@@ -3349,21 +3349,21 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.022
+        "exec_time": 0.019
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.spect_solvers",
         "function": "spect_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.138
+        "exec_time": 0.159
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.spect_solvers",
         "function": "spect_unet_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.13
+        "exec_time": 0.129
       }
     },
     "spect_ct": {
@@ -3379,7 +3379,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "spectct_dl": {
         "status": "verified",
@@ -3402,7 +3402,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "spectral_ct_dl": {
         "status": "verified",
@@ -3425,14 +3425,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.137
+        "exec_time": 0.128
       },
       "sd_dl": {
         "status": "verified",
         "module": "pwm_core.recon.spinning_disk_solvers",
         "function": "sd_care_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.147
+        "exec_time": 0.142
       }
     },
     "srs": {
@@ -3471,14 +3471,14 @@
         "module": "pwm_core.recon.sted_solvers",
         "function": "sted_care_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.134
+        "exec_time": 0.135
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.sted_solvers",
         "function": "rcan_sted_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.144
+        "exec_time": 0.12
       }
     },
     "stem": {
@@ -3517,14 +3517,14 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.152
+        "exec_time": 0.126
       },
       "stm_dl": {
         "status": "verified",
         "module": "pwm_core.recon.stm_solvers",
         "function": "stm_dl_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.148
+        "exec_time": 0.131
       }
     },
     "streak_camera": {
@@ -3533,14 +3533,14 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.003
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.003
       },
       "streak_dl": {
         "status": "verified",
@@ -3593,7 +3593,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       }
     },
     "talbot_lau": {
@@ -3671,21 +3671,21 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.153
+        "exec_time": 0.139
       },
       "3p_dl": {
         "status": "verified",
         "module": "pwm_core.recon.three_photon_solvers",
         "function": "three_photon_care_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.138
+        "exec_time": 0.11
       }
     },
     "tirf": {
@@ -3747,14 +3747,14 @@
         "module": "pwm_core.recon.two_photon_solvers",
         "function": "two_photon_care_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.137
+        "exec_time": 0.122
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.two_photon_solvers",
         "function": "deep_interp_recon",
         "message": "shape=(64, 64)",
-        "exec_time": 0.207
+        "exec_time": 0.12
       }
     },
     "ultrasonic_phased_array": {
@@ -3786,7 +3786,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "best_quality": {
         "status": "verified",
@@ -3823,7 +3823,7 @@
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "message": "shape=(64, 64)",
-        "exec_time": 0.002
+        "exec_time": 0.001
       }
     },
     "waxs": {
@@ -3885,21 +3885,21 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.139
+        "exec_time": 0.124
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.139
+        "exec_time": 0.134
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.141
+        "exec_time": 0.134
       }
     },
     "widefield_lowdose": {
@@ -3915,21 +3915,21 @@
         "module": "pwm_core.recon.care_unet",
         "function": "run_care",
         "message": "shape=(64, 64)",
-        "exec_time": 0.141
+        "exec_time": 0.13
       },
       "famous_dl": {
         "status": "verified",
         "module": "pwm_core.recon.noise2void",
         "function": "noise2void_denoise",
         "message": "shape=(64, 64)",
-        "exec_time": 2.021
+        "exec_time": 2.081
       },
       "small_gpu": {
         "status": "verified",
         "module": "pwm_core.recon.noise2void",
         "function": "noise2void_denoise",
         "message": "shape=(64, 64)",
-        "exec_time": 1.871
+        "exec_time": 1.978
       }
     },
     "xfel_sfx": {
@@ -3945,7 +3945,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.001
+        "exec_time": 0.0
       },
       "sfx_dl": {
         "status": "verified",
@@ -3968,7 +3968,7 @@
         "module": "pwm_core.recon.richardson_lucy",
         "function": "run_richardson_lucy",
         "message": "shape=(64, 64)",
-        "exec_time": 0.0
+        "exec_time": 0.001
       },
       "xtal_dl": {
         "status": "verified",
@@ -4007,7 +4007,7 @@
         "module": "pwm_core.recon.ct_solvers",
         "function": "run_fbp",
         "message": "shape=(64, 64)",
-        "exec_time": 0.016
+        "exec_time": 0.023
       },
       "best_quality": {
         "status": "verified",
