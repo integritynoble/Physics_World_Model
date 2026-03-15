@@ -1544,7 +1544,7 @@ Last updated: 2026-03-14 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| MLAA | Classical | 25.6 dB | 0.72 |  |
+| MLAA | Classical | 25.6 dB | 0.72 | done |
 | Image Registration | Classical | 27.64 dB | 0.873 |  |
 | Guided Reconstruction | PnP | 28.62 dB | 0.893 |  |
 | MR-Guided | PnP | 29.2 dB | 0.848 |  |
