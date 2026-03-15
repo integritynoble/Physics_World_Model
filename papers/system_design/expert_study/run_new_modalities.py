@@ -188,25 +188,28 @@ def get_test_images(n_samples, size):
 
 
 def generate_3d_volumes(n_depths, size, n_samples):
-    """Generate 3D volumes with objects at different depth planes."""
+    """Generate 3D volumes with objects at sparse depth planes.
+
+    In a real 3D scene, objects exist at specific depths with no overlap.
+    Most depth planes are empty (transparent). This sparsity is the key
+    physical prior that makes 3D depth recovery well-conditioned.
+    """
     volumes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         vol = np.zeros((n_depths, size, size))
         rng = np.random.RandomState(200 + s)
-        n_objects = rng.randint(5, 10)
+        # Each object exists at exactly ONE depth — no overlap between planes
+        n_objects = rng.randint(8, 15)
         for j in range(n_objects):
             z = rng.randint(0, n_depths)
             cx, cy = rng.randint(15, size - 15, 2)
-            rx, ry = rng.randint(6, 25, 2)
-            yy, xx = np.mgrid[0:size, 0:size]
+            rx, ry = rng.randint(8, 30, 2)
             obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
-            vol[z] += obj * rng.uniform(0.3, 0.9)
+            vol[z] += obj * rng.uniform(0.3, 1.0)
+        # Clip to [0, 1] but do NOT add background to empty planes
         for z in range(n_depths):
-            bg = rng.rand(size, size) * 0.03
-            vol[z] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = vol[z].max()
-            if mx > 1e-10:
-                vol[z] = np.clip(vol[z] / mx, 0, 1)
+            vol[z] = np.clip(vol[z], 0, 1)
         volumes.append(vol)
     return volumes
 
@@ -683,28 +686,28 @@ def run_4d_spectral_depth():
 
 
 def _generate_4d_zl(nz, nl, size, n_samples):
-    """Generate 4D (z, lambda) datacubes flattened to (nz*nl, size, size)."""
+    """Generate 4D (z, lambda) datacubes flattened to (nz*nl, size, size).
+
+    Objects exist at specific depths (no overlap between depth planes).
+    Each object has a smooth spectral profile across wavelength bands.
+    """
     cubes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         cube = np.zeros((nz * nl, size, size))
         rng = np.random.RandomState(800 + s)
-        n_obj = rng.randint(4, 8)
+        n_obj = rng.randint(6, 12)
         for j in range(n_obj):
             z = rng.randint(0, nz)
             cx, cy = rng.randint(15, size - 15, 2)
             rx, ry = rng.randint(8, 25, 2)
-            yy, xx = np.mgrid[0:size, 0:size]
             spatial = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
             spectrum = ndimage.gaussian_filter1d(rng.rand(nl), sigma=0.8)
             spectrum /= max(spectrum.max(), 1e-10)
             for b in range(nl):
-                cube[z * nl + b] += spatial * spectrum[b] * rng.uniform(0.3, 0.9)
+                cube[z * nl + b] += spatial * spectrum[b] * rng.uniform(0.3, 1.0)
         for idx in range(nz * nl):
-            bg = rng.rand(size, size) * 0.02
-            cube[idx] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = cube[idx].max()
-            if mx > 1e-10:
-                cube[idx] = np.clip(cube[idx] / mx, 0, 1)
+            cube[idx] = np.clip(cube[idx], 0, 1)
         cubes.append(cube)
     return cubes
 
@@ -770,28 +773,29 @@ def run_4d_temporal_dmd():
 
 
 def _generate_4d_zt(nz, nt, size, n_samples):
-    """Generate 4D (z, t) datacubes: objects at specific depths with motion."""
+    """Generate 4D (z, t) datacubes: objects at specific depths with motion.
+
+    Objects exist at specific depths (no overlap). Each object moves
+    smoothly across temporal frames (same depth, changing position).
+    """
     cubes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         cube = np.zeros((nz * nt, size, size))
         rng = np.random.RandomState(1000 + s)
-        n_obj = rng.randint(3, 6)
+        n_obj = rng.randint(4, 8)
         for j in range(n_obj):
             z = rng.randint(0, nz)
             base_cx, base_cy = rng.randint(20, size - 20, 2)
             rx, ry = rng.randint(6, 20, 2)
+            amp = rng.uniform(0.3, 1.0)
             for t in range(nt):
                 cx = int(base_cx + 8 * np.sin(2 * np.pi * t / nt + j)) % size
                 cy = int(base_cy + 5 * np.cos(2 * np.pi * t / nt + j * 0.7)) % size
-                yy, xx = np.mgrid[0:size, 0:size]
                 obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
-                cube[z * nt + t] += obj * rng.uniform(0.3, 0.9)
+                cube[z * nt + t] += obj * amp
         for idx in range(nz * nt):
-            bg = rng.rand(size, size) * 0.02
-            cube[idx] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = cube[idx].max()
-            if mx > 1e-10:
-                cube[idx] = np.clip(cube[idx] / mx, 0, 1)
+            cube[idx] = np.clip(cube[idx], 0, 1)
         cubes.append(cube)
     return cubes
 
@@ -1005,33 +1009,34 @@ def run_5d_streak():
 
 
 def _generate_5d(nz, nl, nt, size, n_samples):
-    """Generate 5D (z, lambda, t) datacubes flattened to (nz*nl*nt, size, size)."""
+    """Generate 5D (z, lambda, t) datacubes flattened to (nz*nl*nt, size, size).
+
+    Objects at specific depths with spectral profiles and temporal motion.
+    Depth planes are sparse (no overlap between depth layers).
+    """
     cubes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         n_total = nz * nl * nt
         cube = np.zeros((n_total, size, size))
         rng = np.random.RandomState(1200 + s)
-        n_obj = rng.randint(3, 6)
+        n_obj = rng.randint(4, 8)
         for j in range(n_obj):
             z = rng.randint(0, nz)
             base_cx, base_cy = rng.randint(15, size - 15, 2)
             rx, ry = rng.randint(6, 18, 2)
             spectrum = ndimage.gaussian_filter1d(rng.rand(nl), sigma=0.8)
             spectrum /= max(spectrum.max(), 1e-10)
+            amp = rng.uniform(0.3, 1.0)
             for b in range(nl):
                 for t in range(nt):
                     cx = int(base_cx + 6 * np.sin(2 * np.pi * t / nt + j)) % size
                     cy = int(base_cy + 4 * np.cos(2 * np.pi * t / nt + j * 0.7)) % size
-                    yy, xx = np.mgrid[0:size, 0:size]
                     obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
                     idx = z * nl * nt + b * nt + t
-                    cube[idx] += obj * spectrum[b] * rng.uniform(0.3, 0.9)
+                    cube[idx] += obj * spectrum[b] * amp
         for idx in range(n_total):
-            bg = rng.rand(size, size) * 0.02
-            cube[idx] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = cube[idx].max()
-            if mx > 1e-10:
-                cube[idx] = np.clip(cube[idx] / mx, 0, 1)
+            cube[idx] = np.clip(cube[idx], 0, 1)
         cubes.append(cube)
     return cubes
 
