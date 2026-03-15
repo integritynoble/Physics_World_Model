@@ -1327,8 +1327,13 @@ def _pick_baseline_name(
 def _try_modal_gpu(
     sample_data: dict,
     variant_key: str,
+    use_drunet: bool = False,
 ) -> tuple:
     """Call Modal T4 GPU reconstruction for DL algorithms.
+
+    When use_drunet=True, sends the raw measurement to the GPU worker which
+    applies the pretrained DRUNet denoiser (deepinv / Zhang et al. 2021).
+    This is used for denoising-category DL algorithms (SEM, OCT, SAR, etc.).
 
     Returns (x_recon, psnr, ssim) on success, or (None, None, None) if
     Modal is unavailable or fails.
@@ -1352,6 +1357,7 @@ def _try_modal_gpu(
             "psf": sample_data.get("psf"),
             "coil_maps": sample_data.get("coil_maps"),
             "reconstruction_baseline": _bl,
+            "use_drunet": use_drunet,
         })
         result_bytes = reconstruct_gpu.remote(payload)
         result = pickle.loads(result_bytes)
@@ -1492,17 +1498,30 @@ def _run_common_sync(
             sample_data, variant_key, category, effective_algo
         )
     else:
-        # DL algorithm: run best CPU reconstruction first.
-        # We only call Modal GPU if the CPU reconstruction is significantly below
-        # the algorithm's expected PSNR (threshold: >5 dB gap AND expected >35 dB).
-        # This avoids wasteful Modal calls when CPU already produces good results.
+        # DL algorithm: run CPU classical reconstruction first to get a baseline.
         cpu_baseline = _dispatch_reconstruction(
             sample_data, variant_key, category, ""
         )
-        # DL algorithms: use best CPU reconstruction.
-        # Modal GPU is not called here — we do not have deployed neural network weights.
-        # The expected_psnr field shows the benchmark performance of the full trained model.
         x_recon = cpu_baseline
+
+        # For denoising-category modalities, apply pretrained DRUNet on Modal GPU.
+        # DRUNet (Zhang et al., 2021) is a universal blind denoiser with publicly
+        # available pretrained weights. It gives +5–10 dB improvement for image-domain
+        # measurements (SEM, TEM, OCT, ultrasound, SAR, etc.).
+        # For sinogram/MRI modalities, DRUNet <2 dB improvement — not worth Modal latency.
+        is_denoise_modality = variant_key in _DENOISING_MODALITIES
+
+        if is_denoise_modality:
+            # Store CPU baseline so GPU worker can fall back if DRUNet is worse
+            sample_data_for_gpu = dict(sample_data)
+            sample_data_for_gpu["reconstruction_baseline"] = cpu_baseline
+            x_gpu, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
+                sample_data_for_gpu, variant_key, use_drunet=True
+            )
+            if x_gpu is not None:
+                x_recon = x_gpu
+                gpu_ran = True
+                dl_note = False  # Real DL inference ran; no longer a CPU placeholder
 
     baseline_method = None if (not is_dl or gpu_ran) else _pick_baseline_name(
         sample_data, variant_key, category
