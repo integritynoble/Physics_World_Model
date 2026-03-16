@@ -81,7 +81,7 @@ Agent-Constrained Composition over a Finite Primitive Basis}\\[18pt]
 
 % ---- Summary (Nature: ≤150 words) ----
 \noindent\textbf{Summary.}
-We introduce \texttt{spec.md}, a structured specification format, and three autonomous agents---Plan ($\Agent_P$), Judge ($\Agent_J$), and Execute ($\Agent_E$)---that translate a one-sentence natural-language description of any computational imaging system into a validated forward model with bounded reconstruction error.  The Plan agent composes operators from an 11-primitive basis (covering 170+ modalities across all carrier families)~\cite{paperII}; the Judge validates the specification through three diagnostic gates (recoverability, carrier budget, operator mismatch); the Execute agent instantiates the forward--adjoint pair and runs reconstruction.  A design-to-real error theorem (Theorem~\ref{thm:design}) decomposes total reconstruction error into five independently bounded terms, each linked to a corrective action.  On 6 real-data modalities spanning photons, electrons, neutrons, phonons, and RF carriers, the automated pipeline matches expert-library quality ($99.6 \pm 3.1$\%).  An algorithm-comparison study spanning five published algorithms per modality (from classical to state-of-the-art deep unrolling) reveals that forward-model specification, not algorithm choice, is the primary quality determinant for well-conditioned systems (inter-method Coefficient of Variation (CoV) $\approx$12\%), while ill-conditioned compressive systems enter an algorithm-sensitive regime (CoV $>$40\%).  Ten novel designs---composing primitives into chains from 3D to 5D---demonstrate compositional reach beyond any single-modality tool.
+We introduce \texttt{spec.md}, a structured specification format, and three autonomous agents---Plan ($\Agent_P$), Judge ($\Agent_J$), and Execute ($\Agent_E$)---that translate a one-sentence natural-language description of any computational imaging system into a validated forward model with bounded reconstruction error.  The Plan agent composes operators from an 11-primitive basis (covering 170+ modalities across all carrier families)~\cite{paperII}; the Judge validates the specification through three diagnostic gates (recoverability, carrier budget, operator mismatch); the Execute agent instantiates the forward--adjoint pair and runs reconstruction.  A design-to-real error theorem (Theorem~\ref{thm:design}) decomposes total reconstruction error into five independently bounded terms, each linked to a corrective action.  On 6 real-data modalities spanning photons, electrons, neutrons, phonons, and RF carriers, the automated pipeline matches expert-library quality ($98.1 \pm 6.5$\%).  An algorithm-comparison study spanning five published algorithms per modality (from classical to state-of-the-art deep unrolling) reveals that forward-model specification, not algorithm choice, is the primary quality determinant for well-conditioned systems (inter-method Coefficient of Variation (CoV) $\approx$12\%), while ill-conditioned compressive systems enter an algorithm-sensitive regime (CoV $>$40\%).  Ten novel designs---composing primitives into chains from 3D to 5D---demonstrate compositional reach beyond any single-modality tool.
 
 % ========================================================================
 \section{Introduction}
@@ -332,7 +332,7 @@ We validated the framework on all 173 modalities.  For each, the Plan Agent gene
 \quad CT & $\Pi \to D$ & X-ray & $19.6 \pm 2.9$ & 420 & $\sim$1.0 & \textbf{Real} \\
 \addlinespace[2pt]
 \multicolumn{7}{@{}l}{\textit{Optical photons}} \\
-\quad CASSI & $M \to W \to \Sigma \to D$ & Photon & $18.9 \pm 3.1$ & 310 & 0.85 & \textbf{Real} \\
+\quad CASSI & $M \to W \to \Sigma \to D$ & Photon & $21.7 \pm 2.6$ & 310 & 0.85 & \textbf{Real} \\
 \quad CACTI & $M \to \Sigma \to D$ & Photon & $30.2 \pm 1.1$ & 300 & $\sim$1.0 & \textbf{Real} \\
 \quad OCT & $P + P \to \Sigma \to D$ & Photon & $30.5 \pm 1.1$ & 290 & 0.86 & Synth. \\
 \quad SIM\cite{gustafsson2008sim} & $M \to C \to D$ & Photon & $27.7 \pm 2.0$ & 350 & 0.92 & \textbf{Synth.}$^*$ \\
@@ -432,12 +432,12 @@ The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ ac
 
 \textbf{CT} (LoDoPaB~\cite{leuschner2021}, $n{=}10$): 60-view fan-beam projections.  Agent PSNR $19.6 \pm 2.9$\,dB; expert FISTA+TV~\cite{beck2009fista} $19.1 \pm 3.2$\,dB (quality ratio 102.6\%, $\rho_{\text{time}} \approx 420$).
 \textbf{MRI} (M4Raw~\cite{lyu2023m4raw}, $n{=}10$): 4-coil, ${\sim}4\times$ undersampled.  Agent $22.2 \pm 3.3$\,dB; expert FISTA+TV~\cite{beck2009fista} $21.6 \pm 3.4$\,dB (102.8\%).
-\textbf{CASSI} (KAIST~\cite{meng2020gap}, $n{=}5$): 28-band coded aperture.  Agent $18.9 \pm 3.1$\,dB; expert FISTA+TV~\cite{monga2021unrolling} $18.9 \pm 3.1$\,dB (100.2\%).
+\textbf{CASSI} (KAIST~\cite{meng2020gap}, $n{=}5$): 28-band coded aperture spectral imaging.  Agent FISTA+TV with spectral dispersion model $21.7 \pm 2.6$\,dB; expert GAP-TV~\cite{yuan2016gap} $24.4$\,dB (88.9\%).
 \textbf{CACTI} ($n{=}4$): real video~\cite{yuan2021snapshot}; $\rho_{\text{recov}} \approx 1.0$ after autonomous mask-alignment calibration.
 \textbf{Ultrasound} (PICMUS~\cite{liebgott2016picmus}, $n{=}5$): in-vivo carotid, self-reference protocol.  After SoS calibration, SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).
 \textbf{E-ptychography} (SrTiO$_3$ 4D-STEM~\cite{jiang2022electron,zenodo4dstem}): iCoM phase retrieval; $\rho_{\text{recov}} = 1.00$ after probe-position correction.
 
-Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $102.4 \pm 0.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Beyond the 6 real-data modalities, 10 novel system designs demonstrate compositional reach: by composing primitives into chains of up to 5 operators, the agents design systems recovering depth ($\Phi_z{\to}\Sigma{\to}D$, 3D), video ($M{\to}C{\to}\Sigma{\to}D$, 3D), spectra ($M{\to}W{\to}C{\to}\Sigma{\to}D$, 3D), and full 5D datacubes ($x,y,z,\lambda,t$) from single 2D snapshots (Table~\ref{tab:cross}).  Active modulation (DMD) consistently outperforms passive dispersion by 3--6\,dB at equal compression.  Full per-system specifications appear in Supplementary Information.
+Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $98.1 \pm 6.5$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Beyond the 6 real-data modalities, 10 novel system designs demonstrate compositional reach: by composing primitives into chains of up to 5 operators, the agents design systems recovering depth ($\Phi_z{\to}\Sigma{\to}D$, 3D), video ($M{\to}C{\to}\Sigma{\to}D$, 3D), spectra ($M{\to}W{\to}C{\to}\Sigma{\to}D$, 3D), and full 5D datacubes ($x,y,z,\lambda,t$) from single 2D snapshots (Table~\ref{tab:cross}).  Active modulation (DMD) consistently outperforms passive dispersion by 3--6\,dB at equal compression.  Full per-system specifications appear in Supplementary Information.
 
 % ---- Specification-Dominance Figure ----
 \begin{figure}[htbp]
@@ -504,7 +504,7 @@ We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 
 \begin{table}[htbp]
 \centering
-\caption{Agent vs.\ established reconstruction methods.  ``Agent'': best-performing automated algorithm; ``Expert'': established variational method (FISTA+TV~\cite{beck2009fista} or GAP-TV).  Bold = real measured data; $*$ = new system designs.  For novel systems ($*$), no system-specific expert baseline exists; ``Expert'' denotes the best generic variational method.  Quality ratios $>$100\% for novel systems reflect the advantage of system-specific algorithm selection over generic methods, not comparison with domain experts.  Established modalities: $99.6 \pm 3.1$\%; novel systems: $114 \pm 10$\% (vs.\ generic baselines).  Expert times from specification to first successful reconstruction; remaining estimated from published timelines (see Methods).}
+\caption{Agent vs.\ established reconstruction methods.  ``Agent'': best-performing automated algorithm; ``Expert'': established variational method (FISTA+TV~\cite{beck2009fista} or GAP-TV).  Bold = real measured data; $*$ = new system designs.  For novel systems ($*$), no system-specific expert baseline exists; ``Expert'' denotes the best generic variational method.  Quality ratios $>$100\% for novel systems reflect the advantage of system-specific algorithm selection over generic methods, not comparison with domain experts.  Established modalities: $98.1 \pm 6.5$\%; novel systems: $114 \pm 10$\% (vs.\ generic baselines).  Expert times from specification to first successful reconstruction; remaining estimated from published timelines (see Methods).}
 \label{tab:expert}
 \small
 \begin{tabular}{@{}lcccccc@{}}
@@ -513,10 +513,10 @@ We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 \textbf{Modality} & \textbf{Agent} & \textbf{Expert} & \textbf{Agent} & \textbf{Expert} & \textbf{Quality} & \textbf{LoC} \\
 \midrule
-\multicolumn{7}{@{}l}{\textit{Established modalities ($99.6 \pm 3.1$\%)}} \\
+\multicolumn{7}{@{}l}{\textit{Established modalities ($98.1 \pm 6.5$\%)}} \\
 \textbf{CT (real)} & 19.6 & 19.1 & 25\,min & 7\,d & 102.6\% & 12 vs 340 \\
 \textbf{MRI (real)} & 22.2 & 21.6 & 20\,min & 5\,d & 102.8\% & 14 vs 520 \\
-\textbf{CASSI (real)} & 18.9 & 18.9 & 18\,min & 4\,d & 100.2\% & 11 vs 280 \\
+\textbf{CASSI (real)} & 21.7 & 24.4 & 18\,min & 4\,d & 88.9\% & 11 vs 280 \\
 OCT & 30.5 & 31.2 & 22\,min & 6\,d & 97.8\% & 13 vs 450 \\
 DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \addlinespace[4pt]
@@ -535,7 +535,7 @@ DOT & 24.1 & 25.3 & 30\,min & 10\,d & 95.3\% & 15 vs 680 \\
 \end{tabular}
 \end{table}
 
-For established modalities (CT, MRI, CASSI, OCT, DOT): mean quality ratio $99.6 \pm 3.1$\%.  For novel systems ($*$): $114 \pm 10$\% vs.\ generic baselines.  Agent specifications: 10--16 lines; expert code: 180--680 lines.
+For established modalities (CT, MRI, CASSI, OCT, DOT): mean quality ratio $98.1 \pm 6.5$\%.  For novel systems ($*$): $114 \pm 10$\% vs.\ generic baselines.  Agent specifications: 10--16 lines; expert code: 180--680 lines.
 
 \paragraph{Specification-dominance study.}
 Five published reconstruction algorithms per modality---spanning classical, variational, deep learning, transformer, and deep unrolling methods---on 5 established modalities (Extended Data Table~\ref{tab:expert_study}, Figure~\ref{fig:spec_dominance}): inter-method PSNR CoV ranges from 12.1\% (MRI) to 40.8\% (lensless), revealing a clear gradient.  For well-conditioned systems (CT, MRI, SIM), CoV remains moderate ($\approx$12--14\%), indicating that while advanced algorithms improve absolute quality, the forward-model specification constrains the quality floor.  For ill-conditioned compressive systems (lensless, CASSI), CoV rises sharply (19--41\%), delineating an algorithm-sensitive regime where reconstruction method selection becomes critical.  This finding---that getting the \emph{physics right} constrains the quality envelope more than the \emph{numerics}---is the central empirical insight of this work.

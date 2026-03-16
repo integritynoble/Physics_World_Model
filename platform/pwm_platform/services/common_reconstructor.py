@@ -199,7 +199,13 @@ _DENOISING_MODALITIES: set[str] = {
 # → use biharmonic inpainting + TV for reconstruction
 _MASK_INPAINT_MODALITIES: frozenset[str] = frozenset({
     "quantum_illumination", "entangled_photon",
-    "cassi", "spc",  # coded aperture: H is binary 256×256 spatial mask, y = H .* x
+    "spc",  # coded aperture: H is binary 256×256 spatial mask, y = H .* x
+})
+
+# CASSI: spectral dispersion forward model y = Σ_λ shift(mask * x[:,:,λ], d_λ)
+# Needs GAP-TV reconstruction, NOT mask inpainting
+_CASSI_MODALITIES: frozenset[str] = frozenset({
+    "cassi", "sd_cassi",
 })
 
 
@@ -1176,6 +1182,84 @@ def _compressive_reconstruct(
 _RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
 
 
+def _cassi_gap_tv_reconstruct(data: dict, n_iter: int = 80, tv_weight: float = 0.008) -> np.ndarray:
+    """Reconstruct CASSI spectral cube using FISTA + TV (accelerated proximal gradient).
+
+    Forward model: y[:, d_k:d_k+W] += mask * x[:,:,k]  for k=0..L-1
+    where d_k = round(step * k).
+
+    Uses FISTA acceleration (Nesterov momentum) with band-wise TV proximal operator.
+    Step size 1/L guarantees convergence (Lipschitz constant of gradient ≤ L).
+    """
+    from skimage.restoration import denoise_tv_chambolle
+
+    y = data["y"].astype(np.float64)       # (Nx, Ny_ext)
+    mask = data["H_ideal"].astype(np.float64)  # (Nx, Ny) coded aperture
+    x_true = data.get("x_true")
+
+    Nx, Ny = mask.shape
+    L = x_true.shape[2] if x_true is not None and x_true.ndim == 3 else 28
+    Ny_ext = y.shape[1]
+
+    # Auto-detect dispersion step from measurement width
+    step = max(1, round((Ny_ext - Ny) / max(L - 1, 1)))
+    offsets = [step * k for k in range(L)]
+    model_width = Ny + offsets[-1]
+
+    # Truncate/pad measurement to model width
+    if Ny_ext > model_width:
+        y_use = y[:, :model_width]
+    elif Ny_ext < model_width:
+        y_use = np.zeros((Nx, model_width), dtype=np.float64)
+        y_use[:, :Ny_ext] = y
+    else:
+        y_use = y
+
+    def forward(x_cube):
+        out = np.zeros((Nx, model_width), dtype=np.float64)
+        for k in range(L):
+            out[:, offsets[k]:offsets[k] + Ny] += mask * x_cube[:, :, k]
+        return out
+
+    def adjoint(y_meas):
+        out = np.zeros((Nx, Ny, L), dtype=np.float64)
+        for k in range(L):
+            out[:, :, k] = mask * y_meas[:, offsets[k]:offsets[k] + Ny]
+        return out
+
+    tau = 1.0 / L  # step size
+
+    # Initialize with scaled adjoint
+    x_hat = adjoint(y_use) * tau
+    x_prev = x_hat.copy()
+    t_k = 1.0
+
+    # FISTA + TV iterations
+    for it in range(n_iter):
+        # FISTA momentum
+        t_new = (1.0 + np.sqrt(1.0 + 4.0 * t_k ** 2)) / 2.0
+        momentum = (t_k - 1.0) / t_new
+        x_mom = x_hat + momentum * (x_hat - x_prev)
+        t_k = t_new
+
+        # Gradient step
+        residual = forward(x_mom) - y_use
+        x_grad = x_mom - tau * adjoint(residual)
+
+        # TV proximal + non-negativity (per-band)
+        x_prev = x_hat.copy()
+        for k in range(L):
+            band = np.clip(x_grad[:, :, k], 0, None)
+            bmax = band.max()
+            if bmax > 1e-10:
+                band_n = denoise_tv_chambolle(band / bmax, weight=tv_weight, max_num_iter=5)
+                x_hat[:, :, k] = np.clip(band_n, 0, 1) * bmax
+            else:
+                x_hat[:, :, k] = band
+
+    return np.clip(x_hat, 0, None)
+
+
 def _mask_inpaint_reconstruct(y: np.ndarray, H: np.ndarray) -> np.ndarray:
     """Reconstruct from pixel-mask measurement: y = H_mask * x + noise.
 
@@ -1225,6 +1309,8 @@ def _detect_recon_type(
         return "deconvolution"
     if variant_key in _PHASE_RETRIEVAL_MODALITIES:
         return "phase_retrieval"
+    if variant_key in _CASSI_MODALITIES:
+        return "cassi"
     if variant_key in _MASK_INPAINT_MODALITIES:
         return "mask_inpaint"
     if variant_key in _DENOISING_MODALITIES:
@@ -1369,6 +1455,9 @@ def _dispatch_reconstruction(
 
             if recon_type == "phase_retrieval":
                 return _phase_retrieval_reconstruct(data, algo_name)
+
+            if recon_type == "cassi":
+                return _cassi_gap_tv_reconstruct(data)
 
             if recon_type == "mask_inpaint":
                 if H is not None:
