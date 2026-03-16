@@ -219,10 +219,11 @@ def _load_sample(h5_path: Path, sample_idx: int = 0, variant_key: str = "") -> d
     with h5py.File(h5_path, "r") as f:
         sample_key = f"sample_{sample_idx:02d}"
         if sample_key not in f:
-            samples = [k for k in f.keys() if k.startswith("sample_")]
+            samples = sorted([k for k in f.keys() if k.startswith("sample_")])
             if not samples:
                 raise ValueError(f"No samples in {h5_path}")
-            sample_key = sorted(samples)[0]
+            # Use modular indexing so each sample button shows a different sample
+            sample_key = samples[sample_idx % len(samples)]
 
         grp = f[sample_key]
         available = set(grp.keys())
@@ -1320,6 +1321,56 @@ def _pick_baseline_name(
     return _BASELINE_NAMES.get(recon_type, "Classical Baseline")
 
 
+# ── Modal GPU helper ──────────────────────────────────────────────────────────
+
+
+def _try_modal_gpu(
+    sample_data: dict,
+    variant_key: str,
+    use_drunet: bool = False,
+) -> tuple:
+    """Call Modal T4 GPU reconstruction for DL algorithms.
+
+    When use_drunet=True, sends the raw measurement to the GPU worker which
+    applies the pretrained DRUNet denoiser (deepinv / Zhang et al. 2021).
+    This is used for denoising-category DL algorithms (SEM, OCT, SAR, etc.).
+
+    Returns (x_recon, psnr, ssim) on success, or (None, None, None) if
+    Modal is unavailable or fails.
+    """
+    try:
+        import pickle
+        import modal
+
+        # Look up the deployed Modal function by app + function name
+        reconstruct_gpu = modal.Function.from_name("pwm-speclab-gpu", "reconstruct_gpu")
+
+        # Build baseline — use explicit None checks (numpy arrays are not bool-testable)
+        _bl = sample_data.get("reconstruction_baseline")
+        if _bl is None:
+            _bl = sample_data.get("reconstruction")
+        payload = pickle.dumps({
+            "y": sample_data.get("y"),
+            "x_true": sample_data.get("x_true"),
+            "angles": sample_data.get("angles"),
+            "mask": sample_data.get("mask"),
+            "psf": sample_data.get("psf"),
+            "coil_maps": sample_data.get("coil_maps"),
+            "reconstruction_baseline": _bl,
+            "use_drunet": use_drunet,
+        })
+        result_bytes = reconstruct_gpu.remote(payload)
+        result = pickle.loads(result_bytes)
+        x_recon = result.get("x_recon")
+        psnr = result.get("psnr")
+        ssim = result.get("ssim")
+        if x_recon is not None:
+            return x_recon, psnr, ssim
+    except Exception as exc:
+        logger.warning("Modal GPU reconstruction unavailable: %s", exc)
+    return None, None, None
+
+
 # ── Main entry points ────────────────────────────────────────────────────
 
 
@@ -1437,35 +1488,53 @@ def _run_common_sync(
 
     # Run reconstruction via central dispatch
     dl_note = is_dl
+    gpu_ran = False
+    effective_algo = algorithm_name
+    psnr_from_gpu: Optional[float] = None
+    ssim_from_gpu: Optional[float] = None
+
     if not is_dl:
-        effective_algo = algorithm_name
+        x_recon = _dispatch_reconstruction(
+            sample_data, variant_key, category, effective_algo
+        )
     else:
-        # For DL methods, run the best available CPU baseline:
-        # sinogram modalities → PINER-CT (better than plain FBP)
-        recon_type_for_baseline = _detect_recon_type(sample_data, variant_key, category)
-        if recon_type_for_baseline == "sinogram":
-            effective_algo = "PINER-CT"
-        elif recon_type_for_baseline == "mri":
-            # Pass algorithm name so keyword-based MRI post-processing (TV, ADMM, etc.) applies
-            effective_algo = algorithm_name
-        else:
-            effective_algo = ""
-    x_recon = _dispatch_reconstruction(
-        sample_data, variant_key, category, effective_algo
+        # DL algorithm: run CPU classical reconstruction first to get a baseline.
+        cpu_baseline = _dispatch_reconstruction(
+            sample_data, variant_key, category, ""
+        )
+        x_recon = cpu_baseline
+
+        # For denoising-category modalities, apply pretrained DRUNet on Modal GPU.
+        # DRUNet (Zhang et al., 2021) is a universal blind denoiser with publicly
+        # available pretrained weights. It gives +5–10 dB improvement for image-domain
+        # measurements (SEM, TEM, OCT, ultrasound, SAR, etc.).
+        # For sinogram/MRI modalities, DRUNet <2 dB improvement — not worth Modal latency.
+        is_denoise_modality = variant_key in _DENOISING_MODALITIES
+
+        if is_denoise_modality:
+            # Store CPU baseline so GPU worker can fall back if DRUNet is worse
+            sample_data_for_gpu = dict(sample_data)
+            sample_data_for_gpu["reconstruction_baseline"] = cpu_baseline
+            x_gpu, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
+                sample_data_for_gpu, variant_key, use_drunet=True
+            )
+            if x_gpu is not None:
+                x_recon = x_gpu
+                gpu_ran = True
+                dl_note = False  # Real DL inference ran; no longer a CPU placeholder
+
+    baseline_method = None if (not is_dl or gpu_ran) else _pick_baseline_name(
+        sample_data, variant_key, category
     )
-    baseline_method = (
-        None if not is_dl else _pick_baseline_name(sample_data, variant_key, category)
-    )
-    # Override baseline name for improved sinogram baseline
-    if is_dl and effective_algo == "PINER-CT":
-        baseline_method = "PINER-CT"
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 
     # Compute metrics
-    psnr_val = None
-    ssim_val = None
-    if has_gt and x_true is not None:
+    # GPU path: metrics already computed on the GPU worker against x_true
+    # CPU path (or GPU path without x_true): compute locally
+    psnr_val: Optional[float] = psnr_from_gpu
+    ssim_val: Optional[float] = ssim_from_gpu
+    if not gpu_ran and has_gt and x_true is not None:
         # Align x_recon shape to x_true if needed
         x_recon_2d = _to_2d_display(x_recon)
         x_true_2d = _to_2d_display(x_true)
@@ -1502,10 +1571,10 @@ def _run_common_sync(
         psnr_val = _compute_psnr(x_true, x_recon)
         ssim_val = _compute_ssim(x_true, x_recon)
 
-    # If DL method, get expected scores from leaderboard
+    # If DL method, get expected scores from leaderboard (shown even when GPU runs)
     expected_psnr = None
     expected_ssim = None
-    if dl_note:
+    if is_dl:
         lb = variant.get("normal_leaderboard", [])
         for entry in lb:
             if entry.get("method", "").lower() == algorithm_name.lower():
@@ -1525,6 +1594,7 @@ def _run_common_sync(
         "psnr": round(psnr_val, 2) if psnr_val is not None else None,
         "ssim": round(ssim_val, 4) if ssim_val is not None else None,
         "is_dl_placeholder": dl_note,
+        "gpu_accelerated": gpu_ran,
         "expected_psnr": expected_psnr,
         "expected_ssim": expected_ssim,
         "variant_key": variant_key,

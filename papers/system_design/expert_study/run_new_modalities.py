@@ -3,17 +3,20 @@
 Modalities (each recovers a different physical dimension from a single 2D shot):
   Existing:
     1. Lensless (C -> D): phase-mask PSF, 1:1
-    2. 3D Lensless (C -> Sigma -> D): depth-dependent PSFs, Nz=8 (8:1)
+    2. 3D Lensless (Phi_z -> Sigma -> D): diffuser depth encoding, Nz=8 (8:1)
     3. Temporal-Coded Video (M -> C -> Sigma -> D): mask + diffuser, Nt=8 (8:1)
     4. Spectral Lensless (M -> W -> C -> Sigma -> D): mask + dispersion + diffuser, Nb=8 (8:1)
-  New multidimensional:
-    5. 4D Spectral-Depth (W_l -> C -> Sigma -> D): passive, Nz*Nl:1
-    6. 4D Temporal-Depth DMD (M -> C -> Sigma -> D): active, Nz*Nt:1
-    7. 4D Temporal-Depth Streak (W_t -> C -> Sigma -> D): passive, Nz*Nt:1
-    8. 5D Full DMD (M -> W_l -> C -> Sigma -> D): active, Nz*Nl*Nt:1
-    9. 5D Full Streak (W_l -> W_t -> C -> Sigma -> D): passive, Nz*Nl*Nt:1
+  Multidimensional (depth via diffuser-encoded light field):
+    5. 4D Spectral-Depth (M -> W_l -> Phi_z -> Sigma -> D): passive, Nz*Nl:1
+    6. 4D Temporal-Depth DMD (M -> Phi_z -> Sigma -> D): active, Nz*Nt:1
+    7. 4D Temporal-Depth Streak (M -> W_t -> Phi_z -> Sigma -> D): passive, Nz*Nt:1
+    8. 5D Full DMD (M -> W_l -> Phi_z -> Sigma -> D): active, Nz*Nl*Nt:1
+    9. 5D Full Streak (M -> W_l -> W_t -> Phi_z -> Sigma -> D): passive, Nz*Nl*Nt:1
 
-Key improvement: Phase-mask-based PSFs with flat power spectrum (well-conditioned).
+Key: Depth encoded via diffuser-encoded light field (depth-dependent PSFs from
+     wave propagation through random phase plate + defocus). Each depth plane
+     produces a unique speckle pattern, providing maximum measurement diversity.
+     Ref: Optica 13(2), 2026 — "Single-shot diffuser-encoded light field imaging"
 Each modality runs 5 algorithms with PSNR/SSIM evaluation.
 """
 import numpy as np
@@ -54,40 +57,64 @@ def generate_phase_mask_psf(size, seed=42, feature_scale=2.5):
     return psf
 
 
-def generate_depth_phase_psfs(n_depths, size, seed=42, feature_scale=2.5):
-    """Generate depth-dependent PSFs with independent random phases per depth.
+def generate_diffuser_depth_psfs(n_depths, size, seed=42, feature_scale=1.0,
+                                  defocus_max=40.0):
+    """Generate depth-dependent PSFs from diffuser-encoded light field.
 
-    Each depth plane uses a different random phase mask, producing maximally
-    diverse PSFs. This models how a physical phase diffuser creates very
-    different PSF patterns at different depths due to the interplay of the
-    random phase structure and depth-dependent wavefront curvature.
+    Models wave propagation through a random phase diffuser at varying depths.
+    Uses ASYMMETRIC defocus (z=0 in focus, z=N-1 maximally defocused) to avoid
+    symmetric PSF pairs and maximize depth diversity.
 
-    The key insight: defocus alone (quadratic phase on a shared base) gives
-    insufficient PSF diversity for depth separation. Independent random
-    phases per depth provide much higher measurement diversity, enabling
-    GAP-TV to separate depth planes at 8:1 compression.
+        PSF(z) = |FT{exp(i*phi_diffuser + i*defocus(z)*r^2)}|^2
+
+    The defocus creates depth-dependent PSFs where each plane produces a
+    different speckle/caustic pattern. Moderate feature_scale balances
+    PSF structure (OTF bandwidth) and inter-depth diversity.
+
+    Ref: Optica 13(2), 2026 — "Single-shot diffuser-encoded light field imaging"
+
+    Args:
+        n_depths: Number of depth planes
+        size: Spatial resolution (size x size)
+        seed: Random seed for diffuser phase
+        feature_scale: Gaussian smoothing sigma for diffuser (controls OTF)
+        defocus_max: Maximum defocus at z=N-1 in radians (controls diversity)
+
+    Returns:
+        H_ffts: List of FFT transfer functions per depth (complex, size x size)
+        psfs: List of PSFs per depth (real, size x size)
     """
+    rng = np.random.RandomState(seed)
+    phase_diffuser = rng.uniform(0, 2 * np.pi, (size, size))
+    if feature_scale > 0:
+        phase_diffuser = ndimage.gaussian_filter(phase_diffuser, sigma=feature_scale)
+
+    # Spatial coordinates for defocus quadratic phase
+    y_arr, x_arr = np.mgrid[-size // 2:size // 2, -size // 2:size // 2]
+    r2 = (x_arr ** 2 + y_arr ** 2) / (size / 2.0) ** 2
+
     psfs = []
-    y, x = np.mgrid[-size // 2:size // 2, -size // 2:size // 2]
-    r2 = (x ** 2 + y ** 2).astype(np.float64) / (size ** 2)
-
+    H_ffts = []
     for z in range(n_depths):
-        # Independent random phase per depth (different seed per plane)
-        rng = np.random.RandomState(seed + z * 137)
-        phase = rng.uniform(0, 2 * np.pi, (size, size))
-        # Vary feature scale slightly with depth for additional diversity
-        sigma = feature_scale + z * 0.3
-        phase = ndimage.gaussian_filter(phase, sigma=sigma)
+        # Asymmetric defocus: z=0 is in focus, z=N-1 has maximum defocus
+        dz = z / max(n_depths - 1, 1)  # 0 to 1
+        defocus_phase = defocus_max * dz * np.pi * r2
 
-        # Add defocus for physical realism
-        defocus_strength = (z - n_depths / 2) * 2.0 * np.pi
-        phase += defocus_strength * r2
+        field = np.exp(1j * (phase_diffuser + defocus_phase))
+        field = np.fft.ifftshift(field)
+        psf = np.abs(sp_fft.fft2(field)) ** 2
+        psf /= psf.sum()
+        psfs.append(psf)
+        H_ffts.append(sp_fft.fft2(psf))
 
-        field = np.exp(1j * phase)
-        psf_z = np.abs(np.fft.fftshift(np.fft.fft2(field))) ** 2
-        psf_z /= psf_z.sum()
-        psfs.append(psf_z)
-    return psfs
+    return H_ffts, psfs
+
+
+def compute_shift_phase(dx, dy, size):
+    """Compute FFT phase ramp for sub-pixel shift (dispersion/streak)."""
+    fx = np.fft.fftfreq(size).reshape(1, -1)
+    fy = np.fft.fftfreq(size).reshape(-1, 1)
+    return np.exp(-2j * np.pi * (fx * dx + fy * dy))
 
 
 # ============================================================================
@@ -161,25 +188,28 @@ def get_test_images(n_samples, size):
 
 
 def generate_3d_volumes(n_depths, size, n_samples):
-    """Generate 3D volumes with objects at different depth planes."""
+    """Generate 3D volumes with objects at sparse depth planes.
+
+    In a real 3D scene, objects exist at specific depths with no overlap.
+    Most depth planes are empty (transparent). This sparsity is the key
+    physical prior that makes 3D depth recovery well-conditioned.
+    """
     volumes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         vol = np.zeros((n_depths, size, size))
         rng = np.random.RandomState(200 + s)
-        n_objects = rng.randint(5, 10)
+        # Each object exists at exactly ONE depth — no overlap between planes
+        n_objects = rng.randint(8, 15)
         for j in range(n_objects):
             z = rng.randint(0, n_depths)
             cx, cy = rng.randint(15, size - 15, 2)
-            rx, ry = rng.randint(6, 25, 2)
-            yy, xx = np.mgrid[0:size, 0:size]
+            rx, ry = rng.randint(8, 30, 2)
             obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
-            vol[z] += obj * rng.uniform(0.3, 0.9)
+            vol[z] += obj * rng.uniform(0.3, 1.0)
+        # Clip to [0, 1] but do NOT add background to empty planes
         for z in range(n_depths):
-            bg = rng.rand(size, size) * 0.03
-            vol[z] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = vol[z].max()
-            if mx > 1e-10:
-                vol[z] = np.clip(vol[z] / mx, 0, 1)
+            vol[z] = np.clip(vol[z], 0, 1)
         volumes.append(vol)
     return volumes
 
@@ -413,52 +443,56 @@ def _lensless_rl(y, H_fft, HT_fft, n_iter=80):
 
 
 # ============================================================================
-# Modality 2: 3D Lensless (C -> Sigma -> D) — depth recovery
+# Modality 2: 3D Lensless (Phi_z -> Sigma -> D) — diffuser depth encoding
 # ============================================================================
 
 NZ = 8  # Depth planes for 3D systems
 
 
 def run_lensless3d():
-    """3D Lensless with depth-dependent phase-mask PSFs."""
+    """3D Lensless with diffuser-encoded light field depth encoding.
+
+    Each depth plane sees a unique speckle PSF from diffuser + defocus.
+    Forward: y = sum_z conv(x_z, psf_z) / Nz
+    """
     print("\n" + "=" * 70)
-    print("3D LENSLESS (C -> Sigma -> D) — depth, 8:1")
+    print("3D LENSLESS (Phi_z -> Sigma -> D) — diffuser depth, 8:1")
     print("=" * 70)
 
-    psfs = generate_depth_phase_psfs(NZ, N)
-    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
-    HT_ffts = [np.conj(h) for h in H_ffts]
+    H_ffts, psfs = generate_diffuser_depth_psfs(NZ, N, seed=100)
     L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / NZ + 1e-8
     volumes = generate_3d_volumes(NZ, N, N_SAMPLES)
 
     def forward(vol):
-        y = np.zeros((N, N))
+        Y_fft = np.zeros((N, N), dtype=complex)
         for z in range(NZ):
-            y += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(vol[z])))
-        return y / NZ
+            Y_fft += H_ffts[z] * sp_fft.fft2(vol[z])
+        return np.real(sp_fft.ifft2(Y_fft)) / NZ
 
     def adjoint(r):
         R_fft = sp_fft.fft2(r)
         out = np.zeros((NZ, N, N))
         for z in range(NZ):
-            out[z] = np.real(sp_fft.ifft2(HT_ffts[z] * R_fft)) / NZ
-        return out
+            out[z] = np.real(sp_fft.ifft2(np.conj(H_ffts[z]) * R_fft))
+        return out / NZ
 
     def wiener(y):
+        Y_fft = sp_fft.fft2(y)
         vol = np.zeros((NZ, N, N))
         for z in range(NZ):
-            vol[z] = wiener_deconv_fft(y, H_ffts[z], snr=200) / NZ
-        return np.clip(vol, 0, 1)
+            vol[z] = np.real(sp_fft.ifft2(
+                np.conj(H_ffts[z]) * Y_fft / (np.abs(H_ffts[z]) ** 2 + 1.0 / 200)))
+        return np.clip(vol / NZ, 0, 1)
 
     algorithms = {
         "Wiener": wiener,
-        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, NZ, n_iter=100, tv_weight=0.006),
-        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, NZ, 0.8 / L, n_iter=100, tv_weight=0.004),
-        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, NZ, n_iter=80, rho=0.5, tv_weight=0.006),
-        "R-L": lambda y: rl_deconv(y, forward, adjoint, NZ, n_iter=80),
+        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, NZ, n_iter=120, tv_weight=0.005),
+        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, NZ, 0.8 / L, n_iter=120, tv_weight=0.003),
+        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, NZ, n_iter=100, rho=0.5, tv_weight=0.005),
+        "R-L": lambda y: rl_deconv(y, forward, adjoint, NZ, n_iter=100),
     }
 
-    return _run_modality_3d("3D Lensless", volumes, psfs, algorithms, forward)
+    return _run_modality_3d("3D Lensless", volumes, None, algorithms, forward)
 
 
 # ============================================================================
@@ -582,7 +616,7 @@ def _spectral_twostep(y, H_fft, HT_fft, mask, shifts, n_iter=40, tv_weight=0.006
 
 
 # ============================================================================
-# Modality 5: 4D Spectral-Depth (W_l -> C -> Sigma -> D) — PASSIVE
+# Modality 5: 4D Spectral-Depth (M -> W_l -> Phi_z -> Sigma -> D) — PASSIVE
 # ============================================================================
 
 NZ4 = 4  # Depth planes for 4D/5D
@@ -591,208 +625,305 @@ NT4 = 4  # Temporal frames for 4D/5D
 
 
 def run_4d_spectral_depth():
-    """4D Spectral-Depth: prism + depth-dependent diffuser (passive)."""
+    """4D Spectral-Depth: mask + prism + diffuser depth (passive).
+
+    Fixed coded aperture mask for spectral dispersion diversity.
+    Diffuser provides depth encoding via depth-dependent PSFs.
+    """
     print("\n" + "=" * 70)
-    print("4D SPECTRAL-DEPTH (W_l -> C -> Sigma -> D) — passive, 16:1")
+    print("4D SPECTRAL-DEPTH (M -> W_l -> Phi_z -> Sigma -> D) — passive, 16:1")
     print("=" * 70)
 
-    psfs = generate_depth_phase_psfs(NZ4, N, seed=60)
-    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
-    HT_ffts = [np.conj(h) for h in H_ffts]
+    H_ffts, _ = generate_diffuser_depth_psfs(NZ4, N, seed=200)
     L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / (NZ4 * NL4) + 1e-8
     shifts = generate_dispersion_shifts(NL4, max_shift_px=12)
+    disp_phase = [compute_shift_phase(dx, dy, N) for dx, dy in shifts]
+    mask = generate_binary_mask(N, 0.5, seed=750)
     n_slices = NZ4 * NL4
     data = _generate_4d_zl(NZ4, NL4, N, N_SAMPLES)
 
     def forward(cube_flat):
-        # cube_flat: (NZ4*NL4, N, N) reshaped from (NZ4, NL4, N, N)
-        y = np.zeros((N, N))
+        Y_fft = np.zeros((N, N), dtype=complex)
         for z in range(NZ4):
             for b in range(NL4):
                 idx = z * NL4 + b
-                dispersed = apply_shift(cube_flat[idx], shifts[b][0], shifts[b][1])
-                y += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(dispersed)))
-        return y / n_slices
+                coded_fft = sp_fft.fft2(mask * cube_flat[idx]) * disp_phase[b]
+                Y_fft += H_ffts[z] * coded_fft
+        return np.real(sp_fft.ifft2(Y_fft)) / n_slices
 
     def adjoint(r):
+        R_fft = sp_fft.fft2(r)
         out = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            HT_r = np.real(sp_fft.ifft2(HT_ffts[z] * sp_fft.fft2(r)))
+            dec_z_fft = R_fft * np.conj(H_ffts[z])
             for b in range(NL4):
                 idx = z * NL4 + b
-                out[idx] = apply_shift_adjoint(HT_r, shifts[b][0], shifts[b][1]) / n_slices
-        return out
+                out[idx] = mask * np.real(sp_fft.ifft2(
+                    dec_z_fft * np.conj(disp_phase[b])))
+        return out / n_slices
 
     def wiener(y):
+        Y_fft = sp_fft.fft2(y)
         vol = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            dec = wiener_deconv_fft(y, H_ffts[z], snr=100)
+            dec_z_fft = np.conj(H_ffts[z]) * Y_fft / (
+                np.abs(H_ffts[z]) ** 2 + 1.0 / 100)
             for b in range(NL4):
-                vol[z * NL4 + b] = apply_shift_adjoint(dec, shifts[b][0], shifts[b][1]) / n_slices
-        return np.clip(vol, 0, 1)
+                idx = z * NL4 + b
+                vol[idx] = mask * np.real(sp_fft.ifft2(
+                    dec_z_fft * np.conj(disp_phase[b])))
+        return np.clip(vol / n_slices, 0, 1)
 
     algorithms = {
         "Wiener": wiener,
-        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=60, tv_weight=0.010),
-        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=60, tv_weight=0.008),
-        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=40, rho=0.5, tv_weight=0.010),
-        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=40),
+        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=80, tv_weight=0.008),
+        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=80, tv_weight=0.006),
+        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=60, rho=0.5, tv_weight=0.008),
+        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=60),
     }
 
-    return _run_modality_3d("4D Spectral-Depth", data, psfs, algorithms, forward)
+    return _run_modality_3d("4D Spectral-Depth", data, None, algorithms, forward)
 
 
 def _generate_4d_zl(nz, nl, size, n_samples):
-    """Generate 4D (z, lambda) datacubes flattened to (nz*nl, size, size)."""
+    """Generate 4D (z, lambda) datacubes flattened to (nz*nl, size, size).
+
+    Objects exist at specific depths (no overlap between depth planes).
+    Each object has a smooth spectral profile across wavelength bands.
+    """
     cubes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         cube = np.zeros((nz * nl, size, size))
         rng = np.random.RandomState(800 + s)
-        n_obj = rng.randint(4, 8)
+        n_obj = rng.randint(6, 12)
         for j in range(n_obj):
             z = rng.randint(0, nz)
             cx, cy = rng.randint(15, size - 15, 2)
             rx, ry = rng.randint(8, 25, 2)
-            yy, xx = np.mgrid[0:size, 0:size]
             spatial = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
             spectrum = ndimage.gaussian_filter1d(rng.rand(nl), sigma=0.8)
             spectrum /= max(spectrum.max(), 1e-10)
             for b in range(nl):
-                cube[z * nl + b] += spatial * spectrum[b] * rng.uniform(0.3, 0.9)
+                cube[z * nl + b] += spatial * spectrum[b] * rng.uniform(0.3, 1.0)
         for idx in range(nz * nl):
-            bg = rng.rand(size, size) * 0.02
-            cube[idx] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = cube[idx].max()
-            if mx > 1e-10:
-                cube[idx] = np.clip(cube[idx] / mx, 0, 1)
+            cube[idx] = np.clip(cube[idx], 0, 1)
         cubes.append(cube)
     return cubes
 
 
 # ============================================================================
-# Modality 6: 4D Temporal-Depth DMD (M -> C -> Sigma -> D) — ACTIVE
+# Modality 6: 4D Temporal-Depth DMD (M -> Phi_z -> Sigma -> D) — ACTIVE
 # ============================================================================
 
 def run_4d_temporal_dmd():
-    """4D Temporal-Depth DMD: mask + depth-dependent diffuser (active)."""
+    """4D Temporal-Depth DMD: DMD mask + diffuser depth (active).
+
+    DMD masks provide temporal coding. Diffuser PSFs encode depth.
+    """
     print("\n" + "=" * 70)
-    print("4D TEMPORAL-DEPTH DMD (M -> C -> Sigma -> D) — active, 16:1")
+    print("4D TEMPORAL-DEPTH DMD (M -> Phi_z -> Sigma -> D) — active, 16:1")
     print("=" * 70)
 
-    psfs = generate_depth_phase_psfs(NZ4, N, seed=65)
-    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
-    HT_ffts = [np.conj(h) for h in H_ffts]
+    H_ffts, _ = generate_diffuser_depth_psfs(NZ4, N, seed=300)
     L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / (NZ4 * NT4) + 1e-8
     masks = [generate_binary_mask(N, 0.5, seed=900 + t) for t in range(NT4)]
     n_slices = NZ4 * NT4
     data = _generate_4d_zt(NZ4, NT4, N, N_SAMPLES)
 
     def forward(cube_flat):
-        y = np.zeros((N, N))
+        Y_fft = np.zeros((N, N), dtype=complex)
         for z in range(NZ4):
+            slice_fft = np.zeros((N, N), dtype=complex)
             for t in range(NT4):
                 idx = z * NT4 + t
-                coded = masks[t] * cube_flat[idx]
-                y += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(coded)))
-        return y / n_slices
+                slice_fft += sp_fft.fft2(masks[t] * cube_flat[idx])
+            Y_fft += H_ffts[z] * slice_fft
+        return np.real(sp_fft.ifft2(Y_fft)) / n_slices
 
     def adjoint(r):
+        R_fft = sp_fft.fft2(r)
         out = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            HT_r = np.real(sp_fft.ifft2(HT_ffts[z] * sp_fft.fft2(r)))
+            dec_z = np.real(sp_fft.ifft2(np.conj(H_ffts[z]) * R_fft))
             for t in range(NT4):
-                out[z * NT4 + t] = masks[t] * HT_r / n_slices
-        return out
+                out[z * NT4 + t] = masks[t] * dec_z
+        return out / n_slices
 
     def wiener(y):
-        vol = np.zeros((n_slices, N, N))
+        Y_fft = sp_fft.fft2(y)
         mask_sum = np.clip(sum(masks), 1, None)
+        vol = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            dec = wiener_deconv_fft(y, H_ffts[z], snr=80)
+            dec_z = np.real(sp_fft.ifft2(
+                np.conj(H_ffts[z]) * Y_fft / (np.abs(H_ffts[z]) ** 2 + 1.0 / 80)))
             for t in range(NT4):
-                vol[z * NT4 + t] = masks[t] * dec / mask_sum / n_slices * NT4
-        return np.clip(vol, 0, 1)
+                vol[z * NT4 + t] = masks[t] * dec_z / mask_sum
+        return np.clip(vol / n_slices * NT4, 0, 1)
 
     algorithms = {
         "Wiener": wiener,
-        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=60, tv_weight=0.010),
-        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=60, tv_weight=0.008),
-        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=40, rho=0.5, tv_weight=0.010),
-        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=40),
+        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=80, tv_weight=0.008),
+        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=80, tv_weight=0.006),
+        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=60, rho=0.5, tv_weight=0.008),
+        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=60),
     }
 
-    return _run_modality_3d("4D Temporal DMD", data, psfs, algorithms, forward)
+    return _run_modality_3d("4D Temporal DMD", data, None, algorithms, forward)
 
 
 def _generate_4d_zt(nz, nt, size, n_samples):
-    """Generate 4D (z, t) datacubes: objects at specific depths with motion."""
+    """Generate 4D (z, t) datacubes: objects at specific depths with motion.
+
+    Objects exist at specific depths (no overlap). Each object moves
+    smoothly across temporal frames (same depth, changing position).
+    """
     cubes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         cube = np.zeros((nz * nt, size, size))
         rng = np.random.RandomState(1000 + s)
-        n_obj = rng.randint(3, 6)
+        n_obj = rng.randint(4, 8)
         for j in range(n_obj):
             z = rng.randint(0, nz)
             base_cx, base_cy = rng.randint(20, size - 20, 2)
             rx, ry = rng.randint(6, 20, 2)
+            amp = rng.uniform(0.3, 1.0)
             for t in range(nt):
                 cx = int(base_cx + 8 * np.sin(2 * np.pi * t / nt + j)) % size
                 cy = int(base_cy + 5 * np.cos(2 * np.pi * t / nt + j * 0.7)) % size
-                yy, xx = np.mgrid[0:size, 0:size]
                 obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
-                cube[z * nt + t] += obj * rng.uniform(0.3, 0.9)
+                cube[z * nt + t] += obj * amp
         for idx in range(nz * nt):
-            bg = rng.rand(size, size) * 0.02
-            cube[idx] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = cube[idx].max()
-            if mx > 1e-10:
-                cube[idx] = np.clip(cube[idx] / mx, 0, 1)
+            cube[idx] = np.clip(cube[idx], 0, 1)
         cubes.append(cube)
     return cubes
 
 
 # ============================================================================
-# Modality 7: 4D Temporal-Depth Streak (W_t -> C -> Sigma -> D) — PASSIVE
+# Modality 7: 4D Temporal-Depth Streak (M -> W_t -> Phi_z -> Sigma -> D) — PASSIVE
 # ============================================================================
 
 def run_4d_temporal_streak():
-    """4D Temporal-Depth Streak: streak camera + diffuser (passive)."""
+    """4D Temporal-Depth Streak: mask + streak + diffuser depth (passive).
+
+    Fixed mask for streak dispersion diversity. Diffuser for depth.
+    """
     print("\n" + "=" * 70)
-    print("4D TEMPORAL-DEPTH STREAK (W_t -> C -> Sigma -> D) — passive, 16:1")
+    print("4D TEMPORAL-DEPTH STREAK (M -> W_t -> Phi_z -> Sigma -> D) — passive, 16:1")
     print("=" * 70)
 
-    psfs = generate_depth_phase_psfs(NZ4, N, seed=70)
-    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
-    HT_ffts = [np.conj(h) for h in H_ffts]
+    H_ffts, _ = generate_diffuser_depth_psfs(NZ4, N, seed=400)
     L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / (NZ4 * NT4) + 1e-8
     t_shifts = generate_streak_shifts(NT4, max_shift_px=12)
+    streak_phase = [compute_shift_phase(dx, dy, N) for dx, dy in t_shifts]
+    mask = generate_binary_mask(N, 0.5, seed=760)
     n_slices = NZ4 * NT4
     data = _generate_4d_zt(NZ4, NT4, N, N_SAMPLES)
 
     def forward(cube_flat):
-        y = np.zeros((N, N))
+        Y_fft = np.zeros((N, N), dtype=complex)
         for z in range(NZ4):
             for t in range(NT4):
                 idx = z * NT4 + t
-                streaked = apply_shift(cube_flat[idx], t_shifts[t][0], t_shifts[t][1])
-                y += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(streaked)))
-        return y / n_slices
+                coded_fft = sp_fft.fft2(mask * cube_flat[idx]) * streak_phase[t]
+                Y_fft += H_ffts[z] * coded_fft
+        return np.real(sp_fft.ifft2(Y_fft)) / n_slices
 
     def adjoint(r):
+        R_fft = sp_fft.fft2(r)
         out = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            HT_r = np.real(sp_fft.ifft2(HT_ffts[z] * sp_fft.fft2(r)))
+            dec_z_fft = R_fft * np.conj(H_ffts[z])
             for t in range(NT4):
-                out[z * NT4 + t] = apply_shift_adjoint(HT_r, t_shifts[t][0], t_shifts[t][1]) / n_slices
-        return out
+                idx = z * NT4 + t
+                out[idx] = mask * np.real(sp_fft.ifft2(
+                    dec_z_fft * np.conj(streak_phase[t])))
+        return out / n_slices
 
     def wiener(y):
+        Y_fft = sp_fft.fft2(y)
         vol = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            dec = wiener_deconv_fft(y, H_ffts[z], snr=80)
+            dec_z_fft = np.conj(H_ffts[z]) * Y_fft / (
+                np.abs(H_ffts[z]) ** 2 + 1.0 / 80)
             for t in range(NT4):
-                vol[z * NT4 + t] = apply_shift_adjoint(dec, t_shifts[t][0], t_shifts[t][1]) / n_slices
-        return np.clip(vol, 0, 1)
+                idx = z * NT4 + t
+                vol[idx] = mask * np.real(sp_fft.ifft2(
+                    dec_z_fft * np.conj(streak_phase[t])))
+        return np.clip(vol / n_slices, 0, 1)
+
+    algorithms = {
+        "Wiener": wiener,
+        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=80, tv_weight=0.008),
+        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=80, tv_weight=0.006),
+        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=60, rho=0.5, tv_weight=0.008),
+        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=60),
+    }
+
+    return _run_modality_3d("4D Temporal Streak", data, None, algorithms, forward)
+
+
+# ============================================================================
+# Modality 8: 5D Full DMD (M -> W_l -> Phi_z -> Sigma -> D) — ACTIVE
+# ============================================================================
+
+def run_5d_dmd():
+    """5D Full DMD: DMD mask + prism + diffuser depth (active).
+
+    DMD masks for temporal coding, prism for spectral dispersion,
+    diffuser for depth encoding via depth-dependent PSFs.
+    """
+    print("\n" + "=" * 70)
+    print("5D FULL DMD (M -> W_l -> Phi_z -> Sigma -> D) — active, 64:1")
+    print("=" * 70)
+
+    H_ffts, _ = generate_diffuser_depth_psfs(NZ4, N, seed=500)
+    masks = [generate_binary_mask(N, 0.5, seed=1100 + t) for t in range(NT4)]
+    l_shifts = generate_dispersion_shifts(NL4, max_shift_px=12)
+    disp_phase = [compute_shift_phase(dx, dy, N) for dx, dy in l_shifts]
+    n_slices = NZ4 * NL4 * NT4
+    L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / n_slices + 1e-8
+    data = _generate_5d(NZ4, NL4, NT4, N, N_SAMPLES)
+
+    def forward(cube_flat):
+        Y_fft = np.zeros((N, N), dtype=complex)
+        for z in range(NZ4):
+            for b in range(NL4):
+                slice_fft = np.zeros((N, N), dtype=complex)
+                for t in range(NT4):
+                    idx = z * NL4 * NT4 + b * NT4 + t
+                    slice_fft += sp_fft.fft2(masks[t] * cube_flat[idx])
+                Y_fft += H_ffts[z] * disp_phase[b] * slice_fft
+        return np.real(sp_fft.ifft2(Y_fft)) / n_slices
+
+    def adjoint(r):
+        R_fft = sp_fft.fft2(r)
+        out = np.zeros((n_slices, N, N))
+        for z in range(NZ4):
+            dec_z_fft = R_fft * np.conj(H_ffts[z])
+            for b in range(NL4):
+                undis = np.real(sp_fft.ifft2(
+                    dec_z_fft * np.conj(disp_phase[b])))
+                for t in range(NT4):
+                    idx = z * NL4 * NT4 + b * NT4 + t
+                    out[idx] = masks[t] * undis
+        return out / n_slices
+
+    def wiener(y):
+        Y_fft = sp_fft.fft2(y)
+        mask_sum = np.clip(sum(masks), 1, None)
+        vol = np.zeros((n_slices, N, N))
+        for z in range(NZ4):
+            dec_z_fft = np.conj(H_ffts[z]) * Y_fft / (
+                np.abs(H_ffts[z]) ** 2 + 1.0 / 50)
+            for b in range(NL4):
+                undis = np.real(sp_fft.ifft2(
+                    dec_z_fft * np.conj(disp_phase[b])))
+                for t in range(NT4):
+                    idx = z * NL4 * NT4 + b * NT4 + t
+                    vol[idx] = masks[t] * undis / mask_sum
+        return np.clip(vol / n_slices * NT4, 0, 1)
 
     algorithms = {
         "Wiener": wiener,
@@ -802,167 +933,110 @@ def run_4d_temporal_streak():
         "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=40),
     }
 
-    return _run_modality_3d("4D Temporal Streak", data, psfs, algorithms, forward)
+    return _run_modality_3d("5D Full DMD", data, None, algorithms, forward)
 
 
 # ============================================================================
-# Modality 8: 5D Full DMD (M -> W_l -> C -> Sigma -> D) — ACTIVE
-# ============================================================================
-
-def run_5d_dmd():
-    """5D Full DMD: mask + prism + depth-dependent diffuser (active)."""
-    print("\n" + "=" * 70)
-    print("5D FULL DMD (M -> W_l -> C -> Sigma -> D) — active, 64:1")
-    print("=" * 70)
-
-    psfs = generate_depth_phase_psfs(NZ4, N, seed=75)
-    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
-    HT_ffts = [np.conj(h) for h in H_ffts]
-    masks = [generate_binary_mask(N, 0.5, seed=1100 + t) for t in range(NT4)]
-    l_shifts = generate_dispersion_shifts(NL4, max_shift_px=12)
-    n_slices = NZ4 * NL4 * NT4
-    L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / n_slices + 1e-8
-    data = _generate_5d(NZ4, NL4, NT4, N, N_SAMPLES)
-
-    def forward(cube_flat):
-        # flat index: z * NL4 * NT4 + b * NT4 + t
-        y = np.zeros((N, N))
-        for z in range(NZ4):
-            for b in range(NL4):
-                for t in range(NT4):
-                    idx = z * NL4 * NT4 + b * NT4 + t
-                    coded = masks[t] * cube_flat[idx]
-                    dispersed = apply_shift(coded, l_shifts[b][0], l_shifts[b][1])
-                    y += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(dispersed)))
-        return y / n_slices
-
-    def adjoint(r):
-        out = np.zeros((n_slices, N, N))
-        for z in range(NZ4):
-            HT_r = np.real(sp_fft.ifft2(HT_ffts[z] * sp_fft.fft2(r)))
-            for b in range(NL4):
-                undispersed = apply_shift_adjoint(HT_r, l_shifts[b][0], l_shifts[b][1])
-                for t in range(NT4):
-                    idx = z * NL4 * NT4 + b * NT4 + t
-                    out[idx] = masks[t] * undispersed / n_slices
-        return out
-
-    def wiener(y):
-        vol = np.zeros((n_slices, N, N))
-        mask_sum = np.clip(sum(masks), 1, None)
-        for z in range(NZ4):
-            dec = wiener_deconv_fft(y, H_ffts[z], snr=50)
-            for b in range(NL4):
-                undispersed = apply_shift_adjoint(dec, l_shifts[b][0], l_shifts[b][1])
-                for t in range(NT4):
-                    idx = z * NL4 * NT4 + b * NT4 + t
-                    vol[idx] = masks[t] * undispersed / mask_sum / n_slices * NT4
-        return np.clip(vol, 0, 1)
-
-    algorithms = {
-        "Wiener": wiener,
-        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=50, tv_weight=0.012),
-        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=50, tv_weight=0.010),
-        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=30, rho=0.5, tv_weight=0.012),
-        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=30),
-    }
-
-    return _run_modality_3d("5D Full DMD", data, psfs, algorithms, forward)
-
-
-# ============================================================================
-# Modality 9: 5D Full Streak (W_l -> W_t -> C -> Sigma -> D) — PASSIVE
+# Modality 9: 5D Full Streak (M -> W_l -> W_t -> Phi_z -> Sigma -> D) — PASSIVE
 # ============================================================================
 
 def run_5d_streak():
-    """5D Full Streak: prism + streak + diffuser (fully passive!)."""
+    """5D Full Streak: mask + prism + streak + diffuser depth (passive).
+
+    Fixed mask for dispersion diversity. Diffuser for depth.
+    """
     print("\n" + "=" * 70)
-    print("5D FULL STREAK (W_l -> W_t -> C -> Sigma -> D) — PASSIVE, 64:1")
+    print("5D FULL STREAK (M -> W_l -> W_t -> Phi_z -> Sigma -> D) — PASSIVE, 64:1")
     print("=" * 70)
 
-    psfs = generate_depth_phase_psfs(NZ4, N, seed=80)
-    H_ffts = [sp_fft.fft2(p, s=(N, N)) for p in psfs]
-    HT_ffts = [np.conj(h) for h in H_ffts]
-    l_shifts = generate_dispersion_shifts(NL4, max_shift_px=12)  # x-axis
-    t_shifts = generate_streak_shifts(NT4, max_shift_px=12)      # y-axis (orthogonal)
+    H_ffts, _ = generate_diffuser_depth_psfs(NZ4, N, seed=600)
+    l_shifts = generate_dispersion_shifts(NL4, max_shift_px=12)
+    t_shifts = generate_streak_shifts(NT4, max_shift_px=12)
+    disp_phase = [compute_shift_phase(dx, dy, N) for dx, dy in l_shifts]
+    streak_phase = [compute_shift_phase(dx, dy, N) for dx, dy in t_shifts]
+    mask = generate_binary_mask(N, 0.5, seed=770)
     n_slices = NZ4 * NL4 * NT4
     L = max(np.max(np.abs(h) ** 2) for h in H_ffts) / n_slices + 1e-8
     data = _generate_5d(NZ4, NL4, NT4, N, N_SAMPLES)
 
     def forward(cube_flat):
-        y = np.zeros((N, N))
+        Y_fft = np.zeros((N, N), dtype=complex)
         for z in range(NZ4):
             for b in range(NL4):
                 for t in range(NT4):
                     idx = z * NL4 * NT4 + b * NT4 + t
-                    # W_t then W_l (streak y-shift, then prism x-shift)
-                    shifted = apply_shift(cube_flat[idx], t_shifts[t][0], t_shifts[t][1])
-                    shifted = apply_shift(shifted, l_shifts[b][0], l_shifts[b][1])
-                    y += np.real(sp_fft.ifft2(H_ffts[z] * sp_fft.fft2(shifted)))
-        return y / n_slices
+                    coded_fft = sp_fft.fft2(mask * cube_flat[idx])
+                    phase = disp_phase[b] * streak_phase[t]
+                    Y_fft += H_ffts[z] * phase * coded_fft
+        return np.real(sp_fft.ifft2(Y_fft)) / n_slices
 
     def adjoint(r):
+        R_fft = sp_fft.fft2(r)
         out = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            HT_r = np.real(sp_fft.ifft2(HT_ffts[z] * sp_fft.fft2(r)))
+            dec_z_fft = R_fft * np.conj(H_ffts[z])
             for b in range(NL4):
-                # Reverse W_l then reverse W_t
-                un_l = apply_shift_adjoint(HT_r, l_shifts[b][0], l_shifts[b][1])
+                undis_fft = dec_z_fft * np.conj(disp_phase[b])
                 for t in range(NT4):
                     idx = z * NL4 * NT4 + b * NT4 + t
-                    out[idx] = apply_shift_adjoint(un_l, t_shifts[t][0], t_shifts[t][1]) / n_slices
-        return out
+                    out[idx] = mask * np.real(sp_fft.ifft2(
+                        undis_fft * np.conj(streak_phase[t])))
+        return out / n_slices
 
     def wiener(y):
+        Y_fft = sp_fft.fft2(y)
         vol = np.zeros((n_slices, N, N))
         for z in range(NZ4):
-            dec = wiener_deconv_fft(y, H_ffts[z], snr=50)
+            dec_z_fft = np.conj(H_ffts[z]) * Y_fft / (
+                np.abs(H_ffts[z]) ** 2 + 1.0 / 50)
             for b in range(NL4):
-                un_l = apply_shift_adjoint(dec, l_shifts[b][0], l_shifts[b][1])
+                undis_fft = dec_z_fft * np.conj(disp_phase[b])
                 for t in range(NT4):
                     idx = z * NL4 * NT4 + b * NT4 + t
-                    vol[idx] = apply_shift_adjoint(un_l, t_shifts[t][0], t_shifts[t][1]) / n_slices
-        return np.clip(vol, 0, 1)
+                    vol[idx] = mask * np.real(sp_fft.ifft2(
+                        undis_fft * np.conj(streak_phase[t])))
+        return np.clip(vol / n_slices, 0, 1)
 
     algorithms = {
         "Wiener": wiener,
-        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=50, tv_weight=0.012),
-        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=50, tv_weight=0.010),
-        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=30, rho=0.5, tv_weight=0.012),
-        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=30),
+        "GAP-TV": lambda y: gap_tv(y, forward, adjoint, n_slices, n_iter=60, tv_weight=0.010),
+        "FISTA+TV": lambda y: fista_tv(y, forward, adjoint, n_slices, 0.8 / L, n_iter=60, tv_weight=0.008),
+        "ADMM+TV": lambda y: admm_tv(y, forward, adjoint, n_slices, n_iter=40, rho=0.5, tv_weight=0.010),
+        "R-L": lambda y: rl_deconv(y, forward, adjoint, n_slices, n_iter=40),
     }
 
-    return _run_modality_3d("5D Full Streak", data, psfs, algorithms, forward)
+    return _run_modality_3d("5D Full Streak", data, None, algorithms, forward)
 
 
 def _generate_5d(nz, nl, nt, size, n_samples):
-    """Generate 5D (z, lambda, t) datacubes flattened to (nz*nl*nt, size, size)."""
+    """Generate 5D (z, lambda, t) datacubes flattened to (nz*nl*nt, size, size).
+
+    Objects at specific depths with spectral profiles and temporal motion.
+    Depth planes are sparse (no overlap between depth layers).
+    """
     cubes = []
+    yy, xx = np.mgrid[0:size, 0:size]
     for s in range(n_samples):
         n_total = nz * nl * nt
         cube = np.zeros((n_total, size, size))
         rng = np.random.RandomState(1200 + s)
-        n_obj = rng.randint(3, 6)
+        n_obj = rng.randint(4, 8)
         for j in range(n_obj):
             z = rng.randint(0, nz)
             base_cx, base_cy = rng.randint(15, size - 15, 2)
             rx, ry = rng.randint(6, 18, 2)
             spectrum = ndimage.gaussian_filter1d(rng.rand(nl), sigma=0.8)
             spectrum /= max(spectrum.max(), 1e-10)
+            amp = rng.uniform(0.3, 1.0)
             for b in range(nl):
                 for t in range(nt):
                     cx = int(base_cx + 6 * np.sin(2 * np.pi * t / nt + j)) % size
                     cy = int(base_cy + 4 * np.cos(2 * np.pi * t / nt + j * 0.7)) % size
-                    yy, xx = np.mgrid[0:size, 0:size]
                     obj = np.exp(-((xx - cx) ** 2 / (2 * rx ** 2) + (yy - cy) ** 2 / (2 * ry ** 2)))
                     idx = z * nl * nt + b * nt + t
-                    cube[idx] += obj * spectrum[b] * rng.uniform(0.3, 0.9)
+                    cube[idx] += obj * spectrum[b] * amp
         for idx in range(n_total):
-            bg = rng.rand(size, size) * 0.02
-            cube[idx] += ndimage.gaussian_filter(bg, sigma=3)
-            mx = cube[idx].max()
-            if mx > 1e-10:
-                cube[idx] = np.clip(cube[idx] / mx, 0, 1)
+            cube[idx] = np.clip(cube[idx], 0, 1)
         cubes.append(cube)
     return cubes
 
@@ -1043,7 +1117,7 @@ if __name__ == "__main__":
     print("=" * 70)
     print("MULTIDIMENSIONAL LENSLESS IMAGING — Expert Study")
     print(f"Spatial: {N}x{N}, Samples: {N_SAMPLES}")
-    print("PSF: Phase-mask-based (well-conditioned)")
+    print("Depth: Diffuser-encoded light field, 2D: Phase-mask PSF")
     print("=" * 70)
 
     all_results = {}
@@ -1086,14 +1160,14 @@ if __name__ == "__main__":
 
     summary = [
         ("Lensless", "C->D", "lensless", "1:1"),
-        ("3D Lensless", "C->Sigma->D", "3d_lensless", "8:1"),
+        ("3D Lensless", "Phi_z->Sigma->D", "3d_lensless", "8:1"),
         ("Temporal-coded", "M->C->Sigma->D", "temporal_coded", "8:1"),
         ("Spectral", "M->W->C->Sigma->D", "spectral", "8:1"),
-        ("4D Spectral-Depth", "W_l->C->Sigma->D", "4d_spectral_depth", "16:1"),
-        ("4D Temporal DMD", "M->C->Sigma->D", "4d_temporal_dmd", "16:1"),
-        ("4D Temporal Streak", "W_t->C->Sigma->D", "4d_temporal_streak", "16:1"),
-        ("5D Full DMD", "M->W_l->C->Sigma->D", "5d_dmd", "64:1"),
-        ("5D Full Streak", "W_l->W_t->C->Sigma->D", "5d_streak", "64:1"),
+        ("4D Spectral-Depth", "M->W_l->Phi_z->Sigma->D", "4d_spectral_depth", "16:1"),
+        ("4D Temporal DMD", "M->Phi_z->Sigma->D", "4d_temporal_dmd", "16:1"),
+        ("4D Temporal Streak", "M->W_t->Phi_z->Sigma->D", "4d_temporal_streak", "16:1"),
+        ("5D Full DMD", "M->W_l->Phi_z->Sigma->D", "5d_dmd", "64:1"),
+        ("5D Full Streak", "M->W_l->W_t->Phi_z->Sigma->D", "5d_streak", "64:1"),
     ]
 
     for label, chain, key, comp in summary:

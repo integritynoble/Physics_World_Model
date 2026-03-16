@@ -3,24 +3,28 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h3 class="text-base font-bold text-gray-900">{{ result.algorithm_name }}</h3>
+            <h3 class="text-base font-bold text-gray-900">
+                {{ result.algorithm_name }}
+                {% if result.gpu_accelerated %}
+                <span class="ml-1 text-xs font-medium bg-green-100 text-green-700 px-1.5 py-0.5 rounded">GPU</span>
+                {% endif %}
+            </h3>
             <p class="text-xs text-gray-500">{{ result.algorithm_type }} &middot; {{ result.algorithm_source }}</p>
         </div>
         <span class="text-xs text-gray-400">{{ result.variant_name }} &middot; {{ result.runtime_ms }} ms</span>
     </div>
 
     {% if result.is_dl_placeholder %}
-    <!-- DL method notice -->
+    <!-- DL method CPU fallback notice -->
     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
         <p class="text-sm text-amber-800">
-            <strong>{{ result.algorithm_name }}</strong> is a deep-learning method requiring GPU inference.
+            <strong>{{ result.algorithm_name }}</strong> is a deep-learning method.
+            GPU inference unavailable — showing
+            <strong>{{ result.baseline_method or "classical" }}</strong> baseline for reference.
             {% if result.expected_psnr %}
-            Expected benchmark performance: <strong>{{ result.expected_psnr }} dB</strong> PSNR
-            {% if result.expected_ssim %}, <strong>{{ result.expected_ssim }}</strong> SSIM{% endif %}
-            {% if result.psnr %} vs. {{ result.baseline_method }} baseline {{ result.psnr }} dB shown below{% endif %}.
+            Expected performance: <strong>{{ result.expected_psnr }} dB</strong> PSNR.
             {% endif %}
         </p>
-        <p class="text-xs text-amber-600 mt-1">GPU inference coming soon. Classical baseline shown for reference.</p>
     </div>
     {% endif %}
 
@@ -70,13 +74,13 @@
             <p class="text-lg font-bold text-blue-800 font-mono">{{ result.ssim }}</p>
         </div>
         {% endif %}
-        {% if result.is_dl_placeholder and result.expected_psnr is not none %}
+        {% if result.expected_psnr is not none %}
         <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-center">
             <p class="text-xs text-indigo-600 font-medium">Expected PSNR</p>
             <p class="text-lg font-bold text-indigo-800 font-mono">{{ result.expected_psnr }} dB</p>
         </div>
         {% endif %}
-        {% if result.is_dl_placeholder and result.expected_ssim is not none %}
+        {% if result.expected_ssim is not none %}
         <div class="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-center">
             <p class="text-xs text-purple-600 font-medium">Expected SSIM</p>
             <p class="text-lg font-bold text-purple-800 font-mono">{{ result.expected_ssim }}</p>
