@@ -7,7 +7,7 @@ Tracks verification status of all reconstruction algorithms in SpecLab
 - `done` — PWM CPU reconstruction verified, actual PSNR within 2 dB of reference
 - *(blank)* — awaiting verification (not yet tested, or PSNR below reference threshold)
 
-Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
+Last updated: 2026-03-16 | Total modalities: 168 | Verified: 508
 
 ---
 
@@ -15,9 +15,9 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| COLMAP+MVS | Classical | 26.4 dB | 0.73 |  |
-| Photogrammetry | Classical | 26.54 dB | 0.847 |  |
-| Mip-NeRF 360 | Deep Learning | 29.4 dB | 0.844 |  |
+| COLMAP+MVS | Classical | 26.4 dB | 0.73 | done |
+| Photogrammetry | Classical | 26.54 dB | 0.847 | done |
+| Mip-NeRF 360 | Deep Learning | 29.4 dB | 0.844 | done |
 | Mesh-GS | Deep Learning | 30.07 dB | 0.918 |  |
 | Instant-NGP | Deep Learning | 31.1 dB | 0.905 |  |
 | NeRF | Deep Learning | 33.15 dB | 0.954 |  |
@@ -431,7 +431,7 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 |-----------|------|----------|----------|--------|
 | STORM-2D | Classical | 21.3 dB | 0.695 | done |
 | PALM | Classical | 22.8 dB | 0.718 | done |
-| DAOSTORM | Classical | 25.4 dB | 0.762 | |
+| DAOSTORM | Classical | 25.4 dB | 0.762 | done |
 | DeepSTORM | Deep Learning | 29.1 dB | 0.831 | |
 | DECODE | Deep Learning | 32.6 dB | 0.878 |  |
 | TransPAINT | Transformer | 35.2 dB | 0.918 |  |
@@ -443,7 +443,7 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Richardson-Lucy | Classical | 24.5 dB | 0.744 | |
+| Richardson-Lucy | Classical | 24.5 dB | 0.744 | done |
 | Wiener-DF | Classical | 27.2 dB | 0.793 | |
 | TV-DF | Variational | 29.8 dB | 0.836 |  |
 | BM3D-DF | Classical | 32.4 dB | 0.871 |  |
@@ -489,7 +489,7 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 | SHORE | Classical | 24.6 dB | 0.745 | done |
 | CHARMED | Statistical | 26.8 dB | 0.782 | done |
 | DnCNN-DTI | Deep Learning | 29.3 dB | 0.831 | done |
-| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | |
+| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | done |
 | DTIFormer | Transformer | 34.8 dB | 0.912 |  |
 | SwinDTI | Transformer | 36.2 dB | 0.931 |  |
 | PhysDiffMRI | Physics-Informed | 37.5 dB | 0.941 |  |
@@ -711,7 +711,7 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Histogram-Eq | Classical | 24.1 dB | 0.738 |  |
+| Histogram-Eq | Classical | 24.1 dB | 0.738 | done |
 | CLAHE-Endo | Classical | 26.5 dB | 0.772 |  |
 | BM3D-Endo | Classical | 28.9 dB | 0.812 |  |
 | DnCNN-Endo | Deep Learning | 31.4 dB | 0.855 | done |
@@ -791,7 +791,7 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | L-BFGS FWI | Classical | 23.5 dB | 0.65 | done |
-| TV-Reg FWI | Classical | 26.8 dB | 0.78 | |
+| TV-Reg FWI | Classical | 26.8 dB | 0.78 | done |
 | InversionNet | Deep Learning | 30.5 dB | 0.88 | done |
 | VelocityGAN | Deep Learning | 32.2 dB | 0.91 | done |
 
@@ -941,9 +941,9 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 | Wiener Filter | Classical | 28.35 dB | 0.805 | done |
 | TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
 | PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
-| PnP-DnCNN | PnP | 31.2 dB | 0.89 | |
-| CARE | Deep Learning | 34.5 dB | 0.948 | |
-| U-Net | Deep Learning | 35.15 dB | 0.956 | |
+| PnP-DnCNN | PnP | 31.2 dB | 0.89 | done |
+| CARE | Deep Learning | 34.5 dB | 0.948 | done |
+| U-Net | Deep Learning | 35.15 dB | 0.956 | done |
 | Restormer | Vision Transformer | 35.8 dB | 0.962 | |
 | ResUNet | Deep Learning | 35.85 dB | 0.964 | |
 | DeconvFormer | Vision Transformer | 37.25 dB | 0.972 | |
@@ -1519,9 +1519,9 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| ThunderSTORM | Classical | 22.5 dB | 0.61 |  |
-| FALCON | PnP | 25.8 dB | 0.74 |  |
-| Deep-STORM | Deep Learning | 30.2 dB | 0.88 |  |
+| ThunderSTORM | Classical | 22.5 dB | 0.61 | done |
+| FALCON | PnP | 25.8 dB | 0.74 | done |
+| Deep-STORM | Deep Learning | 30.2 dB | 0.88 | done |
 | DECODE | Deep Learning | 32.1 dB | 0.915 |  |
 
 ## PET/CT Fusion (`pet_ct`) — multi_modal_fusion
@@ -2014,9 +2014,9 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 | Wiener Filter | Classical | 28.35 dB | 0.805 | done |
 | TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
 | PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
-| PnP-DnCNN | PnP | 31.2 dB | 0.89 | |
-| CARE | Deep Learning | 34.5 dB | 0.948 | |
-| U-Net | Deep Learning | 35.15 dB | 0.956 | |
+| PnP-DnCNN | PnP | 31.2 dB | 0.89 | done |
+| CARE | Deep Learning | 34.5 dB | 0.948 | done |
+| U-Net | Deep Learning | 35.15 dB | 0.956 | done |
 | Restormer | Vision Transformer | 35.8 dB | 0.962 | |
 | ResUNet | Deep Learning | 35.85 dB | 0.964 | |
 | DeconvFormer | Vision Transformer | 37.25 dB | 0.972 | |
@@ -2224,8 +2224,8 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 |-----------|------|----------|----------|--------|
 | Richardson-Lucy | Classical | 27.1 dB | 0.77 | done |
 | Wiener Filter | Classical | 28.35 dB | 0.805 | done |
-| TV-Deconvolution | Classical | 29.5 dB | 0.845 | |
-| PnP-FISTA | PnP | 30.42 dB | 0.872 | |
+| TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
+| PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
 | PnP-DnCNN | PnP | 31.2 dB | 0.89 | |
 | CARE | Deep Learning | 34.5 dB | 0.948 | |
 | U-Net | Deep Learning | 35.15 dB | 0.956 | |
