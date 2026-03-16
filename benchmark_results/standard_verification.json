@@ -3805,6 +3805,12 @@
           "std_psnr": 21.49,
           "std_ssim": 0.2446,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 22.28,
+          "std_ssim": 0.2631,
+          "status": "verified"
         }
       },
       "best_psnr": 12.9
@@ -17022,6 +17028,12 @@
           "std_psnr": 23.4,
           "std_ssim": 0.3287,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 24.13,
+          "std_ssim": 0.3456,
+          "status": "verified"
         }
       },
       "best_psnr": 16.0
@@ -18119,6 +18131,12 @@
           "name": "Best sample recon",
           "std_psnr": 25.36,
           "std_ssim": 0.9569,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 25.64,
+          "std_ssim": 0.9507,
           "status": "verified"
         }
       },
@@ -23044,6 +23062,12 @@
           "std_psnr": 25.9,
           "std_ssim": 0.9786,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 26.19,
+          "std_ssim": 0.9793,
+          "status": "verified"
         }
       },
       "best_psnr": 1.4
@@ -23592,6 +23616,12 @@
           "name": "Best sample recon",
           "std_psnr": 23.8,
           "std_ssim": 0.9429,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 24.05,
+          "std_ssim": 0.9455,
           "status": "verified"
         }
       },
@@ -26313,6 +26343,12 @@
           "name": "m_bil_0.2_7",
           "std_psnr": 18.76,
           "std_ssim": 0.7974,
+          "status": "verified"
+        },
+        "hyper_squeeze": {
+          "name": "Hyper squeeze",
+          "std_psnr": 25.36,
+          "std_ssim": 0.9517,
           "status": "verified"
         }
       },
@@ -29591,6 +29627,12 @@
           "name": "Best sample recon",
           "std_psnr": 24.68,
           "std_ssim": 0.9704,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 25.02,
+          "std_ssim": 0.9727,
           "status": "verified"
         }
       },
@@ -33434,6 +33476,12 @@
           "std_psnr": 17.98,
           "std_ssim": 0.9513,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 22.66,
+          "std_ssim": 0.9611,
+          "status": "verified"
         }
       },
       "best_psnr": 10.9
@@ -37019,6 +37067,12 @@
           "name": "Best sample recon",
           "std_psnr": 26.15,
           "std_ssim": 0.9631,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 26.33,
+          "std_ssim": 0.9645,
           "status": "verified"
         }
       },
@@ -40859,6 +40913,12 @@
           "name": "m_bil_0.2_7",
           "std_psnr": 20.19,
           "std_ssim": 0.788,
+          "status": "verified"
+        },
+        "hyper_squeeze": {
+          "name": "Hyper squeeze",
+          "std_psnr": 27.1,
+          "std_ssim": 0.9635,
           "status": "verified"
         }
       },
@@ -57564,6 +57624,12 @@
           "std_psnr": 22.16,
           "std_ssim": 0.906,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 27.96,
+          "std_ssim": 0.8861,
+          "status": "verified"
         }
       },
       "best_psnr": 26.1
@@ -58120,6 +58186,12 @@
           "std_psnr": 25.41,
           "std_ssim": 0.9735,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 27.44,
+          "std_ssim": 0.9758,
+          "status": "verified"
         }
       },
       "best_psnr": 3.4
@@ -58675,6 +58747,12 @@
           "name": "Best sample recon",
           "std_psnr": 18.78,
           "std_ssim": 0.7588,
+          "status": "verified"
+        },
+        "hyper_squeeze": {
+          "name": "Hyper squeeze",
+          "std_psnr": 19.0,
+          "std_ssim": 0.7356,
           "status": "verified"
         }
       },
@@ -59773,6 +59851,12 @@
           "name": "Best sample recon",
           "std_psnr": 30.02,
           "std_ssim": 0.9273,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 30.14,
+          "std_ssim": 0.9279,
           "status": "verified"
         }
       },
@@ -62501,6 +62585,12 @@
           "name": "Best sample recon",
           "std_psnr": 17.46,
           "std_ssim": 0.8936,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 17.56,
+          "std_ssim": 0.8913,
           "status": "verified"
         }
       },
@@ -69061,6 +69151,12 @@
           "std_psnr": 17.41,
           "std_ssim": 0.7458,
           "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 19.49,
+          "std_ssim": 0.8955,
+          "status": "verified"
         }
       },
       "best_psnr": 5.0
@@ -74844,6 +74940,12 @@
           "name": "Best sample recon",
           "std_psnr": 25.55,
           "std_ssim": 0.9832,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 25.73,
+          "std_ssim": 0.984,
           "status": "verified"
         }
       },
@@ -81378,6 +81480,12 @@
           "name": "Best sample recon",
           "std_psnr": 33.45,
           "std_ssim": 0.9936,
+          "status": "verified"
+        },
+        "smart_squeeze": {
+          "name": "Smart squeeze",
+          "std_psnr": 33.54,
+          "std_ssim": 0.9937,
           "status": "verified"
         }
       },

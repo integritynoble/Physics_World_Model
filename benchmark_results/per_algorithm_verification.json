@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-16 09:15",
+  "generated": "2026-03-16 10:28",
   "modalities": {
     "cacti": [
       {
@@ -634,9 +634,9 @@
         "reference": "Springer, Vis Comput 2025",
         "ref_psnr": 45.1,
         "ref_ssim": 0.99,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -645,9 +645,9 @@
         "reference": "Springer, Vis Comput 2025",
         "ref_psnr": 33.7,
         "ref_ssim": 0.96,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -656,10 +656,10 @@
         "reference": "Springer, SIVP 2025",
         "ref_psnr": 25.0,
         "ref_ssim": 0.824,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
-        "status": "partial"
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
+        "status": "done"
       },
       {
         "name": "Control-label subtraction",
@@ -667,9 +667,9 @@
         "reference": "Detre et al., MRM 1992",
         "ref_psnr": 22.0,
         "ref_ssim": 0.65,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -678,9 +678,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 12.9,
         "ref_ssim": 0.1371,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -689,9 +689,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 12.9,
         "ref_ssim": 0.1371,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -700,9 +700,9 @@
         "reference": "—",
         "ref_psnr": 12.9,
         "ref_ssim": 0.1371,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -711,9 +711,9 @@
         "reference": "—",
         "ref_psnr": 10.9,
         "ref_ssim": null,
-        "pwm_psnr": 21.49,
-        "pwm_ssim": 0.2446,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 22.28,
+        "pwm_ssim": 0.2631,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -1499,9 +1499,9 @@
         "reference": "Andersen & Kak 1984",
         "ref_psnr": 30.0,
         "ref_ssim": null,
-        "pwm_psnr": 23.4,
-        "pwm_ssim": 0.3287,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 24.13,
+        "pwm_ssim": 0.3456,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -1510,9 +1510,9 @@
         "reference": "TV-MLEM for DBT",
         "ref_psnr": 28.0,
         "ref_ssim": 0.87,
-        "pwm_psnr": 23.4,
-        "pwm_ssim": 0.3287,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 24.13,
+        "pwm_ssim": 0.3456,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -1521,9 +1521,9 @@
         "reference": "FBP baseline",
         "ref_psnr": 25.0,
         "ref_ssim": null,
-        "pwm_psnr": 23.4,
-        "pwm_ssim": 0.3287,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 24.13,
+        "pwm_ssim": 0.3456,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1532,9 +1532,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 10.5,
         "ref_ssim": 0.4411,
-        "pwm_psnr": 23.4,
-        "pwm_ssim": 0.3287,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 24.13,
+        "pwm_ssim": 0.3456,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1543,9 +1543,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 10.5,
         "ref_ssim": 0.4411,
-        "pwm_psnr": 23.4,
-        "pwm_ssim": 0.3287,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 24.13,
+        "pwm_ssim": 0.3456,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1554,9 +1554,9 @@
         "reference": "—",
         "ref_psnr": 8.8,
         "ref_ssim": null,
-        "pwm_psnr": 23.4,
-        "pwm_ssim": 0.3287,
-        "matched_solver": "m_bil_0.2_7",
+        "pwm_psnr": 24.13,
+        "pwm_ssim": 0.3456,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -1567,9 +1567,9 @@
         "reference": "DL for Doppler dealiasing",
         "ref_psnr": 30.0,
         "ref_ssim": 0.88,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -1578,9 +1578,9 @@
         "reference": "Blanchard et al., IEEE TUFFC 2022, PMC9247015",
         "ref_psnr": 26.7,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1589,9 +1589,9 @@
         "reference": "Kasai et al., 1985",
         "ref_psnr": 22.0,
         "ref_ssim": 0.7,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1600,9 +1600,9 @@
         "reference": "Blanchard et al., IEEE TUFFC 2022, PMC9247015",
         "ref_psnr": 19.5,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1611,9 +1611,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 18.6,
         "ref_ssim": 0.0164,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1622,9 +1622,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 18.6,
         "ref_ssim": 0.0164,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1633,9 +1633,9 @@
         "reference": "Wall filter baseline",
         "ref_psnr": 18.0,
         "ref_ssim": 0.6,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1644,9 +1644,9 @@
         "reference": "—",
         "ref_psnr": 17.6,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1655,9 +1655,9 @@
         "reference": "—",
         "ref_psnr": 17.6,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1666,9 +1666,9 @@
         "reference": "—",
         "ref_psnr": 17.6,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1677,9 +1677,9 @@
         "reference": "—",
         "ref_psnr": 17.6,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -1688,9 +1688,9 @@
         "reference": "Blanchard et al., IEEE TUFFC 2022, PMC9247015",
         "ref_psnr": 17.4,
         "ref_ssim": null,
-        "pwm_psnr": 25.36,
-        "pwm_ssim": 0.9569,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.64,
+        "pwm_ssim": 0.9507,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -2307,9 +2307,9 @@
         "reference": "DL for IVUS",
         "ref_psnr": 30.0,
         "ref_ssim": 0.88,
-        "pwm_psnr": 26.15,
-        "pwm_ssim": 0.9631,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.33,
+        "pwm_ssim": 0.9645,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -2318,9 +2318,9 @@
         "reference": "DL for IVUS",
         "ref_psnr": 25.0,
         "ref_ssim": 0.8,
-        "pwm_psnr": 26.15,
-        "pwm_ssim": 0.9631,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.33,
+        "pwm_ssim": 0.9645,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -2329,9 +2329,9 @@
         "reference": "DAS baseline",
         "ref_psnr": 22.0,
         "ref_ssim": 0.7,
-        "pwm_psnr": 26.15,
-        "pwm_ssim": 0.9631,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.33,
+        "pwm_ssim": 0.9645,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -2340,9 +2340,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 20.8,
         "ref_ssim": 0.9002,
-        "pwm_psnr": 26.15,
-        "pwm_ssim": 0.9631,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.33,
+        "pwm_ssim": 0.9645,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -2351,9 +2351,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 20.8,
         "ref_ssim": 0.9002,
-        "pwm_psnr": 26.15,
-        "pwm_ssim": 0.9631,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.33,
+        "pwm_ssim": 0.9645,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -2362,9 +2362,9 @@
         "reference": "—",
         "ref_psnr": 19.8,
         "ref_ssim": null,
-        "pwm_psnr": 26.15,
-        "pwm_ssim": 0.9631,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.33,
+        "pwm_ssim": 0.9645,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -3385,9 +3385,9 @@
         "reference": "Antholzer et al., Sci Rep 2020",
         "ref_psnr": 30.2,
         "ref_ssim": 0.89,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "gap"
       },
       {
@@ -3396,9 +3396,9 @@
         "reference": "Shahid et al., Front Neurosci 2021",
         "ref_psnr": 29.9,
         "ref_ssim": 0.97,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "gap"
       },
       {
@@ -3407,9 +3407,9 @@
         "reference": "Antholzer et al., Sci Rep 2020",
         "ref_psnr": 29.6,
         "ref_ssim": 0.91,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "gap"
       },
       {
@@ -3418,9 +3418,9 @@
         "reference": "Antholzer et al., Sci Rep 2020",
         "ref_psnr": 24.4,
         "ref_ssim": 0.85,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -3429,9 +3429,9 @@
         "reference": "Xu & Wang, PMB 2005",
         "ref_psnr": 22.7,
         "ref_ssim": 0.73,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -3440,10 +3440,10 @@
         "reference": "Shahid et al., PMC8165448 (FD-UNet BP input=21.9)",
         "ref_psnr": 21.9,
         "ref_ssim": 0.65,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
-        "status": "partial"
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
+        "status": "done"
       },
       {
         "name": "Deep-PAT [proxy] (PWM)",
@@ -3451,9 +3451,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 21.2,
         "ref_ssim": 0.1988,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -3462,9 +3462,9 @@
         "reference": "—",
         "ref_psnr": 19.8,
         "ref_ssim": null,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -3473,9 +3473,9 @@
         "reference": "—",
         "ref_psnr": 19.8,
         "ref_ssim": null,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -3484,9 +3484,9 @@
         "reference": "Tong et al., Scientific Reports 2020, PMC7244747",
         "ref_psnr": 13.9,
         "ref_ssim": 0.5,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -3495,9 +3495,9 @@
         "reference": "Boink et al., PMC9872879",
         "ref_psnr": 13.9,
         "ref_ssim": null,
-        "pwm_psnr": 18.78,
-        "pwm_ssim": 0.7588,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 19.0,
+        "pwm_ssim": 0.7356,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       }
     ],
@@ -4171,9 +4171,9 @@
         "reference": "ScienceDirect 2024 (DHM)",
         "ref_psnr": 36.9,
         "ref_ssim": 0.99,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -4182,9 +4182,9 @@
         "reference": "Appl Opt 65(7), 2025",
         "ref_psnr": 35.7,
         "ref_ssim": null,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -4193,10 +4193,10 @@
         "reference": "Peng et al., SIGGRAPH Asia 2020",
         "ref_psnr": 30.0,
         "ref_ssim": null,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
-        "status": "gap"
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
+        "status": "partial"
       },
       {
         "name": "HIO",
@@ -4204,10 +4204,10 @@
         "reference": "Fienup, Applied Optics 1982",
         "ref_psnr": 25.0,
         "ref_ssim": 0.78,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
-        "status": "partial"
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
+        "status": "done"
       },
       {
         "name": "Angular Spectrum",
@@ -4215,10 +4215,10 @@
         "reference": "Goodman, Fourier Optics",
         "ref_psnr": 22.0,
         "ref_ssim": 0.7,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
-        "status": "partial"
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
+        "status": "done"
       },
       {
         "name": "GS (Gerchberg-Saxton)",
@@ -4226,9 +4226,9 @@
         "reference": "Gerchberg & Saxton, Optik 1972",
         "ref_psnr": 20.0,
         "ref_ssim": 0.65,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4237,9 +4237,9 @@
         "reference": "Gabor, Nature 1948",
         "ref_psnr": 15.0,
         "ref_ssim": 0.5,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4248,9 +4248,9 @@
         "reference": "—",
         "ref_psnr": 14.9,
         "ref_ssim": null,
-        "pwm_psnr": 17.98,
-        "pwm_ssim": 0.9513,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 22.66,
+        "pwm_ssim": 0.9611,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -4329,9 +4329,9 @@
         "reference": "arXiv 2511.12556",
         "ref_psnr": 45.8,
         "ref_ssim": 0.984,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -4340,10 +4340,10 @@
         "reference": "arXiv 2210.14231",
         "ref_psnr": 36.7,
         "ref_ssim": 0.866,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
-        "status": "gap"
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
+        "status": "partial"
       },
       {
         "name": "WF (Wirtinger Flow)",
@@ -4351,10 +4351,10 @@
         "reference": "Candes et al., TIT 2015",
         "ref_psnr": 30.0,
         "ref_ssim": 0.9,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
-        "status": "partial"
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
+        "status": "done"
       },
       {
         "name": "HIO",
@@ -4362,9 +4362,9 @@
         "reference": "Fienup, Applied Optics 1982",
         "ref_psnr": 25.0,
         "ref_ssim": 0.75,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4373,9 +4373,9 @@
         "reference": "Gerchberg & Saxton, 1972",
         "ref_psnr": 23.0,
         "ref_ssim": 0.7,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4384,9 +4384,9 @@
         "reference": "Wiener filter baseline",
         "ref_psnr": 18.0,
         "ref_ssim": 0.6,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4395,9 +4395,9 @@
         "reference": "Shechtman et al., IEEE SPM 2015",
         "ref_psnr": 14.0,
         "ref_ssim": 0.35,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4406,9 +4406,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 13.6,
         "ref_ssim": 0.3397,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4417,9 +4417,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 13.6,
         "ref_ssim": 0.3397,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -4428,9 +4428,9 @@
         "reference": "—",
         "ref_psnr": 12.6,
         "ref_ssim": null,
-        "pwm_psnr": 25.41,
-        "pwm_ssim": 0.9735,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 27.44,
+        "pwm_ssim": 0.9758,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -4441,9 +4441,9 @@
         "reference": "Cherukara et al., APL 2022",
         "ref_psnr": 33.0,
         "ref_ssim": null,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -4452,9 +4452,9 @@
         "reference": "Cherukara et al., APL 2020",
         "ref_psnr": 31.0,
         "ref_ssim": null,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -4463,9 +4463,9 @@
         "reference": "Maiden & Rodenburg, Ultramicroscopy 2009",
         "ref_psnr": 28.0,
         "ref_ssim": 0.85,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -4474,9 +4474,9 @@
         "reference": "Rodenburg & Faulkner, APL 2004",
         "ref_psnr": 22.0,
         "ref_ssim": 0.7,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -4485,9 +4485,9 @@
         "reference": "—",
         "ref_psnr": 21.0,
         "ref_ssim": null,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -4496,9 +4496,9 @@
         "reference": "—",
         "ref_psnr": 21.0,
         "ref_ssim": null,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -4507,9 +4507,9 @@
         "reference": "—",
         "ref_psnr": 21.0,
         "ref_ssim": null,
-        "pwm_psnr": 17.46,
-        "pwm_ssim": 0.8936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 17.56,
+        "pwm_ssim": 0.8913,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       }
     ],
@@ -5538,9 +5538,9 @@
         "reference": "—",
         "ref_psnr": 45.6,
         "ref_ssim": null,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5549,9 +5549,9 @@
         "reference": "Weigert et al. 2018",
         "ref_psnr": 45.6,
         "ref_ssim": null,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5560,9 +5560,9 @@
         "reference": "Rivenson, Y. et al. (2018) Phase recovery with DL, Light: Sci. & Appl. 7:17141",
         "ref_psnr": 45.6,
         "ref_ssim": null,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5571,9 +5571,9 @@
         "reference": "—",
         "ref_psnr": 45.6,
         "ref_ssim": null,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5582,9 +5582,9 @@
         "reference": "Scientific Reports 2024",
         "ref_psnr": 38.3,
         "ref_ssim": 0.88,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5593,9 +5593,9 @@
         "reference": "Zheng et al., Nature Photonics 2013",
         "ref_psnr": 32.0,
         "ref_ssim": 0.9,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5604,9 +5604,9 @@
         "reference": "ResearchGate 2024",
         "ref_psnr": 29.1,
         "ref_ssim": 0.865,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -5615,9 +5615,9 @@
         "reference": "Zuo et al., Opt Express 2013",
         "ref_psnr": 28.0,
         "ref_ssim": null,
-        "pwm_psnr": 26.91,
-        "pwm_ssim": 0.9601,
-        "matched_solver": "tv_0.15",
+        "pwm_psnr": 27.96,
+        "pwm_ssim": 0.8861,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -5628,9 +5628,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 47.8,
         "ref_ssim": 0.9999,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5639,9 +5639,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 47.8,
         "ref_ssim": 0.9999,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5650,9 +5650,9 @@
         "reference": "Opt Express 30(12), PMC9208591",
         "ref_psnr": 38.1,
         "ref_ssim": 0.897,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5661,9 +5661,9 @@
         "reference": "Opt Express 30(12), PMC9208591",
         "ref_psnr": 37.9,
         "ref_ssim": 0.895,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5672,9 +5672,9 @@
         "reference": "Opt Express 30(12), PMC9208591",
         "ref_psnr": 34.4,
         "ref_ssim": 0.81,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5683,9 +5683,9 @@
         "reference": "—",
         "ref_psnr": 30.9,
         "ref_ssim": null,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -5694,9 +5694,9 @@
         "reference": "—",
         "ref_psnr": 30.9,
         "ref_ssim": null,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -5705,9 +5705,9 @@
         "reference": "Ye et al., Biomed Opt Express 2022, PMC9208591",
         "ref_psnr": 29.0,
         "ref_ssim": 0.5,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -5716,9 +5716,9 @@
         "reference": "Chipman, Handbook of Optics",
         "ref_psnr": 25.0,
         "ref_ssim": null,
-        "pwm_psnr": 30.02,
-        "pwm_ssim": 0.9273,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 30.14,
+        "pwm_ssim": 0.9279,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -5797,9 +5797,9 @@
         "reference": "Christensen et al., APL 2021",
         "ref_psnr": 33.0,
         "ref_ssim": null,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5808,9 +5808,9 @@
         "reference": "Muller et al., Bioinformatics 2016",
         "ref_psnr": 30.5,
         "ref_ssim": 0.89,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5819,9 +5819,9 @@
         "reference": "Gustafsson et al., 2008",
         "ref_psnr": 30.0,
         "ref_ssim": 0.88,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -5830,9 +5830,9 @@
         "reference": "Wen et al. 2021, Light: S&A",
         "ref_psnr": 24.0,
         "ref_ssim": null,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5841,9 +5841,9 @@
         "reference": "—",
         "ref_psnr": 24.0,
         "ref_ssim": null,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5852,9 +5852,9 @@
         "reference": "—",
         "ref_psnr": 24.0,
         "ref_ssim": null,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5863,9 +5863,9 @@
         "reference": "—",
         "ref_psnr": 24.0,
         "ref_ssim": null,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -5874,9 +5874,9 @@
         "reference": "Interpolation baseline",
         "ref_psnr": 22.0,
         "ref_ssim": 0.7,
-        "pwm_psnr": 19.21,
-        "pwm_ssim": 0.8455,
-        "matched_solver": "m_bil_0.02_3",
+        "pwm_psnr": 19.49,
+        "pwm_ssim": 0.8955,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -6714,10 +6714,10 @@
         "reference": "Huang et al., Light Sci Appl 2022",
         "ref_psnr": 36.1,
         "ref_ssim": 0.785,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
-        "status": "gap"
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
+        "status": "partial"
       },
       {
         "name": "HoloPhaseNet (cGAN)",
@@ -6725,9 +6725,9 @@
         "reference": "Terbe et al., Biomed Opt Express 2022",
         "ref_psnr": 35.3,
         "ref_ssim": 0.99,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -6736,9 +6736,9 @@
         "reference": "DL electron holography",
         "ref_psnr": 30.0,
         "ref_ssim": 0.88,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -6747,9 +6747,9 @@
         "reference": "Lichte, Ultramicroscopy 1993",
         "ref_psnr": 25.0,
         "ref_ssim": null,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6758,9 +6758,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 11.9,
         "ref_ssim": 0.0936,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6769,9 +6769,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 11.9,
         "ref_ssim": 0.0936,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6780,9 +6780,9 @@
         "reference": "—",
         "ref_psnr": 9.5,
         "ref_ssim": null,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6791,9 +6791,9 @@
         "reference": "—",
         "ref_psnr": 9.5,
         "ref_ssim": null,
-        "pwm_psnr": 25.9,
-        "pwm_ssim": 0.9786,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 26.19,
+        "pwm_ssim": 0.9793,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -6804,9 +6804,9 @@
         "reference": "Zhang et al., Sci Rep 2019, s41598-019-49267-x",
         "ref_psnr": 27.5,
         "ref_ssim": 0.953,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -6815,9 +6815,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 26.1,
         "ref_ssim": 0.9625,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6826,9 +6826,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 26.1,
         "ref_ssim": 0.9625,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6837,9 +6837,9 @@
         "reference": "—",
         "ref_psnr": 25.1,
         "ref_ssim": null,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6848,9 +6848,9 @@
         "reference": "—",
         "ref_psnr": 25.1,
         "ref_ssim": null,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6859,9 +6859,9 @@
         "reference": "Zhang et al., Sci Rep 2019",
         "ref_psnr": 18.6,
         "ref_ssim": 0.312,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -6870,9 +6870,9 @@
         "reference": "Zhang et al., Sci Rep 2019",
         "ref_psnr": 13.1,
         "ref_ssim": 0.28,
-        "pwm_psnr": 23.8,
-        "pwm_ssim": 0.9429,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 24.05,
+        "pwm_ssim": 0.9455,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -6883,9 +6883,9 @@
         "reference": "Liang et al., ICCVW 2021",
         "ref_psnr": 34.0,
         "ref_ssim": null,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -6894,9 +6894,9 @@
         "reference": "bioRxiv 2021",
         "ref_psnr": 31.0,
         "ref_ssim": 0.971,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -6905,9 +6905,9 @@
         "reference": "Dabov et al., 2007",
         "ref_psnr": 30.0,
         "ref_ssim": null,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -6916,10 +6916,10 @@
         "reference": "—",
         "ref_psnr": 28.3,
         "ref_ssim": null,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
-        "status": "partial"
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
+        "status": "done"
       },
       {
         "name": "CARE (PWM)",
@@ -6927,10 +6927,10 @@
         "reference": "Weigert et al. 2018",
         "ref_psnr": 28.3,
         "ref_ssim": null,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
-        "status": "partial"
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
+        "status": "done"
       },
       {
         "name": "FIB-SEM-Net (PWM)",
@@ -6938,10 +6938,10 @@
         "reference": "Heinrich, L. et al. (2021) Whole-cell organelle segmentation in volume EM, Nature 599:141",
         "ref_psnr": 28.3,
         "ref_ssim": null,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
-        "status": "partial"
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
+        "status": "done"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6949,10 +6949,10 @@
         "reference": "—",
         "ref_psnr": 28.3,
         "ref_ssim": null,
-        "pwm_psnr": 25.06,
-        "pwm_ssim": 0.0512,
-        "matched_solver": "tv_0.7",
-        "status": "partial"
+        "pwm_psnr": 25.36,
+        "pwm_ssim": 0.9517,
+        "matched_solver": "hyper_squeeze",
+        "status": "done"
       }
     ],
     "sem": [
@@ -7063,9 +7063,9 @@
         "reference": "ACS Central Science 2023",
         "ref_psnr": 42.9,
         "ref_ssim": 0.99,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -7074,9 +7074,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 36.2,
         "ref_ssim": 0.98,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -7085,9 +7085,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 36.2,
         "ref_ssim": 0.98,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -7096,9 +7096,9 @@
         "reference": "—",
         "ref_psnr": 34.5,
         "ref_ssim": null,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -7107,9 +7107,9 @@
         "reference": "—",
         "ref_psnr": 34.5,
         "ref_ssim": null,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -7118,9 +7118,9 @@
         "reference": "Liang et al., 2021",
         "ref_psnr": 33.0,
         "ref_ssim": null,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -7129,9 +7129,9 @@
         "reference": "Dabov et al., 2007",
         "ref_psnr": 30.0,
         "ref_ssim": 0.85,
-        "pwm_psnr": 25.55,
-        "pwm_ssim": 0.9832,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.73,
+        "pwm_ssim": 0.984,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       }
     ],
@@ -10307,9 +10307,9 @@
         "reference": "MSSP 2025",
         "ref_psnr": 39.3,
         "ref_ssim": null,
-        "pwm_psnr": 33.45,
-        "pwm_ssim": 0.9936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 33.54,
+        "pwm_ssim": 0.9937,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -10318,9 +10318,9 @@
         "reference": "MSSP 2025",
         "ref_psnr": 36.4,
         "ref_ssim": null,
-        "pwm_psnr": 33.45,
-        "pwm_ssim": 0.9936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 33.54,
+        "pwm_ssim": 0.9937,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -10329,9 +10329,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 35.2,
         "ref_ssim": 0.8974,
-        "pwm_psnr": 33.45,
-        "pwm_ssim": 0.9936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 33.54,
+        "pwm_ssim": 0.9937,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -10340,9 +10340,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 35.2,
         "ref_ssim": 0.8974,
-        "pwm_psnr": 33.45,
-        "pwm_ssim": 0.9936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 33.54,
+        "pwm_ssim": 0.9937,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -10351,9 +10351,9 @@
         "reference": "—",
         "ref_psnr": 31.1,
         "ref_ssim": null,
-        "pwm_psnr": 33.45,
-        "pwm_ssim": 0.9936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 33.54,
+        "pwm_ssim": 0.9937,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       },
       {
@@ -10362,9 +10362,9 @@
         "reference": "Holmes et al., NDT&E Int 2005",
         "ref_psnr": 28.0,
         "ref_ssim": null,
-        "pwm_psnr": 33.45,
-        "pwm_ssim": 0.9936,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 33.54,
+        "pwm_ssim": 0.9937,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -10803,9 +10803,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 35.6,
         "ref_ssim": 0.9304,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -10814,9 +10814,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 35.6,
         "ref_ssim": 0.9304,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -10825,9 +10825,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 35.6,
         "ref_ssim": 0.9304,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
         "status": "gap"
       },
       {
@@ -10836,9 +10836,9 @@
         "reference": "—",
         "ref_psnr": 34.6,
         "ref_ssim": null,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -10847,9 +10847,9 @@
         "reference": "DL for FTIR imaging",
         "ref_psnr": 30.0,
         "ref_ssim": 0.9,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
         "status": "partial"
       },
       {
@@ -10858,10 +10858,10 @@
         "reference": "Tauler, Chemom Intell Lab 1995",
         "ref_psnr": 28.0,
         "ref_ssim": null,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
-        "status": "partial"
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
+        "status": "done"
       },
       {
         "name": "ATR correction",
@@ -10869,9 +10869,9 @@
         "reference": "Bassan et al., Analyst 2010",
         "ref_psnr": 24.0,
         "ref_ssim": null,
-        "pwm_psnr": 24.68,
-        "pwm_ssim": 0.9704,
-        "matched_solver": "best_sample",
+        "pwm_psnr": 25.02,
+        "pwm_ssim": 0.9727,
+        "matched_solver": "smart_squeeze",
         "status": "done"
       }
     ],
@@ -11378,9 +11378,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 32.7,
         "ref_ssim": 0.989,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -11389,9 +11389,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 32.7,
         "ref_ssim": 0.989,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -11400,9 +11400,9 @@
         "reference": "Richardson 1972, JOSA",
         "ref_psnr": 32.7,
         "ref_ssim": 0.989,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "partial"
       },
       {
@@ -11411,10 +11411,10 @@
         "reference": "—",
         "ref_psnr": 30.0,
         "ref_ssim": null,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
-        "status": "partial"
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
+        "status": "done"
       },
       {
         "name": "DiffIR2VR-Zero",
@@ -11422,9 +11422,9 @@
         "reference": "arXiv 2503.15984 (DIPLI)",
         "ref_psnr": 27.8,
         "ref_ssim": 0.62,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -11433,9 +11433,9 @@
         "reference": "arXiv 2503.15984 (DIPLI)",
         "ref_psnr": 26.5,
         "ref_ssim": 0.52,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -11444,9 +11444,9 @@
         "reference": "Fruchter & Hook, PASP 2002",
         "ref_psnr": 26.0,
         "ref_ssim": null,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       },
       {
@@ -11455,9 +11455,9 @@
         "reference": "Lucky imaging baseline",
         "ref_psnr": 22.0,
         "ref_ssim": null,
-        "pwm_psnr": 26.88,
-        "pwm_ssim": 0.0078,
-        "matched_solver": "m_t1.0",
+        "pwm_psnr": 27.1,
+        "pwm_ssim": 0.9635,
+        "matched_solver": "hyper_squeeze",
         "status": "done"
       }
     ],
@@ -14573,9 +14573,9 @@
     ]
   },
   "status_counts": {
-    "gap": 201,
-    "partial": 156,
-    "done": 917,
+    "gap": 198,
+    "partial": 148,
+    "done": 928,
     "—": 20
   }
 }
