@@ -1,20 +1,14 @@
-% preamble.tex — Nature-style formatting for PWM Flagship Paper
-% Review submission format: single column, 1.5 spacing, line numbers, wide margins
+% preamble.tex — arXiv submission format for PWM Flagship Paper
 
 \documentclass[11pt]{article}
 
-%% ——— Geometry: Nature review format (wide margins, single column) ———
+%% ——— Geometry: standard arXiv format ———
 \usepackage[
   top=2.54cm,
   bottom=2.54cm,
-  left=3.18cm,
-  right=3.18cm
+  left=2.54cm,
+  right=2.54cm
 ]{geometry}
-
-%% ——— Spacing and line numbers (Nature review requirements) ———
-\usepackage{setspace}
-\onehalfspacing
-\usepackage{lineno}
 
 %% ——— Mathematics ———
 \usepackage{amsmath}
@@ -23,6 +17,8 @@
 %% ——— Graphics and figures ———
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{float}      % provides [H] placement — no floating
+\usepackage{placeins}   % provides \FloatBarrier
 
 %% ——— Tables ———
 \usepackage{booktabs}
@@ -97,9 +93,12 @@
 \newcommand{\ssim}{\mathrm{SSIM}}
 \newcommand{\recoveryratio}{\rho}
 \newcommand{\mismatchparam}{\boldsymbol{\theta}}
-\newcommand{\triadreport}{\textsc{TriadReport}}
+\newcommand{\triadreport}{\textsc{Triad\-Report}}
 
 % Gate shorthand
 \newcommand{\gateone}{\textbf{Gate\,1}}
 \newcommand{\gatetwo}{\textbf{Gate\,2}}
 \newcommand{\gatethree}{\textbf{Gate\,3}}
+
+%% ——— Global line-breaking tolerance ———
+\emergencystretch=3em
