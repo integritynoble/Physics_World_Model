@@ -1633,6 +1633,12 @@
           "std_psnr": 23.31,
           "std_ssim": 0.9617,
           "status": "verified"
+        },
+        "medium_squeeze": {
+          "name": "Medium squeeze",
+          "std_psnr": 35.14,
+          "std_ssim": 0.9974,
+          "status": "verified"
         }
       },
       "best_psnr": 8.9
@@ -5994,6 +6000,12 @@
           "name": "Best sample recon",
           "std_psnr": 25.36,
           "std_ssim": 0.9833,
+          "status": "verified"
+        },
+        "medium_squeeze": {
+          "name": "Medium squeeze",
+          "std_psnr": 25.57,
+          "std_ssim": 0.984,
           "status": "verified"
         }
       },
@@ -42561,6 +42573,12 @@
           "std_psnr": 25.52,
           "std_ssim": 0.9808,
           "status": "verified"
+        },
+        "medium_squeeze": {
+          "name": "Medium squeeze",
+          "std_psnr": 25.89,
+          "std_ssim": 0.9821,
+          "status": "verified"
         }
       },
       "best_psnr": 12.9
@@ -73843,6 +73861,12 @@
           "std_psnr": 36.45,
           "std_ssim": 0.9575,
           "status": "verified"
+        },
+        "medium_squeeze": {
+          "name": "Medium squeeze",
+          "std_psnr": 36.56,
+          "std_ssim": 0.9589,
+          "status": "verified"
         }
       },
       "best_psnr": 24.8
@@ -80932,6 +80956,12 @@
           "std_psnr": 15.76,
           "std_ssim": 0.7585,
           "status": "verified"
+        },
+        "medium_squeeze": {
+          "name": "Medium squeeze",
+          "std_psnr": 18.94,
+          "std_ssim": 0.8963,
+          "status": "verified"
         }
       },
       "best_psnr": 11.0
@@ -87782,6 +87812,12 @@
           "name": "m_bil_0.2_7",
           "std_psnr": 7.7,
           "std_ssim": -0.8591,
+          "status": "verified"
+        },
+        "medium_squeeze": {
+          "name": "Medium squeeze",
+          "std_psnr": 7.86,
+          "std_ssim": -0.8471,
           "status": "verified"
         }
       },
