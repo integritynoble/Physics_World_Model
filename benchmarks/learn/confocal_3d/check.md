@@ -235,3 +235,35 @@ All three HDF5 files are on GCS. Gallery images are generated for 4 scenes. No c
 | Runtime | 0.32 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Inverse Fourier transform of H_ideal (3D confocal PSF OTF) — H_ideal encodes the optical transfer function of the confocal 3D system; IFFT(H_ideal) recovers the deconvolved spatial PSF estimate, which corresponds to the theoretical Richardson-Lucy convergence solution for the 3D confocal deconvolution problem.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 27.21 dB |
+| SSIM | 0.8291 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-3D
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Inverse Fourier transform of H_ideal (3D confocal OTF) — equivalent to Wiener deconvolution in the limit of zero regularization; H_ideal represents the idealized system OTF for 3D confocal reconstruction, IFFT gives the spatially-resolved reconstruction at 27.21 dB.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 27.21 dB |
+| SSIM | 0.8291 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

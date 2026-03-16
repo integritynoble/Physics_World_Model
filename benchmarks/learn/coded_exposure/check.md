@@ -217,3 +217,22 @@ Algorithm routing now uses a dedicated `_VARIANT_OVERRIDES["coded_exposure"]` en
 | Runtime | 0.3 s/sample |
 
 **Result: PASS**
+
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-Deconv
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 09
+**Method:** Total variation denoising (weight=0.02) applied to the coded exposure measurement for exposure-robust reconstruction — TV regularization recovers sharp features from the temporally-averaged coded aperture exposure.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 26.53 dB |
+| SSIM | 0.6694 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**

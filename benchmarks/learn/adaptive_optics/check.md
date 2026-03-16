@@ -215,3 +215,57 @@ Adaptive optics wavefront sensing is correctly modeled as a linear slope-to-phas
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zernike LS
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=0.5) using H_ideal PSF for wavefront phase recovery from aberrated sensor image.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 31.54 dB |
+| SSIM | 0.7661 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Fried Estimator
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=1.0) using H_ideal PSF for smooth wavefront phase estimation.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 33.73 dB |
+| SSIM | 0.8243 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (WF)
+**Type:** PnP
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=2.0) + TV denoising (weight=0.02) — plug-and-play wavefront reconstruction with total variation regularization.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 38.57 dB |
+| SSIM | 0.9320 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**

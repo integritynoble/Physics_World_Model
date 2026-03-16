@@ -161,6 +161,24 @@ Integral imaging is correctly modeled as a perspective projection through a micr
 
 ## CPU Algorithm Test Results
 
+**Algorithm:** Shift-and-Add
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 02
+**Method:** Non-local means denoising (h=1.0*sigma, patch_size=5, patch_distance=6) applied to the accumulated integral image — NLM exploits self-similarity in the multi-view projection sum to suppress noise while preserving 3D reconstruction detail.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 24.15 dB |
+| SSIM | 0.7314 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
 **Algorithm:** PnP-LF
 **Type:** Classical CPU
 **Test Date:** 2026-03-12

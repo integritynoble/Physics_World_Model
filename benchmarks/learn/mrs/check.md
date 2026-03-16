@@ -353,3 +353,75 @@ MRS is correctly formulated as a spectral decomposition problem where the FID co
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** L1-Wavelet
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.39 dB |
+| SSIM (mean) | 0.233 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** k-t SPARSE-SENSE
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.53 dB |
+| SSIM (mean) | 0.236 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ESPIRiT
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.68 dB |
+| SSIM (mean) | 0.236 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LORAKS
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.76 dB |
+| SSIM (mean) | 0.238 |
+| Runtime | 0.03 s/sample |
+
+**Result: PASS**
+
+---

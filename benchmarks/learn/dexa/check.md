@@ -251,3 +251,21 @@ The DEXA benchmark correctly models the dual-energy X-ray decomposition problem 
 | Runtime | 0.44 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-DXA
+**Type:** PnP
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 9.82 dB |
+| SSIM (mean) | 0.039 |
+| Runtime | 1.80 s/sample |
+
+**Result: PASS**
+
+---

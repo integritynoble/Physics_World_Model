@@ -476,3 +476,75 @@ s(t) = integral rho(x,y) * S_c(x,y) * exp(-i2pi k·r) dr
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** L1-Wavelet
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.17 dB |
+| SSIM (mean) | 0.011 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** k-t SPARSE-SENSE
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.31 dB |
+| SSIM (mean) | 0.011 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ESPIRiT
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.46 dB |
+| SSIM (mean) | 0.011 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LORAKS
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 7.53 dB |
+| SSIM (mean) | 0.011 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---

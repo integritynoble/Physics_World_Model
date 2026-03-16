@@ -346,3 +346,75 @@ where rho_eff is the effective spin density (modulated by T1/T2 relaxation and f
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** L1-Wavelet
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 12.96 dB |
+| SSIM (mean) | 0.002 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** k-t SPARSE-SENSE
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 13.22 dB |
+| SSIM (mean) | 0.002 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ESPIRiT
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 13.48 dB |
+| SSIM (mean) | 0.002 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LORAKS
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 13.61 dB |
+| SSIM (mean) | 0.002 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---

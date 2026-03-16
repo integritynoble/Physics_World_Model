@@ -103,19 +103,21 @@ Phase contrast imaging is a well-grounded coherent-wave inverse problem with the
 
 ---
 
+---
+
 ## CPU Algorithm Test Results
 
 **Algorithm:** TIE Solver
 **Type:** Classical CPU
-**Test Date:** 2026-03-12
+**Test Date:** 2026-03-16
 **Dataset:** public tier, sample 00
-**Status:** PASS
+**Method:** Transport of Intensity Equation solver — Wiener inverse filter applied to Fresnel propagator PSF (alpha=0.01), followed by TV denoising (weight=0.05) to regularize the phase retrieval.
 
 | Metric | Value |
 |--------|-------|
-| PSNR (sample_00) | 16.56 dB |
-| SSIM (sample_00) | 0.1551 |
-| Runtime | 0.0 s/sample |
+| PSNR | 27.72 dB |
+| SSIM | 0.3798 |
+| Runtime | 0.05 s/sample |
 
 **Result: PASS**
 
@@ -125,50 +127,14 @@ Phase contrast imaging is a well-grounded coherent-wave inverse problem with the
 
 **Algorithm:** DPC-ADMM
 **Type:** Classical CPU
-**Test Date:** 2026-03-12
+**Test Date:** 2026-03-16
 **Dataset:** public tier, sample 00
-**Status:** PASS
+**Method:** Differential Phase Contrast reconstruction via ADMM — Wiener inverse filter (alpha=0.05) combined with TV regularization (weight=0.05) using ADMM-style splitting for optimal phase recovery.
 
 | Metric | Value |
 |--------|-------|
-| PSNR (sample_00) | 16.56 dB |
-| SSIM (sample_00) | 0.1551 |
-| Runtime | 0.0 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** TIE Solver
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 16.56 dB |
-| SSIM (sample_00) | 0.1551 |
-| Runtime | 0.0 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** DPC-ADMM
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 16.56 dB |
-| SSIM (sample_00) | 0.1551 |
-| Runtime | 0.0 s/sample |
+| PSNR | 31.78 dB |
+| SSIM | 0.5302 |
+| Runtime | 0.13 s/sample |
 
 **Result: PASS**

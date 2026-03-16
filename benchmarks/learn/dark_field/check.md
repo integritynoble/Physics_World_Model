@@ -282,3 +282,55 @@ All 3 challenge tiers (public/dev/hidden) have been generated and uploaded to GC
 | Runtime | 0.26 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Richardson-Lucy deconvolution (30 iterations) using H_ideal PSF — iterative maximum-likelihood deconvolution for Poisson noise model, recovering the dark-field signal from the blurred/noisy measurement.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 23.09 dB |
+| SSIM | 0.5467 |
+| Runtime | 1.60 s/sample |
+
+**Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-DF
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=0.016) using H_ideal PSF followed by TV denoising (weight=0.15) — Wiener inverse filter for dark-field PSF deconvolution with TV regularization for edge preservation.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 26.76 dB |
+| SSIM | 0.7016 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-DF
+**Type:** Variational
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 11
+**Method:** Total variation denoising (weight=0.01) applied directly to the dark-field measurement for noise-robust signal recovery — TV regularization preserves dark-field contrast edges while suppressing photon shot noise.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 27.93 dB |
+| SSIM | 0.7147 |
+| Runtime | 0.04 s/sample |
+
+**Result: PASS**

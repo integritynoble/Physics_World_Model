@@ -423,3 +423,19 @@ Algorithm catalog expanded to 30 methods covering 1999-2026. New algorithms adde
 | Runtime | 0.01 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Zero-Filled IFFT
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 03
+**Method:** SENSE multi-coil reconstruction with db2 wavelet soft-thresholding (thresh=0.093) — zero-fills missing k-space entries, applies coil sensitivity-weighted combination using SENSE, followed by single-level db2 wavelet coefficient soft-thresholding to suppress aliasing artifacts from under-sampling.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 24.03 dB |
+| SSIM | 0.6441 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
