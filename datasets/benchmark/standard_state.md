@@ -34,7 +34,7 @@ Last updated: 2026-03-16 -- 170 modalities
 | 11 | brillouin | 20 | Brillouin microscopy | -- | simulation |
 | 12 | cacti | 20 | DeSCI CACTI benchmark (6 grayscale videos) | [link](https://github.com/liuyang12/DeSCI) | done |
 | 13 | cars | 20 | CARS microscopy | -- | simulation |
-| 14 | cassi | 10 | CAVE 31-band hyperspectral | [link](https://www.cs.columbia.edu/CAVE/databases/multispectral/) | done |
+| 14 | cassi | 10 | CAVE 28-band hyperspectral (10 scenes) | [link](https://www.cs.columbia.edu/CAVE/databases/multispectral/) | done |
 | 15 | cathodoluminescence | 20 | CL zircon (Zenodo 6801483) | [link](https://zenodo.org/records/6801483) | done |
 | 16 | cbct | 20 | Walnut CBCT (42 walnuts) | [link](https://zenodo.org/records/2686726) | needs_canonical |
 | 17 | cest_mri | 20 | CEST MRI | -- | simulation |
