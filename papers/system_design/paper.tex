@@ -103,96 +103,7 @@ An imaging system is \emph{designable} if it admits a finite DAG decomposition o
 \textbf{Scope.}
 Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 are validated on real data spanning all 5 carrier families.  The remaining ${\sim}$134 pass all compiler gates but lack per-modality benchmarks.  Tier-lifting is demonstrated on 2 cross-tier combinations; the agents depend on current LLM capabilities.
 
-% ---- Validation Pyramid (Task 1.3) ----
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[
-  tier/.style={draw, rounded corners=2pt, minimum height=0.8cm, align=center, font=\small},
-]
-% Base tier
-\node[tier, fill=gray!8, minimum width=12cm] (t0) at (0,0) {\textbf{173 modalities} --- compile through all 6 gates (100\% pass rate)};
-% Middle tier
-\node[tier, fill=blue!8, minimum width=9cm] (t1) at (0,1.2) {\textbf{39 modalities} --- fully validated canonical decompositions};
-% Upper tier
-\node[tier, fill=green!10, minimum width=5.5cm] (t2) at (0,2.4) {\textbf{6 modalities} --- real measured data};
-% Top label
-\node[tier, fill=orange!10, minimum width=3.2cm] (t3) at (0,3.6) {\textbf{3 modalities} --- GT PSNR};
-% Pyramid edges
-\draw[gray!40, thick] (-6,-0.4) -- (-1.6,4) (6,-0.4) -- (1.6,4);
-% Right annotations
-\node[font=\scriptsize, right, text width=3cm] at (6.2,0) {Gates 1--4 verified;\\chains \& bounds};
-\node[font=\scriptsize, right, text width=3cm] at (4.7,1.2) {Quantitative recon.\\+ canonical match};
-\node[font=\scriptsize, right, text width=3cm] at (2.95,2.4) {5 carrier families\\(X-ray, photon, spin,\\acoustic, electron)};
-\node[font=\scriptsize, right, text width=3cm] at (1.8,3.6) {CT, MRI, CASSI};
-\end{tikzpicture}
-\caption{\textbf{Validation pyramid.}  Of 173 designable modalities, all compile; 39 have quantitative reconstruction benchmarks; 6 are validated on real measured data spanning all 5 carrier families; 3 have ground-truth PSNR comparisons (CT, MRI, CASSI).  Each tier is a strict subset.}
-\label{fig:pyramid}
-\end{figure}
-
-% ========================================================================
-\section{Results}
-% ========================================================================
-
-% ------------------------------------------------------------------------
-\subsection{The spec.md Specification Format}
-\label{sec:specmd}
-% ------------------------------------------------------------------------
-
-The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware (\emph{with what}), enabling sharing, version control, and peer review independently of implementation~\cite{wilkinson2016fair}.  A reviewer can verify---by running the three Triad gates---that a forward model is physically feasible \emph{without reading code}.  A \texttt{spec.md} has eight mandatory fields (Figure~\ref{fig:specmd}): seven physics fields plus a \texttt{system\_elements} field that connects the specification to hardware feasibility.
-
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[
-  specbox/.style={draw=black!60, rounded corners=2pt, fill=gray!4, text width=0.92\textwidth, inner sep=6pt, font=\small\ttfamily},
-]
-% Schema
-\node[specbox, text width=0.92\textwidth] (schema) at (0,0) {
-\textnormal{\textbf{\textsf{Eight-field schema:}}}
-\textbf{modality} | \textbf{carrier} | \textbf{geometry} | \textbf{object} | \textbf{forward\_model} | \textbf{noise} | \textbf{target} | \textbf{system\_elements}
-};
-
-% Example 1: CT
-\node[specbox, below=4pt of schema] (ct) {
-\textnormal{\textsf{\textbf{(a) Clinical CT}}} \\
-modality: computed\_tomography \quad carrier: xray \\
-geometry: parallel\_beam, n\_angles=128 \\
-object: 128$\times$128 image, non-negative \\
-forward\_model: Radon($\Pi$) $\to$ Detect(D, intensity) \\
-noise: Poisson, I\_0=1e4 \quad target: PSNR $\geq$ 30\,dB \\
-system\_elements: source=X-ray tube 120\,kVp, detector=flat-panel 0.4\,mm
-};
-
-% Example 2: CASSI
-\node[specbox, below=4pt of ct] (cassi) {
-\textnormal{\textsf{\textbf{(b) CASSI (spectral)}}} \\
-modality: cassi \quad carrier: photon \\
-geometry: coded\_aperture + disperser, $\lambda$=[400,700]\,nm \\
-object: 256$\times$256$\times$28 spectral cube \\
-forward\_model: Modulate(M) $\to$ Disperse(W) $\to$ Accumulate($\Sigma$) $\to$ Detect(D) \\
-noise: Gaussian, $\sigma$=0.01 \quad target: PSNR $\geq$ 28\,dB \\
-system\_elements: source=broadband LED, optics=coded aperture + prism, detector=CMOS 2048$\times$2048
-};
-
-% Example 3: MRI
-\node[specbox, below=4pt of cassi] (mri) {
-\textnormal{\textsf{\textbf{(c) Accelerated MRI}}} \\
-modality: mri \quad carrier: spin \\
-geometry: cartesian\_kspace, acceleration=4x \\
-object: 256$\times$256 complex image \\
-forward\_model: Modulate(M, coil) $\to$ Encode(F, kspace) $\to$ Sample(S) $\to$ Detect(D) \\
-noise: Gaussian, SNR=30\,dB \quad target: SSIM $\geq$ 0.9 \\
-system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=ADC 16-bit
-};
-\end{tikzpicture}
-\caption{\textbf{The \texttt{spec.md} specification format.}  Eight mandatory fields fully determine an imaging system design.  Seven physics fields specify the forward model; the eighth (\texttt{system\_elements}) connects to hardware feasibility and cost.  Three examples span X-ray (CT), optical (CASSI), and spin (MRI) carriers.  Each \texttt{forward\_model} field is a primitive chain over the 11 FPB operators.}
-\label{fig:specmd}
-\end{figure}
-
-% ------------------------------------------------------------------------
-\subsection{The Three-Agent Pipeline}
-\label{sec:pipeline}
-% ------------------------------------------------------------------------
-
+% ---- Three-Agent Pipeline (Figure 1) ----
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
@@ -269,6 +180,70 @@ $\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
 $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
 \label{fig:pipeline}
 \end{figure}
+
+% ========================================================================
+\section{Results}
+% ========================================================================
+
+% ------------------------------------------------------------------------
+\subsection{The spec.md Specification Format}
+\label{sec:specmd}
+% ------------------------------------------------------------------------
+
+The framework's central design choice is that \texttt{spec.md}---not code---is the canonical scientific artifact.  A specification separates the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware (\emph{with what}), enabling sharing, version control, and peer review independently of implementation~\cite{wilkinson2016fair}.  A reviewer can verify---by running the three Triad gates---that a forward model is physically feasible \emph{without reading code}.  A \texttt{spec.md} has eight mandatory fields (Figure~\ref{fig:specmd}): seven physics fields plus a \texttt{system\_elements} field that connects the specification to hardware feasibility.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  specbox/.style={draw=black!60, rounded corners=2pt, fill=gray!4, text width=0.92\textwidth, inner sep=6pt, font=\small\ttfamily},
+]
+% Schema
+\node[specbox, text width=0.92\textwidth] (schema) at (0,0) {
+\textnormal{\textbf{\textsf{Eight-field schema:}}}
+\textbf{modality} | \textbf{carrier} | \textbf{geometry} | \textbf{object} | \textbf{forward\_model} | \textbf{noise} | \textbf{target} | \textbf{system\_elements}
+};
+
+% Example 1: CT
+\node[specbox, below=4pt of schema] (ct) {
+\textnormal{\textsf{\textbf{(a) Clinical CT}}} \\
+modality: computed\_tomography \quad carrier: xray \\
+geometry: parallel\_beam, n\_angles=128 \\
+object: 128$\times$128 image, non-negative \\
+forward\_model: Radon($\Pi$) $\to$ Detect(D, intensity) \\
+noise: Poisson, I\_0=1e4 \quad target: PSNR $\geq$ 30\,dB \\
+system\_elements: source=X-ray tube 120\,kVp, detector=flat-panel 0.4\,mm
+};
+
+% Example 2: CASSI
+\node[specbox, below=4pt of ct] (cassi) {
+\textnormal{\textsf{\textbf{(b) CASSI (spectral)}}} \\
+modality: cassi \quad carrier: photon \\
+geometry: coded\_aperture + disperser, $\lambda$=[400,700]\,nm \\
+object: 256$\times$256$\times$28 spectral cube \\
+forward\_model: Modulate(M) $\to$ Disperse(W) $\to$ Accumulate($\Sigma$) $\to$ Detect(D) \\
+noise: Gaussian, $\sigma$=0.01 \quad target: PSNR $\geq$ 28\,dB \\
+system\_elements: source=broadband LED, optics=coded aperture + prism, detector=CMOS 2048$\times$2048
+};
+
+% Example 3: MRI
+\node[specbox, below=4pt of cassi] (mri) {
+\textnormal{\textsf{\textbf{(c) Accelerated MRI}}} \\
+modality: mri \quad carrier: spin \\
+geometry: cartesian\_kspace, acceleration=4x \\
+object: 256$\times$256 complex image \\
+forward\_model: Modulate(M, coil) $\to$ Encode(F, kspace) $\to$ Sample(S) $\to$ Detect(D) \\
+noise: Gaussian, SNR=30\,dB \quad target: SSIM $\geq$ 0.9 \\
+system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=ADC 16-bit
+};
+\end{tikzpicture}
+\caption{\textbf{The \texttt{spec.md} specification format.}  Eight mandatory fields fully determine an imaging system design.  Seven physics fields specify the forward model; the eighth (\texttt{system\_elements}) connects to hardware feasibility and cost.  Three examples span X-ray (CT), optical (CASSI), and spin (MRI) carriers.  Each \texttt{forward\_model} field is a primitive chain over the 11 FPB operators.}
+\label{fig:specmd}
+\end{figure}
+
+% ------------------------------------------------------------------------
+\subsection{The Three-Agent Pipeline}
+\label{sec:pipeline}
+% ------------------------------------------------------------------------
 
 \textbf{Plan Agent ($\Agent_P$)} generates a \texttt{spec.md} from natural language, selecting FPB primitives, parameters, and noise models from the 173-modality registry.
 
@@ -421,6 +396,14 @@ Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [
 \label{fig:error_decomp}
 \end{figure}
 
+% ---- Design-to-Real Validation (Figure 4) ----
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_design_to_real.pdf}
+\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates (3 Triad + 6 compiler), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities: CT (20.1\,dB, FBP+TV on LoDoPaB), MRI (23.3\,dB, PromptMR on M4Raw), and CASSI (25.5\,dB, GAP-TV on KAIST TSA).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $99.8 \pm 3.2$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
+\label{fig:design_to_real}
+\end{figure}
+
 \textbf{Theorem tightness.}
 The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ across 6 real-data modalities: $\tau \in [1.8, 5.2]$, median 2.9 (CT 2.1, MRI 2.4, CASSI 3.8).  Ratios below 10 are typical for operator-perturbation bounds~\cite{kamilov2023pnp}; values near 2 indicate the bound captures the dominant mechanism with minimal slack.
 
@@ -436,7 +419,7 @@ The tightness ratio $\tau = \eps_{\text{predicted}} / \eps_{\text{observed}}$ ac
 \textbf{Ultrasound} (PICMUS~\cite{liebgott2016picmus}, $n{=}5$): in-vivo carotid, self-reference protocol.  After SoS calibration, SSIM recovers to $0.98 \pm 0.01$ ($\rho_{\text{recov}} \approx 0.95$).
 \textbf{E-ptychography} (SrTiO$_3$ 4D-STEM~\cite{jiang2022electron,zenodo4dstem}): iCoM phase retrieval; $\rho_{\text{recov}} = 1.00$ after probe-position correction.
 
-Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $99.8 \pm 3.2$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron.  Beyond the 6 real-data modalities, 10 novel system designs demonstrate compositional reach: by composing primitives into chains of up to 5 operators, the agents design systems recovering depth ($\Phi_z{\to}\Sigma{\to}D$, 3D), video ($M{\to}C{\to}\Sigma{\to}D$, 3D), spectra ($M{\to}W{\to}C{\to}\Sigma{\to}D$, 3D), and full 5D datacubes ($x,y,z,\lambda,t$) from single 2D snapshots (Table~\ref{tab:cross}).  Active modulation (DMD) consistently outperforms passive dispersion by 3--6\,dB at equal compression.  Full per-system specifications appear in Supplementary Information.
+Across 6 real-data modalities spanning all 5 carrier families: mean quality ratio $99.8 \pm 3.2$\% (3 with ground truth) and $\rho_{\text{recov}} \geq 0.95$ (3 via self-reference), consistent across carriers from X-ray to electron (Figure~\ref{fig:design_to_real}).  Beyond the 6 real-data modalities, 10 novel system designs demonstrate compositional reach: by composing primitives into chains of up to 5 operators, the agents design systems recovering depth ($\Phi_z{\to}\Sigma{\to}D$, 3D), video ($M{\to}C{\to}\Sigma{\to}D$, 3D), spectra ($M{\to}W{\to}C{\to}\Sigma{\to}D$, 3D), and full 5D datacubes ($x,y,z,\lambda,t$) from single 2D snapshots (Table~\ref{tab:cross}).  Active modulation (DMD) consistently outperforms passive dispersion by 3--6\,dB at equal compression.  Full per-system specifications appear in Supplementary Information.
 
 
 % ------------------------------------------------------------------------
@@ -541,11 +524,37 @@ Each FPB primitive is implemented at four fidelity tiers: Tier-0 (geometric), Ti
 
 Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% to $<10^{-12}$) and coherent imaging (Tier-1${\to}$3: 147\% to $<10^{-12}$; Extended Data Table~\ref{tab:tierlift}).  The protocol preserves FPB structure: same primitives, same DAG, same \texttt{spec.md}---only fidelity changes.
 
+% ---- Validation Pyramid (moved to Figure 5 position) ----
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  tier/.style={draw, rounded corners=2pt, minimum height=0.8cm, align=center, font=\small},
+]
+% Base tier
+\node[tier, fill=gray!8, minimum width=12cm] (t0) at (0,0) {\textbf{173 modalities} --- compile through all 6 gates (100\% pass rate)};
+% Middle tier
+\node[tier, fill=blue!8, minimum width=9cm] (t1) at (0,1.2) {\textbf{39 modalities} --- fully validated canonical decompositions};
+% Upper tier
+\node[tier, fill=green!10, minimum width=5.5cm] (t2) at (0,2.4) {\textbf{6 modalities} --- real measured data};
+% Top label
+\node[tier, fill=orange!10, minimum width=3.2cm] (t3) at (0,3.6) {\textbf{3 modalities} --- GT PSNR};
+% Pyramid edges
+\draw[gray!40, thick] (-6,-0.4) -- (-1.6,4) (6,-0.4) -- (1.6,4);
+% Right annotations
+\node[font=\scriptsize, right, text width=3cm] at (6.2,0) {Gates 1--4 verified;\\chains \& bounds};
+\node[font=\scriptsize, right, text width=3cm] at (4.7,1.2) {Quantitative recon.\\+ canonical match};
+\node[font=\scriptsize, right, text width=3cm] at (2.95,2.4) {5 carrier families\\(X-ray, photon, spin,\\acoustic, electron)};
+\node[font=\scriptsize, right, text width=3cm] at (1.8,3.6) {CT, MRI, CASSI};
+\end{tikzpicture}
+\caption{\textbf{Validation pyramid.}  Of 173 designable modalities, all compile; 39 have quantitative reconstruction benchmarks; 6 are validated on real measured data spanning all 5 carrier families; 3 have ground-truth PSNR comparisons (CT, MRI, CASSI).  Each tier is a strict subset.}
+\label{fig:pyramid}
+\end{figure}
+
 % ========================================================================
 \section{Discussion}
 % ========================================================================
 
-The central finding of this work is that a structured specification format (\texttt{spec.md}), a three-agent pipeline, and a five-term error decomposition together automate the design of computational imaging systems across 173 modalities and 5 carrier families.  The framework matches expert-library quality ($99.8\pm3.2$\%) with order-of-magnitude reductions in development time (Table~\ref{tab:expert}), because the agents automate the specification and validation steps that constitute the bulk of expert effort.
+The central finding of this work is that a structured specification format (\texttt{spec.md}), a three-agent pipeline, and a five-term error decomposition together automate the design of computational imaging systems across 173 modalities and 5 carrier families.  The framework matches expert-library quality ($99.8\pm3.2$\%) with order-of-magnitude reductions in development time (Table~\ref{tab:expert}), as validated on real measured data from CT, MRI, and CASSI (Figure~\ref{fig:design_to_real}), because the agents automate the specification and validation steps that constitute the bulk of expert effort.
 
 \texttt{spec.md} decouples physics (\emph{what}) from numerics (\emph{how}) and hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The \texttt{system\_elements} field connects specifications to hardware feasibility, transforming the Judge from a mathematical validator into a system feasibility checker.  Three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances.
 
