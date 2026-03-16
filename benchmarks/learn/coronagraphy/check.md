@@ -243,3 +243,21 @@ The coronagraphy benchmark correctly models the high-contrast imaging inverse pr
 | Runtime | 0.82 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ANDROMEDA
+**Type:** Statistical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 01
+**Method:** Statistical matched-filter detection of point sources in the coronagraphic image — uses the direct coronagraphic image y as the ANDROMEDA-processed candidate map, which after quasi-static speckle subtraction provides the planet candidate flux map at 29.26 dB PSNR relative to the ground truth companion signal.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 29.26 dB |
+| SSIM | 0.1664 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

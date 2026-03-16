@@ -27,7 +27,7 @@ from pwm_platform.services.benchmark_database._algorithm_catalog import CATEGORY
 # Types that can run on CPU (verified by us)
 _CPU_TYPES = {
     "classical", "variational", "compressed sensing", "pnp", "low-rank",
-    "plug-and-play", "dictionary learning", "compressive sensing",
+    "plug-and-play", "dictionary learning", "compressive sensing", "statistical",
 }
 
 # Types that need GPU (leave blank)
