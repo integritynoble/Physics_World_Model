@@ -175,3 +175,21 @@ Lensless imaging is correctly formulated as a convolution-based inverse problem 
 | Runtime | 0.03 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-ADMM
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 02
+**Method:** Wiener deconvolution (SNR=35 dB) using H_ideal PSF followed by TV denoising (weight=0.1) — Wiener frequency-domain inversion of the lensless diffuser PSF with TV regularization for edge-preserving reconstruction.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 21.82 dB |
+| SSIM | 0.8054 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**

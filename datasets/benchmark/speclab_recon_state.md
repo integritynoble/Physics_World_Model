@@ -669,9 +669,9 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Histogram-Eq | Classical | 24.1 dB | 0.738 |  |
-| CLAHE-Endo | Classical | 26.5 dB | 0.772 |  |
-| BM3D-Endo | Classical | 28.9 dB | 0.812 |  |
+| Histogram-Eq | Classical | 24.1 dB | 0.738 | done |
+| CLAHE-Endo | Classical | 26.5 dB | 0.772 | done |
+| BM3D-Endo | Classical | 28.9 dB | 0.812 | done |
 | DnCNN-Endo | Deep Learning | 31.4 dB | 0.855 |  |
 | EndoSLAM-Net | Deep Learning | 33.8 dB | 0.889 |  |
 | TransEndo | Transformer | 35.9 dB | 0.921 |  |
@@ -1051,7 +1051,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-ADMM | Classical | 23.5 dB | 0.64 |  |
+| Wiener-ADMM | Classical | 23.5 dB | 0.64 | done |
 | PnP-ADMM | PnP | 27.5 dB | 0.79 |  |
 | FlatNet | Deep Learning | 31.8 dB | 0.89 |  |
 | Uformer | Transformer | 33.5 dB | 0.92 |  |
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 485 |
-| CPU algorithms pending verification | 90 |
+| CPU algorithms verified (done) | 489 |
+| CPU algorithms pending verification | 86 |
 | GPU algorithms pending | 979 |
 | Total | 1554 |
