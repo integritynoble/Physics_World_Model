@@ -667,70 +667,67 @@ The Judge Agent validates designs in three stages: structural compilation (prere
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
-  node distance=0.4cm and 0.6cm,
-  stage/.style={draw, rounded corners=3pt, minimum width=10.2cm, minimum height=0.9cm, font=\small, align=center},
-  gate/.style={draw, rounded corners=2pt, minimum width=1.35cm, minimum height=0.7cm, font=\scriptsize, align=center},
-  triad/.style={gate, fill=orange!15, draw=orange!60!black},
-  sysgate/.style={gate, fill=blue!12, draw=blue!50!black},
-  compgate/.style={gate, fill=gray!15, draw=gray!60!black},
-  io/.style={draw, rounded corners=2pt, fill=white, minimum width=2.0cm, minimum height=0.6cm, font=\scriptsize, align=center},
-  verdict/.style={draw, rounded corners=2pt, minimum width=2.0cm, minimum height=0.6cm, font=\scriptsize\bfseries, align=center},
-  arr/.style={-{Stealth[length=4pt]}, thick},
-  lbl/.style={font=\scriptsize\bfseries, fill=white, inner sep=1pt},
+  node distance=0.6cm and 0.8cm,
+  stage/.style={draw, rounded corners=4pt, minimum width=12cm, minimum height=1.4cm, font=\small, align=center},
+  gate/.style={draw, rounded corners=3pt, minimum width=1.6cm, minimum height=0.9cm, font=\scriptsize, align=center},
+  triad/.style={gate, fill=orange!15, draw=orange!60!black, minimum height=1.0cm},
+  sysgate/.style={gate, fill=blue!12, draw=blue!50!black, minimum height=1.0cm},
+  compgate/.style={gate, fill=gray!15, draw=gray!60!black, minimum height=0.9cm},
+  io/.style={draw, rounded corners=3pt, fill=white, minimum width=3.0cm, minimum height=0.7cm, font=\small, align=center},
+  verdict/.style={draw, rounded corners=3pt, minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries, align=center},
+  arr/.style={-{Stealth[length=5pt]}, thick},
+  lbl/.style={font=\small\bfseries, fill=white, inner sep=2pt},
 ]
 
 % Input
 \node[io, fill=yellow!10] (input) {\texttt{spec.md} + \texttt{system\_elements}};
 
-% Stage 1 label
-\node[lbl, below=0.5cm of input, xshift=-4.2cm, anchor=east] (s1lbl) {Stage 1};
-\node[stage, fill=gray!6, right=0.1cm of s1lbl, anchor=west, minimum width=8.8cm] (s1box) {};
-\node[compgate, anchor=west] at ([xshift=0.15cm]s1box.west) (g_dag) {DAG};
-\node[compgate, right=0.1cm of g_dag] (g_chain) {Chain};
-\node[compgate, right=0.1cm of g_chain] (g_bnd) {Bounds};
-\node[compgate, right=0.1cm of g_bnd] (g_nl) {Nonlin.};
-\node[compgate, right=0.1cm of g_nl] (g_adj) {Adjoint};
-\node[compgate, right=0.1cm of g_adj] (g_err) {Error};
+% ── Stage 1: Structural Compiler ──
+\node[lbl, below=1.0cm of input, xshift=-5.5cm, anchor=east] (s1lbl) {Stage 1};
+\node[stage, fill=gray!6, right=0.2cm of s1lbl, anchor=west, minimum width=10.5cm] (s1box) {};
+\node[compgate, anchor=west] at ([xshift=0.25cm]s1box.west) (g_dag) {DAG};
+\node[compgate, right=0.25cm of g_dag] (g_chain) {Chain};
+\node[compgate, right=0.25cm of g_chain] (g_bnd) {Bounds};
+\node[compgate, right=0.25cm of g_bnd] (g_nl) {Nonlin.};
+\node[compgate, right=0.25cm of g_nl] (g_adj) {Adjoint};
+\node[compgate, right=0.25cm of g_adj] (g_err) {Error};
 
-% Stage 1 side label
-\node[font=\scriptsize, gray!60!black, anchor=west, align=center] at ([xshift=0.15cm]g_err.east) {Structural\\[-1pt]Compiler};
+\node[font=\small, gray!60!black, anchor=west, align=center] at ([xshift=0.3cm]g_err.east) {Structural\\Compiler};
 
-% Stage 2 label
-\node[lbl, below=0.7cm of s1lbl] (s2lbl) {Stage 2};
-\node[stage, fill=orange!4, right=0.1cm of s2lbl, anchor=west, minimum width=8.8cm] (s2box) {};
-\node[triad, anchor=west, minimum width=2.5cm] at ([xshift=0.15cm]s2box.west) (g1) {\begin{tabular}{c}$G_1$: Recoverability\\[-1pt]{\tiny $\mathrm{PSNR}_{\max}^{(G_1)}\!=\!f(\gamma)$}\end{tabular}};
-\node[triad, right=0.2cm of g1, minimum width=2.5cm] (g2) {\begin{tabular}{c}$G_2$: Carrier Budget\\[-1pt]{\tiny $10\log_{10}(\mathrm{SNR})\!+\!C_M$}\end{tabular}};
-\node[triad, right=0.2cm of g2, minimum width=2.5cm] (g3) {\begin{tabular}{c}$G_3$: Mismatch\\[-1pt]{\tiny $\mathrm{PSNR}_{\mathrm{deploy}}$}\end{tabular}};
+% ── Stage 2: Triad Gates ──
+\node[lbl, below=1.2cm of s1lbl] (s2lbl) {Stage 2};
+\node[stage, fill=orange!4, right=0.2cm of s2lbl, anchor=west, minimum width=10.5cm, minimum height=1.6cm] (s2box) {};
+\node[triad, anchor=west, minimum width=3.0cm, minimum height=1.1cm] at ([xshift=0.25cm]s2box.west) (g1) {\begin{tabular}{c}$G_1$: Recoverability\\[2pt]{\footnotesize $\mathrm{PSNR}_{\max}^{(G_1)}\!=\!f(\gamma)$}\end{tabular}};
+\node[triad, right=0.4cm of g1, minimum width=3.0cm, minimum height=1.1cm] (g2) {\begin{tabular}{c}$G_2$: Carrier Budget\\[2pt]{\footnotesize $10\log_{10}(\mathrm{SNR})\!+\!C_M$}\end{tabular}};
+\node[triad, right=0.4cm of g2, minimum width=3.0cm, minimum height=1.1cm] (g3) {\begin{tabular}{c}$G_3$: Mismatch\\[2pt]{\footnotesize $\mathrm{PSNR}_{\mathrm{deploy}}$}\end{tabular}};
 
-% Stage 2 side label
-\node[font=\scriptsize, orange!60!black, anchor=west] at ([xshift=0.1cm]g3.east) {Triad};
+\node[font=\small, orange!60!black, anchor=west] at ([xshift=0.2cm]g3.east) {Triad};
 
-% Stage 3 label
-\node[lbl, below=0.7cm of s2lbl] (s3lbl) {Stage 3};
-\node[stage, fill=blue!4, right=0.1cm of s3lbl, anchor=west, minimum width=8.8cm] (s3box) {};
-\node[sysgate, anchor=west, minimum width=3.5cm] at ([xshift=0.15cm]s3box.west) (cost) {\begin{tabular}{c}Cost Estimation\\[-1pt]{\tiny itemized from HW database}\end{tabular}};
-\node[sysgate, right=0.3cm of cost, minimum width=3.5cm] (feas) {\begin{tabular}{c}Feasibility Check\\[-1pt]{\tiny power, QE, NA limits}\end{tabular}};
+% ── Stage 3: Cost + Feasibility ──
+\node[lbl, below=1.2cm of s2lbl] (s3lbl) {Stage 3};
+\node[stage, fill=blue!4, right=0.2cm of s3lbl, anchor=west, minimum width=10.5cm, minimum height=1.4cm] (s3box) {};
+\node[sysgate, anchor=west, minimum width=4.2cm, minimum height=1.0cm] at ([xshift=0.25cm]s3box.west) (cost) {\begin{tabular}{c}Cost Estimation\\[1pt]{\footnotesize itemized from HW database}\end{tabular}};
+\node[sysgate, right=0.6cm of cost, minimum width=4.2cm, minimum height=1.0cm] (feas) {\begin{tabular}{c}Feasibility Check\\[1pt]{\footnotesize power, QE, NA limits}\end{tabular}};
 
-% Stage 3 side label
-\node[font=\scriptsize, blue!50!black, anchor=west] at ([xshift=0.1cm]feas.east) {System};
+\node[font=\small, blue!50!black, anchor=west] at ([xshift=0.2cm]feas.east) {System};
 
-% Outputs
-\node[verdict, fill=green!12, draw=green!50!black, below left=0.6cm and -0.5cm of s3box] (pass) {\begin{tabular}{c}PASS\\[-1pt]certificate\end{tabular}};
-\node[verdict, fill=red!10, draw=red!50!black, below right=0.6cm and -0.5cm of s3box] (fail) {\begin{tabular}{c}FAIL\\[-1pt]redesign prompt\end{tabular}};
+% ── Outputs ──
+\node[verdict, fill=green!12, draw=green!50!black, below left=1.0cm and 0.0cm of s3box.south] (pass) {\begin{tabular}{c}PASS\\certificate\end{tabular}};
+\node[verdict, fill=red!10, draw=red!50!black, below right=1.0cm and 0.0cm of s3box.south] (fail) {\begin{tabular}{c}FAIL\\redesign prompt\end{tabular}};
 
-% Arrows
+% ── Arrows ──
 \draw[arr] (input) -- (s1box);
-\draw[arr] (s1box) -- node[lbl, right, xshift=2pt] {all 6 pass} (s2box);
-\draw[arr] (s2box) -- node[lbl, right, xshift=2pt] {all 3 pass} (s3box);
-\draw[arr] (s3box.south) -- ++(0,-0.15) -| (pass.north);
-\draw[arr] (s3box.south) -- ++(0,-0.15) -| (fail.north);
+\draw[arr] (s1box) -- node[lbl, right, xshift=3pt] {all 6 pass} (s2box);
+\draw[arr] (s2box) -- node[lbl, right, xshift=3pt] {all 3 pass} (s3box);
+\draw[arr] (s3box.south) -- ++(0,-0.25) -| (pass.north);
+\draw[arr] (s3box.south) -- ++(0,-0.25) -| (fail.north);
 
 % Reject arrows from stages
-\draw[arr, dashed, red!60!black] (s1box.east) -- ++(0.6,0) |- node[lbl, above, pos=0.25] {\scriptsize reject} (fail.east);
-\draw[arr, dashed, red!60!black] (s2box.east) -- ++(0.4,0) |- (fail.east);
+\draw[arr, dashed, red!60!black] (s1box.east) -- ++(0.8,0) |- node[lbl, above, pos=0.25] {\scriptsize reject} (fail.east);
+\draw[arr, dashed, red!60!black] (s2box.east) -- ++(0.5,0) |- (fail.east);
 
 % Feedback arrow
-\draw[arr, dashed, blue!60!black] (fail.south) -- ++(0,-0.3) -| node[font=\scriptsize, below, pos=0.25] {to $\Agent_P$} ([xshift=-1cm]input.south);
+\draw[arr, dashed, blue!60!black] (fail.south) -- ++(0,-0.4) -| node[font=\small, below, pos=0.25] {to $\Agent_P$} ([xshift=-1.5cm]input.south);
 
 \end{tikzpicture}
 \caption{\textbf{Judge Agent validation flow.}
