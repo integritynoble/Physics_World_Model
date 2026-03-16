@@ -7,7 +7,7 @@ Tracks verification status of all reconstruction algorithms in SpecLab
 - `done` — PWM CPU reconstruction verified, actual PSNR within 2 dB of reference
 - *(blank)* — awaiting verification (not yet tested, or PSNR below reference threshold)
 
-Last updated: 2026-03-15 | Total modalities: 168
+Last updated: 2026-03-16 | Total modalities: 168 | Verified: 492
 
 ---
 
@@ -153,8 +153,8 @@ Last updated: 2026-03-15 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Lorentzian-Fit | Classical | 26.2 dB | 0.785 |  |
-| SG-Baseline | Classical | 27.8 dB | 0.812 |  |
+| Lorentzian-Fit | Classical | 26.2 dB | 0.785 | done |
+| SG-Baseline | Classical | 27.8 dB | 0.812 | done |
 | CNN-Spectra | Deep Learning | 31.5 dB | 0.872 | done |
 | DnCNN-Brillouin | Deep Learning | 33.2 dB | 0.901 | done |
 | CDAE | Deep Learning | 34.8 dB | 0.918 | done |
@@ -195,7 +195,7 @@ Last updated: 2026-03-15 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-CL | Classical | 25.2 dB | 0.771 |  |
+| Wiener-CL | Classical | 25.2 dB | 0.771 | done |
 | Richardson-Lucy | Classical | 27.5 dB | 0.812 |  |
 | DnCNN-CL | Deep Learning | 31.8 dB | 0.875 | done |
 | U-Net-CL | Deep Learning | 34.2 dB | 0.908 | done |
@@ -891,7 +891,7 @@ Last updated: 2026-03-15 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Matched Filter | Classical | 20.0 dB | 0.52 |  |
+| Matched Filter | Classical | 20.0 dB | 0.52 | done |
 | BayesWave | PnP | 24.5 dB | 0.71 |  |
 | GW-CNN | Deep Learning | 28.8 dB | 0.85 | done |
 | WaveFormer | Transformer | 30.5 dB | 0.895 | done |
@@ -1021,7 +1021,7 @@ Last updated: 2026-03-15 | Total modalities: 168
 | Wiener Filter | Classical | 28.35 dB | 0.805 | done |
 | TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
 | PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
-| PnP-DnCNN | PnP | 31.2 dB | 0.89 | |
+| PnP-DnCNN | PnP | 31.2 dB | 0.89 | done |
 | CARE | Deep Learning | 34.5 dB | 0.948 | |
 | U-Net | Deep Learning | 35.15 dB | 0.956 | |
 | Restormer | Vision Transformer | 35.8 dB | 0.962 | |
@@ -1084,7 +1084,7 @@ Last updated: 2026-03-15 | Total modalities: 168
 | Wiener Filter | Classical | 28.35 dB | 0.805 | done |
 | TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
 | PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
-| PnP-DnCNN | PnP | 31.2 dB | 0.89 | |
+| PnP-DnCNN | PnP | 31.2 dB | 0.89 | done |
 | CARE | Deep Learning | 34.5 dB | 0.948 | |
 | U-Net | Deep Learning | 35.15 dB | 0.956 | |
 | Restormer | Vision Transformer | 35.8 dB | 0.962 | |
@@ -1578,8 +1578,8 @@ Last updated: 2026-03-15 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Tikhonov-SMOS | Classical | 22.27 dB | 0.701 | |
-| Backus-Gilbert | Classical | 23.6 dB | 0.754 | |
+| Tikhonov-SMOS | Classical | 22.27 dB | 0.701 | done |
+| Backus-Gilbert | Classical | 23.6 dB | 0.754 | done |
 | MWR-Former | Transformer | 30.78 dB | 0.928 | done |
 | RadioNet | Deep Learning | 31.81 dB | 0.941 | done |
 
@@ -1687,10 +1687,10 @@ Last updated: 2026-03-15 | Total modalities: 168
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | OSEM | Classical | 24.8 dB | 0.69 | done |
-| FBP-PET | Classical | 26.65 dB | 0.849 | |
-| ML-EM | Classical | 28.41 dB | 0.889 | |
-| MAPEM-RDP | PnP | 28.5 dB | 0.815 | |
-| OS-EM | Classical | 28.92 dB | 0.899 | |
+| FBP-PET | Classical | 26.65 dB | 0.849 | done |
+| ML-EM | Classical | 28.41 dB | 0.889 | done |
+| MAPEM-RDP | PnP | 28.5 dB | 0.815 | done |
+| OS-EM | Classical | 28.92 dB | 0.899 | done |
 | DeepPET | Deep Learning | 32.4 dB | 0.918 | |
 | TransEM | Transformer | 33.7 dB | 0.938 | |
 | PETFormer | Vision Transformer | 35.7 dB | 0.972 | |
@@ -1949,11 +1949,11 @@ Last updated: 2026-03-15 | Total modalities: 168
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| OSEM | Classical | 24.8 dB | 0.69 | |
-| OS-EM | Classical | 27.96 dB | 0.88 | |
-| MAPEM-RDP | PnP | 28.5 dB | 0.815 | |
-| ML-EM | Classical | 29.4 dB | 0.907 | |
-| FBP-PET | Classical | 30.1 dB | 0.918 | |
+| OSEM | Classical | 24.8 dB | 0.69 | done |
+| OS-EM | Classical | 27.96 dB | 0.88 | done |
+| MAPEM-RDP | PnP | 28.5 dB | 0.815 | done |
+| ML-EM | Classical | 29.4 dB | 0.907 | done |
+| FBP-PET | Classical | 30.1 dB | 0.918 | done |
 | DeepPET | Deep Learning | 32.4 dB | 0.918 | |
 | TransEM | Transformer | 33.7 dB | 0.938 | |
 | U-Net-PET | Deep Learning | 33.86 dB | 0.96 | |
@@ -2154,7 +2154,7 @@ Last updated: 2026-03-15 | Total modalities: 168
 | Wiener Filter | Classical | 28.35 dB | 0.805 | done |
 | TV-Deconvolution | Classical | 29.5 dB | 0.845 | done |
 | PnP-FISTA | PnP | 30.42 dB | 0.872 | done |
-| PnP-DnCNN | PnP | 31.2 dB | 0.89 | |
+| PnP-DnCNN | PnP | 31.2 dB | 0.89 | done |
 | CARE | Deep Learning | 34.5 dB | 0.948 | |
 | U-Net | Deep Learning | 35.15 dB | 0.956 | |
 | Restormer | Vision Transformer | 35.8 dB | 0.962 | |
