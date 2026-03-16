@@ -300,8 +300,15 @@ def _load_sample(h5_path: Path, sample_idx: int = 0, variant_key: str = "") -> d
                 break
 
         # reconstruction_baseline (pre-computed baseline)
-        if "reconstruction_baseline" in available:
-            data["reconstruction_baseline"] = np.array(grp["reconstruction_baseline"])
+        # Also accept reconstruction_fbp / reconstruction_osem as baseline
+        _BASELINE_KEYS = [
+            "reconstruction_baseline", "reconstruction_fbp",
+            "reconstruction_osem", "reconstruction",
+        ]
+        for _bk in _BASELINE_KEYS:
+            if _bk in available:
+                data["reconstruction_baseline"] = np.array(grp[_bk])
+                break
 
     return data
 
@@ -452,13 +459,111 @@ def _make_gaussian_psf(size: int, sigma: float) -> np.ndarray:
     return psf / psf.sum()
 
 
+def _fan_fbp_reconstruct(
+    sinogram: np.ndarray,
+    angles_rad: np.ndarray,
+    output_size: int = 362,
+    D_so: float = 800.0,
+    D_sd: float = 568.0,
+    det_spacing: float = 1.496,
+) -> np.ndarray:
+    """Fan-beam filtered back-projection for flat-detector CT geometry.
+
+    Matches the CT benchmark generator (fan_beam_project) exactly:
+      - Source-to-isocenter distance D_so (image-pixel units)
+      - Isocenter-to-detector distance D_sd (image-pixel units)
+      - Flat detector with det_spacing pixel pitch
+
+    Algorithm: cosine weighting + Ram-Lak ramp filter + fan-beam backprojection.
+
+    Coordinate derivation (image coords: row positive downward, col positive right):
+      Source at angle a: (row: cy - D_so*sin_a, col: cx + D_so*cos_a)
+      For pixel offset (dr, dc) from isocenter:
+        t_along = D_so + dr*sin_a - dc*cos_a   (distance along central ray)
+        d_perp  = dr*cos_a + dc*sin_a           (perpendicular / detector coord)
+        det_pos = d_perp * D_total / t_along
+    """
+    from scipy.fft import fft, ifft, fftfreq
+    from scipy.ndimage import map_coordinates
+
+    n_views, n_det = sinogram.shape
+    sino = sinogram.astype(np.float64)
+
+    D_total = D_so + D_sd  # source-to-detector distance (pixels)
+
+    # Detector element positions matching generator:
+    #   det_pos = (np.arange(n_det) - n_det / 2.0) * det_spacing
+    j_idx = np.arange(n_det, dtype=np.float64) - n_det / 2.0  # half-pixel shift from center
+    d_pos = j_idx * det_spacing  # (n_det,) in image-pixel units
+
+    # Fan angle for each detector element
+    gamma = np.arctan(d_pos / D_total)  # (n_det,)
+
+    # Step 1: cosine weighting
+    cos_weight = np.cos(gamma)  # (n_det,)
+    sino_weighted = sino * cos_weight[np.newaxis, :]
+
+    # Step 2: ramp (Ram-Lak) filter in the detector dimension
+    pad = max(64, int(2 ** np.ceil(np.log2(2 * n_det))))
+    sino_pad = np.zeros((n_views, pad))
+    sino_pad[:, :n_det] = sino_weighted
+    freqs = fftfreq(pad)
+    ramp = np.abs(freqs) * 2
+    sino_filt = np.real(ifft(fft(sino_pad, axis=1) * ramp[np.newaxis, :], axis=1))[:, :n_det]
+
+    # Step 3: fan-beam back-projection
+    recon = np.zeros((output_size, output_size), dtype=np.float64)
+    cy = output_size / 2.0
+    cx = output_size / 2.0
+    scale_factor = np.pi / n_views
+
+    # Pixel offset grids (computed once, reused for all views)
+    row_idx, col_idx = np.mgrid[:output_size, :output_size]
+    dr = row_idx.astype(np.float64) - cy  # row offset from isocenter
+    dc = col_idx.astype(np.float64) - cx  # col offset from isocenter
+
+    for i, theta in enumerate(angles_rad):
+        cos_t, sin_t = np.cos(theta), np.sin(theta)
+
+        # Distance from source to each pixel, projected along the central ray.
+        # Source is at (cy - D_so*sin_t, cx + D_so*cos_t), so t_along = D_so at isocenter.
+        t_along = D_so + dr * sin_t - dc * cos_t  # (output_size, output_size)
+
+        # Perpendicular offset in detector-plane units (same as det_pos in generator)
+        d_perp = dr * cos_t + dc * sin_t
+
+        # Guard against pixels behind / very close to source plane
+        t_along = np.where(t_along < 1e-3, 1e-3, t_along)
+
+        # Projected detector coordinate → detector index
+        det_pos_px = d_perp * D_total / t_along   # in image-pixel units (same as d_pos above)
+        det_j = det_pos_px / det_spacing + n_det / 2.0   # matches generator centering
+
+        # D_so²/t_along² weighting for fan-beam geometry (Kak & Slaney formulation)
+        weight = (D_so / t_along) ** 2
+
+        # Bilinear interpolation of filtered sinogram row i
+        det_j_clipped = np.clip(det_j, 0, n_det - 1)
+        vals = map_coordinates(
+            sino_filt[i:i + 1, :],
+            [np.zeros(output_size * output_size), det_j_clipped.ravel()],
+            order=1, mode="constant", cval=0.0,
+        ).reshape(output_size, output_size)
+
+        recon += scale_factor * vals * weight
+
+    return np.clip(recon, 0, None)
+
+
 def _fbp_reconstruct(
-    sinogram: np.ndarray, angles: np.ndarray, output_size: int | None = None
+    sinogram: np.ndarray, angles: np.ndarray, output_size: int | None = None,
+    is_fan_beam: bool = False,
 ) -> np.ndarray:
     """Filtered back-projection for CT sinogram data.
 
     Pipeline: sinogram Gaussian denoising → ramp-filter FBP → TV post-processing.
     ``output_size`` controls the reconstruction image size (default: n_detectors).
+    When ``is_fan_beam=True``, rebins from fan-beam to parallel-beam first.
     """
     try:
         from scipy.ndimage import gaussian_filter
@@ -466,6 +571,22 @@ def _fbp_reconstruct(
         from skimage.transform import iradon
 
         sino_arr = sinogram.astype(np.float64)
+        angles_for_iradon = angles  # may be overwritten after rebinning
+
+        # Fan-beam: use proper fan-beam FBP instead of parallel-beam iradon
+        if is_fan_beam:
+            try:
+                angles_r = np.deg2rad(angles_for_iradon) if angles_for_iradon.max() > 2 * np.pi else angles_for_iradon
+                recon_fan = _fan_fbp_reconstruct(sino_arr, angles_r, output_size=output_size or sino_arr.shape[1])
+                lo, hi = recon_fan.min(), recon_fan.max()
+                if hi - lo > 1e-12:
+                    recon_norm = (recon_fan - lo) / (hi - lo)
+                    recon_tv = denoise_tv_chambolle(recon_norm, weight=0.08, max_num_iter=200)
+                    recon_fan = recon_tv * (hi - lo) + lo
+                return np.clip(recon_fan, 0, None)
+            except Exception as _e:
+                logger.warning("Fan-beam FBP failed (%s); falling back to parallel-beam", _e)
+
         n_views_fbp, n_det_fbp = sino_arr.shape
         # Adaptive filtering: use lighter smoothing for many-view (less sparse) sinograms
         if n_views_fbp >= 90:
@@ -475,7 +596,7 @@ def _fbp_reconstruct(
         else:
             det_sigma, tv_wt = 2.0, 0.12
         sino_denoised = gaussian_filter(sino_arr, sigma=[0.5, det_sigma])
-        iradon_kwargs = {"theta": angles, "filter_name": "ramp", "interpolation": "linear"}
+        iradon_kwargs = {"theta": angles_for_iradon, "filter_name": "ramp", "interpolation": "linear"}
         if output_size is not None:
             iradon_kwargs["output_size"] = output_size
         recon = iradon(sino_denoised.T, **iradon_kwargs)
@@ -1235,7 +1356,10 @@ def _dispatch_reconstruction(
                                                            "pnp-admm", "pnp_admm", "admm",
                                                            "sart", "sart-tv", "art"))):
                     return _tv_admm_ct_reconstruct(y, angle_arr, output_size=fbp_out_size)
-                return _fbp_reconstruct(y, angle_arr, output_size=fbp_out_size)
+                # Only the 'ct' benchmark uses a custom fan-beam projector;
+                # cbct/industrial_ct/mammography use skimage.radon (parallel-beam).
+                is_fan = (variant_key == "ct")
+                return _fbp_reconstruct(y, angle_arr, output_size=fbp_out_size, is_fan_beam=is_fan)
 
             if recon_type == "mri":
                 return _mri_reconstruct(data, algo_name)
