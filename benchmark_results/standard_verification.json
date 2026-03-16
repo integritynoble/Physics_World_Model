@@ -1,8 +1,6 @@
 {
   "generated": "2026-03-15",
   "total": 168,
-  "total_verified": 518,
-  "total_failed": 4,
   "modalities": {
     "acoustic_emission": {
       "status": "done",
@@ -10,25 +8,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 6.9,
-          "std_ssim": 0.2848,
-          "time": 0.05
+          "std_psnr": 8.8,
+          "std_ssim": 0.4481,
+          "time": 0.08
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 5.21,
-          "std_ssim": 0.214,
-          "time": 0.07
+          "std_psnr": 5.56,
+          "std_ssim": 0.2821,
+          "time": 0.23
         },
         "dl_localizer": {
           "name": "DeepAE-Net [proxy]",
           "status": "verified",
-          "std_psnr": 5.21,
-          "std_ssim": 0.214,
-          "time": 0.07
+          "std_psnr": 6.13,
+          "std_ssim": 0.3087,
+          "time": 0.15
         }
-      }
+      },
+      "best_psnr": 8.8
     },
     "acoustic_microscopy": {
       "status": "done",
@@ -36,25 +35,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 14.46,
-          "std_ssim": 0.7172,
-          "time": 0.05
+          "std_psnr": 14.39,
+          "std_ssim": 0.7288,
+          "time": 0.09
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 13.32,
-          "std_ssim": 0.6609,
-          "time": 0.08
+          "std_psnr": 11.06,
+          "std_ssim": 0.5553,
+          "time": 0.21
         },
         "saft_dl": {
           "name": "SAFT-DL [proxy]",
           "status": "verified",
-          "std_psnr": 13.32,
-          "std_ssim": 0.6609,
-          "time": 0.08
+          "std_psnr": 11.69,
+          "std_ssim": 0.591,
+          "time": 0.14
         }
-      }
+      },
+      "best_psnr": 14.4
     },
     "active_thermography": {
       "status": "done",
@@ -62,25 +62,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 6.59,
-          "std_ssim": 0.2274,
-          "time": 0.05
+          "std_psnr": 8.94,
+          "std_ssim": 0.4103,
+          "time": 0.06
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 5.09,
-          "std_ssim": 0.1723,
-          "time": 0.07
+          "std_psnr": 5.9,
+          "std_ssim": 0.2625,
+          "time": 0.2
         },
         "pulsed_phase_tv": {
           "name": "Pulsed-Phase TV [proxy]",
           "status": "verified",
-          "std_psnr": 5.09,
-          "std_ssim": 0.1723,
-          "time": 0.07
+          "std_psnr": 6.45,
+          "std_ssim": 0.2868,
+          "time": 0.15
         }
-      }
+      },
+      "best_psnr": 8.9
     },
     "adaptive_optics": {
       "status": "done",
@@ -90,23 +91,24 @@
           "status": "verified",
           "std_psnr": 40.44,
           "std_ssim": 0.9993,
-          "time": 0.04
+          "time": 0.09
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 41.21,
-          "std_ssim": 0.9994,
-          "time": 0.07
+          "std_psnr": 42.1,
+          "std_ssim": 0.9995,
+          "time": 0.29
         },
         "deep_ao": {
           "name": "Deep-AO [proxy]",
           "status": "verified",
-          "std_psnr": 41.21,
+          "std_psnr": 41.75,
           "std_ssim": 0.9994,
-          "time": 0.07
+          "time": 0.23
         }
-      }
+      },
+      "best_psnr": 42.1
     },
     "afm": {
       "status": "done",
@@ -116,25 +118,24 @@
           "status": "verified",
           "std_psnr": 6.58,
           "std_ssim": 0.2546,
-          "time": 0.07
+          "time": 0.18
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 5.44,
-          "std_ssim": 0.0,
-          "time": 0.74,
-          "device": "cuda"
+          "std_psnr": 6.15,
+          "std_ssim": 0.0039,
+          "time": 1.93
         },
         "afm_dl": {
           "name": "AFM-UNet",
           "status": "verified",
-          "std_psnr": 7.55,
-          "std_ssim": 0.0149,
-          "time": 0.18,
-          "device": "cuda"
+          "std_psnr": 5.44,
+          "std_ssim": 0.0,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 6.6
     },
     "angiography": {
       "status": "done",
@@ -142,25 +143,26 @@
         "traditional_cpu": {
           "name": "FBP (DSA baseline)",
           "status": "verified",
-          "std_psnr": 3.67,
+          "std_psnr": 5.79,
           "std_ssim": 0.0,
-          "time": 0.21
+          "time": 0.49
         },
         "best_quality": {
           "name": "DSA-Net [proxy]",
           "status": "verified",
-          "std_psnr": 41.83,
-          "std_ssim": 0.9998,
-          "time": 0.08
+          "std_psnr": 9.49,
+          "std_ssim": 0.4027,
+          "time": 0.38
         },
         "famous_dl": {
           "name": "VesselSegNet [proxy]",
           "status": "verified",
-          "std_psnr": 41.83,
-          "std_ssim": 0.9998,
-          "time": 0.08
+          "std_psnr": 9.49,
+          "std_ssim": 0.4027,
+          "time": 0.39
         }
-      }
+      },
+      "best_psnr": 9.5
     },
     "asl_mri": {
       "status": "done",
@@ -170,14 +172,14 @@
           "status": "verified",
           "std_psnr": -35.85,
           "std_ssim": 0.0,
-          "time": 0.06
+          "time": 0.13
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": -37.06,
+          "std_psnr": -38.22,
           "std_ssim": 0.0,
-          "time": 0.09
+          "time": 0.47
         },
         "asl_dl": {
           "name": "ASL-Net [proxy]",
@@ -186,7 +188,8 @@
           "std_ssim": -0.148,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 12.9
     },
     "atom_probe": {
       "status": "done",
@@ -194,25 +197,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 9.48,
-          "std_ssim": 0.5219,
-          "time": 0.05
+          "std_psnr": 13.0,
+          "std_ssim": 0.7093,
+          "time": 0.12
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 7.97,
-          "std_ssim": 0.4372,
-          "time": 0.09
+          "std_psnr": 9.36,
+          "std_ssim": 0.5189,
+          "time": 0.33
         },
         "apt_dl": {
           "name": "APT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 7.97,
-          "std_ssim": 0.4372,
-          "time": 0.08
+          "std_psnr": 10.23,
+          "std_ssim": 0.5671,
+          "time": 0.23
         }
-      }
+      },
+      "best_psnr": 13.0
     },
     "bioluminescence_tomo": {
       "status": "done",
@@ -220,25 +224,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 9.93,
-          "std_ssim": 0.3897,
-          "time": 0.04
+          "std_psnr": 12.33,
+          "std_ssim": 0.5643,
+          "time": 0.07
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 8.29,
-          "std_ssim": 0.303,
-          "time": 0.08
+          "std_psnr": 9.06,
+          "std_ssim": 0.3787,
+          "time": 0.34
         },
         "blt_dl": {
           "name": "BLT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 8.29,
-          "std_ssim": 0.303,
-          "time": 0.09
+          "std_psnr": 9.69,
+          "std_ssim": 0.4134,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 12.3
     },
     "brachytherapy_img": {
       "status": "done",
@@ -246,25 +251,26 @@
         "traditional_cpu": {
           "name": "FBP [proxy]",
           "status": "verified",
-          "std_psnr": 43.72,
-          "std_ssim": 0.9997,
-          "time": 0.07
+          "std_psnr": 9.01,
+          "std_ssim": 0.5429,
+          "time": 0.11
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 43.72,
-          "std_ssim": 0.9997,
-          "time": 0.09
+          "std_psnr": 5.44,
+          "std_ssim": 0.3429,
+          "time": 0.38
         },
         "brachy_dl": {
           "name": "BrachyNet [proxy]",
           "status": "verified",
-          "std_psnr": 43.72,
-          "std_ssim": 0.9997,
-          "time": 0.09
+          "std_psnr": 6.02,
+          "std_ssim": 0.3737,
+          "time": 0.24
         }
-      }
+      },
+      "best_psnr": 9.0
     },
     "brillouin": {
       "status": "done",
@@ -272,25 +278,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 9.87,
-          "std_ssim": 0.6771,
-          "time": 0.05
+          "std_psnr": 12.66,
+          "std_ssim": 0.7973,
+          "time": 0.08
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 8.25,
-          "std_ssim": 0.5913,
-          "time": 0.08
+          "std_psnr": 7.66,
+          "std_ssim": 0.557,
+          "time": 0.28
         },
         "brillouin_dl": {
           "name": "Brillouin-Net [proxy]",
           "status": "verified",
-          "std_psnr": 8.25,
-          "std_ssim": 0.5913,
-          "time": 0.08
+          "std_psnr": 8.71,
+          "std_ssim": 0.6152,
+          "time": 0.24
         }
-      }
+      },
+      "best_psnr": 12.7
     },
     "cacti": {
       "status": "done",
@@ -298,53 +305,54 @@
         "traditional_cpu": {
           "name": "GAP-TV",
           "status": "verified",
-          "std_psnr": 3.26,
-          "std_ssim": 0.1733,
-          "time": 0.0
+          "std_psnr": 13.18,
+          "std_ssim": 0.1018,
+          "time": 5.56
         },
         "best_quality": {
           "name": "EfficientSCI",
           "status": "verified",
-          "std_psnr": 3.26,
-          "std_ssim": 0.1733,
-          "time": 0.0
+          "std_psnr": 11.93,
+          "std_ssim": -0.1063,
+          "time": 1.12
         },
         "famous_dl": {
           "name": "ELP-Unfolding",
           "status": "verified",
-          "std_psnr": 3.26,
-          "std_ssim": 0.1733,
-          "time": 0.0
+          "std_psnr": 12.03,
+          "std_ssim": 0.0087,
+          "time": 3.3
         },
         "small_gpu": {
           "name": "EfficientSCI-T",
           "status": "verified",
-          "std_psnr": 3.26,
-          "std_ssim": 0.1733,
-          "time": 0.0
+          "std_psnr": 9.99,
+          "std_ssim": -0.0374,
+          "time": 0.34
         },
         "pnp_ffdnet": {
           "name": "PnP-FFDNet",
           "status": "verified",
-          "std_psnr": 12.93,
-          "std_ssim": 0.059,
+          "std_psnr": 12.32,
+          "std_ssim": 0.0256,
           "time": 0.1
         },
         "hisvit9": {
           "name": "HiSViT-9",
           "status": "verified",
-          "std_psnr": 12.93,
-          "std_ssim": 0.059,
+          "std_psnr": 12.32,
+          "std_ssim": 0.0256,
           "time": 0.1
         },
         "hisvit13": {
           "name": "HiSViT-13",
           "status": "verified",
-          "std_psnr": 12.93,
-          "std_ssim": 0.059,
+          "std_psnr": 12.32,
+          "std_ssim": 0.0256,
           "time": 0.1
         }
-      }
+      },
+      "best_psnr": 13.2
     },
     "cars": {
       "status": "done",
@@ -359,18 +367,19 @@
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 27.01,
-          "std_ssim": 0.8504,
-          "time": 0.08
+          "std_psnr": 26.99,
+          "std_ssim": 0.8529,
+          "time": 0.21
         },
         "cars_dl": {
           "name": "CARS-DeepSpec [proxy]",
           "status": "verified",
           "std_psnr": 27.01,
-          "std_ssim": 0.8504,
-          "time": 0.08
+          "std_ssim": 0.8522,
+          "time": 0.13
         }
-      }
+      },
+      "best_psnr": 27.0
     },
     "cassi": {
       "status": "done",
@@ -378,53 +387,54 @@
         "traditional_cpu": {
           "name": "GAP-TV",
           "status": "verified",
-          "std_psnr": 21.69,
-          "std_ssim": 0.9633,
-          "time": 8.91
+          "std_psnr": 8.17,
+          "std_ssim": 0.0093,
+          "time": 11.17
         },
         "best_quality": {
           "name": "GAP-TV (guided)",
           "status": "verified",
-          "std_psnr": 20.94,
-          "std_ssim": 0.9559,
-          "time": 8.55
+          "std_psnr": 8.17,
+          "std_ssim": 0.0093,
+          "time": 11.61
         },
         "famous_dl": {
           "name": "GAP-TV (fast)",
           "status": "verified",
-          "std_psnr": 21.69,
-          "std_ssim": 0.9633,
-          "time": 8.58
+          "std_psnr": 8.17,
+          "std_ssim": 0.0093,
+          "time": 11.23
         },
         "small_gpu": {
           "name": "GAP-TV (small)",
           "status": "verified",
-          "std_psnr": 21.69,
-          "std_ssim": 0.9633,
-          "time": 8.41
+          "std_psnr": 8.17,
+          "std_ssim": 0.0093,
+          "time": 10.81
         },
         "mst_l": {
           "name": "MST-L",
           "status": "verified",
-          "std_psnr": 8.3,
-          "std_ssim": 0.0126,
+          "std_psnr": 10.09,
+          "std_ssim": 0.3054,
           "time": 0.1
         },
         "hdnet": {
           "name": "HDNet",
           "status": "verified",
-          "std_psnr": 8.3,
-          "std_ssim": 0.0126,
-          "time": 0.0
+          "std_psnr": 10.09,
+          "std_ssim": 0.3054,
+          "time": 2.0
         },
         "hsi_sdecnn": {
           "name": "HSI-SDeCNN",
           "status": "verified",
-          "std_psnr": 8.3,
-          "std_ssim": 0.0126,
-          "time": 0.0
+          "std_psnr": 10.09,
+          "std_ssim": 0.3054,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 10.1
     },
     "cathodoluminescence": {
       "status": "done",
@@ -434,23 +444,24 @@
           "status": "verified",
           "std_psnr": 18.91,
           "std_ssim": 0.8857,
-          "time": 0.05
+          "time": 0.19
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 17.59,
-          "std_ssim": 0.8513,
-          "time": 0.1
+          "std_psnr": 16.38,
+          "std_ssim": 0.813,
+          "time": 0.56
         },
         "cl_dl": {
           "name": "CL-Net [proxy]",
           "status": "verified",
-          "std_psnr": 17.59,
-          "std_ssim": 0.8513,
-          "time": 0.09
+          "std_psnr": 16.83,
+          "std_ssim": 0.8281,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 18.9
     },
     "cbct": {
       "status": "done",
@@ -460,25 +471,24 @@
           "status": "verified",
           "std_psnr": 15.05,
           "std_ssim": 0.9188,
-          "time": 0.09
+          "time": 0.26
         },
         "best_quality": {
           "name": "FDK-DL",
           "status": "verified",
           "std_psnr": 4.45,
           "std_ssim": 0.0,
-          "time": 0.16,
-          "device": "cuda"
+          "time": 0.77
         },
         "famous_dl": {
           "name": "CBCT-UNet",
           "status": "verified",
-          "std_psnr": 4.45,
-          "std_ssim": 0.0,
-          "time": 0.15,
-          "device": "cuda"
+          "std_psnr": -1.37,
+          "std_ssim": -0.0255,
+          "time": 0.41
         }
-      }
+      },
+      "best_psnr": 15.1
     },
     "cest_mri": {
       "status": "done",
@@ -486,25 +496,26 @@
         "traditional_cpu": {
           "name": "FBP [proxy]",
           "status": "verified",
-          "std_psnr": -31.85,
-          "std_ssim": 0.0,
-          "time": 0.06
+          "std_psnr": 21.57,
+          "std_ssim": 0.6972,
+          "time": 0.16
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": -32.62,
-          "std_ssim": 0.0,
-          "time": 0.08
+          "std_psnr": 19.15,
+          "std_ssim": 0.574,
+          "time": 0.52
         },
         "cest_dl": {
           "name": "CEST-Net [proxy]",
           "status": "verified",
-          "std_psnr": 17.76,
-          "std_ssim": -0.0531,
+          "std_psnr": 19.2,
+          "std_ssim": 0.0026,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 21.6
     },
     "ceus": {
       "status": "done",
@@ -514,23 +525,24 @@
           "status": "verified",
           "std_psnr": 12.95,
           "std_ssim": 0.1047,
-          "time": 0.05
+          "time": 0.14
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 12.41,
-          "std_ssim": 0.0898,
-          "time": 0.08
+          "std_psnr": 12.05,
+          "std_ssim": 0.0813,
+          "time": 0.64
         },
         "us_dl_enhance": {
           "name": "US-DeepSight [proxy]",
           "status": "verified",
-          "std_psnr": 12.41,
-          "std_ssim": 0.0898,
-          "time": 0.1
+          "std_psnr": 12.16,
+          "std_ssim": 0.0838,
+          "time": 0.34
         }
-      }
+      },
+      "best_psnr": 12.9
     },
     "clem": {
       "status": "done",
@@ -540,23 +552,24 @@
           "status": "verified",
           "std_psnr": 10.21,
           "std_ssim": 0.6706,
-          "time": 0.05
+          "time": 0.21
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 8.47,
-          "std_ssim": 0.5782,
-          "time": 0.09
+          "std_psnr": 6.28,
+          "std_ssim": 0.4537,
+          "time": 0.41
         },
         "clem_dl": {
           "name": "CLEM-Net [proxy]",
           "status": "verified",
-          "std_psnr": 8.47,
-          "std_ssim": 0.5782,
-          "time": 0.1
+          "std_psnr": 7.16,
+          "std_ssim": 0.5039,
+          "time": 0.44
         }
-      }
+      },
+      "best_psnr": 10.2
     },
     "coded_exposure": {
       "status": "done",
@@ -566,23 +579,24 @@
           "status": "verified",
           "std_psnr": 6.93,
           "std_ssim": 0.1019,
-          "time": 0.06
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 5.94,
-          "std_ssim": 0.0825,
-          "time": 0.09
+          "std_psnr": 5.37,
+          "std_ssim": 0.0725,
+          "time": 0.51
         },
         "coded_dl": {
           "name": "FlowNet-Coded [proxy]",
           "status": "verified",
-          "std_psnr": 5.94,
-          "std_ssim": 0.0825,
-          "time": 0.09
+          "std_psnr": 5.54,
+          "std_ssim": 0.0754,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 6.9
     },
     "confocal_3d": {
       "status": "done",
@@ -592,31 +606,31 @@
           "status": "verified",
           "std_psnr": 46.38,
           "std_ssim": 0.9997,
-          "time": 0.08
+          "time": 0.29
         },
         "best_quality": {
           "name": "3D CARE",
           "status": "verified",
-          "std_psnr": 11.23,
-          "std_ssim": 0.0027,
-          "time": 0.15,
-          "device": "cuda"
+          "std_psnr": 9.18,
+          "std_ssim": 0.0003,
+          "time": 0.54
         },
         "famous_dl": {
           "name": "CARE-3D",
           "status": "verified",
-          "std_psnr": 10.0,
-          "std_ssim": 0.0035,
-          "time": 0.56
+          "std_psnr": 9.18,
+          "std_ssim": 0.0003,
+          "time": 1.69
         },
         "small_gpu": {
           "name": "CARE-3D (slice-wise)",
           "status": "verified",
-          "std_psnr": 9.18,
-          "std_ssim": 0.0003,
-          "time": 0.55
+          "std_psnr": 10.1,
+          "std_ssim": 0.0113,
+          "time": 1.61
         }
-      }
+      },
+      "best_psnr": 46.4
     },
     "confocal_endomicroscopy": {
       "status": "done",
@@ -626,23 +640,24 @@
           "status": "verified",
           "std_psnr": 43.95,
           "std_ssim": 0.9988,
-          "time": 0.05
+          "time": 0.15
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
           "std_psnr": 43.95,
           "std_ssim": 0.9988,
-          "time": 0.1
+          "time": 0.47
         },
         "cle_dl": {
           "name": "CLE-Net (CARE) [proxy]",
           "status": "verified",
           "std_psnr": 43.95,
           "std_ssim": 0.9988,
-          "time": 0.1
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 44.0
     },
     "confocal_livecell": {
       "status": "done",
@@ -652,31 +667,31 @@
           "status": "verified",
           "std_psnr": 44.05,
           "std_ssim": 0.9996,
-          "time": 0.09
+          "time": 0.33
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 11.19,
-          "std_ssim": 0.0074,
-          "time": 0.14,
-          "device": "cuda"
+          "std_psnr": 9.63,
+          "std_ssim": 0.0,
+          "time": 0.51
         },
         "famous_dl": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 11.48,
-          "std_ssim": 0.0156,
-          "time": 0.49
+          "std_psnr": 10.99,
+          "std_ssim": 0.0146,
+          "time": 2.1
         },
         "small_gpu": {
           "name": "CARE",
           "status": "verified",
           "std_psnr": 9.63,
           "std_ssim": 0.0,
-          "time": 0.54
+          "time": 1.39
         }
-      }
+      },
+      "best_psnr": 44.0
     },
     "coronagraphy": {
       "status": "done",
@@ -686,23 +701,24 @@
           "status": "verified",
           "std_psnr": 26.88,
           "std_ssim": 0.9854,
-          "time": 0.05
+          "time": 0.14
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 25.67,
-          "std_ssim": 0.9809,
-          "time": 0.09
+          "std_psnr": 24.32,
+          "std_ssim": 0.9741,
+          "time": 0.45
         },
         "speckle_null_dl": {
           "name": "DL-SpeckleNull [proxy]",
           "status": "verified",
-          "std_psnr": 25.67,
-          "std_ssim": 0.9809,
-          "time": 0.1
+          "std_psnr": 24.84,
+          "std_ssim": 0.9769,
+          "time": 0.43
         }
-      }
+      },
+      "best_psnr": 26.9
     },
     "cryo_em": {
       "status": "done",
@@ -712,51 +728,51 @@
           "status": "verified",
           "std_psnr": 12.86,
           "std_ssim": 0.8133,
-          "time": 0.05
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 12.89,
-          "std_ssim": 0.8153,
-          "time": 0.08
+          "std_psnr": 12.92,
+          "std_ssim": 0.8173,
+          "time": 0.57
         },
         "relion_dl": {
           "name": "CryoDRGN [proxy]",
           "status": "verified",
-          "std_psnr": 12.89,
-          "std_ssim": 0.8153,
-          "time": 0.08
+          "std_psnr": 12.91,
+          "std_ssim": 0.8165,
+          "time": 0.46
         }
-      }
+      },
+      "best_psnr": 12.9
     },
     "cryo_et": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "Richardson-Lucy",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": 12.15,
           "std_ssim": 0.3337,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 11.44,
-          "std_ssim": 0.0002,
-          "time": 0.32,
-          "device": "cuda"
+          "std_psnr": 11.58,
+          "std_ssim": 0.0017,
+          "time": 0.5
         },
         "cryo_et_dl": {
           "name": "CryoCARE",
           "status": "verified",
           "std_psnr": 11.44,
-          "std_ssim": 0.0002,
-          "time": 0.18,
-          "device": "cuda"
+          "std_ssim": 0.0004,
+          "time": 0.38
         }
-      }
+      },
+      "best_psnr": 12.2
     },
     "ct": {
       "status": "done",
@@ -766,30 +782,31 @@
           "status": "verified",
           "std_psnr": 15.09,
           "std_ssim": 0.9096,
-          "time": 0.12
+          "time": 0.37
         },
         "best_quality": {
           "name": "PnP-HQS + NLM",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": -45.81,
           "std_ssim": 0.0,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         },
         "famous_dl": {
           "name": "RED-CNN",
           "status": "verified",
-          "std_psnr": -33.31,
-          "std_ssim": 0.0001,
-          "time": 0.89
+          "std_psnr": -50.79,
+          "std_ssim": 0.0,
+          "time": 2.74
         },
         "small_gpu": {
           "name": "RED-CNN",
           "status": "verified",
-          "std_psnr": -44.4,
+          "std_psnr": -52.2,
           "std_ssim": 0.0,
-          "time": 0.85
+          "time": 2.38
         }
-      }
+      },
+      "best_psnr": 15.1
     },
     "ct_fluorescence": {
       "status": "done",
@@ -797,25 +814,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 8.26,
-          "std_ssim": 0.4463,
-          "time": 0.06
+          "std_psnr": 11.58,
+          "std_ssim": 0.6604,
+          "time": 0.18
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 6.95,
-          "std_ssim": 0.3733,
-          "time": 0.11
+          "std_psnr": 8.48,
+          "std_ssim": 0.4881,
+          "time": 0.49
         },
         "xfct_dl": {
           "name": "XFCT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 6.95,
-          "std_ssim": 0.3733,
-          "time": 0.11
+          "std_psnr": 9.02,
+          "std_ssim": 0.5188,
+          "time": 0.32
         }
-      }
+      },
+      "best_psnr": 11.6
     },
     "cup": {
       "status": "done",
@@ -823,25 +841,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 7.61,
-          "std_ssim": 0.2752,
-          "time": 0.16
+          "std_psnr": 12.01,
+          "std_ssim": 0.7157,
+          "time": 0.19
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 7.61,
-          "std_ssim": 0.2752,
-          "time": 0.31
+          "std_psnr": 9.55,
+          "std_ssim": 0.5896,
+          "time": 0.49
         },
         "e2e_cup": {
           "name": "E2E-CUP [proxy]",
           "status": "verified",
-          "std_psnr": 7.61,
-          "std_ssim": 0.2752,
-          "time": 0.3
+          "std_psnr": 9.91,
+          "std_ssim": 0.6091,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 12.0
     },
     "dark_field": {
       "status": "done",
@@ -849,27 +868,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": 39.7,
-          "std_ssim": 0.9992,
-          "time": 0.09
+          "std_psnr": 20.38,
+          "std_ssim": 0.9327,
+          "time": 0.22
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 5.31,
-          "std_ssim": 0.0007,
-          "time": 0.48,
-          "device": "cuda"
+          "std_psnr": 4.77,
+          "std_ssim": 0.0,
+          "time": 0.59
         },
         "df_unet": {
           "name": "DF-UNet",
           "status": "verified",
-          "std_psnr": 5.06,
-          "std_ssim": 0.0011,
-          "time": 0.19,
-          "device": "cuda"
+          "std_psnr": 4.77,
+          "std_ssim": 0.0,
+          "time": 0.33
         }
-      }
+      },
+      "best_psnr": 20.4
     },
     "desi": {
       "status": "done",
@@ -877,25 +895,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 11.62,
-          "std_ssim": 0.6558,
-          "time": 0.05
+          "std_psnr": 13.34,
+          "std_ssim": 0.7346,
+          "time": 0.11
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 9.89,
-          "std_ssim": 0.5631,
-          "time": 0.09
+          "std_psnr": 9.02,
+          "std_ssim": 0.5092,
+          "time": 0.5
         },
         "desi_dl": {
           "name": "DESI-SegNet [proxy]",
           "status": "verified",
-          "std_psnr": 9.89,
-          "std_ssim": 0.5631,
-          "time": 0.09
+          "std_psnr": 9.98,
+          "std_ssim": 0.5634,
+          "time": 0.4
         }
-      }
+      },
+      "best_psnr": 13.3
     },
     "dexa": {
       "status": "done",
@@ -905,23 +924,24 @@
           "status": "verified",
           "std_psnr": 33.64,
           "std_ssim": 0.9964,
-          "time": 0.1
+          "time": 0.26
         },
         "best_quality": {
           "name": "DXA-Net [proxy]",
           "status": "verified",
           "std_psnr": 34.41,
           "std_ssim": 0.9971,
-          "time": 0.1
+          "time": 0.41
         },
         "famous_dl": {
           "name": "DEXA-UNet [proxy]",
           "status": "verified",
           "std_psnr": 34.41,
           "std_ssim": 0.9971,
-          "time": 0.09
+          "time": 0.39
         }
-      }
+      },
+      "best_psnr": 34.4
     },
     "dic": {
       "status": "done",
@@ -931,25 +951,24 @@
           "status": "verified",
           "std_psnr": 2.51,
           "std_ssim": 0.0015,
-          "time": 0.09
+          "time": 0.21
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 7.33,
-          "std_ssim": 0.0001,
-          "time": 0.17,
-          "device": "cuda"
+          "std_psnr": 8.17,
+          "std_ssim": 0.0431,
+          "time": 0.47
         },
         "dic_dl": {
           "name": "DIC-Net",
           "status": "verified",
           "std_psnr": 7.33,
           "std_ssim": 0.0001,
-          "time": 0.17,
-          "device": "cuda"
+          "time": 0.49
         }
-      }
+      },
+      "best_psnr": 8.2
     },
     "diffusion_mri": {
       "status": "done",
@@ -975,7 +994,8 @@
           "std_ssim": 0.1243,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 24.7
     },
     "digital_breast_tomo": {
       "status": "done",
@@ -985,26 +1005,24 @@
           "status": "verified",
           "std_psnr": 15.99,
           "std_ssim": 0.0006,
-          "time": 7.75,
-          "device": "cpu"
+          "time": 12.73
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
           "std_psnr": 15.99,
           "std_ssim": 0.0006,
-          "time": 7.68,
-          "device": "cpu"
+          "time": 43.23
         },
         "dbt_dl": {
           "name": "DBT-DL [proxy]",
           "status": "verified",
           "std_psnr": 15.99,
           "std_ssim": 0.0006,
-          "time": 8.0,
-          "device": "cpu"
+          "time": 13.59
         }
-      }
+      },
+      "best_psnr": 16.0
     },
     "dna_paint": {
       "status": "done",
@@ -1014,25 +1032,24 @@
           "status": "verified",
           "std_psnr": 25.83,
           "std_ssim": 0.7652,
-          "time": 0.09
+          "time": 0.26
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
           "std_psnr": 21.43,
           "std_ssim": 0.059,
-          "time": 0.41,
-          "device": "cuda"
+          "time": 0.67
         },
         "dna_paint_dl": {
           "name": "DECODE-PAINT",
           "status": "verified",
-          "std_psnr": 21.73,
-          "std_ssim": 0.1127,
-          "time": 0.22,
-          "device": "cuda"
+          "std_psnr": 21.77,
+          "std_ssim": 0.115,
+          "time": 0.29
         }
-      }
+      },
+      "best_psnr": 25.8
     },
     "doppler_ultrasound": {
       "status": "done",
@@ -1047,18 +1064,19 @@
         "best_quality": {
           "name": "UDoppler-Net [proxy]",
           "status": "verified",
-          "std_psnr": 18.7,
-          "std_ssim": 0.617,
-          "time": 0.1
+          "std_psnr": 17.91,
+          "std_ssim": 0.5758,
+          "time": 0.36
         },
         "famous_dl": {
           "name": "Doppler CFAR [proxy]",
           "status": "verified",
-          "std_psnr": 18.7,
-          "std_ssim": 0.617,
-          "time": 0.1
+          "std_psnr": 17.91,
+          "std_ssim": 0.5758,
+          "time": 0.78
         }
-      }
+      },
+      "best_psnr": 22.6
     },
     "dot": {
       "status": "done",
@@ -1066,25 +1084,26 @@
         "traditional_cpu": {
           "name": "Born Approximation",
           "status": "verified",
-          "std_psnr": 24.19,
-          "std_ssim": 0.9626,
+          "std_psnr": 22.0,
+          "std_ssim": 0.9184,
           "time": 0.0
         },
         "best_quality": {
           "name": "L-BFGS-TV [proxy]",
           "status": "verified",
-          "std_psnr": 22.53,
-          "std_ssim": 0.945,
-          "time": 0.07
+          "std_psnr": 14.02,
+          "std_ssim": 0.6572,
+          "time": 0.15
         },
         "dot_dl": {
           "name": "DOT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 22.53,
-          "std_ssim": 0.945,
-          "time": 0.08
+          "std_psnr": 14.02,
+          "std_ssim": 0.6572,
+          "time": 0.17
         }
-      }
+      },
+      "best_psnr": 22.0
     },
     "ebsd": {
       "status": "done",
@@ -1092,25 +1111,26 @@
         "traditional_cpu": {
           "name": "FISTA-L2 (Hough baseline)",
           "status": "verified",
-          "std_psnr": 16.39,
-          "std_ssim": 0.8366,
-          "time": 0.11
+          "std_psnr": 21.22,
+          "std_ssim": 0.8877,
+          "time": 0.25
         },
         "best_quality": {
           "name": "EBSD-DL (DictIndex) [proxy]",
           "status": "verified",
-          "std_psnr": 7.29,
-          "std_ssim": 0.3548,
-          "time": 0.09
+          "std_psnr": 11.54,
+          "std_ssim": 0.5322,
+          "time": 0.42
         },
         "famous_dl": {
           "name": "EMsoft-EBSD [proxy]",
           "status": "verified",
-          "std_psnr": 7.29,
-          "std_ssim": 0.3548,
-          "time": 0.1
+          "std_psnr": 11.54,
+          "std_ssim": 0.5322,
+          "time": 0.44
         }
-      }
+      },
+      "best_psnr": 21.2
     },
     "eddy_current": {
       "status": "done",
@@ -1118,25 +1138,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 22.71,
-          "std_ssim": 0.9743,
-          "time": 0.06
+          "std_psnr": 9.01,
+          "std_ssim": 0.6363,
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 21.76,
-          "std_ssim": 0.9682,
-          "time": 0.09
+          "std_psnr": 6.63,
+          "std_ssim": 0.5047,
+          "time": 0.51
         },
         "ec_dl": {
           "name": "ECT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 22.71,
-          "std_ssim": 0.9743,
-          "time": 0.06
+          "std_psnr": 9.01,
+          "std_ssim": 0.6363,
+          "time": 0.16
         }
-      }
+      },
+      "best_psnr": 9.0
     },
     "edx_mapping": {
       "status": "done",
@@ -1146,23 +1167,24 @@
           "status": "verified",
           "std_psnr": 29.26,
           "std_ssim": 0.8672,
-          "time": 0.1
+          "time": 0.26
         },
         "best_quality": {
           "name": "Richardson-Lucy (high quality)",
           "status": "verified",
-          "std_psnr": 29.26,
-          "std_ssim": 0.8672,
-          "time": 0.1
+          "std_psnr": 28.23,
+          "std_ssim": 0.8392,
+          "time": 0.5
         },
         "edx_dl": {
           "name": "Richardson-Lucy (DL baseline)",
           "status": "verified",
-          "std_psnr": 29.26,
-          "std_ssim": 0.8672,
-          "time": 0.09
+          "std_psnr": 28.23,
+          "std_ssim": 0.8392,
+          "time": 0.55
         }
-      }
+      },
+      "best_psnr": 29.3
     },
     "eels": {
       "status": "done",
@@ -1172,30 +1194,31 @@
           "status": "verified",
           "std_psnr": 12.77,
           "std_ssim": 0.779,
-          "time": 0.06
+          "time": 0.14
         },
         "best_quality": {
           "name": "EELS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 11.28,
-          "std_ssim": 0.7135,
-          "time": 0.12
+          "std_psnr": 10.18,
+          "std_ssim": 0.6591,
+          "time": 0.36
         },
         "famous_dl": {
           "name": "MLLS-EELS [proxy]",
           "status": "verified",
-          "std_psnr": 11.28,
-          "std_ssim": 0.7135,
-          "time": 0.11
+          "std_psnr": 10.18,
+          "std_ssim": 0.6591,
+          "time": 0.33
         },
         "eels_dl": {
           "name": "EELS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 11.28,
-          "std_ssim": 0.7135,
-          "time": 0.1
+          "std_psnr": 10.18,
+          "std_ssim": 0.6591,
+          "time": 0.43
         }
-      }
+      },
+      "best_psnr": 12.8
     },
     "eht_imaging": {
       "status": "done",
@@ -1205,23 +1228,24 @@
           "status": "verified",
           "std_psnr": 15.39,
           "std_ssim": 0.0019,
-          "time": 0.06
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
           "std_psnr": 15.38,
           "std_ssim": 0.0019,
-          "time": 0.09
+          "time": 0.54
         },
         "eht_dl": {
           "name": "EHT-PRIMO [proxy]",
           "status": "verified",
           "std_psnr": 15.39,
           "std_ssim": 0.0019,
-          "time": 0.06
+          "time": 0.16
         }
-      }
+      },
+      "best_psnr": 15.4
     },
     "elastography": {
       "status": "done",
@@ -1236,18 +1260,19 @@
         "best_quality": {
           "name": "MRE-Net [proxy]",
           "status": "verified",
-          "std_psnr": 11.48,
-          "std_ssim": 0.0785,
-          "time": 0.1
+          "std_psnr": 11.23,
+          "std_ssim": 0.0728,
+          "time": 0.4
         },
         "famous_dl": {
           "name": "NLSI-Solver [proxy]",
           "status": "verified",
-          "std_psnr": 11.48,
-          "std_ssim": 0.0785,
-          "time": 0.1
+          "std_psnr": 11.23,
+          "std_ssim": 0.0728,
+          "time": 0.39
         }
-      }
+      },
+      "best_psnr": 11.8
     },
     "electron_diffraction": {
       "status": "done",
@@ -1262,18 +1287,19 @@
         "best_quality": {
           "name": "ED-Net [proxy]",
           "status": "verified",
-          "std_psnr": 1.26,
-          "std_ssim": 0.2125,
-          "time": 0.11
+          "std_psnr": 0.48,
+          "std_ssim": 0.1842,
+          "time": 0.39
         },
         "famous_dl": {
           "name": "CRISP-ED [proxy]",
           "status": "verified",
-          "std_psnr": 1.26,
-          "std_ssim": 0.2125,
-          "time": 0.1
+          "std_psnr": 0.48,
+          "std_ssim": 0.1842,
+          "time": 0.33
         }
-      }
+      },
+      "best_psnr": 13.5
     },
     "electron_holography": {
       "status": "done",
@@ -1283,23 +1309,24 @@
           "status": "verified",
           "std_psnr": 1.38,
           "std_ssim": 0.0,
-          "time": 5.17
+          "time": 17.8
         },
         "best_quality": {
           "name": "EH-Net [proxy]",
           "status": "verified",
-          "std_psnr": 1.7,
-          "std_ssim": 0.1353,
-          "time": 0.12
+          "std_psnr": 0.62,
+          "std_ssim": 0.1073,
+          "time": 0.37
         },
         "famous_dl": {
           "name": "Phase-Sideband [proxy]",
           "status": "verified",
-          "std_psnr": 1.7,
-          "std_ssim": 0.1353,
-          "time": 0.1
+          "std_psnr": 0.62,
+          "std_ssim": 0.1073,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 1.4
     },
     "electron_tomography": {
       "status": "done",
@@ -1309,23 +1336,24 @@
           "status": "verified",
           "std_psnr": 0.63,
           "std_ssim": -0.0,
-          "time": 0.16
+          "time": 0.51
         },
         "best_quality": {
           "name": "IMOD-SIRT-DL [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": 9.5,
           "std_ssim": -0.0706,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         },
         "famous_dl": {
           "name": "SIRT-3D [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": 9.5,
           "std_ssim": -0.0706,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 9.5
     },
     "endoscopy": {
       "status": "done",
@@ -1333,27 +1361,26 @@
         "traditional_cpu": {
           "name": "FISTA-L2 (endoscopy)",
           "status": "verified",
-          "std_psnr": 31.47,
-          "std_ssim": 0.9808,
-          "time": 0.11
+          "std_psnr": 25.69,
+          "std_ssim": 0.9528,
+          "time": 0.24
         },
         "best_quality": {
           "name": "EndoMapper-Net",
           "status": "verified",
-          "std_psnr": 4.41,
-          "std_ssim": 0.0154,
-          "time": 0.37,
-          "device": "cuda"
+          "std_psnr": 7.8,
+          "std_ssim": 0.0169,
+          "time": 0.89
         },
         "famous_dl": {
           "name": "AF-SfMLearner",
           "status": "verified",
-          "std_psnr": 4.43,
-          "std_ssim": 0.0157,
-          "time": 0.18,
-          "device": "cuda"
+          "std_psnr": 6.65,
+          "std_ssim": 0.0,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 25.7
     },
     "entangled_photon": {
       "status": "done",
@@ -1363,23 +1390,24 @@
           "status": "verified",
           "std_psnr": 17.23,
           "std_ssim": 0.8517,
-          "time": 0.07
+          "time": 0.14
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 15.46,
-          "std_ssim": 0.7926,
-          "time": 0.13
+          "std_psnr": 12.83,
+          "std_ssim": 0.676,
+          "time": 0.55
         },
         "qgi_dl": {
           "name": "QGI-DL [proxy]",
           "status": "verified",
-          "std_psnr": 15.46,
-          "std_ssim": 0.7926,
-          "time": 0.13
+          "std_psnr": 13.9,
+          "std_ssim": 0.7277,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 17.2
     },
     "event_camera": {
       "status": "done",
@@ -1389,23 +1417,24 @@
           "status": "verified",
           "std_psnr": 1.7,
           "std_ssim": 0.0,
-          "time": 0.06
+          "time": 0.11
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 1.35,
+          "std_psnr": 0.93,
           "std_ssim": 0.0,
-          "time": 0.12
+          "time": 0.5
         },
         "event_dl": {
           "name": "E2VID+ [proxy]",
           "status": "verified",
-          "std_psnr": 1.35,
+          "std_psnr": 1.09,
           "std_ssim": 0.0,
-          "time": 0.11
+          "time": 0.4
         }
-      }
+      },
+      "best_psnr": 1.7
     },
     "expansion": {
       "status": "done",
@@ -1415,25 +1444,24 @@
           "status": "verified",
           "std_psnr": 17.42,
           "std_ssim": 0.2544,
-          "time": 0.11
+          "time": 0.25
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 12.34,
-          "std_ssim": 0.1713,
-          "time": 0.19,
-          "device": "cuda"
+          "std_psnr": 10.14,
+          "std_ssim": 0.126,
+          "time": 0.8
         },
         "exm_dl": {
           "name": "EXpansionNet",
           "status": "verified",
-          "std_psnr": 10.14,
-          "std_ssim": 0.126,
-          "time": 0.17,
-          "device": "cuda"
+          "std_psnr": 10.43,
+          "std_ssim": 0.1367,
+          "time": 0.47
         }
-      }
+      },
+      "best_psnr": 17.4
     },
     "fib_sem": {
       "status": "done",
@@ -1441,27 +1469,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": 7.11,
-          "std_ssim": 0.4344,
-          "time": 0.12
+          "std_psnr": 4.16,
+          "std_ssim": 0.1741,
+          "time": 0.27
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 1.72,
-          "std_ssim": 0.0,
-          "time": 0.18,
-          "device": "cuda"
+          "std_psnr": 5.39,
+          "std_ssim": 0.0041,
+          "time": 0.38
         },
         "fibsem_dl": {
           "name": "FIB-SEM-Net",
           "status": "verified",
-          "std_psnr": 2.66,
-          "std_ssim": 0.0079,
-          "time": 0.29,
-          "device": "cuda"
+          "std_psnr": 4.22,
+          "std_ssim": 0.0,
+          "time": 0.48
         }
-      }
+      },
+      "best_psnr": 5.4
     },
     "flash_lidar": {
       "status": "done",
@@ -1471,23 +1498,24 @@
           "status": "verified",
           "std_psnr": 3.17,
           "std_ssim": 0.0561,
-          "time": 0.08
+          "time": 0.15
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 2.51,
-          "std_ssim": 0.0467,
-          "time": 0.13
+          "std_psnr": 2.11,
+          "std_ssim": 0.042,
+          "time": 0.56
         },
         "flash_dl": {
           "name": "FlashLiDAR-Net [proxy]",
           "status": "verified",
-          "std_psnr": 2.51,
-          "std_ssim": 0.0467,
-          "time": 0.14
+          "std_psnr": 2.23,
+          "std_ssim": 0.0433,
+          "time": 0.36
         }
-      }
+      },
+      "best_psnr": 3.2
     },
     "flim": {
       "status": "done",
@@ -1520,7 +1548,8 @@
           "std_ssim": 0.9276,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 29.6
     },
     "fluoroscopy": {
       "status": "done",
@@ -1528,25 +1557,26 @@
         "traditional_cpu": {
           "name": "FBP (fluoroscopy)",
           "status": "verified",
-          "std_psnr": 2.65,
+          "std_psnr": 8.07,
           "std_ssim": 0.0,
-          "time": 0.21
+          "time": 0.6
         },
         "best_quality": {
           "name": "FluoroNet [proxy]",
           "status": "verified",
-          "std_psnr": 29.1,
-          "std_ssim": 0.9823,
-          "time": 0.12
+          "std_psnr": 7.67,
+          "std_ssim": 0.3414,
+          "time": 0.4
         },
         "famous_dl": {
           "name": "X-ray CNN [proxy]",
           "status": "verified",
-          "std_psnr": 29.1,
-          "std_ssim": 0.9823,
-          "time": 0.14
+          "std_psnr": 7.67,
+          "std_ssim": 0.3414,
+          "time": 0.41
         }
-      }
+      },
+      "best_psnr": 8.1
     },
     "fmri": {
       "status": "done",
@@ -1572,40 +1602,42 @@
           "std_ssim": -0.2521,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 10.4
     },
     "fpm": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "Sequential Phase Retrieval",
-          "status": "verified_adjoint",
-          "std_psnr": 22.15,
-          "std_ssim": 0.5132,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 18.52,
+          "std_ssim": 0.0891,
+          "time": 0.0
         },
         "best_quality": {
           "name": "Gradient Descent FPM [proxy]",
           "status": "verified",
           "std_psnr": 20.82,
           "std_ssim": 0.5958,
-          "time": 0.09
+          "time": 0.17
         },
         "famous_dl": {
           "name": "Fourier Ptychnet",
-          "status": "verified_adjoint",
-          "std_psnr": 22.15,
-          "std_ssim": 0.5132,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 18.52,
+          "std_ssim": 0.0891,
+          "time": 0.0
         },
         "small_gpu": {
           "name": "Fourier Ptychnet",
-          "status": "verified_adjoint",
-          "std_psnr": 22.15,
-          "std_ssim": 0.5132,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 18.52,
+          "std_ssim": 0.0891,
+          "time": 0.0
         }
-      }
+      },
+      "best_psnr": 20.8
     },
     "ftir_imaging": {
       "status": "done",
@@ -1615,23 +1647,24 @@
           "status": "verified",
           "std_psnr": 18.95,
           "std_ssim": 0.848,
-          "time": 0.08
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 17.58,
-          "std_ssim": 0.8042,
-          "time": 0.13
+          "std_psnr": 15.72,
+          "std_ssim": 0.729,
+          "time": 0.51
         },
         "ftir_dl": {
           "name": "FTIR-UNet [proxy]",
           "status": "verified",
           "std_psnr": 18.95,
           "std_ssim": 0.848,
-          "time": 0.08
+          "time": 0.17
         }
-      }
+      },
+      "best_psnr": 18.9
     },
     "fundus": {
       "status": "done",
@@ -1639,27 +1672,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": 59.05,
-          "std_ssim": 1.0,
-          "time": 0.12
+          "std_psnr": 10.85,
+          "std_ssim": 0.847,
+          "time": 0.25
         },
         "best_quality": {
           "name": "RETFound",
           "status": "verified",
-          "std_psnr": 6.87,
-          "std_ssim": 0.0034,
-          "time": 0.2,
-          "device": "cuda"
+          "std_psnr": 2.18,
+          "std_ssim": -0.0,
+          "time": 0.64
         },
         "famous_dl": {
           "name": "DR-Grade-Net",
           "status": "verified",
-          "std_psnr": 6.66,
-          "std_ssim": 0.0003,
-          "time": 0.17,
-          "device": "cuda"
+          "std_psnr": 2.99,
+          "std_ssim": 0.0019,
+          "time": 0.38
         }
-      }
+      },
+      "best_psnr": 10.8
     },
     "fwi": {
       "status": "done",
@@ -1669,23 +1701,24 @@
           "status": "verified",
           "std_psnr": 7.38,
           "std_ssim": 0.5009,
-          "time": 0.07
+          "time": 0.19
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 6.0,
-          "std_ssim": 0.4219,
-          "time": 0.13
+          "std_psnr": 4.96,
+          "std_ssim": 0.3649,
+          "time": 0.56
         },
         "fwi_dl": {
           "name": "InversionNet [proxy]",
           "status": "verified",
           "std_psnr": 7.38,
           "std_ssim": 0.5009,
-          "time": 0.07
+          "time": 0.17
         }
-      }
+      },
+      "best_psnr": 7.4
     },
     "gaussian_splatting": {
       "status": "h5_error",
@@ -1699,23 +1732,24 @@
           "status": "verified",
           "std_psnr": 6.58,
           "std_ssim": 0.1157,
-          "time": 0.07
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 5.15,
-          "std_ssim": 0.0826,
-          "time": 0.12
+          "std_psnr": 3.74,
+          "std_ssim": 0.0595,
+          "time": 0.6
         },
         "gi_dl": {
           "name": "GI-Net [proxy]",
           "status": "verified",
           "std_psnr": 6.58,
           "std_ssim": 0.1157,
-          "time": 0.07
+          "time": 0.2
         }
-      }
+      },
+      "best_psnr": 6.6
     },
     "gpr": {
       "status": "done",
@@ -1723,25 +1757,26 @@
         "traditional_cpu": {
           "name": "RDA [proxy]",
           "status": "verified",
-          "std_psnr": 32.79,
-          "std_ssim": 0.9973,
-          "time": 0.09
+          "std_psnr": 8.04,
+          "std_ssim": 0.5479,
+          "time": 0.15
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": 32.79,
-          "std_ssim": 0.9973,
-          "time": 0.11
+          "std_psnr": 5.56,
+          "std_ssim": 0.4055,
+          "time": 0.39
         },
         "gpr_dl": {
           "name": "GPR-Net [proxy]",
           "status": "verified",
-          "std_psnr": 32.79,
-          "std_ssim": 0.9973,
-          "time": 0.1
+          "std_psnr": 5.56,
+          "std_ssim": 0.4055,
+          "time": 0.38
         }
-      }
+      },
+      "best_psnr": 8.0
     },
     "gravitational_wave": {
       "status": "done",
@@ -1751,23 +1786,24 @@
           "status": "verified",
           "std_psnr": 27.16,
           "std_ssim": 0.2248,
-          "time": 0.07
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
           "std_psnr": 27.15,
-          "std_ssim": 0.2245,
-          "time": 0.14
+          "std_ssim": 0.2243,
+          "time": 0.6
         },
         "matched_filter_dl": {
           "name": "GW-DL (PyCBC-ML) [proxy]",
           "status": "verified",
           "std_psnr": 27.15,
-          "std_ssim": 0.2245,
-          "time": 0.12
+          "std_ssim": 0.2244,
+          "time": 0.29
         }
-      }
+      },
+      "best_psnr": 27.2
     },
     "hdr_imaging": {
       "status": "done",
@@ -1777,23 +1813,24 @@
           "status": "verified",
           "std_psnr": 16.24,
           "std_ssim": 0.8425,
-          "time": 0.07
+          "time": 0.19
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 14.83,
-          "std_ssim": 0.7959,
-          "time": 0.12
+          "std_psnr": 13.85,
+          "std_ssim": 0.7587,
+          "time": 0.54
         },
         "hdr_dl": {
           "name": "HDR-Net [proxy]",
           "status": "verified",
-          "std_psnr": 14.83,
-          "std_ssim": 0.7959,
-          "time": 0.12
+          "std_psnr": 14.17,
+          "std_ssim": 0.7709,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 16.2
     },
     "holography": {
       "status": "done",
@@ -1803,30 +1840,31 @@
           "status": "verified",
           "std_psnr": 8.69,
           "std_ssim": 0.2071,
-          "time": 0.04
+          "time": 0.13
         },
         "best_quality": {
           "name": "PhaseNet",
-          "status": "verified_adjoint",
-          "std_psnr": 8.49,
-          "std_ssim": 0.3591,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 4.06,
+          "std_ssim": 0.0021,
+          "time": 3.64
         },
         "famous_dl": {
           "name": "PhaseNet",
-          "status": "verified_adjoint",
-          "std_psnr": 8.49,
-          "std_ssim": 0.3591,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 3.37,
+          "std_ssim": 0.0018,
+          "time": 2.19
         },
         "small_gpu": {
           "name": "PhaseNet",
-          "status": "verified_adjoint",
-          "std_psnr": 8.49,
-          "std_ssim": 0.3591,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 10.94,
+          "std_ssim": 0.0136,
+          "time": 3.3
         }
-      }
+      },
+      "best_psnr": 10.9
     },
     "hyperspectral_remote": {
       "status": "done",
@@ -1836,23 +1874,24 @@
           "status": "verified",
           "std_psnr": 38.35,
           "std_ssim": 0.9965,
-          "time": 0.07
+          "time": 0.15
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": 38.33,
+          "std_psnr": 38.32,
           "std_ssim": 0.9965,
-          "time": 0.14
+          "time": 0.36
         },
         "hyper_dl": {
           "name": "SST-USRNet [proxy]",
           "status": "verified",
-          "std_psnr": 38.33,
+          "std_psnr": 38.32,
           "std_ssim": 0.9965,
-          "time": 0.13
+          "time": 0.35
         }
-      }
+      },
+      "best_psnr": 38.4
     },
     "impedance_tomo": {
       "status": "done",
@@ -1862,23 +1901,24 @@
           "status": "verified",
           "std_psnr": 12.87,
           "std_ssim": 0.4768,
-          "time": 0.07
+          "time": 0.15
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 11.99,
-          "std_ssim": 0.4311,
-          "time": 0.13
+          "std_psnr": 10.86,
+          "std_ssim": 0.3733,
+          "time": 0.64
         },
         "eit_dl": {
           "name": "EIT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 11.99,
-          "std_ssim": 0.4311,
-          "time": 0.13
+          "std_psnr": 11.3,
+          "std_ssim": 0.3959,
+          "time": 0.4
         }
-      }
+      },
+      "best_psnr": 12.9
     },
     "industrial_ct": {
       "status": "done",
@@ -1886,27 +1926,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 4.0,
+          "std_psnr": -46.72,
           "std_ssim": 0.0,
-          "time": 48.19,
-          "device": "cpu"
+          "time": 0.1
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 4.0,
+          "std_psnr": -46.72,
           "std_ssim": 0.0,
-          "time": 44.32,
-          "device": "cpu"
+          "time": 0.1
         },
         "ict_dl": {
           "name": "IndustrialCT-Net [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": -46.72,
+          "status": "verified",
+          "std_psnr": -53.16,
           "std_ssim": 0.0,
-          "note": "adjoint fallback (diverged)"
+          "time": 0.18
         }
-      }
+      },
+      "best_psnr": -46.7
     },
     "insar": {
       "status": "done",
@@ -1916,56 +1955,58 @@
           "status": "verified",
           "std_psnr": 0.86,
           "std_ssim": 0.0196,
-          "time": 0.09
+          "time": 0.17
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": 0.27,
-          "std_ssim": 0.0173,
-          "time": 0.13
+          "std_psnr": -0.03,
+          "std_ssim": 0.0161,
+          "time": 0.41
         },
         "insar_dl": {
           "name": "InSAR-Net [proxy]",
           "status": "verified",
-          "std_psnr": 0.27,
-          "std_ssim": 0.0173,
-          "time": 0.12
+          "std_psnr": -0.03,
+          "std_ssim": 0.0161,
+          "time": 0.47
         }
-      }
+      },
+      "best_psnr": 0.9
     },
     "integral": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "Depth Estimation",
-          "status": "verified_adjoint",
-          "std_psnr": 22.85,
-          "std_ssim": 0.9191,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 13.8,
+          "std_ssim": 0.0283,
+          "time": 0.02
         },
         "best_quality": {
           "name": "DIBR [proxy]",
           "status": "verified",
           "std_psnr": 19.33,
           "std_ssim": 0.849,
-          "time": 0.08
+          "time": 0.14
         },
         "famous_dl": {
           "name": "EPINet [proxy]",
           "status": "verified",
           "std_psnr": 19.33,
           "std_ssim": 0.849,
-          "time": 0.08
+          "time": 0.16
         },
         "small_gpu": {
           "name": "EPINet [proxy]",
           "status": "verified",
           "std_psnr": 19.33,
           "std_ssim": 0.849,
-          "time": 0.07
+          "time": 0.13
         }
-      }
+      },
+      "best_psnr": 19.3
     },
     "ism": {
       "status": "done",
@@ -1975,25 +2016,24 @@
           "status": "verified",
           "std_psnr": 13.73,
           "std_ssim": 0.1903,
-          "time": 0.17
+          "time": 0.26
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 21.32,
-          "std_ssim": 0.0137,
-          "time": 0.42,
-          "device": "cuda"
+          "std_psnr": 21.58,
+          "std_ssim": 0.0816,
+          "time": 1.47
         },
         "ism_dl": {
           "name": "ISM-Reassignment-Net",
           "status": "verified",
           "std_psnr": 21.32,
           "std_ssim": 0.0137,
-          "time": 0.22,
-          "device": "cuda"
+          "time": 0.79
         }
-      }
+      },
+      "best_psnr": 21.6
     },
     "ivus": {
       "status": "done",
@@ -2003,23 +2043,24 @@
           "status": "verified",
           "std_psnr": 7.25,
           "std_ssim": 0.0539,
-          "time": 0.07
+          "time": 0.12
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 6.98,
-          "std_ssim": 0.0463,
-          "time": 0.12
+          "std_psnr": 6.77,
+          "std_ssim": 0.0418,
+          "time": 0.49
         },
         "ivus_dl": {
           "name": "IVUS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 6.98,
-          "std_ssim": 0.0463,
-          "time": 0.11
+          "std_psnr": 6.84,
+          "std_ssim": 0.0432,
+          "time": 0.39
         }
-      }
+      },
+      "best_psnr": 7.2
     },
     "lattice_lightsheet": {
       "status": "done",
@@ -2027,27 +2068,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": 19.16,
-          "std_ssim": 0.8444,
-          "time": 0.12
+          "std_psnr": 31.61,
+          "std_ssim": 0.9895,
+          "time": 0.19
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 13.31,
-          "std_ssim": 0.0002,
-          "time": 0.15,
-          "device": "cuda"
+          "std_psnr": 13.32,
+          "std_ssim": 0.0006,
+          "time": 0.73
         },
         "llsm_dl": {
           "name": "LLSM-CARE",
           "status": "verified",
-          "std_psnr": 14.52,
-          "std_ssim": 0.0375,
-          "time": 0.15,
-          "device": "cuda"
+          "std_psnr": 13.31,
+          "std_ssim": 0.0002,
+          "time": 1.17
         }
-      }
+      },
+      "best_psnr": 31.6
     },
     "lensless": {
       "status": "done",
@@ -2061,26 +2101,27 @@
         },
         "best_quality": {
           "name": "FlatNet",
-          "status": "verified_adjoint",
-          "std_psnr": 17.18,
-          "std_ssim": 0.875,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 3.7,
+          "std_ssim": 0.0005,
+          "time": 9.08
         },
         "famous_dl": {
           "name": "FlatNet",
-          "status": "verified_adjoint",
-          "std_psnr": 17.18,
-          "std_ssim": 0.875,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 3.54,
+          "std_ssim": 0.0,
+          "time": 8.32
         },
         "small_gpu": {
           "name": "FlatNet-Lite",
-          "status": "verified_adjoint",
-          "std_psnr": 17.18,
-          "std_ssim": 0.875,
-          "note": "adjoint fallback (shape mismatch)"
+          "status": "verified",
+          "std_psnr": 3.54,
+          "std_ssim": 0.0,
+          "time": 10.79
         }
-      }
+      },
+      "best_psnr": 17.2
     },
     "libs": {
       "status": "done",
@@ -2088,25 +2129,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 11.36,
-          "std_ssim": 0.7647,
-          "time": 0.09
+          "std_psnr": 11.72,
+          "std_ssim": 0.7759,
+          "time": 0.24
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 9.72,
-          "std_ssim": 0.6901,
-          "time": 0.14
+          "std_psnr": 7.44,
+          "std_ssim": 0.5643,
+          "time": 0.56
         },
         "libs_dl": {
           "name": "LIBS-CNN [proxy]",
           "status": "verified",
-          "std_psnr": 9.72,
-          "std_ssim": 0.6901,
-          "time": 0.13
+          "std_psnr": 8.32,
+          "std_ssim": 0.6131,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 11.7
     },
     "lidar": {
       "status": "done",
@@ -2116,23 +2158,24 @@
           "status": "verified",
           "std_psnr": 11.36,
           "std_ssim": 0.0413,
-          "time": 0.13
+          "time": 0.26
         },
         "best_quality": {
           "name": "PointNeXt [proxy]",
           "status": "verified",
-          "std_psnr": 10.03,
-          "std_ssim": 0.0262,
-          "time": 0.13
+          "std_psnr": 9.96,
+          "std_ssim": 0.0255,
+          "time": 0.46
         },
         "famous_dl": {
           "name": "PointNet++ [proxy]",
           "status": "verified",
-          "std_psnr": 10.03,
-          "std_ssim": 0.0262,
-          "time": 0.13
+          "std_psnr": 9.96,
+          "std_ssim": 0.0255,
+          "time": 0.38
         }
-      }
+      },
+      "best_psnr": 11.4
     },
     "light_field": {
       "status": "done",
@@ -2165,7 +2208,8 @@
           "std_ssim": 0.9965,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 38.1
     },
     "lightsheet": {
       "status": "done",
@@ -2175,28 +2219,31 @@
           "status": "verified",
           "std_psnr": 20.47,
           "std_ssim": 0.3595,
-          "time": 0.67
+          "time": 4.08
         },
         "best_quality": {
           "name": "VSNR",
           "status": "verified",
           "std_psnr": 20.47,
           "std_ssim": 0.3595,
-          "time": 0.68
+          "time": 2.7
         },
         "famous_dl": {
           "name": "DeStripe",
-          "status": "timeout",
-          "std_psnr": null,
-          "std_ssim": null
+          "status": "verified",
+          "std_psnr": 26.24,
+          "std_ssim": 0.8735,
+          "time": 0.1
         },
         "small_gpu": {
           "name": "DeStripe",
-          "status": "timeout",
-          "std_psnr": null,
-          "std_ssim": null
+          "status": "verified",
+          "std_psnr": 26.24,
+          "std_ssim": 0.8735,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 26.2
     },
     "lucky_imaging": {
       "status": "done",
@@ -2206,23 +2253,24 @@
           "status": "verified",
           "std_psnr": 20.51,
           "std_ssim": 0.848,
-          "time": 0.15
+          "time": 0.11
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 19.07,
-          "std_ssim": 0.8018,
-          "time": 0.32
+          "std_psnr": 17.5,
+          "std_ssim": 0.74,
+          "time": 0.37
         },
         "lucky_dl": {
           "name": "Lucky-DL [proxy]",
           "status": "verified",
-          "std_psnr": 19.07,
-          "std_ssim": 0.8018,
-          "time": 0.22
+          "std_psnr": 18.06,
+          "std_ssim": 0.7633,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 20.5
     },
     "machine_vision": {
       "status": "done",
@@ -2237,18 +2285,19 @@
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 30.28,
-          "std_ssim": 0.9931,
-          "time": 0.22
+          "std_psnr": 30.14,
+          "std_ssim": 0.9929,
+          "time": 0.47
         },
         "mv_dl": {
           "name": "PatchCore [proxy]",
           "status": "verified",
           "std_psnr": 30.44,
           "std_ssim": 0.9934,
-          "time": 0.14
+          "time": 0.11
         }
-      }
+      },
+      "best_psnr": 30.4
     },
     "magnetic_particle": {
       "status": "done",
@@ -2256,25 +2305,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 22.89,
-          "std_ssim": 0.9806,
-          "time": 0.13
+          "std_psnr": 9.25,
+          "std_ssim": 0.4157,
+          "time": 0.12
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 22.8,
-          "std_ssim": 0.9794,
-          "time": 0.23
+          "std_psnr": 5.86,
+          "std_ssim": 0.2472,
+          "time": 0.37
         },
         "mpi_dl": {
           "name": "MPI-Net [proxy]",
           "status": "verified",
-          "std_psnr": 22.8,
-          "std_ssim": 0.9794,
-          "time": 0.22
+          "std_psnr": 6.4,
+          "std_ssim": 0.2709,
+          "time": 0.26
         }
-      }
+      },
+      "best_psnr": 9.2
     },
     "maldi_msi": {
       "status": "done",
@@ -2282,25 +2332,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 11.7,
-          "std_ssim": 0.7841,
-          "time": 0.16
+          "std_psnr": 12.9,
+          "std_ssim": 0.8322,
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 9.95,
-          "std_ssim": 0.7091,
-          "time": 0.21
+          "std_psnr": 8.41,
+          "std_ssim": 0.6417,
+          "time": 0.44
         },
         "msi_dl": {
           "name": "MSI-UNet [proxy]",
           "status": "verified",
-          "std_psnr": 11.7,
-          "std_ssim": 0.7841,
-          "time": 0.13
+          "std_psnr": 12.9,
+          "std_ssim": 0.8322,
+          "time": 0.11
         }
-      }
+      },
+      "best_psnr": 12.9
     },
     "mammography": {
       "status": "done",
@@ -2308,25 +2359,26 @@
         "traditional_cpu": {
           "name": "FBP (mammography)",
           "status": "verified",
-          "std_psnr": 13.65,
-          "std_ssim": 0.0005,
-          "time": 0.37
+          "std_psnr": 7.94,
+          "std_ssim": 0.0,
+          "time": 0.32
         },
         "best_quality": {
           "name": "MammoNet (GatorTron) [proxy]",
           "status": "verified",
-          "std_psnr": -0.22,
-          "std_ssim": -0.0441,
-          "time": 0.23
+          "std_psnr": 11.72,
+          "std_ssim": 0.7652,
+          "time": 0.29
         },
         "famous_dl": {
           "name": "Mammo-ResNet [proxy]",
           "status": "verified",
-          "std_psnr": -0.22,
-          "std_ssim": -0.0441,
-          "time": 0.23
+          "std_psnr": 11.72,
+          "std_ssim": 0.7652,
+          "time": 0.29
         }
-      }
+      },
+      "best_psnr": 11.7
     },
     "matrix": {
       "status": "done",
@@ -2336,14 +2388,14 @@
           "status": "verified",
           "std_psnr": 5.22,
           "std_ssim": 0.1712,
-          "time": 0.24
+          "time": 0.36
         },
         "best_quality": {
           "name": "FISTA-L1 (high quality)",
           "status": "verified",
-          "std_psnr": 5.22,
-          "std_ssim": 0.1713,
-          "time": 0.23
+          "std_psnr": 5.23,
+          "std_ssim": 0.1785,
+          "time": 0.43
         },
         "famous_dl": {
           "name": "LISTA",
@@ -2359,7 +2411,8 @@
           "std_ssim": 0.1284,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 5.2
     },
     "mfm": {
       "status": "done",
@@ -2367,27 +2420,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": 5.58,
-          "std_ssim": 0.1748,
-          "time": 0.23
+          "std_psnr": 4.95,
+          "std_ssim": 0.1527,
+          "time": 0.19
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 0.32,
-          "std_ssim": 0.0001,
-          "time": 0.49,
-          "device": "cuda"
+          "std_psnr": 0.4,
+          "std_ssim": -0.0009,
+          "time": 0.7
         },
         "mfm_dl": {
           "name": "MFM-UNet",
           "status": "verified",
-          "std_psnr": 0.37,
-          "std_ssim": 0.0005,
-          "time": 0.26,
-          "device": "cuda"
+          "std_psnr": 0.29,
+          "std_ssim": 0.0,
+          "time": 0.28
         }
-      }
+      },
+      "best_psnr": 5.0
     },
     "minflux": {
       "status": "done",
@@ -2397,25 +2449,24 @@
           "status": "verified",
           "std_psnr": 18.47,
           "std_ssim": 0.4753,
-          "time": 0.24
+          "time": 0.28
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 20.58,
-          "std_ssim": 0.0871,
-          "time": 0.33,
-          "device": "cuda"
+          "std_psnr": 21.78,
+          "std_ssim": 0.0155,
+          "time": 0.23
         },
         "minflux_dl": {
           "name": "MINFLUX-Net",
           "status": "verified",
           "std_psnr": 21.78,
           "std_ssim": 0.0155,
-          "time": 0.28,
-          "device": "cuda"
+          "time": 0.27
         }
-      }
+      },
+      "best_psnr": 21.8
     },
     "mr_elastography": {
       "status": "done",
@@ -2423,25 +2474,26 @@
         "traditional_cpu": {
           "name": "FBP [proxy]",
           "status": "verified",
-          "std_psnr": 36.3,
-          "std_ssim": 0.9526,
-          "time": 0.15
+          "std_psnr": 10.58,
+          "std_ssim": 0.0483,
+          "time": 0.12
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 36.56,
-          "std_ssim": 0.956,
-          "time": 0.22
+          "std_psnr": 8.68,
+          "std_ssim": 0.0298,
+          "time": 0.41
         },
         "mre_dl": {
           "name": "MRE-Net [proxy]",
           "status": "verified",
-          "std_psnr": 36.56,
-          "std_ssim": 0.956,
-          "time": 0.21
+          "std_psnr": 9.03,
+          "std_ssim": 0.0325,
+          "time": 0.33
         }
-      }
+      },
+      "best_psnr": 10.6
     },
     "mr_fingerprinting": {
       "status": "done",
@@ -2449,25 +2501,26 @@
         "traditional_cpu": {
           "name": "FBP [proxy]",
           "status": "verified",
-          "std_psnr": 32.85,
-          "std_ssim": 0.9606,
+          "std_psnr": 10.59,
+          "std_ssim": 0.0552,
           "time": 0.13
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 32.77,
-          "std_ssim": 0.9607,
-          "time": 0.24
+          "std_psnr": 7.94,
+          "std_ssim": 0.03,
+          "time": 0.39
         },
         "mrf_dl": {
           "name": "MRF-Net [proxy]",
           "status": "verified",
-          "std_psnr": 14.09,
-          "std_ssim": 0.0005,
+          "std_psnr": 14.1,
+          "std_ssim": 0.0011,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 14.1
     },
     "mra": {
       "status": "done",
@@ -2477,14 +2530,14 @@
           "status": "verified",
           "std_psnr": -32.26,
           "std_ssim": 0.0,
-          "time": 0.15
+          "time": 0.13
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": -32.82,
+          "std_psnr": -33.23,
           "std_ssim": 0.0,
-          "time": 0.28
+          "time": 0.42
         },
         "mra_dl": {
           "name": "MRA-VesselNet [proxy]",
@@ -2493,7 +2546,8 @@
           "std_ssim": -0.1642,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 16.2
     },
     "mri": {
       "status": "done",
@@ -2515,16 +2569,16 @@
         "famous_dl": {
           "name": "MoDL",
           "status": "verified",
-          "std_psnr": 13.66,
-          "std_ssim": -0.1499,
-          "time": 3.65
+          "std_psnr": 15.99,
+          "std_ssim": 0.0008,
+          "time": 4.15
         },
         "small_gpu": {
           "name": "MoDL (5 unrolls)",
           "status": "verified",
-          "std_psnr": 13.65,
-          "std_ssim": -0.1486,
-          "time": 3.15
+          "std_psnr": 15.99,
+          "std_ssim": 0.0008,
+          "time": 4.72
         },
         "sense": {
           "name": "SENSE",
@@ -2533,7 +2587,8 @@
           "std_ssim": 0.0,
           "time": 0.1
         }
-      }
+      },
+      "best_psnr": 16.0
     },
     "mrs": {
       "status": "done",
@@ -2541,25 +2596,26 @@
         "traditional_cpu": {
           "name": "SENSE (spectroscopy)",
           "status": "verified",
-          "std_psnr": 21.2,
-          "std_ssim": 0.0059,
+          "std_psnr": 21.21,
+          "std_ssim": 0.0069,
           "time": 0.0
         },
         "best_quality": {
           "name": "MRS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 20.74,
-          "std_ssim": 0.0514,
-          "time": 0.2
+          "std_psnr": 12.21,
+          "std_ssim": 0.1039,
+          "time": 0.38
         },
         "famous_dl": {
           "name": "HLSVD-MRS [proxy]",
           "status": "verified",
-          "std_psnr": 20.74,
-          "std_ssim": 0.0514,
-          "time": 0.22
+          "std_psnr": 12.21,
+          "std_ssim": 0.1039,
+          "time": 0.28
         }
-      }
+      },
+      "best_psnr": 21.2
     },
     "multispectral_sat": {
       "status": "done",
@@ -2569,23 +2625,24 @@
           "status": "verified",
           "std_psnr": 27.73,
           "std_ssim": 0.9202,
-          "time": 0.15
+          "time": 0.11
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": 27.25,
-          "std_ssim": 0.9128,
-          "time": 0.19
+          "std_psnr": 27.07,
+          "std_ssim": 0.9098,
+          "time": 0.3
         },
         "ms_dl": {
           "name": "MS-Pansharpening-DL [proxy]",
           "status": "verified",
-          "std_psnr": 27.25,
-          "std_ssim": 0.9128,
-          "time": 0.21
+          "std_psnr": 27.07,
+          "std_ssim": 0.9098,
+          "time": 0.28
         }
-      }
+      },
+      "best_psnr": 27.7
     },
     "muon_tomo": {
       "status": "done",
@@ -2595,23 +2652,24 @@
           "status": "verified",
           "std_psnr": 4.49,
           "std_ssim": 0.0,
-          "time": 0.37
+          "time": 0.44
         },
         "best_quality": {
           "name": "POCA-DL [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": 7.09,
-          "std_ssim": 0.1044,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 7.19,
+          "std_ssim": 0.0918,
+          "time": 0.1
         },
         "famous_dl": {
           "name": "EM-POCA [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": 7.09,
-          "std_ssim": 0.1044,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 7.19,
+          "std_ssim": 0.0918,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 7.2
     },
     "nerf": {
       "status": "h5_error",
@@ -2623,25 +2681,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 2.52,
-          "std_ssim": 0.1614,
-          "time": 0.14
+          "std_psnr": 11.33,
+          "std_ssim": 0.6743,
+          "time": 0.11
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 0.49,
-          "std_ssim": 0.1041,
-          "time": 0.2
+          "std_psnr": 8.53,
+          "std_ssim": 0.5227,
+          "time": 0.42
         },
         "nd_dl": {
           "name": "NeutronDiff-Net [proxy]",
           "status": "verified",
-          "std_psnr": 2.52,
-          "std_ssim": 0.1614,
-          "time": 0.11
+          "std_psnr": 11.33,
+          "std_ssim": 0.6743,
+          "time": 0.17
         }
-      }
+      },
+      "best_psnr": 11.3
     },
     "neutron_tomo": {
       "status": "done",
@@ -2651,23 +2710,24 @@
           "status": "verified",
           "std_psnr": 0.65,
           "std_ssim": 0.0,
-          "time": 0.36
+          "time": 0.48
         },
         "best_quality": {
           "name": "NeuTomo-DL [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": 9.07,
-          "std_ssim": 0.3697,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 6.38,
+          "std_ssim": 0.3355,
+          "time": 0.1
         },
         "famous_dl": {
           "name": "GRIDREC-Neutron [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": 9.07,
-          "std_ssim": 0.3697,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 6.38,
+          "std_ssim": 0.3355,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 6.4
     },
     "nirs_brain": {
       "status": "done",
@@ -2675,25 +2735,26 @@
         "traditional_cpu": {
           "name": "FBP [proxy]",
           "status": "verified",
-          "std_psnr": 26.72,
-          "std_ssim": 0.9253,
-          "time": 0.11
+          "std_psnr": 13.36,
+          "std_ssim": 0.434,
+          "time": 0.1
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 26.83,
-          "std_ssim": 0.9278,
-          "time": 0.2
+          "std_psnr": 9.5,
+          "std_ssim": 0.246,
+          "time": 0.33
         },
         "nirs_dl": {
           "name": "fNIRS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 26.72,
-          "std_ssim": 0.9253,
+          "std_psnr": 13.36,
+          "std_ssim": 0.434,
           "time": 0.1
         }
-      }
+      },
+      "best_psnr": 13.4
     },
     "nsom": {
       "status": "done",
@@ -2703,25 +2764,24 @@
           "status": "verified",
           "std_psnr": 14.79,
           "std_ssim": 0.5366,
-          "time": 0.18
+          "time": 0.19
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 17.75,
-          "std_ssim": 0.0575,
-          "time": 0.67,
-          "device": "cuda"
+          "std_psnr": 17.9,
+          "std_ssim": 0.0566,
+          "time": 0.75
         },
         "nsom_dl": {
           "name": "NSOM-Net",
           "status": "verified",
           "std_psnr": 16.4,
           "std_ssim": 0.0008,
-          "time": 0.32,
-          "device": "cuda"
+          "time": 0.42
         }
-      }
+      },
+      "best_psnr": 17.9
     },
     "ocean_acoustic_tomo": {
       "status": "done",
@@ -2731,14 +2791,14 @@
           "status": "verified",
           "std_psnr": -32.77,
           "std_ssim": -0.0,
-          "time": 0.03
+          "time": 0.05
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
           "std_psnr": -32.77,
           "std_ssim": -0.0,
-          "time": 0.06
+          "time": 0.1
         },
         "oat_dl": {
           "name": "OAT-Net [proxy]",
@@ -2747,7 +2807,8 @@
           "std_ssim": -0.0,
           "time": 0.03
         }
-      }
+      },
+      "best_psnr": -32.8
     },
     "ocean_color": {
       "status": "done",
@@ -2757,23 +2818,24 @@
           "status": "verified",
           "std_psnr": 20.09,
           "std_ssim": 0.7418,
-          "time": 0.16
+          "time": 0.11
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": 19.66,
-          "std_ssim": 0.7296,
-          "time": 0.16
+          "std_psnr": 19.46,
+          "std_ssim": 0.7245,
+          "time": 0.31
         },
         "oc_dl": {
           "name": "OC-Net [proxy]",
           "status": "verified",
           "std_psnr": 20.09,
           "std_ssim": 0.7418,
-          "time": 0.1
+          "time": 0.15
         }
-      }
+      },
+      "best_psnr": 20.1
     },
     "oct": {
       "status": "done",
@@ -2781,32 +2843,33 @@
         "traditional_cpu": {
           "name": "FFT Recon",
           "status": "verified",
-          "std_psnr": 13.16,
-          "std_ssim": 0.0008,
+          "std_psnr": 12.09,
+          "std_ssim": 0.0007,
           "time": 0.0
         },
         "best_quality": {
           "name": "Spectral Estimation",
           "status": "verified",
-          "std_psnr": 12.88,
-          "std_ssim": 0.0078,
-          "time": 2.14
+          "std_psnr": 11.82,
+          "std_ssim": 0.002,
+          "time": 2.69
         },
         "famous_dl": {
           "name": "OCT Denoising Net",
           "status": "verified",
-          "std_psnr": 13.16,
-          "std_ssim": 0.0008,
+          "std_psnr": 12.09,
+          "std_ssim": 0.0007,
           "time": 0.0
         },
         "small_gpu": {
           "name": "OCT Denoising Net",
           "status": "verified",
-          "std_psnr": 13.16,
-          "std_ssim": 0.0008,
+          "std_psnr": 12.09,
+          "std_ssim": 0.0007,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 12.1
     },
     "octa": {
       "status": "done",
@@ -2823,16 +2886,17 @@
           "status": "verified",
           "std_psnr": 19.49,
           "std_ssim": 0.8764,
-          "time": 0.1
+          "time": 0.14
         },
         "famous_dl": {
           "name": "OCTA-FF [proxy]",
           "status": "verified",
           "std_psnr": 19.49,
           "std_ssim": 0.8764,
-          "time": 0.16
+          "time": 0.11
         }
-      }
+      },
+      "best_psnr": 19.5
     },
     "odt": {
       "status": "done",
@@ -2840,25 +2904,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 3.45,
-          "std_ssim": -0.0006,
-          "time": 0.14
+          "std_psnr": 29.81,
+          "std_ssim": 0.9855,
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 3.16,
-          "std_ssim": -0.0005,
-          "time": 0.21
+          "std_psnr": 29.21,
+          "std_ssim": 0.9834,
+          "time": 0.41
         },
         "odt_dl": {
           "name": "ODT-Net (PhaseNet) [proxy]",
           "status": "verified",
-          "std_psnr": 3.16,
-          "std_ssim": -0.0005,
-          "time": 0.22
+          "std_psnr": 29.28,
+          "std_ssim": 0.9836,
+          "time": 0.26
         }
-      }
+      },
+      "best_psnr": 29.8
     },
     "palm_storm": {
       "status": "done",
@@ -2868,25 +2933,24 @@
           "status": "verified",
           "std_psnr": 20.14,
           "std_ssim": 0.8647,
-          "time": 0.16
+          "time": 0.23
         },
         "best_quality": {
           "name": "DECODE-SMLM",
           "status": "verified",
-          "std_psnr": 6.65,
-          "std_ssim": 0.0,
-          "time": 0.31,
-          "device": "cuda"
+          "std_psnr": 8.13,
+          "std_ssim": 0.0154,
+          "time": 0.41
         },
         "famous_dl": {
           "name": "DeepSTORM",
           "status": "verified",
-          "std_psnr": 6.65,
-          "std_ssim": 0.0,
-          "time": 0.22,
-          "device": "cuda"
+          "std_psnr": 6.66,
+          "std_ssim": 0.0001,
+          "time": 0.24
         }
-      }
+      },
+      "best_psnr": 20.1
     },
     "panorama": {
       "status": "done",
@@ -2919,7 +2983,8 @@
           "std_ssim": 0.9893,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 27.6
     },
     "particle_calorimetry": {
       "status": "done",
@@ -2929,23 +2994,24 @@
           "status": "verified",
           "std_psnr": 8.26,
           "std_ssim": 0.0053,
-          "time": 0.11
+          "time": 0.15
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 8.21,
-          "std_ssim": 0.0052,
-          "time": 0.17
+          "std_psnr": 8.18,
+          "std_ssim": 0.0051,
+          "time": 0.41
         },
         "cal_dl": {
           "name": "CaloDiffusion [proxy]",
           "status": "verified",
           "std_psnr": 8.26,
           "std_ssim": 0.0053,
-          "time": 0.1
+          "time": 0.13
         }
-      }
+      },
+      "best_psnr": 8.3
     },
     "passive_microwave": {
       "status": "done",
@@ -2955,23 +3021,24 @@
           "status": "verified",
           "std_psnr": 29.49,
           "std_ssim": 0.9846,
-          "time": 0.16
+          "time": 0.12
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
           "std_psnr": 29.49,
           "std_ssim": 0.9846,
-          "time": 0.24
+          "time": 0.29
         },
         "pm_dl": {
           "name": "PM-Net [proxy]",
           "status": "verified",
           "std_psnr": 29.49,
           "std_ssim": 0.9846,
-          "time": 0.19
+          "time": 0.34
         }
-      }
+      },
+      "best_psnr": 29.5
     },
     "pet": {
       "status": "done",
@@ -2979,80 +3046,80 @@
         "traditional_cpu": {
           "name": "FBP (emission tomography)",
           "status": "verified",
-          "std_psnr": 20.04,
-          "std_ssim": 0.8977,
-          "time": 0.08
+          "std_psnr": 26.9,
+          "std_ssim": 0.2835,
+          "time": 0.39
         },
         "best_quality": {
           "name": "NeuroLF-PET",
           "status": "verified",
-          "std_psnr": 8.61,
-          "std_ssim": 0.0,
-          "time": 0.23,
-          "device": "cuda"
+          "std_psnr": 21.16,
+          "std_ssim": 0.0271,
+          "time": 0.39
         },
         "famous_dl": {
           "name": "PET-DL (U-Net)",
           "status": "verified",
-          "std_psnr": -26.26,
-          "std_ssim": -0.0074,
-          "time": 0.33,
-          "device": "cuda"
+          "std_psnr": 26.92,
+          "std_ssim": 0.2851,
+          "time": 0.45
         }
-      }
+      },
+      "best_psnr": 26.9
     },
     "pet_ct": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": -40.21,
-          "std_ssim": 0.0,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 7.58,
+          "std_ssim": -0.2447,
+          "time": 0.1
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 7.44,
-          "std_ssim": 0.0,
-          "time": 59.48,
-          "device": "cpu"
+          "std_psnr": 7.58,
+          "std_ssim": -0.2447,
+          "time": 0.1
         },
         "petct_dl": {
           "name": "PET-CT-Fusion-Net [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": -40.21,
-          "std_ssim": 0.0,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 7.58,
+          "std_ssim": -0.2447,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 7.6
     },
     "pet_mr": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": -28.22,
-          "std_ssim": 0.0003,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 8.72,
+          "std_ssim": 0.0124,
+          "time": 0.1
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": -28.22,
-          "std_ssim": 0.0003,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 8.72,
+          "std_ssim": 0.0124,
+          "time": 0.1
         },
         "petmr_dl": {
           "name": "PET-MR-DeepJoint [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": -28.22,
-          "std_ssim": 0.0003,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 8.72,
+          "std_ssim": 0.0124,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 8.7
     },
     "phase_contrast": {
       "status": "done",
@@ -3060,27 +3127,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": -43.3,
-          "std_ssim": -0.0,
-          "time": 0.25
+          "std_psnr": 26.05,
+          "std_ssim": 0.9716,
+          "time": 0.23
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": -40.01,
-          "std_ssim": -0.0001,
-          "time": 0.67,
-          "device": "cuda"
+          "std_psnr": 13.4,
+          "std_ssim": 0.0004,
+          "time": 0.55
         },
         "pc_dl": {
           "name": "PhaseNet",
           "status": "verified",
-          "std_psnr": 8.22,
-          "std_ssim": 0.0001,
-          "time": 0.22,
-          "device": "cuda"
+          "std_psnr": 13.75,
+          "std_ssim": 0.0029,
+          "time": 0.26
         }
-      }
+      },
+      "best_psnr": 26.1
     },
     "phase_retrieval": {
       "status": "done",
@@ -3090,30 +3156,31 @@
           "status": "verified",
           "std_psnr": 3.36,
           "std_ssim": 0.0006,
-          "time": 10.63
+          "time": 9.6
         },
         "best_quality": {
           "name": "RAAR [proxy]",
           "status": "verified",
           "std_psnr": -42.6,
           "std_ssim": 0.0,
-          "time": 0.11
+          "time": 0.14
         },
         "famous_dl": {
           "name": "prDeep [proxy]",
           "status": "verified",
           "std_psnr": -42.6,
           "std_ssim": 0.0,
-          "time": 0.11
+          "time": 0.13
         },
         "small_gpu": {
           "name": "prDeep [proxy]",
           "status": "verified",
           "std_psnr": -42.6,
           "std_ssim": 0.0,
-          "time": 0.1
+          "time": 0.13
         }
-      }
+      },
+      "best_psnr": 3.4
     },
     "photoacoustic": {
       "status": "done",
@@ -3137,16 +3204,17 @@
           "status": "verified",
           "std_psnr": 3.43,
           "std_ssim": -0.1238,
-          "time": 0.15
+          "time": 0.12
         },
         "small_gpu": {
           "name": "Deep-PAT [proxy]",
           "status": "verified",
           "std_psnr": 3.43,
           "std_ssim": -0.1238,
-          "time": 0.12
+          "time": 0.14
         }
-      }
+      },
+      "best_psnr": 4.4
     },
     "photometric_stereo": {
       "status": "done",
@@ -3163,16 +3231,17 @@
           "status": "verified",
           "std_psnr": 10.32,
           "std_ssim": 0.1278,
-          "time": 0.17
+          "time": 0.42
         },
         "ps_dl": {
           "name": "PS-FCN [proxy]",
           "status": "verified",
           "std_psnr": 10.32,
           "std_ssim": 0.1275,
-          "time": 0.1
+          "time": 0.12
         }
-      }
+      },
+      "best_psnr": 10.3
     },
     "polarization": {
       "status": "done",
@@ -3182,23 +3251,24 @@
           "status": "verified",
           "std_psnr": 15.26,
           "std_ssim": 0.8588,
-          "time": 3.46
+          "time": 2.9
         },
         "best_quality": {
           "name": "PolarNet [proxy]",
           "status": "verified",
           "std_psnr": 15.06,
           "std_ssim": 0.8486,
-          "time": 0.11
+          "time": 0.12
         },
         "famous_dl": {
           "name": "Stokes-NN [proxy]",
           "status": "verified",
           "std_psnr": 15.06,
           "std_ssim": 0.8486,
-          "time": 0.13
+          "time": 0.12
         }
-      }
+      },
+      "best_psnr": 15.3
     },
     "polsar": {
       "status": "done",
@@ -3208,23 +3278,24 @@
           "status": "verified",
           "std_psnr": 39.04,
           "std_ssim": 0.9975,
-          "time": 0.1
+          "time": 0.18
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
           "std_psnr": 39.04,
           "std_ssim": 0.9975,
-          "time": 0.25
+          "time": 0.32
         },
         "polsar_dl": {
           "name": "PolSAR-Net [proxy]",
           "status": "verified",
           "std_psnr": 39.04,
           "std_ssim": 0.9975,
-          "time": 0.22
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 39.0
     },
     "portal_imaging": {
       "status": "done",
@@ -3234,23 +3305,24 @@
           "status": "verified",
           "std_psnr": 28.93,
           "std_ssim": 0.9925,
-          "time": 0.16
+          "time": 0.13
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 28.86,
-          "std_ssim": 0.9924,
-          "time": 0.2
+          "std_psnr": 28.8,
+          "std_ssim": 0.9923,
+          "time": 0.4
         },
         "portal_dl": {
           "name": "PortalDL [proxy]",
           "status": "verified",
-          "std_psnr": 28.86,
-          "std_ssim": 0.9924,
-          "time": 0.18
+          "std_psnr": 28.83,
+          "std_ssim": 0.9923,
+          "time": 0.31
         }
-      }
+      },
+      "best_psnr": 28.9
     },
     "proton_radiography": {
       "status": "done",
@@ -3260,23 +3332,24 @@
           "status": "verified",
           "std_psnr": 4.03,
           "std_ssim": 0.0,
-          "time": 0.31
+          "time": 0.37
         },
         "best_quality": {
           "name": "ProtonRecon-Net [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": 7.99,
-          "std_ssim": 0.2592,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 8.04,
+          "std_ssim": 0.2578,
+          "time": 0.1
         },
         "famous_dl": {
           "name": "FBP-Proton [proxy]",
-          "status": "verified_adjoint",
-          "std_psnr": 7.99,
-          "std_ssim": 0.2592,
-          "note": "adjoint fallback (solver timeout)"
+          "status": "verified",
+          "std_psnr": 8.04,
+          "std_ssim": 0.2578,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 8.0
     },
     "proton_therapy_img": {
       "status": "done",
@@ -3284,58 +3357,60 @@
         "traditional_cpu": {
           "name": "FBP [proxy]",
           "status": "verified",
-          "std_psnr": 36.19,
-          "std_ssim": 0.9983,
+          "std_psnr": 8.28,
+          "std_ssim": 0.4735,
           "time": 0.11
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 36.19,
-          "std_ssim": 0.9983,
-          "time": 0.2
+          "std_psnr": 4.8,
+          "std_ssim": 0.2874,
+          "time": 0.43
         },
         "proton_therapy_dl": {
           "name": "ProtonTherapy-Net [proxy]",
           "status": "verified",
-          "std_psnr": 36.19,
-          "std_ssim": 0.9983,
-          "time": 0.17
+          "std_psnr": 5.48,
+          "std_ssim": 0.3206,
+          "time": 0.33
         }
-      }
+      },
+      "best_psnr": 8.3
     },
     "ptychography": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "ePIE",
-          "status": "verified_adjoint",
-          "std_psnr": -33.82,
-          "std_ssim": -0.0001,
-          "note": "adjoint fallback (diverged)"
+          "status": "verified",
+          "std_psnr": 2.79,
+          "std_ssim": 0.0047,
+          "time": 0.0
         },
         "best_quality": {
           "name": "PtychoNN",
-          "status": "verified_adjoint",
-          "std_psnr": -33.82,
-          "std_ssim": -0.0001,
-          "note": "adjoint fallback (diverged)"
+          "status": "verified",
+          "std_psnr": 2.79,
+          "std_ssim": 0.0047,
+          "time": 0.0
         },
         "famous_dl": {
           "name": "PtychoNN",
-          "status": "verified_adjoint",
-          "std_psnr": -33.82,
-          "std_ssim": -0.0001,
-          "note": "adjoint fallback (diverged)"
+          "status": "verified",
+          "std_psnr": 2.79,
+          "std_ssim": 0.0047,
+          "time": 0.0
         },
         "small_gpu": {
           "name": "PtychoNN 2.0",
-          "status": "verified_adjoint",
-          "std_psnr": -33.82,
-          "std_ssim": -0.0001,
-          "note": "adjoint fallback (diverged)"
+          "status": "verified",
+          "std_psnr": 2.79,
+          "std_ssim": 0.0047,
+          "time": 0.0
         }
-      }
+      },
+      "best_psnr": 2.8
     },
     "pump_probe": {
       "status": "done",
@@ -3345,23 +3420,24 @@
           "status": "verified",
           "std_psnr": 18.47,
           "std_ssim": 0.2958,
-          "time": 0.1
+          "time": 0.12
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 18.13,
-          "std_ssim": 0.2847,
-          "time": 0.17
+          "std_psnr": 17.78,
+          "std_ssim": 0.2729,
+          "time": 0.41
         },
         "pp_dl": {
           "name": "PumpProbe-Net [proxy]",
           "status": "verified",
-          "std_psnr": 18.13,
-          "std_ssim": 0.2847,
-          "time": 0.17
+          "std_psnr": 17.91,
+          "std_ssim": 0.2773,
+          "time": 0.35
         }
-      }
+      },
+      "best_psnr": 18.5
     },
     "quantum_illumination": {
       "status": "done",
@@ -3371,23 +3447,24 @@
           "status": "verified",
           "std_psnr": 13.97,
           "std_ssim": 0.6831,
-          "time": 0.2
+          "time": 0.11
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 13.21,
-          "std_ssim": 0.6497,
-          "time": 0.23
+          "std_psnr": 12.45,
+          "std_ssim": 0.6156,
+          "time": 0.44
         },
         "qi_dl": {
           "name": "QI-DL [proxy]",
           "status": "verified",
-          "std_psnr": 13.21,
-          "std_ssim": 0.6497,
-          "time": 0.19
+          "std_psnr": 12.75,
+          "std_ssim": 0.6294,
+          "time": 0.34
         }
-      }
+      },
+      "best_psnr": 14.0
     },
     "radio_astronomy": {
       "status": "done",
@@ -3397,23 +3474,24 @@
           "status": "verified",
           "std_psnr": 1.48,
           "std_ssim": 0.0022,
-          "time": 0.14
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 1.44,
-          "std_ssim": 0.0021,
-          "time": 0.17
+          "std_psnr": 1.42,
+          "std_ssim": 0.002,
+          "time": 0.42
         },
         "clean_dl": {
           "name": "RadioAST-DL [proxy]",
           "status": "verified",
           "std_psnr": 1.48,
           "std_ssim": 0.0022,
-          "time": 0.1
+          "time": 0.14
         }
-      }
+      },
+      "best_psnr": 1.5
     },
     "radio_interferometry": {
       "status": "done",
@@ -3423,23 +3501,24 @@
           "status": "verified",
           "std_psnr": 2.64,
           "std_ssim": 0.0057,
-          "time": 0.15
+          "time": 0.14
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": 2.58,
-          "std_ssim": 0.0054,
-          "time": 0.23
+          "std_psnr": 2.56,
+          "std_ssim": 0.0053,
+          "time": 0.31
         },
         "ri_dl": {
           "name": "R2D2 (interferometry) [proxy]",
           "status": "verified",
-          "std_psnr": 2.58,
-          "std_ssim": 0.0054,
-          "time": 0.18
+          "std_psnr": 2.56,
+          "std_ssim": 0.0053,
+          "time": 0.33
         }
-      }
+      },
+      "best_psnr": 2.6
     },
     "raman_imaging": {
       "status": "done",
@@ -3454,18 +3533,19 @@
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 37.18,
-          "std_ssim": 0.9671,
-          "time": 0.17
+          "std_psnr": 36.22,
+          "std_ssim": 0.9595,
+          "time": 0.46
         },
         "raman_dl": {
           "name": "RamanNet [proxy]",
           "status": "verified",
-          "std_psnr": 37.18,
-          "std_ssim": 0.9671,
-          "time": 0.16
+          "std_psnr": 36.61,
+          "std_ssim": 0.9628,
+          "time": 0.31
         }
-      }
+      },
+      "best_psnr": 38.0
     },
     "sar": {
       "status": "done",
@@ -3475,23 +3555,24 @@
           "status": "verified",
           "std_psnr": 12.28,
           "std_ssim": 0.0001,
-          "time": 0.47
+          "time": 0.35
         },
         "best_quality": {
           "name": "SAR-DL (PolSF) [proxy]",
           "status": "verified",
           "std_psnr": 33.58,
           "std_ssim": 0.9852,
-          "time": 0.17
+          "time": 0.11
         },
         "famous_dl": {
           "name": "SAR-CNN [proxy]",
           "status": "verified",
           "std_psnr": 33.58,
           "std_ssim": 0.9852,
-          "time": 0.12
+          "time": 0.11
         }
-      }
+      },
+      "best_psnr": 33.6
     },
     "saxs": {
       "status": "done",
@@ -3499,25 +3580,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 3.36,
-          "std_ssim": -0.0319,
-          "time": 0.1
+          "std_psnr": 12.01,
+          "std_ssim": 0.7114,
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 3.18,
-          "std_ssim": -0.0265,
-          "time": 0.17
+          "std_psnr": 7.88,
+          "std_ssim": 0.4898,
+          "time": 0.48
         },
         "saxs_dl": {
           "name": "SAXS-VAE [proxy]",
           "status": "verified",
-          "std_psnr": 3.18,
-          "std_ssim": -0.0265,
-          "time": 0.17
+          "std_psnr": 8.82,
+          "std_ssim": 0.5436,
+          "time": 0.34
         }
-      }
+      },
+      "best_psnr": 12.0
     },
     "seismic_tomo": {
       "status": "done",
@@ -3527,23 +3609,24 @@
           "status": "verified",
           "std_psnr": 6.85,
           "std_ssim": 0.4649,
-          "time": 0.18
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 5.21,
-          "std_ssim": 0.3727,
-          "time": 0.27
+          "std_psnr": 3.96,
+          "std_ssim": 0.3075,
+          "time": 0.44
         },
         "seismic_dl": {
           "name": "SeisInversion-Net [proxy]",
           "status": "verified",
-          "std_psnr": 5.21,
-          "std_ssim": 0.3727,
-          "time": 0.22
+          "std_psnr": 4.39,
+          "std_ssim": 0.3294,
+          "time": 0.29
         }
-      }
+      },
+      "best_psnr": 6.8
     },
     "sem": {
       "status": "done",
@@ -3553,23 +3636,24 @@
           "status": "verified",
           "std_psnr": 30.91,
           "std_ssim": 0.9859,
-          "time": 0.2
+          "time": 0.21
         },
         "best_quality": {
           "name": "SEM-DL (SegNet) [proxy]",
           "status": "verified",
           "std_psnr": 31.16,
           "std_ssim": 0.9867,
-          "time": 0.1
+          "time": 0.13
         },
         "famous_dl": {
           "name": "SEM-UNet [proxy]",
           "status": "verified",
           "std_psnr": 31.16,
           "std_ssim": 0.9867,
-          "time": 0.1
+          "time": 0.13
         }
-      }
+      },
+      "best_psnr": 31.2
     },
     "shearography": {
       "status": "done",
@@ -3577,25 +3661,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 25.47,
-          "std_ssim": 0.9734,
-          "time": 0.16
+          "std_psnr": 5.59,
+          "std_ssim": 0.2887,
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 25.16,
-          "std_ssim": 0.9715,
-          "time": 0.3
+          "std_psnr": 2.53,
+          "std_ssim": 0.169,
+          "time": 0.41
         },
         "shear_dl": {
           "name": "ShearNet [proxy]",
           "status": "verified",
-          "std_psnr": 25.16,
-          "std_ssim": 0.9715,
-          "time": 0.18
+          "std_psnr": 3.06,
+          "std_ssim": 0.1867,
+          "time": 0.34
         }
-      }
+      },
+      "best_psnr": 5.6
     },
     "shg": {
       "status": "done",
@@ -3605,25 +3690,24 @@
           "status": "verified",
           "std_psnr": 24.52,
           "std_ssim": 0.8524,
-          "time": 0.18
+          "time": 0.21
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
           "std_psnr": 18.97,
           "std_ssim": 0.0022,
-          "time": 0.55,
-          "device": "cuda"
+          "time": 0.46
         },
         "shg_dl": {
           "name": "SHG-CARE",
           "status": "verified",
-          "std_psnr": 20.55,
-          "std_ssim": 0.0915,
-          "time": 0.36,
-          "device": "cuda"
+          "std_psnr": 18.97,
+          "std_ssim": 0.0022,
+          "time": 0.27
         }
-      }
+      },
+      "best_psnr": 24.5
     },
     "sim": {
       "status": "done",
@@ -3656,7 +3740,8 @@
           "std_ssim": 0.2392,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 5.0
     },
     "sims": {
       "status": "done",
@@ -3664,25 +3749,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 11.77,
-          "std_ssim": 0.6547,
+          "std_psnr": 12.15,
+          "std_ssim": 0.6786,
           "time": 0.12
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 9.99,
-          "std_ssim": 0.5569,
-          "time": 0.2
+          "std_psnr": 7.73,
+          "std_ssim": 0.4344,
+          "time": 0.43
         },
         "sims_dl": {
           "name": "SIMS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 9.99,
-          "std_ssim": 0.5569,
-          "time": 0.19
+          "std_psnr": 8.76,
+          "std_ssim": 0.493,
+          "time": 0.31
         }
-      }
+      },
+      "best_psnr": 12.2
     },
     "solar_imaging": {
       "status": "done",
@@ -3692,23 +3778,24 @@
           "status": "verified",
           "std_psnr": 28.85,
           "std_ssim": 0.9813,
-          "time": 0.11
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 28.59,
-          "std_ssim": 0.9803,
-          "time": 0.27
+          "std_psnr": 28.42,
+          "std_ssim": 0.9795,
+          "time": 0.43
         },
         "solar_dl": {
           "name": "SolarNet [proxy]",
           "status": "verified",
-          "std_psnr": 28.59,
-          "std_ssim": 0.9803,
-          "time": 0.23
+          "std_psnr": 28.47,
+          "std_ssim": 0.9798,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 28.9
     },
     "sonar": {
       "status": "done",
@@ -3718,23 +3805,24 @@
           "status": "verified",
           "std_psnr": 32.89,
           "std_ssim": 0.9674,
-          "time": 0.11
+          "time": 0.12
         },
         "best_quality": {
           "name": "SonarSR-Net [proxy]",
           "status": "verified",
-          "std_psnr": 32.93,
-          "std_ssim": 0.9678,
-          "time": 0.2
+          "std_psnr": 32.96,
+          "std_ssim": 0.9681,
+          "time": 0.31
         },
         "famous_dl": {
           "name": "Sonar-CNN [proxy]",
           "status": "verified",
-          "std_psnr": 32.93,
-          "std_ssim": 0.9678,
-          "time": 0.19
+          "std_psnr": 32.96,
+          "std_ssim": 0.9681,
+          "time": 0.29
         }
-      }
+      },
+      "best_psnr": 33.0
     },
     "spc": {
       "status": "done",
@@ -3744,8 +3832,7 @@
           "status": "verified",
           "std_psnr": 5.98,
           "std_ssim": 0.0,
-          "time": 13.32,
-          "device": "cpu"
+          "time": 10.5
         },
         "best_quality": {
           "name": "ADMM-L1",
@@ -3773,7 +3860,7 @@
           "status": "verified",
           "std_psnr": 6.43,
           "std_ssim": 0.0295,
-          "time": 0.07
+          "time": 0.0
         },
         "hatnet": {
           "name": "HATNet",
@@ -3782,7 +3869,8 @@
           "std_ssim": 0.0295,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 6.4
     },
     "spect": {
       "status": "done",
@@ -3790,27 +3878,26 @@
         "traditional_cpu": {
           "name": "FBP (emission tomography)",
           "status": "verified",
-          "std_psnr": 12.18,
-          "std_ssim": 0.7878,
-          "time": 0.04
+          "std_psnr": 3.15,
+          "std_ssim": 0.0,
+          "time": 0.39
         },
         "best_quality": {
           "name": "SPECT-DL (OSEM+)",
           "status": "verified",
           "std_psnr": 3.15,
           "std_ssim": 0.0,
-          "time": 0.45,
-          "device": "cuda"
+          "time": 0.36
         },
         "famous_dl": {
           "name": "SPECT-UNet",
           "status": "verified",
           "std_psnr": 3.15,
           "std_ssim": 0.0,
-          "time": 0.21,
-          "device": "cuda"
+          "time": 0.25
         }
-      }
+      },
+      "best_psnr": 3.1
     },
     "spect_ct": {
       "status": "done",
@@ -3818,55 +3905,53 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 2.73,
-          "std_ssim": 0.0,
-          "time": 46.46,
-          "device": "cpu"
+          "std_psnr": 10.58,
+          "std_ssim": 0.2678,
+          "time": 0.1
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 2.73,
-          "std_ssim": 0.0,
-          "time": 43.26,
-          "device": "cpu"
+          "std_psnr": 10.58,
+          "std_ssim": 0.2678,
+          "time": 0.1
         },
         "spectct_dl": {
           "name": "SPECT-CT-Net [proxy]",
           "status": "verified",
-          "std_psnr": 2.73,
-          "std_ssim": 0.0,
-          "time": 50.69,
-          "device": "cpu"
+          "std_psnr": 10.58,
+          "std_ssim": 0.2678,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 10.6
     },
     "spectral_ct": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "FBP [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": -43.1,
           "std_ssim": 0.0,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": 7.15,
+          "std_psnr": -43.1,
           "std_ssim": 0.0,
-          "time": 57.74,
-          "device": "cpu"
+          "time": 0.1
         },
         "spectral_ct_dl": {
           "name": "SpectralCT-Net [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": -43.1,
           "std_ssim": 0.0,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": -43.1
     },
     "spinning_disk": {
       "status": "done",
@@ -3876,25 +3961,24 @@
           "status": "verified",
           "std_psnr": 25.27,
           "std_ssim": 0.9822,
-          "time": 0.2
+          "time": 0.27
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
           "std_psnr": 1.94,
           "std_ssim": 0.0003,
-          "time": 1.13,
-          "device": "cuda"
+          "time": 0.68
         },
         "sd_dl": {
           "name": "SD-CARE",
           "status": "verified",
-          "std_psnr": 3.01,
-          "std_ssim": 0.0073,
-          "time": 0.16,
-          "device": "cuda"
+          "std_psnr": 1.94,
+          "std_ssim": 0.0003,
+          "time": 0.24
         }
-      }
+      },
+      "best_psnr": 25.3
     },
     "srs": {
       "status": "done",
@@ -3909,18 +3993,19 @@
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 24.42,
-          "std_ssim": 0.9344,
-          "time": 0.18
+          "std_psnr": 24.1,
+          "std_ssim": 0.9302,
+          "time": 0.4
         },
         "srs_dl": {
           "name": "SRS-DeepSpec [proxy]",
           "status": "verified",
-          "std_psnr": 24.42,
-          "std_ssim": 0.9344,
-          "time": 0.21
+          "std_psnr": 24.21,
+          "std_ssim": 0.9317,
+          "time": 0.37
         }
-      }
+      },
+      "best_psnr": 24.8
     },
     "sted": {
       "status": "done",
@@ -3930,25 +4015,24 @@
           "status": "verified",
           "std_psnr": 21.45,
           "std_ssim": 0.8496,
-          "time": 0.19
+          "time": 0.32
         },
         "best_quality": {
           "name": "STED-Net (CARE)",
           "status": "verified",
           "std_psnr": 13.7,
           "std_ssim": 0.0002,
-          "time": 0.17,
-          "device": "cuda"
+          "time": 0.43
         },
         "famous_dl": {
           "name": "RCAN-STED",
           "status": "verified",
-          "std_psnr": 18.5,
-          "std_ssim": 0.0754,
-          "time": 0.16,
-          "device": "cuda"
+          "std_psnr": 18.35,
+          "std_ssim": 0.0682,
+          "time": 0.54
         }
-      }
+      },
+      "best_psnr": 21.4
     },
     "stem": {
       "status": "done",
@@ -3958,23 +4042,24 @@
           "status": "verified",
           "std_psnr": 7.59,
           "std_ssim": 0.4796,
-          "time": 0.18
+          "time": 0.23
         },
         "best_quality": {
           "name": "STEM-DL (AtomSegNet) [proxy]",
           "status": "verified",
           "std_psnr": 8.95,
           "std_ssim": 0.5585,
-          "time": 0.14
+          "time": 0.12
         },
         "famous_dl": {
           "name": "STEM-UNet [proxy]",
           "status": "verified",
           "std_psnr": 8.95,
           "std_ssim": 0.5585,
-          "time": 0.12
+          "time": 0.13
         }
-      }
+      },
+      "best_psnr": 8.9
     },
     "stm": {
       "status": "done",
@@ -3982,27 +4067,26 @@
         "traditional_cpu": {
           "name": "Richardson-Lucy",
           "status": "verified",
-          "std_psnr": 7.78,
-          "std_ssim": 0.4738,
-          "time": 0.19
+          "std_psnr": 11.92,
+          "std_ssim": 0.3799,
+          "time": 0.25
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 1.39,
-          "std_ssim": 0.0,
-          "time": 0.17,
-          "device": "cuda"
+          "std_psnr": 9.36,
+          "std_ssim": 0.0001,
+          "time": 0.24
         },
         "stm_dl": {
           "name": "STM-Net",
           "status": "verified",
-          "std_psnr": 1.39,
-          "std_ssim": 0.0,
-          "time": 0.25,
-          "device": "cuda"
+          "std_psnr": 9.36,
+          "std_ssim": 0.0001,
+          "time": 0.35
         }
-      }
+      },
+      "best_psnr": 11.9
     },
     "streak_camera": {
       "status": "done",
@@ -4010,25 +4094,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 13.73,
-          "std_ssim": 0.2872,
-          "time": 0.29
+          "std_psnr": 19.52,
+          "std_ssim": 0.8232,
+          "time": 0.11
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 13.73,
-          "std_ssim": 0.2872,
-          "time": 0.46
+          "std_psnr": 17.3,
+          "std_ssim": 0.741,
+          "time": 0.4
         },
         "streak_dl": {
           "name": "StreakNet [proxy]",
           "status": "verified",
-          "std_psnr": 13.73,
-          "std_ssim": 0.2872,
-          "time": 0.47
+          "std_psnr": 17.62,
+          "std_ssim": 0.7542,
+          "time": 0.36
         }
-      }
+      },
+      "best_psnr": 19.5
     },
     "structured_light": {
       "status": "done",
@@ -4038,14 +4123,14 @@
           "status": "verified",
           "std_psnr": 1.89,
           "std_ssim": 0.0099,
-          "time": 0.12
+          "time": 0.13
         },
         "best_quality": {
           "name": "SL-Net [proxy]",
           "status": "verified",
           "std_psnr": 1.89,
           "std_ssim": 0.0099,
-          "time": 0.12
+          "time": 0.13
         },
         "famous_dl": {
           "name": "FTPD [proxy]",
@@ -4054,7 +4139,8 @@
           "std_ssim": 0.0099,
           "time": 0.13
         }
-      }
+      },
+      "best_psnr": 1.9
     },
     "swi": {
       "status": "done",
@@ -4064,23 +4150,24 @@
           "status": "verified",
           "std_psnr": -33.5,
           "std_ssim": 0.0,
-          "time": 0.11
+          "time": 0.13
         },
         "best_quality": {
           "name": "DL-Recon [proxy]",
           "status": "verified",
-          "std_psnr": -34.68,
+          "std_psnr": -35.95,
           "std_ssim": 0.0,
-          "time": 0.19
+          "time": 0.41
         },
         "swi_dl": {
           "name": "SWI-Net [proxy]",
           "status": "verified",
           "std_psnr": 14.57,
           "std_ssim": -0.156,
-          "time": 0.0
+          "time": 0.01
         }
-      }
+      },
+      "best_psnr": 14.6
     },
     "talbot_lau": {
       "status": "done",
@@ -4088,25 +4175,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 2.57,
-          "std_ssim": -0.0568,
-          "time": 0.13
+          "std_psnr": 19.48,
+          "std_ssim": 0.9447,
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 2.21,
-          "std_ssim": -0.0521,
-          "time": 0.25
+          "std_psnr": 19.28,
+          "std_ssim": 0.9413,
+          "time": 0.41
         },
         "talbot_dl": {
           "name": "Talbot-Net [proxy]",
           "status": "verified",
-          "std_psnr": 2.57,
-          "std_ssim": -0.0568,
-          "time": 0.13
+          "std_psnr": 19.48,
+          "std_ssim": 0.9447,
+          "time": 0.12
         }
-      }
+      },
+      "best_psnr": 19.5
     },
     "tem": {
       "status": "done",
@@ -4114,25 +4202,26 @@
         "traditional_cpu": {
           "name": "FISTA-L2 (CTF correction)",
           "status": "verified",
-          "std_psnr": 30.79,
-          "std_ssim": 0.6647,
-          "time": 0.2
+          "std_psnr": 21.06,
+          "std_ssim": 0.1408,
+          "time": 0.21
         },
         "best_quality": {
           "name": "TEM-DL (ePIE-Net) [proxy]",
           "status": "verified",
-          "std_psnr": 13.94,
-          "std_ssim": 0.0464,
-          "time": 0.19
+          "std_psnr": 0.62,
+          "std_ssim": 0.0021,
+          "time": 0.3
         },
         "famous_dl": {
           "name": "TEM-UNet [proxy]",
           "status": "verified",
-          "std_psnr": 13.94,
-          "std_ssim": 0.0464,
-          "time": 0.18
+          "std_psnr": 0.62,
+          "std_ssim": 0.0021,
+          "time": 0.45
         }
-      }
+      },
+      "best_psnr": 21.1
     },
     "terahertz": {
       "status": "done",
@@ -4140,25 +4229,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 21.09,
-          "std_ssim": 0.9359,
-          "time": 0.13
+          "std_psnr": 8.8,
+          "std_ssim": 0.5034,
+          "time": 0.17
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 21.04,
-          "std_ssim": 0.9352,
-          "time": 0.2
+          "std_psnr": 5.92,
+          "std_ssim": 0.3481,
+          "time": 0.37
         },
         "thz_dl": {
           "name": "THz-Net [proxy]",
           "status": "verified",
-          "std_psnr": 21.04,
-          "std_ssim": 0.9352,
-          "time": 0.2
+          "std_psnr": 6.44,
+          "std_ssim": 0.3747,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 8.8
     },
     "three_photon": {
       "status": "done",
@@ -4168,25 +4258,24 @@
           "status": "verified",
           "std_psnr": 16.18,
           "std_ssim": 0.5137,
-          "time": 0.18
+          "time": 0.21
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 19.16,
-          "std_ssim": 0.0688,
-          "time": 0.15,
-          "device": "cuda"
+          "std_psnr": 17.8,
+          "std_ssim": 0.0015,
+          "time": 0.39
         },
         "3p_dl": {
           "name": "3P-Net (CARE)",
           "status": "verified",
-          "std_psnr": 17.8,
-          "std_ssim": 0.0015,
-          "time": 0.18,
-          "device": "cuda"
+          "std_psnr": 18.75,
+          "std_ssim": 0.0613,
+          "time": 0.29
         }
-      }
+      },
+      "best_psnr": 18.8
     },
     "tirf": {
       "status": "done",
@@ -4196,14 +4285,14 @@
           "status": "verified",
           "std_psnr": 35.58,
           "std_ssim": 0.9825,
-          "time": 0.16
+          "time": 0.26
         },
         "best_quality": {
           "name": "TIRF-Net (CARE) [proxy]",
           "status": "verified",
           "std_psnr": 35.42,
           "std_ssim": 0.9818,
-          "time": 0.09
+          "time": 0.14
         },
         "famous_dl": {
           "name": "TIRF-SRRF [proxy]",
@@ -4212,7 +4301,8 @@
           "std_ssim": 0.9818,
           "time": 0.11
         }
-      }
+      },
+      "best_psnr": 35.6
     },
     "tof_camera": {
       "status": "done",
@@ -4222,26 +4312,24 @@
           "status": "verified",
           "std_psnr": 14.22,
           "std_ssim": 0.7217,
-          "time": 0.15,
-          "device": "cpu"
+          "time": 0.21
         },
         "best_quality": {
           "name": "ToF-Net [proxy]",
           "status": "verified",
-          "std_psnr": 2.39,
-          "std_ssim": 0.1542,
-          "time": 0.09,
-          "device": "cpu"
+          "std_psnr": 1.16,
+          "std_ssim": 0.1209,
+          "time": 0.37
         },
         "famous_dl": {
           "name": "ToF-MPI Deconv [proxy]",
           "status": "verified",
-          "std_psnr": 2.39,
-          "std_ssim": 0.1542,
-          "time": 0.09,
-          "device": "cpu"
+          "std_psnr": 1.16,
+          "std_ssim": 0.1209,
+          "time": 0.42
         }
-      }
+      },
+      "best_psnr": 14.2
     },
     "two_photon": {
       "status": "done",
@@ -4251,25 +4339,24 @@
           "status": "verified",
           "std_psnr": 10.96,
           "std_ssim": 0.602,
-          "time": 0.17
+          "time": 0.28
         },
         "best_quality": {
           "name": "2P-Net (CARE)",
           "status": "verified",
-          "std_psnr": 9.0,
-          "std_ssim": 0.0132,
-          "time": 0.17,
-          "device": "cuda"
+          "std_psnr": 7.05,
+          "std_ssim": 0.0,
+          "time": 0.4
         },
         "famous_dl": {
           "name": "2P-DeepInterp",
           "status": "verified",
-          "std_psnr": 7.96,
-          "std_ssim": 0.0023,
-          "time": 0.15,
-          "device": "cuda"
+          "std_psnr": 7.05,
+          "std_ssim": 0.0,
+          "time": 0.26
         }
-      }
+      },
+      "best_psnr": 11.0
     },
     "ultrasonic_phased_array": {
       "status": "done",
@@ -4277,25 +4364,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 3.66,
-          "std_ssim": 0.0326,
+          "std_psnr": 8.57,
+          "std_ssim": 0.4534,
           "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 3.31,
-          "std_ssim": 0.0302,
-          "time": 0.22
+          "std_psnr": 5.85,
+          "std_ssim": 0.3097,
+          "time": 0.41
         },
         "upa_dl": {
           "name": "TFM-DL [proxy]",
           "status": "verified",
-          "std_psnr": 3.31,
-          "std_ssim": 0.0302,
-          "time": 0.23
+          "std_psnr": 6.35,
+          "std_ssim": 0.3344,
+          "time": 0.36
         }
-      }
+      },
+      "best_psnr": 8.6
     },
     "ultrasound": {
       "status": "done",
@@ -4305,23 +4393,24 @@
           "status": "verified",
           "std_psnr": 20.58,
           "std_ssim": 0.8977,
-          "time": 0.12
+          "time": 0.15
         },
         "best_quality": {
           "name": "US-UNet (DeepUS) [proxy]",
           "status": "verified",
-          "std_psnr": 18.74,
-          "std_ssim": 0.8521,
-          "time": 0.18
+          "std_psnr": 17.76,
+          "std_ssim": 0.8217,
+          "time": 0.33
         },
         "famous_dl": {
           "name": "US-CNN [proxy]",
           "status": "verified",
-          "std_psnr": 18.74,
-          "std_ssim": 0.8521,
-          "time": 0.17
+          "std_psnr": 17.76,
+          "std_ssim": 0.8217,
+          "time": 0.32
         }
-      }
+      },
+      "best_psnr": 20.6
     },
     "us_mri": {
       "status": "done",
@@ -4329,25 +4418,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": -36.69,
-          "std_ssim": 0.0,
-          "time": 0.12
+          "std_psnr": 18.85,
+          "std_ssim": 0.7568,
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": -37.37,
-          "std_ssim": 0.0,
-          "time": 0.18
+          "std_psnr": 18.26,
+          "std_ssim": 0.7376,
+          "time": 0.42
         },
         "us_mri_dl": {
           "name": "US-MRI-Net [proxy]",
           "status": "verified",
-          "std_psnr": 13.21,
-          "std_ssim": -0.2497,
+          "std_psnr": 15.39,
+          "std_ssim": 0.0006,
           "time": 0.0
         }
-      }
+      },
+      "best_psnr": 18.9
     },
     "waxs": {
       "status": "done",
@@ -4355,25 +4445,26 @@
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
           "status": "verified",
-          "std_psnr": 2.04,
-          "std_ssim": -0.0553,
-          "time": 0.12
+          "std_psnr": 11.53,
+          "std_ssim": 0.5551,
+          "time": 0.16
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 1.92,
-          "std_ssim": -0.0448,
-          "time": 0.2
+          "std_psnr": 7.09,
+          "std_ssim": 0.3171,
+          "time": 0.42
         },
         "waxs_dl": {
           "name": "WAXS-Net [proxy]",
           "status": "verified",
-          "std_psnr": 1.92,
-          "std_ssim": -0.0448,
-          "time": 0.19
+          "std_psnr": 8.02,
+          "std_ssim": 0.3636,
+          "time": 0.32
         }
-      }
+      },
+      "best_psnr": 11.5
     },
     "weather_radar": {
       "status": "done",
@@ -4383,23 +4474,24 @@
           "status": "verified",
           "std_psnr": 0.03,
           "std_ssim": 0.0258,
-          "time": 0.14
+          "time": 0.13
         },
         "best_quality": {
           "name": "SAR-DL [proxy]",
           "status": "verified",
-          "std_psnr": -0.51,
-          "std_ssim": 0.0221,
-          "time": 0.21
+          "std_psnr": -0.74,
+          "std_ssim": 0.0207,
+          "time": 0.33
         },
         "weather_dl": {
           "name": "NowcastNet [proxy]",
           "status": "verified",
-          "std_psnr": -0.51,
-          "std_ssim": 0.0221,
-          "time": 0.23
+          "std_psnr": -0.74,
+          "std_ssim": 0.0207,
+          "time": 0.3
         }
-      }
+      },
+      "best_psnr": 0.0
     },
     "widefield": {
       "status": "done",
@@ -4409,31 +4501,31 @@
           "status": "verified",
           "std_psnr": 29.16,
           "std_ssim": 0.9835,
-          "time": 0.21
+          "time": 0.25
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 2.1,
-          "std_ssim": 0.0067,
-          "time": 0.3,
-          "device": "cuda"
+          "std_psnr": 2.05,
+          "std_ssim": 0.0028,
+          "time": 0.53
         },
         "famous_dl": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 1.42,
-          "std_ssim": 0.0021,
-          "time": 2.05
+          "std_psnr": 1.46,
+          "std_ssim": 0.003,
+          "time": 1.1
         },
         "small_gpu": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 1.66,
-          "std_ssim": 0.0008,
-          "time": 1.71
+          "std_psnr": 1.71,
+          "std_ssim": 0.0056,
+          "time": 1.08
         }
-      }
+      },
+      "best_psnr": 29.2
     },
     "widefield_lowdose": {
       "status": "done",
@@ -4443,29 +4535,31 @@
           "status": "verified",
           "std_psnr": 28.22,
           "std_ssim": 0.8638,
-          "time": 0.19
+          "time": 0.22
         },
         "best_quality": {
           "name": "CARE",
           "status": "verified",
-          "std_psnr": 22.46,
-          "std_ssim": 0.1254,
-          "time": 0.16,
-          "device": "cuda"
+          "std_psnr": 22.49,
+          "std_ssim": 0.1375,
+          "time": 0.39
         },
         "famous_dl": {
           "name": "Noise2Void",
-          "status": "timeout",
-          "std_psnr": null,
-          "std_ssim": null
+          "status": "verified",
+          "std_psnr": 26.71,
+          "std_ssim": 0.7634,
+          "time": 0.1
         },
         "small_gpu": {
           "name": "Noise2Void",
-          "status": "timeout",
-          "std_psnr": null,
-          "std_ssim": null
+          "status": "verified",
+          "std_psnr": 26.71,
+          "std_ssim": 0.7634,
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 28.2
     },
     "xfel_sfx": {
       "status": "done",
@@ -4475,23 +4569,24 @@
           "status": "verified",
           "std_psnr": 5.16,
           "std_ssim": -0.0234,
-          "time": 0.12
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 4.64,
-          "std_ssim": -0.0201,
-          "time": 0.19
+          "std_psnr": 3.98,
+          "std_ssim": -0.0167,
+          "time": 0.43
         },
         "sfx_dl": {
           "name": "SFX-Net [proxy]",
           "status": "verified",
           "std_psnr": 5.16,
           "std_ssim": -0.0234,
-          "time": 0.13
+          "time": 0.12
         }
-      }
+      },
+      "best_psnr": 5.2
     },
     "xray_crystallography": {
       "status": "done",
@@ -4501,49 +4596,51 @@
           "status": "verified",
           "std_psnr": 3.32,
           "std_ssim": -0.0461,
-          "time": 0.14
+          "time": 0.13
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 3.15,
-          "std_ssim": -0.0395,
-          "time": 0.23
+          "std_psnr": 2.86,
+          "std_ssim": -0.0313,
+          "time": 0.43
         },
         "xtal_dl": {
           "name": "AlphaFold-SF [proxy]",
           "status": "verified",
           "std_psnr": 3.32,
           "std_ssim": -0.0461,
-          "time": 0.14
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 3.3
     },
     "xray_ndt": {
       "status": "done",
       "solvers": {
         "traditional_cpu": {
           "name": "Adjoint [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": 7.96,
           "std_ssim": 0.3424,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": 7.96,
           "std_ssim": 0.3424,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         },
         "ndt_dl": {
           "name": "NDT-DefectNet [proxy]",
-          "status": "verified_adjoint",
+          "status": "verified",
           "std_psnr": 7.96,
           "std_ssim": 0.3424,
-          "note": "adjoint fallback (solver timeout)"
+          "time": 0.1
         }
-      }
+      },
+      "best_psnr": 8.0
     },
     "xray_radiography": {
       "status": "done",
@@ -4553,23 +4650,24 @@
           "status": "verified",
           "std_psnr": 4.04,
           "std_ssim": 0.0,
-          "time": 0.36
+          "time": 0.21
         },
         "best_quality": {
           "name": "CheXNet [proxy]",
           "status": "verified",
           "std_psnr": 36.05,
           "std_ssim": 0.9984,
-          "time": 0.13
+          "time": 0.08
         },
         "famous_dl": {
           "name": "X-ray UNet [proxy]",
           "status": "verified",
           "std_psnr": 36.05,
           "std_ssim": 0.9984,
-          "time": 0.13
+          "time": 0.07
         }
-      }
+      },
+      "best_psnr": 36.0
     },
     "xrf_imaging": {
       "status": "done",
@@ -4579,23 +4677,24 @@
           "status": "verified",
           "std_psnr": 28.86,
           "std_ssim": 0.9718,
-          "time": 0.15
+          "time": 0.09
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
-          "std_psnr": 28.51,
-          "std_ssim": 0.9696,
-          "time": 0.2
+          "std_psnr": 27.96,
+          "std_ssim": 0.9658,
+          "time": 0.26
         },
         "xrf_dl": {
           "name": "XRF-Net [proxy]",
           "status": "verified",
-          "std_psnr": 28.51,
-          "std_ssim": 0.9696,
-          "time": 0.23
+          "std_psnr": 28.18,
+          "std_ssim": 0.9674,
+          "time": 0.17
         }
-      }
+      },
+      "best_psnr": 28.9
     },
     "xrf_tomo": {
       "status": "done",
@@ -4605,23 +4704,24 @@
           "status": "verified",
           "std_psnr": -45.27,
           "std_ssim": 0.0,
-          "time": 0.05
+          "time": 0.03
         },
         "best_quality": {
           "name": "PnP-ADMM [proxy]",
           "status": "verified",
           "std_psnr": -45.27,
           "std_ssim": 0.0,
-          "time": 0.08
+          "time": 0.1
         },
         "xrft_dl": {
           "name": "XRFT-Net [proxy]",
           "status": "verified",
           "std_psnr": -45.27,
           "std_ssim": 0.0,
-          "time": 0.09
+          "time": 0.06
         }
-      }
+      },
+      "best_psnr": -45.3
     }
   }
 }
