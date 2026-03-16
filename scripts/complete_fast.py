@@ -127,8 +127,8 @@ def fix_negative_psnr(sv):
 
 # ─── Parse algorithm_state.md ─────────────────────────────────────────────────
 
-def parse_algorithm_state():
-    text = OUTPUT.read_text(encoding="utf-8")
+def _parse_md_tables(text):
+    """Parse algorithm tables from markdown text."""
     lines = text.split("\n")
     modalities = OrderedDict()
     current_mod = None
@@ -168,6 +168,39 @@ def parse_algorithm_state():
                     })
                 except:
                     pass
+
+    return modalities
+
+
+def parse_algorithm_state():
+    """Parse algorithm_state.md, restoring names from git if '?'."""
+    import subprocess
+    modalities = _parse_md_tables(OUTPUT.read_text(encoding="utf-8"))
+
+    # Check if any names are '?' and try to restore from original git version
+    has_missing = any(
+        a["name"] == "?" for m in modalities.values() for a in m["algorithms"]
+    )
+    if has_missing:
+        try:
+            result = subprocess.run(
+                ['git', 'show', '4fd50ed8:datasets/benchmark/algorithm_state.md'],
+                capture_output=True, text=True, encoding='utf-8', errors='replace',
+                cwd=str(ROOT)
+            )
+            if result.returncode == 0:
+                orig = _parse_md_tables(result.stdout)
+                for mid, md in modalities.items():
+                    orig_algos = orig.get(mid, {}).get("algorithms", [])
+                    for i, a in enumerate(md["algorithms"]):
+                        if a["name"] == "?" and i < len(orig_algos):
+                            a["name"] = orig_algos[i]["name"]
+                            if not a.get("year"):
+                                a["year"] = orig_algos[i].get("year", "")
+                            if not a.get("reference"):
+                                a["reference"] = orig_algos[i].get("reference", "")
+        except:
+            pass
 
     return modalities
 
@@ -235,7 +268,7 @@ def build_state(sv, modalities):
 
             sc[status] += 1
             algos.append({
-                "name": name, "year": algo.get("year", ""),
+                "algorithm": name, "name": name, "year": algo.get("year", ""),
                 "reference": algo.get("reference", ""),
                 "ref_psnr": rp, "ref_ssim": rs,
                 "pwm_psnr": round(pp, 2) if pp is not None else None,

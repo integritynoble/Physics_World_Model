@@ -159,7 +159,7 @@ def main():
 
         for a in algos:
             total_algos += 1
-            algo_name = a.get('algorithm', '?')
+            algo_name = a.get('algorithm') or a.get('name', '?')
             status = a.get('status', '?')
             ref_psnr = a.get('ref_psnr', 0)
 
@@ -312,7 +312,7 @@ def update_algorithm_state(registry):
             reg_algos = registry['modalities'].get(mod_id, {}).get('algorithms', [])
 
             for i, a in enumerate(algos):
-                algo_name = a.get('algorithm', '?')
+                algo_name = a.get('algorithm') or a.get('name', '?')
                 year = a.get('year', '')
                 ref = a.get('reference', '')
                 rp = a.get('ref_psnr')
