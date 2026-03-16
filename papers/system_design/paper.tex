@@ -127,11 +127,6 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % Judge Agent
 \node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
 
-% Three stages below judge (compact, high-level)
-\node[gate, fill=gray!10, draw=gray!50!black, below=0.6cm of judge, minimum width=2.4cm, font=\scriptsize] (s1) {Stage 1\\Compiler (6 gates)};
-\node[triad, below=0.35cm of s1, minimum width=2.4cm, font=\scriptsize] (s2) {Stage 2\\Triad ($G_1$\!--\!$G_3$)};
-\node[sysgate, below=0.35cm of s2, minimum width=2.4cm, font=\scriptsize] (s3) {Stage 3\\Cost + Feasib.};
-
 % Certified spec + report
 \node[spec, right=of judge] (cert) {Judgment\\report};
 
@@ -145,7 +140,7 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 \node[err, below=0.7cm of out] (errbox) {$\eps$ bounds\\report};
 
 % Reject
-\node[box, fill=red!8, draw=red!50!black, dashed, below=0.4cm of s3] (rej) {\scriptsize Reject};
+\node[box, fill=red!8, draw=red!50!black, dashed, below=0.7cm of judge] (rej) {\scriptsize Reject};
 
 % Arrows
 \draw[arr] (nl) -- (plan);
@@ -155,15 +150,10 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 \draw[arr] (cert) -- (perf);
 \draw[arr] (perf) -- (out);
 \draw[arr] (out) -- (errbox);
-\draw[arr, dashed, red!60!black] (s3) -- (rej);
+\draw[arr, dashed, red!60!black] (judge) -- (rej);
 
 % Feedback loop
 \draw[arr, dashed, blue!60!black] (judge.north) -- ++(0,0.4) -| node[above, font=\scriptsize, pos=0.25] {redesign} (plan.north);
-
-% Stage flow arrows
-\draw[arr, gray] (judge.south) -- (s1.north);
-\draw[arr, gray] (s1) -- (s2);
-\draw[arr, gray] (s2) -- (s3);
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
