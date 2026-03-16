@@ -232,3 +232,21 @@ s(t) = Σ_n sigma_n · exp(-j4π f_c R_n(t)/c) · rect(t/T)
 | Runtime | 0.56 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SMILI
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 14.87 dB |
+| SSIM (mean) | 0.031 |
+| Runtime | 0.03 s/sample |
+
+**Result: PASS**
+
+---

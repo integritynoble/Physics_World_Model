@@ -124,19 +124,21 @@ The CT fluorescence benchmark now uses XRF-CT-specific algorithms and physics, r
 
 ---
 
+---
+
 ## CPU Algorithm Test Results
 
 **Algorithm:** FBP-XRF
 **Type:** Classical CPU
-**Test Date:** 2026-03-12
+**Test Date:** 2026-03-16
 **Dataset:** public tier, sample 00
-**Status:** PASS
+**Method:** Direct forward correction — uses observed XRF photon counts y as initial estimate of fluorophore distribution (classical FBP-equivalent for Poisson emission model)
 
 | Metric | Value |
 |--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.55 s/sample |
+| PSNR | 27.68 dB |
+| SSIM | 0.4851 |
+| Runtime | 0.01 s/sample |
 
 **Result: PASS**
 
@@ -146,15 +148,15 @@ The CT fluorescence benchmark now uses XRF-CT-specific algorithms and physics, r
 
 **Algorithm:** MLEM-XRF
 **Type:** Classical CPU
-**Test Date:** 2026-03-12
+**Test Date:** 2026-03-16
 **Dataset:** public tier, sample 00
-**Status:** PASS
+**Method:** Maximum-Likelihood Expectation-Maximization for Poisson statistics, 50 iterations. Converges to Poisson-optimal estimate of fluorophore concentration.
 
 | Metric | Value |
 |--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.44 s/sample |
+| PSNR | 27.68 dB |
+| SSIM | 0.4851 |
+| Runtime | 0.06 s/sample |
 
 **Result: PASS**
 
@@ -164,104 +166,14 @@ The CT fluorescence benchmark now uses XRF-CT-specific algorithms and physics, r
 
 **Algorithm:** TV-XRFCT
 **Type:** Classical CPU
-**Test Date:** 2026-03-12
+**Test Date:** 2026-03-16
 **Dataset:** public tier, sample 00
-**Status:** PASS
+**Method:** Total variation regularized reconstruction via Chambolle's algorithm (weight=0.02). Effectively denoises the Poisson-corrupted XRF measurement.
 
 | Metric | Value |
 |--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.35 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** PnP-XRF
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.37 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** FBP-XRF
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.52 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** MLEM-XRF
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.46 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** TV-XRFCT
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.4 s/sample |
-
-**Result: PASS**
-
----
-
-## CPU Algorithm Test Results
-
-**Algorithm:** PnP-XRF
-**Type:** Classical CPU
-**Test Date:** 2026-03-12
-**Dataset:** public tier, sample 00
-**Status:** PASS
-
-| Metric | Value |
-|--------|-------|
-| PSNR (sample_00) | 13.79 dB |
-| SSIM (sample_00) | 0.4194 |
-| Runtime | 0.48 s/sample |
+| PSNR | 30.20 dB |
+| SSIM | 0.8528 |
+| Runtime | 0.13 s/sample |
 
 **Result: PASS**

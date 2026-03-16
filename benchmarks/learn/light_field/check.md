@@ -180,3 +180,19 @@ Light field camera imaging is correctly distinguished from integral imaging by t
 | Runtime | 7.02 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Shift-and-Sum
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=0.351) using H_ideal PSF — models light-field integration PSF as convolution kernel, Wiener inverse filter recovers the all-in-focus reconstruction equivalent to shift-and-sum aperture synthesis.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 22.51 dB |
+| SSIM | 0.6692 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

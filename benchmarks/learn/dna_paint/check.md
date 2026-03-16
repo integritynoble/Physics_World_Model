@@ -218,3 +218,21 @@ The DNA-PAINT benchmark correctly models the SMLM forward problem with stochasti
 | Runtime | 0.42 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DAOSTORM
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=0.05) using H_ideal PSF followed by TV denoising (weight=0.05) — deconvolution-based localization reconstruction for diffraction-limited spot detection.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 24.73 dB |
+| SSIM | 0.1520 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**

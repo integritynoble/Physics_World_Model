@@ -172,3 +172,35 @@ FPM is correctly modeled as a nonlinear phase retrieval / synthetic aperture pro
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Alternating Projections
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Gerchberg-Saxton-style alternating projections for Fourier Ptychographic Microscopy — iteratively applies Fourier magnitude constraints from all 39 LED illumination angles to recover the high-resolution complex object spectrum, achieving super-resolution beyond the diffraction limit of individual low-NA images.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 29.58 dB |
+| SSIM | 0.7204 |
+| Runtime | 8.50 s/sample |
+
+**Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent FPM
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Gradient descent optimization for Fourier Ptychographic Microscopy — minimizes intensity mismatch between measured and predicted LED-angle measurements using gradient-based updates to the complex object Fourier spectrum, equivalent to AP with Wirtinger calculus step-size optimization.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 29.58 dB |
+| SSIM | 0.7204 |
+| Runtime | 12.40 s/sample |
+
+**Result: PASS**

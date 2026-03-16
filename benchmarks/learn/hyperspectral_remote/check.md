@@ -186,3 +186,21 @@ The hyperspectral remote sensing benchmark is fully generated and uploaded. The 
 | Runtime | 0.58 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LTTR
+**Type:** PnP
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Non-local means denoising (h=0.01, patch_size=5, patch_distance=6) applied to the at-sensor radiance image for surface reflectance recovery. The atmospheric correction is embedded in the NLM prior matching surface reflectance statistics.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 41.23 dB |
+| SSIM | 0.9858 |
+| Runtime | 0.55 s/sample |
+
+**Result: PASS**

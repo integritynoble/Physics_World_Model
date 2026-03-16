@@ -400,3 +400,75 @@ The fMRI benchmark correctly models the BOLD fMRI forward problem with Cartesian
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** L1-Wavelet
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 26.20 dB |
+| SSIM (mean) | 0.707 |
+| Runtime | 0.50 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** k-t SPARSE-SENSE
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 26.73 dB |
+| SSIM (mean) | 0.714 |
+| Runtime | 0.75 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ESPIRiT
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 27.25 dB |
+| SSIM (mean) | 0.714 |
+| Runtime | 1.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LORAKS
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, all samples
+**Status:** PASS
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean) | 27.52 dB |
+| SSIM (mean) | 0.721 |
+| Runtime | 1.26 s/sample |
+
+**Result: PASS**
+
+---

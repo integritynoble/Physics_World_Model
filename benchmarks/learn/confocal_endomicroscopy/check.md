@@ -202,3 +202,55 @@ The modify_plan.md documents the OCT-pool mismatch and the required override ent
 | Runtime | 0.35 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** NLM-Speckle
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=0.1) using H_ideal PSF followed by non-local means denoising (h=0.07, patch_size=5, patch_distance=6) for speckle reduction in confocal endomicroscopy images.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 24.49 dB |
+| SSIM | 0.6732 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-CLE
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Wiener deconvolution (SNR=0.3) using H_ideal PSF followed by BM3D denoising (sigma=0.04) for confocal endomicroscopy speckle removal.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 23.98 dB |
+| SSIM | 0.7188 |
+| Runtime | 12.83 s/sample |
+
+**Result: PASS**
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-CLE
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 05
+**Method:** Wiener deconvolution (SNR=0.0616) using H_ideal PSF followed by TV denoising (weight=0.1) — Wiener inverse filter recovers confocal endomicroscopy signal from optical blur, TV regularization models sparse gradient structure of tissue texture.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 27.23 dB |
+| SSIM | 0.7524 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**

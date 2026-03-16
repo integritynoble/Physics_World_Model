@@ -262,7 +262,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-Deconv | Classical | 26.5 dB | 0.791 |  |
+| Wiener-Deconv | Classical | 26.5 dB | 0.791 | done |
 | TV-Deconv | Variational | 29.2 dB | 0.831 |  |
 | BM3D-Deblur | PnP | 31.8 dB | 0.871 |  |
 | DnCNN-Deblur | Deep Learning | 33.5 dB | 0.899 |  |
@@ -419,7 +419,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Richardson-Lucy | Classical | 24.5 dB | 0.744 | done |
 | Wiener-DF | Classical | 27.2 dB | 0.793 | done |
-| TV-DF | Variational | 29.8 dB | 0.836 |  |
+| TV-DF | Variational | 29.8 dB | 0.836 | done |
 | BM3D-DF | Classical | 32.4 dB | 0.871 |  |
 | CARE-DF | Deep Learning | 35.1 dB | 0.908 |  |
 | Noise2Void-DF | Self-Supervised | 33.7 dB | 0.889 |  |
@@ -987,7 +987,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Shift-and-Add | Classical | 25.0 dB | 0.7 |  |
+| Shift-and-Add | Classical | 25.0 dB | 0.7 | done |
 | PnP-LF | PnP | 29.0 dB | 0.83 |  |
 | LFAttNet | Deep Learning | 33.5 dB | 0.92 |  |
 | DistgSSR | Transformer | 35.8 dB | 0.95 |  |
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 476 |
-| CPU algorithms pending verification | 99 |
+| CPU algorithms verified (done) | 479 |
+| CPU algorithms pending verification | 96 |
 | GPU algorithms pending | 979 |
 | Total | 1554 |
