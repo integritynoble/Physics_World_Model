@@ -127,20 +127,13 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % Judge Agent
 \node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
 
-% Stage 1: Structural compiler (prerequisite, directly below judge)
-\node[gate, fill=gray!10, draw=gray!50!black, below=0.7cm of judge, minimum width=3.0cm] (comp) {Structural Compiler\\{\tiny (DAG, Chain, Bnd, NL, Adj, Err)}};
-
-% Stage 2: Triad gates (primary, below compiler)
-\node[triad, below=0.7cm of comp, xshift=-1.0cm] (t1) {$G_1$\\Recover.};
-\node[triad, right=0.25cm of t1] (t2) {$G_2$\\Carrier};
-\node[triad, right=0.25cm of t2] (t3) {$G_3$\\Mismatch};
-
-% Stage 3: Cost + Feasibility (below Triad)
-\node[sysgate, below=0.7cm of t1, xshift=0.5cm] (cost) {Cost};
-\node[sysgate, right=0.25cm of cost] (feas) {Feasib.};
+% Three stages below judge (compact, high-level)
+\node[gate, fill=gray!10, draw=gray!50!black, below=0.6cm of judge, minimum width=2.4cm, font=\scriptsize] (s1) {Stage 1\\Compiler (6 gates)};
+\node[triad, below=0.35cm of s1, minimum width=2.4cm, font=\scriptsize] (s2) {Stage 2\\Triad ($G_1$\!--\!$G_3$)};
+\node[sysgate, below=0.35cm of s2, minimum width=2.4cm, font=\scriptsize] (s3) {Stage 3\\Cost + Feasib.};
 
 % Certified spec + report
-\node[spec, right=of judge] (cert) {Triad\\report};
+\node[spec, right=of judge] (cert) {Judgment\\report};
 
 % Execute Agent
 \node[agent, right=of cert] (perf) {$\Agent_E$\\Exec.};
@@ -151,8 +144,8 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % Error report
 \node[err, below=0.7cm of out] (errbox) {$\eps$ bounds\\report};
 
-% Reject — below cost/feasibility
-\node[box, fill=red!8, draw=red!50!black, dashed, below=0.5cm of feas] (rej) {\scriptsize Reject};
+% Reject
+\node[box, fill=red!8, draw=red!50!black, dashed, below=0.4cm of s3] (rej) {\scriptsize Reject};
 
 % Arrows
 \draw[arr] (nl) -- (plan);
@@ -162,25 +155,19 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 \draw[arr] (cert) -- (perf);
 \draw[arr] (perf) -- (out);
 \draw[arr] (out) -- (errbox);
-\draw[arr, dashed, red!60!black] (judge) |- (rej);
+\draw[arr, dashed, red!60!black] (s3) -- (rej);
 
 % Feedback loop
 \draw[arr, dashed, blue!60!black] (judge.north) -- ++(0,0.4) -| node[above, font=\scriptsize, pos=0.25] {redesign} (plan.north);
 
-% Stage flow arrows (compiler → triad → system)
-\draw[arr, gray] (judge.south) -- (comp.north);
-\draw[arr, gray] (comp.south) -- ++(0,-0.2) -| (t2.north);
-\draw[arr, gray] (t2.south) -- ++(0,-0.2) -| (cost.north);
-
-% Triad bracket
-\draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-3pt]t1.south west) -- ([yshift=-3pt]t3.south east) node[midway, below=5pt, font=\scriptsize] {Triad~\cite{paperII}};
-% System bracket
-\draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-3pt]cost.south west) -- ([yshift=-3pt]feas.south east) node[midway, below=5pt, font=\scriptsize] {System};
+% Stage flow arrows
+\draw[arr, gray] (judge.south) -- (s1.north);
+\draw[arr, gray] (s1) -- (s2);
+\draw[arr, gray] (s2) -- (s3);
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
-$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in three stages: (1)~a prerequisite structural compiler (6 gates: DAG, Chain, Bounds, Nonlinear, Adjoint, Error) ensures specification correctness; (2)~three Triad gates~\cite{paperII} ($G_1$: recoverability, $G_2$: carrier budget, $G_3$: operator mismatch) diagnose reconstruction feasibility; (3)~hardware cost estimation and physical feasibility from \texttt{system\_elements}.  Rejected designs trigger
-redesign (dashed blue, up to 3 rounds).
+$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in three stages: (1)~structural compilation, (2)~Triad gate evaluation~\cite{paperII}, (3)~cost and feasibility assessment (see Figure~\ref{fig:judge_flow} for details).  Rejected designs trigger redesign (dashed blue, up to 3 rounds).
 $\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
 $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
 \label{fig:pipeline}
