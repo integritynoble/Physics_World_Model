@@ -1260,6 +1260,86 @@ def _cassi_gap_tv_reconstruct(data: dict, n_iter: int = 100, tv_weight: float = 
     return np.clip(x_hat, 0, None)
 
 
+def _cassi_dauhst_reconstruct(data: dict) -> np.ndarray:
+    """Reconstruct CASSI spectral cube using DAUHST-9stg (deep unrolling).
+
+    Uses pretrained weights from GCS. Falls back to FISTA+TV if torch unavailable.
+    Architecture from Cai et al., NeurIPS 2022.
+    """
+    try:
+        import torch
+    except ImportError:
+        logger.warning("PyTorch not available, falling back to FISTA+TV for CASSI")
+        return _cassi_gap_tv_reconstruct(data)
+
+    import sys
+
+    y = data["y"].astype(np.float32)       # (H, W_ext)
+    mask = data["H_ideal"].astype(np.float32)  # (H, W)
+    x_true = data.get("x_true")
+
+    nC = x_true.shape[2] if x_true is not None and x_true.ndim == 3 else 28
+    H_sp, W = mask.shape
+    step = 2
+
+    # Build mask_3d_shift: [nC, H, W_ext] where W_ext = W + (nC-1)*step
+    W_ext = W + (nC - 1) * step
+    mask_3d_shift = np.zeros((nC, H_sp, W_ext), dtype=np.float32)
+    for k in range(nC):
+        mask_3d_shift[k, :, step * k:step * k + W] = mask
+
+    mask_3d_shift_t = torch.from_numpy(mask_3d_shift).unsqueeze(0).float()  # [1,28,H,W_ext]
+    Phi_s = torch.sum(mask_3d_shift_t ** 2, 1)  # [1,H,W_ext]
+    Phi_s[Phi_s == 0] = 1
+
+    # Prepare measurement (pad/trim to match model width)
+    y_model = np.zeros((H_sp, W_ext), dtype=np.float32)
+    copy_w = min(y.shape[1], W_ext)
+    y_model[:, :copy_w] = y[:, :copy_w]
+    y_t = torch.from_numpy(y_model).unsqueeze(0).float()  # [1, H, W_ext]
+
+    # Download checkpoint from GCS if not cached
+    ckpt_cache = CACHE_DIR / "dauhst_9stg.pth"
+    if not ckpt_cache.exists():
+        try:
+            from google.cloud import storage
+            client = storage.Client()
+            bucket = client.bucket(GCS_BUCKET)
+            blob = bucket.blob("datasets/checkpoints/cassi_model_zoo/dauhst/dauhst_9stg.pth")
+            blob.download_to_filename(str(ckpt_cache))
+            logger.info("Downloaded DAUHST-9stg checkpoint from GCS")
+        except Exception as e:
+            logger.warning(f"Cannot download DAUHST checkpoint: {e}, falling back to FISTA+TV")
+            return _cassi_gap_tv_reconstruct(data)
+
+    # Load DAUHST architecture from MST repo (cached in /tmp)
+    arch_dir = Path("/tmp/MST-repo/simulation/test_code/architecture")
+    if not arch_dir.exists():
+        logger.warning("DAUHST architecture not found, falling back to FISTA+TV")
+        return _cassi_gap_tv_reconstruct(data)
+
+    sys.path.insert(0, str(arch_dir))
+    try:
+        from DAUHST import DAUHST as DAUHSTModel
+        device = torch.device("cpu")
+        model = DAUHSTModel(num_iterations=9).to(device)
+
+        ckpt = torch.load(str(ckpt_cache), map_location=device, weights_only=False)
+        sd = {k.replace("module.", ""): v for k, v in ckpt.items()}
+        model.load_state_dict(sd, strict=True)
+        model.eval()
+
+        with torch.no_grad():
+            out = model(y_t.to(device), (mask_3d_shift_t.to(device), Phi_s.to(device)))
+
+        recon = out.squeeze(0).permute(1, 2, 0).cpu().numpy()  # [H, W, nC]
+        return np.clip(recon, 0, 1).astype(np.float32)
+
+    except Exception as e:
+        logger.warning(f"DAUHST inference failed: {e}, falling back to FISTA+TV")
+        return _cassi_gap_tv_reconstruct(data)
+
+
 def _mask_inpaint_reconstruct(y: np.ndarray, H: np.ndarray) -> np.ndarray:
     """Reconstruct from pixel-mask measurement: y = H_mask * x + noise.
 
@@ -1457,7 +1537,7 @@ def _dispatch_reconstruction(
                 return _phase_retrieval_reconstruct(data, algo_name)
 
             if recon_type == "cassi":
-                return _cassi_gap_tv_reconstruct(data)
+                return _cassi_dauhst_reconstruct(data)
 
             if recon_type == "mask_inpaint":
                 if H is not None:
