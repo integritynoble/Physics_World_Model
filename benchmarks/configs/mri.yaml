@@ -104,6 +104,13 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  sense:
+    name: SENSE
+    module: pwm_core.recon.mri_solvers
+    function: run_sense
+    params: {}
+    gpu: false
+    reference: Pruessmann et al., MRM 1999
 metrics:
   names:
   - psnr

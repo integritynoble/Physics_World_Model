@@ -109,6 +109,29 @@ solvers:
     params: 3.78M
     gpu: false
     reference: ''
+  pnp_ffdnet:
+    name: PnP-FFDNet
+    module: pwm_core.recon.cacti_solvers
+    function: pnp_ffdnet_cacti
+    params: {}
+    gpu: false
+    reference: Yuan et al., CVPR 2020
+  hisvit9:
+    name: HiSViT-9
+    module: pwm_core.recon.cacti_solvers
+    function: hisvit_cacti
+    params:
+      blocks: 9
+    gpu: true
+    reference: Chen et al., ICCV 2023
+  hisvit13:
+    name: HiSViT-13
+    module: pwm_core.recon.cacti_solvers
+    function: hisvit_cacti
+    params:
+      blocks: 13
+    gpu: true
+    reference: Chen et al., ECCV 2024
 metrics:
   names:
   - psnr

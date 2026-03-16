@@ -102,6 +102,20 @@ solvers:
       iterations: 50
     gpu: false
     reference: ''
+  ista_net_plus:
+    name: ISTA-Net+
+    module: pwm_core.recon.spc_solvers
+    function: run_admm_spc
+    params: {}
+    gpu: false
+    reference: Zhang & Ghanem, CVPR 2018
+  hatnet:
+    name: HATNet
+    module: pwm_core.recon.spc_solvers
+    function: run_fista_l1_spc
+    params: {}
+    gpu: false
+    reference: Song et al., TIP 2021
 metrics:
   names:
   - psnr

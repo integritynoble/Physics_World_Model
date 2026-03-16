@@ -140,6 +140,30 @@ solvers:
       step: 2
     gpu: false
     reference: ''
+  mst_l:
+    name: MST-L
+    module: pwm_core.recon.mst
+    function: mst_recon_cassi
+    params:
+      n_bands: 28
+    gpu: false
+    reference: Cai et al., CVPR 2022
+  hdnet:
+    name: HDNet
+    module: pwm_core.recon.hdnet
+    function: run_hdnet
+    params:
+      n_bands: 28
+    gpu: false
+    reference: Hu et al., CVPR 2022
+  hsi_sdecnn:
+    name: HSI-SDeCNN
+    module: pwm_core.recon.hsi_sdecnn
+    function: run_hsi_sdecnn
+    params:
+      n_bands: 28
+    gpu: false
+    reference: Maffei et al., TGRS 2020
 metrics:
   names:
   - psnr
