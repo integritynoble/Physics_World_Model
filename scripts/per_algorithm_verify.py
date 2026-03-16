@@ -565,6 +565,25 @@ def build_per_algorithm_results(modalities, verification_data):
                 else:
                     stats["unmatched_lit"] += 1
 
+            # Determine status based on PWM vs Ref PSNR gap
+            if matched_solver and pwm_psnr is not None:
+                ref_p = algo.get("ref_psnr")
+                if ref_p is not None and ref_p > 0 and pwm_psnr > 0:
+                    gap = abs(ref_p - pwm_psnr)
+                    if gap <= 3.0:
+                        algo_status = "done"
+                    elif gap <= 10.0:
+                        algo_status = "partial"
+                    else:
+                        algo_status = "gap"
+                elif pwm_psnr < 0:
+                    algo_status = "fail"
+                else:
+                    # No ref PSNR to compare — mark as ran
+                    algo_status = "ran"
+            else:
+                algo_status = "—"
+
             per_algo_results[mod_id].append({
                 "name": algo_name,
                 "year": algo.get("year", ""),
@@ -575,7 +594,7 @@ def build_per_algorithm_results(modalities, verification_data):
                 "pwm_ssim": pwm_ssim,
                 "matched_solver": matched_solver,
                 "match_confidence": confidence,
-                "status": "done" if matched_solver else "—",
+                "status": algo_status,
             })
 
     return per_algo_results, stats
@@ -589,22 +608,32 @@ def write_algorithm_state(modalities, per_algo_results, verification_data):
 
     # Count stats
     total_algos = sum(len(algos) for algos in per_algo_results.values())
-    implemented = sum(1 for algos in per_algo_results.values()
-                      for a in algos if a["matched_solver"] is not None)
-    lit_only = total_algos - implemented
+    from collections import Counter
+    status_counts = Counter()
+    for algos in per_algo_results.values():
+        for a in algos:
+            status_counts[a["status"]] += 1
+    n_done = status_counts.get("done", 0)
+    n_partial = status_counts.get("partial", 0)
+    n_gap = status_counts.get("gap", 0)
+    n_fail = status_counts.get("fail", 0)
+    n_ran = status_counts.get("ran", 0)
+    n_not_impl = status_counts.get("\u2014", 0)
+    n_verified = n_done + n_partial
 
     lines.append(f"Comprehensive listing of reconstruction algorithms for all {len(modalities)} modalities.")
-    lines.append(f"Generated: 2026-03-15 | **{implemented} implemented / {total_algos} total algorithms** | "
-                 f"{lit_only} literature-only (no PWM implementation)")
+    lines.append(f"Generated: 2026-03-15 | **{n_done} done** ({n_done} within 3 dB of reference) | "
+                 f"{n_partial} partial | {n_gap} gap | {n_fail} fail | "
+                 f"{n_ran} ran (no ref) | {n_not_impl} not implemented | "
+                 f"{total_algos} total")
     lines.append("")
     lines.append("## Legend")
     lines.append("- **Ref PSNR/SSIM**: Published reference values from literature")
     lines.append("- **PWM PSNR/SSIM**: Values from running that specific algorithm in PWM framework")
-    lines.append("- **Std PSNR**: PSNR on standard dataset (per-solver, not per-modality)")
+    lines.append("- **Std PSNR**: PSNR on standard dataset (per-solver)")
     lines.append("- **Std**: `pass` = Std PSNR >= 15 dB | `low` = 5-15 dB | `fail` = < 5 dB | `—` = not implemented")
     lines.append("- **Rank**: Algorithms sorted by Ref PSNR descending (best first)")
-    lines.append("- **Status**: `done` = implemented & verified | `—` = literature reference only")
-    lines.append("- Algorithms marked **—** in PWM columns are literature references without PWM implementations")
+    lines.append("- **Status**: `done` = PWM within 3 dB of reference | `partial` = runs, 3-10 dB gap | `gap` = runs, >10 dB gap | `fail` = diverged | `ran` = no ref to compare | `—` = not implemented")
     lines.append("")
     lines.append("---")
 
@@ -636,18 +665,18 @@ def write_algorithm_state(modalities, per_algo_results, verification_data):
                 ref_p = f"{algo['ref_psnr']:.1f}" if algo['ref_psnr'] is not None else "\u2014"
                 ref_s = f"{algo['ref_ssim']:.4f}" if algo['ref_ssim'] is not None else "\u2014"
 
+                status = algo.get("status", "\u2014")
+
                 if algo['pwm_psnr'] is not None:
                     pwm_p = f"{algo['pwm_psnr']:.1f}"
                     pwm_s = f"{algo['pwm_ssim']:.4f}" if algo['pwm_ssim'] is not None else "\u2014"
                     std_p = f"{algo['pwm_psnr']:.1f}"
                     std_status = "pass" if algo['pwm_psnr'] >= 15 else ("low" if algo['pwm_psnr'] >= 5 else "fail")
-                    status = "done"
                 else:
                     pwm_p = "\u2014"
                     pwm_s = "\u2014"
                     std_p = "\u2014"
                     std_status = "\u2014"
-                    status = "\u2014"
 
                 lines.append(
                     f"| {rank} | {algo['name']} | {algo['year']} | {algo['reference']} "
@@ -659,10 +688,10 @@ def write_algorithm_state(modalities, per_algo_results, verification_data):
     lines.append("---")
     lines.append("")
     lines.append(f"*PWM Benchmark Algorithm State — {len(modalities)} modalities, "
-                 f"{total_algos} algorithms ({implemented} implemented) — Generated 2026-03-15*")
+                 f"{total_algos} algorithms ({n_done} done) — Generated 2026-03-15*")
 
     STATE_PATH.write_text("\n".join(lines), encoding="utf-8")
-    return implemented, total_algos
+    return n_done, total_algos
 
 
 # ============================================================================
@@ -701,11 +730,20 @@ def main():
     modalities = parse_algorithm_state()
     per_algo_results, stats = build_per_algorithm_results(modalities, verification_data)
 
-    print(f"  Total algorithms: {sum(len(v) for v in per_algo_results.values())}")
-    print(f"  Matched to solver: {stats['matched']}")
-    print(f"  Test/baseline entries: {stats['test']}")
-    print(f"  Literature-only (no impl): {stats['unmatched_lit']}")
-    print(f"  Unmatched PWM entries: {stats['unmatched_pwm']}")
+    total_a = sum(len(v) for v in per_algo_results.values())
+    from collections import Counter
+    sc = Counter()
+    for algos in per_algo_results.values():
+        for a in algos:
+            sc[a["status"]] += 1
+    print(f"  Total algorithms: {total_a}")
+    print(f"  Status breakdown:")
+    print(f"    done   (within 3 dB of ref): {sc.get('done',0)}")
+    print(f"    partial (3-10 dB gap):       {sc.get('partial',0)}")
+    print(f"    gap    (>10 dB gap):         {sc.get('gap',0)}")
+    print(f"    fail   (diverged):           {sc.get('fail',0)}")
+    print(f"    ran    (no ref to compare):  {sc.get('ran',0)}")
+    print(f"    —      (not implemented):    {sc.get('\u2014',0)}")
 
     # Save per-algorithm results
     with open(PER_ALGO_JSON, "w", encoding="utf-8") as f:

@@ -18,7 +18,7 @@
         "pwm_ssim": 0.059,
         "matched_solver": "hisvit13",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CTM-SCI",
@@ -54,7 +54,7 @@
         "pwm_ssim": 0.059,
         "matched_solver": "hisvit9",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EfficientSCI",
@@ -66,7 +66,7 @@
         "pwm_ssim": 0.1733,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "STFormer",
@@ -90,7 +90,7 @@
         "pwm_ssim": 0.1733,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "BIRNAT",
@@ -138,7 +138,7 @@
         "pwm_ssim": 0.059,
         "matched_solver": "pnp_ffdnet",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DeSCI",
@@ -162,7 +162,7 @@
         "pwm_ssim": 0.1733,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "GAP-TV (Traffic scene)",
@@ -174,7 +174,7 @@
         "pwm_ssim": 0.1733,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EfficientSCI-T (PWM)",
@@ -186,7 +186,7 @@
         "pwm_ssim": 0.1733,
         "matched_solver": "small_gpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "mask_division_baseline (test)",
@@ -210,7 +210,7 @@
         "pwm_ssim": 0.1733,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       }
     ],
     "cassi": [
@@ -296,7 +296,7 @@
         "pwm_ssim": 0.0126,
         "matched_solver": "hdnet",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MST-L",
@@ -308,7 +308,7 @@
         "pwm_ssim": 0.0126,
         "matched_solver": "mst_l",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PADUT",
@@ -392,7 +392,7 @@
         "pwm_ssim": 0.9559,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "GAP-TV (fast) (PWM)",
@@ -404,7 +404,7 @@
         "pwm_ssim": 0.9633,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "GAP-TV (small) (PWM)",
@@ -416,7 +416,7 @@
         "pwm_ssim": 0.9633,
         "matched_solver": "small_gpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "GAP-TV",
@@ -454,7 +454,7 @@
         "pwm_ssim": 0.1284,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FISTA",
@@ -466,7 +466,7 @@
         "pwm_ssim": 0.1712,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "OMP",
@@ -490,7 +490,7 @@
         "pwm_ssim": 0.1713,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -528,7 +528,7 @@
         "pwm_ssim": 0.0295,
         "matched_solver": "ista_net_plus",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "TransCS",
@@ -564,7 +564,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Random sampling baseline",
@@ -662,7 +662,7 @@
         "pwm_ssim": 0.9998,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "VesselSegNet [proxy] (PWM)",
@@ -674,7 +674,7 @@
         "pwm_ssim": 0.9998,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -748,7 +748,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -760,7 +760,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "ASL-Net [proxy] (PWM)",
@@ -810,7 +810,7 @@
         "pwm_ssim": 0.9997,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "BrachyNet [proxy] (PWM)",
@@ -822,7 +822,7 @@
         "pwm_ssim": 0.9997,
         "matched_solver": "brachy_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Monte Carlo dose",
@@ -858,7 +858,7 @@
         "pwm_ssim": 0.9997,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       }
     ],
     "cbct": [
@@ -908,7 +908,7 @@
         "pwm_ssim": 0.9188,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FDK (8 views)",
@@ -944,7 +944,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CBCT-UNet (PWM)",
@@ -956,7 +956,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "fbp_ramlak (test)",
@@ -994,7 +994,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -1006,7 +1006,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "CEST-Net [proxy] (PWM)",
@@ -1018,7 +1018,7 @@
         "pwm_ssim": -0.0531,
         "matched_solver": "cest_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "ResUNet-NE",
@@ -1092,7 +1092,7 @@
         "pwm_ssim": 0.1047,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -1104,7 +1104,7 @@
         "pwm_ssim": 0.0898,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "US-DeepSight [proxy] (PWM)",
@@ -1116,7 +1116,7 @@
         "pwm_ssim": 0.0898,
         "matched_solver": "us_dl_enhance",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Singular value decomposition",
@@ -1276,7 +1276,7 @@
         "pwm_ssim": 0.9096,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "iRadonMAP",
@@ -1336,7 +1336,7 @@
         "pwm_ssim": 0.0001,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "FBP (Ram-Lak)",
@@ -1348,7 +1348,7 @@
         "pwm_ssim": 0.9096,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FBP (10 angles)",
@@ -1384,7 +1384,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "fbp_ramlak (test)",
@@ -1482,7 +1482,7 @@
         "pwm_ssim": 0.9971,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DEXA-UNet [proxy] (PWM)",
@@ -1494,7 +1494,7 @@
         "pwm_ssim": 0.9971,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FISTA-L2 (dual-energy) (PWM)",
@@ -1506,7 +1506,7 @@
         "pwm_ssim": 0.9964,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -1532,7 +1532,7 @@
         "pwm_ssim": 0.1243,
         "matched_solver": "best_quality",
         "match_confidence": 1,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "MPR-ViT (ADC maps)",
@@ -1580,7 +1580,7 @@
         "pwm_ssim": 0.1243,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Zero-filled (R=4, multi-b)",
@@ -1616,7 +1616,7 @@
         "pwm_ssim": 0.1243,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "zero_filled (test)",
@@ -1666,7 +1666,7 @@
         "pwm_ssim": 0.0006,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -1678,7 +1678,7 @@
         "pwm_ssim": 0.0006,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DBT-DL [proxy] (PWM)",
@@ -1690,7 +1690,7 @@
         "pwm_ssim": 0.0006,
         "matched_solver": "dbt_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -1800,7 +1800,7 @@
         "pwm_ssim": 0.7702,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "autocorrelation_estimator (test)",
@@ -1898,7 +1898,7 @@
         "pwm_ssim": 0.9626,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "Rytov + Laplacian",
@@ -1922,7 +1922,7 @@
         "pwm_ssim": 0.945,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DOT-Net [proxy] (PWM)",
@@ -1934,7 +1934,7 @@
         "pwm_ssim": 0.945,
         "matched_solver": "dot_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "born_backprojection (test)",
@@ -2166,7 +2166,7 @@
         "pwm_ssim": 0.9808,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EndoMapper-Net (PWM)",
@@ -2178,7 +2178,7 @@
         "pwm_ssim": 0.0154,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "AF-SfMLearner (PWM)",
@@ -2190,7 +2190,7 @@
         "pwm_ssim": 0.0157,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "rl_20iter (test)",
@@ -2240,7 +2240,7 @@
         "pwm_ssim": 0.9823,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "X-ray CNN [proxy] (PWM)",
@@ -2252,7 +2252,7 @@
         "pwm_ssim": 0.9823,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FBP (fluoroscopy) (PWM)",
@@ -2264,7 +2264,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -2386,7 +2386,7 @@
         "pwm_ssim": -0.2521,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "zero_filled (test)",
@@ -2412,7 +2412,7 @@
         "pwm_ssim": 0.0034,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DR-Grade-Net (PWM)",
@@ -2424,7 +2424,7 @@
         "pwm_ssim": 0.0003,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "rl_20iter (test)",
@@ -2472,7 +2472,7 @@
         "pwm_ssim": 1.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PCE-Net",
@@ -2522,7 +2522,7 @@
         "pwm_ssim": 0.0463,
         "matched_solver": "ivus_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "U-Net segmentation",
@@ -2558,7 +2558,7 @@
         "pwm_ssim": 0.0539,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -2570,7 +2570,7 @@
         "pwm_ssim": 0.0463,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -2632,7 +2632,7 @@
         "pwm_ssim": 0.0005,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "NLM denoising",
@@ -2656,7 +2656,7 @@
         "pwm_ssim": -0.0441,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "Mammo-ResNet [proxy] (PWM)",
@@ -2668,7 +2668,7 @@
         "pwm_ssim": -0.0441,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_recon (test)",
@@ -2730,7 +2730,7 @@
         "pwm_ssim": 0.9526,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -2742,7 +2742,7 @@
         "pwm_ssim": 0.956,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MRE-Net [proxy] (PWM)",
@@ -2754,7 +2754,7 @@
         "pwm_ssim": 0.956,
         "matched_solver": "mre_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -2840,7 +2840,7 @@
         "pwm_ssim": 0.9606,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -2852,7 +2852,7 @@
         "pwm_ssim": 0.9607,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -2938,7 +2938,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -2950,7 +2950,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "MRA-VesselNet [proxy] (PWM)",
@@ -3084,7 +3084,7 @@
         "pwm_ssim": -0.1498,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "E2E-VarNet (16x)",
@@ -3180,7 +3180,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "sense",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       }
     ],
     "mrs": [
@@ -3230,7 +3230,7 @@
         "pwm_ssim": 0.0514,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "SENSE (spectroscopy) (PWM)",
@@ -3242,7 +3242,7 @@
         "pwm_ssim": 0.0059,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -3292,7 +3292,7 @@
         "pwm_ssim": 0.9253,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -3304,7 +3304,7 @@
         "pwm_ssim": 0.9278,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "fNIRS-Net [proxy] (PWM)",
@@ -3316,7 +3316,7 @@
         "pwm_ssim": 0.9253,
         "matched_solver": "nirs_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -3390,7 +3390,7 @@
         "pwm_ssim": 0.0008,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Spectral Estimation (PWM)",
@@ -3402,7 +3402,7 @@
         "pwm_ssim": 0.0078,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "OCT Denoising Net (PWM)",
@@ -3414,7 +3414,7 @@
         "pwm_ssim": 0.0008,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "bscan_baseline (test)",
@@ -3512,7 +3512,7 @@
         "pwm_ssim": 0.0004,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -3586,7 +3586,7 @@
         "pwm_ssim": 0.8977,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "NeuroLF-PET (PWM)",
@@ -3598,7 +3598,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PET-DL (U-Net) (PWM)",
@@ -3610,7 +3610,7 @@
         "pwm_ssim": -0.0074,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "fbp_ramlak (test)",
@@ -3768,7 +3768,7 @@
         "pwm_ssim": -0.1238,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Back Projection (PWM)",
@@ -3780,7 +3780,7 @@
         "pwm_ssim": -0.3367,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -3878,7 +3878,7 @@
         "pwm_ssim": 0.9925,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -3890,7 +3890,7 @@
         "pwm_ssim": 0.9924,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PortalDL [proxy] (PWM)",
@@ -3902,7 +3902,7 @@
         "pwm_ssim": 0.9924,
         "matched_solver": "portal_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -3976,7 +3976,7 @@
         "pwm_ssim": 0.9983,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "FBP",
@@ -3988,7 +3988,7 @@
         "pwm_ssim": 0.9983,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -4026,7 +4026,7 @@
         "pwm_ssim": 0.7878,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SPECT-DL (OSEM+) (PWM)",
@@ -4038,7 +4038,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SPECT-UNet (PWM)",
@@ -4050,7 +4050,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "fbp_ramlak (test)",
@@ -4086,7 +4086,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MLEM",
@@ -4184,7 +4184,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "SpectralCT-Net [proxy] (PWM)",
@@ -4196,7 +4196,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "spectral_ct_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -4246,7 +4246,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "DL-Recon [proxy] (PWM)",
@@ -4258,7 +4258,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "SWI-Net [proxy] (PWM)",
@@ -4380,7 +4380,7 @@
         "pwm_ssim": 0.8977,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "rl_20iter (test)",
@@ -4430,7 +4430,7 @@
         "pwm_ssim": 0.9984,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "X-ray UNet [proxy] (PWM)",
@@ -4442,7 +4442,7 @@
         "pwm_ssim": 0.9984,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Improved Restormer",
@@ -4502,7 +4502,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -4600,7 +4600,7 @@
         "pwm_ssim": 0.2071,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "GS (Gerchberg-Saxton)",
@@ -4650,7 +4650,7 @@
         "pwm_ssim": -0.0006,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -4662,7 +4662,7 @@
         "pwm_ssim": -0.0005,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "ODT-Net (PhaseNet) [proxy] (PWM)",
@@ -4674,7 +4674,7 @@
         "pwm_ssim": -0.0005,
         "matched_solver": "odt_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -4760,7 +4760,7 @@
         "pwm_ssim": 0.0006,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "ER (Error Reduction)",
@@ -4796,7 +4796,7 @@
         "pwm_ssim": 0.0006,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "RAAR [proxy] (PWM)",
@@ -4808,7 +4808,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "prDeep [proxy] (PWM)",
@@ -4820,7 +4820,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -4858,7 +4858,7 @@
         "pwm_ssim": -0.0001,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "ePIE",
@@ -4870,7 +4870,7 @@
         "pwm_ssim": -0.0001,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PIE",
@@ -4882,7 +4882,7 @@
         "pwm_ssim": -0.0001,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PtychoNN 2.0 (PWM)",
@@ -4894,7 +4894,7 @@
         "pwm_ssim": -0.0001,
         "matched_solver": "small_gpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -4932,7 +4932,7 @@
         "pwm_ssim": -0.0568,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -4944,7 +4944,7 @@
         "pwm_ssim": -0.0521,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Talbot-Net [proxy] (PWM)",
@@ -4956,7 +4956,7 @@
         "pwm_ssim": -0.0568,
         "matched_solver": "talbot_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5030,7 +5030,7 @@
         "pwm_ssim": 0.0035,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE-3D (slice-wise) (PWM)",
@@ -5042,7 +5042,7 @@
         "pwm_ssim": 0.0003,
         "matched_solver": "small_gpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5092,7 +5092,7 @@
         "pwm_ssim": 0.0074,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5128,7 +5128,7 @@
         "pwm_ssim": 0.9996,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       }
     ],
     "dark_field": [
@@ -5166,7 +5166,7 @@
         "pwm_ssim": 0.9992,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -5178,7 +5178,7 @@
         "pwm_ssim": 0.0007,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DF-UNet (PWM)",
@@ -5190,7 +5190,7 @@
         "pwm_ssim": 0.0011,
         "matched_solver": "df_unet",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5300,7 +5300,7 @@
         "pwm_ssim": 0.0015,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -5312,7 +5312,7 @@
         "pwm_ssim": 0.0001,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DIC-Net (PWM)",
@@ -5324,7 +5324,7 @@
         "pwm_ssim": 0.0001,
         "matched_solver": "dic_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5350,7 +5350,7 @@
         "pwm_ssim": 0.7652,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "CARE (PWM)",
@@ -5362,7 +5362,7 @@
         "pwm_ssim": 0.059,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DECODE-PAINT (PWM)",
@@ -5374,7 +5374,7 @@
         "pwm_ssim": 0.1127,
         "matched_solver": "dna_paint_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5424,7 +5424,7 @@
         "pwm_ssim": 0.1713,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EXpansionNet (PWM)",
@@ -5436,7 +5436,7 @@
         "pwm_ssim": 0.126,
         "matched_solver": "exm_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5472,7 +5472,7 @@
         "pwm_ssim": 0.2544,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "partial"
       }
     ],
     "flim": [
@@ -5486,7 +5486,7 @@
         "pwm_ssim": 0.9276,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "MLE Fit (iterative) (PWM)",
@@ -5498,7 +5498,7 @@
         "pwm_ssim": 0.9276,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5560,7 +5560,7 @@
         "pwm_ssim": 0.5958,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "GS-FPM",
@@ -5584,7 +5584,7 @@
         "pwm_ssim": 0.5132,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "Fourier Ptychnet (PWM)",
@@ -5596,7 +5596,7 @@
         "pwm_ssim": 0.5132,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5634,7 +5634,7 @@
         "pwm_ssim": 0.1903,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -5646,7 +5646,7 @@
         "pwm_ssim": 0.0137,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "ISM-Reassignment-Net (PWM)",
@@ -5658,7 +5658,7 @@
         "pwm_ssim": 0.0137,
         "matched_solver": "ism_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5708,7 +5708,7 @@
         "pwm_ssim": 0.0002,
         "matched_solver": "best_quality",
         "match_confidence": 2,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Richardson-Lucy 3D",
@@ -5720,7 +5720,7 @@
         "pwm_ssim": 0.8444,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "LLSM-CARE (PWM)",
@@ -5732,7 +5732,7 @@
         "pwm_ssim": 0.0375,
         "matched_solver": "llsm_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5806,7 +5806,7 @@
         "pwm_ssim": null,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "—"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5868,7 +5868,7 @@
         "pwm_ssim": 0.4753,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -5880,7 +5880,7 @@
         "pwm_ssim": 0.0871,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "MINFLUX-Net (PWM)",
@@ -5892,7 +5892,7 @@
         "pwm_ssim": 0.0155,
         "matched_solver": "minflux_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -5942,7 +5942,7 @@
         "pwm_ssim": 0.8647,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DECODE-SMLM (PWM)",
@@ -5954,7 +5954,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DeepSTORM (PWM)",
@@ -5966,7 +5966,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6002,7 +6002,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Deep-STORM",
@@ -6040,7 +6040,7 @@
         "pwm_ssim": -0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "CARE (PWM)",
@@ -6052,7 +6052,7 @@
         "pwm_ssim": -0.0001,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PhaseNet (PWM)",
@@ -6064,7 +6064,7 @@
         "pwm_ssim": 0.0001,
         "matched_solver": "pc_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6138,7 +6138,7 @@
         "pwm_ssim": 0.8486,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Stokes-NN [proxy] (PWM)",
@@ -6150,7 +6150,7 @@
         "pwm_ssim": 0.8486,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MDU-Net",
@@ -6198,7 +6198,7 @@
         "pwm_ssim": 0.8588,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6248,7 +6248,7 @@
         "pwm_ssim": 0.8524,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DnCNN",
@@ -6272,7 +6272,7 @@
         "pwm_ssim": 0.0022,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "SHG-CARE (PWM)",
@@ -6284,7 +6284,7 @@
         "pwm_ssim": 0.0915,
         "matched_solver": "shg_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6334,7 +6334,7 @@
         "pwm_ssim": 0.2392,
         "matched_solver": "famous_dl",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Wiener-SIM",
@@ -6346,7 +6346,7 @@
         "pwm_ssim": 0.2392,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "HiFi-SIM (PWM)",
@@ -6358,7 +6358,7 @@
         "pwm_ssim": 0.2392,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Wiener-SIM (fast) (PWM)",
@@ -6370,7 +6370,7 @@
         "pwm_ssim": 0.2392,
         "matched_solver": "small_gpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6394,7 +6394,7 @@
         "pwm_ssim": 0.2392,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Bicubic interpolation",
@@ -6420,7 +6420,7 @@
         "pwm_ssim": 0.0003,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SD-CARE (PWM)",
@@ -6432,7 +6432,7 @@
         "pwm_ssim": 0.0073,
         "matched_solver": "sd_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6482,7 +6482,7 @@
         "pwm_ssim": 0.0002,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "RCAN-STED (PWM)",
@@ -6494,7 +6494,7 @@
         "pwm_ssim": 0.0754,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6568,7 +6568,7 @@
         "pwm_ssim": 0.5137,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "CARE (PWM)",
@@ -6580,7 +6580,7 @@
         "pwm_ssim": 0.0688,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "3P-Net (CARE) (PWM)",
@@ -6592,7 +6592,7 @@
         "pwm_ssim": 0.0015,
         "matched_solver": "3p_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6654,7 +6654,7 @@
         "pwm_ssim": 0.9818,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6678,7 +6678,7 @@
         "pwm_ssim": 0.9825,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "partial"
       }
     ],
     "two_photon": [
@@ -6716,7 +6716,7 @@
         "pwm_ssim": 0.0132,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "2P-DeepInterp (PWM)",
@@ -6728,7 +6728,7 @@
         "pwm_ssim": 0.0023,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6764,7 +6764,7 @@
         "pwm_ssim": 0.602,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       }
     ],
     "widefield": [
@@ -6838,7 +6838,7 @@
         "pwm_ssim": 0.0067,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Richardson-Lucy (20 iter)",
@@ -6850,7 +6850,7 @@
         "pwm_ssim": 0.9835,
         "matched_solver": "traditional_cpu",
         "match_confidence": 2,
-        "status": "done"
+        "status": "gap"
       }
     ],
     "widefield_lowdose": [
@@ -6876,7 +6876,7 @@
         "pwm_ssim": 0.1254,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -6900,7 +6900,7 @@
         "pwm_ssim": null,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "—"
       },
       {
         "name": "Richardson-Lucy",
@@ -7024,7 +7024,7 @@
         "pwm_ssim": 0.3548,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EMsoft-EBSD [proxy] (PWM)",
@@ -7036,7 +7036,7 @@
         "pwm_ssim": 0.3548,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Dictionary indexing",
@@ -7098,7 +7098,7 @@
         "pwm_ssim": 0.8672,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "Richardson-Lucy (high quality) (PWM)",
@@ -7110,7 +7110,7 @@
         "pwm_ssim": 0.8672,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "Richardson-Lucy (DL baseline) (PWM)",
@@ -7122,7 +7122,7 @@
         "pwm_ssim": 0.8672,
         "matched_solver": "edx_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7172,7 +7172,7 @@
         "pwm_ssim": 0.779,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EELS-Net [proxy] (PWM)",
@@ -7184,7 +7184,7 @@
         "pwm_ssim": 0.7135,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MLLS-EELS [proxy] (PWM)",
@@ -7196,7 +7196,7 @@
         "pwm_ssim": 0.7135,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PCA denoising",
@@ -7246,7 +7246,7 @@
         "pwm_ssim": 0.2125,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CRISP-ED [proxy] (PWM)",
@@ -7258,7 +7258,7 @@
         "pwm_ssim": 0.2125,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "ePIE (electron ptychography) (PWM)",
@@ -7270,7 +7270,7 @@
         "pwm_ssim": 0.852,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7368,7 +7368,7 @@
         "pwm_ssim": 0.1353,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Phase-Sideband [proxy] (PWM)",
@@ -7380,7 +7380,7 @@
         "pwm_ssim": 0.1353,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Phase Retrieval (HIO) (PWM)",
@@ -7392,7 +7392,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7430,7 +7430,7 @@
         "pwm_ssim": -0.0706,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SIRT-3D [proxy] (PWM)",
@@ -7442,7 +7442,7 @@
         "pwm_ssim": -0.0706,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FBP (SIRT baseline) (PWM)",
@@ -7454,7 +7454,7 @@
         "pwm_ssim": -0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7540,7 +7540,7 @@
         "pwm_ssim": 0.4344,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -7552,7 +7552,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FIB-SEM-Net (PWM)",
@@ -7564,7 +7564,7 @@
         "pwm_ssim": 0.0079,
         "matched_solver": "fibsem_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7662,7 +7662,7 @@
         "pwm_ssim": 0.9859,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7712,7 +7712,7 @@
         "pwm_ssim": 0.5585,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "STEM-UNet [proxy] (PWM)",
@@ -7724,7 +7724,7 @@
         "pwm_ssim": 0.5585,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Richardson-Lucy (STEM) (PWM)",
@@ -7736,7 +7736,7 @@
         "pwm_ssim": 0.4796,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7834,7 +7834,7 @@
         "pwm_ssim": 0.0464,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "TEM-UNet [proxy] (PWM)",
@@ -7846,7 +7846,7 @@
         "pwm_ssim": 0.0464,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Wiener filter (basic)",
@@ -7870,7 +7870,7 @@
         "pwm_ssim": 0.6647,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -7908,7 +7908,7 @@
         "pwm_ssim": 0.849,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "EPINet [proxy] (PWM)",
@@ -7920,7 +7920,7 @@
         "pwm_ssim": 0.849,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Depth Estimation (PWM)",
@@ -7932,7 +7932,7 @@
         "pwm_ssim": 0.9191,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -8030,7 +8030,7 @@
         "pwm_ssim": 0.9965,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DistgEPIT",
@@ -8066,7 +8066,7 @@
         "pwm_ssim": 0.9965,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "LFBM5D (PWM)",
@@ -8078,7 +8078,7 @@
         "pwm_ssim": 0.9965,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -8116,7 +8116,7 @@
         "pwm_ssim": 0.1019,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -8128,7 +8128,7 @@
         "pwm_ssim": 0.0825,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FlowNet-Coded [proxy] (PWM)",
@@ -8140,7 +8140,7 @@
         "pwm_ssim": 0.0825,
         "matched_solver": "coded_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Restormer",
@@ -8226,7 +8226,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "event_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SPADE-E2VID",
@@ -8250,7 +8250,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -8262,7 +8262,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -8286,7 +8286,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "event_dl",
         "match_confidence": 1,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "Raw event accumulation",
@@ -8336,7 +8336,7 @@
         "pwm_ssim": 0.8425,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -8348,7 +8348,7 @@
         "pwm_ssim": 0.7959,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -8410,7 +8410,7 @@
         "pwm_ssim": 0.875,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "ADMM",
@@ -8422,7 +8422,7 @@
         "pwm_ssim": 0.875,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "FlatNet-Lite (PWM)",
@@ -8434,7 +8434,7 @@
         "pwm_ssim": 0.875,
         "matched_solver": "small_gpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "wiener_deconv (test)",
@@ -8508,7 +8508,7 @@
         "pwm_ssim": 0.9893,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Guided Filter Fusion (PWM)",
@@ -8520,7 +8520,7 @@
         "pwm_ssim": 0.9893,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "IFCNN (PWM)",
@@ -8532,7 +8532,7 @@
         "pwm_ssim": 0.9893,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -8888,7 +8888,7 @@
         "pwm_ssim": 0.0262,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PointNet++ [proxy] (PWM)",
@@ -8900,7 +8900,7 @@
         "pwm_ssim": 0.0262,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "BP-Net",
@@ -8924,7 +8924,7 @@
         "pwm_ssim": 0.0413,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -8998,7 +8998,7 @@
         "pwm_ssim": 0.1275,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -9010,7 +9010,7 @@
         "pwm_ssim": 0.1278,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PS-FCN [proxy] (PWM)",
@@ -9022,7 +9022,7 @@
         "pwm_ssim": 0.1275,
         "matched_solver": "ps_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -9096,7 +9096,7 @@
         "pwm_ssim": 0.0099,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FTPD [proxy] (PWM)",
@@ -9108,7 +9108,7 @@
         "pwm_ssim": 0.0099,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -9146,7 +9146,7 @@
         "pwm_ssim": 0.1542,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "ToF-MPI Deconv [proxy] (PWM)",
@@ -9158,7 +9158,7 @@
         "pwm_ssim": 0.1542,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FISTA-L2 (depth) (PWM)",
@@ -9170,7 +9170,7 @@
         "pwm_ssim": 0.7217,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -9268,7 +9268,7 @@
         "pwm_ssim": 0.9973,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9280,7 +9280,7 @@
         "pwm_ssim": 0.9973,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "GPR-Net [proxy] (PWM)",
@@ -9292,7 +9292,7 @@
         "pwm_ssim": 0.9973,
         "matched_solver": "gpr_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Raw B-scan (noisy input)",
@@ -9330,7 +9330,7 @@
         "pwm_ssim": 0.9965,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9342,7 +9342,7 @@
         "pwm_ssim": 0.9965,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SST-USRNet [proxy] (PWM)",
@@ -9354,7 +9354,7 @@
         "pwm_ssim": 0.9965,
         "matched_solver": "hyper_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -9428,7 +9428,7 @@
         "pwm_ssim": 0.0196,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9440,7 +9440,7 @@
         "pwm_ssim": 0.0173,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "InSAR-Net [proxy] (PWM)",
@@ -9452,7 +9452,7 @@
         "pwm_ssim": 0.0173,
         "matched_solver": "insar_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "wrapped_phase_baseline (test)",
@@ -9574,7 +9574,7 @@
         "pwm_ssim": 0.9202,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9586,7 +9586,7 @@
         "pwm_ssim": 0.9128,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MS-Pansharpening-DL [proxy] (PWM)",
@@ -9598,7 +9598,7 @@
         "pwm_ssim": 0.9128,
         "matched_solver": "ms_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "bicubic_upsample (test)",
@@ -9624,7 +9624,7 @@
         "pwm_ssim": 0.7418,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9636,7 +9636,7 @@
         "pwm_ssim": 0.7296,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "OC-Net [proxy] (PWM)",
@@ -9648,7 +9648,7 @@
         "pwm_ssim": 0.7418,
         "matched_solver": "oc_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -9832,7 +9832,7 @@
         "pwm_ssim": 0.9975,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9844,7 +9844,7 @@
         "pwm_ssim": 0.9975,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PolSAR-Net [proxy] (PWM)",
@@ -9856,7 +9856,7 @@
         "pwm_ssim": 0.9975,
         "matched_solver": "polsar_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Lee filter",
@@ -9942,7 +9942,7 @@
         "pwm_ssim": 0.0057,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -9954,7 +9954,7 @@
         "pwm_ssim": 0.0054,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "R2D2 (interferometry) [proxy] (PWM)",
@@ -9966,7 +9966,7 @@
         "pwm_ssim": 0.0054,
         "matched_solver": "ri_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10016,7 +10016,7 @@
         "pwm_ssim": 0.9852,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-CNN [proxy] (PWM)",
@@ -10028,7 +10028,7 @@
         "pwm_ssim": 0.9852,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Matched Filter (192 pts)",
@@ -10052,7 +10052,7 @@
         "pwm_ssim": 0.0001,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10126,7 +10126,7 @@
         "pwm_ssim": 0.9674,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SonarSR-Net [proxy] (PWM)",
@@ -10138,7 +10138,7 @@
         "pwm_ssim": 0.9678,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Sonar-CNN [proxy] (PWM)",
@@ -10150,7 +10150,7 @@
         "pwm_ssim": 0.9678,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10212,7 +10212,7 @@
         "pwm_ssim": 0.0258,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SAR-DL [proxy] (PWM)",
@@ -10224,7 +10224,7 @@
         "pwm_ssim": 0.0221,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "NowcastNet [proxy] (PWM)",
@@ -10236,7 +10236,7 @@
         "pwm_ssim": 0.0221,
         "matched_solver": "weather_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10286,7 +10286,7 @@
         "pwm_ssim": 0.2546,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -10298,7 +10298,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "AFM-UNet (PWM)",
@@ -10310,7 +10310,7 @@
         "pwm_ssim": 0.0149,
         "matched_solver": "afm_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10360,7 +10360,7 @@
         "pwm_ssim": 0.1748,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -10372,7 +10372,7 @@
         "pwm_ssim": 0.0001,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MFM-UNet (PWM)",
@@ -10384,7 +10384,7 @@
         "pwm_ssim": 0.0005,
         "matched_solver": "mfm_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10470,7 +10470,7 @@
         "pwm_ssim": 0.5366,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "CARE (PWM)",
@@ -10482,7 +10482,7 @@
         "pwm_ssim": 0.0575,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "NSOM-Net (PWM)",
@@ -10494,7 +10494,7 @@
         "pwm_ssim": 0.0008,
         "matched_solver": "nsom_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10532,7 +10532,7 @@
         "pwm_ssim": 0.4738,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CARE (PWM)",
@@ -10544,7 +10544,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "STM-Net (PWM)",
@@ -10556,7 +10556,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "stm_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10642,7 +10642,7 @@
         "pwm_ssim": 0.7172,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -10654,7 +10654,7 @@
         "pwm_ssim": 0.6609,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10776,7 +10776,7 @@
         "pwm_ssim": 0.1723,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10912,7 +10912,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "IndustrialCT-Net [proxy] (PWM)",
@@ -10924,7 +10924,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "ict_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -10950,7 +10950,7 @@
         "pwm_ssim": 0.9934,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -10962,7 +10962,7 @@
         "pwm_ssim": 0.9931,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "UniAD",
@@ -11072,7 +11072,7 @@
         "pwm_ssim": 0.9734,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11084,7 +11084,7 @@
         "pwm_ssim": 0.9715,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "ShearNet [proxy] (PWM)",
@@ -11096,7 +11096,7 @@
         "pwm_ssim": 0.9715,
         "matched_solver": "shear_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "OCPDE (Oriented Coupled PDE)",
@@ -11146,7 +11146,7 @@
         "pwm_ssim": 0.9359,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11158,7 +11158,7 @@
         "pwm_ssim": 0.9352,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "THz-Net [proxy] (PWM)",
@@ -11170,7 +11170,7 @@
         "pwm_ssim": 0.9352,
         "matched_solver": "thz_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -11256,7 +11256,7 @@
         "pwm_ssim": 0.0326,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11268,7 +11268,7 @@
         "pwm_ssim": 0.0302,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -11354,7 +11354,7 @@
         "pwm_ssim": 0.3424,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11366,7 +11366,7 @@
         "pwm_ssim": 0.3424,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "NDT-DefectNet [proxy] (PWM)",
@@ -11378,7 +11378,7 @@
         "pwm_ssim": 0.3424,
         "matched_solver": "ndt_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -11502,7 +11502,7 @@
         "pwm_ssim": 0.6771,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11514,7 +11514,7 @@
         "pwm_ssim": 0.5913,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Brillouin-Net [proxy] (PWM)",
@@ -11526,7 +11526,7 @@
         "pwm_ssim": 0.5913,
         "matched_solver": "brillouin_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -11710,7 +11710,7 @@
         "pwm_ssim": 0.6558,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11722,7 +11722,7 @@
         "pwm_ssim": 0.5631,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DESI-SegNet [proxy] (PWM)",
@@ -11734,7 +11734,7 @@
         "pwm_ssim": 0.5631,
         "matched_solver": "desi_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "Gaussian smoothing",
@@ -11772,7 +11772,7 @@
         "pwm_ssim": 0.848,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11784,7 +11784,7 @@
         "pwm_ssim": 0.8042,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "FTIR-UNet [proxy] (PWM)",
@@ -11796,7 +11796,7 @@
         "pwm_ssim": 0.848,
         "matched_solver": "ftir_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -11858,7 +11858,7 @@
         "pwm_ssim": 0.7647,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11870,7 +11870,7 @@
         "pwm_ssim": 0.6901,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "LIBS-CNN [proxy] (PWM)",
@@ -11882,7 +11882,7 @@
         "pwm_ssim": 0.6901,
         "matched_solver": "libs_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -11956,7 +11956,7 @@
         "pwm_ssim": 0.972,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -11968,7 +11968,7 @@
         "pwm_ssim": 0.9671,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "RamanNet [proxy] (PWM)",
@@ -11980,7 +11980,7 @@
         "pwm_ssim": 0.9671,
         "matched_solver": "raman_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Savitzky-Golay",
@@ -12030,7 +12030,7 @@
         "pwm_ssim": 0.6547,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -12042,7 +12042,7 @@
         "pwm_ssim": 0.5569,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SIMS-Net [proxy] (PWM)",
@@ -12054,7 +12054,7 @@
         "pwm_ssim": 0.5569,
         "matched_solver": "sims_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Dead-time correction",
@@ -12104,7 +12104,7 @@
         "pwm_ssim": 0.9388,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -12116,7 +12116,7 @@
         "pwm_ssim": 0.9344,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SRS-DeepSpec [proxy] (PWM)",
@@ -12128,7 +12128,7 @@
         "pwm_ssim": 0.9344,
         "matched_solver": "srs_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -12226,7 +12226,7 @@
         "pwm_ssim": 0.9809,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "DL-SpeckleNull [proxy] (PWM)",
@@ -12238,7 +12238,7 @@
         "pwm_ssim": 0.9809,
         "matched_solver": "speckle_null_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -12300,7 +12300,7 @@
         "pwm_ssim": 0.0019,
         "matched_solver": "eht_dl",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "eht-imaging RML",
@@ -12398,7 +12398,7 @@
         "pwm_ssim": 0.848,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -12410,7 +12410,7 @@
         "pwm_ssim": 0.8018,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Lucky-DL [proxy] (PWM)",
@@ -12422,7 +12422,7 @@
         "pwm_ssim": 0.8018,
         "matched_solver": "lucky_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -12582,7 +12582,7 @@
         "pwm_ssim": 0.2752,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "E2E-CUP [proxy] (PWM)",
@@ -12594,7 +12594,7 @@
         "pwm_ssim": 0.2752,
         "matched_solver": "e2e_cup",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-BM3D",
@@ -12704,7 +12704,7 @@
         "pwm_ssim": 0.2958,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -12716,7 +12716,7 @@
         "pwm_ssim": 0.2847,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PumpProbe-Net [proxy] (PWM)",
@@ -12728,7 +12728,7 @@
         "pwm_ssim": 0.2847,
         "matched_solver": "pp_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "SVD analysis",
@@ -12778,7 +12778,7 @@
         "pwm_ssim": 0.2872,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "StreakNet [proxy] (PWM)",
@@ -12790,7 +12790,7 @@
         "pwm_ssim": 0.2872,
         "matched_solver": "streak_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -12864,7 +12864,7 @@
         "pwm_ssim": -0.0234,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -12876,7 +12876,7 @@
         "pwm_ssim": -0.0201,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SFX-Net [proxy] (PWM)",
@@ -12888,7 +12888,7 @@
         "pwm_ssim": -0.0234,
         "matched_solver": "sfx_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "cctbx.xfel",
@@ -12938,7 +12938,7 @@
         "pwm_ssim": 0.8517,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -12950,7 +12950,7 @@
         "pwm_ssim": 0.7926,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "QGI-DL [proxy] (PWM)",
@@ -12962,7 +12962,7 @@
         "pwm_ssim": 0.7926,
         "matched_solver": "qgi_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13132,7 +13132,7 @@
         "pwm_ssim": 0.0826,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "GI-Net [proxy] (PWM)",
@@ -13182,7 +13182,7 @@
         "pwm_ssim": 0.6831,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13194,7 +13194,7 @@
         "pwm_ssim": 0.6497,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "QI-DL [proxy] (PWM)",
@@ -13206,7 +13206,7 @@
         "pwm_ssim": 0.6497,
         "matched_solver": "qi_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13292,7 +13292,7 @@
         "pwm_ssim": 0.2848,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13304,7 +13304,7 @@
         "pwm_ssim": 0.214,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "DeepAE-Net [proxy] (PWM)",
@@ -13316,7 +13316,7 @@
         "pwm_ssim": 0.214,
         "matched_solver": "dl_localizer",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13354,7 +13354,7 @@
         "pwm_ssim": 0.9993,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13366,7 +13366,7 @@
         "pwm_ssim": 0.9994,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Deep-AO [proxy] (PWM)",
@@ -13378,7 +13378,7 @@
         "pwm_ssim": 0.9994,
         "matched_solver": "deep_ao",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13464,7 +13464,7 @@
         "pwm_ssim": 0.3897,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13476,7 +13476,7 @@
         "pwm_ssim": 0.303,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "BLT-Net [proxy] (PWM)",
@@ -13488,7 +13488,7 @@
         "pwm_ssim": 0.303,
         "matched_solver": "blt_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13562,7 +13562,7 @@
         "pwm_ssim": 0.5009,
         "matched_solver": "fwi_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "VelocityGAN",
@@ -13598,7 +13598,7 @@
         "pwm_ssim": 0.4219,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13624,7 +13624,7 @@
         "pwm_ssim": 0.2248,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13636,7 +13636,7 @@
         "pwm_ssim": 0.2245,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "GW-DL (PyCBC-ML) [proxy] (PWM)",
@@ -13648,7 +13648,7 @@
         "pwm_ssim": 0.2245,
         "matched_solver": "matched_filter_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13782,7 +13782,7 @@
         "pwm_ssim": 0.4768,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13794,7 +13794,7 @@
         "pwm_ssim": 0.4311,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "EIT-Net [proxy] (PWM)",
@@ -13806,7 +13806,7 @@
         "pwm_ssim": 0.4311,
         "matched_solver": "eit_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "TPINV (Tikhonov Pseudoinverse)",
@@ -13892,7 +13892,7 @@
         "pwm_ssim": 0.9806,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13904,7 +13904,7 @@
         "pwm_ssim": 0.9794,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "MPI-Net [proxy] (PWM)",
@@ -13916,7 +13916,7 @@
         "pwm_ssim": 0.9794,
         "matched_solver": "mpi_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -13966,7 +13966,7 @@
         "pwm_ssim": -0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -13978,7 +13978,7 @@
         "pwm_ssim": -0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "OAT-Net [proxy] (PWM)",
@@ -13990,7 +13990,7 @@
         "pwm_ssim": -0.0,
         "matched_solver": "oat_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14040,7 +14040,7 @@
         "pwm_ssim": 0.0053,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14052,7 +14052,7 @@
         "pwm_ssim": 0.0052,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CaloDiffusion [proxy] (PWM)",
@@ -14064,7 +14064,7 @@
         "pwm_ssim": 0.0053,
         "matched_solver": "cal_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14126,7 +14126,7 @@
         "pwm_ssim": 0.0022,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14138,7 +14138,7 @@
         "pwm_ssim": 0.0021,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "RadioAST-DL [proxy] (PWM)",
@@ -14150,7 +14150,7 @@
         "pwm_ssim": 0.0022,
         "matched_solver": "clean_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14260,7 +14260,7 @@
         "pwm_ssim": 0.4649,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14272,7 +14272,7 @@
         "pwm_ssim": 0.3727,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "SeisInversion-Net [proxy] (PWM)",
@@ -14284,7 +14284,7 @@
         "pwm_ssim": 0.3727,
         "matched_solver": "seismic_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14310,7 +14310,7 @@
         "pwm_ssim": 0.5219,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14322,7 +14322,7 @@
         "pwm_ssim": 0.4372,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "APT-Net [proxy] (PWM)",
@@ -14334,7 +14334,7 @@
         "pwm_ssim": 0.4372,
         "matched_solver": "apt_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14384,7 +14384,7 @@
         "pwm_ssim": 0.8857,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14396,7 +14396,7 @@
         "pwm_ssim": 0.8513,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CL-Net [proxy] (PWM)",
@@ -14408,7 +14408,7 @@
         "pwm_ssim": 0.8513,
         "matched_solver": "cl_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14494,7 +14494,7 @@
         "pwm_ssim": 0.8133,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14506,7 +14506,7 @@
         "pwm_ssim": 0.8153,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "CryoDRGN [proxy] (PWM)",
@@ -14518,7 +14518,7 @@
         "pwm_ssim": 0.8153,
         "matched_solver": "relion_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "cryoSPARC",
@@ -14580,7 +14580,7 @@
         "pwm_ssim": 0.7841,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14592,7 +14592,7 @@
         "pwm_ssim": 0.7091,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MSI-UNet [proxy] (PWM)",
@@ -14604,7 +14604,7 @@
         "pwm_ssim": 0.7841,
         "matched_solver": "msi_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14654,7 +14654,7 @@
         "pwm_ssim": 0.1044,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "mu-Net (ConvNeXt U-Net)",
@@ -14678,7 +14678,7 @@
         "pwm_ssim": 0.1044,
         "matched_solver": "best_quality",
         "match_confidence": 1,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PoCA (1024 muons)",
@@ -14702,7 +14702,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14764,7 +14764,7 @@
         "pwm_ssim": 0.1614,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -14776,7 +14776,7 @@
         "pwm_ssim": 0.1041,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "NeutronDiff-Net [proxy] (PWM)",
@@ -14788,7 +14788,7 @@
         "pwm_ssim": 0.1614,
         "matched_solver": "nd_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14826,7 +14826,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 1,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "NeuTomo-DL [proxy] (PWM)",
@@ -14936,7 +14936,7 @@
         "pwm_ssim": 0.2592,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "FBP-Proton [proxy] (PWM)",
@@ -14948,7 +14948,7 @@
         "pwm_ssim": 0.2592,
         "matched_solver": "famous_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -14998,7 +14998,7 @@
         "pwm_ssim": -0.0319,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15010,7 +15010,7 @@
         "pwm_ssim": -0.0265,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "SAXS-VAE [proxy] (PWM)",
@@ -15022,7 +15022,7 @@
         "pwm_ssim": -0.0265,
         "matched_solver": "saxs_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -15048,7 +15048,7 @@
         "pwm_ssim": -0.0553,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15060,7 +15060,7 @@
         "pwm_ssim": -0.0448,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "WAXS-Net [proxy] (PWM)",
@@ -15072,7 +15072,7 @@
         "pwm_ssim": -0.0448,
         "matched_solver": "waxs_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "Rietveld refinement",
@@ -15134,7 +15134,7 @@
         "pwm_ssim": -0.0461,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15146,7 +15146,7 @@
         "pwm_ssim": -0.0395,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "AlphaFold-SF [proxy] (PWM)",
@@ -15158,7 +15158,7 @@
         "pwm_ssim": -0.0461,
         "matched_solver": "xtal_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -15256,7 +15256,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15268,7 +15268,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "XRFT-Net [proxy] (PWM)",
@@ -15280,7 +15280,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "xrft_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -15306,7 +15306,7 @@
         "pwm_ssim": 0.6706,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15318,7 +15318,7 @@
         "pwm_ssim": 0.5782,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "CLEM-Net [proxy] (PWM)",
@@ -15330,7 +15330,7 @@
         "pwm_ssim": 0.5782,
         "matched_solver": "clem_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -15416,7 +15416,7 @@
         "pwm_ssim": 0.3733,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "XFCT-Net [proxy] (PWM)",
@@ -15428,7 +15428,7 @@
         "pwm_ssim": 0.3733,
         "matched_solver": "xfct_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -15514,7 +15514,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15526,7 +15526,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "partial"
       },
       {
         "name": "PET-CT-Fusion-Net [proxy] (PWM)",
@@ -15538,7 +15538,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "petct_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "precomputed_baseline (test)",
@@ -15600,7 +15600,7 @@
         "pwm_ssim": 0.0003,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15612,7 +15612,7 @@
         "pwm_ssim": 0.0003,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PET-MR-DeepJoint [proxy] (PWM)",
@@ -15624,7 +15624,7 @@
         "pwm_ssim": 0.0003,
         "matched_solver": "petmr_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "No-AC (1/10 counts)",
@@ -15722,7 +15722,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15734,7 +15734,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "SPECT-CT-Net [proxy] (PWM)",
@@ -15746,7 +15746,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "spectct_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "MLEM (1 iter, 1/20 counts)",
@@ -15796,7 +15796,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "traditional_cpu",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "PnP-ADMM [proxy] (PWM)",
@@ -15808,7 +15808,7 @@
         "pwm_ssim": 0.0,
         "matched_solver": "best_quality",
         "match_confidence": 3,
-        "status": "done"
+        "status": "fail"
       },
       {
         "name": "US-MRI-Net [proxy] (PWM)",
@@ -15820,7 +15820,7 @@
         "pwm_ssim": -0.2497,
         "matched_solver": "us_mri_dl",
         "match_confidence": 3,
-        "status": "done"
+        "status": "gap"
       },
       {
         "name": "precomputed_baseline (test)",
