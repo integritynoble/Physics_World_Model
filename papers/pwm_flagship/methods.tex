@@ -366,7 +366,6 @@ The fine correction phase uses a differentiable forward model to jointly
 optimize all mismatch parameters via gradient descent.  The key components
 are:
 
-\begin{sloppypar}
 \begin{enumerate}
   \item \textbf{Differentiable mask warp.}  The binary mask is warped by a
     continuous affine transformation using bilinear interpolation,
@@ -390,7 +389,6 @@ are:
     differentiable GAP-TV solver (\texttt{DifferentiableGAPTV}, $K=10$
     unrolled iterations).
 \end{enumerate}
-\end{sloppypar}
 
 Total runtime for Algorithm~2 is approximately 3,200 seconds
 (200~steps $\times$ 4~restarts $\times$ 9~candidates with early stopping).
@@ -482,24 +480,19 @@ refinement) additionally uses PyTorch automatic differentiation on the
 same GPU.
 
 \paragraph{CASSI configuration.}
-\begin{sloppypar}
 The coded aperture snapshot spectral imaging (CASSI) system uses a TSA-Net
 binary mask of dimensions $256 \times 256$, with 28 spectral bands
 dispersed along the spatial dimension.  The five-parameter mismatch model
-$\mismatchparam = (dx, dy, \theta, a_1, \alpha)$,
-where $dx$, $dy$ are spatial shifts (pixels), $\theta$ is rotation (degrees),
-$a_1$ is dispersion slope (pixels/band), and $\alpha$ is dispersion axis angle (degrees).
-An optional sixth parameter (PSF blur width $\sigma_{\text{psf}}$) is not used in the primary experiments.
-These values were determined through systematic characterization of realistic CASSI
-assembly errors (Supplementary Note~8); the true parameters are
-$dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$.
-Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv},
-DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst},
-all of which receive the same operator and differ only in their reconstruction algorithm.
-The supplementary per-scene analysis additionally includes DeSCI~\cite{liu2019rank} and HDNet~\cite{hu2022hdnet}.
-\end{sloppypar}
-
-\begin{sloppypar}
+$\mismatchparam = (dx, dy, \theta, a_1, \alpha)$
+describes: mask spatial shift in $x$ ($dx$, pixels), mask spatial shift in
+$y$ ($dy$, pixels), mask rotation angle ($\theta$, degrees), dispersion
+slope ($a_1$, pixels per band), and dispersion axis angle ($\alpha$,
+degrees).  An optional sixth parameter, PSF blur width ($\sigma_{\text{psf}}$, pixels), is available but not used in the primary experiments.
+These mismatch parameter values were determined through systematic characterization of realistic CASSI assembly errors (Supplementary Note~8). The true mismatch parameters are
+$\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;
+\theta = 0.1^\circ,\; a_1 = 2.02,\;
+\alpha = 0.15^\circ)$.
+Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv}, DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst}, all of which receive the same operator and differ only in their reconstruction algorithm. The supplementary per-scene analysis additionally includes DeSCI~\cite{liu2019rank} and HDNet~\cite{hu2022hdnet}.
 \textit{Real-data validation.}
 The TSA real hyperspectral dataset~\cite{wagadarikar2008cassi} consists of
 5 scenes at $660 \times 660$ spatial resolution with 28 spectral bands
@@ -509,8 +502,8 @@ HDNet (pre-trained checkpoint, full spatial resolution), MST-S and MST-L
 hardcoded spatial assumptions in the model architecture).  The coded
 aperture mask is perturbed by $dx = 0.5$\,px, $dy = 0.3$\,px to simulate
 assembly-induced mismatch.  No ground truth is available; quality is
-assessed via the normalised measurement residual $r = \|\mathbf{y} - H\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
-\end{sloppypar}
+assessed via the normalised measurement residual
+$r = \|\mathbf{y} - H\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
 
 \paragraph{CACTI configuration.}
 The coded aperture compressive temporal imaging system uses binary
@@ -607,7 +600,6 @@ centre-of-mass (iCoM) phase retrieval.  Calibration uses ePIE blind
 position correction~\cite{maiden2009ptychography}.
 
 \paragraph{Cryo-EM configuration.}
-\begin{sloppypar}
 Cryo-EM imaging is modeled as contrast transfer function (CTF) filtering
 of a 2D projected potential ($128 \times 128$, pixel size $0.1$\,nm).  The
 CTF is parameterized by defocus $\Delta f = -2000$\,nm, spherical aberration
@@ -618,7 +610,6 @@ as defocus error $\Delta(\Delta f) \in \{100, 200, 500, 1000\}$\,nm.  The
 default solver is Wiener filtering with SNR\,$= 50$.  Calibration uses grid
 search over 51 defocus values in $[-3000, -500]$\,nm, selecting the value
 that maximizes reconstruction PSNR.
-\end{sloppypar}
 
 \paragraph{MRI configuration.}
 Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
