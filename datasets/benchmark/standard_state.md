@@ -2,6 +2,39 @@
 
 Last updated: 2026-03-15 -- 170/170 modalities with unique standard datasets
 
+## Cloud Storage (GCS)
+
+Standard datasets are stored in Google Cloud Storage (NOT in the GitHub repo).
+
+- **GCS bucket:** `gs://pwm-benchmark-datasets/datasets/Benchmark/{modality}/standard/`
+- **Total size:** ~1 GB across 170 modalities (~5750 files)
+- **File types:** `*.h5` (data), `*.json` (metadata), `images/*.png` (previews)
+
+### Setup on a new server
+
+```bash
+# 1. Install gcloud CLI: https://cloud.google.com/sdk/docs/install
+# 2. Authenticate:
+gcloud auth login
+
+# 3. Download all modalities (~1 GB):
+python scripts/download_standard_from_gcs.py
+
+# 4. Download specific modalities only:
+python scripts/download_standard_from_gcs.py --modality ct,mri,pet
+
+# 5. List available modalities:
+python scripts/download_standard_from_gcs.py --list
+```
+
+### Upload (maintainer only)
+
+```bash
+gcloud auth login
+python scripts/upload_standard_to_gcs.py
+```
+
+
 ## Source Breakdown
 
 | Category | Count | Description |
