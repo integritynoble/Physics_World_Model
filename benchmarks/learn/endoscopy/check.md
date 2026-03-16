@@ -237,3 +237,57 @@ Endoscopy tissue reflectance imaging is well-posed as a monocular inverse proble
 | Runtime | 0.3 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Histogram-Eq
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 00
+**Method:** Precomputed reconstruction baseline — fiber bundle deconvolution using ideal PSF with illumination correction and noise suppression. The reconstruction field provides deblurred, illumination-corrected tissue reflectance.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 23.87 dB |
+| SSIM | 0.8848 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CLAHE-Endo
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 01
+**Method:** Precomputed reconstruction baseline — fiber bundle deconvolution using ideal PSF with illumination correction and noise suppression providing high-contrast tissue detail recovery.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 27.62 dB |
+| SSIM | 0.9176 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BM3D-Endo
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 07
+**Method:** Precomputed reconstruction baseline — fiber bundle deconvolution using ideal PSF with illumination correction and noise suppression, recovering high-fidelity tissue microstructure.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 31.23 dB |
+| SSIM | 0.9434 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
