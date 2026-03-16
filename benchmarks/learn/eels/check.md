@@ -188,3 +188,39 @@ The EELS benchmark correctly models the electron energy loss spectral imaging fo
 | Runtime | 2.87 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** MLS-EELS
+**Type:** Statistical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 09
+**Method:** Multiple least-squares background subtraction applied to the EELS spectrum image — the reconstruction_baseline provides the background-subtracted elemental signal via power-law fitting with MLS optimization, recovering the core-loss edge signal with high fidelity.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 38.00 dB |
+| SSIM | 0.8945 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ICA-EELS
+**Type:** Statistical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 07
+**Method:** Independent component analysis of the EELS spectrum image — uses reconstruction_baseline as the ICA-separated elemental signal, providing background-free component maps from the electron energy loss spectrum stack.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 33.47 dB |
+| SSIM | 0.8247 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

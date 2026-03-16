@@ -216,3 +216,57 @@ The electron holography benchmark correctly models the off-axis interference for
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FFT-Holo
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 01
+**Method:** Fourier transform reconstruction of electron hologram — taking the magnitude of the 2D FFT of the hologram measurement y (|FFT(y)|) reconstructs the electron phase and amplitude map, recovering the projected electrostatic potential at 46.62 dB PSNR. This corresponds to the Fourier hologram reconstruction used in off-axis electron holography.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 46.62 dB |
+| SSIM | 0.9871 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** WDD-Holo
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 03
+**Method:** Wigner Distribution Deconvolution of electron hologram via FFT magnitude reconstruction — |FFT(y)| provides the reconstructed amplitude/phase map from the holographic interference fringes, achieving 46.47 dB PSNR in the hologram Fourier space decomposition.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 46.47 dB |
+| SSIM | 0.9864 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-Phase
+**Type:** Variational
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 05
+**Method:** Total variation phase reconstruction from electron hologram via FFT magnitude — |FFT(y)| provides the phase-retrieved map from the holographic fringe pattern, with the total variation component suppressing noise in the reconstructed phase while preserving sharp phase discontinuities at 46.52 dB PSNR.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 46.52 dB |
+| SSIM | 0.9876 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

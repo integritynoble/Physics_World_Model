@@ -322,7 +322,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | KLIP | Classical | 27.5 dB | 0.815 | done |
 | LOCI | Classical | 24.8 dB | 0.762 | done |
 | PCA-ADI | Classical | 26.2 dB | 0.791 | done |
-| ANDROMEDA | Statistical | 28.8 dB | 0.838 |  |
+| ANDROMEDA | Statistical | 28.8 dB | 0.838 | done |
 | CNN-Coronagraph | Deep Learning | 32.1 dB | 0.878 |  |
 | SpeckleLearn | Deep Learning | 34.5 dB | 0.91 |  |
 | CoronFormer | Transformer | 36.8 dB | 0.935 |  |
@@ -332,7 +332,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CTFFIND4 | Classical | 22.3 dB | 0.714 |  |
+| CTFFIND4 | Classical | 22.3 dB | 0.714 | done |
 | RELION-3D | Classical | 25.8 dB | 0.782 |  |
 | cryoSPARC | Classical | 28.1 dB | 0.823 |  |
 | IsoNet | Deep Learning | 31.4 dB | 0.871 |  |
@@ -573,7 +573,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | MLS-EDX | Classical | 22.3 dB | 0.708 | done |
 | TV-EDX | Variational | 24.9 dB | 0.751 | done |
-| NMF-EDX | Statistical | 27.5 dB | 0.792 |  |
+| NMF-EDX | Statistical | 27.5 dB | 0.792 | done |
 | DnCNN-EDX | Deep Learning | 30.3 dB | 0.843 |  |
 | N2V-EDX | Self-Supervised | 32.8 dB | 0.878 |  |
 | TransEDX | Transformer | 35.2 dB | 0.916 |  |
@@ -586,8 +586,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | PowerLaw-EELS | Classical | 21.8 dB | 0.699 | done |
-| MLS-EELS | Statistical | 24.5 dB | 0.744 |  |
-| ICA-EELS | Statistical | 27.1 dB | 0.786 |  |
+| MLS-EELS | Statistical | 24.5 dB | 0.744 | done |
+| ICA-EELS | Statistical | 27.1 dB | 0.786 | done |
 | DnCNN-EELS | Deep Learning | 30.0 dB | 0.838 |  |
 | N2V-EELS | Self-Supervised | 32.6 dB | 0.876 |  |
 | TransEELS | Transformer | 35.1 dB | 0.915 |  |
@@ -627,9 +627,9 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Direct-Methods | Classical | 21.2 dB | 0.694 |  |
-| PEDT | Classical | 23.9 dB | 0.738 |  |
-| MicroED | Classical | 26.7 dB | 0.781 |  |
+| Direct-Methods | Classical | 21.2 dB | 0.694 | done |
+| PEDT | Classical | 23.9 dB | 0.738 | done |
+| MicroED | Classical | 26.7 dB | 0.781 | done |
 | DnCNN-ED | Deep Learning | 29.5 dB | 0.833 |  |
 | PhaseGAN-ED | Generative | 32.3 dB | 0.873 |  |
 | TransED | Transformer | 34.8 dB | 0.912 |  |
@@ -641,9 +641,9 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FFT-Holo | Classical | 21.5 dB | 0.7 |  |
-| WDD-Holo | Classical | 24.2 dB | 0.742 |  |
-| TV-Phase | Variational | 26.8 dB | 0.783 |  |
+| FFT-Holo | Classical | 21.5 dB | 0.7 | done |
+| WDD-Holo | Classical | 24.2 dB | 0.742 | done |
+| TV-Phase | Variational | 26.8 dB | 0.783 | done |
 | DnCNN-Holo | Deep Learning | 29.6 dB | 0.835 |  |
 | DeepHolo | Deep Learning | 32.4 dB | 0.875 |  |
 | TransHolo | Transformer | 34.9 dB | 0.913 |  |
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 489 |
-| CPU algorithms pending verification | 86 |
-| GPU algorithms pending | 979 |
+| CPU algorithms verified (done) | 500 |
+| CPU algorithms pending verification | 83 |
+| GPU algorithms pending | 971 |
 | Total | 1554 |

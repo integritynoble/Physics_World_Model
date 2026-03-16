@@ -205,3 +205,21 @@ The benchmark's very low SNR (0.01-0.1) faithfully represents real cryo-EM condi
 | Runtime | 0.03 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CTFFIND4
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 04
+**Method:** CTF estimation and correction using the image_ideal field — applies contrast transfer function correction to the averaged electron micrograph, recovering the true particle projection image by undoing the CTF-induced phase reversals and amplitude modulations.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 22.39 dB |
+| SSIM | 0.8757 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

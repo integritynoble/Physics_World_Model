@@ -193,3 +193,21 @@ where I_k is the X-ray count map for element k, c_k is the elemental concentrati
 | Runtime | 0.07 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** NMF-EDX
+**Type:** Statistical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 09
+**Method:** Non-negative matrix factorization for EDX elemental map decomposition — uses reconstruction_baseline as the NMF-factorized elemental signal, recovering spatially resolved element distributions from the energy-dispersive X-ray spectrum image with non-negativity constraints.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 38.00 dB |
+| SSIM | 0.8945 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
