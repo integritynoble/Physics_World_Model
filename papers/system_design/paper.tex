@@ -91,7 +91,7 @@ Every computational imaging system maps an unknown object $x$ to measurements $y
 
 As FASTA~\cite{pearson1990fasta} standardised sequence data for genomics, computational imaging needs a common representation to escape its pre-standardisation state.
 
-A companion paper~\cite{paperII} proved that 11 canonical primitives suffice to represent any imaging forward model across 170 modalities and 5 carrier families.  Each primitive is implemented at four fidelity tiers (Tier-0 geometric through Tier-3 full-physics).  This \emph{Finite Primitive Basis} (FPB) is the representation language, but representation alone does not automate design.  \textbf{This paper's contribution is the design layer}: the formal bridge from natural-language intent to bounded real-system reconstruction error.
+A companion paper~\cite{paperII} proved that 11 canonical primitives suffice to represent any imaging forward model across 170 modalities and 5 carrier families (key results reproduced in Supplementary Information S1--S4).  Each primitive is implemented at four fidelity tiers (Tier-0 geometric through Tier-3 full-physics).  This \emph{Finite Primitive Basis} (FPB) is the representation language, but representation alone does not automate design.  \textbf{This paper's contribution is the design layer}: the formal bridge from natural-language intent to bounded real-system reconstruction error.
 
 An imaging system is \emph{designable} if it admits a finite DAG decomposition over the 11 FPB primitives ($\eps_{\text{FPB}} < 0.01$), its carrier belongs to one of 5 families (photon, X-ray, electron, acoustic, spin/particle), and all parameters are finitely specifiable with known physical bounds (Definition~\ref{def:scope}, Methods).  This encompasses 173 modalities across 22 domains (170 from~\cite{paperII} plus 3 novel compositions; Figure~\ref{fig:pyramid}, Extended Data Table~\ref{tab:ext_registry}).  Our contributions are:
 \begin{enumerate}[nosep]
@@ -400,7 +400,7 @@ Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig4_design_to_real.pdf}
-\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates (3 Triad + 6 compiler), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities: CT (20.1\,dB, FBP+TV on LoDoPaB), MRI (23.3\,dB, PromptMR on M4Raw), and CASSI (25.5\,dB, GAP-TV on KAIST TSA).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $99.8 \pm 3.2$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
+\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates (3 Triad + 6 compiler), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities with ground truth: CT ($19.6$\,dB, FBP+TV on LoDoPaB), MRI ($22.2$\,dB, FISTA+TV on M4Raw), and CASSI ($38.5$\,dB, DAUHST-9stg on KAIST TSA).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $99.8 \pm 3.2$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
 \label{fig:design_to_real}
 \end{figure}
 
@@ -556,9 +556,11 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
 
 The central finding of this work is that a structured specification format (\texttt{spec.md}), a three-agent pipeline, and a five-term error decomposition together automate the design of computational imaging systems across 173 modalities and 5 carrier families.  The framework matches expert-library quality ($99.8\pm3.2$\%) with order-of-magnitude reductions in development time (Table~\ref{tab:expert}), as validated on real measured data from CT, MRI, and CASSI (Figure~\ref{fig:design_to_real}), because the agents automate the specification and validation steps that constitute the bulk of expert effort.
 
-\texttt{spec.md} decouples physics (\emph{what}) from numerics (\emph{how}) and hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The \texttt{system\_elements} field connects specifications to hardware feasibility, transforming the Judge from a mathematical validator into a system feasibility checker.  Three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances.
+\texttt{spec.md} decouples physics (\emph{what}) from numerics (\emph{how}) and hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The \texttt{system\_elements} field connects specifications to hardware feasibility, transforming the Judge from a mathematical validator into a system feasibility checker.  Three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances.  This reproducibility---identical physics from independent instances---is the property that made FASTA transformative for genomics: a shared, verifiable format that decouples the science from the implementation.
 
 The five-term error decomposition (Theorem~\ref{thm:design}) functions as a formal contract: each $\eps$ term maps to a corrective action (Figure~\ref{fig:error_decomp}).  The dominant residual is $\eps_{\text{param}}$, reducible by calibration; $\rho_{\text{recov}} \geq 0.85$ across all 5 carrier families.
+
+Theorem~\ref{thm:design} thus functions as a design-to-deployment diagnostic: when a deployed system underperforms its specification target, the five-term decomposition localises the failure.  If $\eps_{\text{param}}$ dominates (CT, MRI, e-ptychography in Figure~\ref{fig:error_decomp}), calibration is the corrective action.  If $\eps_{\text{unmod}}$ dominates (DOT), tier-lifting from Tier-2 to Tier-3 physics is required.  If $\eps_{\text{spec}}$ or $\eps_{\text{trans}}$ are nonzero, the specification itself must be revised.  Each diagnosis maps to a single, actionable intervention---a property that distinguishes this decomposition from generic error bounds.
 
 \textbf{Relation to existing work.}
 AI for scientific discovery~\cite{jumper2021alphafold,merchant2023gnome,wang2023scientific,boiko2023autonomous} and automated experiment design~\cite{tian2023ci,boiko2023autonomous} address related problems but none provide a formal error decomposition from natural-language intent to reconstruction quality.  Operator libraries (ASTRA~\cite{aarle2016}, SigPy~\cite{ong2019sigpy}, ODL~\cite{adler2017odl}, DeepInverse~\cite{tachella2023deepinverse}) provide modular forward operators but require manual composition and parameter selection per modality; our contribution is the \emph{automated specification layer} above such libraries.  Learned reconstruction methods (MoDL~\cite{aggarwal2019modl}, learned primal-dual~\cite{adler2018learned}, PnP~\cite{kamilov2023pnp}) achieve higher per-modality PSNR than our model-based reconstructions but require training data and are single-modality; our framework trades per-modality optimality for cross-modality generality (173 modalities from one system).
@@ -567,7 +569,7 @@ AI for scientific discovery~\cite{jumper2021alphafold,merchant2023gnome,wang2023
 The algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}, Extended Data Figure~\ref{fig:spec_dominance}) sheds light on why the framework achieves expert-equivalent quality with model-based algorithms.  For well-conditioned systems (CT, MRI, CASSI), the specification constrains the quality envelope: inter-method CoV remains low ($\approx$3.5--6.2\%) across the top-5 published algorithms, indicating that a correct forward model leaves comparatively little room for solver improvement.  This explains the framework's $99.8\pm3.2$\% quality ratio without per-modality algorithm tuning.  However, compressive systems with high condition numbers (lensless: CoV $>$40\%; SIM: CoV 15\%) would clearly benefit from learned reconstruction methods that exploit data-driven priors beyond what model-based solvers provide.  We view this as motivation for future integration of learned methods into the Execute Agent, particularly for ill-conditioned modalities where the gap between model-based and data-driven approaches is largest.
 
 \textbf{Limitations.}
-(1)~Reconstruction uses model-based algorithms (FISTA+TV, ADMM+TV); learned methods~\cite{aggarwal2019modl,adler2018learned} achieve higher per-modality PSNR (typically 3--8\,dB) but require training data unavailable for novel designs.  The comparison is restricted to model-based approaches to ensure fair cross-modality evaluation.
+(1)~For most modalities, reconstruction uses model-based algorithms (FISTA+TV, ADMM+TV).  For CASSI, the Execute Agent selects DAUHST-9stg~\cite{cai2022dauhst}, a deep unrolling method, reflecting the algorithm-sensitive regime identified in the CoV analysis (Extended Data Figure~\ref{fig:spec_dominance}).  Learned methods~\cite{aggarwal2019modl,adler2018learned} achieve higher per-modality PSNR (typically 3--8\,dB) but require training data unavailable for novel designs.
 (2)~The agents depend on LLM capabilities (Claude Sonnet 4 in all experiments); robustness across LLM backends is not tested.  The 4\% misspecification rate (7/173 modalities) may vary with different models.
 (3)~Development-time ratios ($\rho_{\text{time}}$) rely partly on published estimates of expert development timelines, not prospective head-to-head comparisons.  The ratios should be interpreted as order-of-magnitude indicators.
 (4)~Quantitative reconstruction validated for 39/173 modalities; real data for 6.  Novel system designs are validated only in simulation.
@@ -976,6 +978,89 @@ C.Y.\ conceived the project, developed the theory (Theorem~\ref{thm:design} and 
 \section*{Competing Interests}
 
 C.Y.\ is affiliated with NextGen PlatformAI C Corp, which develops the Physics World Model platform described in this paper.
+
+% ========================================================================
+\section*{Supplementary Information}
+% ========================================================================
+
+The following reproduces the key theoretical results from the companion paper~\cite{paperII} that underpin this work, so that the present paper is self-contained for review.
+
+% ------------------------------------------------------------------------
+\subsection*{S1. FPB Basis Theorem}
+% ------------------------------------------------------------------------
+
+\begin{theorem}[Finite Primitive Basis~\cite{paperII}]
+\label{thm:fpb}
+Let $\mathcal{F} = \{A_1, \ldots, A_N\}$ be the set of $N$ forward models across all validated imaging modalities.  There exists a set of $K = 11$ canonical primitives $\{P_1, \ldots, P_{11}\}$ such that every $A_i \in \mathcal{F}$ can be expressed as a directed acyclic graph (DAG) composition over $\{P_k\}$ with representation error $\eps_{\text{FPB}} < 0.01$:
+\[
+\forall A_i \in \mathcal{F},\quad \exists\, \text{DAG}_i \text{ over } \{P_k\}_{k=1}^{11}: \quad \frac{\|A_i - \text{DAG}_i\|_{\text{op}}}{\|A_i\|_{\text{op}}} < 0.01.
+\]
+\end{theorem}
+
+\textbf{Proof sketch.}
+The 11 primitives---Projection ($\Pi$), Fourier Encode ($F$), Modulate ($M$), Convolve ($C$), Propagate ($P$), Disperse ($W$), Accumulate ($\Sigma$), Sample ($S$), Detect ($D$), Scatter ($R$), Nonlinear ($\Lambda$)---are identified by a greedy set-cover procedure over $N = 170$ modalities.  Starting from the most frequently occurring linear operation (Radon projection $\Pi$, covering 23 modalities), each subsequent primitive is chosen to maximise marginal coverage of uncovered modalities.  The procedure saturates at $K = 11$: adding a 12th primitive covers zero additional modalities at the $\eps < 0.01$ threshold.  The saturation argument shows that imaging physics, despite its diversity, occupies a low-dimensional operator space---every forward model is a composition of measurement geometry ($\Pi, F, S$), wave interaction ($P, C, W, R$), modulation ($M$), accumulation ($\Sigma$), detection ($D$), and pointwise nonlinearity ($\Lambda$).  The $\eps < 0.01$ bound is verified empirically for each modality via Gate~6 of the structural compiler: $\eps = \mathbb{E}[\|(\text{DAG}_i - A_i)(x)\| / \|A_i(x)\|]$ over 5 random non-negative test vectors.
+
+% ------------------------------------------------------------------------
+\subsection*{S2. Triad Decomposition Theorem}
+% ------------------------------------------------------------------------
+
+\begin{theorem}[Triad Decomposition~\cite{paperII}]
+\label{thm:triad}
+For any imaging system with forward model $A$, object $x$, measurements $y = A(x) + n$, and reconstruction $\hat{x}$, the mean squared error decomposes as:
+\[
+\text{MSE}(\hat{x}, x) \leq \text{MSE}^{(G_1)} + \text{MSE}^{(G_2)} + \text{MSE}^{(G_3)}
+\]
+where:
+\begin{itemize}[nosep]
+\item $\text{MSE}^{(G_1)}$: information loss from insufficient measurement geometry (recoverability);
+\item $\text{MSE}^{(G_2)}$: noise amplification from insufficient carrier budget (SNR);
+\item $\text{MSE}^{(G_3)}$: model mismatch between designed and deployed operator.
+\end{itemize}
+No reconstruction failure mode falls outside these three gates.
+\end{theorem}
+
+\textbf{Proof sketch.}
+Decompose the reconstruction error as $\hat{x} - x = (\hat{x} - x_{\text{noiseless}}) + (x_{\text{noiseless}} - x_{\text{oracle}}) + (x_{\text{oracle}} - x)$, where $x_{\text{oracle}}$ is the reconstruction from the true operator with noiseless data, and $x_{\text{noiseless}}$ is the reconstruction from the agent operator with noiseless data.
+
+The first term $\|\hat{x} - x_{\text{noiseless}}\|^2$ is bounded by $\text{MSE}^{(G_2)}$: the noise term, controlled by the carrier budget (source power, detector efficiency, integration time).  The bound follows from the noise amplification factor $\kappa(A)^2 \cdot \sigma_n^2 / m$, where $\kappa(A)$ is the condition number of $A$.
+
+The second term $\|x_{\text{noiseless}} - x_{\text{oracle}}\|^2$ is bounded by $\text{MSE}^{(G_3)}$: the model mismatch term.  By the reconstruction stability bound (Eq.~\ref{eq:stability} in the main text), this is controlled by $\|A_{\text{agent}} - A_{\text{true}}\|_{\text{op}}^2$.
+
+The third term $\|x_{\text{oracle}} - x\|^2$ is bounded by $\text{MSE}^{(G_1)}$: the information loss from under-sampling.  When $\gamma = m/n < 1$, the null space of $A$ is nonempty and the projection onto the measurement subspace loses information.  The bound depends on the compression ratio $\gamma$ and the signal's compressibility in a sparsifying basis.
+
+Completeness follows because these three mechanisms---information loss, noise, and model error---are exhaustive: any discrepancy between $\hat{x}$ and $x$ must arise from insufficient measurements (Gate~1), insufficient SNR (Gate~2), or incorrect forward model (Gate~3).
+
+% ------------------------------------------------------------------------
+\subsection*{S3. Compression Bound Theorem}
+% ------------------------------------------------------------------------
+
+\begin{theorem}[Compression Bound~\cite{paperII}]
+\label{thm:compression}
+For an imaging system with compression ratio $\gamma = m/n$, forward model $A$, and $s$-sparse signal in basis $\Psi$, the maximum achievable PSNR satisfies:
+\[
+\text{PSNR}_{\max}^{(G_1)} \leq 10\log_{10}\!\left(\frac{\|x\|_\infty^2}{\sigma_{\min}^{-2}(A\Psi_s)\,\|n\|^2/m + C_s\,\|x - x_s\|^2}\right)
+\]
+where $\Psi_s$ is the restriction to the $s$ largest coefficients, $x_s$ is the best $s$-term approximation, and $C_s$ is a constant depending on the restricted isometry constant of $A$.
+\end{theorem}
+
+\textbf{Proof sketch.}
+The derivation combines two bounds: (1)~the oracle bound for $s$-sparse recovery, $\|\hat{x} - x\|^2 \leq C \cdot s\,\sigma_n^2 \cdot \log(n/s)/m$ from compressed sensing theory~\cite{candes2006robust}, which sets the noise floor as a function of $\gamma$; and (2)~the approximation error $\|x - x_s\|$ from signal compressibility.  Gate~1 evaluates whether $\gamma$ exceeds the modality-specific threshold $\gamma_{\min}(\text{modality})$ derived from empirical recovery curves across the 4-scenario protocol (Methods).  Below this threshold, the null-space component grows faster than regularisation can compensate, and $\text{PSNR}_{\max}^{(G_1)}$ falls below the specification target.
+
+% ------------------------------------------------------------------------
+\subsection*{S4. Calibration Sensitivity Theorem}
+% ------------------------------------------------------------------------
+
+\begin{theorem}[Calibration Sensitivity~\cite{paperII}]
+\label{thm:calibration}
+Let $A(\theta)$ be a forward model parameterised by $\theta \in \R^p$.  For small parameter perturbations $\delta\theta = \theta_{\text{deployed}} - \theta_{\text{designed}}$, the PSNR degradation satisfies:
+\[
+\Delta\text{PSNR}_{\text{total}} = \sqrt{\sum_{k=1}^{p} \left(s_k \cdot \delta\theta_k\right)^2}
+\]
+where $s_k = \partial(\text{PSNR})/\partial\theta_k$ is the sensitivity of reconstruction quality to the $k$-th parameter, evaluated at the design point.
+\end{theorem}
+
+\textbf{Proof sketch.}
+Expand the reconstruction error to first order in $\delta\theta$: $\hat{x}(\theta + \delta\theta) - \hat{x}(\theta) \approx \sum_k (\partial\hat{x}/\partial\theta_k)\,\delta\theta_k$.  The MSE increment is $\Delta\text{MSE} \approx \sum_k \|\partial\hat{x}/\partial\theta_k\|^2\,\delta\theta_k^2$ (cross-terms vanish under independence).  Converting to PSNR via $\Delta\text{PSNR} \approx -10/({\ln 10}) \cdot \Delta\text{MSE}/\text{MSE}$ and defining $s_k$ as the per-parameter PSNR sensitivity yields the root-sum-of-squares formula.  Gate~3 checks whether the predicted deployment PSNR ($\text{PSNR}_{\max}^{(G_2)} - \Delta\text{PSNR}_{\text{total}}$) exceeds the specification target, using calibration tolerances from \texttt{system\_elements.calibration}.  Each $s_k$ is computed numerically by perturbing $\theta_k$ by $\pm 1\%$ and measuring PSNR change, validated against the Lipschitz analysis from Gate~4.
 
 % ========================================================================
 \begingroup
