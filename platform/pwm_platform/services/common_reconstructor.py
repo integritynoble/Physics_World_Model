@@ -1182,7 +1182,7 @@ def _compressive_reconstruct(
 _RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
 
 
-def _cassi_gap_tv_reconstruct(data: dict, n_iter: int = 80, tv_weight: float = 0.008) -> np.ndarray:
+def _cassi_gap_tv_reconstruct(data: dict, n_iter: int = 100, tv_weight: float = 0.02) -> np.ndarray:
     """Reconstruct CASSI spectral cube using FISTA + TV (accelerated proximal gradient).
 
     Forward model: y[:, d_k:d_k+W] += mask * x[:,:,k]  for k=0..L-1
