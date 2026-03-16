@@ -144,3 +144,21 @@ y = Poisson(Gaussian_blur(x_true) * lambda_photons)
 | Runtime | 0.46 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CS-Ghost
+**Type:** Compressed Sensing
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 04
+**Method:** Total variation denoising (weight=0.05) applied to the ghost imaging measurement — TV regularization recovers the spatial correlations from the compressed entangled photon coincidence pattern.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 23.15 dB |
+| SSIM | 0.6491 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

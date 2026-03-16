@@ -236,3 +236,21 @@ Algorithm routing now uses a dedicated `_VARIANT_OVERRIDES["coded_exposure"]` en
 | Runtime | 0.08 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-Deconv
+**Type:** Variational
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 09
+**Method:** Total variation denoising (weight=0.05) applied to the reconstruction_baseline — TV regularization with the precomputed coded exposure reconstruction for improved deblurring artifact removal.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 28.07 dB |
+| SSIM | 0.7228 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**

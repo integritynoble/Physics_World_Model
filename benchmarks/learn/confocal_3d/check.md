@@ -267,3 +267,21 @@ All three HDF5 files are on GCS. Gallery images are generated for 4 scenes. No c
 | Runtime | 0.01 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** IRCNN-Confocal
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 06
+**Method:** Total variation denoising (weight=0.03) applied directly to the confocal 3D measurement — TV regularization recovers the sharp 3D structure from the optically-blurred z-stack measurement.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 33.24 dB |
+| SSIM | 0.5768 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**

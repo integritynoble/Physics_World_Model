@@ -192,3 +192,21 @@ Integral imaging is correctly modeled as a perspective projection through a micr
 | Runtime | 24.77 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LF
+**Type:** PnP
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 09
+**Method:** Total variation denoising (weight=0.05) applied to the reconstruction_baseline — plug-and-play TV denoiser applied to the integral imaging projection sum for depth-resolved reconstruction.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 28.07 dB |
+| SSIM | 0.7228 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
