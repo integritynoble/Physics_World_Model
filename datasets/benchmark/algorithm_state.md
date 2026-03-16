@@ -161,10 +161,36 @@ Each modality has 3-8 solver keys defined in `benchmarks/configs/{modality}.yaml
 | `small_gpu` | Lightweight GPU solver | Yes | Fast GPU inference |
 | Modality-specific keys | e.g. `mst_l`, `hdnet`, `hisvit13` | Varies | Algorithm-specific runs |
 
+### Algorithm Base (Direct Access)
+
+All algorithms are also organized in `algorithm_base/` — one folder per modality with ready-to-run solver code.
+
+```python
+# Import by modality
+from algorithm_base.cassi import run_solver, run_traditional_cpu
+from algorithm_base.mri import run_best_quality
+from algorithm_base.ct import list_solvers
+
+# Central registry
+from algorithm_base import get_solver, list_solvers, list_modalities, run_solver
+
+# Run any algorithm in one line
+x_hat = run_solver("cassi", "traditional_cpu", y, operator)
+```
+
+Structure: `algorithm_base/{modality}/solvers.py` contains SOLVERS dict + `run_solver()` + per-key functions. See `algorithm_base/README.md` for full docs.
+
+Adding a new algorithm:
+1. Add solver function to `packages/pwm_core/pwm_core/recon/my_solver.py`
+2. Register in `benchmarks/configs/{modality}.yaml`
+3. Run `python scripts/build_algorithm_base.py` to regenerate
+
 ### Files
 
 | File | Description |
 |------|-------------|
+| `algorithm_base/` | Per-modality solver folders (168 modalities, 541 solvers) |
+| `algorithm_base/_registry.py` | Central dispatch: `get_solver()`, `list_solvers()`, `run_solver()` |
 | `benchmark_results/solver_registry.json` | Complete algorithm → solver mapping (1294 entries) |
 | `benchmark_results/solver_summary.md` | Per-modality solver table with module/function paths |
 | `benchmarks/configs/{modality}.yaml` | Solver definitions per modality (module, function, params, gpu) |
