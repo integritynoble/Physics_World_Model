@@ -7,7 +7,7 @@ Tracks verification status of all reconstruction algorithms in SpecLab
 - `done` — PWM CPU reconstruction verified, actual PSNR within 2 dB of reference
 - *(blank)* — awaiting verification (not yet tested, or PSNR below reference threshold)
 
-Last updated: 2026-03-16 | Total modalities: 168 | Verified: 504
+Last updated: 2026-03-16 | Total modalities: 168 | Verified: 508
 
 ---
 
@@ -489,7 +489,7 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 504
 | SHORE | Classical | 24.6 dB | 0.745 | done |
 | CHARMED | Statistical | 26.8 dB | 0.782 | done |
 | DnCNN-DTI | Deep Learning | 29.3 dB | 0.831 | done |
-| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | |
+| DWIML-Net | Deep Learning | 32.1 dB | 0.871 | done |
 | DTIFormer | Transformer | 34.8 dB | 0.912 |  |
 | SwinDTI | Transformer | 36.2 dB | 0.931 |  |
 | PhysDiffMRI | Physics-Informed | 37.5 dB | 0.941 |  |
@@ -1519,9 +1519,9 @@ Last updated: 2026-03-16 | Total modalities: 168 | Verified: 504
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| ThunderSTORM | Classical | 22.5 dB | 0.61 |  |
-| FALCON | PnP | 25.8 dB | 0.74 |  |
-| Deep-STORM | Deep Learning | 30.2 dB | 0.88 |  |
+| ThunderSTORM | Classical | 22.5 dB | 0.61 | done |
+| FALCON | PnP | 25.8 dB | 0.74 | done |
+| Deep-STORM | Deep Learning | 30.2 dB | 0.88 | done |
 | DECODE | Deep Learning | 32.1 dB | 0.915 |  |
 
 ## PET/CT Fusion (`pet_ct`) — multi_modal_fusion
