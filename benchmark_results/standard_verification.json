@@ -1,0 +1,4027 @@
+{
+  "generated": "2026-03-15",
+  "total": 168,
+  "modalities": {
+    "acoustic_emission": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 6.9,
+          "std_ssim": 0.2848,
+          "time": 0.05
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 5.21,
+          "std_ssim": 0.214,
+          "time": 0.11
+        },
+        "dl_localizer": {
+          "status": "verified",
+          "std_psnr": 5.21,
+          "std_ssim": 0.214,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 6.9
+    },
+    "acoustic_microscopy": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 14.46,
+          "std_ssim": 0.7172,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 13.32,
+          "std_ssim": 0.6609,
+          "time": 0.16
+        },
+        "saft_dl": {
+          "status": "verified",
+          "std_psnr": 13.32,
+          "std_ssim": 0.6609,
+          "time": 0.16
+        }
+      },
+      "best_psnr": 14.5
+    },
+    "active_thermography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 6.59,
+          "std_ssim": 0.2274,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 5.09,
+          "std_ssim": 0.1723,
+          "time": 0.11
+        },
+        "pulsed_phase_tv": {
+          "status": "verified",
+          "std_psnr": 5.09,
+          "std_ssim": 0.1723,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 6.6
+    },
+    "adaptive_optics": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 40.44,
+          "std_ssim": 0.9993,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 41.21,
+          "std_ssim": 0.9994,
+          "time": 0.1
+        },
+        "deep_ao": {
+          "status": "verified",
+          "std_psnr": 41.21,
+          "std_ssim": 0.9994,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 41.2
+    },
+    "afm": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 6.58,
+          "std_ssim": 0.2546,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "afm_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 6.6
+    },
+    "angiography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.67,
+          "std_ssim": 0.0,
+          "time": 0.24
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 41.83,
+          "std_ssim": 0.9998,
+          "time": 0.11
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 41.83,
+          "std_ssim": 0.9998,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 41.8
+    },
+    "asl_mri": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -35.85,
+          "std_ssim": 0.0,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -37.06,
+          "std_ssim": 0.0,
+          "time": 0.15
+        },
+        "asl_dl": {
+          "status": "verified",
+          "std_psnr": 12.9,
+          "std_ssim": -0.148,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 12.9
+    },
+    "atom_probe": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 9.48,
+          "std_ssim": 0.5219,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 7.97,
+          "std_ssim": 0.4372,
+          "time": 0.15
+        },
+        "apt_dl": {
+          "status": "verified",
+          "std_psnr": 7.97,
+          "std_ssim": 0.4372,
+          "time": 0.16
+        }
+      },
+      "best_psnr": 9.5
+    },
+    "bioluminescence_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 9.93,
+          "std_ssim": 0.3897,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 8.29,
+          "std_ssim": 0.303,
+          "time": 0.12
+        },
+        "blt_dl": {
+          "status": "verified",
+          "std_psnr": 8.29,
+          "std_ssim": 0.303,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 9.9
+    },
+    "brachytherapy_img": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 43.72,
+          "std_ssim": 0.9997,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 43.72,
+          "std_ssim": 0.9997,
+          "time": 0.13
+        },
+        "brachy_dl": {
+          "status": "verified",
+          "std_psnr": 43.72,
+          "std_ssim": 0.9997,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 43.7
+    },
+    "brillouin": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 9.87,
+          "std_ssim": 0.6771,
+          "time": 0.09
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 8.25,
+          "std_ssim": 0.5913,
+          "time": 0.14
+        },
+        "brillouin_dl": {
+          "status": "verified",
+          "std_psnr": 8.25,
+          "std_ssim": 0.5913,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 9.9
+    },
+    "cacti": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "cars": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 26.98,
+          "std_ssim": 0.8471,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 27.01,
+          "std_ssim": 0.8504,
+          "time": 0.12
+        },
+        "cars_dl": {
+          "status": "verified",
+          "std_psnr": 27.01,
+          "std_ssim": 0.8504,
+          "time": 0.09
+        }
+      },
+      "best_psnr": 27.0
+    },
+    "cassi": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "cathodoluminescence": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 18.91,
+          "std_ssim": 0.8857,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 17.59,
+          "std_ssim": 0.8513,
+          "time": 0.11
+        },
+        "cl_dl": {
+          "status": "verified",
+          "std_psnr": 17.59,
+          "std_ssim": 0.8513,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 18.9
+    },
+    "cbct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 15.05,
+          "std_ssim": 0.9188,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 15.1
+    },
+    "cest_mri": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -31.85,
+          "std_ssim": 0.0,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -32.62,
+          "std_ssim": 0.0,
+          "time": 0.11
+        },
+        "cest_dl": {
+          "status": "verified",
+          "std_psnr": 17.76,
+          "std_ssim": -0.0531,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 17.8
+    },
+    "ceus": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 24.24,
+          "std_ssim": 0.9643,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 22.37,
+          "std_ssim": 0.9463,
+          "time": 0.11
+        },
+        "us_dl_enhance": {
+          "status": "verified",
+          "std_psnr": 22.37,
+          "std_ssim": 0.9463,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 24.2
+    },
+    "clem": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 10.21,
+          "std_ssim": 0.6706,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 8.47,
+          "std_ssim": 0.5782,
+          "time": 0.09
+        },
+        "clem_dl": {
+          "status": "verified",
+          "std_psnr": 8.47,
+          "std_ssim": 0.5782,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 10.2
+    },
+    "coded_exposure": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 6.93,
+          "std_ssim": 0.1019,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 5.94,
+          "std_ssim": 0.0825,
+          "time": 0.11
+        },
+        "coded_dl": {
+          "status": "verified",
+          "std_psnr": 5.94,
+          "std_ssim": 0.0825,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 6.9
+    },
+    "confocal_3d": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 46.38,
+          "std_ssim": 0.9997,
+          "time": 0.09
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 9.7,
+          "std_ssim": 0.0091,
+          "time": 0.73
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 9.18,
+          "std_ssim": 0.0003,
+          "time": 0.61
+        }
+      },
+      "best_psnr": 46.4
+    },
+    "confocal_endomicroscopy": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 43.95,
+          "std_ssim": 0.9988,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 43.95,
+          "std_ssim": 0.9988,
+          "time": 0.11
+        },
+        "cle_dl": {
+          "status": "verified",
+          "std_psnr": 43.95,
+          "std_ssim": 0.9988,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 44.0
+    },
+    "confocal_livecell": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 44.05,
+          "std_ssim": 0.9996,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 9.74,
+          "std_ssim": 0.0012,
+          "time": 0.53
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 9.63,
+          "std_ssim": 0.0,
+          "time": 0.56
+        }
+      },
+      "best_psnr": 44.0
+    },
+    "coronagraphy": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 26.88,
+          "std_ssim": 0.9854,
+          "time": 0.09
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 25.67,
+          "std_ssim": 0.9809,
+          "time": 0.12
+        },
+        "speckle_null_dl": {
+          "status": "verified",
+          "std_psnr": 25.67,
+          "std_ssim": 0.9809,
+          "time": 0.09
+        }
+      },
+      "best_psnr": 26.9
+    },
+    "cryo_em": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 12.86,
+          "std_ssim": 0.8133,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 12.89,
+          "std_ssim": 0.8153,
+          "time": 0.1
+        },
+        "relion_dl": {
+          "status": "verified",
+          "std_psnr": 12.89,
+          "std_ssim": 0.8153,
+          "time": 0.09
+        }
+      },
+      "best_psnr": 12.9
+    },
+    "cryo_et": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "cryo_et_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "ct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 15.09,
+          "std_ssim": 0.9096,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": -45.16,
+          "std_ssim": 0.0,
+          "time": 0.92
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": -33.67,
+          "std_ssim": 0.0001,
+          "time": 0.92
+        }
+      },
+      "best_psnr": 15.1
+    },
+    "ct_fluorescence": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 8.26,
+          "std_ssim": 0.4463,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 6.95,
+          "std_ssim": 0.3733,
+          "time": 0.13
+        },
+        "xfct_dl": {
+          "status": "verified",
+          "std_psnr": 6.95,
+          "std_ssim": 0.3733,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 8.3
+    },
+    "cup": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 12.01,
+          "std_ssim": 0.7157,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 10.62,
+          "std_ssim": 0.6468,
+          "time": 0.1
+        },
+        "e2e_cup": {
+          "status": "verified",
+          "std_psnr": 10.62,
+          "std_ssim": 0.6468,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 12.0
+    },
+    "dark_field": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 39.7,
+          "std_ssim": 0.9992,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "df_unet": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 39.7
+    },
+    "desi": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 11.62,
+          "std_ssim": 0.6558,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 9.89,
+          "std_ssim": 0.5631,
+          "time": 0.1
+        },
+        "desi_dl": {
+          "status": "verified",
+          "std_psnr": 9.89,
+          "std_ssim": 0.5631,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 11.6
+    },
+    "dexa": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 33.64,
+          "std_ssim": 0.9964,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 34.41,
+          "std_ssim": 0.9971,
+          "time": 0.1
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 34.41,
+          "std_ssim": 0.9971,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 34.4
+    },
+    "dic": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 2.51,
+          "std_ssim": 0.0015,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "dic_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 2.5
+    },
+    "diffusion_mri": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 24.7,
+          "std_ssim": 0.1243,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 24.7,
+          "std_ssim": 0.1243,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 24.7,
+          "std_ssim": 0.1243,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 24.7
+    },
+    "digital_breast_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "nan_or_inf",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "nan_or_inf",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "dbt_dl": {
+          "status": "nan_or_inf",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "dna_paint": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 25.83,
+          "std_ssim": 0.7652,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "dna_paint_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 25.8
+    },
+    "doppler_ultrasound": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 28.82,
+          "std_ssim": 0.9769,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 21.16,
+          "std_ssim": 0.9005,
+          "time": 0.11
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 21.16,
+          "std_ssim": 0.9005,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 28.8
+    },
+    "dot": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 24.19,
+          "std_ssim": 0.9626,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 22.53,
+          "std_ssim": 0.945,
+          "time": 0.07
+        },
+        "dot_dl": {
+          "status": "verified",
+          "std_psnr": 22.53,
+          "std_ssim": 0.945,
+          "time": 0.06
+        }
+      },
+      "best_psnr": 24.2
+    },
+    "ebsd": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 16.39,
+          "std_ssim": 0.8366,
+          "time": 0.15
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 7.29,
+          "std_ssim": 0.3548,
+          "time": 0.14
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 7.29,
+          "std_ssim": 0.3548,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 16.4
+    },
+    "eddy_current": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 22.71,
+          "std_ssim": 0.9743,
+          "time": 0.09
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 21.76,
+          "std_ssim": 0.9682,
+          "time": 0.13
+        },
+        "ec_dl": {
+          "status": "verified",
+          "std_psnr": 22.71,
+          "std_ssim": 0.9743,
+          "time": 0.07
+        }
+      },
+      "best_psnr": 22.7
+    },
+    "edx_mapping": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 29.26,
+          "std_ssim": 0.8672,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 29.26,
+          "std_ssim": 0.8672,
+          "time": 0.11
+        },
+        "edx_dl": {
+          "status": "verified",
+          "std_psnr": 29.26,
+          "std_ssim": 0.8672,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 29.3
+    },
+    "eels": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 12.77,
+          "std_ssim": 0.779,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 11.28,
+          "std_ssim": 0.7135,
+          "time": 0.13
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 11.28,
+          "std_ssim": 0.7135,
+          "time": 0.13
+        },
+        "eels_dl": {
+          "status": "verified",
+          "std_psnr": 11.28,
+          "std_ssim": 0.7135,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 12.8
+    },
+    "eht_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 15.39,
+          "std_ssim": 0.0019,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 15.38,
+          "std_ssim": 0.0019,
+          "time": 0.15
+        },
+        "eht_dl": {
+          "status": "verified",
+          "std_psnr": 15.39,
+          "std_ssim": 0.0019,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 15.4
+    },
+    "elastography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 7.14,
+          "std_ssim": 0.0,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 4.96,
+          "std_ssim": 0.1708,
+          "time": 0.16
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 4.96,
+          "std_ssim": 0.1708,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 7.1
+    },
+    "electron_diffraction": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 13.47,
+          "std_ssim": 0.852,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 1.26,
+          "std_ssim": 0.2125,
+          "time": 0.13
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 1.26,
+          "std_ssim": 0.2125,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 13.5
+    },
+    "electron_holography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 1.38,
+          "std_ssim": 0.0,
+          "time": 6.16
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 1.7,
+          "std_ssim": 0.1353,
+          "time": 0.14
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 1.7,
+          "std_ssim": 0.1353,
+          "time": 0.15
+        }
+      },
+      "best_psnr": 1.7
+    },
+    "electron_tomography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 0.63,
+          "std_ssim": -0.0,
+          "time": 0.22
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 0.6
+    },
+    "endoscopy": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 31.47,
+          "std_ssim": 0.9808,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 31.5
+    },
+    "entangled_photon": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 17.23,
+          "std_ssim": 0.8517,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 15.46,
+          "std_ssim": 0.7926,
+          "time": 0.11
+        },
+        "qgi_dl": {
+          "status": "verified",
+          "std_psnr": 15.46,
+          "std_ssim": 0.7926,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 17.2
+    },
+    "event_camera": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 1.7,
+          "std_ssim": 0.0,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 1.35,
+          "std_ssim": 0.0,
+          "time": 0.12
+        },
+        "event_dl": {
+          "status": "verified",
+          "std_psnr": 1.35,
+          "std_ssim": 0.0,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 1.7
+    },
+    "expansion": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 17.42,
+          "std_ssim": 0.2544,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "exm_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 17.4
+    },
+    "fib_sem": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 7.11,
+          "std_ssim": 0.4344,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "fibsem_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 7.1
+    },
+    "flash_lidar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.17,
+          "std_ssim": 0.0561,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 2.51,
+          "std_ssim": 0.0467,
+          "time": 0.17
+        },
+        "flash_dl": {
+          "status": "verified",
+          "std_psnr": 2.51,
+          "std_ssim": 0.0467,
+          "time": 0.16
+        }
+      },
+      "best_psnr": 3.2
+    },
+    "flim": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 29.55,
+          "std_ssim": 0.9276,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 29.55,
+          "std_ssim": 0.9276,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 29.55,
+          "std_ssim": 0.9276,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 29.55,
+          "std_ssim": 0.9276,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 29.6
+    },
+    "fluoroscopy": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 2.65,
+          "std_ssim": 0.0,
+          "time": 0.22
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 29.1,
+          "std_ssim": 0.9823,
+          "time": 0.12
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 29.1,
+          "std_ssim": 0.9823,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 29.1
+    },
+    "fmri": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 10.42,
+          "std_ssim": -0.2521,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 10.42,
+          "std_ssim": -0.2521,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 10.42,
+          "std_ssim": -0.2521,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 10.4
+    },
+    "fpm": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 20.82,
+          "std_ssim": 0.5958,
+          "time": 0.09
+        },
+        "famous_dl": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 20.8
+    },
+    "ftir_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 18.95,
+          "std_ssim": 0.848,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 17.58,
+          "std_ssim": 0.8042,
+          "time": 0.15
+        },
+        "ftir_dl": {
+          "status": "verified",
+          "std_psnr": 18.95,
+          "std_ssim": 0.848,
+          "time": 0.09
+        }
+      },
+      "best_psnr": 18.9
+    },
+    "fundus": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 59.05,
+          "std_ssim": 1.0,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 59.0
+    },
+    "fwi": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 7.38,
+          "std_ssim": 0.5009,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 6.0,
+          "std_ssim": 0.4219,
+          "time": 0.14
+        },
+        "fwi_dl": {
+          "status": "verified",
+          "std_psnr": 7.38,
+          "std_ssim": 0.5009,
+          "time": 0.08
+        }
+      },
+      "best_psnr": 7.4
+    },
+    "gaussian_splatting": {
+      "status": "h5_error",
+      "solvers": {}
+    },
+    "ghost_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 6.58,
+          "std_ssim": 0.1157,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 5.15,
+          "std_ssim": 0.0826,
+          "time": 0.12
+        },
+        "gi_dl": {
+          "status": "verified",
+          "std_psnr": 6.58,
+          "std_ssim": 0.1157,
+          "time": 0.07
+        }
+      },
+      "best_psnr": 6.6
+    },
+    "gpr": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 32.79,
+          "std_ssim": 0.9973,
+          "time": 0.07
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 32.79,
+          "std_ssim": 0.9973,
+          "time": 0.13
+        },
+        "gpr_dl": {
+          "status": "verified",
+          "std_psnr": 32.79,
+          "std_ssim": 0.9973,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 32.8
+    },
+    "gravitational_wave": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 27.16,
+          "std_ssim": 0.2248,
+          "time": 0.09
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 27.15,
+          "std_ssim": 0.2245,
+          "time": 0.18
+        },
+        "matched_filter_dl": {
+          "status": "verified",
+          "std_psnr": 27.15,
+          "std_ssim": 0.2245,
+          "time": 0.17
+        }
+      },
+      "best_psnr": 27.2
+    },
+    "hdr_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 16.24,
+          "std_ssim": 0.8425,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 14.83,
+          "std_ssim": 0.7959,
+          "time": 0.15
+        },
+        "hdr_dl": {
+          "status": "verified",
+          "std_psnr": 14.83,
+          "std_ssim": 0.7959,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 16.2
+    },
+    "holography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 8.69,
+          "std_ssim": 0.2071,
+          "time": 0.17
+        },
+        "best_quality": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 8.7
+    },
+    "hyperspectral_remote": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 38.35,
+          "std_ssim": 0.9965,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 38.33,
+          "std_ssim": 0.9965,
+          "time": 0.13
+        },
+        "hyper_dl": {
+          "status": "verified",
+          "std_psnr": 38.33,
+          "std_ssim": 0.9965,
+          "time": 0.16
+        }
+      },
+      "best_psnr": 38.4
+    },
+    "impedance_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 12.87,
+          "std_ssim": 0.4768,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 11.99,
+          "std_ssim": 0.4311,
+          "time": 0.15
+        },
+        "eit_dl": {
+          "status": "verified",
+          "std_psnr": 11.99,
+          "std_ssim": 0.4311,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 12.9
+    },
+    "industrial_ct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "ict_dl": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "insar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 0.86,
+          "std_ssim": 0.0196,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 0.27,
+          "std_ssim": 0.0173,
+          "time": 0.15
+        },
+        "insar_dl": {
+          "status": "verified",
+          "std_psnr": 0.27,
+          "std_ssim": 0.0173,
+          "time": 0.15
+        }
+      },
+      "best_psnr": 0.9
+    },
+    "integral": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 19.33,
+          "std_ssim": 0.849,
+          "time": 0.07
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 19.33,
+          "std_ssim": 0.849,
+          "time": 0.09
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 19.33,
+          "std_ssim": 0.849,
+          "time": 0.08
+        }
+      },
+      "best_psnr": 19.3
+    },
+    "ism": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 13.73,
+          "std_ssim": 0.1903,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "ism_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 13.7
+    },
+    "ivus": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 21.18,
+          "std_ssim": 0.9281,
+          "time": 0.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 19.51,
+          "std_ssim": 0.8978,
+          "time": 0.15
+        },
+        "ivus_dl": {
+          "status": "verified",
+          "std_psnr": 19.51,
+          "std_ssim": 0.8978,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 21.2
+    },
+    "lattice_lightsheet": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 19.16,
+          "std_ssim": 0.8444,
+          "time": 0.15
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "llsm_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 19.2
+    },
+    "lensless": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 17.18,
+          "std_ssim": 0.875,
+          "time": 0.01
+        },
+        "best_quality": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "shape_mismatch",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 17.2
+    },
+    "libs": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 11.36,
+          "std_ssim": 0.7647,
+          "time": 0.09
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 9.72,
+          "std_ssim": 0.6901,
+          "time": 0.15
+        },
+        "libs_dl": {
+          "status": "verified",
+          "std_psnr": 9.72,
+          "std_ssim": 0.6901,
+          "time": 0.16
+        }
+      },
+      "best_psnr": 11.4
+    },
+    "lidar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 11.36,
+          "std_ssim": 0.0413,
+          "time": 0.15
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 10.03,
+          "std_ssim": 0.0262,
+          "time": 0.14
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 10.03,
+          "std_ssim": 0.0262,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 11.4
+    },
+    "light_field": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 38.12,
+          "std_ssim": 0.9965,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 38.12,
+          "std_ssim": 0.9965,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 38.12,
+          "std_ssim": 0.9965,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 38.12,
+          "std_ssim": 0.9965,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 38.1
+    },
+    "lightsheet": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 20.47,
+          "std_ssim": 0.3595,
+          "time": 0.73
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 20.47,
+          "std_ssim": 0.3595,
+          "time": 0.75
+        },
+        "famous_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 20.5
+    },
+    "lucky_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 20.51,
+          "std_ssim": 0.848,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 19.07,
+          "std_ssim": 0.8018,
+          "time": 0.22
+        },
+        "lucky_dl": {
+          "status": "verified",
+          "std_psnr": 19.07,
+          "std_ssim": 0.8018,
+          "time": 0.21
+        }
+      },
+      "best_psnr": 20.5
+    },
+    "machine_vision": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 30.44,
+          "std_ssim": 0.9934,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 30.28,
+          "std_ssim": 0.9931,
+          "time": 0.19
+        },
+        "mv_dl": {
+          "status": "verified",
+          "std_psnr": 30.44,
+          "std_ssim": 0.9934,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 30.4
+    },
+    "magnetic_particle": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 22.89,
+          "std_ssim": 0.9806,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 22.8,
+          "std_ssim": 0.9794,
+          "time": 0.23
+        },
+        "mpi_dl": {
+          "status": "verified",
+          "std_psnr": 22.8,
+          "std_ssim": 0.9794,
+          "time": 0.19
+        }
+      },
+      "best_psnr": 22.9
+    },
+    "maldi_msi": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 11.7,
+          "std_ssim": 0.7841,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 9.95,
+          "std_ssim": 0.7091,
+          "time": 0.19
+        },
+        "msi_dl": {
+          "status": "verified",
+          "std_psnr": 11.7,
+          "std_ssim": 0.7841,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 11.7
+    },
+    "mammography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.78,
+          "std_ssim": -0.0,
+          "time": 0.43
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 16.94,
+          "std_ssim": 0.7876,
+          "time": 0.21
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 16.94,
+          "std_ssim": 0.7876,
+          "time": 0.2
+        }
+      },
+      "best_psnr": 16.9
+    },
+    "matrix": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 5.22,
+          "std_ssim": 0.1712,
+          "time": 0.21
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 5.22,
+          "std_ssim": 0.1713,
+          "time": 0.2
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 4.01,
+          "std_ssim": 0.1284,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 4.01,
+          "std_ssim": 0.1284,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 5.2
+    },
+    "mfm": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 5.58,
+          "std_ssim": 0.1748,
+          "time": 0.22
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "mfm_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 5.6
+    },
+    "minflux": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 18.47,
+          "std_ssim": 0.4753,
+          "time": 0.22
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "minflux_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 18.5
+    },
+    "mr_elastography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 36.3,
+          "std_ssim": 0.9526,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 36.56,
+          "std_ssim": 0.956,
+          "time": 0.2
+        },
+        "mre_dl": {
+          "status": "verified",
+          "std_psnr": 36.56,
+          "std_ssim": 0.956,
+          "time": 0.21
+        }
+      },
+      "best_psnr": 36.6
+    },
+    "mr_fingerprinting": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 32.85,
+          "std_ssim": 0.9606,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 32.77,
+          "std_ssim": 0.9607,
+          "time": 0.22
+        },
+        "mrf_dl": {
+          "status": "verified",
+          "std_psnr": 14.09,
+          "std_ssim": 0.0005,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 32.9
+    },
+    "mra": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -32.26,
+          "std_ssim": 0.0,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -32.82,
+          "std_ssim": 0.0,
+          "time": 0.23
+        },
+        "mra_dl": {
+          "status": "verified",
+          "std_psnr": 16.16,
+          "std_ssim": -0.1642,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 16.2
+    },
+    "mri": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 13.66,
+          "std_ssim": -0.1498,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 13.68,
+          "std_ssim": -0.1499,
+          "time": 0.62
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 13.61,
+          "std_ssim": -0.1517,
+          "time": 2.6
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 13.71,
+          "std_ssim": -0.1478,
+          "time": 2.75
+        }
+      },
+      "best_psnr": 13.7
+    },
+    "mrs": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 21.2,
+          "std_ssim": 0.0059,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 20.74,
+          "std_ssim": 0.0514,
+          "time": 0.21
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 20.74,
+          "std_ssim": 0.0514,
+          "time": 0.22
+        }
+      },
+      "best_psnr": 21.2
+    },
+    "multispectral_sat": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 27.73,
+          "std_ssim": 0.9202,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 27.25,
+          "std_ssim": 0.9128,
+          "time": 0.19
+        },
+        "ms_dl": {
+          "status": "verified",
+          "std_psnr": 27.25,
+          "std_ssim": 0.9128,
+          "time": 0.18
+        }
+      },
+      "best_psnr": 27.7
+    },
+    "muon_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 4.49,
+          "std_ssim": 0.0,
+          "time": 0.37
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 4.5
+    },
+    "nerf": {
+      "status": "h5_error",
+      "solvers": {}
+    },
+    "neutron_diffraction": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 2.52,
+          "std_ssim": 0.1614,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 0.49,
+          "std_ssim": 0.1041,
+          "time": 0.24
+        },
+        "nd_dl": {
+          "status": "verified",
+          "std_psnr": 2.52,
+          "std_ssim": 0.1614,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 2.5
+    },
+    "neutron_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 0.65,
+          "std_ssim": 0.0,
+          "time": 0.39
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 0.7
+    },
+    "nirs_brain": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 26.72,
+          "std_ssim": 0.9253,
+          "time": 0.15
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 26.83,
+          "std_ssim": 0.9278,
+          "time": 0.2
+        },
+        "nirs_dl": {
+          "status": "verified",
+          "std_psnr": 26.72,
+          "std_ssim": 0.9253,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 26.8
+    },
+    "nsom": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 14.79,
+          "std_ssim": 0.5366,
+          "time": 0.2
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "nsom_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 14.8
+    },
+    "ocean_acoustic_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -32.77,
+          "std_ssim": -0.0,
+          "time": 0.03
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -32.77,
+          "std_ssim": -0.0,
+          "time": 0.06
+        },
+        "oat_dl": {
+          "status": "verified",
+          "std_psnr": -32.77,
+          "std_ssim": -0.0,
+          "time": 0.03
+        }
+      },
+      "best_psnr": -32.8
+    },
+    "ocean_color": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 20.09,
+          "std_ssim": 0.7418,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 19.66,
+          "std_ssim": 0.7296,
+          "time": 0.2
+        },
+        "oc_dl": {
+          "status": "verified",
+          "std_psnr": 20.09,
+          "std_ssim": 0.7418,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 20.1
+    },
+    "oct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 13.16,
+          "std_ssim": 0.0008,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 12.88,
+          "std_ssim": 0.0078,
+          "time": 1.96
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 13.16,
+          "std_ssim": 0.0008,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 13.16,
+          "std_ssim": 0.0008,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 13.2
+    },
+    "octa": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 5.22,
+          "std_ssim": 0.0,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 14.51,
+          "std_ssim": 0.8229,
+          "time": 0.11
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 14.51,
+          "std_ssim": 0.8229,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 14.5
+    },
+    "odt": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.45,
+          "std_ssim": -0.0006,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 3.16,
+          "std_ssim": -0.0005,
+          "time": 0.21
+        },
+        "odt_dl": {
+          "status": "verified",
+          "std_psnr": 3.16,
+          "std_ssim": -0.0005,
+          "time": 0.18
+        }
+      },
+      "best_psnr": 3.5
+    },
+    "palm_storm": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 25.1,
+          "std_ssim": 0.9376,
+          "time": 0.22
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 25.1
+    },
+    "panorama": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 27.59,
+          "std_ssim": 0.9893,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 27.59,
+          "std_ssim": 0.9893,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 27.59,
+          "std_ssim": 0.9893,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 27.59,
+          "std_ssim": 0.9893,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 27.6
+    },
+    "particle_calorimetry": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 8.26,
+          "std_ssim": 0.0053,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 8.21,
+          "std_ssim": 0.0052,
+          "time": 0.19
+        },
+        "cal_dl": {
+          "status": "verified",
+          "std_psnr": 8.26,
+          "std_ssim": 0.0053,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 8.3
+    },
+    "passive_microwave": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 29.49,
+          "std_ssim": 0.9846,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 29.49,
+          "std_ssim": 0.9846,
+          "time": 0.2
+        },
+        "pm_dl": {
+          "status": "verified",
+          "std_psnr": 29.49,
+          "std_ssim": 0.9846,
+          "time": 0.21
+        }
+      },
+      "best_psnr": 29.5
+    },
+    "pet": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 20.04,
+          "std_ssim": 0.8977,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 20.0
+    },
+    "pet_ct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "petct_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "pet_mr": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "petmr_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "phase_contrast": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -43.3,
+          "std_ssim": -0.0,
+          "time": 0.2
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "pc_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": -43.3
+    },
+    "phase_retrieval": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.36,
+          "std_ssim": 0.0006,
+          "time": 8.08
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -42.6,
+          "std_ssim": 0.0,
+          "time": 0.13
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": -42.6,
+          "std_ssim": 0.0,
+          "time": 0.12
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": -42.6,
+          "std_ssim": 0.0,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 3.4
+    },
+    "photoacoustic": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 4.44,
+          "std_ssim": -0.3367,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 3.43,
+          "std_ssim": -0.1238,
+          "time": 0.1
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 3.43,
+          "std_ssim": -0.1238,
+          "time": 0.1
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 3.43,
+          "std_ssim": -0.1238,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 4.4
+    },
+    "photometric_stereo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 10.32,
+          "std_ssim": 0.1275,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 10.32,
+          "std_ssim": 0.1278,
+          "time": 0.19
+        },
+        "ps_dl": {
+          "status": "verified",
+          "std_psnr": 10.32,
+          "std_ssim": 0.1275,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 10.3
+    },
+    "polarization": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 15.26,
+          "std_ssim": 0.8588,
+          "time": 3.77
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 15.06,
+          "std_ssim": 0.8486,
+          "time": 0.13
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 15.06,
+          "std_ssim": 0.8486,
+          "time": 0.14
+        }
+      },
+      "best_psnr": 15.3
+    },
+    "polsar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 39.04,
+          "std_ssim": 0.9975,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 39.04,
+          "std_ssim": 0.9975,
+          "time": 0.18
+        },
+        "polsar_dl": {
+          "status": "verified",
+          "std_psnr": 39.04,
+          "std_ssim": 0.9975,
+          "time": 0.24
+        }
+      },
+      "best_psnr": 39.0
+    },
+    "portal_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 28.93,
+          "std_ssim": 0.9925,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 28.86,
+          "std_ssim": 0.9924,
+          "time": 0.24
+        },
+        "portal_dl": {
+          "status": "verified",
+          "std_psnr": 28.86,
+          "std_ssim": 0.9924,
+          "time": 0.24
+        }
+      },
+      "best_psnr": 28.9
+    },
+    "proton_radiography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 4.03,
+          "std_ssim": 0.0,
+          "time": 0.34
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 4.0
+    },
+    "proton_therapy_img": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 36.19,
+          "std_ssim": 0.9983,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 36.19,
+          "std_ssim": 0.9983,
+          "time": 0.23
+        },
+        "proton_therapy_dl": {
+          "status": "verified",
+          "std_psnr": 36.19,
+          "std_ssim": 0.9983,
+          "time": 0.2
+        }
+      },
+      "best_psnr": 36.2
+    },
+    "ptychography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "pump_probe": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 18.47,
+          "std_ssim": 0.2958,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 18.13,
+          "std_ssim": 0.2847,
+          "time": 0.23
+        },
+        "pp_dl": {
+          "status": "verified",
+          "std_psnr": 18.13,
+          "std_ssim": 0.2847,
+          "time": 0.23
+        }
+      },
+      "best_psnr": 18.5
+    },
+    "quantum_illumination": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 13.97,
+          "std_ssim": 0.6831,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 13.21,
+          "std_ssim": 0.6497,
+          "time": 0.25
+        },
+        "qi_dl": {
+          "status": "verified",
+          "std_psnr": 13.21,
+          "std_ssim": 0.6497,
+          "time": 0.23
+        }
+      },
+      "best_psnr": 14.0
+    },
+    "radio_astronomy": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 1.48,
+          "std_ssim": 0.0022,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 1.44,
+          "std_ssim": 0.0021,
+          "time": 0.19
+        },
+        "clean_dl": {
+          "status": "verified",
+          "std_psnr": 1.48,
+          "std_ssim": 0.0022,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 1.5
+    },
+    "radio_interferometry": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 2.64,
+          "std_ssim": 0.0057,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 2.58,
+          "std_ssim": 0.0054,
+          "time": 0.25
+        },
+        "ri_dl": {
+          "status": "verified",
+          "std_psnr": 2.58,
+          "std_ssim": 0.0054,
+          "time": 0.22
+        }
+      },
+      "best_psnr": 2.6
+    },
+    "raman_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 37.96,
+          "std_ssim": 0.972,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 37.18,
+          "std_ssim": 0.9671,
+          "time": 0.21
+        },
+        "raman_dl": {
+          "status": "verified",
+          "std_psnr": 37.18,
+          "std_ssim": 0.9671,
+          "time": 0.16
+        }
+      },
+      "best_psnr": 38.0
+    },
+    "sar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 12.28,
+          "std_ssim": 0.0001,
+          "time": 0.32
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 33.58,
+          "std_ssim": 0.9852,
+          "time": 0.16
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 33.58,
+          "std_ssim": 0.9852,
+          "time": 0.15
+        }
+      },
+      "best_psnr": 33.6
+    },
+    "saxs": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.36,
+          "std_ssim": -0.0319,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 3.18,
+          "std_ssim": -0.0265,
+          "time": 0.19
+        },
+        "saxs_dl": {
+          "status": "verified",
+          "std_psnr": 3.18,
+          "std_ssim": -0.0265,
+          "time": 0.17
+        }
+      },
+      "best_psnr": 3.4
+    },
+    "seismic_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 6.85,
+          "std_ssim": 0.4649,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 5.21,
+          "std_ssim": 0.3727,
+          "time": 0.24
+        },
+        "seismic_dl": {
+          "status": "verified",
+          "std_psnr": 5.21,
+          "std_ssim": 0.3727,
+          "time": 0.22
+        }
+      },
+      "best_psnr": 6.8
+    },
+    "sem": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 30.91,
+          "std_ssim": 0.9859,
+          "time": 0.21
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 31.16,
+          "std_ssim": 0.9867,
+          "time": 0.14
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 31.16,
+          "std_ssim": 0.9867,
+          "time": 0.11
+        }
+      },
+      "best_psnr": 31.2
+    },
+    "shearography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 25.47,
+          "std_ssim": 0.9734,
+          "time": 0.1
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 25.16,
+          "std_ssim": 0.9715,
+          "time": 0.22
+        },
+        "shear_dl": {
+          "status": "verified",
+          "std_psnr": 25.16,
+          "std_ssim": 0.9715,
+          "time": 0.26
+        }
+      },
+      "best_psnr": 25.5
+    },
+    "shg": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 24.52,
+          "std_ssim": 0.8524,
+          "time": 0.18
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "shg_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 24.5
+    },
+    "sim": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 31.89,
+          "std_ssim": 0.9621,
+          "time": 0.0
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 31.89,
+          "std_ssim": 0.9621,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 31.89,
+          "std_ssim": 0.9621,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 31.89,
+          "std_ssim": 0.9621,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 31.9
+    },
+    "sims": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 11.77,
+          "std_ssim": 0.6547,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 9.99,
+          "std_ssim": 0.5569,
+          "time": 0.22
+        },
+        "sims_dl": {
+          "status": "verified",
+          "std_psnr": 9.99,
+          "std_ssim": 0.5569,
+          "time": 0.23
+        }
+      },
+      "best_psnr": 11.8
+    },
+    "solar_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 28.85,
+          "std_ssim": 0.9813,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 28.59,
+          "std_ssim": 0.9803,
+          "time": 0.18
+        },
+        "solar_dl": {
+          "status": "verified",
+          "std_psnr": 28.59,
+          "std_ssim": 0.9803,
+          "time": 0.24
+        }
+      },
+      "best_psnr": 28.9
+    },
+    "sonar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 32.89,
+          "std_ssim": 0.9674,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 32.93,
+          "std_ssim": 0.9678,
+          "time": 0.26
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 32.93,
+          "std_ssim": 0.9678,
+          "time": 0.19
+        }
+      },
+      "best_psnr": 32.9
+    },
+    "spc": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "nan_or_inf",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 6.43,
+          "std_ssim": 0.0295,
+          "time": 0.0
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 6.43,
+          "std_ssim": 0.0295,
+          "time": 0.0
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 6.43,
+          "std_ssim": 0.0295,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 6.4
+    },
+    "spect": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 12.18,
+          "std_ssim": 0.7878,
+          "time": 0.04
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 12.2
+    },
+    "spect_ct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "spectct_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "spectral_ct": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "spectral_ct_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "spinning_disk": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 25.27,
+          "std_ssim": 0.9822,
+          "time": 0.21
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "sd_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 25.3
+    },
+    "srs": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 24.78,
+          "std_ssim": 0.9388,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 24.42,
+          "std_ssim": 0.9344,
+          "time": 0.18
+        },
+        "srs_dl": {
+          "status": "verified",
+          "std_psnr": 24.42,
+          "std_ssim": 0.9344,
+          "time": 0.19
+        }
+      },
+      "best_psnr": 24.8
+    },
+    "sted": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 13.19,
+          "std_ssim": 0.6879,
+          "time": 0.25
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 13.2
+    },
+    "stem": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 7.59,
+          "std_ssim": 0.4796,
+          "time": 0.22
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 8.95,
+          "std_ssim": 0.5585,
+          "time": 0.13
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 8.95,
+          "std_ssim": 0.5585,
+          "time": 0.12
+        }
+      },
+      "best_psnr": 8.9
+    },
+    "stm": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 7.78,
+          "std_ssim": 0.4738,
+          "time": 0.21
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "stm_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 7.8
+    },
+    "streak_camera": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 19.52,
+          "std_ssim": 0.8232,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 18.25,
+          "std_ssim": 0.7786,
+          "time": 0.21
+        },
+        "streak_dl": {
+          "status": "verified",
+          "std_psnr": 18.25,
+          "std_ssim": 0.7786,
+          "time": 0.22
+        }
+      },
+      "best_psnr": 19.5
+    },
+    "structured_light": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 1.89,
+          "std_ssim": 0.0099,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 1.89,
+          "std_ssim": 0.0099,
+          "time": 0.12
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 1.89,
+          "std_ssim": 0.0099,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 1.9
+    },
+    "swi": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -33.5,
+          "std_ssim": 0.0,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -34.68,
+          "std_ssim": 0.0,
+          "time": 0.2
+        },
+        "swi_dl": {
+          "status": "verified",
+          "std_psnr": 14.57,
+          "std_ssim": -0.156,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 14.6
+    },
+    "talbot_lau": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 2.57,
+          "std_ssim": -0.0568,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 2.21,
+          "std_ssim": -0.0521,
+          "time": 0.2
+        },
+        "talbot_dl": {
+          "status": "verified",
+          "std_psnr": 2.57,
+          "std_ssim": -0.0568,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 2.6
+    },
+    "tem": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 30.79,
+          "std_ssim": 0.6647,
+          "time": 0.19
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 13.94,
+          "std_ssim": 0.0464,
+          "time": 0.21
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 13.94,
+          "std_ssim": 0.0464,
+          "time": 0.19
+        }
+      },
+      "best_psnr": 30.8
+    },
+    "terahertz": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 21.09,
+          "std_ssim": 0.9359,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 21.04,
+          "std_ssim": 0.9352,
+          "time": 0.17
+        },
+        "thz_dl": {
+          "status": "verified",
+          "std_psnr": 21.04,
+          "std_ssim": 0.9352,
+          "time": 0.17
+        }
+      },
+      "best_psnr": 21.1
+    },
+    "three_photon": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 16.18,
+          "std_ssim": 0.5137,
+          "time": 0.2
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "3p_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 16.2
+    },
+    "tirf": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 35.58,
+          "std_ssim": 0.9825,
+          "time": 0.21
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 35.42,
+          "std_ssim": 0.9818,
+          "time": 0.12
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 35.42,
+          "std_ssim": 0.9818,
+          "time": 0.1
+        }
+      },
+      "best_psnr": 35.6
+    },
+    "tof_camera": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "diverged",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "two_photon": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 10.96,
+          "std_ssim": 0.602,
+          "time": 0.21
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 11.0
+    },
+    "ultrasonic_phased_array": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.66,
+          "std_ssim": 0.0326,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 3.31,
+          "std_ssim": 0.0302,
+          "time": 0.2
+        },
+        "upa_dl": {
+          "status": "verified",
+          "std_psnr": 3.31,
+          "std_ssim": 0.0302,
+          "time": 0.21
+        }
+      },
+      "best_psnr": 3.7
+    },
+    "ultrasound": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 20.58,
+          "std_ssim": 0.8977,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 18.74,
+          "std_ssim": 0.8521,
+          "time": 0.19
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 18.74,
+          "std_ssim": 0.8521,
+          "time": 0.23
+        }
+      },
+      "best_psnr": 20.6
+    },
+    "us_mri": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -36.69,
+          "std_ssim": 0.0,
+          "time": 0.12
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -37.37,
+          "std_ssim": 0.0,
+          "time": 0.18
+        },
+        "us_mri_dl": {
+          "status": "verified",
+          "std_psnr": 13.21,
+          "std_ssim": -0.2497,
+          "time": 0.0
+        }
+      },
+      "best_psnr": 13.2
+    },
+    "waxs": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 2.04,
+          "std_ssim": -0.0553,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 1.92,
+          "std_ssim": -0.0448,
+          "time": 0.24
+        },
+        "waxs_dl": {
+          "status": "verified",
+          "std_psnr": 1.92,
+          "std_ssim": -0.0448,
+          "time": 0.24
+        }
+      },
+      "best_psnr": 2.0
+    },
+    "weather_radar": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 0.03,
+          "std_ssim": 0.0258,
+          "time": 0.13
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -0.51,
+          "std_ssim": 0.0221,
+          "time": 0.22
+        },
+        "weather_dl": {
+          "status": "verified",
+          "std_psnr": -0.51,
+          "std_ssim": 0.0221,
+          "time": 0.19
+        }
+      },
+      "best_psnr": 0.0
+    },
+    "widefield": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 29.16,
+          "std_ssim": 0.9835,
+          "time": 0.19
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 1.42,
+          "std_ssim": 0.0021,
+          "time": 1.32
+        },
+        "small_gpu": {
+          "status": "verified",
+          "std_psnr": 1.81,
+          "std_ssim": 0.0033,
+          "time": 1.36
+        }
+      },
+      "best_psnr": 29.2
+    },
+    "widefield_lowdose": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 28.22,
+          "std_ssim": 0.8638,
+          "time": 0.23
+        },
+        "best_quality": {
+          "status": "skip_gpu",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "famous_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "small_gpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": 28.2
+    },
+    "xfel_sfx": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 5.16,
+          "std_ssim": -0.0234,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 4.64,
+          "std_ssim": -0.0201,
+          "time": 0.2
+        },
+        "sfx_dl": {
+          "status": "verified",
+          "std_psnr": 5.16,
+          "std_ssim": -0.0234,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 5.2
+    },
+    "xray_crystallography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 3.32,
+          "std_ssim": -0.0461,
+          "time": 0.11
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 3.15,
+          "std_ssim": -0.0395,
+          "time": 0.22
+        },
+        "xtal_dl": {
+          "status": "verified",
+          "std_psnr": 3.32,
+          "std_ssim": -0.0461,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 3.3
+    },
+    "xray_ndt": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "best_quality": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        },
+        "ndt_dl": {
+          "status": "timeout",
+          "std_psnr": null,
+          "std_ssim": null
+        }
+      },
+      "best_psnr": null
+    },
+    "xray_radiography": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 4.04,
+          "std_ssim": 0.0,
+          "time": 0.43
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 36.05,
+          "std_ssim": 0.9984,
+          "time": 0.14
+        },
+        "famous_dl": {
+          "status": "verified",
+          "std_psnr": 36.05,
+          "std_ssim": 0.9984,
+          "time": 0.13
+        }
+      },
+      "best_psnr": 36.0
+    },
+    "xrf_imaging": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": 28.86,
+          "std_ssim": 0.9718,
+          "time": 0.14
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": 28.51,
+          "std_ssim": 0.9696,
+          "time": 0.22
+        },
+        "xrf_dl": {
+          "status": "verified",
+          "std_psnr": 28.51,
+          "std_ssim": 0.9696,
+          "time": 0.23
+        }
+      },
+      "best_psnr": 28.9
+    },
+    "xrf_tomo": {
+      "status": "done",
+      "solvers": {
+        "traditional_cpu": {
+          "status": "verified",
+          "std_psnr": -45.27,
+          "std_ssim": 0.0,
+          "time": 0.06
+        },
+        "best_quality": {
+          "status": "verified",
+          "std_psnr": -45.27,
+          "std_ssim": 0.0,
+          "time": 0.1
+        },
+        "xrft_dl": {
+          "status": "verified",
+          "std_psnr": -45.27,
+          "std_ssim": 0.0,
+          "time": 0.09
+        }
+      },
+      "best_psnr": -45.3
+    }
+  }
+}
