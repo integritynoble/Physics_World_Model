@@ -89,20 +89,33 @@ def fbp_2d(
     Returns:
         Reconstructed image (output_size, output_size)
     """
-    from pwm_core.recon.gpu_utils import resolve_device
-    dev, use_gpu = resolve_device(device)
-
-    if use_gpu:
-        return _fbp_2d_torch(sinogram, angles, filter_type, output_size, dev)
-
-    from scipy.ndimage import map_coordinates
-
     n_angles, n_detectors = sinogram.shape
     sinogram = sinogram.astype(np.float32)
 
     if output_size is None:
         output_size = n_detectors
 
+    # Prefer skimage's well-tested iradon (works on CPU, accurate)
+    try:
+        from skimage.transform import iradon
+        filter_map = {"ramlak": "ramp", "shepp_logan": "shepp-logan",
+                      "cosine": "cosine", "none": None}
+        sk_filter = filter_map.get(filter_type, "ramp")
+        angles_deg = np.rad2deg(angles)
+        result = iradon(sinogram.T, theta=angles_deg, circle=True,
+                        output_size=output_size, filter_name=sk_filter)
+        return result.astype(np.float32)
+    except ImportError:
+        pass
+
+    # GPU path (when skimage not available)
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _fbp_2d_torch(sinogram, angles, filter_type, output_size, dev)
+
+    # Fallback: custom FBP implementation
     # Create filter
     if filter_type == "ramlak":
         filt = create_ramlak_filter(n_detectors)
@@ -123,10 +136,12 @@ def fbp_2d(
     # Back-projection
     reconstruction = np.zeros((output_size, output_size), dtype=np.float32)
 
-    # Create coordinate grid
+    # Create coordinate grid — scale to match detector spacing
     center = output_size / 2
-    x = np.arange(output_size) - center
-    y = np.arange(output_size) - center
+    det_center = n_detectors / 2
+    scale = n_detectors / output_size  # scale pixel coords to detector coords
+    x = (np.arange(output_size) - center) * scale
+    y = (np.arange(output_size) - center) * scale
     X, Y = np.meshgrid(x, y)
 
     for i, angle in enumerate(angles):
@@ -134,7 +149,7 @@ def fbp_2d(
         t = X * np.cos(angle) + Y * np.sin(angle)
 
         # Map to detector indices
-        detector_coords = t + n_detectors / 2
+        detector_coords = t + det_center
 
         # Interpolate from filtered projection
         proj_interp = np.interp(

@@ -371,7 +371,7 @@ def run_hsi_sdecnn(
 
         result = gap_sdecnn_cassi(
             y, mask, n_bands=n_bands, step=step,
-            weights_path=weights_path, iters=iters, acc=acc,
+            weights_path=weights_path, iters=iters,
             device=device,
         )
         return result, info

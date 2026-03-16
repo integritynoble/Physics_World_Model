@@ -2,6 +2,9 @@
 
 Each function wraps a solver from pwm_core.recon.*.
 All follow the standard interface: fn(y, operator, cfg) -> x_hat
+
+When operator=None, loads mask/n_bands from H5 metadata or creates defaults.
+Standard data format: y_ideal (H, W_meas), mask (H, W), wavelength (n_bands,)
 """
 
 from __future__ import annotations
@@ -28,6 +31,7 @@ SOLVERS = {
         "function": "run_gap_tv",
         "gpu": False,
         "reference": "Yuan et al. 2016",
+        "cfg_override": {"iters": 100, "lam": 0.03, "acc": 1.0},
     },
     "famous_dl": {
         "name": "GAP-TV (fast)",
@@ -35,6 +39,7 @@ SOLVERS = {
         "function": "run_gap_tv",
         "gpu": False,
         "reference": "",
+        "cfg_override": {"iters": 30, "lam": 0.05},
     },
     "small_gpu": {
         "name": "GAP-TV (small)",
@@ -42,6 +47,7 @@ SOLVERS = {
         "function": "run_gap_tv",
         "gpu": False,
         "reference": "",
+        "cfg_override": {"iters": 20, "lam": 0.08},
     },
     "mst_l": {
         "name": "MST-L",
@@ -67,6 +73,42 @@ SOLVERS = {
 }
 
 
+class CASSIOperator:
+    """CASSI forward/adjoint operator for solvers."""
+    def __init__(self, mask: np.ndarray, n_bands: int, step: int = 2):
+        self.mask = mask.astype(np.float32)
+        self.n_bands = n_bands
+        self.step = step
+        h, w = mask.shape
+        self.h = h
+        self.w = w
+        self.w_meas = w + (n_bands - 1) * step
+        self.x_shape = (h, w, n_bands)
+
+    def forward(self, x):
+        x_3d = x.reshape(self.h, self.w, self.n_bands)
+        y = np.zeros((self.h, self.w_meas), dtype=np.float32)
+        for k in range(self.n_bands):
+            y[:, k*self.step : k*self.step + self.w] += self.mask * x_3d[:, :, k]
+        return y
+
+    def adjoint(self, y):
+        y_2d = y.reshape(self.h, self.w_meas)
+        x = np.zeros((self.h, self.w, self.n_bands), dtype=np.float32)
+        for k in range(self.n_bands):
+            x[:, :, k] = self.mask * y_2d[:, k*self.step : k*self.step + self.w]
+        return x
+
+    def info(self):
+        return {
+            'modality': 'cassi',
+            'mask': self.mask,
+            'n_bands': self.n_bands,
+            'step': self.step,
+            'x_shape': self.x_shape,
+        }
+
+
 def _load_fn(solver_key: str):
     """Dynamically load solver function."""
     spec = SOLVERS[solver_key]
@@ -74,23 +116,64 @@ def _load_fn(solver_key: str):
     return getattr(mod, spec["function"])
 
 
+def _make_operator_from_h5(y: np.ndarray, cfg: Dict) -> Optional[CASSIOperator]:
+    """Try to load mask and params from the standard H5 file."""
+    mask = cfg.get('mask', None)
+    n_bands = cfg.get('n_bands', None)
+    step = cfg.get('step', 2)
+
+    if mask is None or n_bands is None:
+        return None
+    return CASSIOperator(mask, n_bands, step)
+
+
 def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
                cfg: Optional[Dict] = None) -> np.ndarray:
     """Run a solver by key.
 
     Args:
-        solver_key: One of ['traditional_cpu', 'best_quality', 'famous_dl', 'small_gpu', 'mst_l', 'hdnet', 'hsi_sdecnn']
-        y: Measurement data (float32)
-        operator: Forward operator
-        cfg: Hyperparameters (optional)
+        solver_key: Solver key from SOLVERS dict
+        y: CASSI measurement (H, W_meas) float32
+        operator: CASSI operator (auto-created if None, needs mask/n_bands in cfg)
+        cfg: Hyperparameters. For auto-operator: must include 'mask', 'n_bands', 'step'
 
     Returns:
-        x_hat: Reconstructed signal
+        x_hat: Reconstructed spectral cube (H, W, n_bands)
     """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+    cfg = dict(cfg or {})
+
+    # Apply solver-specific config overrides
+    spec = SOLVERS[solver_key]
+    if "cfg_override" in spec:
+        for k, v in spec["cfg_override"].items():
+            if k not in cfg:
+                cfg[k] = v
+
+    # Auto-create CASSI operator when none provided
+    if operator is None:
+        operator = _make_operator_from_h5(y, cfg)
+
     fn = _load_fn(solver_key)
-    result = fn(y.astype(np.float32), operator, cfg or {})
+
+    # Special dispatch for solvers with non-standard interfaces
+    if spec["function"] == "mst_recon_cassi":
+        # MST takes (measurement, mask_2d, nC, step, ...)
+        mask = operator.mask if operator else cfg.get('mask')
+        n_bands = operator.n_bands if operator else cfg.get('n_bands', 28)
+        step = operator.step if operator else cfg.get('step', 2)
+        if mask is None:
+            raise ValueError("MST requires mask (via operator or cfg['mask'])")
+        result = fn(y.astype(np.float32), mask, nC=n_bands, step=step,
+                     device=cfg.get('device'), variant=cfg.get('variant', 'mst_l'))
+    elif spec["function"] == "run_hsi_sdecnn":
+        # HSI-SDeCNN: pass through standard interface
+        result = fn(y.astype(np.float32), operator, cfg)
+    else:
+        # Standard (y, physics, cfg) interface
+        result = fn(y.astype(np.float32), operator, cfg)
+
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
     return np.asarray(result, dtype=np.float32)
@@ -114,13 +197,11 @@ def run_best_quality(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = 
     return run_solver("best_quality", y, operator, cfg)
 
 def run_famous_dl(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """GAP-TV (fast). CPU only.
-    """
+    """GAP-TV (fast). CPU only."""
     return run_solver("famous_dl", y, operator, cfg)
 
 def run_small_gpu(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """GAP-TV (small). CPU only.
-    """
+    """GAP-TV (small). CPU only."""
     return run_solver("small_gpu", y, operator, cfg)
 
 def run_mst_l(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:

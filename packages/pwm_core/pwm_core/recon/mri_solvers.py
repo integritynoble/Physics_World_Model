@@ -498,6 +498,10 @@ def run_espirit_recon(
     }
 
     try:
+        # Handle real+imag channel format: (..., 2) -> complex
+        if y.ndim >= 2 and y.shape[-1] == 2 and not np.iscomplexobj(y):
+            y = y[..., 0] + 1j * y[..., 1]
+
         # Get mask from physics
         mask = None
         sensitivity_maps = None
@@ -555,6 +559,9 @@ def run_cs_mri(
 
     Alias for run_espirit_recon with method='cs'.
     """
+    # Handle real+imag channel format: (H, W, 2) -> complex (H, W)
+    if y.ndim == 3 and y.shape[-1] == 2:
+        y = y[..., 0] + 1j * y[..., 1]
     cfg = dict(cfg)
     cfg['method'] = 'cs'
     return run_espirit_recon(y, physics, cfg)
@@ -585,7 +592,13 @@ def run_zero_filled(
             pi = physics.info()
             if isinstance(pi, dict):
                 mask = pi.get('mask', None)
-        result = zero_filled_reconstruction(y, mask=mask, device=device)
+
+        # Handle real+imag channel format: (H, W, 2) -> complex (H, W)
+        kspace = y
+        if kspace.ndim == 3 and kspace.shape[-1] == 2:
+            kspace = kspace[..., 0] + 1j * kspace[..., 1]
+
+        result = zero_filled_reconstruction(kspace, mask=mask, device=device)
         return result, info
     except Exception as e:
         info["error"] = str(e)[:200]

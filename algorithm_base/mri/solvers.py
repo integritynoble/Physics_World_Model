@@ -2,6 +2,9 @@
 
 Each function wraps a solver from pwm_core.recon.*.
 All follow the standard interface: fn(y, operator, cfg) -> x_hat
+
+When no operator is provided, an FFT-based MRI operator is created automatically.
+k-space data in (H, W, 2) real+imag format is converted to complex automatically.
 """
 
 from __future__ import annotations
@@ -53,6 +56,44 @@ SOLVERS = {
 }
 
 
+class MRIOperator:
+    """Lightweight MRI forward/adjoint operator for solvers that need one.
+
+    Single-coil Cartesian MRI with undersampling mask.
+    """
+    def __init__(self, mask: np.ndarray, image_size: int = 256):
+        self.mask = mask.astype(np.float32)
+        self.image_size = image_size
+        self.x_shape = (image_size, image_size)
+
+    def forward(self, x):
+        x_2d = x.reshape(self.image_size, self.image_size)
+        kspace = np.fft.fftshift(np.fft.fft2(x_2d))
+        return (kspace * self.mask).astype(np.complex64)
+
+    def adjoint(self, y):
+        return np.fft.ifft2(np.fft.ifftshift(y)).astype(np.complex64)
+
+    def info(self):
+        return {
+            'modality': 'mri',
+            'mask': self.mask,
+            'x_shape': self.x_shape,
+        }
+
+
+def _to_complex(y: np.ndarray) -> np.ndarray:
+    """Convert real+imag format to complex if needed."""
+    if y.ndim >= 2 and y.shape[-1] == 2 and not np.iscomplexobj(y):
+        return (y[..., 0] + 1j * y[..., 1]).astype(np.complex64)
+    return y
+
+
+def _infer_mask(kspace: np.ndarray) -> np.ndarray:
+    """Infer sampling mask from k-space (sampled locations have nonzero values)."""
+    return (np.abs(kspace) > 1e-10).astype(np.float32)
+
+
 def _load_fn(solver_key: str):
     """Dynamically load solver function."""
     spec = SOLVERS[solver_key]
@@ -65,21 +106,54 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """Run a solver by key.
 
     Args:
-        solver_key: One of ['traditional_cpu', 'best_quality', 'famous_dl', 'small_gpu', 'sense']
-        y: Measurement data (float32)
-        operator: Forward operator
+        solver_key: One of the registered solver keys
+        y: k-space data. Accepts (H, W, 2) real+imag or (H, W) complex
+        operator: MRI operator (auto-created if None)
         cfg: Hyperparameters (optional)
 
     Returns:
-        x_hat: Reconstructed signal
+        x_hat: Reconstructed image (magnitude)
     """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
-    fn = _load_fn(solver_key)
-    result = fn(y.astype(np.float32), operator, cfg or {})
+    cfg = dict(cfg or {})
+
+    # Convert real+imag to complex
+    y_complex = _to_complex(y)
+
+    # Auto-create MRI operator when none provided
+    if operator is None and y_complex.ndim == 2:
+        mask = _infer_mask(y_complex)
+        operator = MRIOperator(mask, y_complex.shape[0])
+
+    spec = SOLVERS[solver_key]
+    needs_image_input = spec["module"] in ("pwm_core.recon.modl",)
+
+    if needs_image_input:
+        # MoDL needs complex k-space but also the operator
+        # Pre-reconstruct with zero-filled for initialization
+        zf_mod = importlib.import_module("pwm_core.recon.mri_solvers")
+        zf_result = zf_mod.run_zero_filled(y_complex.astype(np.complex64 if np.iscomplexobj(y_complex) else np.float32), operator, cfg)
+        if isinstance(zf_result, tuple):
+            y_img = zf_result[0]
+        else:
+            y_img = zf_result
+        fn = _load_fn(solver_key)
+        result = fn(y_img.astype(np.float32), operator, cfg)
+    else:
+        fn = _load_fn(solver_key)
+        result = fn(y_complex.astype(np.complex64 if np.iscomplexobj(y_complex) else np.float32), operator, cfg)
+
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        x_hat = np.asarray(result[0], dtype=np.float32)
+    else:
+        x_hat = np.asarray(result, dtype=np.float32)
+
+    # Return magnitude for complex results
+    if np.iscomplexobj(x_hat):
+        x_hat = np.abs(x_hat).astype(np.float32)
+
+    return x_hat
 
 
 def list_solvers():
@@ -88,8 +162,7 @@ def list_solvers():
 
 
 def run_traditional_cpu(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """Zero-Filled IFFT. CPU only.
-    """
+    """Zero-Filled IFFT. CPU only."""
     return run_solver("traditional_cpu", y, operator, cfg)
 
 def run_best_quality(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
@@ -105,8 +178,7 @@ def run_famous_dl(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = Non
     return run_solver("famous_dl", y, operator, cfg)
 
 def run_small_gpu(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """MoDL (5 unrolls). CPU only.
-    """
+    """MoDL (5 unrolls). CPU only."""
     return run_solver("small_gpu", y, operator, cfg)
 
 def run_sense(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
