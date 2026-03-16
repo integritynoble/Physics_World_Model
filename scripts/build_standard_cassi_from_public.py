@@ -58,7 +58,7 @@ with h5py.File(str(src_h5), "r") as src:
             f.create_dataset("mask", data=H_ideal, compression="gzip")
             f.attrs["modality"] = "cassi"
             f.attrs["sample_index"] = i
-            f.attrs["source"] = "CAVE hyperspectral (sd_cassi public challenge scenes)"
+            f.attrs["source"] = "CAVE hyperspectral (cassi public challenge scenes)"
             f.attrs["reference"] = "Wagadarikar et al., Applied Optics 2008; Yasuma et al., ICIP 2010"
             f.attrs["data_type"] = "real"
             f.attrs["n_bands"] = int(x_true.shape[2])
