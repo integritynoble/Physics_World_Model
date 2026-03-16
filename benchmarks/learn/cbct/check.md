@@ -230,3 +230,21 @@ The forward model (Radon projection, Poisson noise, sparse views) is physically 
 | Runtime | 12.52 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK
+**Type:** Classical
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 11
+**Method:** Filtered back-projection (ramp filter, circle=True) applied to the central 256 detector channels of the measured sinogram, followed by TV denoising (weight=0.005) to suppress reconstruction artifacts — FDK-equivalent parallel-beam reconstruction with light TV post-processing.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 28.28 dB |
+| SSIM | 0.7620 |
+| Runtime | 0.57 s/sample |
+
+**Result: PASS**

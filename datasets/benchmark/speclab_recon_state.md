@@ -206,7 +206,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FDK | Classical | 27.8 dB | 0.801 |  |
+| FDK | Classical | 27.8 dB | 0.801 | done |
 | TV-ADMM | Variational | 31.2 dB | 0.851 |  |
 | FBPConvNet | Deep Learning | 34.5 dB | 0.891 |  |
 | Metal-AR-Net | Deep Learning | 35.8 dB | 0.912 |  |
@@ -263,7 +263,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Wiener-Deconv | Classical | 26.5 dB | 0.791 | done |
-| TV-Deconv | Variational | 29.2 dB | 0.831 |  |
+| TV-Deconv | Variational | 29.2 dB | 0.831 | done |
 | BM3D-Deblur | PnP | 31.8 dB | 0.871 |  |
 | DnCNN-Deblur | Deep Learning | 33.5 dB | 0.899 |  |
 | DeblurGAN | Generative | 34.8 dB | 0.914 |  |
@@ -278,7 +278,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Richardson-Lucy | Classical | 26.8 dB | 0.801 | done |
 | Wiener-3D | Classical | 28.5 dB | 0.828 | done |
-| IRCNN-Confocal | PnP | 32.1 dB | 0.878 |  |
+| IRCNN-Confocal | PnP | 32.1 dB | 0.878 | done |
 | CARE | Deep Learning | 34.8 dB | 0.91 |  |
 | Noise2Void | Self-Supervised | 33.5 dB | 0.895 |  |
 | U-Net-3D | Deep Learning | 35.9 dB | 0.924 |  |
@@ -684,7 +684,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Coincidence-Count | Classical | 19.8 dB | 0.658 | done |
-| CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 |  |
+| CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 | done |
 | SVD-Ghost | Statistical | 25.1 dB | 0.748 |  |
 | DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 |  |
 | GAN-Ghost | Generative | 31.0 dB | 0.852 |  |
@@ -988,7 +988,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Shift-and-Add | Classical | 25.0 dB | 0.7 | done |
-| PnP-LF | PnP | 29.0 dB | 0.83 |  |
+| PnP-LF | PnP | 29.0 dB | 0.83 | done |
 | LFAttNet | Deep Learning | 33.5 dB | 0.92 |  |
 | DistgSSR | Transformer | 35.8 dB | 0.95 |  |
 
@@ -1086,7 +1086,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Shift-and-Sum | Classical | 24.5 dB | 0.69 | done |
-| PnP-LF | PnP | 28.5 dB | 0.82 |  |
+| PnP-LF | PnP | 28.5 dB | 0.82 | done |
 | LFNet | Deep Learning | 33.0 dB | 0.915 |  |
 | DistgSSR | Transformer | 35.5 dB | 0.948 |  |
 
@@ -2416,7 +2416,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 479 |
-| CPU algorithms pending verification | 96 |
+| CPU algorithms verified (done) | 485 |
+| CPU algorithms pending verification | 90 |
 | GPU algorithms pending | 979 |
 | Total | 1554 |

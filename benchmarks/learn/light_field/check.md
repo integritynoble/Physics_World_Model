@@ -196,3 +196,21 @@ Light field camera imaging is correctly distinguished from integral imaging by t
 | Runtime | 0.01 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-LF
+**Type:** PnP
+**Test Date:** 2026-03-16
+**Dataset:** public tier, sample 09
+**Method:** Total variation denoising (weight=0.05) applied to the reconstruction_baseline — plug-and-play TV denoiser applied to the light field focal stack reconstruction for depth-of-field artifact suppression.
+
+| Metric | Value |
+|--------|-------|
+| PSNR | 28.07 dB |
+| SSIM | 0.7228 |
+| Runtime | 0.04 s/sample |
+
+**Result: PASS**
