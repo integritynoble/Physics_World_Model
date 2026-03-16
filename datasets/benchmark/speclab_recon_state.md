@@ -7,7 +7,7 @@ Tracks verification status of all reconstruction algorithms in SpecLab
 - `done` — PWM CPU reconstruction verified, actual PSNR within 2 dB of reference
 - *(blank)* — awaiting verification (not yet tested, or PSNR below reference threshold)
 
-Last updated: 2026-03-14 | Total modalities: 168
+Last updated: 2026-03-15 | Total modalities: 168
 
 ---
 
