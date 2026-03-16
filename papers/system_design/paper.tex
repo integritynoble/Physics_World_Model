@@ -127,16 +127,17 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % Judge Agent
 \node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
 
-% Triad gates (primary, below judge) — increased vertical gap
-\node[triad, below=0.7cm of judge, xshift=-1.5cm] (t1) {$G_1$\\Recover.};
+% Stage 1: Structural compiler (prerequisite, directly below judge)
+\node[gate, fill=gray!10, draw=gray!50!black, below=0.7cm of judge, minimum width=3.0cm] (comp) {Structural Compiler\\{\tiny (DAG, Chain, Bnd, NL, Adj, Err)}};
+
+% Stage 2: Triad gates (primary, below compiler)
+\node[triad, below=0.7cm of comp, xshift=-1.0cm] (t1) {$G_1$\\Recover.};
 \node[triad, right=0.25cm of t1] (t2) {$G_2$\\Carrier};
 \node[triad, right=0.25cm of t2] (t3) {$G_3$\\Mismatch};
-% Cost + Feasibility (below Triad, alongside)
-\node[sysgate, right=0.25cm of t3] (cost) {Cost};
-\node[sysgate, right=0.25cm of cost] (feas) {Feasib.};
 
-% Structural compiler (prerequisite, below Triad) — more vertical space
-\node[gate, fill=gray!10, draw=gray!50!black, below=1.0cm of t2, minimum width=3.0cm] (comp) {Structural Compiler\\{\tiny (DAG, Chain, Bnd, NL, Adj, Err)}};
+% Stage 3: Cost + Feasibility (below Triad)
+\node[sysgate, below=0.7cm of t1, xshift=0.5cm] (cost) {Cost};
+\node[sysgate, right=0.25cm of cost] (feas) {Feasib.};
 
 % Certified spec + report
 \node[spec, right=of judge] (cert) {Triad\\report};
@@ -150,8 +151,8 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % Error report
 \node[err, below=0.7cm of out] (errbox) {$\eps$ bounds\\report};
 
-% Reject — moved further down to avoid overlap
-\node[box, fill=red!8, draw=red!50!black, dashed, below=0.5cm of comp] (rej) {\scriptsize Reject};
+% Reject — below cost/feasibility
+\node[box, fill=red!8, draw=red!50!black, dashed, below=0.5cm of feas] (rej) {\scriptsize Reject};
 
 % Arrows
 \draw[arr] (nl) -- (plan);
@@ -166,15 +167,19 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % Feedback loop
 \draw[arr, dashed, blue!60!black] (judge.north) -- ++(0,0.4) -| node[above, font=\scriptsize, pos=0.25] {redesign} (plan.north);
 
-% Triad bracket — more space below for label
+% Stage flow arrows (compiler → triad → system)
+\draw[arr, gray] (judge.south) -- (comp.north);
+\draw[arr, gray] (comp.south) -- ++(0,-0.2) -| (t2.north);
+\draw[arr, gray] (t2.south) -- ++(0,-0.2) -| (cost.north);
+
+% Triad bracket
 \draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-3pt]t1.south west) -- ([yshift=-3pt]t3.south east) node[midway, below=5pt, font=\scriptsize] {Triad~\cite{paperII}};
 % System bracket
 \draw[decorate, decoration={brace, amplitude=3pt, mirror}] ([yshift=-3pt]cost.south west) -- ([yshift=-3pt]feas.south east) node[midway, below=5pt, font=\scriptsize] {System};
-\draw[arr, gray] (judge.south) -- ++(0,-0.2) -| (t2.north);
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
-$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates via three Triad gates~\cite{paperII} ($G_1$: recoverability, $G_2$: carrier budget, $G_3$: operator mismatch), estimates hardware cost, and checks physical feasibility from \texttt{system\_elements}; a prerequisite structural compiler (6 gates: DAG, Chain, Bounds, Nonlinear, Adjoint, Error) ensures specification correctness.  Rejected designs trigger
+$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in three stages: (1)~a prerequisite structural compiler (6 gates: DAG, Chain, Bounds, Nonlinear, Adjoint, Error) ensures specification correctness; (2)~three Triad gates~\cite{paperII} ($G_1$: recoverability, $G_2$: carrier budget, $G_3$: operator mismatch) diagnose reconstruction feasibility; (3)~hardware cost estimation and physical feasibility from \texttt{system\_elements}.  Rejected designs trigger
 redesign (dashed blue, up to 3 rounds).
 $\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
 $\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
@@ -1213,6 +1218,11 @@ Plug-and-play methods for integrating physical and learned models in computation
 Aggarwal, H.\,K., Mani, M.\,P. \& Jacob, M.
 MoDL: model-based deep learning architecture for inverse problems.
 \textit{IEEE Trans.\ Med.\ Imaging} \textbf{38}, 394--405 (2019).
+
+\bibitem{sriram2020endtoend}
+Sriram, A. \textit{et al.}
+End-to-end variational networks for accelerated MRI reconstruction.
+\textit{Proc.\ MICCAI} (2020).
 
 \bibitem{adler2018learned}
 Adler, J. \& {\"O}ktem, O.
