@@ -97,11 +97,11 @@ An imaging system is \emph{designable} if it admits a finite DAG decomposition o
 \begin{enumerate}[nosep]
 \item \textbf{\texttt{spec.md}}: a structured 8-field specification format that decouples the imaging problem (\emph{what}) from the numerical method (\emph{how}) and the hardware implementation (\emph{with what}), serving as a shareable, peer-reviewable scientific artifact (\hyperref[sec:specmd]{``The spec.md Specification Format''}).
 \item \textbf{Three-agent pipeline}: Plan ($\Agent_P$), Judge ($\Agent_J$), and Execute ($\Agent_E$) agents that generate, validate, and execute specifications over the FPB (\hyperref[sec:pipeline]{``The Three-Agent Pipeline''}).  The Judge validates via three Triad gates~\cite{paperII} (recoverability, carrier budget, operator mismatch) plus hardware cost and feasibility assessment.
-\item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a gate and a corrective action (Theorem~\ref{thm:design}).
+\item \textbf{Design-to-real error theorem}: the total reconstruction error decomposes into five independently bounded, independently measurable terms, each linked to a check or gate and a corrective action (Theorem~\ref{thm:design}).
 \end{enumerate}
 
 \textbf{Scope.}
-Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 are validated on real data spanning all 5 carrier families.  The remaining ${\sim}$134 pass all compiler gates but lack per-modality benchmarks.  Tier-lifting is demonstrated on 2 cross-tier combinations; the agents depend on current LLM capabilities.
+Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 are validated on real data spanning all 5 carrier families.  The remaining ${\sim}$134 pass all compiler checks but lack per-modality benchmarks.  Tier-lifting is demonstrated on 2 cross-tier combinations; the agents depend on current LLM capabilities.
 
 % ---- Three-Agent Pipeline (Figure 1) ----
 \begin{figure}[htbp]
@@ -229,7 +229,7 @@ system\_elements: source=main magnet 3\,T, optics=RF coils $\times$4, detector=A
 \emph{Gate~1 (Recoverability)}: the measurement geometry must capture sufficient information---the compression ratio $\gamma = m/n$ is checked against modality-specific thresholds derived from the Compression Bound Theorem~\cite{paperII}.
 \emph{Gate~2 (Carrier Budget)}: the measurement SNR must exceed the noise floor---computed from the source power, detector quantum efficiency, and noise parameters in \texttt{system\_elements}.
 \emph{Gate~3 (Operator Mismatch)}: the forward model must faithfully represent the intended physics---calibration tolerances from \texttt{system\_elements.calibration} determine the expected deployment degradation $\Delta\text{PSNR}_{\text{total}}$ via the Calibration Sensitivity Theorem~\cite{paperII}.
-The Judge additionally estimates \emph{hardware cost} from itemized \texttt{system\_elements} and checks \emph{physical feasibility} of each element.  A prerequisite structural compiler (6 gates: DAG acyclicity, canonical chain, complexity bounds, nonlinear constraints, adjoint consistency, representation error) ensures specification correctness before the Triad evaluation.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
+The Judge additionally estimates \emph{hardware cost} from itemized \texttt{system\_elements} and checks \emph{physical feasibility} of each element.  A prerequisite structural compiler (6 checks: DAG acyclicity, canonical chain, complexity bounds, nonlinear constraints, adjoint consistency, representation error) ensures specification correctness before the Triad evaluation.  Failures trigger rejection; the Plan Agent regenerates (up to 3 rounds).
 
 \textbf{Execute Agent ($\Agent_E$)} selects the reconstruction algorithm, executes it, and predicts quality from analytical estimates (condition number, noise amplification) combined with calibrated lookup.
 
@@ -251,10 +251,10 @@ Let $\Atrue$ be the true imaging forward model and $\Aagent$ the agent-designed 
 \end{equation}
 where each design-error term is independently bounded and independently measurable:
 \begin{itemize}[nosep]
-\item $\eps_{\text{FPB}} < 0.01$: FPB representation error.  \emph{Measured by}: Gate~6.  \emph{Guaranteed by}: the basis theorem~\cite{paperII}.
-\item $\eps_{\text{spec}} = 0$ when all 6 compiler gates pass.  \emph{Bounded by}: $C_1 \cdot \delta_{\text{spec}}$ otherwise.
+\item $\eps_{\text{FPB}} < 0.01$: FPB representation error.  \emph{Measured by}: Check~C6.  \emph{Guaranteed by}: the basis theorem~\cite{paperII}.
+\item $\eps_{\text{spec}} = 0$ when all 6 compiler checks pass.  \emph{Bounded by}: $C_1 \cdot \delta_{\text{spec}}$ otherwise.
 \item $\eps_{\text{trans}} = 0$ when the canonical chain matches the 39-modality registry (34/39 = 87\%).  \emph{Bounded by}: $C_2 \cdot \delta_{\text{chain}}$ otherwise.
-\item $\eps_{\text{param}} \leq \frac{2B}{\alpha + \lambda}\,L_A\,\|\theta_{\text{agent}} - \theta_{\text{true}}\|$, where $L_A$ is the operator Lipschitz constant (computed per primitive by Gate~4), $\alpha$ is the coercivity constant, $\lambda$ the regularization weight, and $B$ a signal bound.  \emph{Reducible by}: calibration.
+\item $\eps_{\text{param}} \leq \frac{2B}{\alpha + \lambda}\,L_A\,\|\theta_{\text{agent}} - \theta_{\text{true}}\|$, where $L_A$ is the operator Lipschitz constant (computed per primitive by Check~C4), $\alpha$ is the coercivity constant, $\lambda$ the regularization weight, and $B$ a signal bound.  \emph{Reducible by}: calibration.
 \item $\eps_{\text{unmod}} = 0$ at Tier-3; otherwise reducible by tier-lifting (\hyperref[sec:tierlifting]{``Cross-Tier Hybrid Reconstruction''}).
 \item $\eps_{\text{recon}}$: irreducible reconstruction error (noise floor $+$ regularization bias), independent of the design.
 \end{itemize}
@@ -262,7 +262,7 @@ where each design-error term is independently bounded and independently measurab
 \end{mdframed}
 
 \textbf{Compiler--theorem link.}
-When all 6 gates pass: $\eps_{\text{FPB}} < 0.01$, $\eps_{\text{spec}} = 0$, $\eps_{\text{param}}$ bounded by the Lipschitz constant from Gate~4; with canonical chain match: $\eps_{\text{trans}} = 0$; at Tier-3: $\eps_{\text{unmod}} = 0$.  The dominant residual is $\eps_{\text{param}}$, reducible by calibration (Figure~\ref{fig:error_decomp}).  Full proof in Methods.
+When all 6 checks pass: $\eps_{\text{FPB}} < 0.01$, $\eps_{\text{spec}} = 0$, $\eps_{\text{param}}$ bounded by the Lipschitz constant from Check~C4; with canonical chain match: $\eps_{\text{trans}} = 0$; at Tier-3: $\eps_{\text{unmod}} = 0$.  The dominant residual is $\eps_{\text{param}}$, reducible by calibration (Figure~\ref{fig:error_decomp}).  Full proof in Methods.
 
 % ------------------------------------------------------------------------
 \subsection{Cross-Modality Validation}
@@ -317,7 +317,7 @@ We validated the framework on all 173 modalities.  For each, the Plan Agent gene
 \end{tabularx}
 \end{table}
 
-Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88])~\cite{paperII}.  The agent--expert quality gap (Cohen's $d = 0.31$) indicates practical equivalence; time ratios $\rho_{\text{time}}$ range from 190$\times$ to 420$\times$~\cite{aarle2016,ong2019sigpy}.  All 173 modalities compile (100\% pass rate, Gates~1--4); canonical chain fidelity: 34/39 (87\%).
+Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [0.82, 0.88])~\cite{paperII}.  The agent--expert quality gap (Cohen's $d = 0.31$) indicates practical equivalence; time ratios $\rho_{\text{time}}$ range from 190$\times$ to 420$\times$~\cite{aarle2016,ong2019sigpy}.  All 173 modalities compile (100\% pass rate, Checks~C1--C4); canonical chain fidelity: 34/39 (87\%).
 
 % ---- Error Decomposition Visualisation (Task 2.4) ----
 \begin{figure}[htbp]
@@ -378,7 +378,7 @@ Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig4_design_to_real.pdf}
-\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates (3 Triad + 6 compiler), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities with ground truth: CT ($19.6$\,dB, FBP+TV on LoDoPaB), MRI ($31.7$\,dB, HybridCascade++ on M4Raw), and CASSI ($38.5$\,dB, DAUHST-9stg on KAIST TSA).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $98.8 \pm 2.5$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
+\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates and checks (3 Triad gates + 6 compiler checks), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities with ground truth: CT ($19.6$\,dB, FBP+TV on LoDoPaB), MRI ($31.7$\,dB, HybridCascade++ on M4Raw), and CASSI ($38.5$\,dB, DAUHST-9stg on KAIST TSA).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $98.8 \pm 2.5$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
 \label{fig:design_to_real}
 \end{figure}
 
@@ -409,7 +409,7 @@ We ablated the pipeline on 12 representative modalities spanning all 5 carrier f
 
 \begin{table}[htbp]
 \centering
-\caption{Ablation study (5 trials $\times$ 12 modalities = 300 runs).  ``Valid'': passes all compiler gates.  ``$\leq \eps$'': reconstruction within Theorem~\ref{thm:design} error bound.  No single agent is dispensable.}
+\caption{Ablation study (5 trials $\times$ 12 modalities = 300 runs).  ``Valid'': passes all compiler checks.  ``$\leq \eps$'': reconstruction within Theorem~\ref{thm:design} error bound.  No single agent is dispensable.}
 \label{tab:ablation}
 \small
 \begin{tabularx}{\textwidth}{@{}Xccccl@{}}
@@ -428,7 +428,7 @@ Template only & --- & 3/12 & 0 & 0.5\,min & No coverage (75\%) \\
 \textbf{Without $\Agent_J$}: 4/12 physically invalid specifications pass; 2 additional produce unbounded error.
 \textbf{Without $\Agent_E$ (Execute)}: all pass validation but mean PSNR drops 2.1\,dB.
 \textbf{Without $\Agent_P$}: manual specification averages 52\,min with 14\% error rate.
-Random specification passes Gate~1 in 12\% of cases but never passes Gates~4--5; retrieval-only covers 22/39 modalities at 4.2\,dB below the full pipeline.
+Random specification passes Triad Gate~1 in 12\% of cases but never passes compiler Checks~C4--C5; retrieval-only covers 22/39 modalities at 4.2\,dB below the full pipeline.
 
 % ------------------------------------------------------------------------
 \subsection{Failure Analysis}
@@ -437,7 +437,7 @@ Random specification passes Gate~1 in 12\% of cases but never passes Gates~4--5;
 
 We characterise four failure modes (Figure~\ref{fig:error_decomp}):
 \textbf{(1)~Scattering-dominated systems} (DOT~\cite{arridge2009optical}, Compton): $\eps_{\text{unmod}}$ is large at Tier-2 (7.8\% for DOT); mitigated by tier-lifting.
-\textbf{(2)~LLM misspecification}: 4\% of test cases have subtle parametric errors; the structural compiler and Triad gates together catch 96\%.
+\textbf{(2)~LLM misspecification}: 4\% of test cases have subtle parametric errors; the structural compiler checks and Triad gates together catch 96\%.
 \textbf{(3)~Multi-parameter mismatch}: $\rho_{\text{recov}}$ drops below 0.9 when $>$2 parameters are simultaneously off (CASSI: 0.85).
 \textbf{(4)~Chain ambiguity}: 5/39 modalities have non-matching chains due to $\Sigma$--$D$ merging.
 
@@ -509,7 +509,7 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
   tier/.style={draw, rounded corners=2pt, minimum height=0.8cm, align=center, font=\small},
 ]
 % Base tier
-\node[tier, fill=gray!8, minimum width=12cm] (t0) at (0,0) {\textbf{173 modalities} --- compile through all 6 gates (100\% pass rate)};
+\node[tier, fill=gray!8, minimum width=12cm] (t0) at (0,0) {\textbf{173 modalities} --- compile through all 6 checks (100\% pass rate)};
 % Middle tier
 \node[tier, fill=blue!8, minimum width=9cm] (t1) at (0,1.2) {\textbf{39 modalities} --- fully validated canonical decompositions};
 % Upper tier
@@ -519,7 +519,7 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
 % Pyramid edges
 \draw[gray!40, thick] (-6,-0.4) -- (-1.6,4) (6,-0.4) -- (1.6,4);
 % Right annotations
-\node[font=\scriptsize, right, text width=3cm] at (6.2,0) {Gates 1--4 verified;\\chains \& bounds};
+\node[font=\scriptsize, right, text width=3cm] at (6.2,0) {Checks C1--C4;\\chains \& bounds};
 \node[font=\scriptsize, right, text width=3cm] at (4.7,1.2) {Quantitative recon.\\+ canonical match};
 \node[font=\scriptsize, right, text width=3cm] at (2.95,2.4) {5 carrier families\\(X-ray, photon, spin,\\acoustic, electron)};
 \node[font=\scriptsize, right, text width=3cm] at (1.8,3.6) {CT, MRI, CASSI};
@@ -577,7 +577,7 @@ An imaging system $A$ is \emph{designable} within this framework if:
 \begin{itemize}[nosep]
 \item[\textbf{A1.}] \textit{Coercivity.}  The data-fidelity term $f(x) = \|A(x) - y\|^2$ satisfies $\langle \nabla f(x) - \nabla f(x'), x - x'\rangle \geq \alpha\|x - x'\|^2$ with coercivity constant $\alpha = \sigma_{\min}^2(A) > 0$ (linear case) or $\alpha > 0$ from restricted strong convexity (nonlinear case).
 \item[\textbf{A2.}] \textit{Regularisation.}  $R(x)$ is proper, convex, lower-semicontinuous, and $\lambda > 0$.  The composite objective $F(x) = f(x) + \lambda R(x)$ is $\mu$-strongly convex with $\mu = \alpha + \lambda$~\cite{chambolle2016introduction}.
-\item[\textbf{A3.}] \textit{Lipschitz parameters.}  Each FPB primitive $A_i(\cdot\,; \theta_i)$ is $L_i$-Lipschitz continuous in its parameters: $\|A_i(\cdot\,; \theta) - A_i(\cdot\,; \theta')\|_{\text{op}} \leq L_i\|\theta - \theta'\|$.  The DAG composition has Lipschitz constant $L_A \leq \prod_i L_i$, computed by Gate~4.
+\item[\textbf{A3.}] \textit{Lipschitz parameters.}  Each FPB primitive $A_i(\cdot\,; \theta_i)$ is $L_i$-Lipschitz continuous in its parameters: $\|A_i(\cdot\,; \theta) - A_i(\cdot\,; \theta')\|_{\text{op}} \leq L_i\|\theta - \theta'\|$.  The DAG composition has Lipschitz constant $L_A \leq \prod_i L_i$, computed by Check~C4.
 \item[\textbf{A4.}] \textit{Bounded signal.}  $\|x^*\| \leq B$ for known bound $B$.
 \end{itemize}
 
@@ -616,18 +616,18 @@ The second term $\eps_{\text{recon}} = \|x_{\text{oracle}} - x^*\|$ is the irred
 
 \textbf{Step 5: Bounding each term.}
 \begin{enumerate}[nosep, label=(\alph*)]
-\item $\delta_{\text{FPB}} < 0.01$ by the FPB basis theorem~\cite{paperII}.  Verified by Gate~6 of the compiler: $\eps = \mathbb{E}[\|\Aagent(x) - \Atrue(x)\|/\|\Atrue(x)\|] < 0.01$ over 5 random test vectors.  Hence $\eps_{\text{FPB}} < 0.01 \cdot 2B/(\alpha + \lambda)$.
+\item $\delta_{\text{FPB}} < 0.01$ by the FPB basis theorem~\cite{paperII}.  Verified by Check~C6 of the compiler: $\eps = \mathbb{E}[\|\Aagent(x) - \Atrue(x)\|/\|\Atrue(x)\|] < 0.01$ over 5 random test vectors.  Hence $\eps_{\text{FPB}} < 0.01 \cdot 2B/(\alpha + \lambda)$.
 
-\item $\delta_{\text{spec}} = 0$ when all 6 compiler gates pass.  \emph{Condition}: Gates~1--5 jointly verify that the \texttt{spec.md} fully and correctly specifies the FPB composition: DAG acyclicity (Gate~1), chain fidelity (Gate~2), complexity bounds (Gate~3), nonlinear family constraints (Gate~4), and adjoint consistency (Gate~5).  When all pass, $A_{\text{spec}} \equiv A_{\text{FPB}}$.
+\item $\delta_{\text{spec}} = 0$ when all 6 compiler checks pass.  \emph{Condition}: Checks~C1--C5 jointly verify that the \texttt{spec.md} fully and correctly specifies the FPB composition: DAG acyclicity (C1), chain fidelity (C2), complexity bounds (C3), nonlinear family constraints (C4), and adjoint consistency (C5).  When all pass, $A_{\text{spec}} \equiv A_{\text{FPB}}$.
 
-\item $\delta_{\text{trans}} = 0$ when the natural-language-to-DAG translation produces a canonical chain that exactly matches one of the 39 entries in the validated registry.  \emph{Condition}: Gate~2 (chain fidelity) returns exact match.  This holds for 34/39 (87\%) of validated modalities.
+\item $\delta_{\text{trans}} = 0$ when the natural-language-to-DAG translation produces a canonical chain that exactly matches one of the 39 entries in the validated registry.  \emph{Condition}: Check~C2 (chain fidelity) returns exact match.  This holds for 34/39 (87\%) of validated modalities.
 
-\item $\delta_{\text{param}} \leq L_A\|\theta_{\text{agent}} - \theta_{\text{true}}\|$ by Assumption A3.  $L_A$ is computed per primitive by Gate~4's Lipschitz analysis: each nonlinear primitive has at most 2 free parameters with VC dimension $\leq 3$, so $L_i$ is computable in closed form.
+\item $\delta_{\text{param}} \leq L_A\|\theta_{\text{agent}} - \theta_{\text{true}}\|$ by Assumption A3.  $L_A$ is computed per primitive by Check~C4's Lipschitz analysis: each nonlinear primitive has at most 2 free parameters with VC dimension $\leq 3$, so $L_i$ is computable in closed form.
 
 \item $\delta_{\text{unmod}} = 0$ at Tier-3 by definition: $A_{\text{tier}} \equiv \Atrue$ when operating at full-physics fidelity.  For lower tiers, $\delta_{\text{unmod}}$ is estimated empirically via cross-tier comparison (Table~\ref{tab:tierlift}) and is reducible to machine precision via tier-lifting.
 \end{enumerate}
 
-This completes the proof: each $\eps_i$ is bounded, measurable, and linked to a specific compiler gate and corrective action. \qed
+This completes the proof: each $\eps_i$ is bounded, measurable, and linked to a specific compiler check and corrective action. \qed
 
 % ------------------------------------------------------------------------
 \subsection{Tier-Lifting Protocol}
@@ -703,7 +703,7 @@ The Judge Agent validates designs in three stages: structural compilation (prere
 
 % ── Arrows ──
 \draw[arr] (input) -- (s1box);
-\draw[arr] (s1box) -- node[lbl, right, xshift=3pt] {all 6 pass} (s2box);
+\draw[arr] (s1box) -- node[lbl, right, xshift=3pt] {all 6 checks pass} (s2box);
 \draw[arr] (s2box) -- node[lbl, right, xshift=3pt] {all 3 pass} (s3box);
 \draw[arr] (s3box.south) -- ++(0,-0.25) -| (pass.north);
 \draw[arr] (s3box.south) -- ++(0,-0.25) -| (fail.north);
@@ -717,7 +717,7 @@ The Judge Agent validates designs in three stages: structural compilation (prere
 
 \end{tikzpicture}
 \caption{\textbf{Judge Agent validation flow.}
-Stage~1: a 6-gate structural compiler rejects malformed specifications before physics evaluation.
+Stage~1: a 6-check structural compiler rejects malformed specifications before physics evaluation.
 Stage~2: three deterministic Triad gates~\cite{paperII} diagnose recoverability ($G_1$), carrier budget ($G_2$), and operator mismatch ($G_3$), each with a quantitative margin in dB.
 Stage~3: hardware cost estimation and physical feasibility assessment.
 Failure at any stage produces a redesign prompt fed back to the Plan Agent.}
@@ -726,13 +726,13 @@ Failure at any stage produces a redesign prompt fed back to the Plan Agent.}
 
 \subsubsection{Stage 1: Structural Compilation (Prerequisite)}
 
-A 6-gate compiler ensures specification correctness before the Triad evaluation.
-\textbf{Gate~1 (DAG).}  Compiled into a typed \texttt{OperatorGraphSpec} (Pydantic~v2).  Acyclicity verified via Kahn's algorithm, $O(V{+}E)$.
-\textbf{Gate~2 (Chain).}  Canonical chain extracted and compared against the 39-modality registry.  Match is exact or within known equivalences ($\Sigma$ merged into $D$).
-\textbf{Gate~3 (Bounds).}  $N \leq 20$ nodes, $D \leq 10$ depth.
-\textbf{Gate~4 (Nonlinear).}  For each nonlinear node ($D$, $R$, $\Lambda$): family resolved, parameter count $\leq 2$, values within physics bounds, Lipschitz constant $L_i$ computed.
-\textbf{Gate~5 (Adjoint).}  Randomised dot-product test: $|\langle Ax, y\rangle - \langle x, A^Ty\rangle| / \max(|\langle Ax, y\rangle|, 10^{-8}) < 10^{-4}$, 3 trials.
-\textbf{Gate~6 (Error).}  When reference available: $\eps = \mathbb{E}[\|(\Aagent - \Atrue)(x)\| / \|\Atrue(x)\|]$ over 5 random non-negative test vectors, threshold $< 0.01$.
+A 6-check compiler ensures specification correctness before the Triad evaluation.
+\textbf{C1 (DAG).}  Compiled into a typed \texttt{OperatorGraphSpec} (Pydantic~v2).  Acyclicity verified via Kahn's algorithm, $O(V{+}E)$.
+\textbf{C2 (Chain).}  Canonical chain extracted and compared against the 39-modality registry.  Match is exact or within known equivalences ($\Sigma$ merged into $D$).
+\textbf{C3 (Bounds).}  $N \leq 20$ nodes, $D \leq 10$ depth.
+\textbf{C4 (Nonlinear).}  For each nonlinear node ($D$, $R$, $\Lambda$): family resolved, parameter count $\leq 2$, values within physics bounds, Lipschitz constant $L_i$ computed.
+\textbf{C5 (Adjoint).}  Randomised dot-product test: $|\langle Ax, y\rangle - \langle x, A^Ty\rangle| / \max(|\langle Ax, y\rangle|, 10^{-8}) < 10^{-4}$, 3 trials.
+\textbf{C6 (Error).}  When reference available: $\eps = \mathbb{E}[\|(\Aagent - \Atrue)(x)\| / \|\Atrue(x)\|]$ over 5 random non-negative test vectors, threshold $< 0.01$.
 
 \subsubsection{Stage 2: Triad Gate Evaluation (Primary)}
 
@@ -831,7 +831,7 @@ Coherent & Tier-1 (ang.\ spec.) & Tier-3 (FDTD) & Evanescent + scatter & 147\% &
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Extended Data Table~3: Modality registry (39 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  $\Phi_z$: depth-parameterised $C$ (see Table~\ref{tab:cross}).  An additional ${\sim}$134 modalities pass all compiler gates but lack per-modality reconstruction benchmarks; the full list is in the repository.}
+\caption{\textbf{Extended Data Table~3: Modality registry (39 validated canonical decompositions).}  Status: FV = fully validated (canonical chain + quantitative reconstruction), QV = quantitatively validated (reconstruction without independent canonical chain), HO = held-out validation, T = template.  $\Phi_z$: depth-parameterised $C$ (see Table~\ref{tab:cross}).  An additional ${\sim}$134 modalities pass all compiler checks but lack per-modality reconstruction benchmarks; the full list is in the repository.}
 \label{tab:ext_registry}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}llllclll@{}}
@@ -1050,7 +1050,7 @@ Let $\mathcal{F} = \{A_1, \ldots, A_N\}$ be the set of $N$ forward models across
 \end{theorem}
 
 \textbf{Proof sketch.}
-The 11 primitives---Projection ($\Pi$), Fourier Encode ($F$), Modulate ($M$), Convolve ($C$), Propagate ($P$), Disperse ($W$), Accumulate ($\Sigma$), Sample ($S$), Detect ($D$), Scatter ($R$), Nonlinear ($\Lambda$)---are identified by a greedy set-cover procedure over $N = 170$ modalities.  Starting from the most frequently occurring linear operation (Radon projection $\Pi$, covering 23 modalities), each subsequent primitive is chosen to maximise marginal coverage of uncovered modalities.  The procedure saturates at $K = 11$: adding a 12th primitive covers zero additional modalities at the $\eps < 0.01$ threshold.  The saturation argument shows that imaging physics, despite its diversity, occupies a low-dimensional operator space---every forward model is a composition of measurement geometry ($\Pi, F, S$), wave interaction ($P, C, W, R$), modulation ($M$), accumulation ($\Sigma$), detection ($D$), and pointwise nonlinearity ($\Lambda$).  The $\eps < 0.01$ bound is verified empirically for each modality via Gate~6 of the structural compiler: $\eps = \mathbb{E}[\|(\text{DAG}_i - A_i)(x)\| / \|A_i(x)\|]$ over 5 random non-negative test vectors.
+The 11 primitives---Projection ($\Pi$), Fourier Encode ($F$), Modulate ($M$), Convolve ($C$), Propagate ($P$), Disperse ($W$), Accumulate ($\Sigma$), Sample ($S$), Detect ($D$), Scatter ($R$), Nonlinear ($\Lambda$)---are identified by a greedy set-cover procedure over $N = 170$ modalities.  Starting from the most frequently occurring linear operation (Radon projection $\Pi$, covering 23 modalities), each subsequent primitive is chosen to maximise marginal coverage of uncovered modalities.  The procedure saturates at $K = 11$: adding a 12th primitive covers zero additional modalities at the $\eps < 0.01$ threshold.  The saturation argument shows that imaging physics, despite its diversity, occupies a low-dimensional operator space---every forward model is a composition of measurement geometry ($\Pi, F, S$), wave interaction ($P, C, W, R$), modulation ($M$), accumulation ($\Sigma$), detection ($D$), and pointwise nonlinearity ($\Lambda$).  The $\eps < 0.01$ bound is verified empirically for each modality via Check~C6 of the structural compiler: $\eps = \mathbb{E}[\|(\text{DAG}_i - A_i)(x)\| / \|A_i(x)\|]$ over 5 random non-negative test vectors.
 
 % ------------------------------------------------------------------------
 \subsection*{S2. Triad Decomposition Theorem}
@@ -1112,7 +1112,7 @@ where $s_k = \partial(\text{PSNR})/\partial\theta_k$ is the sensitivity of recon
 \end{theorem}
 
 \textbf{Proof sketch.}
-Expand the reconstruction error to first order in $\delta\theta$: $\hat{x}(\theta + \delta\theta) - \hat{x}(\theta) \approx \sum_k (\partial\hat{x}/\partial\theta_k)\,\delta\theta_k$.  The MSE increment is $\Delta\text{MSE} \approx \sum_k \|\partial\hat{x}/\partial\theta_k\|^2\,\delta\theta_k^2$ (cross-terms vanish under independence).  Converting to PSNR via $\Delta\text{PSNR} \approx -10/({\ln 10}) \cdot \Delta\text{MSE}/\text{MSE}$ and defining $s_k$ as the per-parameter PSNR sensitivity yields the root-sum-of-squares formula.  Gate~3 checks whether the predicted deployment PSNR ($\text{PSNR}_{\max}^{(G_2)} - \Delta\text{PSNR}_{\text{total}}$) exceeds the specification target, using calibration tolerances from \texttt{system\_elements.calibration}.  Each $s_k$ is computed numerically by perturbing $\theta_k$ by $\pm 1\%$ and measuring PSNR change, validated against the Lipschitz analysis from Gate~4.
+Expand the reconstruction error to first order in $\delta\theta$: $\hat{x}(\theta + \delta\theta) - \hat{x}(\theta) \approx \sum_k (\partial\hat{x}/\partial\theta_k)\,\delta\theta_k$.  The MSE increment is $\Delta\text{MSE} \approx \sum_k \|\partial\hat{x}/\partial\theta_k\|^2\,\delta\theta_k^2$ (cross-terms vanish under independence).  Converting to PSNR via $\Delta\text{PSNR} \approx -10/({\ln 10}) \cdot \Delta\text{MSE}/\text{MSE}$ and defining $s_k$ as the per-parameter PSNR sensitivity yields the root-sum-of-squares formula.  Gate~3 checks whether the predicted deployment PSNR ($\text{PSNR}_{\max}^{(G_2)} - \Delta\text{PSNR}_{\text{total}}$) exceeds the specification target, using calibration tolerances from \texttt{system\_elements.calibration}.  Each $s_k$ is computed numerically by perturbing $\theta_k$ by $\pm 1\%$ and measuring PSNR change, validated against the Lipschitz analysis from Check~C4.
 
 % ========================================================================
 \begingroup
