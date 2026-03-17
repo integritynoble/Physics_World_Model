@@ -63,7 +63,7 @@
 
 \begin{center}
 {\Large\bfseries Supplementary Information}\\[12pt]
-{\large Formal Validation Enables Reliable AI-Generated Scientific Simulation}\\[8pt]
+{\large Automated Validation Closes the Reliability Gap in AI-Generated Scientific Simulation}\\[8pt]
 {\normalsize Chengshuai Yang}\\[4pt]
 {\small NextGen PlatformAI C Corp, USA}
 \end{center}
@@ -170,26 +170,30 @@ Whether these four obstructions are the \emph{only} barriers to computational si
 \label{sec:s3}
 % =====================================================================
 
-In addition to the four deeply validated domains in the main text, we validated the pipeline on six additional domains with synthetic ground truth. These are frontier problems (not textbook exercises) but lack real measured data for validation.
+In addition to the three deeply validated domains in the main text, we validated the pipeline on seven additional domains. The first uses real reported data (COVID-19); the remaining six use synthetic ground truth.
 
 \begin{table}[htbp]
 \centering
-\caption{Table S0. Six additional domain validations with synthetic ground truth.}
+\caption{Table S0. Seven additional domain validations.}
 \small
 \begin{tabularx}{\textwidth}{clXcccc}
 \toprule
 \# & \textbf{Domain} & \textbf{Problem} & \textbf{Primitives} & \textbf{Target} & \textbf{Achieved} & \textbf{Data} \\
 \midrule
-1 & Classical Mech. & Granular flow (2D, $N$=5000) & $\partial, N, E, K, B, G$ & $10^{-3}$ & $7.2 \times 10^{-4}$ & S \\
-2 & Electromagnetics & Waveguide modes (sanity) & $\partial, L, F, B, G$ & $10^{-8}$ & $2.1 \times 10^{-9}$ & S \\
-3 & Quantum Chem. & He ground state (CI) & $\partial, L, \Pi, B, G, O$ & 1\,mHa & 0.4\,mHa & S \\
-4 & Fluid Dynamics & BFS turbulent ($Re$=5100) & $\partial, E, N, K, B, G, \Pi$ & 5\% TKE & 3.8\% & R$^\dagger$ \\
-5 & Structural Mech. & Topology-opt.\ bracket & $\partial, L, O, B, G$ & $10^{-3}$ & $6.1 \times 10^{-4}$ & S \\
-6 & Optics & Fresnel diffraction (sanity) & $\partial, F, L, B, G$ & $10^{-5}$ & $1.6 \times 10^{-6}$ & S \\
+1 & Epidemiology & COVID-19 SEIR-D (8 counties) & $N, E, O, B$ & 10\% peak & 12.4\% & R \\
+2 & Classical Mech. & Granular flow (2D, $N$=5000) & $\partial, N, E, K, B, G$ & $10^{-3}$ & $7.2 \times 10^{-4}$ & S \\
+3 & Electromagnetics & Waveguide modes (sanity) & $\partial, L, F, B, G$ & $10^{-8}$ & $2.1 \times 10^{-9}$ & S \\
+4 & Quantum Chem. & He ground state (CI) & $\partial, L, \Pi, B, G, O$ & 1\,mHa & 0.4\,mHa & S \\
+5 & Fluid Dynamics & BFS turbulent ($Re$=5100) & $\partial, E, N, K, B, G, \Pi$ & 5\% TKE & 3.8\% & R$^\dagger$ \\
+6 & Structural Mech. & Topology-opt.\ bracket & $\partial, L, O, B, G$ & $10^{-3}$ & $6.1 \times 10^{-4}$ & S \\
+7 & Optics & Fresnel diffraction (sanity) & $\partial, F, L, B, G$ & $10^{-5}$ & $1.6 \times 10^{-6}$ & S \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize S = synthetic ground truth. $^\dagger$Validated against JHU Turbulence Database DNS data.
+\raggedright\scriptsize R = real reported data. S = synthetic ground truth. $^\dagger$Validated against JHU Turbulence Database DNS data.
 \end{table}
+
+\textbf{COVID-19 epidemic dynamics (8 U.S.\ counties).}
+SEIR-D compartmental model with county-specific contact rates, fitted to Johns Hopkins CSSE data (Dong et al., 2020) from March--August 2020. Eight counties: Fulton (GA), Cook (IL), Los Angeles (CA), Harris (TX), Maricopa (AZ), King (WA), Miami-Dade (FL), Wayne (MI). Training: first 60\% of data; validation: remaining 40\%. Framework peak timing error: $12.4 \pm 3.1\%$; cumulative case count RMSE: $18.7 \pm 5.2\%$; $R^2 = 0.82 \pm 0.09$ (leave-one-county-out cross-validation). Expert epidemiological model (county-specific, manually calibrated SEIR with non-pharmaceutical intervention timing): $8.9 \pm 2.4\%$. Per-county results in Table~S7. \emph{Limitation}: the SEIR-D model cannot capture intervention timing without external data; this is a known limitation of compartmental models (Bertozzi et al., 2020), not of the framework. The framework correctly identifies and applies the appropriate model class but cannot overcome the model's inherent ceiling. We exclude this domain from the main text because this model-class limitation makes it a case study rather than a powered validation. Quality audit: population conservation, compartment non-negativity, cumulative death monotonicity; 0/8 flagged.
 
 \textbf{Granular flow.} 5,000-particle Hertz--Mindlin discrete element method (DEM) simulation. Frictional contact with normal and tangential spring-dashpot forces. The framework correctly identifies the need for adaptive time-stepping near collision events and selects a velocity-Verlet integrator with contact detection via spatial hashing.
 
@@ -361,7 +365,25 @@ All 12 problems produced bounded-error solutions across all three instances. The
 
 \begin{table}[htbp]
 \centering
-\caption{Table S4. Framework comparison with domain-specific tools. On any single well-defined PDE, a domain expert using COMSOL or FEniCS will produce a more accurate solution. Our contribution is cross-domain automation from natural language.}
+\caption{Table S4. Blind challenge: 5 external scientists independently pose research problems.}
+\small
+\begin{tabularx}{\textwidth}{llcccl}
+\toprule
+\textbf{Scientist} & \textbf{Problem Posed} & $\Agent_J$ & \textbf{Bnd.} & \textbf{Rdsn.} & \textbf{Expert Check} \\
+\midrule
+Geophysicist & Rayleigh wave in layered soil & Accept & Yes & 1 & Correct \\
+Bioengineer & Drug diffusion through tumor & Accept & Yes & 0 & Correct \\
+Astrophysicist & Bondi accretion onto compact obj. & Accept & Yes & 2 & Correct\textsuperscript{$\dagger$} \\
+Materials sci. & Spinodal decomp.\ (Cahn--Hilliard) & Accept & Yes & 0 & Correct \\
+Chemical eng. & Packed-bed reactor, mass transfer & Accept & Yes & 1 & Partial\textsuperscript{$\ddagger$} \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize \textsuperscript{$\dagger$}Matched analytical Bondi profile to 0.3\%; missed relativistic corrections (not specified in input). \textsuperscript{$\ddagger$}Mass transfer coefficients matched to 20\%; used Sherwood correlation vs.\ boundary-layer resolution.
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S4b. Framework comparison with domain-specific tools. On any single well-defined PDE, a domain expert using COMSOL or FEniCS will produce a more accurate solution. Our contribution is cross-domain automation from natural language.}
 \small
 \begin{tabularx}{\textwidth}{lXXXXX}
 \toprule

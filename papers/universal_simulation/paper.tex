@@ -20,7 +20,7 @@
 \usepackage[hidelinks,colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
 \usepackage{microtype}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,decorations.pathreplacing}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
 
 % ---- Page style ----
 \pagestyle{fancy}
@@ -44,20 +44,13 @@
 \setlength{\parskip}{6pt}
 
 % ---- Theorem environments ----
-\newtheorem{theorem}{Theorem}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{remark}[theorem]{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}[proposition]{Remark}
 
 % ---- Custom commands ----
 \newcommand{\R}{\mathbb{R}}
-\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
-\newcommand{\Spec}{\mathcal{S}}
-\newcommand{\Prim}{\mathcal{P}}
 \newcommand{\Agent}{\mathcal{A}}
-\newcommand{\Domain}{\Omega}
 \newcommand{\cmark}{\checkmark}
 
 \begin{document}
@@ -66,8 +59,8 @@
 % TITLE
 % =====================================================================
 \begin{center}
-{\LARGE\bfseries Formal Validation Enables Reliable\\[3pt]
-AI-Generated Scientific Simulation}\\[18pt]
+{\LARGE\bfseries Automated Validation Closes the Reliability Gap\\[3pt]
+in AI-Generated Scientific Simulation}\\[18pt]
 {\large Chengshuai Yang}\\[6pt]
 {\normalsize NextGen PlatformAI C Corp, USA}\\[6pt]
 {\normalsize Correspondence: integrityyang@gmail.com}\\[12pt]
@@ -80,19 +73,21 @@ AI-Generated Scientific Simulation}\\[18pt]
 % ABSTRACT (~150 words, Nature format)
 % =====================================================================
 \noindent\textbf{Abstract.}
-A seismologist needs to image Earth's subsurface; a combustion engineer must predict ignition timing; an epidemiologist wants to forecast disease spread. Each builds a bespoke numerical solver from scratch---correct for one problem, unusable for the next. Large language models can now generate such solvers from plain-English descriptions, but the generated code silently fails on most non-textbook problems. Here we introduce a Judge Agent that applies well-posedness proofs, stability analysis, and domain-specific quality audits between AI planning and execution. Without the Judge, AI-generated code fails on 7 of 12 frontier problems; with it, all 12 produce correct solutions with automated error bounds. We validate on four domains with real data---clinical CT imaging, seismic inversion, combustion chemistry, and COVID-19 dynamics---and confirm generalization on 72 held-out tasks from 12 external scientists. Code, data, and benchmark are archived on Zenodo.
+Large language models can generate numerical simulation code from plain-English problem descriptions, but they silently produce wrong answers on most non-textbook problems because the generated code lacks mathematical validation. Here we introduce a Judge Agent---an automated validation layer that checks well-posedness, stability, and physical consistency between AI code generation and execution. In a controlled comparison on 12 frontier problems, removing the Judge increases the silent-failure rate from 0\% to 42\%. We validate on three domains with real measured data: clinical CT imaging (200 cases, 99\% of expert quality), seismic full-waveform inversion (5 velocity models, 95\%), and combustion chemistry (15 conditions, 6.3\% error vs.\ shock-tube data). A prospective benchmark of 72 held-out tasks from 12 external scientists at 9 institutions, managed by an independent coordinator, confirms generalization. The residual qualitative failure rate is 1.5\%, confined to problems near bifurcation points. Code, data, and cached inference logs are archived on Zenodo.
 
 % =====================================================================
-\section{Introduction}
+% OPENING PARAGRAPHS (no section heading, Nature style)
 % =====================================================================
 
-In 2024, a structural engineer in Tokyo spent three weeks coding a finite-element solver for a novel bridge design. The code ran, the numbers looked reasonable, and the project moved forward---until a post-mortem revealed that an incorrect boundary condition had silently produced unconservative stress estimates throughout.  This pattern repeats across science: thousands of researchers independently build bespoke numerical solvers---finite-element codes for bridges, quantum-chemistry packages for molecules, climate models for the atmosphere---each correct for one domain but unusable for any other~\cite{baker2016}. Large language models (LLMs) can now generate such code from natural-language descriptions~\cite{karniadakis2021,lu2021,tian2024scicode}, much as AlphaFold~\cite{jumper2021} democratized protein structure prediction. But the generated code comes with no guarantee of correctness. When it silently produces a wrong answer---a laminar solution for a turbulent flow~\cite{pope2000}, a missing correlation term in a quantum calculation, a numerically unstable integrator for a stiff system---the scientist has no way to detect the error.
+Large language models (LLMs) can now write numerical solvers from natural-language descriptions~\cite{karniadakis2021,tian2024scicode}. A researcher types ``solve the heat equation on a square domain with Dirichlet boundary conditions'' and receives working Python code in seconds. But when the problem is harder---a stiff chemical kinetics system, an ill-conditioned inverse problem, a turbulent flow near a bifurcation point---the generated code still runs, still produces numbers, and still looks plausible. The scientist has no automatic way to know the answer is wrong.
 
-The mathematical foundations for automated error bounds exist: Lax--Richtmyer convergence theory~\cite{lax1956} for discretizations, Hadamard well-posedness~\cite{hadamard1902} for continuous dependence, and computability theory~\cite{turing1936,blum1989} for fundamental limits. What has been missing is a practical system that \emph{automatically} applies these classical results to arbitrary problem descriptions---and evidence that this works on problems scientists actually struggle with. Existing approaches address parts of this challenge: physics-informed neural networks (PINNs)~\cite{karniadakis2021,raissi2019pinnsjcp} learn solutions but lack automated error bounds; automated code generation from variational forms (FEniCS~\cite{logg2012fenics}, Firedrake~\cite{rathgeber2016firedrake}) automates solver construction but requires expert problem formulation; formal verification tools~\cite{boldo2015verified} guarantee floating-point correctness but do not automate problem specification; and recent LLM-based scientific agents~\cite{boiko2023coscientist,bran2024chemcrow} generate experimental protocols but not numerically certified simulations.
+This silent-failure problem is well documented. In the SciCode benchmark~\cite{tian2024scicode}, frontier LLMs solve fewer than half of research-level computational problems correctly. Physics-informed neural networks (PINNs)~\cite{karniadakis2021,raissi2019pinnsjcp} learn solutions but provide no error certificates. Automated code generation from variational forms (FEniCS~\cite{logg2012fenics}, Firedrake~\cite{rathgeber2016firedrake}) is rigorous but requires expert problem formulation. LLM-based scientific agents~\cite{boiko2023coscientist,bran2024chemcrow} generate experimental protocols but do not address numerical convergence. The reproducibility crisis in computational science~\cite{baker2016} will deepen as LLM-generated code proliferates without validation.
 
-We present a three-agent pipeline---Plan ($\Agent_P$), Judge ($\Agent_J$), Execute ($\Agent_E$)---that translates natural-language problem descriptions into bounded-error numerical solutions (Fig.~\ref{fig:pipeline}). The key contribution is the Judge Agent, which operates in two modes: \emph{pre-execution}, it validates well-posedness, dimensional consistency, and error budgets; \emph{post-execution}, it audits solution quality against domain-specific physical constraints (conservation, monotonicity, entropy, symmetry). We emphasize that the underlying mathematics is entirely classical (Remark~\ref{rem:classical}); the contribution is an engineering architecture that automates the application of these results to arbitrary problems from natural language.
+The mathematical tools for catching these failures already exist---Lax--Richtmyer convergence theory~\cite{lax1956}, Hadamard well-posedness~\cite{hadamard1902}, CFL stability conditions---but applying them requires numerical analysis expertise that the typical end-user lacks. What has been missing is a system that \emph{automatically} applies these classical checks to AI-generated simulation code.
 
-\textbf{Scope and limitations.} The automated error bound (Proposition~\ref{prop:main}) holds for problems whose discretization decomposes over a 12-operation primitive basis, verified for 25 numerical method families (Supplementary Table~S1) but not proven for all methods. The pipeline does not outperform domain-optimized tools---on any single PDE, a domain expert using COMSOL~\cite{comsol}, FEniCS~\cite{logg2012fenics}, or OpenFOAM~\cite{jasak2007openfoam} will produce a more accurate solution (Table~\ref{tab:tool_comparison}). The claim is that our framework automates the path from problem description to bounded-error solution across arbitrary domains. The $L^2$ error bound does not guarantee qualitative physical correctness; we report a 6\% residual rate of qualitative failures and show how the Judge's quality audit reduces it to 1.5\%.
+We present a three-agent pipeline (Fig.~\ref{fig:pipeline}) in which a Plan Agent ($\Agent_P$) translates natural language into a structured specification, a Judge Agent ($\Agent_J$) validates that specification against five mathematical checks, and an Execute Agent ($\Agent_E$) generates and runs the solver code. After execution, $\Agent_J$ audits the solution for physical consistency (conservation laws, monotonicity, symmetry, bounds). The underlying mathematics is entirely classical (Remark~\ref{rem:classical}); the novelty is an engineering architecture that automates its application, and empirical evidence that this automation closes the reliability gap on problems scientists actually struggle with.
+
+\textbf{What this paper does not claim.} The pipeline does not outperform domain-optimized tools: on any single well-defined PDE, an expert using COMSOL~\cite{comsol} or FEniCS~\cite{logg2012fenics} will produce a more accurate solution (Table~\ref{tab:tool_comparison}). The 12-operation primitive basis used internally is verified for 25 numerical method families (Supplementary Table~S1) but not proven sufficient for all methods. The error bound holds for problems that are well-posed, convergently discretizable, and decomposable over this basis (Methods); problems outside this scope---lattice gauge theory, smoothed-particle hydrodynamics with free surfaces, tensor network contractions---may require extensions. The pipeline retains a 1.5\% qualitative failure rate, concentrated near bifurcation points (Section~\ref{sec:failure}).
 
 % =====================================================================
 % FIGURE 1: Pipeline Architecture
@@ -104,27 +99,18 @@ We present a three-agent pipeline---Plan ($\Agent_P$), Judge ($\Agent_J$), Execu
   node distance=1.4cm and 1.8cm,
   box/.style={draw, rounded corners=3pt, minimum width=2.2cm, minimum height=0.8cm, font=\small, align=center, thick},
   agent/.style={box, fill=blue!12},
-  gate/.style={box, fill=orange!15, minimum width=1.6cm, font=\scriptsize},
   io/.style={box, fill=gray!15, dashed},
   arr/.style={-{Stealth[length=5pt]}, thick},
   rej/.style={-{Stealth[length=5pt]}, thick, red!70!black, dashed},
 ]
-% Input
 \node[io] (input) {Natural-language\\problem};
-% Plan Agent
 \node[agent, right=of input] (plan) {$\Agent_P$\\Plan Agent};
-% spec.md
 \node[io, right=of plan] (spec) {\texttt{spec.md}};
-% Judge pre
 \node[agent, right=of spec] (judgepre) {$\Agent_J$\\Pre-execution};
-% Execute
 \node[agent, right=of judgepre] (exec) {$\Agent_E$\\Execute Agent};
-% Judge post
 \node[agent, below=1.2cm of exec] (judgepost) {$\Agent_J$\\Quality Audit};
-% Output
 \node[io, left=of judgepost] (output) {Bounded-error\\solution $\hat{x}$};
 
-% Arrows
 \draw[arr] (input) -- (plan);
 \draw[arr] (plan) -- (spec);
 \draw[arr] (spec) -- (judgepre);
@@ -132,15 +118,13 @@ We present a three-agent pipeline---Plan ($\Agent_P$), Judge ($\Agent_J$), Execu
 \draw[arr] (exec) -- (judgepost);
 \draw[arr] (judgepost) -- node[above, font=\scriptsize]{Pass} (output);
 
-% Rejection/redesign loops
 \draw[rej] (judgepre) -- ++(0,-1.5) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{Reject / Redesign} (plan);
 \draw[rej] (judgepost.west) -- ++(-0.5,0) |- node[pos=0.3, left, font=\scriptsize, red!70!black]{Flag} ([yshift=-0.5cm]exec.south) -- (exec.south);
 
-% Gate labels
 \node[below=0.15cm of judgepre, font=\scriptsize, text=black!60, align=center, text width=2.5cm] {5 gates: dimension, BC/IC, well-posed, class, cost};
 \node[below=0.15cm of judgepost, font=\scriptsize, text=black!60, align=center, text width=2.5cm] {conservation, monotonicity, entropy, symmetry, bounds};
 \end{tikzpicture}
-\caption{Three-agent pipeline architecture. The Plan Agent ($\Agent_P$) generates a structured specification (\texttt{spec.md}) from natural language. The Judge Agent ($\Agent_J$) operates in two modes: pre-execution (5 formal gates) and post-execution (quality audit). Rejection triggers redesign (up to 3 rounds). The Execute Agent ($\Agent_E$) produces a bounded-error solution.}
+\caption{Three-agent pipeline. The Plan Agent ($\Agent_P$) generates a structured specification from natural language. The Judge Agent ($\Agent_J$) validates it against five pre-execution gates, then audits the solution post-execution. Rejection triggers redesign (up to 3 rounds). The Execute Agent ($\Agent_E$) produces the numerical solution.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -149,15 +133,59 @@ We present a three-agent pipeline---Plan ($\Agent_P$), Judge ($\Agent_J$), Execu
 % =====================================================================
 
 % -------------------------------------------------------------------
-\subsection{Deep validation on four domains with real data}
-\label{sec:validation}
+\subsection{The Judge Agent is necessary: controlled comparison}
+\label{sec:gap}
 % -------------------------------------------------------------------
 
-We validated the pipeline on four domains chosen for scientific importance, availability of real measured data, and diversity of underlying physics (Table~\ref{tab:domains}). For each, $\Agent_P$ generated a \texttt{spec.md} from a problem description, $\Agent_J$ validated it, and $\Agent_E$ executed the computation. Six additional domains are validated in Supplementary Section~S3.
+To isolate the Judge's contribution, we ran five conditions on 12 frontier problems spanning imaging, geophysics, combustion, fluid dynamics, quantum chemistry, and optimization (Table~\ref{tab:comparison}).
 
 \begin{table}[htbp]
 \centering
-\caption{Deep validation on four domains with real measured data. 95\% CI computed via bootstrap (10,000 resamples) for CT; via condition variation for others. $\rho$ = expert setup time / framework setup time.}
+\caption{Controlled comparison on 12 frontier problems. Five conditions isolate the Judge Agent's contribution. ``Correct'': solution within domain-specific tolerance. ``Bound'': automated error bound provided. Each condition run 3$\times$ with different seeds; majority vote reported.}
+\label{tab:comparison}
+\small
+\begin{tabularx}{\textwidth}{Xcc|cc|cc|cc|c}
+\toprule
+& \multicolumn{2}{c|}{\textbf{Full pipeline}} & \multicolumn{2}{c|}{\textbf{No $\Agent_J$}} & \multicolumn{2}{c|}{\textbf{GPT-4+spec}} & \multicolumn{2}{c|}{\textbf{GPT-4 raw}} & \textbf{PINN} \\
+& Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. \\
+\midrule
+CT reconstruction & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
+Marmousi FWI & \cmark & \cmark & --- & --- & --- & --- & --- & --- & --- \\
+GRI-Mech ignition & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & --- & --- & --- \\
+Granular flow & \cmark & \cmark & --- & --- & --- & --- & --- & --- & --- \\
+He ground state & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- & --- \\
+BFS turbulent\textsuperscript{a} & \cmark & \cmark & --- & --- & --- & --- & --- & --- & $\sim$ \\
+Topology opt. & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & --- \\
+Waveguide & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
+Heat equation & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
+Fresnel diffraction & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
+Rossby waves & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- & --- \\
+COVID-19 SEIR\textsuperscript{b} & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- & $\sim$ \\
+\midrule
+\textbf{Total} & \textbf{12} & \textbf{12} & \textbf{7} & \textbf{0} & \textbf{6} & \textbf{0} & \textbf{5} & \textbf{0} & \textbf{4} \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize \cmark\ = correct within tolerance. $\sim$ = partially correct or qualitatively wrong. --- = incorrect or not provided. ``No $\Agent_J$'' = Plan + Execute without the Judge. PINN = DeepXDE~\cite{lu2021deepxde}, applicable to PDE problems only. \textsuperscript{a}Validated against JHU Turbulence Database~\cite{li2008jhtdb}. \textsuperscript{b}COVID-19 validated in Supplementary Section~S3.
+\end{table}
+
+Without the Judge, the pipeline silently produces wrong answers on 5 of 12 problems (42\% silent-failure rate). The failures are concentrated on non-textbook problems: stiff ODEs, inverse problems, turbulent flows, and near-critical parameter regimes. With the Judge, all 12 produce correct solutions with automated error bounds. No other condition produces any error bound.
+
+Claude-3.5-Sonnet in raw code-generation mode (no pipeline) achieves 6/12, comparable to GPT-4+spec, confirming that the Judge's contribution is independent of the underlying LLM (Supplementary Table~S8).
+
+\textbf{Extended comparison on 72 tasks.} On the 72 prospective tasks (Section~\ref{sec:prospective}), the pattern holds: full pipeline 64/72 (89\%), no Judge 38/72 (53\%), GPT-4+spec 31/72 (43\%), PINN 19/72 (26\%). On the 24 hardest (``frontier'') tasks: full pipeline 19/24 (79\%) vs.\ no Judge 7/24 (29\%). The Judge's contribution grows with problem difficulty (Supplementary Table~S12).
+
+\textbf{LLM backbone sensitivity.} Re-running the 12 problems with Claude-3-Opus and GPT-4-Turbo as $\Agent_P$/$\Agent_E$ backbones: Claude-3-Opus achieves 12/12 correct; GPT-4-Turbo achieves 11/12 (one combustion failure). The Judge's validation logic is deterministic and backbone-independent (Supplementary Section~S7).
+
+% -------------------------------------------------------------------
+\subsection{Validation on three domains with real measured data}
+\label{sec:validation}
+% -------------------------------------------------------------------
+
+We validated the pipeline on three domains chosen for scientific importance, availability of real measured data, and diversity of underlying physics (Table~\ref{tab:domains}). A fourth domain (COVID-19 SEIR-D) is reported in Supplementary Section~S3; we exclude it from the main text because the model-class ceiling (inability to capture intervention timing without external data) limits the validation to a case study rather than a powered comparison.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation on three domains with real measured data. 95\% CI via bootstrap (10,000 resamples) for CT; via condition/model variation for others. $\rho$ = expert setup time / framework setup time. Six additional domains validated with synthetic ground truth in Supplementary Section~S3.}
 \label{tab:domains}
 \small
 \begin{tabularx}{\textwidth}{lllccccc}
@@ -167,76 +195,32 @@ We validated the pipeline on four domains chosen for scientific importance, avai
 Medical imaging & CT (LoDoPaB) & Radon inversion & 200 & 31.7\,dB & 32.1\,dB & $-$0.4\,dB & 600 \\
 Geophysics & Marmousi FWI & Wave-eq.\ inv. & 5 & 25.8\,dB & 27.3\,dB & $-$1.5\,dB & 450 \\
 Combustion & GRI-Mech ign. & Stiff ODE & 15 & 6.3\% & 3.8\% & +2.5\% & 200 \\
-Epidemiology & COVID-19 SEIR & Compartmental & 8 & 12.4\% & 8.9\% & +3.5\% & $>$1000 \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize $n$ = number of independent test cases/models. $\Delta$ = framework $-$ expert (negative = framework closer to ground truth). GRI-Mech and COVID-19 errors are relative to experimental/reported data.
+\raggedright\scriptsize $n$ = independent test cases/models. $\Delta$ = framework $-$ expert (negative = framework closer to ground truth). GRI-Mech errors are relative to shock-tube experimental data. Statistical rigor is uneven: CT ($n=200$, bootstrap CIs) is far more powered than seismic ($n=5$) or combustion ($n=15$). We report effect sizes and CIs where sample sizes permit.
 \end{table}
 
 \textbf{Clinical CT reconstruction (LoDoPaB).}
-200 real clinical sinograms from a Siemens scanner~\cite{leuschner2021}, subsampled to 128 parallel-beam projections with Poisson noise. The framework selects Tikhonov + TV regularization with non-negativity constraints; $\lambda_{\text{TV}}$ set via the Morozov discrepancy principle. PSNR: $31.7 \pm 1.2$\,dB (95\% CI: [31.5, 31.9]\,dB, bootstrap $n = 10{,}000$); SSIM: $0.891 \pm 0.031$. Expert-tuned ASTRA Toolbox~\cite{aarle2016}: $32.1 \pm 1.1$\,dB / SSIM $0.903$. Paired Wilcoxon signed-rank test: $p < 0.001$, Cohen's $d = 0.35$ (small-to-medium effect). The framework achieves 99\% of expert quality. Setup: 12\,min (framework) vs.\ 5\,days (expert), $\rho \approx 600$. \emph{Sensitivity}: varying $\lambda_{\text{TV}}$ by $\pm 50\%$ changes PSNR by $\pm 0.8$\,dB. \emph{Quality audit}: $\Agent_J$ checks non-negativity, support constraint, and streak-artifact absence; 0/200 flagged. Per-case results in Supplementary Fig.~S1.
+200 real clinical sinograms from a Siemens scanner~\cite{leuschner2021}, subsampled to 128 parallel-beam projections with Poisson noise. The framework selects Tikhonov + TV regularization; $\lambda_{\text{TV}}$ set via the Morozov discrepancy principle. PSNR: $31.7 \pm 1.2$\,dB (95\% CI: [31.5, 31.9]\,dB); SSIM: $0.891 \pm 0.031$. Expert-tuned ASTRA Toolbox~\cite{aarle2016}: $32.1 \pm 1.1$\,dB. Wilcoxon signed-rank: $p < 0.001$, Cohen's $d = 0.35$. The framework achieves 99\% of expert quality. Setup: 12\,min vs.\ 5\,days ($\rho \approx 600$). Quality audit: non-negativity, support constraint, streak-artifact absence; 0/200 flagged.
 
 \textbf{Seismic full-waveform inversion (Marmousi-2).}
-Five velocity models of increasing complexity: Marmousi-2~\cite{martin2006marmousi} (primary), plus four synthetic models with salt bodies, thrust faults, thin layers, and a smooth gradient (Supplementary Table~S5). Configuration: 240 sources at 10\,m spacing, 480 receivers, Ricker wavelet (10\,Hz peak). Starting model: 1D gradient smoothed with 500\,m Gaussian. Frequency continuation: 2--5\,Hz (50 iterations), 5--10\,Hz (30 iterations), 10--15\,Hz (20 iterations)~\cite{bunks1995fwi}. TV regularization $\lambda = 10^{-3}$. Framework PSNR across 5 models: $25.8 \pm 1.9$\,dB (range: 23.1--28.2). Expert-configured Madagascar~\cite{fomel2013madagascar}: $27.3 \pm 1.6$\,dB. Quality ratio: 95\%. Setup: 45\,min vs.\ 2\,weeks ($\rho \approx 450$). \emph{Sensitivity}: constant-velocity starting model degrades to 21.1\,dB on Marmousi-2 (cycle-skipping); the framework's automatic smoothed initialization avoids this. \emph{Quality audit}: $\Agent_J$ checks velocity range (1500--5500\,m/s) and layer-continuity; 0/5 flagged.
+Five velocity models~\cite{martin2006marmousi}: 240 sources, 480 receivers, Ricker wavelet (10\,Hz), frequency continuation 2--15\,Hz~\cite{bunks1995fwi}. Framework PSNR: $25.8 \pm 1.9$\,dB. Expert (Madagascar~\cite{fomel2013madagascar}): $27.3 \pm 1.6$\,dB. Quality ratio: 95\%. Setup: 45\,min vs.\ 2\,weeks ($\rho \approx 450$). Per-model results in Supplementary Table~S5. \emph{Caveat}: $n = 5$ models is too small for statistical inference; this is a case study.
 
 \textbf{GRI-Mech 3.0 ignition delay.}
-53-species, 325-reaction methane--air combustion~\cite{smith1999gri} at reference conditions (1500\,K, 10\,atm, $\phi = 1.0$). Stiffness ratio $\sim 10^{10}$; framework selects BDF implicit integrator. Tested across 15 conditions ($T \in [1000, 2000]$\,K, $p \in [1, 50]$\,atm). Ignition delay error vs.\ shock-tube experiments: $6.3 \pm 2.1\%$ (95\% CI: [5.1, 7.5]\%). Expert Cantera configuration: $3.8 \pm 1.4\%$. Per-condition errors in Supplementary Table~S6. Setup: 8\,min vs.\ 1\,day ($\rho \approx 200$). \emph{Sensitivity}: explicit RK4 crashes at stiffness $> 10^6$ (correctly rejected by $\Agent_J$). \emph{Quality audit}: mass conservation ($< 10^{-12}$ relative), temperature monotonicity post-ignition, species non-negativity; 0/15 flagged.
-
-\textbf{COVID-19 epidemic dynamics (8 U.S.\ counties).}
-SEIR-D compartmental model with county-specific contact rates, fitted to Johns Hopkins CSSE data~\cite{dong2020lancet} from March--August 2020. Eight counties: Fulton (GA), Cook (IL), Los Angeles (CA), Harris (TX), Maricopa (AZ), King (WA), Miami-Dade (FL), Wayne (MI). Training: first 60\% of data; validation: remaining 40\%. Framework peak timing error: $12.4 \pm 3.1\%$; cumulative case count RMSE: $18.7 \pm 5.2\%$; $R^2 = 0.82 \pm 0.09$ (leave-one-county-out cross-validation). Expert epidemiological model (county-specific, manually calibrated SEIR with non-pharmaceutical intervention timing): $8.9 \pm 2.4\%$. Per-county results in Supplementary Table~S7. \emph{Honest limitation}: the SEIR-D model cannot capture intervention timing without external data; this is a known limitation of compartmental models~\cite{bertozzi2020covid}, not of the framework. The framework correctly identifies and applies the appropriate model class but cannot overcome the model's inherent ceiling. More sophisticated approaches (age-structured models, agent-based simulations with mobility data) would require primitives beyond our current basis. Setup: 6\,min vs.\ months ($\rho > 1000$). \emph{Quality audit}: population conservation, compartment non-negativity, cumulative death monotonicity; 0/8 flagged.
+53-species, 325-reaction methane--air combustion~\cite{smith1999gri}. Stiffness ratio $\sim 10^{10}$; framework selects BDF integrator. 15 conditions ($T \in [1000, 2000]$\,K, $p \in [1, 50]$\,atm). Error vs.\ shock-tube data: $6.3 \pm 2.1\%$ (95\% CI: [5.1, 7.5]\%). Expert Cantera: $3.8 \pm 1.4\%$. The Judge correctly rejects explicit RK4 at stiffness $> 10^6$. Mass conservation: $< 10^{-12}$ relative. Per-condition results in Supplementary Table~S6.
 
 % -------------------------------------------------------------------
-\subsection{The Judge Agent is necessary: controlled comparison}
-\label{sec:gap}
-% -------------------------------------------------------------------
-
-\begin{table}[htbp]
-\centering
-\caption{Controlled comparison on 12 problems. Two GPT-4 conditions, one Claude-3.5 condition, and one PINN baseline isolate contributions. ``Correct'': solution within domain-specific tolerance. ``Bound'': automated error bound provided. Each condition run 3$\times$ with different seeds; majority vote reported.}
-\label{tab:llm_comparison}
-\small
-\begin{tabularx}{\textwidth}{Xcc|cc|cc|cc|c}
-\toprule
-& \multicolumn{2}{c|}{\textbf{Full}} & \multicolumn{2}{c|}{\textbf{GPT-4}} & \multicolumn{2}{c|}{\textbf{GPT-4+spec}} & \multicolumn{2}{c|}{\textbf{No $\Agent_J$}} & \textbf{PINN} \\
-& Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. \\
-\midrule
-CT recon. & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
-Marmousi FWI & \cmark & \cmark & --- & --- & --- & --- & --- & --- & --- \\
-GRI-Mech ign. & \cmark & \cmark & --- & --- & $\sim$ & --- & $\sim$ & --- & --- \\
-COVID-19 & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- & $\sim$ \\
-Granular flow & \cmark & \cmark & --- & --- & --- & --- & --- & --- & --- \\
-He ground state & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- & --- \\
-BFS turbulent\textsuperscript{a} & \cmark & \cmark & --- & --- & --- & --- & --- & --- & $\sim$ \\
-Topology opt. & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & --- \\
-Waveguide & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
-Heat eq. & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
-Fresnel diff. & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
-Rossby waves & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- & --- \\
-\midrule
-\textbf{Total} & \textbf{12} & \textbf{12} & \textbf{5} & \textbf{0} & \textbf{6} & \textbf{0} & \textbf{7} & \textbf{0} & \textbf{4} \\
-\bottomrule
-\end{tabularx}\\[3pt]
-\raggedright\scriptsize \cmark\ = correct and within tolerance. $\sim$ = partially correct or qualitatively wrong. --- = incorrect or not provided. ``No $\Agent_J$'' = $\Agent_P + \Agent_E$ without the Judge. PINN = Physics-Informed Neural Network baseline (DeepXDE~\cite{lu2021deepxde}, applicable to PDE problems only). \textsuperscript{a}Validated against JHU Turbulence Database~\cite{li2008jhtdb}.
-\end{table}
-
-GPT-4 with raw natural-language input produces correct results on 5/12 problems---all textbook-level. With the structured \texttt{spec.md} from $\Agent_P$: 6/12. Without $\Agent_J$ (Plan + Execute only): 7/12. The full pipeline: 12/12 with automated error bounds on every problem. No other configuration produces any error bound. A PINN baseline (DeepXDE~\cite{lu2021deepxde}) solves 4/12---the PDE-amenable textbook problems---but provides no automated bound and fails on inverse problems, stiff ODEs, and optimization. The Judge Agent is the critical differentiator.
-
-We also tested Claude-3.5-Sonnet (the backbone LLM) in the raw code-generation condition: 6/12 correct, 0/12 bounded---comparable to GPT-4+spec. This confirms that the Judge's contribution is independent of the underlying LLM (Supplementary Table~S8).
-
-\textbf{Extended comparison on 72 prospective tasks.} To test whether these results generalize beyond the 12 development problems, we ran all conditions on the 72 prospective tasks (Supplementary Table~S12). The full pipeline achieved 64/72 correct with bounds (89\%); the No-$\Agent_J$ condition dropped to 38/72 (53\%); GPT-4+spec achieved 31/72 (43\%); PINN baseline 19/72 (26\%, applicable subset only). The Judge's contribution is even more pronounced on harder problems: on the 24 ``frontier'' tasks, the full pipeline achieved 19/24 (79\%) vs.\ 7/24 (29\%) without the Judge.
-
-\textbf{LLM backbone sensitivity.} The pipeline currently uses Claude-3.5-Sonnet (version 20241022). To assess sensitivity to model version, we re-ran the 12 development problems with Claude-3-Opus and GPT-4-Turbo as $\Agent_P$/$\Agent_E$ backbones (keeping the same $\Agent_J$ logic). Claude-3-Opus: 12/12 correct, 12/12 bounded (comparable quality). GPT-4-Turbo: 11/12 correct, 11/12 bounded (one GRI-Mech failure due to incorrect stiffness handling). This suggests the pipeline is moderately robust to LLM choice, but we caution that future model updates could degrade performance on specific problem types. We archive exact model version identifiers and cached inference logs to enable reproduction independent of API availability (Supplementary Section~S7).
-
-% -------------------------------------------------------------------
-\subsection{Prospective external benchmark}
+\subsection{Prospective benchmark: 72 tasks from 12 external scientists}
 \label{sec:prospective}
 % -------------------------------------------------------------------
 
-\textbf{Protocol.} 12 scientists from 9 institutions across 8 countries (Supplementary Table~S2) each submitted 6 problems from their own research, totaling 72 tasks. No prior involvement in development; no guidance on formatting. An independent coordinator (Dr.~M.~Torres, ETH Z\"urich) collected all submissions before any were executed, preventing cherry-picking. Each scientist provided an expert baseline. \emph{Pre-registration note:} This benchmark was not pre-registered in a formal trial registry. As a mitigation, the coordinator sealed all 72 tasks before execution, and the analysis protocol (success criteria, quality metric, stratification scheme) was fixed before the first task was run. We encourage future work to pre-register such evaluations in a recognized registry (e.g., OSF Registries).
+To test generalization beyond our development problems, we conducted a prospective benchmark designed to minimize developer bias.
+
+\textbf{Protocol and independence measures.} 12 scientists from 9 institutions across 8 countries (Supplementary Table~S2) each submitted 6 problems from their own research, totaling 72 tasks. None had prior involvement with the framework or the author's company. An independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no affiliation with the company) collected all 72 submissions before any were executed, preventing cherry-picking. The analysis protocol---success criteria, quality metric, and difficulty stratification---was fixed before execution began. Each scientist provided an expert baseline solution. \emph{Pre-registration note}: this benchmark was not registered in a formal trial registry. We encourage future evaluations to use OSF Registries or equivalent.
 
 \begin{table}[htbp]
 \centering
-\caption{Prospective external benchmark: 72 tasks from 12 scientists, 9 institutions. Results stratified by difficulty in Supplementary Table~S9.}
+\caption{Prospective benchmark: 72 tasks from 12 scientists, 9 institutions, 8 countries. Managed by an independent coordinator. Results stratified by difficulty in Supplementary Table~S9.}
 \label{tab:prospective}
 \small
 \begin{tabularx}{\textwidth}{Xccccl}
@@ -244,7 +228,7 @@ We also tested Claude-3.5-Sonnet (the backbone LLM) in the raw code-generation c
 \textbf{Outcome} & \textbf{Count} & \textbf{\%} & \textbf{Redesign} & \textbf{Quality} & \textbf{Notes} \\
 \midrule
 Correct + bounded + quality & 58 & 80.6\% & 1.4$\pm$0.8 & Pass & --- \\
-Correct + bounded, quality flag & 6 & 8.3\% & 2.1$\pm$1.0 & Flag & Resolved 5/6 after consult \\
+Correct + bounded, quality flag & 6 & 8.3\% & 2.1$\pm$1.0 & Flag & 5/6 resolved after consult \\
 $\Agent_J$ rejected (correct) & 3 & 4.2\% & --- & --- & Genuinely ill-posed \\
 $\Agent_J$ rejected (fixable) & 2 & 2.8\% & --- & --- & Ambiguous NL input \\
 Failed (resource limit) & 2 & 2.8\% & --- & --- & Exceeded 64\,GB memory \\
@@ -255,66 +239,40 @@ Failed (wrong answer) & 1 & 1.4\% & 3 & Fail & Bifurcation near critical pt \\
 \end{tabularx}
 \end{table}
 
-For the 58 fully successful tasks, the framework achieved a median quality ratio of 94\% relative to expert baselines (IQR: 89--98\%; distribution in Supplementary Fig.~S2). Median setup time: 11\,min (framework) vs.\ 3\,days (expert-reported).
+For the 58 fully successful tasks, the framework achieved a median quality ratio of 94\% relative to expert baselines (IQR: 89--98\%). Median setup time: 11\,min (framework) vs.\ 3\,days (expert-reported).
+
+\textbf{Blind challenge.} Five additional scientists from different institutions posed problems from their own research with no formatting guidance. All five produced bounded-error solutions; four were judged ``correct'' by the posing scientist. The fifth (packed-bed reactor) matched mass-transfer coefficients to 20\% using a Sherwood correlation where the expert used boundary-layer resolution. Details in Supplementary Table~S4.
 
 % -------------------------------------------------------------------
-\subsection{Blind challenge with external scientists}
-\label{sec:blind}
-% -------------------------------------------------------------------
-
-Five scientists from different institutions and domains posed problems from their own research in natural language, with no guidance on formatting.
-
-\begin{table}[htbp]
-\centering
-\caption{Blind challenge: 5 external scientists independently pose research problems.}
-\label{tab:blind}
-\small
-\begin{tabularx}{\textwidth}{llcccl}
-\toprule
-\textbf{Scientist} & \textbf{Problem Posed} & $\Agent_J$ & \textbf{Bnd.} & \textbf{Rdsn.} & \textbf{Expert Check} \\
-\midrule
-Geophysicist & Rayleigh wave in layered soil & Accept & Yes & 1 & Correct \\
-Bioengineer & Drug diffusion through tumor & Accept & Yes & 0 & Correct \\
-Astrophysicist & Bondi accretion onto compact obj. & Accept & Yes & 2 & Correct\textsuperscript{$\dagger$} \\
-Materials sci. & Spinodal decomp.\ (Cahn--Hilliard) & Accept & Yes & 0 & Correct \\
-Chemical eng. & Packed-bed reactor, mass transfer & Accept & Yes & 1 & Partial\textsuperscript{$\ddagger$} \\
-\bottomrule
-\end{tabularx}\\[3pt]
-\raggedright\scriptsize \textsuperscript{$\dagger$}Matched analytical Bondi profile to 0.3\%; missed relativistic corrections (not specified in input). \textsuperscript{$\ddagger$}Mass transfer coefficients matched to 20\%; used Sherwood correlation vs.\ boundary-layer resolution.
-\end{table}
-
-All five produced bounded-error solutions; four judged ``correct'' by the posing scientist. Problem description took 5--15 minutes; none wrote code.
-
-% -------------------------------------------------------------------
-\subsection{Systematic failure analysis}
+\subsection{Failure analysis and residual failure rate}
 \label{sec:failure}
 % -------------------------------------------------------------------
 
-We submitted 50 adversarial inputs spanning three categories (Methods), yielding 134 total test cases with the 12 development and 72 prospective problems.
+We submitted 50 adversarial inputs specifically designed to expose weaknesses, yielding 134 total test cases with the 12 development and 72 prospective problems (Supplementary Table~S3).
 
-\textbf{(a) $\Agent_P$ misspecification} (20 adversarial): incorrect equations in 4/20 (20\%). $\Agent_J$ caught all 4 via dimensional inconsistency or non-physical parameters; 3/4 corrected after redesign, 1 required human clarification.
+\textbf{$\Agent_P$ misspecification} (20 adversarial): incorrect equations in 4/20 (20\%). $\Agent_J$ caught all 4 via dimensional inconsistency or non-physical parameters; 3/4 corrected after redesign, 1 required human clarification.
 
-\textbf{(b) $\Agent_J$ false negatives} (20 adversarial): incorrectly accepted 2/20 (10\%) with condition numbers $> 10^{12}$. One caught by $\Agent_E$ a posteriori; one produced locking artifacts ($\nu = 0.4999$ elasticity) that pre-execution gates missed but the quality audit flagged.
+\textbf{$\Agent_J$ false negatives} (20 adversarial): incorrectly accepted 2/20 (10\%) with condition numbers $> 10^{12}$. One caught by $\Agent_E$ a posteriori; one produced volumetric locking ($\nu = 0.4999$ elasticity) that the quality audit flagged.
 
-\textbf{(c) Qualitative failures} (10 adversarial): 3/10 met $L^2$ bound but exhibited non-physical artifacts (oscillations, missed symmetry-breaking, missing shocks). Without quality audit: 6\% silent failure rate. With quality audit: 1.5\% (2/134), both near bifurcation points---an open problem requiring global landscape analysis.
+\textbf{Qualitative failures} (10 adversarial): 3/10 met the $L^2$ error bound but exhibited non-physical artifacts (oscillations, missed symmetry-breaking, wrong shock structure). Without the quality audit, the silent-failure rate across all 134 problems is 6\%. With the quality audit: 1.5\% (2/134).
 
-\textbf{Per-gate ablation.} We ablated each of $\Agent_J$'s five pre-execution gates individually on the 12 development problems (Supplementary Table~S10) and confirmed the pattern on the 72 prospective tasks (Supplementary Table~S13). On both sets, removing the well-posedness gate caused the most failures (4/12 dev, 14/72 prospective); removing dimensional consistency was partially redundant (caught by other gates in 2/3 cases). The quality audit is non-redundant: it catches failures invisible to all pre-execution gates.
+\textbf{Characterizing the residual 1.5\%.} Both residual failures occur near bifurcation points where the energy landscape has multiple local minima separated by small barriers. The Judge's current checks---conservation, monotonicity, entropy, symmetry---cannot distinguish between the correct and incorrect branches without global landscape information. Converting these from silent failures to flagged/rejected cases would require bifurcation-detection heuristics (e.g., parameter continuation or Lyapunov exponent estimation), which we have not implemented. We consider this an open problem rather than a limitation of the validation-first approach.
 
-\textbf{Scalability.} $\Agent_J$ overhead averages 12\% of total wall-clock time across the 12 development problems (range: 3--28\%), dominated by the well-posedness check on stiff systems. $\Agent_E$ execution dominates for all problems with $> 10^4$ degrees of freedom (Supplementary Fig.~S3).
+\textbf{Per-gate ablation.} Removing the well-posedness gate causes the most failures: 4/12 (dev), 14/72 (prospective). The quality audit is non-redundant: it catches failures invisible to all pre-execution gates (Supplementary Tables~S10, S13).
 
 % =====================================================================
 \section{Discussion}
 % =====================================================================
 
-This paper makes one claim: a Judge Agent that applies automated mathematical validation is the missing component that makes AI-generated scientific simulation reliable. The system is not infallible---it retains a 1.5\% qualitative failure rate, concentrated near bifurcation points (Section~\ref{sec:failure})---but it reduces silent failures from 42\% (without the Judge) to below 6\% on adversarial inputs and to 1.4\% on 72 held-out tasks (Table~\ref{tab:prospective}). The evidence consists of a controlled comparison (Table~\ref{tab:llm_comparison}), deep validation on 4 domains with real data (Table~\ref{tab:domains}), a prospective benchmark (Table~\ref{tab:prospective}), a blind challenge with 5 domain experts (Table~\ref{tab:blind}), and systematic failure analysis on 50 adversarial inputs.
+This paper makes one claim: automated mathematical validation---the Judge Agent---closes the reliability gap in AI-generated scientific simulation. The evidence: removing the Judge increases the silent-failure rate from 0\% to 42\% on development problems and from 11\% to 47\% on 72 held-out tasks. The remaining 1.5\% qualitative failure rate is confined to near-bifurcation regimes and is reported transparently, not hidden.
 
-We emphasize that the Judge's mathematical content is entirely classical---Lax--Richtmyer convergence, Hadamard well-posedness, CFL stability---applied automatically. The contribution is the engineering architecture: mapping natural language to formal specifications, automatically verifying well-posedness, selecting appropriate primitives, and auditing solution quality. This is genuinely hard (the 20\% $\Agent_P$ misspecification rate and 10\% $\Agent_J$ false-negative rate on adversarial inputs demonstrate the difficulty) and genuinely new (no existing tool provides this end-to-end automation with automated error bounds).
+The Judge's mathematical content is entirely classical---Lax--Richtmyer convergence, Hadamard well-posedness, CFL stability---applied automatically. The contribution is an engineering architecture that automates the application of these checks to AI-generated code. This is harder than it sounds: the 20\% misspecification rate from $\Agent_P$ and 10\% false-negative rate from $\Agent_J$ on adversarial inputs demonstrate that automation is not trivial.
 
-\textbf{Relation to existing tools.} Our pipeline complements, rather than replaces, domain-specific tools (Table~\ref{tab:tool_comparison}). COMSOL~\cite{comsol} and FEniCS~\cite{logg2012fenics} produce better solutions within their domains; our contribution is cross-domain automation from natural language. PINNs~\cite{karniadakis2021,raissi2019pinnsjcp} and neural operators~\cite{li2021fno} learn solution mappings but provide no automated error bounds---the Judge could in principle be applied to verify their outputs. Recent LLM agents for science~\cite{boiko2023coscientist,bran2024chemcrow} generate experimental protocols and tool calls but do not address numerical convergence or error certification. The same Plan/Judge/Execute architecture is applied to computational imaging design in a companion paper~\cite{yang2026imaging}, where the Judge validates recoverability, carrier budget, and operator mismatch.
+\textbf{This is not a universal simulator.} The pipeline does not replace domain experts or domain-specific tools (Table~\ref{tab:tool_comparison}). On any single well-defined PDE, COMSOL or FEniCS will produce a better solution. The pipeline is useful when a researcher needs a quick, validated first answer across domains where they lack numerical expertise---and when the alternative is unvalidated LLM-generated code.
 
 \begin{table}[htbp]
 \centering
-\caption{Comparison with existing tools. Each excels in its domain; the contribution here is cross-domain automation with automated error bounds. A concrete cross-domain example: given ``image a patient's lung CT, then simulate airflow through the reconstructed geometry,'' the pipeline chains CT reconstruction (Radon inversion) with Navier--Stokes CFD---a workflow that would require ASTRA + OpenFOAM + manual mesh transfer using existing tools.}
+\caption{Comparison with existing tools. Each tool excels in its domain; the contribution here is automated validation of AI-generated code across the domains tested.}
 \label{tab:tool_comparison}
 \small
 \begin{tabularx}{\textwidth}{lcccccc}
@@ -322,111 +280,69 @@ We emphasize that the Judge's mathematical content is entirely classical---Lax--
 & \textbf{This work} & \textbf{COMSOL} & \textbf{FEniCS} & \textbf{OpenFOAM} & \textbf{PINNs} & \textbf{LLM agents} \\
 \midrule
 NL input & \cmark & --- & --- & --- & --- & \cmark \\
-Cross-domain & \cmark & Partial & PDE only & CFD only & PDE only & Partial \\
+Cross-domain & Tested & Multi-phys. & PDE & CFD & PDE & Partial \\
 Error bound & \cmark & --- & A post. & --- & --- & --- \\
 Quality audit & \cmark & --- & --- & --- & --- & --- \\
 No code required & \cmark & --- & --- & --- & --- & \cmark \\
 Setup (median) & 11\,min & Hours & Hours & Hours & Hours & Minutes \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize NL = natural language. A post.\ = a posteriori error estimates (for supported element types). LLM agents = Coscientist~\cite{boiko2023coscientist}, ChemCrow~\cite{bran2024chemcrow}. ``---'' = not provided.
+\raggedright\scriptsize A post.\ = a posteriori error estimates for supported element types. LLM agents = Coscientist~\cite{boiko2023coscientist}, ChemCrow~\cite{bran2024chemcrow}.
 \end{table}
 
 \textbf{Limitations.}
-(1)~Primitive basis sufficiency is empirically verified for 25 method families, not all methods. Problems requiring mesh-free methods (smoothed particle hydrodynamics with free surfaces), lattice gauge theory, or tensor network contraction may require additional primitives.
-(2)~$\Agent_P$ misspecifies 20\% of deliberately ambiguous inputs; $\Agent_J$ catches most but not all.
-(3)~$\Agent_J$'s 10\% false-negative rate on near-singular systems is a known weakness.
-(4)~The COVID-19 validation illustrates an inherent limitation: the framework correctly identifies and applies the SEIR-D model but cannot overcome the model class's inability to capture intervention timing.
-(5)~The prospective benchmark (72 tasks) and blind challenge (5 scientists) demonstrate feasibility, not community-scale adoption.
-(6)~The pipeline depends on LLM capabilities that may change across model versions. Testing with three LLM backbones (Claude-3.5-Sonnet, Claude-3-Opus, GPT-4-Turbo) shows moderate robustness, but we cannot guarantee that a future model update will not degrade performance on specific problem types. We archive exact model versions and cached inference logs to ensure reproducibility independent of API availability (Supplementary Section~S7).
-(7)~Statistical rigor is uneven across the four validation domains: CT imaging ($n = 200$, bootstrap CIs) is far more powered than seismic ($n = 5$) or COVID-19 ($n = 8$). We report effect sizes and confidence intervals where sample sizes permit, and acknowledge that the seismic and combustion validations are closer to case studies than powered experiments.
-(8)~Single-author paper from a company developing the platform. Mitigation: independent coordinator, external scientists, public code, and third-party replication (see Methods).
+(1)~The error bound holds for well-posed, convergently discretizable problems decomposable over a 12-operation primitive basis (Methods). This basis is verified for 25 numerical method families but not proven sufficient for all methods.
+(2)~Statistical rigor is uneven: CT imaging ($n = 200$, bootstrap CIs) is a powered experiment; seismic ($n = 5$) and combustion ($n = 15$) are closer to case studies.
+(3)~The pipeline depends on LLM capabilities that may change across versions. Testing with three backbones shows moderate robustness, but we cannot guarantee stability across future model updates. Cached inference logs enable reproduction independent of API availability.
+(4)~The prospective benchmark (72 tasks) demonstrates feasibility, not community-scale adoption.
+(5)~Single-author paper from a company developing the platform. Mitigation: independent coordinator, external scientists with no company relationship, public code, third-party replication on separate hardware (Methods).
 
 % =====================================================================
 \section{Methods}
 % =====================================================================
 
-\subsection{Simulability class and automated error bounds}
+\subsection{Validation architecture}
 
-\begin{definition}[Simulability Class $\mathfrak{S}$]
-\label{def:simulability}
-A scientific problem $P$ belongs to $\mathfrak{S}$ if it is: (1)~finitely specifiable as $(\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$; (2)~convergently discretizable with order-$q$ convergence; (3)~primitive-decomposable into a finite DAG over the 12 primitives (Table~\ref{tab:primitives}); (4)~observable ($\mathcal{O}$ consists of well-defined functionals); (5)~metrizable (a computable norm quantifies $\norm{\hat{x} - x^*}$).
-\end{definition}
+$\Agent_J$ operates in two modes:
 
-$\mathfrak{S}$ contains all Hadamard-well-posed PDEs, Lipschitz ODEs, regularized inverse problems, and their compositions. Four mathematical obstructions characterize its complement: logical undecidability~\cite{turing1936,rice1953}, real uncomputability~\cite{blum1989}, quantum measurement irreducibility, and infinite-precision barriers (Supplementary Section~S2).
+\textbf{Pre-execution gates} (5 checks before $\Agent_E$ runs): (i)~dimensional consistency; (ii)~boundary/initial condition compatibility; (iii)~well-posedness (coercivity, CFL, Lipschitz bounds); (iv)~problem classification (confirms decomposability over the primitive basis); (v)~cost estimation. Failure triggers redesign (up to 3 rounds) or rejection with a diagnostic certificate.
 
-Classical convergence theory guarantees that the pipeline produces bounded-error solutions for problems in $\mathfrak{S}$:
+\textbf{Post-execution quality audit} (after $\Agent_E$ returns $\hat{x}$): conservation residuals, monotonicity, entropy inequality, symmetry preservation, physical bounds, and archetype matching against known solution classes. Flags trigger expert review or $\Agent_E$ refinement. False positive rate: $< 2\%$ on development problems.
 
-\begin{proposition}[Automated Bounded-Error Realizability]
-\label{prop:main}
-Under standard assumptions---$P \in \mathfrak{S}$, Hadamard well-posedness with Lipschitz constants $L_i$, and Lax--Richtmyer convergence $\varepsilon_i \leq C_i h_i^{q_i}$ for each primitive---the three-agent pipeline produces $\hat{x}$ satisfying $\norm{\hat{x} - x^*}_X \leq \varepsilon$ for any $\varepsilon > 0$ in finite time.
-\end{proposition}
+\subsection{Error bound}
 
-\begin{proof}[Proof sketch]
-Decompose into a DAG of depth $D$. Set per-node tolerance $\varepsilon_i = \varepsilon / (D \cdot L_i)$. Error propagation: $\norm{\hat{x} - x^*} \leq \sum_i L_i \varepsilon_i \leq \varepsilon$. Each $\varepsilon_i$ achievable by mesh refinement. Full proof in Supplementary Section~S1.
-\end{proof}
+The pipeline's error bound follows from classical numerical analysis. For problems that are Hadamard-well-posed with finite Lipschitz constants and admit convergent discretizations, composing operators through a directed acyclic graph of computational primitives yields a total error bounded by the sum of per-node errors amplified by downstream Lipschitz products. The Judge verifies these conditions; the Execute Agent sets resolution parameters to meet a user-specified tolerance. Full statement and proof in Supplementary Section~S1.
 
-\begin{remark}[Novelty is automation, not mathematics]
+\begin{remark}[Classical content]
 \label{rem:classical}
-Proposition~\ref{prop:main} contains no new mathematics; its content is inherited from Lax--Richtmyer~\cite{lax1956}. We state it explicitly because the engineering contribution---automating the application of these classical results to arbitrary natural-language problem descriptions---requires the bound to be computable, not merely existential. The novelty of this paper is: (1)~a practical architecture that performs this automation end-to-end; and (2)~empirical demonstration that the automation works reliably across 12 domains and 72 held-out tasks, with a 1.5\% residual qualitative failure rate (Section~\ref{sec:failure}).
+The error bound contains no new mathematics; it follows from Lax--Richtmyer theory~\cite{lax1956}. We make it explicit because the engineering contribution---automating the verification of assumptions and the computation of resolution parameters from natural-language input---requires the bound to be computable, not merely existential. The novelty is the automation and the empirical evidence that it works.
 \end{remark}
 
-\subsection{The 12 computational primitives}
+\subsection{Computational primitives}
 
-\begin{table}[htbp]
-\centering
-\caption{The 12 computational primitives. Minimality proofs and 25-method decomposition in Supplementary Sections~S4 and Table~S1.}
-\label{tab:primitives}
-\small
-\begin{tabularx}{\textwidth}{clllX}
-\toprule
-\# & Sym. & Name & Cat. & Operation and Method Families \\
-\midrule
-1 & $\partial$ & Differentiate & Calc. & FD, FEM gradient, spectral \\
-2 & $\int$ & Integrate & Calc. & Gauss quadrature, Monte Carlo \\
-3 & $L$ & Solve & Alg. & LU, CG, multigrid, GMRES \\
-4 & $N$ & Evaluate & Alg. & Newton, Picard, continuation \\
-5 & $E$ & Evolve & Dyn. & RK4, BDF, splitting \\
-6 & $F$ & Transform & Anal. & FFT, wavelet, spherical harmonics \\
-7 & $\Pi$ & Project & Anal. & SVD, PCA, POD, Galerkin truncation \\
-8 & $S$ & Sample & Stoch. & MC, MCMC, quasi-MC, Langevin \\
-9 & $K$ & Couple & Struct. & Operator splitting, DDM, FSI \\
-10 & $B$ & Constrain & Struct. & Penalty, Lagrange multiplier \\
-11 & $G$ & Discretize & Struct. & Delaunay, octree, isogeometric \\
-12 & $O$ & Optimize & Optim. & L-BFGS, ADMM, proximal \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsection{Judge Agent implementation}
-
-$\Agent_J$ operates in two sequential modes:
-
-\textbf{Pre-execution gates} (5 checks before $\Agent_E$ runs): dimensional consistency, BC/IC compatibility, well-posedness (coercivity, CFL, Lipschitz bounds), simulability classification, and cost estimation. Failure triggers redesign (up to 3 rounds) or rejection.
-
-\textbf{Post-execution quality audit} (after $\Agent_E$ returns $\hat{x}$): conservation residuals, monotonicity, entropy inequality, symmetry preservation, physical bounds, and archetype matching. Flags trigger expert review or $\Agent_E$ refinement. Thresholds set conservatively ($< 2\%$ false positive rate).
+The pipeline internally decomposes problems into directed acyclic graphs over 12 operations: differentiate, integrate, solve (linear), evaluate (nonlinear), evolve, transform, project, sample, couple, constrain, discretize, and optimize. This basis covers 25 standard numerical method families (Supplementary Table~S1). Minimality---each primitive is necessary---is shown by witness problems in Supplementary Section~S4. We do not claim this basis is sufficient for all conceivable methods.
 
 \subsection{Adversarial test construction}
 
-50 inputs in three categories: (a)~20 with ambiguous natural language (testing $\Agent_P$), (b)~20 with subtle well-posedness issues (testing $\Agent_J$ gates), (c)~10 where qualitative correctness diverges from $L^2$ correctness (testing quality audit). Full list in Supplementary Table~S3. Two examples: ``$\partial u / \partial t = \nabla^2 u$ on $[0,1]^2$, Dirichlet BC'' (no IC; $\Agent_J$: REJECT---Hadamard violation); ``Predict which slit a photon passes through'' ($\Agent_J$: REJECT---Born rule irreducibility).
+50 inputs in three categories: (a)~20 with ambiguous or incomplete natural language (testing $\Agent_P$); (b)~20 with subtle well-posedness issues such as missing initial conditions, near-singular operators, or degenerate boundary conditions (testing $\Agent_J$ gates); (c)~10 where $L^2$ correctness diverges from qualitative physical correctness---symmetry-breaking bifurcations, entropy-violating shocks, wrong solution branches (testing the quality audit). Full list in Supplementary Table~S3.
 
 \subsection{Implementation and reproducibility}
 
-The framework is implemented in Python. Agents use Claude-3.5-Sonnet (Anthropic, version 20241022) with temperature 0 for reproducibility. Primitive library: NumPy, SciPy, PyTorch. All code, \texttt{spec.md} files, the 3,600-task benchmark, execution logs, cached inference logs (enabling reproduction without API access), and the 72 prospective tasks with expert baselines are archived on Zenodo (DOI: \texttt{10.5281/zenodo.XXXXXXX}; to be minted before submission) and available at \url{https://github.com/integritynoble/Physics_World_Model}. A Docker container reproducing all main-text results is provided with the archive. Hardware requirements and exact reproduction commands are documented in \texttt{REPRODUCE.md}.
+Python implementation. LLM backbone: Claude-3.5-Sonnet (Anthropic, version \texttt{20241022}), temperature 0. Primitives: NumPy, SciPy, PyTorch. All code, \texttt{spec.md} files, cached inference logs (enabling reproduction without API access), the 72 prospective tasks with expert baselines, and a Docker container are archived on Zenodo (DOI: \texttt{10.5281/zenodo.XXXXXXX}; to be minted before submission) and at \url{https://github.com/integritynoble/Physics_World_Model}. Exact reproduction commands in \texttt{REPRODUCE.md}.
 
-\textbf{Independent replication.} Three researchers with no prior involvement---J.~Rodriguez (University of Michigan), A.~Patel (Georgia Institute of Technology), and M.~Chen (Stanford University)---independently ran the pipeline on the 12 development problems using only the \texttt{spec.md} files and codebase, on separate hardware. All 12 produced bounded-error solutions. Cross-instance variability: $\pm 0.2$\,dB (imaging), $\pm 3\%$ (PDE norms), $\pm 5\%$ (stochastic observables). Their replication report is included in Supplementary Section~S6.
+\textbf{Independent replication.} Three researchers (J.~Rodriguez, U.~Michigan; A.~Patel, Georgia Tech; M.~Chen, Stanford) independently ran the pipeline on the 12 development problems using only the codebase and \texttt{spec.md} files, on separate hardware, with no additional instructions. All 12 produced bounded-error solutions. Cross-instance variability: $\pm 0.2$\,dB (imaging), $\pm 3\%$ (PDE norms), $\pm 5\%$ (stochastic observables). Full report in Supplementary Section~S6.
 
 \subsection{Data availability}
 
-LoDoPaB-CT from~\cite{leuschner2021} (CC BY 4.0). Marmousi-2 from~\cite{martin2006marmousi} (public domain via SEG). GRI-Mech 3.0 from~\cite{smith1999gri} (public domain). COVID-19 data from~\cite{dong2020lancet} (public). All framework-generated data, prospective benchmark tasks, and expert baselines archived on Zenodo.
+LoDoPaB-CT~\cite{leuschner2021} (CC BY 4.0). Marmousi-2~\cite{martin2006marmousi} (public domain, SEG). GRI-Mech 3.0~\cite{smith1999gri} (public domain). All framework-generated data, expert baselines, and benchmark tasks archived on Zenodo.
 
 \subsection{Code availability}
 
-Source code for the three-agent pipeline, all \texttt{spec.md} files, cached LLM inference logs, and the Docker reproduction container are available at the GitHub repository and Zenodo archive above under MIT license.
+Source code, \texttt{spec.md} files, cached LLM inference logs, and Docker container available under MIT license at the repository and archive above.
 
 \subsection{Competing interests}
 
-C.Y.\ is the founder and sole employee of NextGen PlatformAI C Corp, which develops the Physics World Model platform described in this paper. The company has a direct commercial interest in the technology being evaluated. The following steps were taken to mitigate this conflict: (1)~an independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no affiliation with the company) managed the prospective benchmark; (2)~all external scientists had no prior relationship with the company; (3)~all code, data, and execution logs are publicly archived; (4)~three independent researchers replicated results on separate hardware.
+C.Y.\ is the founder of NextGen PlatformAI C Corp, which develops the platform described in this paper. The company has a direct commercial interest in the technology. Mitigation: (1)~independent coordinator (Dr.~M.~Torres, ETH Z\"urich) managed the prospective benchmark with no company affiliation; (2)~all 12 external scientists had no prior relationship with the company; (3)~all code, data, inference logs, and execution traces are publicly archived; (4)~three independent researchers replicated all development results on separate hardware.
 
 \subsection{AI-use disclosure}
 
@@ -434,67 +350,13 @@ The software framework uses Claude-3.5-Sonnet (Anthropic) as the backbone for al
 
 \subsection{Acknowledgements}
 
-We thank the 12 scientists who contributed to the prospective benchmark (Supplementary Table~S2). We thank the five blind-challenge participants; three have consented to be named in the final version. We thank J.~Rodriguez, A.~Patel, and M.~Chen for independent replication. We thank Dr.~M.~Torres for serving as independent coordinator.
+We thank the 12 scientists who contributed to the prospective benchmark (Supplementary Table~S2), the five blind-challenge participants, J.~Rodriguez, A.~Patel, and M.~Chen for independent replication, and Dr.~M.~Torres for serving as independent coordinator.
 
 % =====================================================================
 \begin{thebibliography}{99}
 
-\bibitem{turing1936}
-A.~M. Turing. On computable numbers. \emph{Proc.\ London Math.\ Soc.}, 2(42):230--265, 1936.
-
-\bibitem{lax1956}
-P.~D. Lax and R.~D. Richtmyer. Survey of the stability of linear finite difference equations. \emph{Comm.\ Pure Appl.\ Math.}, 9(2):267--293, 1956.
-
-\bibitem{hadamard1902}
-J.~Hadamard. Sur les probl\`emes aux d\'eriv\'ees partielles. \emph{Princeton Univ.\ Bull.}, 13:49--52, 1902.
-
-\bibitem{blum1989}
-L.~Blum, M.~Shub, and S.~Smale. On a theory of computation over the real numbers. \emph{Bull.\ AMS}, 21(1):1--46, 1989.
-
-\bibitem{rice1953}
-H.~G. Rice. Classes of recursively enumerable sets. \emph{Trans.\ AMS}, 74(2):358--366, 1953.
-
-\bibitem{jumper2021}
-J.~Jumper et~al. Highly accurate protein structure prediction with AlphaFold. \emph{Nature}, 596:583--589, 2021.
-
 \bibitem{karniadakis2021}
 G.~E. Karniadakis et~al. Physics-informed machine learning. \emph{Nature Rev.\ Phys.}, 3:422--440, 2021.
-
-\bibitem{lu2021}
-L.~Lu et~al. Learning nonlinear operators via DeepONet. \emph{Nature Mach.\ Intell.}, 3:218--229, 2021.
-
-\bibitem{baker2016}
-M.~Baker. 1,500 scientists lift the lid on reproducibility. \emph{Nature}, 533:452--454, 2016.
-
-\bibitem{leuschner2021}
-J.~Leuschner et~al. LoDoPaB-CT, a benchmark dataset for low-dose CT reconstruction. \emph{Sci.\ Data}, 8:109, 2021.
-
-\bibitem{aarle2016}
-W.~van Aarle et~al. The ASTRA Toolbox. \emph{Ultramicroscopy}, 157:35--47, 2016.
-
-\bibitem{li2008jhtdb}
-Y.~Li et~al. A public turbulence database cluster. \emph{J.\ Turbulence}, 9:N31, 2008.
-
-\bibitem{dong2020lancet}
-E.~Dong, H.~Du, and L.~Gardner. COVID-19 dashboard. \emph{Lancet Infect.\ Dis.}, 20(5):533--534, 2020.
-
-\bibitem{martin2006marmousi}
-G.~S. Martin, R.~Wiley, and K.~J. Marfurt. Marmousi2: an elastic upgrade. \emph{The Leading Edge}, 25(2):156--166, 2006.
-
-\bibitem{smith1999gri}
-G.~P. Smith et~al. GRI-Mech 3.0. \url{http://combustion.berkeley.edu/gri-mech/}, 1999.
-
-\bibitem{fomel2013madagascar}
-S.~Fomel et~al. Madagascar: open-source software for reproducible experiments. \emph{J.\ Open Res.\ Softw.}, 1(1):e8, 2013.
-
-\bibitem{bunks1995fwi}
-C.~Bunks et~al. Multiscale seismic waveform inversion. \emph{Geophysics}, 60(5):1457--1473, 1995.
-
-\bibitem{pope2000}
-S.~B. Pope. \emph{Turbulent Flows}. Cambridge University Press, 2000.
-
-\bibitem{yang2026imaging}
-C.~Yang. Designing any imaging system from natural language: agent-constrained composition over a finite primitive basis. \emph{Manuscript in preparation}, 2026.
 
 \bibitem{tian2024scicode}
 H.~Tian et~al. SciCode: a research coding benchmark curated by scientists. \emph{arXiv:2407.13168}, 2024.
@@ -508,35 +370,68 @@ A.~Logg, K.-A. Mardal, and G.~Wells (eds). \emph{Automated Solution of Different
 \bibitem{rathgeber2016firedrake}
 F.~Rathgeber et~al. Firedrake: automating the finite element method by composing abstractions. \emph{ACM TOMS}, 43(3):1--27, 2016.
 
-\bibitem{boldo2015verified}
-S.~Boldo et~al. Verified compilation of floating-point computations. \emph{J.\ Autom.\ Reasoning}, 54(2):135--163, 2015.
-
 \bibitem{boiko2023coscientist}
 D.~A. Boiko et~al. Autonomous chemical research with large language models. \emph{Nature}, 624:570--578, 2023.
 
 \bibitem{bran2024chemcrow}
 A.~M. Bran et~al. ChemCrow: augmenting large-language models with chemistry tools. \emph{Nature Mach.\ Intell.}, 6:525--535, 2024.
 
-\bibitem{li2021fno}
-Z.~Li et~al. Fourier neural operator for parametric partial differential equations. \emph{ICLR}, 2021.
+\bibitem{baker2016}
+M.~Baker. 1,500 scientists lift the lid on reproducibility. \emph{Nature}, 533:452--454, 2016.
 
-\bibitem{lu2021deepxde}
-L.~Lu et~al. DeepXDE: a deep learning library for solving differential equations. \emph{SIAM Rev.}, 63(1):208--228, 2021.
+\bibitem{lax1956}
+P.~D. Lax and R.~D. Richtmyer. Survey of the stability of linear finite difference equations. \emph{Comm.\ Pure Appl.\ Math.}, 9(2):267--293, 1956.
+
+\bibitem{hadamard1902}
+J.~Hadamard. Sur les probl\`emes aux d\'eriv\'ees partielles. \emph{Princeton Univ.\ Bull.}, 13:49--52, 1902.
 
 \bibitem{comsol}
 COMSOL Multiphysics v.~6.2. COMSOL AB, Stockholm, 2024.
 
+\bibitem{leuschner2021}
+J.~Leuschner et~al. LoDoPaB-CT, a benchmark dataset for low-dose CT reconstruction. \emph{Sci.\ Data}, 8:109, 2021.
+
+\bibitem{aarle2016}
+W.~van Aarle et~al. The ASTRA Toolbox. \emph{Ultramicroscopy}, 157:35--47, 2016.
+
+\bibitem{martin2006marmousi}
+G.~S. Martin, R.~Wiley, and K.~J. Marfurt. Marmousi2: an elastic upgrade. \emph{The Leading Edge}, 25(2):156--166, 2006.
+
+\bibitem{bunks1995fwi}
+C.~Bunks et~al. Multiscale seismic waveform inversion. \emph{Geophysics}, 60(5):1457--1473, 1995.
+
+\bibitem{fomel2013madagascar}
+S.~Fomel et~al. Madagascar: open-source software for reproducible experiments. \emph{J.\ Open Res.\ Softw.}, 1(1):e8, 2013.
+
+\bibitem{smith1999gri}
+G.~P. Smith et~al. GRI-Mech 3.0. \url{http://combustion.berkeley.edu/gri-mech/}, 1999.
+
+\bibitem{li2008jhtdb}
+Y.~Li et~al. A public turbulence database cluster. \emph{J.\ Turbulence}, 9:N31, 2008.
+
+\bibitem{lu2021deepxde}
+L.~Lu et~al. DeepXDE: a deep learning library for solving differential equations. \emph{SIAM Rev.}, 63(1):208--228, 2021.
+
+\bibitem{lu2021}
+L.~Lu et~al. Learning nonlinear operators via DeepONet. \emph{Nature Mach.\ Intell.}, 3:218--229, 2021.
+
+\bibitem{li2021fno}
+Z.~Li et~al. Fourier neural operator for parametric partial differential equations. \emph{ICLR}, 2021.
+
+\bibitem{yang2026imaging}
+C.~Yang. Designing any imaging system from natural language: agent-constrained composition over a finite primitive basis. \emph{Manuscript in preparation}, 2026.
+
+\bibitem{boldo2015verified}
+S.~Boldo et~al. Verified compilation of floating-point computations. \emph{J.\ Autom.\ Reasoning}, 54(2):135--163, 2015.
+
 \bibitem{jasak2007openfoam}
 H.~Jasak, A.~Jemcov, and Z.~Tukovic. OpenFOAM: a C++ library for complex physics simulations. \emph{Int.\ Workshop Coupled Meth.\ Numer.\ Dyn.}, 1000:1--20, 2007.
 
+\bibitem{dong2020lancet}
+E.~Dong, H.~Du, and L.~Gardner. COVID-19 dashboard. \emph{Lancet Infect.\ Dis.}, 20(5):533--534, 2020.
+
 \bibitem{bertozzi2020covid}
 A.~L. Bertozzi et~al. The challenges of modeling and forecasting the spread of COVID-19. \emph{PNAS}, 117(29):16732--16738, 2020.
-
-\bibitem{merchant2023}
-A.~Merchant et~al. Scaling deep learning for materials discovery. \emph{Nature}, 624:80--85, 2023.
-
-\bibitem{rombach2024sciml}
-M.~Cranmer et~al. Discovering symbolic models from deep learning with inductive biases. \emph{NeurIPS}, 2020.
 
 \end{thebibliography}
 
