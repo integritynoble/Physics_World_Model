@@ -401,7 +401,9 @@ def draw_panel_c(fig, gs_sub):
                                    wspace=0.06, hspace=0.22)
 
     # Try loading real GT images
-    ct_gt = make_shepp_logan(128)  # Shepp-Logan phantom (standard CT test)
+    ct_gt = _load_real_image("/tmp/fig4_recon/images/ct_ground_truth.png")
+    if ct_gt is None:
+        ct_gt = make_shepp_logan(128)  # fallback
     mri_gt = _load_real_image("/tmp/paper_modality_images/mri/sample_03_ground_truth_clean.png")
     cassi_gt = _load_cassi_gt_rgb("/tmp/tsa_data/scene04.mat", resize=128)
 
@@ -412,11 +414,11 @@ def draw_panel_c(fig, gs_sub):
         cassi_gt = make_spectral_cube_slice(128)
 
     # Algorithm labels and PSNR values:
-    #   CT: FBP+TV on Shepp-Logan (60-view sparse)
+    #   CT: FISTA-TV on LoDoPaB (60-view fan-beam, 24.8 dB)
     #   MRI: HybridCascade++ on M4Raw (4-coil, ~4x accel, GPU TTO, 31.7 dB)
     #   CASSI: GAP-TV on KAIST TSA 10 scenes (inversenet paper, 24.3 dB)
     modalities = [
-        ("CT",    ct_gt,    "gray", "19.6 dB", "FBP+TV",           19.6, 2.0),
+        ("CT",    ct_gt,    "gray", "24.8 dB", "FISTA-TV",         24.8, 1.5),
         ("MRI",   mri_gt,   "gray", "31.7 dB", "HybridCascade++",  31.7, 0.4),
         ("CASSI", cassi_gt,  None,  "24.3 dB", "GAP-TV",           24.3, 1.5),
     ]
@@ -477,7 +479,7 @@ def draw_panel_c(fig, gs_sub):
 def draw_panel_d(ax):
     """Draw quality ratio bar chart with tightness annotations."""
     modalities = ["CT", "MRI", "CASSI", "CACTI", "Ultrasound", "E-ptycho"]
-    quality_ratio = [102.6, 102.8, 100.4, 100.0, 98.0, 100.0]
+    quality_ratio = [103.3, 97.8, 93.1, 100.0, 98.0, 100.0]
     tightness = [2.1, 2.4, 3.8, None, None, None]
 
     x = np.arange(len(modalities))
@@ -505,12 +507,12 @@ def draw_panel_d(ax):
     # Tightness tau labels (inside bars, near bottom)
     for i, tau in enumerate(tightness):
         if tau is not None:
-            ax.text(x[i], 94.6, r"$\tau$" + f"={tau:.1f}",
+            ax.text(x[i], 91.6, r"$\tau$" + f"={tau:.1f}",
                     ha="center", va="bottom", fontsize=5.5,
                     color=C_BAR_TIGHT, fontweight="bold")
 
     # Median tau annotation (standalone, right side)
-    ax.text(4.5, 94.3, r"median $\tau = 2.9$",
+    ax.text(4.5, 91.3, r"median $\tau = 2.9$",
             fontsize=6.5, color=C_BAR_TIGHT, fontweight="bold",
             ha="center", va="bottom",
             bbox=dict(boxstyle="round,pad=0.15", facecolor="#FEF3C7",
@@ -519,7 +521,7 @@ def draw_panel_d(ax):
     ax.set_xticks(x)
     ax.set_xticklabels(modalities, fontsize=6.5, rotation=0)
     ax.set_ylabel("Quality ratio (%)", fontsize=7.5)
-    ax.set_ylim(93, 106)
+    ax.set_ylim(90, 106)
     ax.set_xlim(-0.5, len(modalities) - 0.4)
 
     ax.spines["top"].set_visible(False)
