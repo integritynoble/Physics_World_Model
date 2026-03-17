@@ -9,8 +9,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Install torch CPU-only for CASSI DL model inference
+RUN pip install --no-cache-dir "torch==2.3.0" \
+    --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir "einops>=0.6.0"
+
 # Copy and install pwm_core (simulation engine dependency)
-# Use --no-deps to skip torch (GPU solvers not needed; CPU/numpy path is used)
 COPY packages/pwm_core/ /tmp/pwm_core/
 RUN cd /tmp/pwm_core && \
     sed -i 's|readme = "../../README.md"|readme = {text = "PWM Core", content-type = "text/plain"}|' pyproject.toml && \

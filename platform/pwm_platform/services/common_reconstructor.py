@@ -1343,6 +1343,14 @@ def _compressive_reconstruct(
 # Physics-informed algorithms we can actually run
 _RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
 
+# CASSI DL models that can run on CPU via GCS checkpoint download.
+# Treating them as non-DL routes them through _cassi_reconstruct_by_algo → _cassi_model_reconstruct.
+_CASSI_CPU_RUNNABLE: set[str] = {
+    "TSA-Net", "λ-Net", "ADMM-Net", "GAP-Net", "DGSMP",
+    "HDNet", "MST-L", "MST++", "CST-L-Plus", "BIRNAT",
+    "DAUHST-9stg", "BiSRNet", "PADUT-3stg", "RDLUF-MixS2-9stg", "SSR-L",
+}
+
 
 def _cassi_2d_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
     """Reconstruct 2D CASSI challenge data: y = shifted_mask * x_true + noise.
@@ -2147,6 +2155,10 @@ def _run_common_sync(
 
     # Physics-informed methods we can actually run get treated as classical
     if algorithm_name in _RUNNABLE_PHYSICS_INFORMED:
+        is_dl = False
+
+    # CASSI DL models with GCS checkpoints run on CPU via _cassi_model_reconstruct
+    if variant_key == "cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
         is_dl = False
 
     # Run reconstruction via central dispatch
