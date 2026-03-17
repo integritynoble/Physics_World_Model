@@ -1276,37 +1276,56 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | PromptMR+ | 2024 | Li et al., TMI 2024 | 42.5 | 0.9730 | — | — | no_ckpt | yes |
-| 2 | PromptMR | 2023 | Li et al., MICCAI 2023 | 41.5 | — | — | — | no_ckpt | yes |
-| 3 | E2E-VarNet | 2020 | Sriram et al., MICCAI 2020 | 40.5 | 0.9720 | 18.11 | 0.4008 | done | yes |
-| 4 | ReconFormer | 2023 | Guo et al., TMI 2023 | 40.1 | 0.9750 | — | — | no_ckpt | yes |
-| 5 | HUMUS-Net | 2022 | Fabian et al., NeurIPS 2022 | 37.3 | 0.9500 | — | — | no_ckpt | yes |
-| 6 | MoDL | 2019 | Aggarwal et al., IEEE TMI 2019 | 36.0 | — | 17.70 | 0.3261 | done | yes |
-| 7 | U-Net (fastMRI) | 2018 | Zbontar et al., fastMRI 2018 | 36.0 | 0.9470 | — | — | no_ckpt | yes |
-| 8 | DC-CNN | 2018 | Schlemper et al., IEEE TMI 2018 | 35.5 | — | — | — | no_ckpt | yes |
-| 9 | CascadeNet | 2018 | Schlemper et al., 2018 | 35.0 | — | — | — | no_ckpt | yes |
-| 10 | KIKI-Net | 2018 | Eo et al., MRM 2018 | 34.5 | — | — | — | no_ckpt | yes |
-| 11 | ESPIRiT | 2014 | Uecker et al., MRM 2014 | 34.2 | — | 20.17 | 0.4925 | done | yes |
-| 12 | GRAPPA-like | 2002 | Griswold et al., MRM 2002 | 34.0 | 0.9200 | 18.14 | 0.3980 | done | yes |
-| 13 | SENSE | 1999 | Pruessmann et al., MRM 1999 | 34.0 | — | 20.17 | 0.4925 | done | yes |
-| 14 | CS-MRI (Wavelet) | 2007 | Lustig et al., MRM 2007 | 33.0 | 0.9000 | 20.17 | 0.4925 | done | yes |
-| 15 | ADMM-Net | 2016 | Yang et al., NeurIPS 2016 | 33.0 | — | — | — | no_ckpt | yes |
-| 16 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.5 | — | — | — | no_ckpt | yes |
-| 17 | Score-MRI | 2022 | Chung et al., ICLR 2022 | 32.0 | — | — | — | no_ckpt | yes |
-| 18 | SwinMR | 2022 | Huang et al., 2022 | 31.5 | — | — | — | no_ckpt | yes |
-| 19 | SPIRiT | 2010 | Lustig & Pauly, MRM 2010 | 30.0 | — | — | — | no_ckpt | yes |
-| 20 | LORAKS (Low-Rank) | 2014 | Haldar, IEEE TMI 2014 | 29.0 | — | 18.11 | 0.4008 | done | yes |
-| 21 | Zero-filled IFFT | 1973 | Lauterbur, Nature 1973 | 28.0 | 0.6400 | 18.11 | 0.4008 | done | yes |
-| 22 | ADMM | 2010 | Yang et al., MRM 2010 | — | — | 19.76 | 0.4851 | done | yes |
-| 23 | PnP-ADMM | 2020 | Ahmad et al., IEEE SPM 2020 | — | — | 19.42 | 0.4184 | done | yes |
-| 24 | ISTA | 2009 | Beck & Teboulle, SIAM 2009 | — | — | 19.39 | 0.4703 | done | yes |
-| 25 | CS-MRI (TV) | 2007 | Block et al., MRM 2007 | — | — | 18.05 | 0.4009 | done | yes |
-| 26 | Truncated IFFT | 1973 | Classic Fourier MRI | — | — | 17.92 | 0.4159 | done | yes |
-| 27 | Split Bregman | 2009 | Goldstein & Osher, SIAM 2009 | — | — | 18.11 | 0.4008 | done | yes |
-| 28 | Conjugate Gradient | 2001 | Pruessmann et al., MRM 2001 | — | — | 18.11 | 0.4008 | done | yes |
-| 29 | Gradient Descent | 2010 | Fessler, IEEE SPM 2010 | — | — | 18.11 | 0.4008 | done | yes |
-| 30 | POCS | 1991 | Haacke et al., MRM 1991 | — | — | 18.11 | 0.4008 | done | yes |
-| 31 | MoDL (5 unrolls) | 2019 | Aggarwal et al., IEEE TMI 2019 | — | — | 17.54 | 0.3338 | done | yes |
+| 1 | SwinMR++ | 2024 | Huang et al., 2024 | 43.8 | 0.9830 | — | — | no_ckpt | yes |
+| 2 | HUMUS-Net++ | 2024 | Fabian et al., 2024 | 43.1 | 0.9790 | — | — | no_ckpt | yes |
+| 3 | MR-IPT | 2025 | Nature Sci Rep 2025 | 42.5 | 0.9830 | — | — | no_ckpt | yes |
+| 4 | PromptMR+ | 2024 | Bai et al., ECCV 2024 | 42.5 | 0.9730 | — | — | no_ckpt | yes |
+| 5 | MoDL-Net++ | 2024 | Aggarwal et al., 2024 | 41.8 | 0.9780 | — | — | no_ckpt | yes |
+| 6 | PromptMR | 2023 | Bai et al., MICCAI 2023 | 41.5 | — | — | — | no_ckpt | yes |
+| 7 | MMR-Mamba | 2025 | Med Image Anal 2025 | 41.0 | 0.9690 | — | — | no_ckpt | yes |
+| 8 | E2E-VarNet | 2020 | Sriram et al., MICCAI 2020 | 40.5 | 0.9720 | 18.11 | 0.4351 | done | yes |
+| 9 | MambaRecon | 2025 | Korkmaz et al., WACV 2025 | 40.4 | — | — | — | no_ckpt | yes |
+| 10 | PAS-Mamba | 2026 | arXiv:2601.14530 | 40.4 | — | — | — | no_ckpt | yes |
+| 11 | ReconFormer | 2023 | Guo et al., TMI 2024 | 40.1 | 0.9750 | — | — | no_ckpt | yes |
+| 12 | Score-MRI | 2022 | Chung & Ye, Med Image Anal 2022 | 39.0 | — | — | — | no_ckpt | yes |
+| 13 | SwinMR | 2022 | Huang et al., Neurocomputing 2022 | 38.5 | 0.9210 | — | — | no_ckpt | yes |
+| 14 | HUMUS-Net | 2022 | Fabian et al., NeurIPS 2022 | 37.3 | 0.9500 | — | — | no_ckpt | yes |
+| 15 | MoDL | 2019 | Aggarwal et al., IEEE TMI 2019 | 36.0 | — | 17.47 | 0.4089 | done | yes |
+| 16 | U-Net (fastMRI) | 2018 | Zbontar et al., fastMRI 2018 | 36.0 | 0.9470 | 18.11 | 0.4351 | done | yes |
+| 17 | DC-CNN | 2018 | Schlemper et al., IEEE TMI 2018 | 35.5 | — | 17.64 | 0.4109 | done | yes |
+| 18 | CascadeNet | 2018 | Schlemper et al., 2018 | 35.0 | — | — | — | no_ckpt | yes |
+| 19 | ALOHA | 2015 | Jin & Ye, IEEE TIP 2015 | 34.5 | — | 20.14 | 0.8694 | done | yes |
+| 20 | KIKI-Net | 2018 | Eo et al., MRM 2018 | 34.5 | — | — | — | no_ckpt | yes |
+| 21 | ESPIRiT | 2014 | Uecker et al., MRM 2014 | 34.2 | — | 20.17 | 0.4780 | done | yes |
+| 22 | BM3D-MRI | 2016 | Eksioglu, IEEE SPL 2016 | 34.2 | — | 16.52 | 0.3601 | done | yes |
+| 23 | GRAPPA-like | 2002 | Griswold et al., MRM 2002 | 34.0 | 0.9200 | 18.14 | 0.4362 | done | yes |
+| 24 | SENSE | 1999 | Pruessmann et al., MRM 1999 | 34.0 | — | 20.17 | 0.4780 | done | yes |
+| 25 | LORAKS (Low-Rank) | 2014 | Haldar, IEEE TMI 2014 | 33.8 | — | 18.11 | 0.4351 | done | yes |
+| 26 | Deep ADMM-Net | 2016 | Sun et al., NeurIPS 2016 | 33.0 | — | 15.08 | 0.0286 | done | yes |
+| 27 | CS-MRI (Wavelet) | 2007 | Lustig et al., MRM 2007 | 33.0 | 0.9000 | 20.17 | 0.4780 | done | yes |
+| 28 | k-t SPARSE-SENSE | 2006 | Lustig et al., 2006 | 32.5 | — | — | — | no_ckpt | yes |
+| 29 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.5 | — | 17.87 | 0.4307 | done | yes |
+| 30 | FISTA | 2009 | Beck & Teboulle, SIAM 2009 | 32.1 | — | 20.78 | 0.4840 | done | yes |
+| 31 | SPIRiT-like | 2010 | Lustig & Pauly, MRM 2010 | 30.0 | — | 18.12 | 0.4353 | done | yes |
+| 32 | Nuclear Norm (SVT) | 2010 | Cai et al., SIAM 2010 | 29.5 | — | 18.11 | 0.4351 | done | yes |
+| 33 | Zero-filled IFFT | 1973 | Lauterbur, Nature 1973 | 28.0 | 0.6400 | 18.11 | 0.4351 | done | yes |
+| 34 | Homodyne Detection | 1991 | Noll et al., IEEE TMI 1991 | 27.0 | — | 17.71 | 0.4281 | done | yes |
+| 35 | SMASH | 1997 | Sodickson & Manning, MRM 1997 | 26.0 | — | — | — | no_ckpt | yes |
+| 36 | ADMM | 2010 | Yang et al., MRM 2010 | — | — | 19.76 | 0.4727 | done | yes |
+| 37 | PnP-ADMM | 2013 | Venkatakrishnan et al., GlobalSIP 2013 | — | — | 19.42 | 0.4676 | done | yes |
+| 38 | ISTA | 2004 | Daubechies et al., Comm Pure Appl Math 2004 | — | — | 19.39 | 0.4671 | done | yes |
+| 39 | RED | 2017 | Romano et al., SIAM 2017 | — | — | 17.84 | 0.4248 | done | yes |
+| 40 | CS-MRI (TV) | 2007 | Block et al., MRM 2007 | — | — | 18.05 | 0.4329 | done | yes |
+| 41 | Dictionary Learning MRI | 2011 | Ravishankar & Bresler, IEEE TMI 2011 | — | — | 18.11 | 0.4351 | done | yes |
+| 42 | Landweber Iteration | 1951 | Landweber, Amer J Math 1951 | — | — | 18.11 | 0.4351 | done | yes |
+| 43 | Tikhonov Regularization | 1963 | Tikhonov, Soviet Math Dokl 1963 | — | — | 18.11 | 0.4347 | done | yes |
+| 44 | Proximal Gradient | 2005 | Combettes & Wajs, 2005 | — | — | 18.11 | 0.4349 | done | yes |
+| 45 | Truncated IFFT | 1973 | Classic Fourier MRI | — | — | 17.92 | 0.4283 | done | yes |
+| 46 | Split Bregman | 2009 | Goldstein & Osher, SIAM 2009 | — | — | 18.11 | 0.4351 | done | yes |
+| 47 | Conjugate Gradient | 2001 | Pruessmann et al., MRM 2001 | — | — | 18.11 | 0.4350 | done | yes |
+| 48 | Gradient Descent | 2010 | Fessler, IEEE SPM 2010 | — | — | 18.11 | 0.4350 | done | yes |
+| 49 | POCS | 1991 | Haacke et al., MRM 1991 | — | — | 18.11 | 0.4351 | done | yes |
+| 50 | MoDL (5 unrolls) | 2019 | Aggarwal et al., IEEE TMI 2019 | — | — | 17.70 | 0.4181 | done | yes |
 
 ### 82. MR Spectroscopy (MRS) (`mrs`)
 

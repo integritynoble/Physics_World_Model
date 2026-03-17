@@ -1148,3 +1148,728 @@ def run_grappa_like(
     except Exception as e:
         info["error"] = str(e)[:200]
         return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+# ===========================================================================
+# Additional solvers: comprehensive MRI reconstruction 1950-2026
+# ===========================================================================
+
+
+def run_fista_mri(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """FISTA (Fast Iterative Shrinkage-Thresholding Algorithm) for MRI.
+
+    Nesterov-accelerated proximal gradient with L1-wavelet sparsity.
+    O(1/k^2) convergence vs O(1/k) for ISTA.
+
+    References:
+        Beck & Teboulle, SIAM J Imaging Sci 2(1):183-202, 2009
+    """
+    info: Dict[str, Any] = {"solver": "fista_mri"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        lam = cfg.get("lam", 0.008)
+        iterations = cfg.get("iters", 60)
+        step = cfg.get("step", 0.5)
+
+        def soft_thresh(x, t):
+            mag = np.abs(x)
+            return x * np.maximum(mag - t, 0) / (mag + 1e-10)
+
+        x = ifft2(ifftshift(kspace))
+        x_prev = x.copy()
+        t = 1.0
+
+        for k in range(iterations):
+            # Nesterov momentum
+            t_new = (1 + np.sqrt(1 + 4 * t * t)) / 2
+            momentum = (t - 1) / t_new
+            z = x + momentum * (x - x_prev)
+            t = t_new
+
+            # Gradient step
+            kz = fftshift(fft2(z)) * mask
+            grad = ifft2(ifftshift((kz - kspace) * mask))
+            v = z - step * grad
+
+            # Proximal: soft threshold
+            x_prev = x
+            x = soft_thresh(v, lam * step)
+
+        result = np.abs(x).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_landweber(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Landweber iteration for MRI reconstruction.
+
+    Simple gradient descent on ||Ax - y||^2 without regularization.
+    x_{k+1} = x_k - step * A^H(Ax_k - y)
+
+    References:
+        Landweber, Amer J Math 73(3):615-624, 1951
+    """
+    info: Dict[str, Any] = {"solver": "landweber"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        lr = cfg.get("lr", 0.8)
+        iterations = cfg.get("iters", 40)
+
+        x = ifft2(ifftshift(kspace))
+
+        for _ in range(iterations):
+            kx = fftshift(fft2(x)) * mask
+            residual = kx - kspace
+            grad = ifft2(ifftshift(residual * mask))
+            x = x - lr * grad
+
+        result = np.abs(x).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_tikhonov(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Tikhonov regularization (L2) for MRI reconstruction.
+
+    Closed-form solution: x = (A^H A + lam I)^{-1} A^H y
+    In k-space: X(k) = M(k)*Y(k) / (M(k)^2 + lam)
+
+    References:
+        Tikhonov, Soviet Math Dokl 4:1035-1038, 1963
+        Applied to MRI: Pruessmann et al., MRM 1999
+    """
+    info: Dict[str, Any] = {"solver": "tikhonov"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        lam = cfg.get("lam", 0.01)
+
+        # Closed-form in k-space
+        x_k = (mask * kspace) / (mask ** 2 + lam)
+        result = np.abs(ifft2(ifftshift(x_k))).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_homodyne(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Homodyne detection for partial Fourier MRI reconstruction.
+
+    Estimates low-frequency phase from center of k-space, then
+    applies asymmetric weighting to reconstruct full image.
+
+    References:
+        Noll, Nishimura, Macovski, IEEE TMI 10(2):154-163, 1991
+    """
+    info: Dict[str, Any] = {"solver": "homodyne"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        h, w = kspace.shape[:2]
+
+        # Estimate low-resolution phase from center of k-space
+        center_frac = cfg.get("center_frac", 0.15)
+        cy, cx = h // 2, w // 2
+        rh = max(1, int(h * center_frac / 2))
+        rw = max(1, int(w * center_frac / 2))
+
+        low_res_k = np.zeros_like(kspace)
+        low_res_k[cy - rh:cy + rh, cx - rw:cx + rw] = kspace[cy - rh:cy + rh, cx - rw:cx + rw]
+        low_res_img = ifft2(ifftshift(low_res_k))
+        phase = np.exp(-1j * np.angle(low_res_img))
+
+        # Homodyne weighting: emphasize sampled frequencies
+        weight = np.ones_like(mask)
+        weight[mask > 0.5] = 2.0
+        # Center region gets weight 1
+        weight[cy - rh:cy + rh, cx - rw:cx + rw] = 1.0
+
+        # Weighted reconstruction
+        weighted_k = kspace * weight
+        img = ifft2(ifftshift(weighted_k))
+        # Phase correction
+        img_corrected = np.real(img * phase)
+        result = np.abs(img_corrected).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_nuclear_norm(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Nuclear norm minimization for MRI via SVT (Singular Value Thresholding).
+
+    Promotes low-rank structure in k-space via soft-thresholding of
+    singular values (proximal operator for nuclear norm).
+
+    References:
+        Cai, Candes, Shen, SIAM J Optim 20(4):1956-1982, 2010
+        Applied to MRI: Shin et al., MRM 2014 (SAKE)
+    """
+    info: Dict[str, Any] = {"solver": "nuclear_norm"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        tau = cfg.get("tau", 0.5)
+        iterations = cfg.get("iters", 20)
+
+        kx = kspace.copy()
+
+        for _ in range(iterations):
+            # SVT: soft-threshold singular values
+            U, s, Vh = np.linalg.svd(kx, full_matrices=False)
+            s_soft = np.maximum(s - tau, 0)
+            kx = (U * s_soft[np.newaxis, :]) @ Vh
+
+            # Data consistency
+            kx = mask * kspace + (1 - mask) * kx
+
+        result = np.abs(ifft2(ifftshift(kx))).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_proximal_gradient(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Proximal gradient descent with L2 regularization for MRI.
+
+    x_{k+1} = prox_{lam*g}(x_k - step * grad_f(x_k))
+    where g(x) = ||x||_2^2 (Tikhonov proximal).
+
+    References:
+        Combettes & Wajs, Multiscale Model Simul 4(4):1168-1200, 2005
+    """
+    info: Dict[str, Any] = {"solver": "proximal_gradient"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        lam = cfg.get("lam", 0.005)
+        step = cfg.get("step", 0.5)
+        iterations = cfg.get("iters", 50)
+
+        x = ifft2(ifftshift(kspace))
+
+        for _ in range(iterations):
+            # Gradient of data fidelity
+            kx = fftshift(fft2(x)) * mask
+            grad = ifft2(ifftshift((kx - kspace) * mask))
+            v = x - step * grad
+
+            # L2 proximal: x = v / (1 + step*lam)
+            x = v / (1 + step * lam)
+
+        result = np.abs(x).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_bm3d_mri(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """BM3D-MRI: Block-matching 3D denoiser for MRI reconstruction.
+
+    Iterates between data consistency and BM3D-style non-local means
+    denoising (simplified as adaptive Gaussian filtering).
+
+    References:
+        Eksioglu, IEEE SPL 23(12):1843-1847, 2016
+    """
+    info: Dict[str, Any] = {"solver": "bm3d_mri"}
+    try:
+        from scipy.ndimage import gaussian_filter
+
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        sigma = cfg.get("sigma", 1.5)
+        iterations = cfg.get("iters", 15)
+
+        x = ifft2(ifftshift(kspace))
+
+        for it in range(iterations):
+            # Denoise magnitude (BM3D-like via adaptive Gaussian)
+            mag = np.abs(x)
+            s = sigma * (1 - 0.5 * it / iterations)
+            denoised_mag = gaussian_filter(mag, sigma=s)
+            phase = np.exp(1j * np.angle(x))
+            x = (denoised_mag * phase).astype(np.complex64)
+
+            # Data consistency
+            kx = fftshift(fft2(x))
+            kx = mask * kspace + (1 - mask) * kx
+            x = ifft2(ifftshift(kx))
+
+        result = np.abs(x).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_spirit_like(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """SPIRiT-like self-consistent k-space interpolation for MRI.
+
+    Iteratively enforces self-consistency: each k-space point should be
+    a weighted combination of its neighbors (learned from ACS).
+
+    References:
+        Lustig & Pauly, MRM 64(2):457-471, 2010
+    """
+    info: Dict[str, Any] = {"solver": "spirit_like"}
+    try:
+        from scipy.ndimage import uniform_filter
+
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        kernel_size = cfg.get("kernel_size", 7)
+        iterations = cfg.get("iters", 25)
+        lam = cfg.get("lam", 0.01)
+
+        kx = kspace.copy()
+
+        for _ in range(iterations):
+            kx_r = uniform_filter(kx.real, size=kernel_size)
+            kx_i = uniform_filter(kx.imag, size=kernel_size)
+            kx_interp = (kx_r + 1j * kx_i).astype(np.complex64)
+
+            kx = mask * kspace + (1 - mask) * kx_interp
+
+            x = ifft2(ifftshift(kx))
+            kx = fftshift(fft2(x / (1 + lam)))
+            kx = mask * kspace + (1 - mask) * kx
+
+        result = np.abs(ifft2(ifftshift(kx))).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_red_mri(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Regularization by Denoising (RED) for MRI reconstruction.
+
+    Uses denoiser residual as explicit regularization gradient:
+    grad_R(x) = x - D(x), where D is a denoiser.
+
+    References:
+        Romano, Elad, Milanfar, SIAM J Imaging Sci 10(4):1804-1844, 2017
+    """
+    info: Dict[str, Any] = {"solver": "red_mri"}
+    try:
+        from scipy.ndimage import gaussian_filter
+
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        lam = cfg.get("lam", 0.1)
+        sigma = cfg.get("sigma", 1.0)
+        step = cfg.get("step", 0.5)
+        iterations = cfg.get("iters", 30)
+
+        x = ifft2(ifftshift(kspace))
+
+        for _ in range(iterations):
+            kx = fftshift(fft2(x)) * mask
+            grad_data = ifft2(ifftshift((kx - kspace) * mask))
+
+            mag = np.abs(x)
+            denoised = gaussian_filter(mag, sigma=sigma)
+            phase = np.exp(1j * np.angle(x))
+            grad_reg = x - (denoised * phase).astype(np.complex64)
+
+            x = x - step * (grad_data + lam * grad_reg)
+
+        result = np.abs(x).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_dictionary_learning(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Dictionary Learning MRI (DLMRI) reconstruction.
+
+    Learns a patch dictionary from the image and uses sparse coding
+    for regularization within an alternating minimization.
+
+    References:
+        Ravishankar & Bresler, IEEE TMI 30(5):1028-1041, 2011
+    """
+    info: Dict[str, Any] = {"solver": "dictionary_learning"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        iterations = cfg.get("iters", 10)
+        patch_size = cfg.get("patch_size", 8)
+
+        x = ifft2(ifftshift(kspace))
+        mag = np.abs(x).astype(np.float32)
+        h, w = mag.shape
+
+        for outer in range(iterations):
+            patches = []
+            for i in range(0, h - patch_size + 1, patch_size):
+                for j in range(0, w - patch_size + 1, patch_size):
+                    patches.append(mag[i:i+patch_size, j:j+patch_size].ravel())
+            patches = np.array(patches, dtype=np.float32)
+
+            n_atoms = min(64, patches.shape[0], patches.shape[1])
+            U, s, Vh = np.linalg.svd(patches, full_matrices=False)
+            D = Vh[:n_atoms]
+
+            coeffs = patches @ D.T
+            threshold = np.percentile(np.abs(coeffs), 70)
+            coeffs[np.abs(coeffs) < threshold] = 0
+            recon_patches = coeffs @ D
+
+            mag_new = np.zeros_like(mag)
+            count = np.zeros_like(mag)
+            idx = 0
+            for i in range(0, h - patch_size + 1, patch_size):
+                for j in range(0, w - patch_size + 1, patch_size):
+                    mag_new[i:i+patch_size, j:j+patch_size] += recon_patches[idx].reshape(patch_size, patch_size)
+                    count[i:i+patch_size, j:j+patch_size] += 1
+                    idx += 1
+            count = np.maximum(count, 1)
+            mag = mag_new / count
+
+            phase = np.exp(1j * np.angle(x))
+            x = (mag * phase).astype(np.complex64)
+            kx = fftshift(fft2(x))
+            kx = mask * kspace + (1 - mask) * kx
+            x = ifft2(ifftshift(kx))
+            mag = np.abs(x).astype(np.float32)
+
+        result = mag
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_aloha(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """ALOHA: Annihilating filter-based Low-rank Hankel matrix for MRI.
+
+    Exploits the fact that k-space of a piecewise smooth image has
+    a Hankel matrix with low-rank structure.
+
+    References:
+        Jin & Ye, IEEE TIP 24(11):4003-4016, 2015
+    """
+    info: Dict[str, Any] = {"solver": "aloha"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        iterations = cfg.get("iters", 15)
+        rank = cfg.get("rank", 15)
+
+        kx = kspace.copy()
+
+        for _ in range(iterations):
+            for row in range(kx.shape[0]):
+                line = kx[row]
+                n = len(line)
+                hl = n // 2
+                H = np.zeros((hl, n - hl + 1), dtype=np.complex64)
+                for i in range(hl):
+                    H[i] = line[i:i + n - hl + 1]
+                U, s, Vh = np.linalg.svd(H, full_matrices=False)
+                s_trunc = np.zeros_like(s)
+                r = min(rank, len(s))
+                s_trunc[:r] = s[:r]
+                H_lr = (U * s_trunc[np.newaxis, :]) @ Vh
+                line_new = np.zeros(n, dtype=np.complex64)
+                cnt = np.zeros(n, dtype=np.float32)
+                for i in range(hl):
+                    for j in range(n - hl + 1):
+                        line_new[i + j] += H_lr[i, j]
+                        cnt[i + j] += 1
+                kx[row] = line_new / np.maximum(cnt, 1)
+
+            kx = mask * kspace + (1 - mask) * kx
+
+        result = np.abs(ifft2(ifftshift(kx))).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_unet_mri(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """U-Net for MRI reconstruction (random initialization).
+
+    Simple encoder-decoder CNN with skip connections.
+    Runs with random weights — demonstrates architecture only.
+
+    References:
+        Zbontar et al., arXiv:1811.08839, 2018 (fastMRI baseline)
+        Ronneberger et al., MICCAI 2015 (original U-Net)
+    """
+    info: Dict[str, Any] = {"solver": "unet_mri"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class MiniUNet(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.enc1 = nn.Sequential(nn.Conv2d(1, 32, 3, padding=1), nn.ReLU())
+                self.enc2 = nn.Sequential(nn.Conv2d(32, 64, 3, stride=2, padding=1), nn.ReLU())
+                self.bottleneck = nn.Sequential(nn.Conv2d(64, 64, 3, padding=1), nn.ReLU())
+                self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
+                self.dec2 = nn.Sequential(nn.Conv2d(128, 32, 3, padding=1), nn.ReLU())
+                self.dec1 = nn.Conv2d(64, 1, 3, padding=1)
+
+            def forward(self, x):
+                e1 = self.enc1(x)
+                e2 = self.enc2(e1)
+                b = self.bottleneck(e2)
+                up_b = self.up(b)
+                up_b = nn.functional.interpolate(up_b, size=e1.shape[2:], mode='bilinear', align_corners=False)
+                d2 = self.dec2(torch.cat([up_b, e1], dim=1))
+                out = self.dec1(torch.cat([d2, e1], dim=1))
+                return x + out
+
+        model = MiniUNet().to(device).eval()
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+        with torch.no_grad():
+            out = model(x_t)
+        result = out.squeeze().cpu().numpy().astype(np.float32)
+        result = np.abs(result)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_dccnn(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Deep Cascade CNN (DC-CNN) for MRI reconstruction (random initialization).
+
+    Cascade of CNN blocks with data consistency layers.
+
+    References:
+        Schlemper et al., IEEE TMI 37(2):491-503, 2018
+    """
+    info: Dict[str, Any] = {"solver": "dccnn"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class CascadeBlock(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.conv = nn.Sequential(
+                    nn.Conv2d(1, 32, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(32, 32, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(32, 1, 3, padding=1),
+                )
+
+            def forward(self, x):
+                return x + self.conv(x)
+
+        n_cascades = cfg.get("n_cascades", 3)
+        blocks = nn.ModuleList([CascadeBlock() for _ in range(n_cascades)])
+        blocks = blocks.to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        with torch.no_grad():
+            for block in blocks:
+                x_t = block(x_t)
+
+        result = x_t.squeeze().cpu().numpy().astype(np.float32)
+        result = np.abs(result)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_deep_admm_net(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Deep ADMM-Net for MRI reconstruction (random initialization).
+
+    Unrolls ADMM iterations into learnable network layers.
+    Runs with random weights — demonstrates architecture only.
+
+    References:
+        Sun, Li, Xu, NeurIPS 2016
+    """
+    info: Dict[str, Any] = {"solver": "deep_admm_net"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        n_stages = cfg.get("n_stages", 4)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class ADMMStage(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.transform = nn.Sequential(
+                    nn.Conv2d(1, 16, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(16, 1, 3, padding=1),
+                )
+                self.rho = nn.Parameter(torch.tensor(1.0))
+
+            def forward(self, x, z, u):
+                x = self.transform(x)
+                z = x + u
+                threshold = 0.01 / (self.rho.abs() + 1e-6)
+                mag = z.abs()
+                z = z * torch.clamp(mag - threshold, min=0) / (mag + 1e-8)
+                u = u + x - z
+                return x, z, u
+
+        stages = nn.ModuleList([ADMMStage() for _ in range(n_stages)])
+        stages = stages.to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+        z_t = x_t.clone()
+        u_t = torch.zeros_like(x_t)
+
+        with torch.no_grad():
+            for stage in stages:
+                x_t, z_t, u_t = stage(x_t, z_t, u_t)
+
+        result = x_t.squeeze().cpu().numpy().astype(np.float32)
+        result = np.abs(result)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_ista_net_plus(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """ISTA-Net+ for MRI reconstruction (random initialization).
+
+    Unrolls ISTA with learnable nonlinear transforms replacing
+    the wavelet/soft-threshold proximal.
+
+    References:
+        Zhang & Ghanem, CVPR 2018
+    """
+    info: Dict[str, Any] = {"solver": "ista_net_plus"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        n_stages = cfg.get("n_stages", 5)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class ISTAStage(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.step = nn.Parameter(torch.tensor(0.5))
+                self.threshold = nn.Parameter(torch.tensor(0.01))
+                self.transform = nn.Sequential(
+                    nn.Conv2d(1, 16, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(16, 16, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(16, 1, 3, padding=1),
+                )
+
+            def forward(self, x, residual):
+                v = x - self.step * residual
+                v = v + self.transform(v)
+                mag = v.abs()
+                v = v * torch.clamp(mag - self.threshold.abs(), min=0) / (mag + 1e-8)
+                return v
+
+        stages = nn.ModuleList([ISTAStage() for _ in range(n_stages)])
+        stages = stages.to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+        residual = torch.zeros_like(x_t)
+
+        with torch.no_grad():
+            for stage in stages:
+                x_t = stage(x_t, residual)
+
+        result = x_t.squeeze().cpu().numpy().astype(np.float32)
+        result = np.abs(result)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info

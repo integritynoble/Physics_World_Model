@@ -34,7 +34,7 @@ theta:
   noise_figure_db: 0.5
   bit_depth: 16
 assets: {}
-category_module: medical_ct_radon
+category_module: medical_mri_kspace
 data_source:
   priority:
   - web
@@ -78,32 +78,16 @@ solvers:
     name: Zero-Filled IFFT
     module: pwm_core.recon.mri_solvers
     function: run_zero_filled
-    params: '0'
+    params: {}
     gpu: false
-    reference: ''
+    reference: Lauterbur, Nature 1973
   best_quality:
     name: CS-MRI (Wavelet)
     module: pwm_core.recon.mri_solvers
     function: run_cs_mri
-    params:
-      lam: 0.01
-      iters: 50
+    params: {}
     gpu: false
-    reference: Lustig et al. 2007, MRM
-  famous_dl:
-    name: MoDL
-    module: pwm_core.recon.modl
-    function: run_modl
-    params: 2M
-    gpu: false
-    reference: Aggarwal et al. 2019, IEEE TMI
-  small_gpu:
-    name: MoDL (5 unrolls)
-    module: pwm_core.recon.modl
-    function: run_modl
-    params: '0'
-    gpu: false
-    reference: ''
+    reference: Lustig et al., MRM 2007 — 33.0 dB on fastMRI knee 4x
   sense:
     name: SENSE
     module: pwm_core.recon.mri_solvers
@@ -111,6 +95,217 @@ solvers:
     params: {}
     gpu: false
     reference: Pruessmann et al., MRM 1999
+  espirit:
+    name: ESPIRiT
+    module: pwm_core.recon.mri_solvers
+    function: run_espirit_recon
+    params: {}
+    gpu: false
+    reference: Uecker et al., MRM 2014 — 34.2 dB on fastMRI knee 4x
+  cs_tv:
+    name: CS-MRI (TV)
+    module: pwm_core.recon.mri_solvers
+    function: run_tv_mri
+    params: {}
+    gpu: false
+    reference: Block et al., MRM 2007
+  pocs:
+    name: POCS
+    module: pwm_core.recon.mri_solvers
+    function: run_pocs
+    params: {}
+    gpu: false
+    reference: Haacke et al., MRM 1991
+  admm_mri:
+    name: ADMM
+    module: pwm_core.recon.mri_solvers
+    function: run_admm_mri
+    params: {}
+    gpu: false
+    reference: Yang et al., MRM 2010
+  conjugate_gradient:
+    name: Conjugate Gradient
+    module: pwm_core.recon.mri_solvers
+    function: run_conjugate_gradient
+    params: {}
+    gpu: false
+    reference: Pruessmann et al., MRM 2001
+  truncated_ifft:
+    name: Truncated IFFT
+    module: pwm_core.recon.mri_solvers
+    function: run_truncated_ifft
+    params: {}
+    gpu: false
+    reference: Classic Fourier MRI, Lauterbur 1973
+  gradient_descent:
+    name: Gradient Descent
+    module: pwm_core.recon.mri_solvers
+    function: run_gradient_descent
+    params: {}
+    gpu: false
+    reference: Fessler, IEEE SPM 2010
+  split_bregman:
+    name: Split Bregman
+    module: pwm_core.recon.mri_solvers
+    function: run_split_bregman
+    params: {}
+    gpu: false
+    reference: Goldstein & Osher, SIAM J Imaging Sci 2009
+  pnp_admm:
+    name: PnP-ADMM
+    module: pwm_core.recon.mri_solvers
+    function: run_pnp_mri
+    params: {}
+    gpu: false
+    reference: Ahmad et al., IEEE SPM 2020
+  low_rank:
+    name: Low-Rank
+    module: pwm_core.recon.mri_solvers
+    function: run_low_rank
+    params: {}
+    gpu: false
+    reference: Haldar, IEEE TMI 2014 — LORAKS
+  ista_mri:
+    name: ISTA
+    module: pwm_core.recon.mri_solvers
+    function: run_ista_mri
+    params: {}
+    gpu: false
+    reference: Daubechies et al., 2004; Beck & Teboulle, 2009
+  grappa_like:
+    name: GRAPPA-like
+    module: pwm_core.recon.mri_solvers
+    function: run_grappa_like
+    params: {}
+    gpu: false
+    reference: Griswold et al., MRM 2002
+  famous_dl:
+    name: MoDL
+    module: pwm_core.recon.modl
+    function: run_modl
+    params: {}
+    gpu: true
+    reference: Aggarwal et al., IEEE TMI 2019 — 36.0 dB on fastMRI knee 4x
+  small_gpu:
+    name: MoDL (5 unrolls)
+    module: pwm_core.recon.modl
+    function: run_modl
+    params:
+      n_iter: 5
+    gpu: true
+    reference: Aggarwal et al., IEEE TMI 2019
+  varnet:
+    name: E2E-VarNet
+    module: pwm_core.recon.varnet
+    function: run_varnet
+    params: {}
+    gpu: true
+    reference: Sriram et al., MICCAI 2020 — 40.5 dB on fastMRI knee 4x
+  fista_mri:
+    name: FISTA
+    module: pwm_core.recon.mri_solvers
+    function: run_fista_mri
+    params: {}
+    gpu: false
+    reference: Beck & Teboulle, SIAM J Imaging Sci 2009
+  landweber:
+    name: Landweber Iteration
+    module: pwm_core.recon.mri_solvers
+    function: run_landweber
+    params: {}
+    gpu: false
+    reference: Landweber, Amer J Math 1951
+  tikhonov:
+    name: Tikhonov Regularization
+    module: pwm_core.recon.mri_solvers
+    function: run_tikhonov
+    params: {}
+    gpu: false
+    reference: Tikhonov, Soviet Math Dokl 1963
+  homodyne:
+    name: Homodyne Detection
+    module: pwm_core.recon.mri_solvers
+    function: run_homodyne
+    params: {}
+    gpu: false
+    reference: Noll, Nishimura, Macovski, IEEE TMI 1991
+  nuclear_norm:
+    name: Nuclear Norm (SVT)
+    module: pwm_core.recon.mri_solvers
+    function: run_nuclear_norm
+    params: {}
+    gpu: false
+    reference: Cai, Candes, Shen, SIAM J Optim 2010; Shin et al., MRM 2014 (SAKE)
+  proximal_gradient:
+    name: Proximal Gradient Descent
+    module: pwm_core.recon.mri_solvers
+    function: run_proximal_gradient
+    params: {}
+    gpu: false
+    reference: Combettes & Wajs, Multiscale Model Simul 2005
+  bm3d_mri:
+    name: BM3D-MRI
+    module: pwm_core.recon.mri_solvers
+    function: run_bm3d_mri
+    params: {}
+    gpu: false
+    reference: Eksioglu, IEEE SPL 2016
+  spirit_like:
+    name: SPIRiT-like
+    module: pwm_core.recon.mri_solvers
+    function: run_spirit_like
+    params: {}
+    gpu: false
+    reference: Lustig & Pauly, MRM 2010
+  red_mri:
+    name: RED (Regularization by Denoising)
+    module: pwm_core.recon.mri_solvers
+    function: run_red_mri
+    params: {}
+    gpu: false
+    reference: Romano, Elad, Milanfar, SIAM J Imaging Sci 2017
+  dictionary_learning:
+    name: Dictionary Learning MRI
+    module: pwm_core.recon.mri_solvers
+    function: run_dictionary_learning
+    params: {}
+    gpu: false
+    reference: Ravishankar & Bresler, IEEE TMI 2011
+  aloha:
+    name: ALOHA (Hankel Low-Rank)
+    module: pwm_core.recon.mri_solvers
+    function: run_aloha
+    params: {}
+    gpu: false
+    reference: Jin & Ye, IEEE TIP 2015
+  unet_mri:
+    name: U-Net (fastMRI)
+    module: pwm_core.recon.mri_solvers
+    function: run_unet_mri
+    params: {}
+    gpu: true
+    reference: Zbontar et al., arXiv 2018; Ronneberger et al., MICCAI 2015
+  dccnn:
+    name: DC-CNN
+    module: pwm_core.recon.mri_solvers
+    function: run_dccnn
+    params: {}
+    gpu: true
+    reference: Schlemper et al., IEEE TMI 2018
+  deep_admm_net:
+    name: Deep ADMM-Net
+    module: pwm_core.recon.mri_solvers
+    function: run_deep_admm_net
+    params: {}
+    gpu: true
+    reference: Sun, Li, Xu, NeurIPS 2016
+  ista_net_plus:
+    name: ISTA-Net+
+    module: pwm_core.recon.mri_solvers
+    function: run_ista_net_plus
+    params: {}
+    gpu: true
+    reference: Zhang & Ghanem, CVPR 2018
 metrics:
   names:
   - psnr

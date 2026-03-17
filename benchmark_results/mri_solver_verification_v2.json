@@ -1,0 +1,332 @@
+{
+  "traditional_cpu": {
+    "name": "Zero-Filled IFFT",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 9.4,
+    "status": "PASS"
+  },
+  "best_quality": {
+    "name": "CS-MRI (Wavelet)",
+    "mean_psnr": 20.17,
+    "mean_ssim": 0.478,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 4.2,
+    "status": "PASS"
+  },
+  "sense": {
+    "name": "SENSE",
+    "mean_psnr": 20.17,
+    "mean_ssim": 0.478,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 4.2,
+    "status": "PASS"
+  },
+  "espirit": {
+    "name": "ESPIRiT",
+    "mean_psnr": 20.17,
+    "mean_ssim": 0.478,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 4.1,
+    "status": "PASS"
+  },
+  "cs_tv": {
+    "name": "CS-MRI (TV)",
+    "mean_psnr": 18.05,
+    "mean_ssim": 0.4329,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 15.0,
+    "status": "PASS"
+  },
+  "pocs": {
+    "name": "POCS",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 6.4,
+    "status": "PASS"
+  },
+  "admm_mri": {
+    "name": "ADMM",
+    "mean_psnr": 19.76,
+    "mean_ssim": 0.4727,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.7,
+    "status": "PASS"
+  },
+  "conjugate_gradient": {
+    "name": "Conjugate Gradient",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.435,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.1,
+    "status": "PASS"
+  },
+  "truncated_ifft": {
+    "name": "Truncated IFFT",
+    "mean_psnr": 17.92,
+    "mean_ssim": 0.4283,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.0,
+    "status": "PASS"
+  },
+  "gradient_descent": {
+    "name": "Gradient Descent",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.435,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.6,
+    "status": "PASS"
+  },
+  "split_bregman": {
+    "name": "Split Bregman",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 2.6,
+    "status": "PASS"
+  },
+  "pnp_admm": {
+    "name": "PnP-ADMM",
+    "mean_psnr": 19.42,
+    "mean_ssim": 0.4676,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.5,
+    "status": "PASS"
+  },
+  "low_rank": {
+    "name": "Low-Rank",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 77.8,
+    "status": "PASS"
+  },
+  "ista_mri": {
+    "name": "ISTA",
+    "mean_psnr": 19.39,
+    "mean_ssim": 0.4671,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.8,
+    "status": "PASS"
+  },
+  "grappa_like": {
+    "name": "GRAPPA-like",
+    "mean_psnr": 18.14,
+    "mean_ssim": 0.4362,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.6,
+    "status": "PASS"
+  },
+  "famous_dl": {
+    "name": "MoDL",
+    "mean_psnr": 17.47,
+    "mean_ssim": 0.4089,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 24.7,
+    "status": "PASS"
+  },
+  "small_gpu": {
+    "name": "MoDL (5 unrolls)",
+    "mean_psnr": 17.7,
+    "mean_ssim": 0.4181,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 23.4,
+    "status": "PASS"
+  },
+  "varnet": {
+    "name": "E2E-VarNet",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 3.2,
+    "status": "PASS"
+  },
+  "fista_mri": {
+    "name": "FISTA",
+    "mean_psnr": 20.78,
+    "mean_ssim": 0.484,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 8.7,
+    "status": "PASS"
+  },
+  "landweber": {
+    "name": "Landweber Iteration",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.0,
+    "status": "PASS"
+  },
+  "tikhonov": {
+    "name": "Tikhonov Regularization",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4347,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.0,
+    "status": "PASS"
+  },
+  "homodyne": {
+    "name": "Homodyne Detection",
+    "mean_psnr": 17.71,
+    "mean_ssim": 0.4281,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.1,
+    "status": "PASS"
+  },
+  "nuclear_norm": {
+    "name": "Nuclear Norm (SVT)",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 70.1,
+    "status": "PASS"
+  },
+  "proximal_gradient": {
+    "name": "Proximal Gradient Descent",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4349,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.3,
+    "status": "PASS"
+  },
+  "bm3d_mri": {
+    "name": "BM3D-MRI",
+    "mean_psnr": 16.52,
+    "mean_ssim": 0.3601,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.9,
+    "status": "PASS"
+  },
+  "spirit_like": {
+    "name": "SPIRiT-like",
+    "mean_psnr": 18.12,
+    "mean_ssim": 0.4353,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 1.3,
+    "status": "PASS"
+  },
+  "red_mri": {
+    "name": "RED (Regularization by Denoising)",
+    "mean_psnr": 17.84,
+    "mean_ssim": 0.4248,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 4.0,
+    "status": "PASS"
+  },
+  "dictionary_learning": {
+    "name": "Dictionary Learning MRI",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 4.5,
+    "status": "PASS"
+  },
+  "aloha": {
+    "name": "ALOHA (Hankel Low-Rank)",
+    "mean_psnr": 20.14,
+    "mean_ssim": 0.8694,
+    "pass": 3,
+    "total": 3,
+    "errors": 0,
+    "time": 218.0,
+    "status": "PASS"
+  },
+  "unet_mri": {
+    "name": "U-Net (fastMRI)",
+    "mean_psnr": 18.11,
+    "mean_ssim": 0.4351,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 5.3,
+    "status": "PASS"
+  },
+  "dccnn": {
+    "name": "DC-CNN",
+    "mean_psnr": 17.64,
+    "mean_ssim": 0.4109,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.8,
+    "status": "PASS"
+  },
+  "deep_admm_net": {
+    "name": "Deep ADMM-Net",
+    "mean_psnr": 15.08,
+    "mean_ssim": 0.0286,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.4,
+    "status": "PASS"
+  },
+  "ista_net_plus": {
+    "name": "ISTA-Net+",
+    "mean_psnr": 17.87,
+    "mean_ssim": 0.4307,
+    "pass": 20,
+    "total": 20,
+    "errors": 0,
+    "time": 0.7,
+    "status": "PASS"
+  }
+}
