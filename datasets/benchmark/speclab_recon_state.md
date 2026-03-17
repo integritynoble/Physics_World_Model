@@ -94,9 +94,9 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Zero-Filled IFFT | Classical | 24.5 dB | 0.58 |  |
-| L1-Wavelet (ESPIRiT) | Compressed Sensing | 28.3 dB | 0.82 |  |
-| PnP-DnCNN | PnP | 29.8 dB | 0.843 |  |
+| Zero-Filled IFFT | Classical | 24.5 dB | 0.58 | done |
+| L1-Wavelet (ESPIRiT) | Compressed Sensing | 28.3 dB | 0.82 | done |
+| PnP-DnCNN | PnP | 29.8 dB | 0.843 | done |
 | U-Net (ASL) | Deep Learning | 32.1 dB | 0.876 |  |
 | E2E-VarNet | Deep Unrolling | 34.6 dB | 0.908 |  |
 | Kinetic-CS | Physics-Informed | 33.2 dB | 0.891 |  |
@@ -193,7 +193,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Wiener-CL | Classical | 25.2 dB | 0.771 | done |
-| Richardson-Lucy | Classical | 27.5 dB | 0.812 |  |
+| Richardson-Lucy | Classical | 27.5 dB | 0.812 | done |
 | DnCNN-CL | Deep Learning | 31.8 dB | 0.875 |  |
 | U-Net-CL | Deep Learning | 34.2 dB | 0.908 |  |
 | CARE-CL | Deep Learning | 35.5 dB | 0.921 |  |
@@ -420,7 +420,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Richardson-Lucy | Classical | 24.5 dB | 0.744 | done |
 | Wiener-DF | Classical | 27.2 dB | 0.793 | done |
 | TV-DF | Variational | 29.8 dB | 0.836 | done |
-| BM3D-DF | Classical | 32.4 dB | 0.871 |  |
+| BM3D-DF | Classical | 32.4 dB | 0.871 | done |
 | CARE-DF | Deep Learning | 35.1 dB | 0.908 |  |
 | Noise2Void-DF | Self-Supervised | 33.7 dB | 0.889 |  |
 | SwinIR-DF | Transformer | 37.6 dB | 0.932 |  |
@@ -445,9 +445,9 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-DEXA | Classical | 26.4 dB | 0.782 |  |
-| TV-DEXA | Variational | 30.1 dB | 0.841 |  |
-| BML-Sep | Classical | 28.7 dB | 0.813 |  |
+| FBP-DEXA | Classical | 26.4 dB | 0.782 | done |
+| TV-DEXA | Variational | 30.1 dB | 0.841 | done |
+| BML-Sep | Classical | 28.7 dB | 0.813 | done |
 | DXA-CNN | Deep Learning | 33.8 dB | 0.881 |  |
 | DXA-U-Net | Deep Learning | 35.6 dB | 0.907 |  |
 | PnP-DXA | PnP | 34.2 dB | 0.893 |  |
@@ -475,7 +475,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | DTI-FIT | Classical | 22.4 dB | 0.71 | done |
 | SHORE | Classical | 24.6 dB | 0.745 | done |
-| CHARMED | Statistical | 26.8 dB | 0.782 |  |
+| CHARMED | Statistical | 26.8 dB | 0.782 | done |
 | DnCNN-DTI | Deep Learning | 29.3 dB | 0.831 |  |
 | DWIML-Net | Deep Learning | 32.1 dB | 0.871 |  |
 | DTIFormer | Transformer | 34.8 dB | 0.912 |  |
@@ -599,11 +599,11 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| CLEAN-VLBI | Classical | 20.4 dB | 0.672 |  |
-| MEM-VLBI | Variational | 23.1 dB | 0.718 |  |
-| RESOLVE | Statistical | 25.8 dB | 0.761 |  |
-| eht-imaging | Variational | 28.6 dB | 0.812 |  |
-| SMILI | Compressed Sensing | 31.2 dB | 0.858 |  |
+| CLEAN-VLBI | Classical | 20.4 dB | 0.672 | done |
+| MEM-VLBI | Variational | 23.1 dB | 0.718 | done |
+| RESOLVE | Statistical | 25.8 dB | 0.761 | done |
+| eht-imaging | Variational | 28.6 dB | 0.812 | done |
+| SMILI | Compressed Sensing | 31.2 dB | 0.858 | done |
 | TransVLBI | Transformer | 34.5 dB | 0.908 |  |
 | RadioFormer | Transformer | 36.2 dB | 0.928 |  |
 | PhysVLBI | Physics-Informed | 37.6 dB | 0.94 |  |
@@ -655,7 +655,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| WBP-ET | Classical | 20.9 dB | 0.678 |  |
+| WBP-ET | Classical | 20.9 dB | 0.678 | done |
 | SIRT-ET | Classical | 23.6 dB | 0.724 |  |
 | CS-ET | Compressed Sensing | 26.4 dB | 0.769 |  |
 | DnCNN-ET | Deep Learning | 29.3 dB | 0.829 |  |
@@ -685,7 +685,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 |-----------|------|----------|----------|--------|
 | Coincidence-Count | Classical | 19.8 dB | 0.658 | done |
 | CS-Ghost | Compressed Sensing | 22.5 dB | 0.704 | done |
-| SVD-Ghost | Statistical | 25.1 dB | 0.748 |  |
+| SVD-Ghost | Statistical | 25.1 dB | 0.748 | done |
 | DnCNN-Ghost | Deep Learning | 28.3 dB | 0.806 |  |
 | GAN-Ghost | Generative | 31.0 dB | 0.852 |  |
 | TransGhost | Transformer | 33.8 dB | 0.897 |  |
@@ -895,7 +895,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Kirchhoff Migration | Classical | 22.0 dB | 0.6 |  |
+| Kirchhoff Migration | Classical | 22.0 dB | 0.6 | done |
 | RTM | Classical | 25.5 dB | 0.74 |  |
 | GPR-RCNN | Deep Learning | 29.8 dB | 0.87 |  |
 | HyperDet | Deep Learning | 31.5 dB | 0.905 |  |
@@ -905,7 +905,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Matched Filter | Classical | 20.0 dB | 0.52 | done |
-| BayesWave | PnP | 24.5 dB | 0.71 |  |
+| BayesWave | PnP | 24.5 dB | 0.71 | done |
 | GW-CNN | Deep Learning | 28.8 dB | 0.85 |  |
 | WaveFormer | Transformer | 30.5 dB | 0.895 |  |
 
@@ -978,7 +978,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Goldstein-MCF | Classical | 23.0 dB | 0.64 |  |
+| Goldstein-MCF | Classical | 23.0 dB | 0.64 | done |
 | InSAR-BM3D | PnP | 27.0 dB | 0.79 |  |
 | PhaseNet | Deep Learning | 31.0 dB | 0.89 |  |
 | InSAR-Former | Transformer | 33.0 dB | 0.92 |  |
@@ -1052,7 +1052,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
 | Wiener-ADMM | Classical | 23.5 dB | 0.64 | done |
-| PnP-ADMM | PnP | 27.5 dB | 0.79 |  |
+| PnP-ADMM | PnP | 27.5 dB | 0.79 | done |
 | FlatNet | Deep Learning | 31.8 dB | 0.89 |  |
 | Uformer | Transformer | 33.5 dB | 0.92 |  |
 
@@ -1263,8 +1263,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| SVD-MRF | Classical | 23.5 dB | 0.65 |  |
-| MANTIS | Classical | 27.0 dB | 0.79 |  |
+| SVD-MRF | Classical | 23.5 dB | 0.65 | done |
+| MANTIS | Classical | 27.0 dB | 0.79 | done |
 | MRF-Net | Deep Learning | 31.5 dB | 0.895 |  |
 | MRF-Former | Transformer | 33.5 dB | 0.93 |  |
 
@@ -1550,8 +1550,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wolf FBP | Classical | 24.5 dB | 0.69 |  |
-| Born-ADMM | PnP | 28.0 dB | 0.81 |  |
+| Wolf FBP | Classical | 24.5 dB | 0.69 | done |
+| Born-ADMM | PnP | 28.0 dB | 0.81 | done |
 | ODT-Net | Deep Learning | 32.0 dB | 0.905 |  |
 | Rytov-Former | Transformer | 34.0 dB | 0.935 |  |
 
@@ -1743,7 +1743,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| FBP-MLP | Classical | 23.5 dB | 0.65 |  |
+| FBP-MLP | Classical | 23.5 dB | 0.65 | done |
 | DROP-TVS | PnP | 27.0 dB | 0.79 |  |
 | ProtonNet | Deep Learning | 31.0 dB | 0.89 |  |
 | pCT-Former | Transformer | 33.0 dB | 0.92 |  |
@@ -1854,14 +1854,28 @@ Last updated: 2026-03-12 | Total modalities: 169
 | ScatterNet | Deep Learning | 31.5 dB | 0.895 |  |
 | ScatterFormer | Transformer | 33.5 dB | 0.925 |  |
 
-## SD-CASSI (`sd_cassi`) — compressive
+## CASSI (`cassi`) — compressive
 
-| Algorithm | Type | Ref PSNR | Ref SSIM | Status |
-|-----------|------|----------|----------|--------|
-| GAP-TV | Classical |  |  | done |
-| PnP-HSICNN | PnP |  |  | done |
-| HDNet | Deep Learning |  |  |  |
-| MST-L | Transformer |  |  |  |
+| Algorithm | Type | Ref PSNR | Ref SSIM | Status | Tests |
+|-----------|------|----------|----------|--------|-------|
+| GAP-TV | Classical | 24.34 dB | — | done | 2 |
+| TwIST | Classical | 23.1 dB | — | done | 1 |
+| PnP-HSICNN | PnP | 25.12 dB | — | done | 1 |
+| TSA-Net | Deep Learning | 25.96 dB | — | done | 1 |
+| λ-Net | Deep Learning | 29.36 dB | — | done | 1 |
+| ADMM-Net | Deep Unrolling | 28.08 dB | — | done | 1 |
+| GAP-Net | Deep Unrolling | 30.31 dB | — | done | 1 |
+| DGSMP | Deep Unrolling | 27.31 dB | — | done | 1 |
+| HDNet | Deep Learning | 28.39 dB | — | done | 1 |
+| MST-L | Transformer | 34.80 dB | — | done | 1 |
+| MST++ | Transformer | 33.20 dB | — | done | 1 |
+| CST-L-Plus | Transformer | 33.84 dB | — | done | 1 |
+| BIRNAT | Deep Unrolling | 35.77 dB | — | done | 1 |
+| DAUHST-9stg | Transformer | 37.15 dB | — | done | 1 |
+| BiSRNet | Deep Learning | 29.47 dB | — | done | 1 |
+| PADUT-3stg | Transformer | 36.95 dB | — | no-ckpt | 0 |
+| RDLUF-MixS2-9stg | Deep Unrolling | 39.6 dB | — | no-ckpt | 0 |
+| SSR-L | Transformer | 34.0 dB | — | no-ckpt | 0 |
 
 ## Seismic Tomography (`seismic_tomo`) — experimental_science
 
@@ -1892,7 +1906,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Goldstein MCF | Classical | 24.0 dB | 0.67 |  |
+| Goldstein MCF | Classical | 24.0 dB | 0.67 | done |
 | PnP-Phase | PnP | 28.0 dB | 0.8 |  |
 | ShearNet | Deep Learning | 32.0 dB | 0.9 |  |
 | PhaseFormer | Transformer | 34.0 dB | 0.935 |  |
@@ -1919,8 +1933,8 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Algorithm | Type | Ref PSNR | Ref SSIM | Status |
 |-----------|------|----------|----------|--------|
-| Wiener-SIM | Classical | 28.5 dB | 0.82 |  |
-| PnP-SIM | PnP | 31.5 dB | 0.89 |  |
+| Wiener-SIM | Classical | 28.5 dB | 0.82 | done |
+| PnP-SIM | PnP | 31.5 dB | 0.89 | done |
 | DL-SIM | Deep Learning | 35.0 dB | 0.945 |  |
 | SIMformer | Transformer | 36.5 dB | 0.96 |  |
 
@@ -2416,7 +2430,7 @@ Last updated: 2026-03-12 | Total modalities: 169
 
 | Category | Count |
 |----------|-------|
-| CPU algorithms verified (done) | 500 |
-| CPU algorithms pending verification | 83 |
+| CPU algorithms verified (done) | 528 |
+| CPU algorithms pending verification | 55 |
 | GPU algorithms pending | 971 |
 | Total | 1554 |

@@ -104,6 +104,10 @@ MODEL_REGISTRY = {
         "input_setting": "H", "input_mask": "Mask", "binary_mask": True,
         "ckpt": "bisrnet/bisrnet.pth", "ref_psnr": 33.0,
     },
+    "hdnet": {
+        "input_setting": "H", "input_mask": None, "binary_mask": True,
+        "ckpt": "hdnet/hdnet.pth", "ref_psnr": 34.97,
+    },
     "mst_s": {
         "input_setting": "H", "input_mask": "Phi", "binary_mask": True,
         "ckpt": "mst/mst_s.pth", "ref_psnr": 32.0,
@@ -111,6 +115,10 @@ MODEL_REGISTRY = {
     "mst_m": {
         "input_setting": "H", "input_mask": "Phi", "binary_mask": True,
         "ckpt": "mst/mst_m.pth", "ref_psnr": 33.5,
+    },
+    "mst_l": {
+        "input_setting": "H", "input_mask": "Phi", "binary_mask": True,
+        "ckpt": "mst/mst_l.pth", "ref_psnr": 34.81,
     },
     # ── RDLUF-MixS2 (ShawnDong98/RDLUF_MixS2) ──
     "rdluf_mixs2_9stg": {
@@ -350,12 +358,36 @@ def _build_model(model_key: str, device=None):
     elif model_key == "bisrnet":
         from cassi_arch.BiSRNet import BiSRNet
         model = BiSRNet(in_channels=28, out_channels=28, n_feat=28, stage=1, num_blocks=[1, 1, 1])
+    elif model_key == "hdnet":
+        from cassi_arch.HDNet import HDNetOriginal
+        model = HDNetOriginal(in_ch=28, out_ch=28)
     elif model_key == "mst_s":
         from cassi_arch.MST_Plus_Plus import MST
         model = MST(dim=28, stage=2, num_blocks=[2, 2, 2])
     elif model_key == "mst_m":
         from cassi_arch.MST_Plus_Plus import MST
-        model = MST(dim=28, stage=2, num_blocks=[2, 4, 4])
+        model = MST(dim=28, stage=2, num_blocks=[2, 4, 2])
+    elif model_key == "mst_l":
+        # mst_l checkpoint uses the original MST architecture (mst.py MST class
+        # with 3-element encoder stages including mask downsampling conv)
+        import importlib.util as _ilu
+        _mst_paths = [
+            str(_PKG_ROOT / "mst.py"),  # local: .../recon/mst.py
+            "/mst.py",                   # Modal: added as /mst.py in image
+        ]
+        _mst_mod = None
+        for _mp in _mst_paths:
+            _spec = _ilu.spec_from_file_location("_mst_orig", _mp)
+            if _spec is not None:
+                try:
+                    _mst_mod = _ilu.module_from_spec(_spec)
+                    _spec.loader.exec_module(_mst_mod)
+                    break
+                except Exception:
+                    pass
+        if _mst_mod is None:
+            raise ImportError("Cannot load mst.py for mst_l model")
+        model = _mst_mod.MST(dim=28, stage=2, num_blocks=[4, 7, 5])
     elif model_key == "rdluf_mixs2_9stg":
         from cassi_arch.RDLUF_MixS2 import DUF_MixS2
         from argparse import Namespace

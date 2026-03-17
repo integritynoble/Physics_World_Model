@@ -246,7 +246,7 @@ class HSI_CS(nn.Module):
             y = y.unsqueeze(1)
         bs = sz[0]
         sz = y.size()
-        x = torch.zeros([bs, 28, sz[2], sz[2]]).cuda()
+        x = torch.zeros([bs, 28, sz[2], sz[2]], device=y.device)
         for t in range(28):
             temp = y[:, :, :, 0 + 2 * t : sz[2] + 2 * t]
 
@@ -262,7 +262,7 @@ class HSI_CS(nn.Module):
         else:
             bs = sz[0]
         sz = x.size()
-        y = torch.zeros([bs, sz[2], sz[2]+2*27]).cuda()
+        y = torch.zeros([bs, sz[2], sz[2]+2*27], device=x.device)
         for t in range(28):
             y[:, :, 0 + 2 * t : sz[2] + 2 * t] = x[:, t, :, :] + y[:, :, 0 + 2 * t : sz[2] + 2 * t]
         return y

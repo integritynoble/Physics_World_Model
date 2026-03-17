@@ -549,7 +549,7 @@ class CST(nn.Module):
             fea,mask = self.fe(x)
         else:
             fea = self.fe(x)
-            mask = torch.randn((b,1,h,w)).cuda()
+            mask = torch.randn((b,1,h,w), device=x.device)
 
         # Encoder
         fea_encoder = []

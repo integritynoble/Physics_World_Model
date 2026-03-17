@@ -1,0 +1,15 @@
+{
+  "test_date": "2026-03-17",
+  "gpu": "T4",
+  "dataset": "standard_cassi_00.h5 (KAIST scene 0)",
+  "psnr_formula": "per-band average PSNR with peak=1",
+  "results": {
+    "mst_l": {
+      "status": "PASS",
+      "psnr": 34.8,
+      "ref_psnr": 34.81,
+      "time_s": 4.3,
+      "display": "MST-L"
+    }
+  }
+}
