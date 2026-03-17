@@ -118,6 +118,7 @@ MODEL_REGISTRY = {
         "ckpt": "rdluf_mixs2/RDLUF_MixS2_9stage.pth", "ref_psnr": 39.6,
         "output_format": "tuple",  # returns (out, log_dict)
         "ckpt_format": "dict_model",  # checkpoint['model']
+        "circular_shift": True,
     },
     # ── SSR (ZhangJC-2k/SSR) ──
     "ssr_s": {
@@ -142,15 +143,13 @@ MODEL_REGISTRY = {
         "stage": 9,
     },
     # ── PADUT (MyuLi/PADUT) ──
-    "padut_5stg": {
+    # PADUT uses linear shift for measurement/Phi (same as MST-benchmark),
+    # circular shift (torch.roll) only inside the model's forward pass
+    "padut_3stg": {
         "input_setting": "Y", "input_mask": "Phi_PhiPhiT", "binary_mask": True,
-        "ckpt": "padut/padut_5stg.pth", "ref_psnr": 34.8,
-        "ckpt_format": "direct",  # state dict directly
-    },
-    "padut_12stg": {
-        "input_setting": "Y", "input_mask": "Phi_PhiPhiT", "binary_mask": True,
-        "ckpt": "padut/padut_12stg.pth", "ref_psnr": 38.9,
-        "ckpt_format": "direct",  # state dict directly
+        "ckpt": "padut/padut_3stg_official.pth", "ref_psnr": 36.95,
+        "ckpt_format": "dict_model",
+        "nums_stages": 2,
     },
 }
 
@@ -218,14 +217,19 @@ def _prepare_masks(mask_2d: np.ndarray, nC: int = 28, step: int = 2, device=None
     Phi_s = torch.sum(Phi ** 2, dim=1)  # (1, H, W_meas)
     Phi_s[Phi_s == 0] = 1
 
-    # Phi_roll: circular-shifted mask3d using torch.roll (for RDLUF-MixS2)
+    # Phi_roll: circular-shifted mask3d using torch.roll (for RDLUF-MixS2, PADUT)
     mask3d_padded = torch.zeros(1, nC, H, W + (nC - 1) * step, device=device)
     mask3d_padded[:, :, :, :W] = mask3d
     Phi_roll = mask3d_padded.clone()
     for i in range(nC):
         Phi_roll[:, i, :, :] = torch.roll(Phi_roll[:, i, :, :], shifts=step * i, dims=2)
 
-    return {"mask3d": mask3d, "Phi": Phi, "Phi_s": Phi_s, "Phi_roll": Phi_roll}
+    # Phi_s_roll: sum(Phi_roll**2, dim=1), floor at 1
+    Phi_s_roll = torch.sum(Phi_roll ** 2, dim=1)
+    Phi_s_roll[Phi_s_roll == 0] = 1
+
+    return {"mask3d": mask3d, "Phi": Phi, "Phi_s": Phi_s,
+            "Phi_roll": Phi_roll, "Phi_s_roll": Phi_s_roll}
 
 
 def _prepare_input(y: np.ndarray, mask_2d: np.ndarray, model_key: str,
@@ -287,6 +291,9 @@ def _prepare_input(y: np.ndarray, mask_2d: np.ndarray, model_key: str,
     elif mask_type == "Mask_PhiS":
         # SSR format: unshifted mask3d + Phi_s with channel dim
         input_mask = (masks["mask3d"], masks["Phi_s"].unsqueeze(1))
+    elif mask_type == "Phi_roll_PhiS":
+        # PADUT: circular-shifted Phi + Phi_s from circular-shifted mask
+        input_mask = (masks["Phi_roll"], masks["Phi_s_roll"])
     else:
         raise ValueError(f"Unknown mask_type: {mask_type}")
 
@@ -373,8 +380,12 @@ def _build_model(model_key: str, device=None):
         model = Net(opt)
     elif model_key.startswith("padut_"):
         from cassi_arch.PADUT import PADUT
-        n_stg = int(model_key.split("_")[1].replace("stg", ""))
-        model = PADUT(in_c=28, n_feat=28, nums_stages=n_stg - 1)
+        spec = MODEL_REGISTRY[model_key]
+        nums_stages = spec.get("nums_stages")
+        if nums_stages is None:
+            n_stg = int(model_key.split("_")[1].replace("stg", ""))
+            nums_stages = n_stg - 1
+        model = PADUT(in_c=28, n_feat=28, nums_stages=nums_stages)
     else:
         raise ValueError(f"Unknown model_key: {model_key}")
 
@@ -511,7 +522,7 @@ def cassi_model_recon(y: np.ndarray, mask_2d: np.ndarray, model_key: str,
     # Handle binary mask: binarize mask and regenerate measurement from x_true
     if uses_binary and x_true is not None:
         mask_2d = (mask_2d > 0.5).astype(np.float32)
-        circular = spec.get("input_setting") == "Y_norm"
+        circular = spec.get("circular_shift", False) or spec.get("input_setting") == "Y_norm"
         y = _regenerate_measurement(x_true, mask_2d, nC, step, circular=circular)
 
     # Cache model to avoid reloading

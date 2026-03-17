@@ -180,21 +180,13 @@ SOLVERS = {
         "reference": "Zhang et al., CVPR 2024 — 34.0 dB on KAIST",
         "cfg_override": {"model_key": "ssr_l"},
     },
-    "padut_5stg": {
-        "name": "PADUT-5stg",
+    "padut_3stg": {
+        "name": "PADUT-3stg",
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Li et al., CVPR 2023 — 34.8 dB on KAIST",
-        "cfg_override": {"model_key": "padut_5stg"},
-    },
-    "padut_12stg": {
-        "name": "PADUT-12stg",
-        "module": "pwm_core.recon.cassi_models",
-        "function": "run_cassi_model",
-        "gpu": True,
-        "reference": "Li et al., CVPR 2023 — 38.9 dB on KAIST",
-        "cfg_override": {"model_key": "padut_12stg"},
+        "reference": "Li et al., ICCV 2023 — 36.95 dB on KAIST",
+        "cfg_override": {"model_key": "padut_3stg"},
     },
 }
 
