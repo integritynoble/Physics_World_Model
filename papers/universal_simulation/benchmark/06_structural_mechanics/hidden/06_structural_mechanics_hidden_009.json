@@ -1,0 +1,11 @@
+{
+  "V_frac": 0.49794174799671287,
+  "E_GPa": 210,
+  "load_N": 1000,
+  "support": "bridge",
+  "penalization": 3,
+  "_task_id": "06_structural_mechanics_hidden_009",
+  "_seed": 299523981,
+  "_tier": "hidden",
+  "_domain": "06_structural_mechanics"
+}

@@ -1,0 +1,12 @@
+{
+  "county": "LosAngeles_CA",
+  "beta_0": 0.35,
+  "sigma": 0.2,
+  "gamma": 0.1,
+  "delta": 0.005,
+  "T_days": 380,
+  "_task_id": "08_epidemiology_hidden_097",
+  "_seed": 2513687132,
+  "_tier": "hidden",
+  "_domain": "08_epidemiology"
+}

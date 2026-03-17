@@ -1,0 +1,12 @@
+{
+  "protein": "HP35",
+  "force_field": "ff14SB",
+  "solvent": "TIP3P",
+  "T_K": 281,
+  "T_sim_ns": 1000,
+  "dt_fs": 2.0,
+  "_task_id": "12_molecular_dynamics_hidden_059",
+  "_seed": 1851036335,
+  "_tier": "hidden",
+  "_domain": "12_molecular_dynamics"
+}

@@ -1,0 +1,12 @@
+{
+  "protein": "Trp-cage",
+  "force_field": "ff14SB",
+  "solvent": "GB-Neck2",
+  "T_K": 310,
+  "T_sim_ns": 1000,
+  "dt_fs": 2.0,
+  "_task_id": "12_molecular_dynamics_hidden_087",
+  "_seed": 986970556,
+  "_tier": "hidden",
+  "_domain": "12_molecular_dynamics"
+}

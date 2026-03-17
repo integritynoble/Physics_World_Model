@@ -1,0 +1,11 @@
+{
+  "n_angles": 129,
+  "image_size": 128,
+  "noise": "Poisson",
+  "geometry": "parallel_beam",
+  "regularization": "wavelet",
+  "_task_id": "10_inverse_problems_dev_088",
+  "_seed": 3555854365,
+  "_tier": "dev",
+  "_domain": "10_inverse_problems"
+}

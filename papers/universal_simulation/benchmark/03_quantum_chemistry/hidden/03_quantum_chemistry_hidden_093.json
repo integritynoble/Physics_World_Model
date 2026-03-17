@@ -1,0 +1,11 @@
+{
+  "Z": 5,
+  "basis": "cc-pVDZ",
+  "n_max": 4,
+  "l_max": 3,
+  "method": "Full-CI",
+  "_task_id": "03_quantum_chemistry_hidden_093",
+  "_seed": 3523891136,
+  "_tier": "hidden",
+  "_domain": "03_quantum_chemistry"
+}

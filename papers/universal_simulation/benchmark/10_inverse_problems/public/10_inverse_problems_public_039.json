@@ -1,0 +1,11 @@
+{
+  "n_angles": 256,
+  "image_size": 128,
+  "noise": "Poisson",
+  "geometry": "parallel_beam",
+  "regularization": "TV",
+  "_task_id": "10_inverse_problems_public_039",
+  "_seed": 123191241,
+  "_tier": "public",
+  "_domain": "10_inverse_problems"
+}

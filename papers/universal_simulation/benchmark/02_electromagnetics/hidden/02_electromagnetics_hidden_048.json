@@ -1,0 +1,13 @@
+{
+  "a_mm": 35.10970726662717,
+  "b_mm": 10.16,
+  "epsilon_r": 0.9864082385744433,
+  "sigma_wall": 57288257.927603774,
+  "n_modes": 10,
+  "freq_min_GHz": 8.0,
+  "freq_max_GHz": 12.0,
+  "_task_id": "02_electromagnetics_hidden_048",
+  "_seed": 4174231311,
+  "_tier": "hidden",
+  "_domain": "02_electromagnetics"
+}

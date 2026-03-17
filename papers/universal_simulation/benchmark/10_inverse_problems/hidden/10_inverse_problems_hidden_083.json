@@ -1,0 +1,11 @@
+{
+  "n_angles": 124,
+  "image_size": 128,
+  "noise": "Poisson",
+  "geometry": "limited_angle",
+  "regularization": "TV",
+  "_task_id": "10_inverse_problems_hidden_083",
+  "_seed": 3619709430,
+  "_tier": "hidden",
+  "_domain": "10_inverse_problems"
+}

@@ -1,0 +1,12 @@
+{
+  "protein": "chignolin",
+  "force_field": "ff14SB",
+  "solvent": "GB-Neck2",
+  "T_K": 314,
+  "T_sim_ns": 1000,
+  "dt_fs": 2.0,
+  "_task_id": "12_molecular_dynamics_hidden_028",
+  "_seed": 2179129250,
+  "_tier": "hidden",
+  "_domain": "12_molecular_dynamics"
+}

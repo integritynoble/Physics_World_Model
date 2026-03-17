@@ -1,0 +1,11 @@
+{
+  "alpha": 0.00809947533894479,
+  "T_final": 1.0,
+  "bc_type": "Neumann",
+  "source": "none",
+  "domain_shape": "square",
+  "_task_id": "05_thermodynamics_dev_076",
+  "_seed": 1247600265,
+  "_tier": "dev",
+  "_domain": "05_thermodynamics"
+}

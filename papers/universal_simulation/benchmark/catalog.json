@@ -1,0 +1,137 @@
+{
+  "benchmark": "Universal Simulation Benchmark v1.0",
+  "total_tasks": 3600,
+  "domains": {
+    "01_classical_mechanics": {
+      "name": "Granular Flow with Frictional Contact",
+      "spec": "01_classical_mechanics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "02_electromagnetics": {
+      "name": "Rectangular Waveguide Mode Analysis",
+      "spec": "02_electromagnetics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "03_quantum_chemistry": {
+      "name": "Helium-like Atom Ground State Energy",
+      "spec": "03_quantum_chemistry/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "04_fluid_dynamics": {
+      "name": "Turbulent Backward-Facing Step",
+      "spec": "04_fluid_dynamics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "05_thermodynamics": {
+      "name": "2D Heat Conduction",
+      "spec": "05_thermodynamics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "06_structural_mechanics": {
+      "name": "Topology Optimization of Bracket",
+      "spec": "06_structural_mechanics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "07_chemical_kinetics": {
+      "name": "GRI-Mech 3.0 Ignition Delay",
+      "spec": "07_chemical_kinetics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "08_epidemiology": {
+      "name": "COVID-19 County-Level SEIR-D",
+      "spec": "08_epidemiology/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "09_optics": {
+      "name": "Fresnel Diffraction",
+      "spec": "09_optics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "10_inverse_problems": {
+      "name": "CT Reconstruction (LoDoPaB)",
+      "spec": "10_inverse_problems/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "11_seismic": {
+      "name": "Seismic Full-Waveform Inversion (Marmousi)",
+      "spec": "11_seismic/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    },
+    "12_molecular_dynamics": {
+      "name": "Protein Conformational Sampling",
+      "spec": "12_molecular_dynamics/spec.md",
+      "tasks": {
+        "public": 100,
+        "dev": 100,
+        "hidden": 100
+      },
+      "total": 300
+    }
+  },
+  "tiers": {
+    "public": "Ground truth provided, standard parameters",
+    "dev": "Blind evaluation, modified parameters",
+    "hidden": "Adversarial instances, edge cases"
+  },
+  "tasks_per_domain": 300,
+  "instances_per_tier": {
+    "public": 100,
+    "dev": 100,
+    "hidden": 100
+  }
+}

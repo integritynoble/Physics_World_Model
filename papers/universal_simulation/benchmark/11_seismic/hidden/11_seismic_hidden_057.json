@@ -1,0 +1,11 @@
+{
+  "model": "Overthrust",
+  "n_sources": 240,
+  "freq_max_Hz": 10,
+  "starting_model": "1D_smoothed",
+  "lambda_TV": 0.001,
+  "_task_id": "11_seismic_hidden_057",
+  "_seed": 870823523,
+  "_tier": "hidden",
+  "_domain": "11_seismic"
+}

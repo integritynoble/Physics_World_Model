@@ -1,0 +1,11 @@
+{
+  "Z": 3,
+  "basis": "STO-6G",
+  "n_max": 4,
+  "l_max": 3,
+  "method": "HF",
+  "_task_id": "03_quantum_chemistry_dev_055",
+  "_seed": 1266006602,
+  "_tier": "dev",
+  "_domain": "03_quantum_chemistry"
+}

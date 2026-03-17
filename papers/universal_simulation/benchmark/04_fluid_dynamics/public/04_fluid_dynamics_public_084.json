@@ -1,0 +1,9 @@
+{
+  "Re": 10000,
+  "expansion_ratio": 2.0,
+  "T_averaging": 300,
+  "_task_id": "04_fluid_dynamics_public_084",
+  "_seed": 1326747520,
+  "_tier": "public",
+  "_domain": "04_fluid_dynamics"
+}

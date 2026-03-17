@@ -1,0 +1,11 @@
+{
+  "alpha": 0.0019593132931081557,
+  "T_final": 1.0,
+  "bc_type": "Dirichlet",
+  "source": "none",
+  "domain_shape": "square",
+  "_task_id": "05_thermodynamics_dev_040",
+  "_seed": 3009125363,
+  "_tier": "dev",
+  "_domain": "05_thermodynamics"
+}

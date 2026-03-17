@@ -1,0 +1,11 @@
+{
+  "alpha": 0.2007484842888521,
+  "T_final": 1.0,
+  "bc_type": "Robin",
+  "source": "none",
+  "domain_shape": "square",
+  "_task_id": "05_thermodynamics_dev_014",
+  "_seed": 3016666736,
+  "_tier": "dev",
+  "_domain": "05_thermodynamics"
+}

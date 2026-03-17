@@ -1,0 +1,11 @@
+{
+  "alpha": 0.010472119600359198,
+  "T_final": 1.0,
+  "bc_type": "Dirichlet",
+  "source": "none",
+  "domain_shape": "L-shaped",
+  "_task_id": "05_thermodynamics_hidden_030",
+  "_seed": 278395782,
+  "_tier": "hidden",
+  "_domain": "05_thermodynamics"
+}

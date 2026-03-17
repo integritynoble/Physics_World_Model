@@ -1,0 +1,11 @@
+{
+  "n_angles": 49,
+  "image_size": 128,
+  "noise": "Poisson",
+  "geometry": "parallel_beam",
+  "regularization": "Tikhonov",
+  "_task_id": "10_inverse_problems_dev_096",
+  "_seed": 114115762,
+  "_tier": "dev",
+  "_domain": "10_inverse_problems"
+}
