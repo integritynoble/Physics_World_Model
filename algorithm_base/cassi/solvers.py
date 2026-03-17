@@ -17,58 +17,63 @@ DISPLAY_NAME = "Coded Aperture Snapshot Spectral Imaging (CASSI)"
 
 
 # Solver registry for cassi
+# Reference PSNR from InverseNet ECCV benchmark (KAIST 10 scenes, Scenario I):
+#   GAP-TV: 24.34 dB (100 iters, Chambolle TV w=0.1)
+#   PnP-HSICNN: 25.12 dB (GAP + HSI-SDeCNN hybrid)
+#   HDNet: 34.66 dB (pretrained, mask-oblivious)
+#   MST-L: 34.81 dB (pretrained, mask-aware transformer)
 SOLVERS = {
     "traditional_cpu": {
         "name": "GAP-TV",
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "gpu": False,
-        "reference": "Yuan et al. 2016",
+        "reference": "Yuan et al. 2016 — 24.34 dB on KAIST",
+        "cfg_override": {"iters": 100, "lam": 0.1, "tv_iter": 5},
     },
     "best_quality": {
-        "name": "GAP-TV (guided)",
+        "name": "GAP-TV (200 iter)",
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "gpu": False,
-        "reference": "Yuan et al. 2016",
-        "cfg_override": {"iters": 100, "lam": 0.03, "acc": 1.0},
+        "reference": "Yuan et al. 2016 — ~24.9 dB on KAIST",
+        "cfg_override": {"iters": 200, "lam": 0.01, "tv_iter": 5},
     },
     "famous_dl": {
+        "name": "MST-L",
+        "module": "pwm_core.recon.mst",
+        "function": "mst_recon_cassi",
+        "gpu": True,
+        "reference": "Cai et al., CVPR 2022 — 34.81 dB on KAIST",
+    },
+    "small_gpu": {
         "name": "GAP-TV (fast)",
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "gpu": False,
-        "reference": "",
-        "cfg_override": {"iters": 30, "lam": 0.05},
-    },
-    "small_gpu": {
-        "name": "GAP-TV (small)",
-        "module": "pwm_core.recon.gap_tv",
-        "function": "run_gap_tv",
-        "gpu": False,
-        "reference": "",
-        "cfg_override": {"iters": 20, "lam": 0.08},
+        "reference": "Yuan et al. 2016",
+        "cfg_override": {"iters": 50, "lam": 0.1, "tv_iter": 5},
     },
     "mst_l": {
         "name": "MST-L",
         "module": "pwm_core.recon.mst",
         "function": "mst_recon_cassi",
-        "gpu": False,
-        "reference": "Cai et al., CVPR 2022",
+        "gpu": True,
+        "reference": "Cai et al., CVPR 2022 — 34.81 dB on KAIST",
     },
     "hdnet": {
         "name": "HDNet",
         "module": "pwm_core.recon.hdnet",
         "function": "run_hdnet",
-        "gpu": False,
-        "reference": "Hu et al., CVPR 2022",
+        "gpu": True,
+        "reference": "Hu et al., CVPR 2022 — 34.66 dB on KAIST",
     },
     "hsi_sdecnn": {
-        "name": "HSI-SDeCNN",
+        "name": "PnP-HSICNN",
         "module": "pwm_core.recon.hsi_sdecnn",
         "function": "run_hsi_sdecnn",
-        "gpu": False,
-        "reference": "Maffei et al., TGRS 2020",
+        "gpu": True,
+        "reference": "Maffei et al., TGRS 2020 — 25.12 dB on KAIST",
     },
 }
 

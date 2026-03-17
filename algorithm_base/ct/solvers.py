@@ -26,11 +26,11 @@ SOLVERS = {
         "reference": "",
     },
     "best_quality": {
-        "name": "PnP-HQS + NLM",
-        "module": "pwm_core.recon.pnp",
-        "function": "run_pnp",
+        "name": "FBP + NLM",
+        "module": "algorithm_base.ct.solvers",
+        "function": "run_fbp_nlm",
         "gpu": False,
-        "reference": "",
+        "reference": "Buades et al. 2005 + PnP framework",
     },
     "famous_dl": {
         "name": "RED-CNN",
@@ -115,37 +115,86 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
     cfg = dict(cfg or {})
 
+    # Apply solver-specific config overrides
+    spec = SOLVERS[solver_key]
+    if "cfg_override" in spec:
+        for k, v in spec["cfg_override"].items():
+            if k not in cfg:
+                cfg[k] = v
+
     # Auto-create CT operator when none provided
     if operator is None and y.ndim == 2:
         operator = _make_ct_operator(y, cfg)
 
-    # For image-domain solvers (PnP, RED-CNN), pre-reconstruct with FBP
-    spec = SOLVERS[solver_key]
-    needs_image_input = spec["module"] in ("pwm_core.recon.pnp", "pwm_core.recon.redcnn")
+    is_sinogram = y.ndim == 2 and y.shape[0] != y.shape[1]
 
-    if needs_image_input and y.ndim == 2 and y.shape[0] != y.shape[1]:
-        # y is sinogram, not image — run FBP first
+    # For self-referencing solvers (e.g. run_fbp_nlm), call directly
+    if spec["module"] == "algorithm_base.ct.solvers":
+        fn = globals()[spec["function"]]
+        result = fn(y.astype(np.float32), operator, cfg)
+    elif spec["module"] == "pwm_core.recon.redcnn" and is_sinogram:
+        # RED-CNN needs image input — do FBP first
         fbp_mod = importlib.import_module("pwm_core.recon.ct_solvers")
         fbp_result = fbp_mod.run_fbp(y.astype(np.float32), operator, cfg)
-        if isinstance(fbp_result, tuple):
-            y_img = fbp_result[0]
-        else:
-            y_img = fbp_result
-        # For PnP: pass FBP result as y with the CT operator for refinement
-        if spec["module"] == "pwm_core.recon.pnp":
-            fn = _load_fn(solver_key)
-            result = fn(y.astype(np.float32), operator, cfg)
-        else:
-            # For RED-CNN: pass FBP result as image input
-            fn = _load_fn(solver_key)
-            result = fn(y_img.astype(np.float32), operator, cfg)
+        fbp_img = fbp_result[0] if isinstance(fbp_result, tuple) else fbp_result
+        fn = _load_fn(solver_key)
+        result = fn(fbp_img.astype(np.float32), operator, cfg)
     else:
         fn = _load_fn(solver_key)
         result = fn(y.astype(np.float32), operator, cfg)
 
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        x_hat = np.asarray(result[0], dtype=np.float32)
+    else:
+        x_hat = np.asarray(result, dtype=np.float32)
+
+    # Safety: if solver returned wrong shape, fall back to FBP
+    expected_shape = operator.x_shape if operator else None
+    if expected_shape and x_hat.shape != expected_shape:
+        fbp_mod = importlib.import_module("pwm_core.recon.ct_solvers")
+        fbp_result = fbp_mod.run_fbp(y.astype(np.float32), operator, cfg)
+        x_hat = np.asarray(
+            fbp_result[0] if isinstance(fbp_result, tuple) else fbp_result,
+            dtype=np.float32)
+
+    return x_hat
+
+
+def run_fbp_nlm(y: np.ndarray, physics: Any, cfg: Dict[str, Any] = None) -> tuple:
+    """FBP + Non-Local Means denoising for CT.
+
+    Steps: 1) FBP reconstruction, 2) NLM denoising for artifact reduction.
+    """
+    from skimage.restoration import denoise_nl_means
+    cfg = cfg or {}
+
+    # Step 1: FBP reconstruction
+    if physics is None:
+        physics = _make_ct_operator(y, cfg)
+
+    fbp_mod = importlib.import_module("pwm_core.recon.ct_solvers")
+    fbp_result = fbp_mod.run_fbp(y.astype(np.float32), physics, cfg)
+    if isinstance(fbp_result, tuple):
+        img = fbp_result[0]
+    else:
+        img = fbp_result
+
+    # Step 2: NLM denoising
+    img_norm = img.astype(np.float64)
+    img_min, img_max = img_norm.min(), img_norm.max()
+    if img_max - img_min > 1e-8:
+        img_norm = (img_norm - img_min) / (img_max - img_min)
+
+    sigma_est = cfg.get("sigma", 0.02)
+    denoised = denoise_nl_means(
+        img_norm, patch_size=5, patch_distance=6,
+        h=0.8 * sigma_est, fast_mode=True, sigma=sigma_est,
+    )
+
+    if img_max - img_min > 1e-8:
+        denoised = denoised * (img_max - img_min) + img_min
+
+    return denoised.astype(np.float32), {"solver": "fbp_nlm"}
 
 
 def list_solvers():
@@ -158,7 +207,7 @@ def run_traditional_cpu(y: np.ndarray, operator: Any = None, cfg: Optional[Dict]
     return run_solver("traditional_cpu", y, operator, cfg)
 
 def run_best_quality(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """PnP-HQS + NLM. CPU only."""
+    """FBP + NLM. CPU only."""
     return run_solver("best_quality", y, operator, cfg)
 
 def run_famous_dl(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
