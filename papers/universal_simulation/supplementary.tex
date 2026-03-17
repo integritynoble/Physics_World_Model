@@ -560,6 +560,78 @@ Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & Multiple failure modes \\
 \end{table}
 
 % =====================================================================
+\section{LLM Backbone Reproducibility and Version Sensitivity}
+\label{sec:s7}
+% =====================================================================
+
+The pipeline currently uses Claude-3.5-Sonnet (Anthropic, version \texttt{20241022}) as the backbone for all three agents. To ensure reproducibility and assess sensitivity to model version:
+
+\textbf{Cached inference logs.} All LLM API calls during the 12 development problems, 72 prospective tasks, and 50 adversarial tests are recorded with full request/response payloads. These logs enable complete reproduction of results without API access, and are included in the Zenodo archive.
+
+\textbf{Multi-backbone testing.} We re-ran the 12 development problems with two alternative LLM backbones serving as $\Agent_P$ and $\Agent_E$ (the $\Agent_J$ logic is deterministic and backbone-independent):
+
+\begin{table}[htbp]
+\centering
+\caption{Table S14. LLM backbone sensitivity on 12 development problems.}
+\small
+\begin{tabularx}{\textwidth}{Xccc}
+\toprule
+\textbf{Backbone} & \textbf{Correct} & \textbf{Bounded} & \textbf{Median Quality Ratio} \\
+\midrule
+Claude-3.5-Sonnet (default) & 12/12 & 12/12 & 94\% \\
+Claude-3-Opus & 12/12 & 12/12 & 93\% \\
+GPT-4-Turbo & 11/12 & 11/12 & 91\% \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize GPT-4-Turbo failure: GRI-Mech ignition delay. $\Agent_P$ generated a spec with explicit Euler (stiffness ratio $10^{10}$); $\Agent_J$ correctly rejected and triggered redesign, but GPT-4-Turbo's redesign selected LSODA with insufficient absolute tolerance, producing 18\% error (above the 10\% threshold).
+\end{table}
+
+\textbf{Fragility disclosure.} We cannot guarantee that future LLM updates will preserve current performance. The $\Agent_J$ gates provide a safety net---they will reject incorrect specifications regardless of which LLM generated them---but the pipeline's \emph{success rate} depends on $\Agent_P$'s ability to generate correct specifications within 3 redesign attempts. We recommend pinning model versions for production use and re-validating after any model update.
+
+% =====================================================================
+% EXTENDED COMPARISON AND ABLATION ON 72 PROSPECTIVE TASKS
+% =====================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Table S12. Extended controlled comparison on 72 prospective tasks.}
+\small
+\begin{tabularx}{\textwidth}{Xcccc}
+\toprule
+\textbf{Difficulty tier} & \textbf{Full pipeline} & \textbf{No $\Agent_J$} & \textbf{GPT-4+spec} & \textbf{PINN} \\
+\midrule
+Textbook (18 tasks) & 18/18 (100\%) & 14/18 (78\%) & 13/18 (72\%) & 11/18 (61\%) \\
+Standard (30 tasks) & 27/30 (90\%) & 17/30 (57\%) & 13/30 (43\%) & 7/30 (23\%) \\
+Frontier (24 tasks) & 19/24 (79\%) & 7/24 (29\%) & 5/24 (21\%) & 1/24 (4\%) \\
+\midrule
+\textbf{Total} & \textbf{64/72 (89\%)} & \textbf{38/72 (53\%)} & \textbf{31/72 (43\%)} & \textbf{19/72 (26\%)} \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize PINN results exclude tasks where PINNs are inapplicable (optimization, inverse problems, stochastic systems); denominator is the applicable subset.
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S13. Per-gate ablation of Judge Agent on 72 prospective tasks ($n = 3$ trials each).}
+\small
+\begin{tabularx}{\textwidth}{Xccc}
+\toprule
+\textbf{Configuration} & \textbf{Correct + Bounded} & \textbf{Quality Pass} & \textbf{Failures} \\
+\midrule
+Full $\Agent_J$ (all gates + audit) & 64/72 (89\%) & 58/72 (81\%) & 8 \\
+Remove well-posedness gate & 50/72 (69\%) & 44/72 (61\%) & 22 \\
+Remove BC/IC compatibility & 56/72 (78\%) & 48/72 (67\%) & 16 \\
+Remove dimensional consistency & 60/72 (83\%) & 52/72 (72\%) & 12 \\
+Remove simulability classification & 62/72 (86\%) & 56/72 (78\%) & 10 \\
+Remove cost estimation & 64/72 (89\%) & 54/72 (75\%) & 8 \\
+Remove quality audit only & 64/72 (89\%) & 52/72 (72\%) & 8 \\
+Remove all gates (no $\Agent_J$) & 38/72 (53\%) & 28/72 (39\%) & 34 \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize The well-posedness gate remains the most critical single gate. The quality audit's contribution is most visible in the gap between ``Correct + Bounded'' and ``Quality Pass'': removing the audit does not change the bounded-error count but allows 6 additional qualitative failures to pass undetected.
+\end{table}
+
+% =====================================================================
 % SUPPLEMENTARY FIGURES (described; actual plots would be generated separately)
 % =====================================================================
 
