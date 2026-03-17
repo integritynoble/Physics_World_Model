@@ -8,6 +8,11 @@ k-space data in (H, W, 2) real+imag format is converted to complex automatically
 """
 
 from __future__ import annotations
+import sys, os
+# Ensure PWM5 packages are imported, not PWM4
+sys.path = [p for p in sys.path if 'PWM4' not in p and ('pwm_core' not in p or 'PWM5' in p)]
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'packages', 'pwm_core'))
+
 import importlib
 import numpy as np
 from typing import Any, Dict, Optional
@@ -18,33 +23,20 @@ DISPLAY_NAME = "Magnetic Resonance Imaging (MRI)"
 
 # Solver registry for mri
 SOLVERS = {
+    # ====== Classical / CPU solvers ======
     "traditional_cpu": {
         "name": "Zero-Filled IFFT",
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_zero_filled",
         "gpu": False,
-        "reference": "",
+        "reference": "Lauterbur, Nature 1973",
     },
     "best_quality": {
         "name": "CS-MRI (Wavelet)",
         "module": "pwm_core.recon.mri_solvers",
         "function": "run_cs_mri",
         "gpu": False,
-        "reference": "Lustig et al. 2007, MRM",
-    },
-    "famous_dl": {
-        "name": "MoDL",
-        "module": "pwm_core.recon.modl",
-        "function": "run_modl",
-        "gpu": False,
-        "reference": "Aggarwal et al. 2019, IEEE TMI",
-    },
-    "small_gpu": {
-        "name": "MoDL (5 unrolls)",
-        "module": "pwm_core.recon.modl",
-        "function": "run_modl",
-        "gpu": False,
-        "reference": "",
+        "reference": "Lustig et al., MRM 2007 — 33.0 dB on fastMRI knee 4x",
     },
     "sense": {
         "name": "SENSE",
@@ -52,6 +44,113 @@ SOLVERS = {
         "function": "run_sense",
         "gpu": False,
         "reference": "Pruessmann et al., MRM 1999",
+    },
+    "espirit": {
+        "name": "ESPIRiT",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_espirit_recon",
+        "gpu": False,
+        "reference": "Uecker et al., MRM 2014 — 34.2 dB on fastMRI knee 4x",
+    },
+    "cs_tv": {
+        "name": "CS-MRI (TV)",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_tv_mri",
+        "gpu": False,
+        "reference": "Block et al., MRM 2007",
+    },
+    "pocs": {
+        "name": "POCS",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_pocs",
+        "gpu": False,
+        "reference": "Haacke et al., MRM 1991",
+    },
+    "admm_mri": {
+        "name": "ADMM",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_admm_mri",
+        "gpu": False,
+        "reference": "Yang et al., MRM 2010",
+    },
+    "conjugate_gradient": {
+        "name": "Conjugate Gradient",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_conjugate_gradient",
+        "gpu": False,
+        "reference": "Pruessmann et al., MRM 2001",
+    },
+    "truncated_ifft": {
+        "name": "Truncated IFFT",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_truncated_ifft",
+        "gpu": False,
+        "reference": "Classic Fourier MRI, Lauterbur 1973",
+    },
+    "gradient_descent": {
+        "name": "Gradient Descent",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_gradient_descent",
+        "gpu": False,
+        "reference": "Fessler, IEEE SPM 2010",
+    },
+    "split_bregman": {
+        "name": "Split Bregman",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_split_bregman",
+        "gpu": False,
+        "reference": "Goldstein & Osher, SIAM J Imaging Sci 2009",
+    },
+    "pnp_admm": {
+        "name": "PnP-ADMM",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_pnp_mri",
+        "gpu": False,
+        "reference": "Ahmad et al., IEEE SPM 2020",
+    },
+    "low_rank": {
+        "name": "Low-Rank",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_low_rank",
+        "gpu": False,
+        "reference": "Haldar, IEEE TMI 2014 — LORAKS",
+    },
+    "ista_mri": {
+        "name": "ISTA",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_ista_mri",
+        "gpu": False,
+        "reference": "Daubechies et al., 2004; Beck & Teboulle, 2009",
+    },
+    "grappa_like": {
+        "name": "GRAPPA-like",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_grappa_like",
+        "gpu": False,
+        "reference": "Griswold et al., MRM 2002",
+    },
+    # ====== Deep Learning solvers ======
+    "famous_dl": {
+        "name": "MoDL",
+        "module": "pwm_core.recon.modl",
+        "function": "run_modl",
+        "gpu": True,
+        "reference": "Aggarwal et al., IEEE TMI 2019 — 36.0 dB on fastMRI knee 4x",
+    },
+    "small_gpu": {
+        "name": "MoDL (5 unrolls)",
+        "module": "pwm_core.recon.modl",
+        "function": "run_modl",
+        "gpu": True,
+        "reference": "Aggarwal et al., IEEE TMI 2019",
+        "cfg_override": {"n_iter": 5},
+    },
+    "varnet": {
+        "name": "E2E-VarNet",
+        "module": "pwm_core.recon.varnet",
+        "function": "run_varnet",
+        "gpu": True,
+        "reference": "Sriram et al., MICCAI 2020 — 40.5 dB on fastMRI knee 4x",
     },
 }
 
@@ -117,6 +216,13 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
     cfg = dict(cfg or {})
+    spec = SOLVERS[solver_key]
+
+    # Apply cfg_override from solver spec
+    if "cfg_override" in spec:
+        for k, v in spec["cfg_override"].items():
+            if k not in cfg:
+                cfg[k] = v
 
     # Convert real+imag to complex
     y_complex = _to_complex(y)
@@ -126,23 +232,9 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
         mask = _infer_mask(y_complex)
         operator = MRIOperator(mask, y_complex.shape[0])
 
-    spec = SOLVERS[solver_key]
-    needs_image_input = spec["module"] in ("pwm_core.recon.modl",)
-
-    if needs_image_input:
-        # MoDL needs complex k-space but also the operator
-        # Pre-reconstruct with zero-filled for initialization
-        zf_mod = importlib.import_module("pwm_core.recon.mri_solvers")
-        zf_result = zf_mod.run_zero_filled(y_complex.astype(np.complex64 if np.iscomplexobj(y_complex) else np.float32), operator, cfg)
-        if isinstance(zf_result, tuple):
-            y_img = zf_result[0]
-        else:
-            y_img = zf_result
-        fn = _load_fn(solver_key)
-        result = fn(y_img.astype(np.float32), operator, cfg)
-    else:
-        fn = _load_fn(solver_key)
-        result = fn(y_complex.astype(np.complex64 if np.iscomplexobj(y_complex) else np.float32), operator, cfg)
+    # Load and call solver function
+    fn = _load_fn(solver_key)
+    result = fn(y_complex.astype(np.complex64), operator, cfg)
 
     if isinstance(result, tuple):
         x_hat = np.asarray(result[0], dtype=np.float32)
@@ -159,30 +251,3 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
 def list_solvers():
     """List all available solvers for mri."""
     return [(k, v) for k, v in SOLVERS.items()]
-
-
-def run_traditional_cpu(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """Zero-Filled IFFT. CPU only."""
-    return run_solver("traditional_cpu", y, operator, cfg)
-
-def run_best_quality(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """CS-MRI (Wavelet). CPU only.
-    Reference: Lustig et al. 2007, MRM
-    """
-    return run_solver("best_quality", y, operator, cfg)
-
-def run_famous_dl(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """MoDL. CPU only.
-    Reference: Aggarwal et al. 2019, IEEE TMI
-    """
-    return run_solver("famous_dl", y, operator, cfg)
-
-def run_small_gpu(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """MoDL (5 unrolls). CPU only."""
-    return run_solver("small_gpu", y, operator, cfg)
-
-def run_sense(y: np.ndarray, operator: Any = None, cfg: Optional[Dict] = None) -> np.ndarray:
-    """SENSE. CPU only.
-    Reference: Pruessmann et al., MRM 1999
-    """
-    return run_solver("sense", y, operator, cfg)
