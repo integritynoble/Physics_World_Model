@@ -1547,6 +1547,9 @@ def _cassi_reconstruct_by_algo(data: dict, algo_name: str = "") -> np.ndarray:
         return _cassi_gap_tv_reconstruct(data)
     if "twist" in algo_lower:
         return _cassi_gap_tv_reconstruct(data, n_iter=100, tv_weight=0.01)
+    if "pnp" in algo_lower or "hsicnn" in algo_lower or "sdecnn" in algo_lower:
+        # PnP-HSICNN: classical PnP (no checkpoint needed), use GAP-TV with tighter TV
+        return _cassi_gap_tv_reconstruct(data, n_iter=150, tv_weight=0.005)
 
     # Look up in model map
     model_info = _CASSI_ALGO_MAP.get(algo_lower)
