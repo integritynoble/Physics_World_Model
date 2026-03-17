@@ -1,6 +1,6 @@
 # PWM Benchmark -- Standard Dataset State
 
-Last updated: 2026-03-16 -- 170 modalities
+Last updated: 2026-03-16 -- 169 modalities
 
 ## Cloud Storage (GCS)
 
@@ -12,10 +12,10 @@ Last updated: 2026-03-16 -- 170 modalities
 
 | Status | Count | Description |
 |--------|-------|-------------|
-| done | 85 | Uses canonical/real data from this modality |
+| done | 84 | Uses canonical/real data from this modality |
 | needs_canonical | 24 | Canonical dataset exists, need to download 30 samples |
 | simulation | 61 | No public benchmark -- using simulated data |
-| **Total** | **170** | |
+| **Total** | **169** | |
 
 ## All Modalities
 
@@ -149,45 +149,44 @@ Last updated: 2026-03-16 -- 170 modalities
 | 126 | raman_imaging | 20 | Raman photothermal (Zenodo 8141012) | [link](https://zenodo.org/records/8141012) | done |
 | 127 | sar | 20 | MSTAR (SAR target recognition) | [link](https://www.sdms.afrl.af.mil/index.php?collection=mstar) | needs_canonical |
 | 128 | saxs | 20 | Small-angle X-ray scattering | -- | simulation |
-| 129 | sd_cassi | 10 | CAVE 24-band hyperspectral | [link](https://www.cs.columbia.edu/CAVE/databases/multispectral/) | done |
-| 130 | seismic_tomo | 20 | Marmousi2 elastic velocity | [link](https://wiki.seg.org/wiki/Open_data) | done |
-| 131 | sem | 20 | SEM nanoparticle (Zenodo 7986673) | [link](https://zenodo.org/records/7986673) | done |
-| 132 | shearography | 20 | Shearography NDT | -- | simulation |
-| 133 | shg | 20 | PSHG-TISS | [link](https://doi.org/10.17605/OSF.IO/K2Z8G) | needs_canonical |
-| 134 | sim | 20 | UniFMIR SIM F-actin (Zenodo 8420100) | [link](https://zenodo.org/records/8420100) | done |
-| 135 | sims | 20 | SIMS | -- | simulation |
-| 136 | solar_imaging | 20 | NASA SDO AIA EUV composite | [link](https://sdo.gsfc.nasa.gov/) | done |
-| 137 | sonar | 30 | UATD forward-looking sonar (30 images) | [link](https://figshare.com/articles/dataset/UATD_Dataset/21331143) | done |
-| 138 | spc | 20 | BSD68 (SPC test images) | [link](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/) | done |
-| 139 | spc_kronecker | 10 | Indian Pines AVIRIS | [link](https://engineering.purdue.edu/~biehl/MultiSpec/) | done |
-| 140 | spect | 20 | SPECT | -- | simulation |
-| 141 | spect_ct | 20 | SPECT-CT | -- | simulation |
-| 142 | spectral_ct | 20 | Spectral CT | -- | simulation |
-| 143 | spinning_disk | 20 | Spinning disk confocal | -- | simulation |
-| 144 | srs | 20 | SRS microscopy | -- | simulation |
-| 145 | sted | 20 | UniFMIR STED (Zenodo 8420100) | [link](https://zenodo.org/records/8420100) | done |
-| 146 | stem | 20 | Scanning TEM | -- | simulation |
-| 147 | stm | 20 | Graphene/Ni STM (Zenodo 5799774) | [link](https://zenodo.org/records/5799774) | needs_canonical |
-| 148 | streak_camera | 20 | BSD68 (streak camera test) | [link](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/) | done |
-| 149 | structured_light | 20 | Middlebury Stereo depth | [link](https://vision.middlebury.edu/stereo/) | done |
-| 150 | swi | 20 | OpenNeuro ds000114 brain MRI | [link](https://openneuro.org/datasets/ds000114) | done |
-| 151 | talbot_lau | 20 | Talbot-Lau | -- | simulation |
-| 152 | tem | 20 | TEM cilia (Zenodo 11188503) | [link](https://zenodo.org/records/11188503) | done |
-| 153 | terahertz | 20 | Active THz dataset | [link](https://github.com/LingLIx/THz_Dataset) | needs_canonical |
-| 154 | three_photon | 20 | Three-photon microscopy | -- | simulation |
-| 155 | tirf | 20 | TIRF microscopy | -- | simulation |
-| 156 | tof_camera | 20 | ToF depth maps (Zenodo 10732158) | [link](https://zenodo.org/records/10732158) | done |
-| 157 | two_photon | 20 | CaImAn calcium imaging | [link](https://github.com/flatironinstitute/CaImAn) | done |
-| 158 | ultrasonic_phased_array | 20 | UT phased array NDT | -- | simulation |
-| 159 | ultrasound | 20 | BUSI breast ultrasound (780 images) | [link](https://www.kaggle.com/datasets/sabahesaraki/breast-ultrasound-images-dataset) | done |
-| 160 | us_mri | 20 | Ultrashort-TE MRI | -- | simulation |
-| 161 | waxs | 20 | Wide-angle X-ray scattering | -- | simulation |
-| 162 | weather_radar | 20 | NOAA NEXRAD composite | [link](https://www.ncei.noaa.gov/products/radar) | done |
-| 163 | widefield | 20 | FMD widefield denoising | [link](https://github.com/yinhaoz/denoising-fluorescence) | needs_canonical |
-| 164 | widefield_lowdose | 20 | FMD low-dose | [link](https://github.com/yinhaoz/denoising-fluorescence) | needs_canonical |
-| 165 | xfel_sfx | 20 | EMDB XFEL SFX | [link](https://www.ebi.ac.uk/emdb/) | done |
-| 166 | xray_crystallography | 20 | EMDB/PDB X-ray crystallography | [link](https://www.ebi.ac.uk/emdb/) | done |
-| 167 | xray_ndt | 30 | X-ray radiography (Zenodo 7947924) | [link](https://zenodo.org/records/7947924) | done |
-| 168 | xray_radiography | 20 | NIH ChestX-ray14 | [link](https://nihcc.app.box.com/v/ChestXray-NIHCC) | done |
-| 169 | xrf_imaging | 20 | XRF fossil map (Zenodo 4005031) | [link](https://zenodo.org/records/4005031) | done |
-| 170 | xrf_tomo | 20 | XRF tomography | -- | simulation |
+| 129 | seismic_tomo | 20 | Marmousi2 elastic velocity | [link](https://wiki.seg.org/wiki/Open_data) | done |
+| 130 | sem | 20 | SEM nanoparticle (Zenodo 7986673) | [link](https://zenodo.org/records/7986673) | done |
+| 131 | shearography | 20 | Shearography NDT | -- | simulation |
+| 132 | shg | 20 | PSHG-TISS | [link](https://doi.org/10.17605/OSF.IO/K2Z8G) | needs_canonical |
+| 133 | sim | 20 | UniFMIR SIM F-actin (Zenodo 8420100) | [link](https://zenodo.org/records/8420100) | done |
+| 134 | sims | 20 | SIMS | -- | simulation |
+| 135 | solar_imaging | 20 | NASA SDO AIA EUV composite | [link](https://sdo.gsfc.nasa.gov/) | done |
+| 136 | sonar | 30 | UATD forward-looking sonar (30 images) | [link](https://figshare.com/articles/dataset/UATD_Dataset/21331143) | done |
+| 137 | spc | 20 | BSD68 (SPC test images) | [link](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/) | done |
+| 138 | spc_kronecker | 10 | Indian Pines AVIRIS | [link](https://engineering.purdue.edu/~biehl/MultiSpec/) | done |
+| 139 | spect | 20 | SPECT | -- | simulation |
+| 140 | spect_ct | 20 | SPECT-CT | -- | simulation |
+| 141 | spectral_ct | 20 | Spectral CT | -- | simulation |
+| 142 | spinning_disk | 20 | Spinning disk confocal | -- | simulation |
+| 143 | srs | 20 | SRS microscopy | -- | simulation |
+| 144 | sted | 20 | UniFMIR STED (Zenodo 8420100) | [link](https://zenodo.org/records/8420100) | done |
+| 145 | stem | 20 | Scanning TEM | -- | simulation |
+| 146 | stm | 20 | Graphene/Ni STM (Zenodo 5799774) | [link](https://zenodo.org/records/5799774) | needs_canonical |
+| 147 | streak_camera | 20 | BSD68 (streak camera test) | [link](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/) | done |
+| 148 | structured_light | 20 | Middlebury Stereo depth | [link](https://vision.middlebury.edu/stereo/) | done |
+| 149 | swi | 20 | OpenNeuro ds000114 brain MRI | [link](https://openneuro.org/datasets/ds000114) | done |
+| 150 | talbot_lau | 20 | Talbot-Lau | -- | simulation |
+| 151 | tem | 20 | TEM cilia (Zenodo 11188503) | [link](https://zenodo.org/records/11188503) | done |
+| 152 | terahertz | 20 | Active THz dataset | [link](https://github.com/LingLIx/THz_Dataset) | needs_canonical |
+| 153 | three_photon | 20 | Three-photon microscopy | -- | simulation |
+| 154 | tirf | 20 | TIRF microscopy | -- | simulation |
+| 155 | tof_camera | 20 | ToF depth maps (Zenodo 10732158) | [link](https://zenodo.org/records/10732158) | done |
+| 156 | two_photon | 20 | CaImAn calcium imaging | [link](https://github.com/flatironinstitute/CaImAn) | done |
+| 157 | ultrasonic_phased_array | 20 | UT phased array NDT | -- | simulation |
+| 158 | ultrasound | 20 | BUSI breast ultrasound (780 images) | [link](https://www.kaggle.com/datasets/sabahesaraki/breast-ultrasound-images-dataset) | done |
+| 159 | us_mri | 20 | Ultrashort-TE MRI | -- | simulation |
+| 160 | waxs | 20 | Wide-angle X-ray scattering | -- | simulation |
+| 161 | weather_radar | 20 | NOAA NEXRAD composite | [link](https://www.ncei.noaa.gov/products/radar) | done |
+| 162 | widefield | 20 | FMD widefield denoising | [link](https://github.com/yinhaoz/denoising-fluorescence) | needs_canonical |
+| 163 | widefield_lowdose | 20 | FMD low-dose | [link](https://github.com/yinhaoz/denoising-fluorescence) | needs_canonical |
+| 164 | xfel_sfx | 20 | EMDB XFEL SFX | [link](https://www.ebi.ac.uk/emdb/) | done |
+| 165 | xray_crystallography | 20 | EMDB/PDB X-ray crystallography | [link](https://www.ebi.ac.uk/emdb/) | done |
+| 166 | xray_ndt | 30 | X-ray radiography (Zenodo 7947924) | [link](https://zenodo.org/records/7947924) | done |
+| 167 | xray_radiography | 20 | NIH ChestX-ray14 | [link](https://nihcc.app.box.com/v/ChestXray-NIHCC) | done |
+| 168 | xrf_imaging | 20 | XRF fossil map (Zenodo 4005031) | [link](https://zenodo.org/records/4005031) | done |
+| 169 | xrf_tomo | 20 | XRF tomography | -- | simulation |

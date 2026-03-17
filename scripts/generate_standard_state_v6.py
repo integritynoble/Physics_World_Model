@@ -17,7 +17,7 @@ C = {
     # === DONE (75): real data from the correct modality ===
     "cacti":               ("DeSCI CACTI benchmark (6 grayscale videos)", "https://github.com/liuyang12/DeSCI", "Liu et al., IEEE TPAMI 2019", "done"),
     "cassi":               ("CAVE 28-band hyperspectral (10 scenes)", "https://www.cs.columbia.edu/CAVE/databases/multispectral/", "Wagadarikar et al., Applied Optics 2008", "done"),
-    "sd_cassi":            ("CAVE 24-band hyperspectral", "https://www.cs.columbia.edu/CAVE/databases/multispectral/", "Yasuma et al., ICIP 2010", "done"),
+    # sd_cassi merged into cassi
     "spc_kronecker":       ("Indian Pines AVIRIS", "https://engineering.purdue.edu/~biehl/MultiSpec/", "Baumgardner et al., 2015", "done"),
     "nerf":                ("Tiny NeRF Lego scene", "https://github.com/bmild/nerf", "Mildenhall et al., ECCV 2020", "done"),
     "gaussian_splatting":  ("Tiny NeRF Lego + 3DGS", "https://github.com/graphdeco-inria/gaussian-splatting", "Kerbl et al., SIGGRAPH 2023", "done"),
