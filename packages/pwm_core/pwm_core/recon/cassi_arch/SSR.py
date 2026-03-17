@@ -333,7 +333,7 @@ class Net(torch.nn.Module):
         return x
 
     def mul_PhiTg(self, Phi_shift, g):
-        temp_1 = g.repeat(1, Phi_shift.shape[1], 1, 1).cuda()
+        temp_1 = g.repeat(1, Phi_shift.shape[1], 1, 1).to(g.device)
         PhiTg = temp_1 * Phi_shift
         PhiTg = self.shift_back(PhiTg)
         return PhiTg

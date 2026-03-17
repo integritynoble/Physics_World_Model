@@ -1524,6 +1524,12 @@ _CASSI_ALGO_MAP: dict[str, tuple[str, str]] = {
     "dauhst-9stg":       ("dauhst_9stg",   "checkpoint/cassi/dauhst/dauhst_9stg.pth"),
     "dauhst_9stg":       ("dauhst_9stg",   "checkpoint/cassi/dauhst/dauhst_9stg.pth"),
     "bisrnet":           ("bisrnet",       "checkpoint/cassi/bisrnet/bisrnet.pth"),
+    "padut-3stg":        ("padut_3stg",    "checkpoint/cassi/padut/padut_3stg_official.pth"),
+    "padut_3stg":        ("padut_3stg",    "checkpoint/cassi/padut/padut_3stg_official.pth"),
+    "rdluf-mixs2-9stg":  ("rdluf_mixs2_9stg", "checkpoint/cassi/rdluf_mixs2/RDLUF_MixS2_9stage.pth"),
+    "rdluf_mixs2_9stg":  ("rdluf_mixs2_9stg", "checkpoint/cassi/rdluf_mixs2/RDLUF_MixS2_9stage.pth"),
+    "ssr-l":             ("ssr_l",         "checkpoint/cassi/ssr/model_L.pkl"),
+    "ssr_l":             ("ssr_l",         "checkpoint/cassi/ssr/model_L.pkl"),
 }
 
 

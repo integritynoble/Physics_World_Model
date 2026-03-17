@@ -1873,9 +1873,9 @@ Last updated: 2026-03-12 | Total modalities: 169
 | BIRNAT | Deep Unrolling | 35.77 dB | — | done | 1 |
 | DAUHST-9stg | Transformer | 37.15 dB | — | done | 1 |
 | BiSRNet | Deep Learning | 29.47 dB | — | done | 1 |
-| PADUT-3stg | Transformer | 36.95 dB | — | no-ckpt | 0 |
-| RDLUF-MixS2-9stg | Deep Unrolling | 39.6 dB | — | no-ckpt | 0 |
-| SSR-L | Transformer | 34.0 dB | — | no-ckpt | 0 |
+| PADUT-3stg | Transformer | 35.74 dB | — | done | 1 |
+| RDLUF-MixS2-9stg | Deep Unrolling | 35.25 dB | — | done | 1 |
+| SSR-L | Transformer | 39.28 dB | — | done | 1 |
 
 ## Seismic Tomography (`seismic_tomo`) — experimental_science
 
