@@ -160,25 +160,22 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 \draw[arr, gray!70!black] (s2) -- node[lbl, right, xshift=2pt] {all 3 pass} (s3);
 
 % ===== Column 4: Execute Agent + outputs =====
-\node[agent, right=1.5cm of s2, minimum height=1.2cm, minimum width=1.5cm] (exec) {$\Agent_E$ Execute};
+\node[agent, right=1.8cm of judge.east, minimum height=1.2cm, minimum width=1.5cm, anchor=west] (exec) {$\Agent_E$ Execute};
 
-\node[outbox, right=0.6cm of exec, minimum height=0.9cm] (ahat) {$\hat{A}$};
-\node[errbox, below=0.4cm of ahat, minimum width=1.5cm] (epsbox) {$\eps$-bound\\report};
-
-\node[box, fill=green!18, draw=green!60!black, right=0.55cm of ahat, yshift=-0.25cm, minimum height=1.0cm, minimum width=1.4cm, font=\small] (result) {Recon.~+\\Valid.};
+% Two outputs side by side
+\node[outbox, right=0.5cm of exec, minimum height=1.0cm, minimum width=1.2cm] (ahat) {$\hat{A}$};
+\node[errbox, right=0.4cm of ahat, minimum width=1.5cm, minimum height=1.0cm] (epsbox) {$\eps$-bound\\report};
 
 % ===== Main pipeline arrows =====
 \draw[arr] (nl) -- (plan);
 \draw[arr] (plan) -- (specmd);
 \draw[arr] (specmd) -- (judge.west |- s1);
 
-% Pass: Stage 3 → Execute
-\draw[arr, green!50!black] (s3.east) -| ++(0.5, 0) |- node[lbl, above, pos=0.25] {pass: certificate} (exec.west);
+% Pass: Stage 3 → Execute (straight arrow with label above midpoint)
+\draw[arr, green!50!black] (judge.east |- s2) -- node[lbl, above] {pass: certificate} (exec.west);
 
 \draw[arr] (exec) -- (ahat);
-\draw[arr] (ahat) -- (result);
-\draw[arr, gray!60!black] (exec.south) |- (epsbox.west);
-\draw[arr, gray!60!black] (epsbox) -| (result.south);
+\draw[arr] (ahat) -- (epsbox);
 
 % ===== Inner feedback loop (above) =====
 \draw[arr, dashed, red!60!black, thick]
