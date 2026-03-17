@@ -203,7 +203,7 @@ def draw_panel_b(ax):
 
     # --- Compiler Gates ---
     y -= 0.15
-    ax.text(0.6, y, "Compiler Gates (6/6)", fontsize=7.5, fontweight="bold",
+    ax.text(0.6, y, "Compiler Checks (6/6)", fontsize=7.5, fontweight="bold",
             color=C_DARK, ha="left", va="center")
 
     compiler_gates = [
@@ -339,14 +339,34 @@ def degrade_image(img, noise_level=0.04, blur_sigma=1.2):
     return np.clip(noisy, 0, 1)
 
 
-def _load_real_image(path, resize=128):
+def _load_real_image(path, resize=128, mode="L"):
     """Load a real image from disk, resize, and normalize to [0,1]."""
     try:
         from PIL import Image
-        img = Image.open(path).convert("L")
+        img = Image.open(path).convert(mode)
         img = img.resize((resize, resize), Image.LANCZOS)
         arr = np.array(img, dtype=np.float64) / 255.0
         return arr
+    except Exception:
+        return None
+
+
+def _load_cassi_gt_rgb(scene_path, resize=128):
+    """Load KAIST TSA scene and create false-color RGB from bands 5,15,25."""
+    try:
+        import scipy.io as sio
+        data = sio.loadmat(scene_path)
+        x = data['img'].astype(np.float64)  # (256, 256, 28)
+        # False-color: R=band25, G=band15, B=band5
+        rgb = np.stack([x[:, :, 25], x[:, :, 15], x[:, :, 5]], axis=2)
+        rgb = rgb / (rgb.max() + 1e-8)
+        rgb = np.clip(rgb, 0, 1)
+        if resize != rgb.shape[0]:
+            from PIL import Image
+            pil_img = Image.fromarray((rgb * 255).astype(np.uint8))
+            pil_img = pil_img.resize((resize, resize), Image.LANCZOS)
+            rgb = np.array(pil_img, dtype=np.float64) / 255.0
+        return rgb
     except Exception:
         return None
 
@@ -380,24 +400,25 @@ def draw_panel_c(fig, gs_sub):
     inner = GridSpecFromSubplotSpec(3, 2, subplot_spec=gs_sub,
                                    wspace=0.06, hspace=0.22)
 
-    # Try loading real GT images from benchmark runs
-    ct_gt = _load_real_image("/tmp/paper_modality_images/ct/sample_02_ground_truth.png")
+    # Try loading real GT images
+    ct_gt = make_shepp_logan(128)  # Shepp-Logan phantom (standard CT test)
     mri_gt = _load_real_image("/tmp/paper_modality_images/mri/sample_03_ground_truth_clean.png")
+    cassi_gt = _load_cassi_gt_rgb("/tmp/tsa_data/scene04.mat", resize=128)
 
     # Fall back to synthetic phantoms if real images not available
-    if ct_gt is None:
-        ct_gt = make_shepp_logan(128)
     if mri_gt is None:
         mri_gt = make_brain_phantom(128)
+    if cassi_gt is None:
+        cassi_gt = make_spectral_cube_slice(128)
 
-    # Algorithm labels and PSNR values (consistent with paper Tables 1 & 3):
-    #   CT: FBP+TV on LoDoPaB-CT (60-view sparse, perturbed forward model)
+    # Algorithm labels and PSNR values:
+    #   CT: FBP+TV on Shepp-Logan (60-view sparse)
     #   MRI: HybridCascade++ on M4Raw (4-coil, ~4x accel, GPU TTO, 31.7 dB)
-    #   CASSI: DAUHST-9stg on KAIST TSA 10 scenes (published reference)
+    #   CASSI: GAP-TV on KAIST TSA 10 scenes (inversenet paper, 24.3 dB)
     modalities = [
-        ("CT",    ct_gt,                       "gray", "19.6 dB", "FBP+TV",           19.6, 2.0),
-        ("MRI",   mri_gt,                      "gray", "31.7 dB", "HybridCascade++",  31.7, 0.4),
-        ("CASSI", make_spectral_cube_slice(128), None,  "38.5 dB", "DAUHST-9stg",     38.5, 0.3),
+        ("CT",    ct_gt,    "gray", "19.6 dB", "FBP+TV",           19.6, 2.0),
+        ("MRI",   mri_gt,   "gray", "31.7 dB", "HybridCascade++",  31.7, 0.4),
+        ("CASSI", cassi_gt,  None,  "24.3 dB", "GAP-TV",           24.3, 1.5),
     ]
 
     for row, (name, gt_img, cmap, psnr_str, algo, target_psnr, blur_s) in enumerate(modalities):

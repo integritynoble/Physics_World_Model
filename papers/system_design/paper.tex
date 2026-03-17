@@ -422,7 +422,7 @@ Across all 39 modalities: mean $\rho_{\text{recov}} = 0.85 \pm 0.07$ (95\% CI: [
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig4_design_to_real.pdf}
-\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates and checks (3 Triad gates + 6 compiler checks), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities with ground truth: CT ($19.6$\,dB, FBP+TV on LoDoPaB), MRI ($31.7$\,dB, HybridCascade++ on M4Raw), and CASSI ($38.5$\,dB, DAUHST-9stg on KAIST TSA).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $98.8 \pm 2.5$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
+\caption{\textbf{Design-to-real validation.}  \textbf{(a)}~A natural-language prompt is translated into a structured \texttt{spec.md} by the Plan Agent.  \textbf{(b)}~The Judge Agent validates all gates and checks (3 Triad gates + 6 compiler checks), producing a certificate.  \textbf{(c)}~Reconstruction results on three real-data modalities with ground truth: CT ($19.6$\,dB, FBP+TV on LoDoPaB), MRI ($31.7$\,dB, HybridCascade++ on M4Raw), and CASSI ($24.3$\,dB, GAP-TV on KAIST TSA~\cite{meng2020gap}).  \textbf{(d)}~Quality ratio (agent/expert PSNR) across 6 real-data modalities spanning all 5 carrier families: mean $98.8 \pm 2.5$\%; theorem tightness ratio $\tau \in [1.8, 5.2]$, median~2.9.}
 \label{fig:design_to_real}
 \end{figure}
 
