@@ -75,6 +75,127 @@ SOLVERS = {
         "gpu": True,
         "reference": "Maffei et al., TGRS 2020 — 25.12 dB on KAIST",
     },
+    # ── MST-benchmark models (caiyuanhao1998/MST) ──
+    "dauhst_9stg": {
+        "name": "DAUHST-9stg",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Cai et al., NeurIPS 2022 — 38.4 dB on KAIST",
+        "cfg_override": {"model_key": "dauhst_9stg"},
+    },
+    "cst_l_plus": {
+        "name": "CST-L-Plus",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Cai et al., ECCV 2022 — 36.1 dB on KAIST",
+        "cfg_override": {"model_key": "cst_l_plus"},
+    },
+    "mst_plus_plus": {
+        "name": "MST++",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Cai et al., CVPRW 2022 — 36.0 dB on KAIST",
+        "cfg_override": {"model_key": "mst_plus_plus"},
+    },
+    "dgsmp": {
+        "name": "DGSMP",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Huang et al., CVPR 2021 — 32.6 dB on KAIST",
+        "cfg_override": {"model_key": "dgsmp"},
+    },
+    "tsa_net": {
+        "name": "TSA-Net",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Meng et al., ECCV 2020 — 31.5 dB on KAIST",
+        "cfg_override": {"model_key": "tsa_net"},
+    },
+    "lambda_net": {
+        "name": "λ-Net",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Miao et al., ICCV 2019 — 30.1 dB on KAIST",
+        "cfg_override": {"model_key": "lambda_net"},
+    },
+    "admm_net": {
+        "name": "ADMM-Net",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Ma et al., ICCV 2019 — 29.1 dB on KAIST",
+        "cfg_override": {"model_key": "admm_net"},
+    },
+    "gap_net": {
+        "name": "GAP-Net",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Meng et al., 2020 — 29.1 dB on KAIST",
+        "cfg_override": {"model_key": "gap_net"},
+    },
+    "birnat": {
+        "name": "BIRNAT",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Cheng et al., ECCV 2022",
+        "cfg_override": {"model_key": "birnat"},
+    },
+    "bisrnet": {
+        "name": "BiSRNet",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "BiSRNet, 2023",
+        "cfg_override": {"model_key": "bisrnet"},
+    },
+    "twist": {
+        "name": "TwIST",
+        "module": "pwm_core.recon.twist",
+        "function": "run_twist",
+        "gpu": False,
+        "reference": "Bioucas-Dias & Figueiredo, TIP 2007 — 23.1 dB on KAIST",
+        "cfg_override": {"iters": 100, "lam": 0.01, "tv_iter": 5},
+    },
+    "rdluf_mixs2_9stg": {
+        "name": "RDLUF-MixS2-9stg",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Dong et al., CVPR 2023 — 39.6 dB on KAIST",
+        "cfg_override": {"model_key": "rdluf_mixs2_9stg"},
+    },
+    "ssr_l": {
+        "name": "SSR-L",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Zhang et al., CVPR 2024 — 34.0 dB on KAIST",
+        "cfg_override": {"model_key": "ssr_l"},
+    },
+    "padut_5stg": {
+        "name": "PADUT-5stg",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Li et al., CVPR 2023 — 34.8 dB on KAIST",
+        "cfg_override": {"model_key": "padut_5stg"},
+    },
+    "padut_12stg": {
+        "name": "PADUT-12stg",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Li et al., CVPR 2023 — 38.9 dB on KAIST",
+        "cfg_override": {"model_key": "padut_12stg"},
+    },
 }
 
 
@@ -172,6 +293,9 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
             raise ValueError("MST requires mask (via operator or cfg['mask'])")
         result = fn(y.astype(np.float32), mask, nC=n_bands, step=step,
                      device=cfg.get('device'), variant=cfg.get('variant', 'mst_l'))
+    elif spec["function"] == "run_cassi_model":
+        # Unified CASSI model interface: fn(y, operator, cfg)
+        result = fn(y.astype(np.float32), operator, cfg)
     elif spec["function"] == "run_hsi_sdecnn":
         # HSI-SDeCNN: pass through standard interface
         result = fn(y.astype(np.float32), operator, cfg)

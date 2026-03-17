@@ -496,25 +496,28 @@ Adding a new algorithm:
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | MiJUN | 2025 | MiJUN, AAAI 2025 | 40.9 | 0.9760 | 10.1 | 0.3054 | gap | yes |
-| 2 | RDLUF-MixS2 | 2022 | Cai et al., ECCV 2022 | 39.6 | 0.9720 | 10.1 | 0.3054 | gap | yes |
-| 3 | PADUT-L | 2023 | Li et al., CVPR 2023 | 38.9 | 0.9700 | 10.1 | 0.3054 | gap | yes |
-| 4 | DAUHST-9stg | 2022 | Cai et al., NeurIPS 2022 | 38.4 | 0.9670 | 10.1 | 0.3054 | gap | yes |
-| 5 | CST-L-Plus | 2022 | Cai et al., ECCV 2022 | 36.1 | 0.9570 | 10.1 | 0.3054 | gap | yes |
-| 6 | MST++ | 2022 | Cai et al., CVPRW 2022 | 36.0 | 0.9510 | 10.1 | 0.3054 | gap | yes |
-| 7 | HDNet | 2022 | Hu et al., CVPR 2022 | 35.0 | 0.9430 | 10.1 | 0.3054 | gap | yes |
-| 8 | MST-L | 2022 | Cai et al., CVPR 2022 | 34.9 | 0.9440 | 10.1 | 0.3054 | gap | yes |
-| 9 | PADUT | 2023 | Li et al., CVPR 2023 | 34.8 | — | 10.1 | 0.3054 | gap | yes |
-| 10 | SSR-L | 2023 | Zhang et al., ICCV 2023 | 34.0 | — | 10.1 | 0.3054 | gap | yes |
-| 11 | DGSMP | 2021 | Huang et al., CVPR 2021 | 32.6 | 0.9170 | 10.1 | 0.3054 | gap | yes |
-| 12 | TSA-Net | 2020 | Meng et al., ECCV 2020 | 31.5 | 0.8940 | 10.1 | 0.3054 | gap | yes |
-| 13 | λ-Net | 2020 | Miao et al., ICCV 2019 | 30.1 | 0.8770 | 10.1 | 0.3054 | gap | yes |
-| 14 | ADMM-Net | 2019 | Ma et al., ICCV 2019 | 29.1 | 0.8600 | 10.1 | 0.3054 | gap | yes |
-| 15 | GAP-TV (guided) (PWM) | — | Yuan et al. 2016 | 26.2 | — | 10.1 | 0.3054 | gap | yes |
-| 16 | GAP-TV (fast) (PWM) | — | — | 26.2 | — | 10.1 | 0.3054 | gap | yes |
-| 17 | GAP-TV (small) (PWM) | — | — | 26.2 | — | 10.1 | 0.3054 | gap | yes |
-| 18 | GAP-TV | 2016 | Yuan, GAP-TV, ICIP 2016 | 24.4 | 0.6690 | 10.1 | 0.3054 | gap | yes |
-| 19 | TwIST | 2007 | Bioucas-Dias & Figueiredo, TwIST, TIP 2007 | 23.1 | 0.6690 | 10.1 | 0.3054 | gap | yes |
+| 1 | SSR-L | 2024 | Zhang et al., CVPR 2024 | 34.0 | — | 39.75 | — | done | yes |
+| 2 | DAUHST-9stg | 2022 | Cai et al., NeurIPS 2022 | 38.4 | 0.9670 | 37.35 | — | done | yes |
+| 3 | DAUHST-5stg | 2022 | Cai et al., NeurIPS 2022 | 37.3 | — | 36.34 | — | done | yes |
+| 4 | BIRNAT | 2022 | Cheng et al., ECCV 2022 | 30.0 | — | 35.30 | — | done | yes |
+| 5 | DAUHST-3stg | 2022 | Cai et al., NeurIPS 2022 | 36.0 | — | 34.97 | — | done | yes |
+| 6 | HDNet | 2022 | Hu et al., CVPR 2022 | 35.0 | 0.9430 | 34.66 | — | done | yes |
+| 7 | MST-L | 2022 | Cai et al., CVPR 2022 | 34.9 | 0.9440 | 34.81 | — | done | yes |
+| 8 | RDLUF-MixS2-9stg | 2023 | Dong et al., CVPR 2023 | 39.6 | 0.9720 | 33.72 | — | done | yes |
+| 9 | CST-L-Plus | 2022 | Cai et al., ECCV 2022 | 36.1 | 0.9570 | 32.52 | — | done | yes |
+| 10 | MST++ | 2022 | Cai et al., CVPRW 2022 | 36.0 | 0.9510 | 31.72 | — | done | yes |
+| 11 | λ-Net | 2020 | Miao et al., ICCV 2019 | 30.1 | 0.8770 | 28.06 | — | done | yes |
+| 12 | BiSRNet | 2023 | BiSRNet, 2023 | 33.0 | — | 27.83 | — | done | yes |
+| 13 | GAP-Net | 2020 | Meng et al., 2020 | 29.1 | — | 26.39 | — | done | yes |
+| 14 | DGSMP | 2021 | Huang et al., CVPR 2021 | 32.6 | 0.9170 | 26.21 | — | done | yes |
+| 15 | TSA-Net | 2020 | Meng et al., ECCV 2020 | 31.5 | 0.8940 | 25.64 | — | done | yes |
+| 16 | PnP-HSICNN | 2020 | Maffei et al., TGRS 2020 | 25.1 | — | 25.12 | — | done | yes |
+| 17 | TwIST | 2007 | Bioucas-Dias & Figueiredo, TIP 2007 | 23.1 | 0.6690 | 25.06 | — | done | yes |
+| 18 | ADMM-Net | 2019 | Ma et al., ICCV 2019 | 29.1 | 0.8600 | 24.99 | — | done | yes |
+| 19 | GAP-TV | 2016 | Yuan, GAP-TV, ICIP 2016 | 24.4 | 0.6690 | 24.34 | — | done | yes |
+| 20 | MiJUN | 2025 | MiJUN, AAAI 2025 | 40.9 | 0.9760 | — | — | no_ckpt | yes |
+| 21 | PADUT-L | 2023 | Li et al., CVPR 2023 | 38.9 | 0.9700 | — | — | no_ckpt | yes |
+| 22 | PADUT | 2023 | Li et al., CVPR 2023 | 34.8 | — | — | — | no_ckpt | yes |
 
 ### 23. Generic Matrix Sensing (`matrix`)
 
