@@ -106,37 +106,48 @@ We address both gaps. First, we define the \emph{simulability class} $\Sclass$ (
 
 \begin{figure}[htbp]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  node distance=1.2cm and 1.6cm,
-  box/.style={draw, rounded corners=3pt, minimum width=2.0cm, minimum height=0.7cm, font=\small, align=center, thick},
+  node distance=0.8cm and 1.4cm,
+  box/.style={draw, rounded corners=3pt, minimum width=1.8cm, minimum height=0.75cm, font=\footnotesize, align=center, thick},
   agent/.style={box, fill=blue!12},
   io/.style={box, fill=gray!15, dashed},
   sclass/.style={box, fill=green!8, thick, draw=green!50!black},
   arr/.style={-{Stealth[length=5pt]}, thick},
   rej/.style={-{Stealth[length=5pt]}, thick, red!70!black, dashed},
+  annot/.style={font=\scriptsize, text=black!50, align=center, text width=2.0cm},
 ]
-\node[io] (input) {Natural-language\\problem};
+% --- Top row ---
+\node[io] (input) {NL problem};
 \node[agent, right=of input] (plan) {$\Agent_P$\\Plan};
 \node[io, right=of plan] (spec) {\texttt{spec.md}};
-\node[sclass, right=of spec] (judgepre) {$\Agent_J$\\$\in \Sclass\,$?};
+\node[sclass, right=of spec] (judgepre) {$\Agent_J$\\$\in\Sclass$\,?};
 \node[agent, right=of judgepre] (exec) {$\Agent_E$\\Execute};
-\node[agent, below=1.0cm of exec] (judgepost) {$\Agent_J$\\Audit};
-\node[io, left=of judgepost] (output) {Bounded-error\\solution $\hat{x}$};
 
+% --- Bottom row (shifted down to leave room for rejection path) ---
+\node[agent, below=2.2cm of exec] (judgepost) {$\Agent_J$\\Audit};
+\node[io, left=1.4cm of judgepost] (output) {Bounded-error\\solution $\hat{x}$};
+
+% --- Forward arrows ---
 \draw[arr] (input) -- (plan);
 \draw[arr] (plan) -- (spec);
 \draw[arr] (spec) -- (judgepre);
-\draw[arr] (judgepre) -- node[above, font=\scriptsize]{$\in \Sclass$} (exec);
+\draw[arr] (judgepre) -- node[above, font=\scriptsize]{$\in\Sclass$} (exec);
 \draw[arr] (exec) -- (judgepost);
 \draw[arr] (judgepost) -- node[above, font=\scriptsize]{Pass} (output);
 
-\draw[rej] (judgepre) -- ++(0,-1.3) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{$\notin \Sclass$ / Redesign} (plan);
-\draw[rej] (judgepost.west) -- ++(-0.4,0) |- node[pos=0.3, left, font=\scriptsize, red!70!black]{Flag} ([yshift=-0.4cm]exec.south) -- (exec.south);
+% --- Rejection / redesign loop (routed well below the top row) ---
+\draw[rej] (judgepre.south) -- ++(0,-0.8) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{$\notin\Sclass$ / Redesign} (plan.south);
 
-\node[below=0.1cm of judgepre, font=\scriptsize, text=black!60, align=center, text width=2.2cm] {well-posed, stable, bounded Lipschitz, dimension, cost};
-\node[below=0.1cm of judgepost, font=\scriptsize, text=black!60, align=center, text width=2.2cm] {conservation, monotonicity, symmetry, bounds};
-\end{tikzpicture}
-\caption{Three-agent pipeline grounded in the simulability class $\Sclass$. The Plan Agent decomposes natural language into a structured specification. The Judge Agent verifies membership in $\Sclass$ via 5 pre-execution gates (well-posedness, stability, bounded Lipschitz composition, dimensional consistency, cost feasibility) and audits the solution via 4 post-execution quality checks. Rejection triggers redesign (up to 3 rounds) or a certificate that the problem lies outside $\Sclass$.}
+% --- Flag loop (right side, from audit back to execute) ---
+\draw[rej] (judgepost.east) -- ++(0.5,0) |- node[pos=0.25, right, font=\scriptsize, red!70!black]{Flag} (exec.east);
+
+% --- Gate annotations (placed beside nodes, not below) ---
+\node[annot, below=1.2cm of judgepre] {\itshape Pre-gates:\\well-posedness\\stability, Lipschitz\\dimension, cost};
+\node[annot, below=0.2cm of judgepost] {\itshape Post-audit:\\conservation\\monotonicity\\symmetry, bounds};
+\end{tikzpicture}%
+}% end resizebox
+\caption{Three-agent pipeline grounded in the simulability class $\Sclass$. The Plan Agent decomposes natural language into a structured specification. The Judge Agent verifies $\Sclass$-membership via 5 pre-execution gates and audits the solution via 4 post-execution quality checks. Rejection triggers redesign (up to 3 rounds) or a certificate that the problem lies outside $\Sclass$.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -225,6 +236,7 @@ The framework selects Tikhonov + TV regularization; $\lambda_{\text{TV}}$ set vi
 
 \begin{figure}[htbp]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}
 % Ground truth
 \node[draw, minimum width=3.5cm, minimum height=3.5cm, fill=black!5, align=center] (gt) at (0,0) {\small\textit{Ground truth}\\[4pt]\footnotesize (clinical CT)};
@@ -239,7 +251,8 @@ The framework selects Tikhonov + TV regularization; $\lambda_{\text{TV}}$ set vi
 \node[below=0.15cm of wj, font=\scriptsize\bfseries] {(b)};
 \node[below=0.15cm of nj, font=\scriptsize\bfseries] {(c)};
 \node[below=0.15cm of hist, font=\scriptsize\bfseries] {(d)};
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{CT reconstruction comparison (representative case from LoDoPaB-CT). \textbf{(a)}~Ground truth. \textbf{(b)}~Framework with Judge ($\in \Sclass$ verified): 31.7\,dB, no artifacts, all quality checks pass. \textbf{(c)}~Framework without Judge: streak artifacts from incorrect regularization parameter, non-negativity violations. \textbf{(d)}~PSNR distribution across all 200 cases with expert baseline overlay. \emph{Actual reconstructed images to be generated from the archived dataset for the final submission.}}
 \label{fig:ct_comparison}
 \end{figure}
