@@ -236,24 +236,14 @@ The framework selects Tikhonov + TV regularization; $\lambda_{\text{TV}}$ set vi
 
 \begin{figure}[htbp]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}
-% Ground truth
-\node[draw, minimum width=3.5cm, minimum height=3.5cm, fill=black!5, align=center] (gt) at (0,0) {\small\textit{Ground truth}\\[4pt]\footnotesize (clinical CT)};
-% With Judge
-\node[draw, minimum width=3.5cm, minimum height=3.5cm, fill=blue!5, align=center] (wj) at (4.5,0) {\small\textit{With Judge}\\[4pt]\footnotesize PSNR 31.7\,dB\\SSIM 0.891};
-% Without Judge
-\node[draw, minimum width=3.5cm, minimum height=3.5cm, fill=red!5, align=center] (nj) at (9,0) {\small\textit{Without Judge}\\[4pt]\footnotesize streak artifacts\\non-negative viol.};
-% PSNR histogram
-\node[draw, minimum width=3.5cm, minimum height=3.5cm, fill=green!3, align=center] (hist) at (13.5,0) {\small\textit{PSNR distribution}\\[4pt]\footnotesize $n = 200$\\expert overlay};
-% Labels
-\node[below=0.15cm of gt, font=\scriptsize\bfseries] {(a)};
-\node[below=0.15cm of wj, font=\scriptsize\bfseries] {(b)};
-\node[below=0.15cm of nj, font=\scriptsize\bfseries] {(c)};
-\node[below=0.15cm of hist, font=\scriptsize\bfseries] {(d)};
-\end{tikzpicture}%
-}
-\caption{CT reconstruction comparison (representative case from LoDoPaB-CT). \textbf{(a)}~Ground truth. \textbf{(b)}~Framework with Judge ($\in \Sclass$ verified): 31.7\,dB, no artifacts, all quality checks pass. \textbf{(c)}~Framework without Judge: streak artifacts from incorrect regularization parameter, non-negativity violations. \textbf{(d)}~PSNR distribution across all 200 cases with expert baseline overlay. \emph{Actual reconstructed images to be generated from the archived dataset for the final submission.}}
+\begin{tabular}{@{}c@{\hskip 3pt}c@{\hskip 3pt}c@{\hskip 3pt}c@{}}
+\includegraphics[width=0.21\textwidth]{figures/ct_groundtruth.png} &
+\includegraphics[width=0.21\textwidth]{figures/ct_with_judge.png} &
+\includegraphics[width=0.21\textwidth]{figures/ct_without_judge.png} &
+\includegraphics[width=0.27\textwidth]{figures/ct_psnr_histogram.png} \\
+{\scriptsize\bfseries (a)} & {\scriptsize\bfseries (b)} & {\scriptsize\bfseries (c)} & {\scriptsize\bfseries (d)}
+\end{tabular}
+\caption{CT reconstruction comparison (modified Shepp--Logan phantom, 128 projections, Poisson noise, $n = 200$). \textbf{(a)}~Ground truth. \textbf{(b)}~Framework with Judge ($\in \Sclass$ verified): correct angular model, Ram-Lak filter, non-negativity enforced. \textbf{(c)}~Without Judge: wrong angular range (360\textdegree{} assumed instead of 180\textdegree{}), producing doubled edges and streak artifacts; 5{,}326 non-negativity violations. \textbf{(d)}~PSNR distribution: with Judge $25.6 \pm 0.3$\,dB vs.\ without Judge $13.1 \pm 0.1$\,dB ($n = 200$, $p < 10^{-30}$, Wilcoxon).}
 \label{fig:ct_comparison}
 \end{figure}
 
