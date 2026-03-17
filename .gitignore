@@ -144,3 +144,5 @@ datasets/benchmark/gallery/
 datasets/benchmark/**/baseline_summary.json
 datasets/benchmark/mri/*.py
 datasets/benchmark/*/
+!datasets/benchmark/cassi/
+!datasets/benchmark/cassi/manifest.json
