@@ -80,7 +80,7 @@ AI Code Generation and Scientific Simulation}\\[18pt]
 % =====================================================================
 \noindent\fbox{\parbox{0.97\textwidth}{\small
 \textbf{Significance.}
-Large language models can generate numerical simulation code from plain-language descriptions, but they produce silently wrong results on the majority of non-textbook scientific problems because they lack formal mathematical checks. We introduce a validation layer---implemented as an agent that executes well-posedness proofs, stability checks, and error-budget computations---and show that inserting it between AI planning and AI execution reduces the silent-failure rate from 58\% to below 6\% across four deeply validated scientific domains (medical imaging, seismic inversion, combustion chemistry, epidemic dynamics) with real measured data. The validated pipeline achieves 94--99\% of domain-expert solution quality at 1/500th the setup time. A prospective benchmark of 72 externally contributed tasks and a blind challenge with five independent scientists confirm generalization beyond the development set.
+Large language models can generate numerical simulation code from plain-language descriptions, but they produce silently wrong results on the majority of non-textbook scientific problems because they lack formal mathematical checks. We introduce a Judge Agent---executing well-posedness proofs, stability checks, error-budget computations, and domain-specific quality audits---and show that inserting it between AI planning and AI execution reduces the silent-failure rate from 58\% to below 6\% across four deeply validated scientific domains (medical imaging, seismic inversion, combustion chemistry, epidemic dynamics) with real measured data. The validated pipeline achieves 94--99\% of domain-expert solution quality at 1/500th the setup time. A prospective benchmark of 72 externally contributed tasks and a blind challenge with five independent scientists confirm generalization beyond the development set.
 }}
 
 \vspace{8pt}
@@ -89,7 +89,7 @@ Large language models can generate numerical simulation code from plain-language
 % ABSTRACT
 % =====================================================================
 \noindent\textbf{Abstract.}
-AI-generated code can now produce numerical solvers from natural-language problem descriptions, yet it does so without error certificates---leaving scientists unable to distinguish correct from incorrect output. Here we show that a formally grounded validation step, inserted between problem specification and numerical execution, is both necessary and sufficient to close this gap. We define a \emph{simulability class} $\mathfrak{S}$ of problems admitting bounded-error numerical solutions (Definition~\ref{def:simulability}) and prove that, for problems in $\mathfrak{S}$ whose discretization decomposes over a 12-operation primitive basis, a four-agent pipeline (Plan, Validate, Compute, Quality) produces solutions satisfying $\norm{\hat{x} - x^*} \leq \varepsilon$ for any prescribed tolerance $\varepsilon > 0$ (Theorem~\ref{thm:main}). The theorem rests on classical convergence theory (Lax--Richtmyer); the contribution is an automated pipeline that \emph{identifies and constructs} the convergent discretization from natural language, with each agent addressing a distinct failure mode. We validate deeply in four domains with real measured data: clinical CT reconstruction (200 cases, 99\% of expert quality), seismic full-waveform inversion on Marmousi-2 (95\% of expert quality), GRI-Mech~3.0 combustion ignition delay against shock-tube measurements (6.3\% error), and COVID-19 epidemic dynamics across 8~U.S.\ counties against reported case data~\cite{dong2020lancet} (12.4\% peak timing error). A controlled comparison against GPT-4 shows that AI code generation without formal validation silently fails on 58\% of frontier problems; our Validation Agent reduces this to below 6\%. Fifty targeted adversarial tests systematically characterize failure modes across three categories. A prospective benchmark of 72 tasks from 12 external scientists and a blind challenge with 5 independent domain experts confirm generalization. Code, specifications, benchmark tasks, and execution logs are publicly available.
+AI-generated code can now produce numerical solvers from natural-language problem descriptions, yet it does so without error certificates---leaving scientists unable to distinguish correct from incorrect output. Here we show that a formally grounded validation step, inserted between problem specification and numerical execution, is both necessary and sufficient to close this gap. We define a \emph{simulability class} $\mathfrak{S}$ of problems admitting bounded-error numerical solutions (Definition~\ref{def:simulability}) and prove that, for problems in $\mathfrak{S}$ whose discretization decomposes over a 12-operation primitive basis, a three-agent pipeline---Plan ($\Agent_P$), Judge ($\Agent_J$), Execute ($\Agent_E$)---produces solutions satisfying $\norm{\hat{x} - x^*} \leq \varepsilon$ for any prescribed tolerance $\varepsilon > 0$ (Theorem~\ref{thm:main}). The theorem rests on classical convergence theory (Lax--Richtmyer); the contribution is an automated pipeline that \emph{identifies and constructs} the convergent discretization from natural language, with each agent addressing a distinct failure mode. We validate deeply in four domains with real measured data: clinical CT reconstruction (200 cases, 99\% of expert quality), seismic full-waveform inversion on Marmousi-2 (95\% of expert quality), GRI-Mech~3.0 combustion ignition delay against shock-tube measurements (6.3\% error), and COVID-19 epidemic dynamics across 8~U.S.\ counties against reported case data~\cite{dong2020lancet} (12.4\% peak timing error). A controlled comparison against GPT-4 shows that AI code generation without formal validation silently fails on 58\% of frontier problems; our Judge Agent reduces this to below 6\%. Fifty targeted adversarial tests systematically characterize failure modes across three categories. A prospective benchmark of 72 tasks from 12 external scientists and a blind challenge with 5 independent domain experts confirm generalization. The same Plan/Judge/Execute architecture is applied to computational imaging design in a companion paper~\cite{yang2026imaging}. Code, specifications, benchmark tasks, and execution logs are publicly available.
 
 % =====================================================================
 \section{Introduction}
@@ -101,10 +101,10 @@ Every year, thousands of scientists independently build bespoke numerical solver
 The mathematical foundations for a more general approach exist. The Church--Turing thesis~\cite{turing1936} guarantees computability of computable functions; the Lax equivalence theorem~\cite{lax1956} ensures convergence of consistent, stable discretizations; Hadamard's theory~\cite{hadamard1902} certifies continuous dependence on data. What has been missing is a practical framework that connects these results into an automated pipeline with formal error guarantees---and evidence that such a pipeline works on problems that scientists actually struggle with, not just textbook exercises.
 
 \textbf{The claim.}
-We show that formal mathematical validation, implemented as an autonomous agent that executes well-posedness proofs and error-budget computations, is necessary and sufficient to close this gap for the class of problems $\mathfrak{S}$ defined below. ``Necessary'' is demonstrated by ablation: removing the Validation Agent causes the pipeline to produce silently wrong results on 42\% of tested problems (Table~\ref{tab:llm_comparison}, ``No $\Agent_V$'' column). ``Sufficient'' is demonstrated by a controlled comparison: inserting the Validation Agent reduces the silent-failure rate of AI-generated solvers from 58\% (GPT-4 alone) to below 6\% (Table~\ref{tab:llm_comparison}), while providing formal error certificates that raw code generation never produces.
+We show that formal mathematical validation, implemented as an autonomous Judge Agent ($\Agent_J$) that executes well-posedness proofs and error-budget computations, is necessary and sufficient to close this gap for the class of problems $\mathfrak{S}$ defined below. ``Necessary'' is demonstrated by ablation: removing $\Agent_J$ causes the pipeline to produce silently wrong results on 42\% of tested problems (Table~\ref{tab:llm_comparison}, ``No $\Agent_J$'' column). ``Sufficient'' is demonstrated by a controlled comparison: inserting $\Agent_J$ reduces the silent-failure rate of AI-generated solvers from 58\% (GPT-4 alone) to below 6\% (Table~\ref{tab:llm_comparison}), while providing formal error certificates that raw code generation never produces.
 
 \textbf{What this paper does not claim.}
-We do not claim universality. The theorem holds for problems whose discretization decomposes over a specific 12-operation basis; we have verified this for 25 numerical method families (Supplementary Table~S1) but do not claim it covers all possible methods. The pipeline does not outperform domain-optimized solvers; on any single well-defined PDE, a domain expert using COMSOL or FEniCS will produce a more accurate, more efficient solution (Supplementary Table~S4). The claim is that our framework \emph{automates} the process of going from problem description to bounded-error solution across arbitrary domains, with no numerical expertise required. The formal error bound is in the $L^2$ norm and does not guarantee qualitative physical correctness in all cases; we report a 6\% residual rate of qualitative failures (Section~\ref{sec:failure}) and introduce a domain-quality gate to reduce it.
+We do not claim universality. The theorem holds for problems whose discretization decomposes over a specific 12-operation basis; we have verified this for 25 numerical method families (Supplementary Table~S1) but do not claim it covers all possible methods. The pipeline does not outperform domain-optimized solvers; on any single well-defined PDE, a domain expert using COMSOL or FEniCS will produce a more accurate, more efficient solution (Supplementary Table~S4). The claim is that our framework \emph{automates} the process of going from problem description to bounded-error solution across arbitrary domains, with no numerical expertise required. The formal error bound is in the $L^2$ norm and does not guarantee qualitative physical correctness in all cases; we report a 6\% residual rate of qualitative failures (Section~\ref{sec:failure}) and show that the Judge Agent's post-execution quality audit reduces it to 1.5\%.
 
 % =====================================================================
 \section{Results}
@@ -145,7 +145,7 @@ We state assumptions, theorem, and empirical scope separately.
 
 \begin{theorem}[Bounded-Error Realizability]
 \label{thm:main}
-Under (A1)--(A3), for any $\varepsilon > 0$, the four-agent pipeline produces $\hat{x}$ satisfying $\norm{\hat{x} - x^*}_X \leq \varepsilon$ in finite time.
+Under (A1)--(A3), for any $\varepsilon > 0$, the three-agent pipeline produces $\hat{x}$ satisfying $\norm{\hat{x} - x^*}_X \leq \varepsilon$ in finite time.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
@@ -167,47 +167,55 @@ The mathematical content---convergent methods converge---is the Lax equivalence 
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
-    node distance=0.5cm and 0.7cm,
-    box/.style={draw, rounded corners=3pt, minimum height=0.9cm, minimum width=1.8cm, align=center, font=\small},
+    node distance=0.6cm and 0.8cm,
+    box/.style={draw, rounded corners=3pt, minimum height=1.0cm, minimum width=2.0cm, align=center, font=\small},
     agent/.style={box, fill=blue!12, draw=blue!50!black, thick},
     spec/.style={box, fill=green!12, draw=green!50!black},
-    gate/.style={box, fill=purple!12, draw=purple!50!black, thick},
     arr/.style={-{Stealth[length=5pt]}, thick},
 ]
+% Nodes
 \node[box, fill=gray!10] (nl) {NL\\Input};
 \node[agent, right=of nl] (ap) {$\Agent_P$\\Plan};
 \node[spec, right=of ap] (s1) {\texttt{spec.md}};
-\node[agent, right=of s1] (av) {$\Agent_V$\\Validate};
-\node[spec, right=of av] (s2) {Certified\\$\Spec$};
-\node[agent, below=1cm of s2] (ac) {$\Agent_C$\\Compute};
-\node[gate, left=of ac] (aq) {$\Agent_Q$\\Quality};
-\node[box, fill=green!20, left=of aq] (out) {$\hat{x}, \varepsilon$};
-\node[box, fill=red!8, draw=red!50!black, dashed, below=0.5cm of av] (rej) {Reject};
+\node[agent, right=of s1, minimum width=2.8cm, minimum height=1.4cm] (aj) {$\Agent_J$\\Judge};
+\node[spec, right=of aj] (s2) {Certified\\$\Spec, \varepsilon$};
+\node[agent, right=of s2] (ae) {$\Agent_E$\\Execute};
+\node[box, fill=green!20, right=of ae] (out) {$\hat{x}, \varepsilon$};
+\node[box, fill=red!8, draw=red!50!black, dashed, below=0.6cm of aj] (rej) {Reject:\\$P \notin \mathfrak{S}$};
 
+% Main flow
 \draw[arr] (nl) -- (ap);
 \draw[arr] (ap) -- (s1);
-\draw[arr] (s1) -- (av);
-\draw[arr] (av) -- (s2);
-\draw[arr] (s2) -- (ac);
-\draw[arr] (ac) -- (aq);
-\draw[arr] (aq) -- (out);
-\draw[arr, dashed, red!60!black] (av) -- (rej);
-\draw[arr, blue!60, dashed] (av.north) -- ++(0,0.4) -| node[above, font=\scriptsize, pos=0.25] {Redesign} (ap.north);
-\draw[arr, purple!60, dashed] (aq.south) -- ++(0,-0.3) -| node[below, font=\scriptsize, pos=0.25] {Refine} (ac.south);
+\draw[arr] (s1) -- (aj);
+\draw[arr] (aj) -- (s2);
+\draw[arr] (s2) -- (ae);
+\draw[arr] (ae) -- (out);
+
+% Reject path
+\draw[arr, dashed, red!60!black] (aj) -- (rej);
+
+% Redesign loop: Judge back to Plan
+\draw[arr, blue!60, dashed] (aj.north) -- ++(0,0.5) -| node[above, font=\scriptsize, pos=0.25] {Redesign} (ap.north);
+
+% Post-execution audit: Execute back through Judge
+\draw[arr, purple!60, dashed] (ae.south) -- ++(0,-0.4) -| node[below, font=\scriptsize, pos=0.25] {Quality audit} (aj.south east);
+
+% Judge internal labels
+\node[font=\tiny, anchor=north] at ([yshift=-0.1cm]aj.north) {Pre: validation gates};
+\node[font=\tiny, anchor=south] at ([yshift=0.1cm]aj.south) {Post: quality audit};
+
 \end{tikzpicture}
-\caption{\textbf{Four-agent pipeline.} $\Agent_P$ translates natural language to a typed specification (\texttt{spec.md}). $\Agent_V$ executes formal well-posedness checks; failures trigger redesign or rejection. $\Agent_C$ constructs and executes a primitive DAG. $\Agent_Q$ applies domain-specific quality checks---monotonicity, entropy conditions, conservation laws, symmetry---beyond the $L^2$ error bound, flagging qualitative failures that formal analysis alone misses.}
+\caption{\textbf{Three-agent pipeline.} $\Agent_P$ (Plan) translates natural language to a typed specification (\texttt{spec.md}). $\Agent_J$ (Judge) operates in two modes: \emph{pre-execution}, it validates well-posedness, stability, and error budgets---failures trigger redesign or rejection; \emph{post-execution}, it audits the solution for domain-specific physical correctness (monotonicity, entropy, conservation, symmetry). $\Agent_E$ (Execute) constructs a primitive DAG, sets resolution, executes, and returns $\hat{x}$ with error bound $\varepsilon$. The same Plan/Judge/Execute architecture is used for computational imaging design in a companion paper~\cite{yang2026imaging}.}
 \label{fig:pipeline}
 \end{figure}
 
-The pipeline has four stages (Fig.~\ref{fig:pipeline}):
+The pipeline has three stages (Fig.~\ref{fig:pipeline}):
 
 \textbf{Plan Agent ($\Agent_P$)} accepts a natural-language problem description and generates a structured \texttt{spec.md} with six typed fields matching Definition~\ref{def:simulability}: $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$.
 
-\textbf{Validation Agent ($\Agent_V$)} executes five formal mathematical checks: dimensional consistency, boundary/initial condition compatibility, Hadamard well-posedness (coercivity, CFL, Lipschitz bounds), simulability classification, and cost estimation. $\Agent_V$ operates by applying mathematical criteria---not statistical pattern matching. When a check fails, the output is a mathematical diagnosis, not a confidence score.
+\textbf{Judge Agent ($\Agent_J$)} operates in two modes. \emph{Pre-execution}: five formal validation gates---dimensional consistency, boundary/initial condition compatibility, Hadamard well-posedness (coercivity, CFL, Lipschitz bounds), simulability classification, and cost estimation. These are mathematical proofs, not statistical predictions; when a check fails, the output is a formal diagnosis. Failures trigger redesign (back to $\Agent_P$, up to 3 rounds) or rejection with a mathematical certificate that $P \notin \mathfrak{S}$. \emph{Post-execution}: domain-specific quality audit---monotonicity for diffusion problems, entropy conditions for shocks, conservation-law residuals, symmetry preservation, physical bounds, and qualitative comparison against known solution archetypes. The quality audit catches the 6\% of cases (Section~\ref{sec:failure}) where the formal $L^2$ bound is met but the physics is qualitatively wrong, reducing the residual rate to 1.5\%.
 
-\textbf{Computation Agent ($\Agent_C$)} constructs a DAG over the 12 primitives, sets resolution parameters via a priori error estimates, executes the DAG, and verifies the error bound a posteriori.
-
-\textbf{Quality Agent ($\Agent_Q$)} applies domain-specific physical checks beyond the $L^2$ error bound: monotonicity for diffusion problems, entropy conditions for shocks, conservation-law residuals, symmetry preservation, and qualitative comparison against known solution archetypes. $\Agent_Q$ does not replace the formal bound but catches the 6\% of cases (Section~\ref{sec:failure}) where the bound is met but the physics is qualitatively wrong. In our tests, $\Agent_Q$ reduces the qualitative failure rate from 6\% to 1.5\% (2/134 remaining, both involving bifurcation detection near critical parameter values).
+\textbf{Execute Agent ($\Agent_E$)} selects primitives from the 12-operation basis, constructs a DAG, sets resolution parameters via a priori error estimates, executes the DAG, and verifies the error bound a posteriori. After execution, $\Agent_E$ returns $\hat{x}$ and $\varepsilon$ to $\Agent_J$ for quality audit.
 
 \textbf{spec.md as a scientific exchange format.} Just as FASTA made biological sequences shareable and SMILES made molecular structures machine-readable, \texttt{spec.md} provides a standardized representation for computational problems. Unlike code, which encodes both the problem and the numerical method (conflating \emph{what} with \emph{how}), a \texttt{spec.md} file encodes only the problem, leaving method selection to the framework.
 
@@ -237,16 +245,16 @@ Epidemiology & COVID-19 (8 counties) & SEIR-D compartmental & 8 & 12.4\% err & 8
 \end{table}
 
 \textbf{Clinical CT reconstruction (LoDoPaB).}
-200 real clinical sinograms from a Siemens scanner~\cite{leuschner2021}, subsampled to 128 parallel-beam projections with Poisson noise. The framework selects Tikhonov + TV regularization with non-negativity constraints; $\lambda_{\text{TV}}$ is set via the Morozov discrepancy principle. PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$. Expert-tuned ASTRA Toolbox~\cite{aarle2016}: $32.1 \pm 1.1$\,dB / SSIM $0.903$. Quality ratio: 99\%. Time: $\rho = 5$\,days / 12\,min $\approx 600$. \emph{Sensitivity}: varying $\lambda_{\text{TV}}$ by $\pm 50\%$ changes PSNR by $\pm 0.8$\,dB. \emph{Quality gate}: $\Agent_Q$ checks non-negativity, support constraint, and streak-artifact absence; 0/200 flagged.
+200 real clinical sinograms from a Siemens scanner~\cite{leuschner2021}, subsampled to 128 parallel-beam projections with Poisson noise. The framework selects Tikhonov + TV regularization with non-negativity constraints; $\lambda_{\text{TV}}$ is set via the Morozov discrepancy principle. PSNR $31.7 \pm 1.2$\,dB, SSIM $0.891 \pm 0.031$. Expert-tuned ASTRA Toolbox~\cite{aarle2016}: $32.1 \pm 1.1$\,dB / SSIM $0.903$. Quality ratio: 99\%. Time: $\rho = 5$\,days / 12\,min $\approx 600$. \emph{Sensitivity}: varying $\lambda_{\text{TV}}$ by $\pm 50\%$ changes PSNR by $\pm 0.8$\,dB. \emph{Quality audit}: $\Agent_J$ post-execution checks non-negativity, support constraint, and streak-artifact absence; 0/200 flagged.
 
 \textbf{Seismic full-waveform inversion (Marmousi-2).}
-The Marmousi-2 velocity model~\cite{martin2006marmousi}, a community benchmark for full-waveform inversion (FWI). Configuration: 240 sources at 10\,m spacing on the surface, 480 receivers, Ricker wavelet with 10\,Hz peak frequency. Starting model: 1D gradient from water velocity (1500\,m/s) to 4500\,m/s at depth, obtained by smoothing the true model with a 500\,m Gaussian. Frequency continuation schedule: 2--5\,Hz (50 iterations), 5--10\,Hz (30 iterations), 10--15\,Hz (20 iterations), following standard multi-scale FWI practice~\cite{bunks1995fwi}. TV regularization with $\lambda = 10^{-3}$. Framework velocity PSNR: 26.4\,dB. Expert-configured Madagascar~\cite{fomel2013madagascar} with manual starting model selection and frequency tuning: 27.8\,dB. Quality ratio: 95\%. Time: 45\,min vs.\ 2\,weeks ($\rho \approx 450$). \emph{Sensitivity}: using a constant-velocity starting model degrades PSNR to 21.1\,dB (cycle-skipping), confirming known FWI sensitivity to initial model; the framework's automatic smoothed-model initialization avoids this pitfall. \emph{Quality gate}: $\Agent_Q$ checks velocity range (1500--5500\,m/s physical bound) and layer-continuity; 0/1 flagged.
+The Marmousi-2 velocity model~\cite{martin2006marmousi}, a community benchmark for full-waveform inversion (FWI). Configuration: 240 sources at 10\,m spacing on the surface, 480 receivers, Ricker wavelet with 10\,Hz peak frequency. Starting model: 1D gradient from water velocity (1500\,m/s) to 4500\,m/s at depth, obtained by smoothing the true model with a 500\,m Gaussian. Frequency continuation schedule: 2--5\,Hz (50 iterations), 5--10\,Hz (30 iterations), 10--15\,Hz (20 iterations), following standard multi-scale FWI practice~\cite{bunks1995fwi}. TV regularization with $\lambda = 10^{-3}$. Framework velocity PSNR: 26.4\,dB. Expert-configured Madagascar~\cite{fomel2013madagascar} with manual starting model selection and frequency tuning: 27.8\,dB. Quality ratio: 95\%. Time: 45\,min vs.\ 2\,weeks ($\rho \approx 450$). \emph{Sensitivity}: using a constant-velocity starting model degrades PSNR to 21.1\,dB (cycle-skipping), confirming known FWI sensitivity to initial model; the framework's automatic smoothed-model initialization avoids this pitfall. \emph{Quality audit}: $\Agent_J$ checks velocity range (1500--5500\,m/s physical bound) and layer-continuity; 0/1 flagged.
 
 \textbf{GRI-Mech 3.0 ignition delay.}
-53-species, 325-reaction methane--air combustion~\cite{smith1999gri} at 1500\,K, 10\,atm, equivalence ratio $\phi = 1.0$. Stiffness ratio $\sim 10^{10}$; framework selects BDF implicit integrator. Tested across 15 conditions ($T \in [1000, 2000]$\,K, $p \in [1, 50]$\,atm). Ignition delay error vs.\ shock-tube experiments: $6.3 \pm 2.1\%$. Expert Cantera configuration: $3.8 \pm 1.4\%$. Setup: 8\,min vs.\ 1\,day ($\rho \approx 200$). \emph{Sensitivity}: switching to explicit RK4 crashes at stiffness $> 10^6$ (correctly rejected by $\Agent_V$). \emph{Quality gate}: $\Agent_Q$ checks mass conservation ($< 10^{-12}$ relative), temperature monotonicity post-ignition, and species non-negativity; 0/15 flagged.
+53-species, 325-reaction methane--air combustion~\cite{smith1999gri} at 1500\,K, 10\,atm, equivalence ratio $\phi = 1.0$. Stiffness ratio $\sim 10^{10}$; framework selects BDF implicit integrator. Tested across 15 conditions ($T \in [1000, 2000]$\,K, $p \in [1, 50]$\,atm). Ignition delay error vs.\ shock-tube experiments: $6.3 \pm 2.1\%$. Expert Cantera configuration: $3.8 \pm 1.4\%$. Setup: 8\,min vs.\ 1\,day ($\rho \approx 200$). \emph{Sensitivity}: switching to explicit RK4 crashes at stiffness $> 10^6$ (correctly rejected by $\Agent_J$ pre-execution gate). \emph{Quality audit}: $\Agent_J$ checks mass conservation ($< 10^{-12}$ relative), temperature monotonicity post-ignition, and species non-negativity; 0/15 flagged.
 
 \textbf{COVID-19 epidemic dynamics (8 U.S.\ counties).}
-SEIR-D compartmental model (Susceptible, Exposed, Infectious, Recovered, Dead) with county-specific contact rates, fitted to Johns Hopkins CSSE data~\cite{dong2020lancet} from March--August 2020. Eight counties spanning urban and rural demographics: Fulton County (GA), Cook County (IL), Los Angeles (CA), Harris County (TX), Maricopa (AZ), King County (WA), Miami-Dade (FL), and Wayne County (MI). Parameters: $\beta$ estimated via maximum likelihood on the first 60\% of data (training); remaining 40\% used for validation. Framework peak timing error: $12.4 \pm 3.1\%$ (mean $\pm$ s.d.\ across 8 counties); cumulative case count error at 6 months: $18.7 \pm 5.2\%$. Worst county: Wayne County (22.1\% peak error), likely due to complex multi-wave dynamics. Best: King County (7.3\%), which had a more classical single-peak trajectory. Expert epidemiological model (county-specific, manually calibrated SEIR with intervention timing): $8.9 \pm 2.4\%$ peak error. The framework's SEIR structure cannot capture non-pharmaceutical intervention timing without external data; this is a known limitation of compartmental models, not of the framework. Setup: 6\,min vs.\ months of model development ($\rho > 1000$). \emph{Quality gate}: $\Agent_Q$ checks population conservation ($S+E+I+R+D = N$), non-negativity of all compartments, and monotonicity of cumulative deaths; 0/8 flagged.
+SEIR-D compartmental model (Susceptible, Exposed, Infectious, Recovered, Dead) with county-specific contact rates, fitted to Johns Hopkins CSSE data~\cite{dong2020lancet} from March--August 2020. Eight counties spanning urban and rural demographics: Fulton County (GA), Cook County (IL), Los Angeles (CA), Harris County (TX), Maricopa (AZ), King County (WA), Miami-Dade (FL), and Wayne County (MI). Parameters: $\beta$ estimated via maximum likelihood on the first 60\% of data (training); remaining 40\% used for validation. Framework peak timing error: $12.4 \pm 3.1\%$ (mean $\pm$ s.d.\ across 8 counties); cumulative case count error at 6 months: $18.7 \pm 5.2\%$. Worst county: Wayne County (22.1\% peak error), likely due to complex multi-wave dynamics. Best: King County (7.3\%), which had a more classical single-peak trajectory. Expert epidemiological model (county-specific, manually calibrated SEIR with intervention timing): $8.9 \pm 2.4\%$ peak error. The framework's SEIR structure cannot capture non-pharmaceutical intervention timing without external data; this is a known limitation of compartmental models, not of the framework. Setup: 6\,min vs.\ months of model development ($\rho > 1000$). \emph{Quality audit}: $\Agent_J$ checks population conservation ($S+E+I+R+D = N$), non-negativity of all compartments, and monotonicity of cumulative deaths; 0/8 flagged.
 
 % -------------------------------------------------------------------
 \subsection{The Validation Gap: AI Generation vs.\ Formal Verification}
@@ -260,7 +268,7 @@ SEIR-D compartmental model (Susceptible, Exposed, Infectious, Recovered, Dead) w
 \small
 \begin{tabularx}{\textwidth}{Xcc|cc|cc|cc}
 \toprule
-& \multicolumn{2}{c|}{\textbf{Full pipeline}} & \multicolumn{2}{c|}{\textbf{GPT-4 (raw)}} & \multicolumn{2}{c|}{\textbf{GPT-4 + spec}} & \multicolumn{2}{c}{\textbf{No $\Agent_V$}} \\
+& \multicolumn{2}{c|}{\textbf{Full pipeline}} & \multicolumn{2}{c|}{\textbf{GPT-4 (raw)}} & \multicolumn{2}{c|}{\textbf{GPT-4 + spec}} & \multicolumn{2}{c}{\textbf{No $\Agent_J$}} \\
 & Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. \\
 \midrule
 CT recon. & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- \\
@@ -279,10 +287,10 @@ Rossby waves & \cmark & \cmark & $\sim$ & --- & $\sim$ & --- & $\sim$ & --- \\
 \textbf{Correct} & \textbf{12} & \textbf{12} & \textbf{5} & \textbf{0} & \textbf{6} & \textbf{0} & \textbf{7} & \textbf{0} \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize \cmark\ = correct and within tolerance. $\sim$ = partially correct or qualitatively wrong. --- = incorrect or not provided. ``No $\Agent_V$'' = $\Agent_P + \Agent_C$ without validation. \textsuperscript{a}Validated against JHU Turbulence Database~\cite{li2008jhtdb}.
+\raggedright\scriptsize \cmark\ = correct and within tolerance. $\sim$ = partially correct or qualitatively wrong. --- = incorrect or not provided. ``No $\Agent_J$'' = $\Agent_P + \Agent_E$ without the Judge. \textsuperscript{a}Validated against JHU Turbulence Database~\cite{li2008jhtdb}.
 \end{table}
 
-GPT-4 with raw natural-language input produces correct results on 5/12 problems---all textbook-level. GPT-4 with the structured \texttt{spec.md} produced by $\Agent_P$ improves to 6/12 (the spec helped with GRI-Mech by specifying the stiff solver requirement). However, GPT-4 + spec still fails on 6 frontier problems---and critically, produces no error bound in any case. The \texttt{spec.md} gives GPT-4 the right problem formulation ($\Agent_P$'s contribution), but without formal verification ($\Agent_V$) and principled primitive selection ($\Agent_C$), the LLM still produces physically incorrect solutions for complex problems. The full pipeline achieves 12/12 with formal error bounds on every problem. This isolates the Validation Agent as the critical differentiator: it rejects ill-posed specifications, catches under-resolved discretizations, and certifies the final error bound.
+GPT-4 with raw natural-language input produces correct results on 5/12 problems---all textbook-level. GPT-4 with the structured \texttt{spec.md} produced by $\Agent_P$ improves to 6/12 (the spec helped with GRI-Mech by specifying the stiff solver requirement). However, GPT-4 + spec still fails on 6 frontier problems---and critically, produces no error bound in any case. The \texttt{spec.md} gives GPT-4 the right problem formulation ($\Agent_P$'s contribution), but without formal verification ($\Agent_J$) and principled primitive selection ($\Agent_E$), the LLM still produces physically incorrect solutions for complex problems. The full pipeline achieves 12/12 with formal error bounds on every problem. This isolates the Judge Agent as the critical differentiator: it rejects ill-posed specifications, catches under-resolved discretizations, and certifies the final error bound.
 
 % -------------------------------------------------------------------
 \subsection{Prospective External Benchmark}
@@ -306,8 +314,8 @@ To test generalization beyond the development set, we conducted a prospective be
 \midrule
 Correct + bounded + quality & 58 & 80.6\% & 1.4$\pm$0.8 & Pass & --- \\
 Correct + bounded, quality flag & 6 & 8.3\% & 2.1$\pm$1.0 & Flag & Qualitative concern \\
-$\Agent_V$ rejected (correct) & 3 & 4.2\% & --- & --- & Genuinely ill-posed \\
-$\Agent_V$ rejected (fixable) & 2 & 2.8\% & --- & --- & Ambiguous NL input \\
+$\Agent_J$ rejected (correct) & 3 & 4.2\% & --- & --- & Genuinely ill-posed \\
+$\Agent_J$ rejected (fixable) & 2 & 2.8\% & --- & --- & Ambiguous NL input \\
 Failed (resource limit) & 2 & 2.8\% & --- & --- & Exceeded 64\,GB memory \\
 Failed (wrong answer) & 1 & 1.4\% & 3 & Fail & Bifurcation near critical pt \\
 \midrule
@@ -316,7 +324,7 @@ Failed (wrong answer) & 1 & 1.4\% & 3 & Fail & Bifurcation near critical pt \\
 \end{tabularx}
 \end{table}
 
-Of 72 prospective tasks: 58 (80.6\%) produced correct, bounded, quality-verified solutions. 6 (8.3\%) met the formal error bound but were flagged by $\Agent_Q$ for qualitative concerns (resolved after expert consultation in 5/6 cases). 3 were correctly rejected as ill-posed. 2 failed due to ambiguous input (resolved after clarification). 2 exceeded memory limits. 1 produced a wrong answer (bifurcation detection near a critical parameter value).
+Of 72 prospective tasks: 58 (80.6\%) produced correct, bounded, quality-verified solutions. 6 (8.3\%) met the formal error bound but were flagged by $\Agent_J$'s quality audit for qualitative concerns (resolved after expert consultation in 5/6 cases). 3 were correctly rejected as ill-posed. 2 failed due to ambiguous input (resolved after clarification). 2 exceeded memory limits. 1 produced a wrong answer (bifurcation detection near a critical parameter value).
 
 \textbf{Quality vs.\ expert baselines.} For the 58 fully successful tasks, the framework achieved a median quality ratio of 94\% relative to the expert baseline (IQR: 89--98\%). Median setup time: 11\,min (framework) vs.\ expert-reported median of 3\,days.
 
@@ -331,12 +339,12 @@ Five scientists from different institutions and domains---none involved in frame
 
 \begin{table}[htbp]
 \centering
-\caption{Blind challenge: 5 external scientists independently pose research problems. ``Redesign'': $\Agent_V$-triggered specification revision. ``Expert check'': scientist's assessment of physical correctness.}
+\caption{Blind challenge: 5 external scientists independently pose research problems. ``Redesign'': $\Agent_J$-triggered specification revision. ``Expert check'': scientist's assessment of physical correctness.}
 \label{tab:blind}
 \small
 \begin{tabularx}{\textwidth}{llcccl}
 \toprule
-\textbf{Scientist} & \textbf{Problem Posed} & $\Agent_V$ & \textbf{Bounded} & \textbf{Redesign} & \textbf{Expert Check} \\
+\textbf{Scientist} & \textbf{Problem Posed} & $\Agent_J$ & \textbf{Bounded} & \textbf{Redesign} & \textbf{Expert Check} \\
 \midrule
 Geophysicist & Rayleigh wave in layered soil & Accept & Yes & 1 & Correct \\
 Bioengineer & Drug diffusion through tumor & Accept & Yes & 0 & Correct \\
@@ -348,7 +356,7 @@ Chemical eng. & Packed-bed reactor, mass transfer & Accept & Yes & 1 & Partial\t
 \raggedright\scriptsize \textsuperscript{$\dagger$}Expert noted solution matched analytical Bondi profile to 0.3\% but did not capture relativistic corrections (not specified in input). \textsuperscript{$\ddagger$}Mass transfer coefficients matched experiments to 20\%; expert noted framework used a Sherwood correlation rather than resolving the boundary layer directly, which would require finer mesh.
 \end{table}
 
-All five problems were accepted by $\Agent_V$ and produced bounded-error solutions. Four were judged ``correct'' by the posing scientist; one was ``partially correct''---the packed-bed reactor used a correlation-based approach that sacrificed boundary-layer resolution for computational feasibility. Three problems required redesign cycles triggered by $\Agent_V$ (CFL violation in Bondi accretion, mesh quality in Rayleigh waves, coupling scheme in packed-bed). The scientists reported that problem description took 5--15 minutes; none wrote code or specified numerical methods.
+All five problems were accepted by $\Agent_J$ and produced bounded-error solutions. Four were judged ``correct'' by the posing scientist; one was ``partially correct''---the packed-bed reactor used a correlation-based approach that sacrificed boundary-layer resolution for computational feasibility. Three problems required redesign cycles triggered by $\Agent_J$ (CFL violation in Bondi accretion, mesh quality in Rayleigh waves, coupling scheme in packed-bed). The scientists reported that problem description took 5--15 minutes; none wrote code or specified numerical methods.
 
 % -------------------------------------------------------------------
 \subsection{Failure Analysis}
@@ -357,34 +365,34 @@ All five problems were accepted by $\Agent_V$ and produced bounded-error solutio
 
 To systematically characterize failure modes, we submitted 50 adversarial and edge-case problems spanning three categories. Combined with the 12 development problems and 72 prospective tasks, this yields 134 total test cases.
 
-\textbf{(a) $\Agent_P$ misspecification} (20 problems with ambiguous or incomplete natural-language input): $\Agent_P$ produced incorrect governing equations in 4/20 cases (20\%). Failure triggers: ambiguous variable names (``$k$'' interpreted as thermal conductivity vs.\ rate constant), missing scale information (``large Reynolds number'' without a value), and domain-specific jargon outside the model's training distribution (``Knudsen regime'' misinterpreted). In all 4 cases, $\Agent_V$ caught the error during well-posedness checking (dimensional inconsistency in 2 cases, non-physical parameter range in 2 cases) and triggered a redesign cycle. After redesign, 3/4 converged to correct solutions; 1 required human clarification.
+\textbf{(a) $\Agent_P$ misspecification} (20 problems with ambiguous or incomplete natural-language input): $\Agent_P$ produced incorrect governing equations in 4/20 cases (20\%). Failure triggers: ambiguous variable names (``$k$'' interpreted as thermal conductivity vs.\ rate constant), missing scale information (``large Reynolds number'' without a value), and domain-specific jargon outside the model's training distribution (``Knudsen regime'' misinterpreted). In all 4 cases, $\Agent_J$'s pre-execution gates caught the error (dimensional inconsistency in 2 cases, non-physical parameter range in 2 cases) and triggered redesign. After redesign, 3/4 converged to correct solutions; 1 required human clarification.
 
-\textbf{(b) $\Agent_V$ false negatives} (20 problems with subtle well-posedness issues): $\Agent_V$ incorrectly accepted 2/20 specifications (10\% false negative rate). Both involved near-singular systems where condition numbers exceeded $10^{12}$ but formal coercivity bounds were technically satisfied. In one case (reaction-diffusion with extreme parameter ratios), $\Agent_C$ detected the issue via a posteriori error checking and triggered refinement. In the other (nearly incompressible elasticity with $\nu = 0.4999$), the solution was technically within the error bound but exhibited locking artifacts that a domain expert would recognize as non-physical. This highlights a limitation: the framework guarantees $L^2$ error bounds but does not check qualitative physical correctness without $\Agent_Q$.
+\textbf{(b) $\Agent_J$ false negatives} (20 problems with subtle well-posedness issues): $\Agent_J$ incorrectly accepted 2/20 specifications (10\% false negative rate). Both involved near-singular systems where condition numbers exceeded $10^{12}$ but formal coercivity bounds were technically satisfied. In one case (reaction-diffusion with extreme parameter ratios), $\Agent_E$ detected the issue via a posteriori error checking and triggered refinement. In the other (nearly incompressible elasticity with $\nu = 0.4999$), the solution was technically within the error bound but exhibited locking artifacts that a domain expert would recognize as non-physical. This highlights a limitation: the pre-execution gates guarantee $L^2$ error bounds but do not check qualitative physical correctness---this is the role of $\Agent_J$'s post-execution quality audit.
 
-\textbf{(c) $\Agent_C$ qualitatively wrong solutions} (10 problems where the error bound is met but the physics is questionable): In 3/10 cases, the solution met the formal $\norm{\hat{x} - x^*} \leq \varepsilon$ bound in the $L^2$ norm but exhibited qualitative artifacts: oscillatory solutions where monotone behavior was expected (1 case), symmetric solutions for problems with symmetry-breaking bifurcations (1 case), and smooth solutions where shocks should appear (1 case, pre-shock-capturing redesign). Without $\Agent_Q$, these 3 silent failures (6\% of the 50 adversarial tests) represent the framework's most serious limitation. With $\Agent_Q$: 2/134 overall (1.5\%), both involving bifurcation detection near critical parameter values---an open problem requiring global solution-landscape analysis.
+\textbf{(c) Qualitatively wrong solutions} (10 problems where the error bound is met but the physics is questionable): In 3/10 cases, the solution met the formal $\norm{\hat{x} - x^*} \leq \varepsilon$ bound in the $L^2$ norm but exhibited qualitative artifacts: oscillatory solutions where monotone behavior was expected (1 case), symmetric solutions for problems with symmetry-breaking bifurcations (1 case), and smooth solutions where shocks should appear (1 case, pre-shock-capturing redesign). Without $\Agent_J$'s quality audit, these 3 silent failures (6\% of the 50 adversarial tests) represent the framework's most serious limitation. With the quality audit: 2/134 overall (1.5\%), both involving bifurcation detection near critical parameter values---an open problem requiring global solution-landscape analysis.
 
-\textbf{Overall failure rate.} Across all 50 adversarial tests, the full pipeline produced correct, bounded-error solutions in 41/50 cases (82\%). Of the 9 failures: 4 were caught and corrected by $\Agent_V$ redesign, 1 required human clarification, 1 was caught by $\Agent_C$ a posteriori, and 3 were ``silent'' qualitative failures where the formal error bound was met but the solution was scientifically questionable. $\Agent_Q$ catches 1 of the 3, reducing the silent qualitative failure rate from 6\% to 1.5\%.
+\textbf{Overall failure rate.} Across all 50 adversarial tests, the full pipeline produced correct, bounded-error solutions in 41/50 cases (82\%). Of the 9 failures: 4 were caught and corrected by $\Agent_J$ redesign, 1 required human clarification, 1 was caught by $\Agent_E$ a posteriori, and 3 were ``silent'' qualitative failures. $\Agent_J$'s quality audit catches 1 of the 3, reducing the silent qualitative failure rate from 6\% to 1.5\%.
 
 % =====================================================================
 \section{Discussion}
 % =====================================================================
 
 \textbf{One claim, deeply validated.}
-This paper makes one claim: formal mathematical validation is the missing component that transforms AI code generation into reliable scientific simulation. The evidence is a controlled comparison (Table~\ref{tab:llm_comparison}) showing that validation reduces the silent-failure rate from 58\% to below 6\%, deep validation on 4 domains with real measured data (Table~\ref{tab:domains}), a prospective benchmark (Table~\ref{tab:prospective}) confirming generalization to 72 unseen tasks from 12 external scientists, a blind challenge (Table~\ref{tab:blind}) demonstrating real-world usability with 5 independent domain experts, and an honest failure analysis identifying the remaining 1.5\% qualitative failure rate.
+This paper makes one claim: formal mathematical validation is the missing component that transforms AI code generation into reliable scientific simulation. The evidence is a controlled comparison (Table~\ref{tab:llm_comparison}) showing that removing $\Agent_J$ increases the silent-failure rate from below 6\% to 42\%, deep validation on 4 domains with real measured data (Table~\ref{tab:domains}), a prospective benchmark (Table~\ref{tab:prospective}) confirming generalization to 72 unseen tasks from 12 external scientists, a blind challenge (Table~\ref{tab:blind}) demonstrating real-world usability with 5 independent domain experts, and an honest failure analysis identifying the remaining 1.5\% qualitative failure rate.
 
 \textbf{Formal verification as the critical differentiator.}
-The GPT-4 comparison (Table~\ref{tab:llm_comparison}) makes the case starkly: even when given the structured \texttt{spec.md} produced by $\Agent_P$, GPT-4 still fails on 50\% of frontier problems---and produces no error bound in any case. The Validation Agent provides a fundamentally different contract: $\norm{\hat{x} - x^*} \leq \varepsilon$ when $P \in \mathfrak{S}$, or a formal rejection with a mathematical diagnosis otherwise. This is the distinction between \emph{verification} (checking a proof) and \emph{generation} (producing an answer).
+The GPT-4 comparison (Table~\ref{tab:llm_comparison}) makes the case starkly: even when given the structured \texttt{spec.md} produced by $\Agent_P$, GPT-4 still fails on 50\% of frontier problems---and produces no error bound in any case. $\Agent_J$ provides a fundamentally different contract: $\norm{\hat{x} - x^*} \leq \varepsilon$ when $P \in \mathfrak{S}$, or a formal rejection with a mathematical diagnosis otherwise. This is the distinction between \emph{verification} (checking a proof) and \emph{generation} (producing an answer).
 
 \textbf{The expertise bottleneck is real and quantifiable.}
 Across four real-data domains, the median efficiency ratio is $\rho \approx 500$ (range: 80--$>$1000). The blind challenge (Table~\ref{tab:blind}) demonstrates that this efficiency extends to independently posed research problems: five scientists from five different domains described their problems in 5--15 minutes and received bounded-error solutions without writing code.
 
-\textbf{The quality gate.}
-The introduction of $\Agent_Q$ reflects a lesson from this work: formal $L^2$ error bounds are necessary but not sufficient for scientific correctness. A solution can satisfy $\norm{\hat{x} - x^*} \leq \varepsilon$ while exhibiting non-physical oscillations or missing qualitative features. $\Agent_Q$'s domain-specific checks (monotonicity, entropy, conservation, symmetry) reduced the qualitative failure rate from 6\% to 1.5\%. The remaining failures involve bifurcation detection, which requires global solution-landscape analysis---an open problem.
+\textbf{The Judge Agent's dual role.}
+$\Agent_J$'s two-mode design---pre-execution validation gates and post-execution quality audit---reflects a key lesson: formal $L^2$ error bounds are necessary but not sufficient for scientific correctness. A solution can satisfy $\norm{\hat{x} - x^*} \leq \varepsilon$ while exhibiting non-physical oscillations or missing qualitative features. The quality audit (monotonicity, entropy, conservation, symmetry checks) reduced the qualitative failure rate from 6\% to 1.5\%. The remaining failures involve bifurcation detection, which requires global solution-landscape analysis---an open problem. The same dual-mode Judge architecture is used for computational imaging in a companion paper~\cite{yang2026imaging}, where it validates recoverability, carrier budget, and operator mismatch.
 
 \textbf{Limitations.}
 (1)~Primitive basis sufficiency is verified for 25 method families, not all methods.
-(2)~$\Agent_P$ misspecifies equations for 20\% of ambiguous inputs (Section~\ref{sec:failure}); $\Agent_V$ catches most but not all errors.
-(3)~$\Agent_V$ has a 10\% false negative rate on subtle well-posedness issues (near-singular systems).
+(2)~$\Agent_P$ misspecifies equations for 20\% of ambiguous inputs (Section~\ref{sec:failure}); $\Agent_J$ catches most but not all errors.
+(3)~$\Agent_J$ has a 10\% false negative rate on subtle well-posedness issues (near-singular systems).
 (4)~The framework guarantees $L^2$ error bounds but not qualitative physical correctness; 6\% of adversarial tests produced ``silent'' qualitative failures.
 (5)~Real-data validation covers 4 domains deeply; extending to additional domains is ongoing.
 (6)~The prospective benchmark (72 tasks) and blind challenge (5 scientists) demonstrate feasibility but not community-scale validation.
@@ -427,26 +435,38 @@ The introduction of $\Agent_Q$ reflects a lesson from this work: formal $L^2$ er
 
 Each primitive is minimal: for each $p_k$, we exhibit a witness problem $P_k \in \mathfrak{S}$ unsolvable by the remaining 11 (Supplementary Section~S4).
 
-\subsection{Quality Agent ($\Agent_Q$) Implementation}
+\subsection{Judge Agent ($\Agent_J$) Implementation}
 
-$\Agent_Q$ applies a configurable set of domain-specific checks after $\Agent_C$ produces a solution:
+$\Agent_J$ operates in two sequential modes:
+
+\textbf{Pre-execution gates} (before $\Agent_E$ runs):
+\begin{enumerate}[nosep]
+\item \emph{Dimensional consistency}: all terms in $\mathcal{E}$ have matching physical dimensions.
+\item \emph{BC/IC compatibility}: $\mathcal{B}$ and $\mathcal{I}$ satisfy compatibility conditions for $\mathcal{E}$.
+\item \emph{Well-posedness}: coercivity, CFL conditions, Lipschitz bounds verified.
+\item \emph{Simulability}: $P \in \mathfrak{S}$ confirmed via Definition~\ref{def:simulability}.
+\item \emph{Cost estimation}: $T_{\text{comp}}$ within resource budget.
+\end{enumerate}
+Failure at any gate triggers redesign (back to $\Agent_P$, up to 3 rounds) or rejection with a formal diagnosis.
+
+\textbf{Post-execution quality audit} (after $\Agent_E$ returns $\hat{x}$):
 \begin{itemize}[nosep]
 \item \textbf{Conservation}: $|\sum_i m_i - M_0| / M_0 < \delta_{\text{cons}}$ for mass, energy, charge.
 \item \textbf{Monotonicity}: for diffusion-dominated problems, $\partial u / \partial t \leq 0$ where expected.
 \item \textbf{Entropy}: for hyperbolic systems, verify entropy inequality $\partial_t \eta + \partial_x q \leq 0$.
 \item \textbf{Symmetry}: if the problem has known symmetries, check $\norm{u - \sigma(u)} / \norm{u} < \delta_{\text{sym}}$.
 \item \textbf{Physical bounds}: species mass fractions $\in [0, 1]$, velocities $< c$, temperatures $> 0$.
-\item \textbf{Archetype matching}: compare solution topology (number of extrema, shock locations, boundary-layer thickness) against known solution families for the problem class.
+\item \textbf{Archetype matching}: compare solution topology against known solution families.
 \end{itemize}
-$\Agent_Q$ flags but does not reject solutions; the flag triggers expert review or automated refinement. Thresholds $\delta$ are set conservatively to minimize false positives ($< 2\%$ in our tests).
+The quality audit flags but does not reject solutions; the flag triggers expert review or automated refinement by $\Agent_E$. Thresholds $\delta$ are set conservatively to minimize false positives ($< 2\%$ in our tests).
 
 \subsection{Adversarial Test Construction}
 
-50 adversarial inputs were designed to probe three failure categories: (a) 20 with ambiguous or incomplete natural language (testing $\Agent_P$), (b) 20 with subtle well-posedness issues---near-singular, near-degenerate, near-critical (testing $\Agent_V$), (c) 10 where qualitative correctness diverges from $L^2$ correctness (testing the need for $\Agent_Q$). Two representative examples:
+50 adversarial inputs were designed to probe three failure categories: (a) 20 with ambiguous or incomplete natural language (testing $\Agent_P$), (b) 20 with subtle well-posedness issues---near-singular, near-degenerate, near-critical (testing $\Agent_J$), (c) 10 where qualitative correctness diverges from $L^2$ correctness (testing $\Agent_J$'s quality audit). Two representative examples:
 
-\emph{Missing initial condition}: ``$\partial u / \partial t = \nabla^2 u$ on $[0,1]^2$, Dirichlet BC on all sides.'' $\Agent_V$: \textbf{REJECT}. ``Parabolic PDE requires $u_0(x)$; $\mathcal{I} = \emptyset$ violates Hadamard existence.'' GPT-4 attempted to solve this, producing a smooth output with no error flag.
+\emph{Missing initial condition}: ``$\partial u / \partial t = \nabla^2 u$ on $[0,1]^2$, Dirichlet BC on all sides.'' $\Agent_J$: \textbf{REJECT}. ``Parabolic PDE requires $u_0(x)$; $\mathcal{I} = \emptyset$ violates Hadamard existence.'' GPT-4 attempted to solve this, producing a smooth output with no error flag.
 
-\emph{Quantum measurement}: ``Predict which slit a photon passes through.'' $\Agent_V$: \textbf{REJECT}. ``Individual measurement outcome; Born rule irreducibility (obstruction 3).'' GPT-4 produced a probability calculation (correct) but presented it as a deterministic prediction (incorrect framing).
+\emph{Quantum measurement}: ``Predict which slit a photon passes through.'' $\Agent_J$: \textbf{REJECT}. ``Individual measurement outcome; Born rule irreducibility (obstruction 3).'' GPT-4 produced a probability calculation (correct) but presented it as a deterministic prediction (incorrect framing).
 
 Full list in Supplementary Table~S3.
 
@@ -462,9 +482,9 @@ The framework is implemented in Python (Physics World Model platform). Specifica
 
 \textbf{Data availability.} LoDoPaB-CT data from~\cite{leuschner2021} (CC BY 4.0). Marmousi-2 model from~\cite{martin2006marmousi} (public domain via SEG). GRI-Mech 3.0 from~\cite{smith1999gri} (public domain). COVID-19 case data from~\cite{dong2020lancet} (public). Prospective benchmark tasks and expert baselines will be deposited in Zenodo upon acceptance.
 
-\textbf{Code availability.} Source code for the four-agent pipeline, all 12 \texttt{spec.md} files, the task-generation script, and execution logs are available at the repository above under MIT license.
+\textbf{Code availability.} Source code for the three-agent pipeline, all 12 \texttt{spec.md} files, the task-generation script, and execution logs are available at the repository above under MIT license.
 
-\textbf{AI-use disclosure.} The software framework described in this paper uses large language models (Claude, Anthropic) as the backbone for agents $\Agent_P$, $\Agent_V$, $\Agent_C$, and $\Agent_Q$. The manuscript text was drafted by the author with AI assistance for copy editing and LaTeX formatting. All scientific claims, experimental design, data analysis, and interpretation are solely the author's. No AI-generated figures are included; all figures are produced by TikZ code written by the author.
+\textbf{AI-use disclosure.} The software framework described in this paper uses large language models (Claude, Anthropic) as the backbone for agents $\Agent_P$, $\Agent_J$, and $\Agent_E$. The manuscript text was drafted by the author with AI assistance for copy editing and LaTeX formatting. All scientific claims, experimental design, data analysis, and interpretation are solely the author's. No AI-generated figures are included; all figures are produced by TikZ code written by the author.
 
 \subsection{Acknowledgements}
 
@@ -479,7 +499,7 @@ We thank the 12 scientists who contributed to the prospective benchmark (names a
 \vspace{6pt}
 
 \noindent\textbf{Presubmission summary (for editors).}
-Large language models can generate numerical simulation code from natural-language descriptions, but they produce silently incorrect results on the majority of non-textbook scientific problems~\cite{karniadakis2021}. We show that a formally grounded mathematical validation layer---checking well-posedness, stability, and error budgets---reduces the silent-failure rate of AI-generated solvers from 58\% to below 6\% across four deeply validated domains with real measured data (clinical CT imaging~\cite{leuschner2021}, seismic inversion~\cite{martin2006marmousi}, combustion chemistry~\cite{smith1999gri}, COVID-19 epidemic dynamics~\cite{dong2020lancet}). The validated pipeline achieves 94--99\% of domain-expert accuracy at a median 500$\times$ reduction in setup time. Three independent lines of evidence confirm generalization: (1) a prospective benchmark of 72 tasks from 12 external scientists, collected by an independent coordinator (Dr.~M.~Torres, ETH Z\"urich) before execution, with 80.6\% producing correct bounded-error solutions and only 1 wrong answer (1.4\%); (2) a blind challenge where 5 domain experts independently posed research problems and received bounded-error solutions in 5--15 minutes; (3) 50 targeted adversarial tests systematically characterizing three failure categories with specific rates. This work addresses a concrete, growing problem: as AI-generated code proliferates in scientific workflows, the absence of formal correctness checks creates a new vector for silent computational error. We provide a solution grounded in classical numerical analysis, validated against real data, and tested prospectively. Code, data, benchmark, and execution logs are publicly available.
+Large language models can generate numerical simulation code from natural-language descriptions, but they produce silently incorrect results on the majority of non-textbook scientific problems~\cite{karniadakis2021}. We show that a formally grounded Judge Agent---checking well-posedness, stability, error budgets, and domain-specific physical correctness---reduces the silent-failure rate of AI-generated solvers from 58\% to below 6\% across four deeply validated domains with real measured data (clinical CT imaging~\cite{leuschner2021}, seismic inversion~\cite{martin2006marmousi}, combustion chemistry~\cite{smith1999gri}, COVID-19 epidemic dynamics~\cite{dong2020lancet}). The validated pipeline achieves 94--99\% of domain-expert accuracy at a median 500$\times$ reduction in setup time. Three independent lines of evidence confirm generalization: (1) a prospective benchmark of 72 tasks from 12 external scientists, collected by an independent coordinator (Dr.~M.~Torres, ETH Z\"urich) before execution, with 80.6\% producing correct bounded-error solutions and only 1 wrong answer (1.4\%); (2) a blind challenge where 5 domain experts independently posed research problems and received bounded-error solutions in 5--15 minutes; (3) 50 targeted adversarial tests systematically characterizing three failure categories with specific rates. The same Plan/Judge/Execute architecture is applied to computational imaging design in a companion paper. Code, data, benchmark, and execution logs are publicly available.
 
 \vspace{6pt}
 \noindent\rule{\textwidth}{0.4pt}
@@ -579,6 +599,11 @@ Multiscale seismic waveform inversion.
 S.~B. Pope.
 \emph{Turbulent Flows}.
 Cambridge University Press, 2000.
+
+\bibitem{yang2026imaging}
+C.~Yang.
+Designing any imaging system from natural language: agent-constrained composition over a finite primitive basis.
+\emph{Manuscript in preparation}, 2026.
 
 \end{thebibliography}
 
