@@ -3,9 +3,11 @@
 Rebuild CASSI standard dataset using REAL KAIST data (not synthetic).
 
 Source: KAIST 10 test scenes from TSA-Net mirror (already in _raw_src/).
-Uses binarized KAIST mask with step=2 dispersion.
+Uses ORIGINAL continuous KAIST mask (NOT binarized) with step=2 dispersion.
+This matches the mask used in MST-main training (caiyuanhao1998/MST).
 
-This should match reference GAP-TV PSNR (24.4 dB) and MST-L (34.9 dB).
+Reference PSNR (InverseNet ECCV, KAIST 10 scenes, Scenario I):
+  GAP-TV: 24.34 dB, PnP-HSICNN: 25.12 dB, HDNet: 34.66 dB, MST-L: 34.81 dB
 """
 from __future__ import annotations
 import json, sys
@@ -55,9 +57,11 @@ def build():
         return False
     mat = scipy.io.loadmat(str(mask_path))
     mask_raw = mat["mask"].astype(np.float32)
-    mask_bin = (mask_raw > 0.5).astype(np.float32)
-    print(f"  Mask: {mask_raw.shape}, raw range [{mask_raw.min():.4f}, {mask_raw.max():.4f}]")
-    print(f"  Binarized fill rate: {mask_bin.mean():.4f}")
+    # Use ORIGINAL continuous mask (matches MST-main training, NOT binarized)
+    # HDNet/MST-L were trained with this continuous mask; binarizing breaks PSNR
+    mask = mask_raw
+    print(f"  Mask: {mask_raw.shape}, range [{mask_raw.min():.4f}, {mask_raw.max():.4f}]")
+    print(f"  Mean: {mask.mean():.4f}, unique values: {len(np.unique(mask))}")
 
     # Wavelengths (KAIST: 450-650nm, 28 bands)
     wavelengths = np.linspace(450, 650, N_BANDS).astype(np.float32)
@@ -75,17 +79,17 @@ def build():
         x_true = mat["img"].astype(np.float32)  # (256, 256, 28)
 
         # CASSI forward model (no normalization!)
-        y_ideal = cassi_forward(x_true, mask_bin, N_BANDS, STEP)
+        y_ideal = cassi_forward(x_true, mask, N_BANDS, STEP)
 
         # Verify forward model
-        y_check = cassi_forward(x_true, mask_bin, N_BANDS, STEP)
+        y_check = cassi_forward(x_true, mask, N_BANDS, STEP)
         fwd_err = np.abs(y_ideal - y_check).max()
 
         h5_path = OUTDIR / f"standard_cassi_{idx:02d}.h5"
         with h5py.File(str(h5_path), "w") as f:
             f.create_dataset("x_true", data=x_true, compression="gzip")
             f.create_dataset("y_ideal", data=y_ideal, compression="gzip")
-            f.create_dataset("mask", data=mask_bin, compression="gzip")
+            f.create_dataset("mask", data=mask, compression="gzip")
             f.create_dataset("wavelength", data=wavelengths, compression="gzip")
 
             hp = f.create_group("H_params")
@@ -94,7 +98,7 @@ def build():
             hp.attrs["step"] = STEP
             hp.attrs["image_size"] = NPIX
             hp.attrs["meas_width"] = W_MEAS
-            hp.attrs["mask_fill"] = float(mask_bin.mean())
+            hp.attrs["mask_fill"] = float(mask.mean())
             hp.attrs["noise"] = "none"
             hp.attrs["y_normalization"] = "none"
 
@@ -117,8 +121,8 @@ def build():
         "y_ideal_shape": [NPIX, W_MEAS],
         "n_bands": N_BANDS,
         "step": STEP,
-        "mask_type": "binarized_kaist",
-        "mask_fill": float(mask_bin.mean()),
+        "mask_type": "original_kaist_continuous",
+        "mask_mean": float(mask.mean()),
         "date_built": datetime.now().strftime("%Y-%m-%d"),
         "files": out_files,
     }
