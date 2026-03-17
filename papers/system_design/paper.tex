@@ -20,7 +20,7 @@
 \usepackage[hidelinks,colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
 \usepackage{microtype}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,decorations.pathreplacing}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,decorations.pathreplacing,backgrounds}
 \usepackage{mdframed}
 
 % ---- Page style ----
@@ -104,60 +104,107 @@ An imaging system is \emph{designable} if it admits a finite DAG decomposition o
 Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 are validated on real data spanning all 5 carrier families.  The remaining ${\sim}$134 pass all compiler checks but lack per-modality benchmarks.  Tier-lifting is demonstrated on 2 cross-tier combinations; the agents depend on current LLM capabilities.
 
 % ---- Three-Agent Pipeline (Figure 1) ----
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tikzpicture}[
-    node distance=0.5cm and 0.7cm,
-    box/.style={draw, rounded corners=3pt, minimum height=0.9cm, minimum width=1.8cm, align=center, font=\small},
-    agent/.style={box, fill=blue!12, draw=blue!50!black, thick},
-    spec/.style={box, fill=green!12, draw=green!50!black},
-    gate/.style={box, fill=orange!8, draw=orange!50!black, minimum width=0.9cm, font=\scriptsize},
-    triad/.style={box, fill=red!8, draw=red!40!black, minimum width=1.2cm, font=\scriptsize},
-    sysgate/.style={box, fill=green!8, draw=green!40!black, minimum width=1.0cm, font=\scriptsize},
-    err/.style={box, fill=yellow!10, draw=yellow!50!black, font=\scriptsize},
-    arr/.style={-{Stealth[length=5pt]}, thick},
+\begin{tikzpicture}[scale=0.75, every node/.style={transform shape},
+    node distance=0.4cm and 0.5cm,
+    box/.style={draw, rounded corners=3pt, minimum height=1.0cm, minimum width=1.5cm, align=center, font=\normalsize},
+    agent/.style={box, fill=blue!10, draw=blue!50!black, thick},
+    specbox/.style={draw, rounded corners=2pt, fill=green!8, draw=green!50!black, minimum width=1.6cm, minimum height=1.0cm, align=center, font=\normalsize},
+    outbox/.style={box, fill=green!14, draw=green!50!black},
+    errbox/.style={box, fill=yellow!8, draw=yellow!50!black, font=\small},
+    arr/.style={-{Stealth[length=6pt]}, thick},
+    lbl/.style={font=\small, fill=white, inner sep=2pt},
 ]
-% Input
-\node[box, fill=gray!10] (nl) {NL\\Prompt};
 
-% Plan Agent
-\node[agent, right=of nl] (plan) {$\Agent_P$\\Plan};
-\node[spec, right=of plan] (specmd) {\texttt{spec.md}};
+% ===== Column 1: User Input =====
+\node[box, fill=gray!10, minimum height=1.2cm, minimum width=1.8cm] (nl) {NL Prompt};
 
-% Judge Agent
-\node[agent, right=of specmd] (judge) {$\Agent_J$\\Judge};
+% ===== Column 2: Plan Agent =====
+\node[agent, right=0.8cm of nl, minimum height=1.2cm, minimum width=1.5cm] (plan) {$\Agent_P$ Plan};
 
-% Certified spec + report
-\node[spec, right=of judge] (cert) {Judgment\\report};
+% ===== spec.md artifact =====
+\node[specbox, right=0.6cm of plan, minimum height=1.2cm, minimum width=1.6cm] (specmd) {\texttt{spec.md}};
 
-% Execute Agent
-\node[agent, right=of cert] (perf) {$\Agent_E$\\Exec.};
+% ===== Column 3: Judge Agent container =====
+% Stage 1: Structural Compiler
+\node[draw=gray!60!black, rounded corners=3pt, fill=gray!12, text=black,
+      minimum width=5.4cm, minimum height=1.2cm, align=center, font=\small,
+      right=1.0cm of specmd] (s1) {%
+\textbf{Structural Compiler}\\[2pt]%
+{\scriptsize C1\,DAG\;\;C2\,Chain\;\;C3\,Bounds\;\;C4\,Nonlin.\;\;C5\,Adj.\;\;C6\,Err.}};
 
-% Output
-\node[box, fill=green!18, right=of perf] (out) {$\hat{A}$};
+% Stage 2: Triad Gates
+\node[draw=orange!60!black, rounded corners=3pt, fill=orange!10, text=black,
+      minimum width=5.4cm, minimum height=1.2cm, align=center, font=\small,
+      below=0.6cm of s1] (s2) {%
+\textbf{Triad Gates}\\[2pt]%
+{\scriptsize $G_1$\,Recoverability\;\;$G_2$\,Carrier Budget\;\;$G_3$\,Mismatch}};
 
-% Error report
-\node[err, below=0.7cm of out] (errbox) {$\eps$ bounds\\report};
+% Stage 3: Cost & Feasibility
+\node[draw=blue!50!black, rounded corners=3pt, fill=blue!8, text=black,
+      minimum width=5.4cm, minimum height=1.2cm, align=center, font=\small,
+      below=0.6cm of s2] (s3) {%
+\textbf{Cost \& Feasibility}\\[2pt]%
+{\scriptsize power, QE, NA limits; itemised HW cost}};
 
-% Arrows
+% Judge container (behind stages)
+\begin{scope}[on background layer]
+\node[draw=gray!50!black, very thick, rounded corners=6pt, fill=gray!4,
+      inner sep=10pt, fit=(s1)(s2)(s3),
+      label={[font=\normalsize\bfseries, anchor=south, yshift=1pt]above:{$\Agent_J$\;\;Judge}}] (judge) {};
+\end{scope}
+
+% Internal arrows
+\draw[arr, gray!70!black] (s1) -- node[lbl, right, xshift=2pt] {all 6 pass} (s2);
+\draw[arr, gray!70!black] (s2) -- node[lbl, right, xshift=2pt] {all 3 pass} (s3);
+
+% ===== Column 4: Execute Agent + outputs =====
+\node[agent, right=1.5cm of s2, minimum height=1.2cm, minimum width=1.5cm] (exec) {$\Agent_E$ Execute};
+
+\node[outbox, right=0.6cm of exec, minimum height=0.9cm] (ahat) {$\hat{A}$};
+\node[errbox, below=0.4cm of ahat, minimum width=1.5cm] (epsbox) {$\eps$-bound\\report};
+
+\node[box, fill=green!18, draw=green!60!black, right=0.55cm of ahat, yshift=-0.25cm, minimum height=1.0cm, minimum width=1.4cm, font=\small] (result) {Recon.~+\\Valid.};
+
+% ===== Main pipeline arrows =====
 \draw[arr] (nl) -- (plan);
 \draw[arr] (plan) -- (specmd);
-\draw[arr] (specmd) -- (judge);
-\draw[arr] (judge) -- node[above, font=\scriptsize] {pass} (cert);
-\draw[arr] (cert) -- (perf);
-\draw[arr] (perf) -- (out);
-\draw[arr] (out) -- (errbox);
+\draw[arr] (specmd) -- (judge.west |- s1);
 
-% Redesign feedback loop (fail → back to Plan)
-\draw[arr, dashed, red!60!black] (judge.south) -- ++(0,-0.35) -| node[below, font=\scriptsize, pos=0.25] {fail: redesign (up to $3\times$)} (plan.south);
+% Pass: Stage 3 → Execute
+\draw[arr, green!50!black] (s3.east) -| ++(0.5, 0) |- node[lbl, above, pos=0.25] {pass: certificate} (exec.west);
+
+\draw[arr] (exec) -- (ahat);
+\draw[arr] (ahat) -- (result);
+\draw[arr, gray!60!black] (exec.south) |- (epsbox.west);
+\draw[arr, gray!60!black] (epsbox) -| (result.south);
+
+% ===== Inner feedback loop (above) =====
+\draw[arr, dashed, red!60!black, thick]
+  (judge.north) -- ++(0, 0.9)
+  -| node[font=\small, above, pos=0.35, fill=white, inner sep=1.5pt, text=red!60!black]
+     {fail: redesign prompt (up to $3\!\times$)}
+  (plan.north);
+
+% ===== Outer feedback loop (below) =====
+\draw[arr, dashed, blue!50!black]
+  (judge.south) -- ++(0, -0.85)
+  -| node[font=\small, below, pos=0.3, fill=white, inner sep=1.5pt, text=blue!50!black]
+     {$3\!\times$ exhausted: return diagnostic to user}
+  (nl.south);
+
 \end{tikzpicture}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
-$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in three stages: (1)~structural compilation, (2)~Triad gate evaluation~\cite{paperII}, (3)~cost and feasibility assessment (see Figure~\ref{fig:judge_flow} for details).  Failed designs are fed back with a redesign prompt (dashed red, up to 3 rounds).
-$\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit
-$\eps$-bound report.  See Figure~\ref{fig:error_decomp} for per-modality error breakdown.}
+$\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in three sequential stages:
+(1)~structural compilation (6 checks C1--C6),
+(2)~Triad gate evaluation~\cite{paperII} ($G_1$--$G_3$),
+(3)~cost and feasibility assessment.
+Two feedback paths handle failures: an automatic inner loop ($\Agent_P \leftrightarrow \Agent_J$, up to 3 rounds, dashed red) for structural/parametric corrections, and an outer loop (dashed blue) returning diagnostics to the user when automatic repair is exhausted.
+$\Agent_E$ executes reconstruction and outputs $\hat{A}$ with an explicit $\eps$-bound report.}
 \label{fig:pipeline}
-\end{figure}
+\end{figure*}
 
 % ========================================================================
 \section{Results}
@@ -648,81 +695,7 @@ uses the fast low-tier adjoint $A_{\text{low}}^T$ for gradient computation and t
 \subsection{Judge Agent: Triad-Based Validation}
 % ------------------------------------------------------------------------
 
-The Judge Agent validates designs in three stages: structural compilation (prerequisite), Triad gate evaluation (primary), and system feasibility assessment (Figure~\ref{fig:judge_flow}).
-
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[
-  node distance=0.6cm and 0.8cm,
-  stage/.style={draw, rounded corners=4pt, minimum width=12cm, minimum height=1.4cm, font=\small, align=center},
-  gate/.style={draw, rounded corners=3pt, minimum width=1.6cm, minimum height=0.9cm, font=\scriptsize, align=center},
-  triad/.style={gate, fill=orange!15, draw=orange!60!black, minimum height=1.0cm},
-  sysgate/.style={gate, fill=blue!12, draw=blue!50!black, minimum height=1.0cm},
-  compgate/.style={gate, fill=gray!15, draw=gray!60!black, minimum height=0.9cm},
-  io/.style={draw, rounded corners=3pt, fill=white, minimum width=3.0cm, minimum height=0.7cm, font=\small, align=center},
-  verdict/.style={draw, rounded corners=3pt, minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries, align=center},
-  arr/.style={-{Stealth[length=5pt]}, thick},
-  lbl/.style={font=\small\bfseries, fill=white, inner sep=2pt},
-]
-
-% Input
-\node[io, fill=yellow!10] (input) {\texttt{spec.md} + \texttt{system\_elements}};
-
-% ── Stage 1: Structural Compiler ──
-\node[lbl, below=1.0cm of input, xshift=-5.5cm, anchor=east] (s1lbl) {Stage 1};
-\node[stage, fill=gray!6, right=0.2cm of s1lbl, anchor=west, minimum width=10.5cm] (s1box) {};
-\node[compgate, anchor=west] at ([xshift=0.25cm]s1box.west) (g_dag) {DAG};
-\node[compgate, right=0.25cm of g_dag] (g_chain) {Chain};
-\node[compgate, right=0.25cm of g_chain] (g_bnd) {Bounds};
-\node[compgate, right=0.25cm of g_bnd] (g_nl) {Nonlin.};
-\node[compgate, right=0.25cm of g_nl] (g_adj) {Adjoint};
-\node[compgate, right=0.25cm of g_adj] (g_err) {Error};
-
-\node[font=\small, gray!60!black, anchor=west, align=center] at ([xshift=0.3cm]g_err.east) {Structural\\Compiler};
-
-% ── Stage 2: Triad Gates ──
-\node[lbl, below=1.2cm of s1lbl] (s2lbl) {Stage 2};
-\node[stage, fill=orange!4, right=0.2cm of s2lbl, anchor=west, minimum width=10.5cm, minimum height=1.6cm] (s2box) {};
-\node[triad, anchor=west, minimum width=3.0cm, minimum height=1.1cm] at ([xshift=0.25cm]s2box.west) (g1) {\begin{tabular}{c}$G_1$: Recoverability\\[2pt]{\footnotesize $\mathrm{PSNR}_{\max}^{(G_1)}\!=\!f(\gamma)$}\end{tabular}};
-\node[triad, right=0.4cm of g1, minimum width=3.0cm, minimum height=1.1cm] (g2) {\begin{tabular}{c}$G_2$: Carrier Budget\\[2pt]{\footnotesize $10\log_{10}(\mathrm{SNR})\!+\!C_M$}\end{tabular}};
-\node[triad, right=0.4cm of g2, minimum width=3.0cm, minimum height=1.1cm] (g3) {\begin{tabular}{c}$G_3$: Mismatch\\[2pt]{\footnotesize $\mathrm{PSNR}_{\mathrm{deploy}}$}\end{tabular}};
-
-\node[font=\small, orange!60!black, anchor=west] at ([xshift=0.2cm]g3.east) {Triad};
-
-% ── Stage 3: Cost + Feasibility ──
-\node[lbl, below=1.2cm of s2lbl] (s3lbl) {Stage 3};
-\node[stage, fill=blue!4, right=0.2cm of s3lbl, anchor=west, minimum width=10.5cm, minimum height=1.4cm] (s3box) {};
-\node[sysgate, anchor=west, minimum width=4.2cm, minimum height=1.0cm] at ([xshift=0.25cm]s3box.west) (cost) {\begin{tabular}{c}Cost Estimation\\[1pt]{\footnotesize itemized from HW database}\end{tabular}};
-\node[sysgate, right=0.6cm of cost, minimum width=4.2cm, minimum height=1.0cm] (feas) {\begin{tabular}{c}Feasibility Check\\[1pt]{\footnotesize power, QE, NA limits}\end{tabular}};
-
-\node[font=\small, blue!50!black, anchor=west] at ([xshift=0.2cm]feas.east) {System};
-
-% ── Outputs ──
-\node[verdict, fill=green!12, draw=green!50!black, below left=1.0cm and 0.0cm of s3box.south] (pass) {\begin{tabular}{c}PASS\\certificate\end{tabular}};
-\node[verdict, fill=red!10, draw=red!50!black, below right=1.0cm and 0.0cm of s3box.south] (fail) {\begin{tabular}{c}FAIL\\redesign prompt\end{tabular}};
-
-% ── Arrows ──
-\draw[arr] (input) -- (s1box);
-\draw[arr] (s1box) -- node[lbl, right, xshift=3pt] {all 6 checks pass} (s2box);
-\draw[arr] (s2box) -- node[lbl, right, xshift=3pt] {all 3 pass} (s3box);
-\draw[arr] (s3box.south) -- ++(0,-0.25) -| (pass.north);
-\draw[arr] (s3box.south) -- ++(0,-0.25) -| (fail.north);
-
-% Reject arrows from stages
-\draw[arr, dashed, red!60!black] (s1box.east) -- ++(0.8,0) |- node[lbl, above, pos=0.25] {\scriptsize reject} (fail.east);
-\draw[arr, dashed, red!60!black] (s2box.east) -- ++(0.5,0) |- (fail.east);
-
-% Feedback arrow
-\draw[arr, dashed, blue!60!black] (fail.south) -- ++(0,-0.4) -| node[font=\small, below, pos=0.25] {to $\Agent_P$} ([xshift=-1.5cm]input.south);
-
-\end{tikzpicture}
-\caption{\textbf{Judge Agent validation flow.}
-Stage~1: a 6-check structural compiler rejects malformed specifications before physics evaluation.
-Stage~2: three deterministic Triad gates~\cite{paperII} diagnose recoverability ($G_1$), carrier budget ($G_2$), and operator mismatch ($G_3$), each with a quantitative margin in dB.
-Stage~3: hardware cost estimation and physical feasibility assessment.
-Failure at any stage produces a redesign prompt fed back to the Plan Agent.}
-\label{fig:judge_flow}
-\end{figure}
+The Judge Agent validates designs in three stages: structural compilation (prerequisite), Triad gate evaluation (primary), and system feasibility assessment (Figure~\ref{fig:pipeline}).
 
 \subsubsection{Stage 1: Structural Compilation (Prerequisite)}
 
