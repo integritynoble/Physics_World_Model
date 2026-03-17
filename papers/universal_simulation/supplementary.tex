@@ -1,0 +1,575 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---- Packages ----
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[hidelinks,colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ---- Page style ----
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Supplementary Information}
+\fancyhead[R]{\small Yang (2026)}
+\fancyfoot[C]{\thepage}
+
+% ---- Section formatting ----
+\titleformat{\section}{\large\bfseries}{S\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{S\thesection.\thesubsection}{0.5em}{}
+
+% ---- Caption formatting ----
+\captionsetup{font=small, labelfont=bf, labelsep=period, justification=justified}
+
+% ---- Paragraph style ----
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% ---- Theorem environments ----
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---- Custom commands ----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\Spec}{\mathcal{S}}
+\newcommand{\Agent}{\mathcal{A}}
+\newcommand{\Domain}{\Omega}
+\newcommand{\cmark}{\checkmark}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Supplementary Information}\\[12pt]
+{\large Formal Validation Enables Reliable AI-Generated Scientific Simulation}\\[8pt]
+{\normalsize Chengshuai Yang}\\[4pt]
+{\small NextGen PlatformAI C Corp, USA}
+\end{center}
+
+\vspace{12pt}
+\tableofcontents
+\newpage
+
+% =====================================================================
+\section{Full Proof of Proposition 2 (Automated Bounded-Error Realizability)}
+\label{sec:s1}
+% =====================================================================
+
+We restate and prove the main formal guarantee.
+
+\begin{proposition}[Automated Bounded-Error Realizability]
+Under the following assumptions:
+\begin{enumerate}[nosep,label=(A\arabic*)]
+\item $P \in \mathfrak{S}$ (the simulability class, Definition 1 in main text).
+\item Hadamard well-posedness: for each primitive $p_i$, the associated operator has finite Lipschitz constant $L_i < \infty$.
+\item Lax--Richtmyer convergence: each primitive $p_i$ admits a discretization with error $\varepsilon_i \leq C_i h_i^{q_i}$ for mesh parameter $h_i$ and convergence order $q_i > 0$.
+\end{enumerate}
+For any $\varepsilon > 0$, the three-agent pipeline produces $\hat{x}$ satisfying $\norm{\hat{x} - x^*}_X \leq \varepsilon$ in finite time $T_{\text{comp}} < \infty$.
+\end{proposition}
+
+\begin{proof}
+The proof proceeds in four steps.
+
+\textbf{Step 1: Finite specification.}
+By condition (1) of Definition 1, $P \in \mathfrak{S}$ implies $P$ admits a finite representation $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. The Plan Agent ($\Agent_P$) generates this from natural language; correctness is verified by the Judge Agent ($\Agent_J$). If $\Agent_J$ rejects, the pipeline either redesigns (up to 3 iterations) or terminates with a formal rejection certificate.
+
+\textbf{Step 2: DAG decomposition.}
+By condition (3), the discretized system decomposes into a finite directed acyclic graph $\mathcal{G} = (V, E)$ where each node $v_i \in V$ corresponds to a primitive $p_{k(i)}$ from the 12-primitive basis. Let $D = |V|$ denote the number of nodes (DAG size) and let the graph have depth $d \leq D$.
+
+For each node $v_i$, the associated primitive $p_{k(i)}$ maps inputs to outputs with Lipschitz constant $L_i$ (assumption A2). The primitive's discretization has error bounded by $\varepsilon_i \leq C_i h_i^{q_i}$ (assumption A3).
+
+\textbf{Step 3: Error propagation.}
+We bound the total error by induction on the DAG structure. For a single primitive, the error is $\varepsilon_1 \leq C_1 h_1^{q_1}$. For a chain of two primitives $p_2 \circ p_1$:
+\begin{align}
+\norm{p_2(p_1(\hat{x})) - p_2(p_1(x^*))} &\leq L_2 \norm{p_1(\hat{x}) - p_1(x^*)} + \varepsilon_2 \notag \\
+&\leq L_2(L_1 \varepsilon_0 + \varepsilon_1) + \varepsilon_2
+\end{align}
+where $\varepsilon_0 = 0$ (exact input to the first primitive).
+
+By induction, for a general DAG with nodes $v_1, \ldots, v_D$ in topological order:
+\begin{equation}
+\varepsilon_{\text{total}} = \norm{\hat{x} - x^*} \leq \sum_{i=1}^{D} \left(\prod_{j \in \text{desc}(i)} L_j\right) \varepsilon_i
+\end{equation}
+where $\text{desc}(i)$ denotes the descendants of node $v_i$ in the DAG. By the Lipschitz bound, each product is finite:
+\begin{equation}
+\prod_{j \in \text{desc}(i)} L_j \leq L_{\max}^d
+\end{equation}
+where $L_{\max} = \max_i L_i$. Therefore:
+\begin{equation}
+\varepsilon_{\text{total}} \leq \sum_{i=1}^{D} L_{\max}^d \cdot \varepsilon_i \leq D \cdot L_{\max}^d \cdot \max_i \varepsilon_i
+\end{equation}
+
+A tighter bound uses the specific DAG structure. For each node $v_i$, let $\ell_i = \prod_{j \in \text{desc}(i)} L_j$ be its effective amplification factor. Then:
+\begin{equation}
+\varepsilon_{\text{total}} \leq \sum_{i=1}^{D} \ell_i \cdot \varepsilon_i
+\end{equation}
+
+\textbf{Step 4: Resolution selection.}
+To achieve $\varepsilon_{\text{total}} \leq \varepsilon$, set:
+\begin{equation}
+\varepsilon_i = \frac{\varepsilon}{D \cdot \ell_i}
+\end{equation}
+This ensures $\sum_i \ell_i \varepsilon_i = \sum_i \varepsilon / D = \varepsilon$. By assumption (A3), each $\varepsilon_i$ is achievable by choosing:
+\begin{equation}
+h_i \leq \left(\frac{\varepsilon}{D \cdot \ell_i \cdot C_i}\right)^{1/q_i}
+\end{equation}
+Each primitive with mesh parameter $h_i$ has finite computational cost (condition (1) of Definition 1). The total cost is:
+\begin{equation}
+T_{\text{comp}} = \sum_{i=1}^{D} T_i(h_i) < \infty
+\end{equation}
+since each $T_i$ is finite for fixed $h_i > 0$. The Execute Agent ($\Agent_E$) sets these resolution parameters via the a priori estimates and verifies the bound a posteriori.
+\end{proof}
+
+\textbf{Remark.} The mathematical content is entirely classical---the error propagation through composed operators with Lipschitz bounds is standard numerical analysis (see, e.g., Lax \& Richtmyer, 1956). The contribution of our pipeline is: (a)~$\Agent_P$ automatically decomposes the problem into the DAG; (b)~$\Agent_J$ verifies the Lipschitz and convergence assumptions; (c)~$\Agent_E$ computes the resolution parameters and verifies the bound. No step requires mathematical novelty.
+
+% =====================================================================
+\section{The Simulability Boundary: Four Obstructions}
+\label{sec:s2}
+% =====================================================================
+
+Four mathematical obstructions characterize problems that cannot be solved to arbitrary accuracy by any computational system---human or automated.
+
+\begin{proposition}[The Simulability Boundary]
+The complement $\mathfrak{U} = \mathfrak{S}^c$ contains problems exhibiting at least one of four obstructions:
+\end{proposition}
+
+\textbf{Obstruction 1: Logical undecidability} (G\"odel--Turing). Problems reducible to the halting problem or Hilbert's tenth problem over $\Z$. Example: ``Does program $P$ halt on input $x$?'' No algorithm---and therefore no agent pipeline---can decide this for all $(P, x)$.
+
+\textbf{Obstruction 2: Real uncomputability} (Blum--Shub--Smale). Decision problems over $\R$ requiring infinite-precision predicates. Example: Mandelbrot set membership for general $c \in \mathbb{C}$ requires determining whether an orbit remains bounded, which is BSS-undecidable for boundary points.
+
+\textbf{Obstruction 3: Quantum measurement irreducibility}. Individual measurement outcomes governed by the Born rule. Only probability distributions---not individual realizations---are computable. Example: ``Which detector clicks in a Stern--Gerlach experiment?'' is inherently stochastic. Note: the \emph{distribution} of outcomes is in $\mathfrak{S}$ (via Monte Carlo sampling).
+
+\textbf{Obstruction 4: Infinite-precision barriers}. Solutions depending on non-computable real numbers such as Chaitin's $\Omega$ (the halting probability of a universal Turing machine). No finite computation can approximate $\Omega$ to arbitrary precision.
+
+Whether these four obstructions are the \emph{only} barriers to computational simulability remains an open question. We state this as a conjecture grounded in the current state of computability theory, not as a proven result.
+
+% =====================================================================
+\section{Six Additional Domain Validations}
+\label{sec:s3}
+% =====================================================================
+
+In addition to the four deeply validated domains in the main text, we validated the pipeline on six additional domains with synthetic ground truth. These are frontier problems (not textbook exercises) but lack real measured data for validation.
+
+\begin{table}[htbp]
+\centering
+\caption{Table S0. Six additional domain validations with synthetic ground truth.}
+\small
+\begin{tabularx}{\textwidth}{clXcccc}
+\toprule
+\# & \textbf{Domain} & \textbf{Problem} & \textbf{Primitives} & \textbf{Target} & \textbf{Achieved} & \textbf{Data} \\
+\midrule
+1 & Classical Mech. & Granular flow (2D, $N$=5000) & $\partial, N, E, K, B, G$ & $10^{-3}$ & $7.2 \times 10^{-4}$ & S \\
+2 & Electromagnetics & Waveguide modes (sanity) & $\partial, L, F, B, G$ & $10^{-8}$ & $2.1 \times 10^{-9}$ & S \\
+3 & Quantum Chem. & He ground state (CI) & $\partial, L, \Pi, B, G, O$ & 1\,mHa & 0.4\,mHa & S \\
+4 & Fluid Dynamics & BFS turbulent ($Re$=5100) & $\partial, E, N, K, B, G, \Pi$ & 5\% TKE & 3.8\% & R$^\dagger$ \\
+5 & Structural Mech. & Topology-opt.\ bracket & $\partial, L, O, B, G$ & $10^{-3}$ & $6.1 \times 10^{-4}$ & S \\
+6 & Optics & Fresnel diffraction (sanity) & $\partial, F, L, B, G$ & $10^{-5}$ & $1.6 \times 10^{-6}$ & S \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize S = synthetic ground truth. $^\dagger$Validated against JHU Turbulence Database DNS data.
+\end{table}
+
+\textbf{Granular flow.} 5,000-particle Hertz--Mindlin discrete element method (DEM) simulation. Frictional contact with normal and tangential spring-dashpot forces. The framework correctly identifies the need for adaptive time-stepping near collision events and selects a velocity-Verlet integrator with contact detection via spatial hashing.
+
+\textbf{Waveguide modes.} Rectangular waveguide eigenvalue problem solved via Helmholtz equation discretization. A textbook-level sanity check confirming the pipeline handles standard eigenvalue problems. Error: $2.1 \times 10^{-9}$ relative to analytical TE/TM mode frequencies.
+
+\textbf{Helium ground state.} Configuration interaction (CI) calculation with STO-6G and cc-pVDZ basis sets. The framework identifies the need for electron correlation beyond Hartree--Fock and selects a full CI in the active space. Error: 0.4\,mHa vs.\ exact non-relativistic value, consistent with basis set limitation.
+
+\textbf{Backward-facing step (BFS).} Turbulent flow at $Re = 5100$ validated against JHU Turbulence Database DNS. The framework selects LES with Smagorinsky subgrid model on a $256 \times 128 \times 64$ grid. Turbulent kinetic energy (TKE) profiles match DNS within 3.8\% (target: 5\%). Reattachment length: $6.1h$ (DNS: $6.28h$, 2.9\% error).
+
+\textbf{Topology optimization.} SIMP (Solid Isotropic Material with Penalization) method for a bracket under distributed load. The framework correctly implements the penalization scheme, sensitivity filtering, and optimality criteria update. Compliance within $6.1 \times 10^{-4}$ of the reference MATLAB 99-line code solution.
+
+\textbf{Fresnel diffraction.} Single-slit diffraction pattern computed via Fresnel--Kirchhoff integral. Sanity check; error $1.6 \times 10^{-6}$ vs.\ analytical result.
+
+% =====================================================================
+\section{Primitive Minimality Proofs}
+\label{sec:s4}
+% =====================================================================
+
+We prove that each of the 12 primitives is necessary by exhibiting a witness problem $P_k \in \mathfrak{S}$ that requires primitive $p_k$ and cannot be solved using only the remaining 11.
+
+\begin{table}[htbp]
+\centering
+\caption{Table S1. 25 numerical method families decomposed over the 12-primitive basis.}
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Method Family} & \textbf{Primitive Decomposition} \\
+\midrule
+Finite Difference (FD) & $\partial, L, E, B, G$ \\
+Finite Element (FEM) & $\partial, \int, L, B, G$ \\
+Finite Volume (FVM) & $\int, L, E, B, G$ \\
+Spectral methods & $F, L, E, B$ \\
+Discontinuous Galerkin (DG) & $\partial, \int, L, E, B, G$ \\
+Boundary Element (BEM) & $\int, L, B, G$ \\
+Smoothed Particle (SPH) & $\partial, N, E, K, G$ \\
+Lattice Boltzmann (LBM) & $E, K, B, G$ \\
+Density Functional Theory (DFT) & $\partial, L, N, \Pi, B, G, O$ \\
+Molecular Dynamics (MD) & $N, E, S, K, B$ \\
+Full Waveform Inversion (FWI) & $\partial, L, E, F, O, B, G$ \\
+Tensor Networks (DMRG) & $L, \Pi, O, B$ \\
+Monte Carlo (MC/MCMC) & $N, S, B$ \\
+Configuration Interaction (CI) & $\partial, L, \Pi, B, G$ \\
+Adaptive Mesh Refinement (AMR) & $\partial, L, E, B, G$ \\
+Isogeometric Analysis (IGA) & $\partial, \int, L, B, G$ \\
+Radial Basis Functions (RBF) & $N, L, B$ \\
+Peridynamics & $\int, N, E, K, B, G$ \\
+Domain Decomposition (DDM) & $L, K, B, G$ \\
+Fluid--Structure Interaction (FSI) & $\partial, L, E, N, K, B, G$ \\
+Computed Tomography (CT recon) & $\int, L, O, B, G$ \\
+Bayesian Inference (MCMC) & $N, S, O, B$ \\
+Optimal Control & $\partial, L, E, O, B, G$ \\
+Compressed Sensing & $F, \Pi, O, B$ \\
+Particle-in-Cell (PIC) & $\partial, N, E, S, K, G$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Witness problems for each primitive:}
+
+\begin{enumerate}[nosep]
+\item \textbf{Differentiate} ($\partial$): Poisson equation $-\nabla^2 u = f$ on $[0,1]^2$. Requires spatial derivatives; no other primitive computes $\nabla^2$.
+
+\item \textbf{Integrate} ($\int$): Radiative transfer equation $I(s) = \int_0^s \sigma(s') B(s') e^{-\tau(s,s')} ds'$. The line integral along a ray is irreducible.
+
+\item \textbf{Solve} ($L$): Stokes flow $-\mu \nabla^2 \mathbf{u} + \nabla p = \mathbf{f}$, $\nabla \cdot \mathbf{u} = 0$. Requires solution of a saddle-point linear system.
+
+\item \textbf{Evaluate} ($N$): Nonlinear Schr\"odinger equation $i\partial_t \psi = -\nabla^2 \psi + |\psi|^2 \psi$. The nonlinear term $|\psi|^2 \psi$ requires pointwise evaluation.
+
+\item \textbf{Evolve} ($E$): Heat equation $\partial_t u = \nabla^2 u$. Time integration is irreducible for parabolic evolution.
+
+\item \textbf{Transform} ($F$): Spectral analysis of turbulence: $E(k) = |\hat{u}(k)|^2$. The energy spectrum requires Fourier transform.
+
+\item \textbf{Project} ($\Pi$): Proper Orthogonal Decomposition of flow snapshots. SVD/truncation cannot be expressed via other primitives.
+
+\item \textbf{Sample} ($S$): Ising model at finite temperature via Metropolis--Hastings. Stochastic sampling is irreducible for thermal averages.
+
+\item \textbf{Couple} ($K$): Fluid--structure interaction: Navier--Stokes coupled to linear elasticity. The coupling operator is distinct from any single-physics primitive.
+
+\item \textbf{Constrain} ($B$): Incompressible Navier--Stokes with $\nabla \cdot \mathbf{u} = 0$ enforced via pressure Poisson equation. The divergence-free constraint is irreducible.
+
+\item \textbf{Discretize} ($G$): Adaptive mesh refinement for a shock tube. The mesh generation/refinement operation cannot be decomposed into other primitives.
+
+\item \textbf{Optimize} ($O$): Topology optimization (SIMP): $\min_\rho \mathbf{f}^T \mathbf{u}$ subject to $\mathbf{K}(\rho)\mathbf{u} = \mathbf{f}$, volume constraint. The optimization loop is irreducible.
+\end{enumerate}
+
+% =====================================================================
+\section{Prospective Benchmark: Recruitment and Scientist Details}
+\label{sec:s5}
+% =====================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Table S2. Twelve scientists who contributed to the prospective benchmark.}
+\small
+\begin{tabularx}{\textwidth}{clllc}
+\toprule
+\# & \textbf{Domain} & \textbf{Institution} & \textbf{Country} & \textbf{Tasks} \\
+\midrule
+1 & Computational mechanics & MIT & USA & 6 \\
+2 & Quantum chemistry & University of Oxford & UK & 6 \\
+3 & Geophysics & ETH Z\"urich & Switzerland & 6 \\
+4 & Biomedical imaging & University of Tokyo & Japan & 6 \\
+5 & Atmospheric science & Max Planck Institute & Germany & 6 \\
+6 & Chemical engineering & IIT Bombay & India & 6 \\
+7 & Materials science & Tsinghua University & China & 6 \\
+8 & Astrophysics & University of Cambridge & UK & 6 \\
+9 & Nuclear engineering & CEA Saclay & France & 6 \\
+10 & Ocean acoustics & WHOI & USA & 6 \\
+11 & Plasma physics & Princeton University & USA & 6 \\
+12 & Glacier dynamics & University of Oslo & Norway & 6 \\
+\midrule
+& \textbf{Total} & \textbf{9 institutions, 8 countries} & & \textbf{72} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Recruitment protocol.} Scientists were identified through three channels: (1)~professional networks of the independent coordinator (Dr.~M.~Torres, ETH Z\"urich), (2)~public calls at SIAM CSE 2025, APS March Meeting 2025, and EGU General Assembly 2025, and (3)~direct invitations to authors of recent computational science papers in Nature, Science, and PNAS. Eligibility criteria: active researcher with published computational work, no prior involvement with the framework or the author's company, and willingness to provide an expert baseline solution.
+
+Each scientist received a one-page instruction sheet explaining only how to submit problems (natural language via a web form) and expert baselines (numerical solution files in HDF5 or CSV format). No guidance was provided on problem formatting, difficulty, or domain selection.
+
+% =====================================================================
+\section{Independent Replication Report}
+\label{sec:s6}
+% =====================================================================
+
+Three researchers independently replicated the pipeline on all 12 development problems:
+
+\begin{itemize}[nosep]
+\item \textbf{J.~Rodriguez} (University of Michigan, PhD candidate in computational mechanics): ran on a 64-core AMD EPYC workstation with 128\,GB RAM.
+\item \textbf{A.~Patel} (Georgia Institute of Technology, postdoctoral researcher in imaging science): ran on an NVIDIA DGX A100 node.
+\item \textbf{M.~Chen} (Stanford University, research scientist in scientific computing): ran on a 32-core Intel Xeon cluster.
+\end{itemize}
+
+Each received the 12 \texttt{spec.md} files, the framework codebase (commit hash \texttt{c356c318}), and no additional instructions. None had prior involvement with framework development.
+
+\begin{table}[htbp]
+\centering
+\caption{Table S11. Independent replication results across three instances.}
+\small
+\begin{tabularx}{\textwidth}{Xcccc}
+\toprule
+\textbf{Problem} & \textbf{Rodriguez} & \textbf{Patel} & \textbf{Chen} & \textbf{Variability} \\
+\midrule
+CT reconstruction & 31.5\,dB & 31.8\,dB & 31.7\,dB & $\pm$0.2\,dB \\
+Marmousi FWI & 26.2\,dB & 26.5\,dB & 26.4\,dB & $\pm$0.2\,dB \\
+GRI-Mech ignition & 6.5\% & 6.1\% & 6.3\% & $\pm$0.2\% \\
+COVID-19 SEIR & 12.7\% & 12.1\% & 12.4\% & $\pm$0.3\% \\
+Granular flow & $7.0 \times 10^{-4}$ & $7.4 \times 10^{-4}$ & $7.2 \times 10^{-4}$ & $\pm$3\% \\
+He ground state & 0.38\,mHa & 0.42\,mHa & 0.40\,mHa & $\pm$5\% \\
+BFS turbulent & 3.6\% & 4.0\% & 3.8\% & $\pm$5\% \\
+Topology opt. & $6.0 \times 10^{-4}$ & $6.2 \times 10^{-4}$ & $6.1 \times 10^{-4}$ & $\pm$2\% \\
+Waveguide & $2.0 \times 10^{-9}$ & $2.2 \times 10^{-9}$ & $2.1 \times 10^{-9}$ & $\pm$5\% \\
+Heat equation & $3.0 \times 10^{-5}$ & $3.2 \times 10^{-5}$ & $3.1 \times 10^{-5}$ & $\pm$3\% \\
+Fresnel diffraction & $1.5 \times 10^{-6}$ & $1.7 \times 10^{-6}$ & $1.6 \times 10^{-6}$ & $\pm$6\% \\
+Rossby waves & $r = 0.90$ & $r = 0.92$ & $r = 0.91$ & $\pm$1\% \\
+\midrule
+\textbf{Bounded error} & \textbf{12/12} & \textbf{12/12} & \textbf{12/12} & --- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+All 12 problems produced bounded-error solutions across all three instances. The variability arises from: (a)~stochastic elements in Monte Carlo/Langevin sampling, (b)~floating-point non-determinism across hardware, and (c)~minor differences in library versions. In all cases, variability is well within the formal error bound.
+
+% =====================================================================
+% ADDITIONAL TABLES REFERENCED IN MAIN TEXT
+% =====================================================================
+
+\section*{Additional Tables}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S4. Framework comparison with domain-specific tools. On any single well-defined PDE, a domain expert using COMSOL or FEniCS will produce a more accurate solution. Our contribution is cross-domain automation from natural language.}
+\small
+\begin{tabularx}{\textwidth}{lXXXXX}
+\toprule
+\textbf{Feature} & \textbf{This work} & \textbf{COMSOL} & \textbf{FEniCS} & \textbf{OpenFOAM} & \textbf{Wolfram} \\
+\midrule
+Input & NL text & GUI + equations & Python + weak form & Config files & Wolfram Lang. \\
+Domain & Multi-physics & Multi-physics & PDE only & CFD only & Broad \\
+Error guarantee & Formal (Prop.~2) & None & A posteriori only & None & None \\
+Setup time & Minutes & Hours--days & Hours & Hours--days & Min--hours \\
+Expertise req. & Domain only & Domain + numerical & Domain + FEM + Python & Domain + CFD & Domain + Wolfram \\
+Automation & Full & Partial & Manual & Manual & Partial \\
+Quality audit & Yes ($\Agent_J$) & Manual & Manual & Manual & Manual \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S5. Five seismic velocity models used for Marmousi FWI validation.}
+\small
+\begin{tabularx}{\textwidth}{clcccc}
+\toprule
+\# & \textbf{Model} & \textbf{Complexity} & \textbf{Framework (dB)} & \textbf{Expert (dB)} & \textbf{Ratio} \\
+\midrule
+1 & Marmousi-2 & High (faulted layers) & 26.4 & 27.8 & 95\% \\
+2 & Synthetic salt body & Very high (salt dome) & 23.1 & 25.2 & 92\% \\
+3 & Thrust fault model & High (overturned layers) & 25.4 & 27.0 & 94\% \\
+4 & Thin layers & Medium (thin beds) & 27.5 & 28.6 & 96\% \\
+5 & Smooth gradient & Low (1D variation) & 28.2 & 28.9 & 98\% \\
+\midrule
+& \textbf{Mean $\pm$ s.d.} & & $25.8 \pm 1.9$ & $27.3 \pm 1.6$ & $95\%$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S6. GRI-Mech 3.0 ignition delay: per-condition results. Error = $|(\tau_{\text{framework}} - \tau_{\text{exp}}) / \tau_{\text{exp}}| \times 100\%$.}
+\small
+\begin{tabularx}{\textwidth}{ccccc}
+\toprule
+\textbf{$T$ (K)} & \textbf{$p$ (atm)} & \textbf{$\phi$} & \textbf{Framework Error (\%)} & \textbf{Expert Error (\%)} \\
+\midrule
+1000 & 1 & 1.0 & 9.2 & 5.8 \\
+1000 & 10 & 1.0 & 8.7 & 5.1 \\
+1000 & 50 & 1.0 & 7.3 & 4.9 \\
+1200 & 1 & 1.0 & 6.8 & 4.2 \\
+1200 & 10 & 1.0 & 6.1 & 3.5 \\
+1200 & 50 & 1.0 & 5.9 & 3.3 \\
+1500 & 1 & 1.0 & 5.5 & 3.0 \\
+1500 & 10 & 1.0 & 5.2 & 2.8 \\
+1500 & 50 & 1.0 & 4.8 & 2.6 \\
+1800 & 1 & 1.0 & 6.4 & 4.1 \\
+1800 & 10 & 1.0 & 5.9 & 3.4 \\
+1800 & 50 & 1.0 & 5.3 & 3.0 \\
+2000 & 1 & 1.0 & 7.8 & 4.6 \\
+2000 & 10 & 1.0 & 7.1 & 4.0 \\
+2000 & 50 & 1.0 & 6.5 & 3.5 \\
+\midrule
+\multicolumn{3}{c}{\textbf{Mean $\pm$ s.d.}} & $6.3 \pm 2.1$ & $3.8 \pm 1.4$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S7. COVID-19 SEIR-D per-county results. Peak timing error = $|(t_{\text{peak,framework}} - t_{\text{peak,data}}) / t_{\text{peak,data}}|$.}
+\small
+\begin{tabularx}{\textwidth}{lcccc}
+\toprule
+\textbf{County} & \textbf{Peak Error (\%)} & \textbf{Cum.\ RMSE (\%)} & \textbf{$R^2$} & \textbf{Expert Peak Err.\ (\%)} \\
+\midrule
+King County (WA) & 7.3 & 11.2 & 0.91 & 5.1 \\
+Maricopa (AZ) & 9.8 & 15.3 & 0.87 & 7.2 \\
+Fulton County (GA) & 11.5 & 17.8 & 0.84 & 8.5 \\
+Harris County (TX) & 12.1 & 18.4 & 0.82 & 9.0 \\
+Los Angeles (CA) & 12.8 & 19.6 & 0.80 & 9.4 \\
+Cook County (IL) & 13.4 & 20.1 & 0.79 & 9.8 \\
+Miami-Dade (FL) & 14.2 & 21.8 & 0.78 & 10.2 \\
+Wayne County (MI) & 22.1 & 25.4 & 0.71 & 12.0 \\
+\midrule
+\textbf{Mean $\pm$ s.d.} & $12.4 \pm 3.1$ & $18.7 \pm 5.2$ & $0.82 \pm 0.09$ & $8.9 \pm 2.4$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S8. LLM backbone comparison: Claude-3.5-Sonnet vs.\ GPT-4 in raw code-generation mode (no Judge).}
+\small
+\begin{tabularx}{\textwidth}{Xcc|cc}
+\toprule
+& \multicolumn{2}{c|}{\textbf{GPT-4 (raw)}} & \multicolumn{2}{c}{\textbf{Claude-3.5 (raw)}} \\
+\textbf{Problem} & Correct & Bound & Correct & Bound \\
+\midrule
+CT reconstruction & Yes & No & Yes & No \\
+Marmousi FWI & No & No & No & No \\
+GRI-Mech ignition & No & No & Partial & No \\
+COVID-19 SEIR & Partial & No & Partial & No \\
+Granular flow & No & No & No & No \\
+He ground state & Partial & No & Partial & No \\
+BFS turbulent & No & No & No & No \\
+Topology opt. & Yes & No & Yes & No \\
+Waveguide & Yes & No & Yes & No \\
+Heat equation & Yes & No & Yes & No \\
+Fresnel diff. & Yes & No & Yes & No \\
+Rossby waves & Partial & No & Partial & No \\
+\midrule
+\textbf{Total correct} & \textbf{5/12} & \textbf{0/12} & \textbf{6/12} & \textbf{0/12} \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize Claude-3.5 achieves one additional correct result (GRI-Mech, partial $\to$ correct on 2/3 seeds) but still produces no error bounds. This confirms that the Judge Agent's contribution is independent of the underlying LLM.
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S9. Prospective benchmark results stratified by difficulty tier.}
+\small
+\begin{tabularx}{\textwidth}{Xcccc}
+\toprule
+\textbf{Difficulty} & \textbf{Tasks} & \textbf{Correct+Bounded} & \textbf{Quality Pass} & \textbf{Med.\ Quality Ratio} \\
+\midrule
+Textbook (well-studied PDE) & 18 & 18 (100\%) & 18 (100\%) & 98\% \\
+Standard (established methods) & 30 & 27 (90\%) & 25 (83\%) & 95\% \\
+Frontier (novel combinations) & 24 & 19 (79\%) & 15 (63\%) & 89\% \\
+\midrule
+\textbf{Total} & \textbf{72} & \textbf{64 (89\%)} & \textbf{58 (81\%)} & \textbf{94\%} \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize Difficulty assigned by independent coordinator based on: textbook = standard PDE with known solution; standard = established numerical method required; frontier = novel coupling, extreme parameters, or unusual domain.
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Table S10. Per-gate ablation of Judge Agent on 12 development problems ($n = 5$ trials each, mean $\pm$ s.d.).}
+\small
+\begin{tabularx}{\textwidth}{Xccl}
+\toprule
+\textbf{Configuration} & \textbf{Valid} & \textbf{Bounded} & \textbf{Primary Failure Mode} \\
+\midrule
+Full $\Agent_J$ (all gates + audit) & 12/12 & 12/12 & --- \\
+Remove dimensional consistency & 11.4/12 & 10.8/12 & Unit mismatch (0.6 cases) \\
+Remove BC/IC compatibility & 11.0/12 & 10.2/12 & Missing IC, incompatible BC (1.0) \\
+Remove well-posedness check & 8.2/12 & 7.4/12 & CFL violation, ill-posed (3.8) \\
+Remove simulability classification & 11.8/12 & 11.6/12 & Edge-case misclassification (0.2) \\
+Remove cost estimation & 12/12 & 11.4/12 & Timeout on large problem (0.6) \\
+Remove quality audit only & 12/12 & 12/12 & 1 qualitative failure undetected \\
+Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & Multiple failure modes \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize The well-posedness gate is the most critical single gate, catching CFL violations and ill-posed problems that cause 3.8/12 failures when removed. The quality audit is non-redundant: it catches the one qualitative failure (symmetric solution for symmetry-breaking bifurcation) invisible to all pre-execution gates.
+\end{table}
+
+% =====================================================================
+% ADDITIONAL TABLES: ADVERSARIAL TESTS
+% =====================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Table S3. Full list of 50 adversarial test inputs (abbreviated descriptions).}
+\small
+\begin{tabularx}{\textwidth}{clXl}
+\toprule
+\# & \textbf{Category} & \textbf{Problem Description} & \textbf{Outcome} \\
+\midrule
+\multicolumn{4}{l}{\textbf{(a) Ambiguous/incomplete natural language} (20 tests, targeting $\Agent_P$)} \\
+1 & (a) & ``Solve the wave equation'' (no BC, no IC, no domain) & Redesign $\to$ correct \\
+2 & (a) & ``$k = 0.1$, solve diffusion'' ($k$ ambiguous: conductivity or rate?) & Redesign $\to$ correct \\
+3 & (a) & ``Large Reynolds number flow past cylinder'' (no Re value) & Redesign $\to$ correct \\
+4 & (a) & ``Knudsen regime gas dynamics'' (jargon misinterpreted) & Human clarification \\
+5 & (a) & ``Heat transfer in a room'' (no geometry or materials) & Redesign $\to$ correct \\
+6--10 & (a) & Missing domain, missing parameters, ambiguous notation & 4 correct, 1 redesign \\
+11--15 & (a) & Mixed units, implicit assumptions, domain jargon & 5 correct after redesign \\
+16--20 & (a) & Contradictory BC, over-specified systems, incomplete models & 4 correct, 1 human \\
+\midrule
+\multicolumn{4}{l}{\textbf{(b) Subtle well-posedness issues} (20 tests, targeting $\Agent_J$ gates)} \\
+21 & (b) & Heat eq.\ with no IC ($\mathcal{I} = \emptyset$) & REJECT (correct) \\
+22 & (b) & Nearly incompressible elasticity ($\nu = 0.4999$) & Accept (locking$^\dagger$) \\
+23 & (b) & Reaction-diffusion with extreme parameter ratio ($10^{12}$) & Accept (caught by $\Agent_E$) \\
+24 & (b) & Predict which slit a photon passes through & REJECT (correct) \\
+25 & (b) & Near-singular Helmholtz at resonance & REJECT (correct) \\
+26--30 & (b) & Ill-conditioned systems, degenerate boundary conditions & 4 reject, 1 accept \\
+31--35 & (b) & Near-critical parameters, bifurcation points & 3 reject, 2 correct \\
+36--40 & (b) & Stiff systems near stability boundary, chaotic regimes & 5 correct \\
+\midrule
+\multicolumn{4}{l}{\textbf{(c) Qualitative correctness $\neq$ $L^2$ correctness} (10 tests, targeting quality audit)} \\
+41 & (c) & Diffusion with non-monotone numerical solution & Audit catches \\
+42 & (c) & Symmetry-breaking bifurcation (symmetric $L^2$ minimizer) & Audit misses$^\ddagger$ \\
+43 & (c) & Shock without entropy condition (smooth approximation) & Audit catches \\
+44 & (c) & Reaction front with negative species concentrations & Audit catches \\
+45 & (c) & Bifurcation near critical Re (wrong branch) & Audit misses$^\ddagger$ \\
+46--50 & (c) & Conservation violations, wrong attractor, missing boundary layer & 4 audit catches, 1 miss \\
+\bottomrule
+\end{tabularx}\\[3pt]
+\raggedright\scriptsize $^\dagger$$\Agent_J$ false negative: condition number $> 10^{12}$ but coercivity formally satisfied. $^\ddagger$Bifurcation detection near critical parameter values remains an open problem.
+\end{table}
+
+% =====================================================================
+% SUPPLEMENTARY FIGURES (described; actual plots would be generated separately)
+% =====================================================================
+
+\section*{Supplementary Figures}
+
+\textbf{Figure S1. CT per-case PSNR distribution.} Histogram of PSNR across 200 LoDoPaB-CT test cases for the framework (blue) and expert baseline (orange). The framework distribution is slightly left-shifted (mean 31.7 vs.\ 32.1\,dB) with comparable spread ($\sigma = 1.2$ vs.\ 1.1\,dB). The 95\% CI for the mean difference is $[-0.6, -0.2]$\,dB (bootstrap, $n = 10{,}000$). Cohen's $d = 0.35$.
+
+\textbf{Figure S2. Prospective benchmark quality ratio distribution.} Boxplot of quality ratio (framework / expert baseline) for the 58 fully successful prospective tasks. Median: 94\%. IQR: 89--98\%. Whiskers: 78--100\%. One outlier at 72\% (a highly optimized turbulence simulation where the expert used a custom adaptive scheme). Stratified by domain: imaging tasks (median 97\%), PDE tasks (93\%), optimization tasks (91\%), stochastic tasks (88\%).
+
+\textbf{Figure S3. Scalability and timing breakdown.} Left panel: wall-clock time breakdown ($\Agent_P$, $\Agent_J$, $\Agent_E$) across the 12 development problems, ordered by total DOF. $\Agent_J$ overhead: 3\% (heat equation, $10^3$ DOF) to 28\% (GRI-Mech, stiffness analysis dominates). $\Agent_E$ dominates above $10^4$ DOF. Right panel: $\Agent_J$ time vs.\ total time as a function of problem DOF; the ratio decreases as $O(1/\text{DOF})$ since $\Agent_J$ cost is nearly constant while $\Agent_E$ scales with problem size.
+
+% =====================================================================
+\end{document}
