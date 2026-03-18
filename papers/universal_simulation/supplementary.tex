@@ -82,12 +82,12 @@ We restate and prove the main formal guarantee, which applies to problems in the
 
 \begin{proposition}[Automated Bounded-Error Realizability within $\Sclass$]
 \label{prop:bound}
-Under the following assumptions:
+Under the following assumptions, which correspond to the four conditions of $\Sclass$ (Definition~1, main text):
 \begin{enumerate}[nosep,label=(A\arabic*)]
-\item $P \in \Sclass$ (the simulability class, Definition~1 in main text): $P$ admits decomposition into a DAG over $K$ computational primitives, each well-posed and stably discretizable, with bounded Lipschitz composition.
-\item Hadamard well-posedness: for each primitive $p_i$, the associated operator has finite Lipschitz constant $L_i < \infty$ (condition 2 of $\Sclass$).
-\item Lax--Richtmyer convergence: each primitive $p_i$ admits a discretization with error $\varepsilon_i \leq C_i h_i^{q_i}$ for mesh parameter $h_i$ and convergence order $q_i > 0$ (condition 3 of $\Sclass$).
-\item Bounded composition: the DAG Lipschitz constant $L_{\text{DAG}} = \max_i \prod_{j \in \text{desc}(i)} L_j < \infty$ (condition 4 of $\Sclass$).
+\item \textbf{Finite specifiability (S1):} $P$ admits a finite representation $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$, realized as a valid \texttt{spec.md} file. The Plan Agent generates this from natural language; the Judge Agent validates it.
+\item \textbf{Hadamard stability (S2):} The map from problem data to solution is well-posed: for each computational subproblem, the associated operator has finite Lipschitz constant $L_i < \infty$.
+\item \textbf{Approximability (S3):} Each subproblem admits a convergent discretization with error $\varepsilon_i \leq C_i h_i^{q_i}$ for mesh parameter $h_i$ and convergence order $q_i > 0$, satisfying the Lax--Richtmyer equivalence theorem.
+\item \textbf{Certifiability (S4):} The composition of subproblems through the computational DAG has bounded Lipschitz constant $L_{\text{DAG}} = \max_i \prod_{j \in \text{desc}(i)} L_j < \infty$, enabling a computable error bound.
 \end{enumerate}
 For any $\varepsilon > 0$, the three-agent pipeline produces $\hat{x}$ satisfying $\norm{\hat{x} - x^*}_X \leq \varepsilon$ in finite time $T_{\text{comp}} < \infty$.
 \end{proposition}
@@ -95,15 +95,15 @@ For any $\varepsilon > 0$, the three-agent pipeline produces $\hat{x}$ satisfyin
 \begin{proof}
 The proof proceeds in four steps.
 
-\textbf{Step 1: Finite specification.}
-By condition (1) of $\Sclass$, $P$ admits a finite representation $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. The Plan Agent ($\Agent_P$) generates this from natural language; correctness is verified by the Judge Agent ($\Agent_J$) via $\Sclass$-membership verification. If $\Agent_J$ rejects, the pipeline either redesigns (up to 3 iterations) or terminates with a formal rejection certificate indicating which $\Sclass$ condition is violated.
+\textbf{Step 1: Finite specification (S1).}
+By S1, $P$ admits a finite representation $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$, concretely realized as a \texttt{spec.md} file. The Plan Agent ($\Agent_P$) generates this from natural language; correctness is verified by the Judge Agent ($\Agent_J$) via $\Sclass$-membership verification. If $\Agent_J$ rejects, the pipeline either redesigns (up to 3 iterations) or terminates with a formal rejection certificate indicating which of S1--S4 is violated.
 
-\textbf{Step 2: DAG decomposition.}
-By condition (1), the discretized system decomposes into a finite directed acyclic graph $\mathcal{G} = (V, E)$ where each node $v_i \in V$ corresponds to a primitive $p_{k(i)}$ from the 12-primitive basis. Let $D = |V|$ denote the number of nodes (DAG size) and let the graph have depth $d \leq D$.
+\textbf{Step 2: DAG decomposition (Proposition 3, main text).}
+By the Primitive Realizability proposition, the discretized system decomposes into a finite directed acyclic graph $\mathcal{G} = (V, E)$ where each node $v_i \in V$ corresponds to a primitive $p_{k(i)}$ from the 12-primitive basis. Let $D = |V|$ denote the number of nodes (DAG size) and let the graph have depth $d \leq D$.
 
-For each node $v_i$, the associated primitive $p_{k(i)}$ maps inputs to outputs with Lipschitz constant $L_i$ (assumption A2). The primitive's discretization has error bounded by $\varepsilon_i \leq C_i h_i^{q_i}$ (assumption A3).
+For each node $v_i$, the associated primitive $p_{k(i)}$ maps inputs to outputs with Lipschitz constant $L_i$ (S2). The primitive's discretization has error bounded by $\varepsilon_i \leq C_i h_i^{q_i}$ (S3).
 
-\textbf{Step 3: Error propagation through the DAG.}
+\textbf{Step 3: Error propagation through the DAG (S2 + S3 $\Rightarrow$ S4).}
 We bound the total error by induction on the DAG structure. For a single primitive, the error is $\varepsilon_1 \leq C_1 h_1^{q_1}$. For a chain of two primitives $p_2 \circ p_1$:
 \begin{align}
 \norm{p_2(p_1(\hat{x})) - p_2(p_1(x^*))} &\leq L_2 \norm{p_1(\hat{x}) - p_1(x^*)} + \varepsilon_2 \notag \\
@@ -116,12 +116,12 @@ By induction, for a general DAG with nodes $v_1, \ldots, v_D$ in topological ord
 \label{eq:total_error}
 \varepsilon_{\text{total}} = \norm{\hat{x} - x^*} \leq \sum_{i=1}^{D} \ell_i \cdot \varepsilon_i
 \end{equation}
-where $\ell_i = \prod_{j \in \text{desc}(i)} L_j$ is the effective amplification factor from node $v_i$ to the output. By the bounded composition assumption (A4), each $\ell_i \leq L_{\text{DAG}} < \infty$. The crude bound gives:
+where $\ell_i = \prod_{j \in \text{desc}(i)} L_j$ is the effective amplification factor from node $v_i$ to the output. By the certifiability assumption (A4/S4), each $\ell_i \leq L_{\text{DAG}} < \infty$. The crude bound gives:
 \begin{equation}
 \varepsilon_{\text{total}} \leq D \cdot L_{\text{DAG}} \cdot \max_i \varepsilon_i
 \end{equation}
 
-\textbf{Step 4: Resolution selection.}
+\textbf{Step 4: Resolution selection (S4 realization).}
 To achieve $\varepsilon_{\text{total}} \leq \varepsilon$, set:
 \begin{equation}
 \varepsilon_i = \frac{\varepsilon}{D \cdot \ell_i}
@@ -130,7 +130,7 @@ This ensures $\sum_i \ell_i \varepsilon_i = \sum_i \varepsilon / D = \varepsilon
 \begin{equation}
 h_i \leq \left(\frac{\varepsilon}{D \cdot \ell_i \cdot C_i}\right)^{1/q_i}
 \end{equation}
-Each primitive with mesh parameter $h_i$ has finite computational cost (condition (1) of $\Sclass$). The total cost is:
+Each primitive with mesh parameter $h_i$ has finite computational cost (S1: finite specifiability implies finite problem size). The total cost is:
 \begin{equation}
 T_{\text{comp}} = \sum_{i=1}^{D} T_i(h_i) < \infty
 \end{equation}
@@ -139,37 +139,56 @@ since each $T_i$ is finite for fixed $h_i > 0$. The Execute Agent ($\Agent_E$) s
 
 \textbf{Connection to the Judge Agent's gates.} The Judge Agent's 5 pre-execution gates directly verify the assumptions of Proposition~\ref{prop:bound}:
 \begin{itemize}[nosep]
-\item \textbf{Gates 1 \& 4} (dimensional consistency, problem classification) verify assumption (A1): the problem admits a correct DAG decomposition into known primitives.
-\item \textbf{Gates 2 \& 3} (BC/IC compatibility, well-posedness) verify assumptions (A2) and (A3): each primitive is well-posed and admits a convergent discretization.
-\item \textbf{Gate 5} (cost estimation) verifies that the resolution parameters $h_i$ required by Step~4 are computationally feasible given assumption (A4).
+\item \textbf{Gates 1 \& 4} (dimensional consistency, problem classification) verify \textbf{S1}: the \texttt{spec.md} correctly encodes a well-defined problem.
+\item \textbf{Gate 2} (BC/IC compatibility) verifies \textbf{S2}: the problem data is complete and consistent for well-posedness.
+\item \textbf{Gate 3} (well-posedness: coercivity, CFL, Lipschitz bounds) verifies \textbf{S2} and \textbf{S3}: the solution exists uniquely and the discretization converges.
+\item \textbf{Gate 5} (cost estimation) verifies that the resolution parameters $h_i$ required by Step~4 are computationally feasible for \textbf{S4} realization.
 \end{itemize}
 
-\textbf{Remark.} The mathematical content is entirely classical---the error propagation through composed operators with Lipschitz bounds is standard numerical analysis (see, e.g., Lax \& Richtmyer, 1956). The contribution of our pipeline is: (a)~$\Agent_P$ automatically decomposes the problem into the DAG; (b)~$\Agent_J$ verifies $\Sclass$-membership (assumptions A1--A4); (c)~$\Agent_E$ computes the resolution parameters and verifies the bound. No step requires mathematical novelty.
+The post-execution quality audit realizes \textbf{S4} (certifiability) in practice: it computes residuals, checks conservation laws, and produces the verified error certificate.
 
-\textbf{Where the bound breaks down.} At the \emph{scientific event horizon} (boundary $\partial \Sclass$), assumption (A4) fails: $L_{\text{DAG}} \to \infty$, typically because a bifurcation parameter $\theta \to \theta_c$ causes $\ell_i \sim |\theta - \theta_c|^{-\alpha}$ for some node $i$. Near $\partial \Sclass$, the required resolution $h_i \to 0$ and the computational cost $T_{\text{comp}} \to \infty$, making the bound vacuous. The two residual failures (1.5\%) in the main text both occur in this regime.
+\textbf{Remark.} The mathematical content of the error bound is entirely classical---the error propagation through composed operators with Lipschitz bounds is standard numerical analysis (see, e.g., Lax \& Richtmyer, 1956). The intellectual novelty lies in the formalization of certifiability (S4) as a computability requirement distinct from approximability (S3): a problem can be computable without being certifiable. The contribution of our pipeline is: (a)~$\Agent_P$ automatically generates the \texttt{spec.md} (S1); (b)~$\Agent_J$ verifies S2--S4; (c)~$\Agent_E$ computes the resolution parameters and the quality audit certifies the result (S4). The automation of classical verification, not mathematical novelty, is the advance.
+
+\textbf{Where the bound breaks down.} At the \emph{scientific event horizon} (boundary $\partial \Sclass$), S4 (certifiability) fails: $L_{\text{DAG}} \to \infty$, typically because a bifurcation parameter $\theta \to \theta_c$ causes $\ell_i \sim |\theta - \theta_c|^{-\alpha}$ for some node $i$. Near $\partial \Sclass$, the required resolution $h_i \to 0$ and the computational cost $T_{\text{comp}} \to \infty$, making the bound vacuous. The two residual failures (1.5\%) in the main text both occur in this regime.
 
 % =====================================================================
 \section{The Scientific Event Horizon: Four Obstructions}
 \label{sec:s2}
 % =====================================================================
 
-The simulability class $\Sclass$ (Definition~1, main text) delineates problems amenable to automated bounded-error simulation. Outside $\Sclass$---at and beyond the scientific event horizon---four fundamental obstructions prevent any computational system (human or automated) from guaranteeing bounded-error solutions.
+The simulability class $\Sclass$ (Definition~1, main text) delineates problems amenable to automated bounded-error simulation via four conditions: S1 (finite specifiability), S2 (Hadamard stability), S3 (approximability), and S4 (certifiability). Outside $\Sclass$---at and beyond the scientific event horizon---four fundamental obstructions prevent any computational system (human or automated) from guaranteeing bounded-error solutions. Each obstruction maps to the failure of a specific $\Sclass$ condition.
 
 \begin{proposition}[Obstructions at the Scientific Event Horizon]
 The complement $\mathfrak{U} = \Sclass^c$ contains problems exhibiting at least one of four obstructions:
 \end{proposition}
 
-\textbf{Obstruction 1: Logical undecidability} (G\"odel--Turing). Problems reducible to the halting problem or Hilbert's tenth problem over $\Z$. Example: ``Does program $P$ halt on input $x$?'' No algorithm---and therefore no agent pipeline---can decide this for all $(P, x)$. These problems violate $\Sclass$ condition (1): no finite DAG decomposition exists.
+\begin{table}[htbp]
+\centering
+\caption{Mapping of obstructions to $\Sclass$ conditions.}
+\small
+\begin{tabularx}{\textwidth}{lccX}
+\toprule
+\textbf{Obstruction} & \textbf{Condition} & \textbf{Fails} & \textbf{Example} \\
+\midrule
+Turing undecidability & S3 & No convergent approximation & Halting problem \\
+BSS uncomputability & S3 & No finite algorithm over $\R$ & Mandelbrot boundary membership \\
+Quantum measurement & S2 & Solution not unique/determined & Individual photon detection \\
+Infinite-precision barrier & S4 & Error bound not computable & Problems depending on Chaitin's $\Omega$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-\textbf{Obstruction 2: Real uncomputability} (Blum--Shub--Smale). Decision problems over $\R$ requiring infinite-precision predicates. Example: Mandelbrot set membership for general $c \in \mathbb{C}$ requires determining whether an orbit remains bounded, which is BSS-undecidable for boundary points. These problems violate $\Sclass$ condition (3): no convergent discretization exists at the decision boundary.
+\textbf{Obstruction 1: Logical undecidability} (G\"odel--Turing). Problems reducible to the halting problem or Hilbert's tenth problem over $\Z$. Example: ``Does program $P$ halt on input $x$?'' No algorithm---and therefore no agent pipeline---can decide this for all $(P, x)$. These problems violate \textbf{S3} (approximability): no convergent approximation scheme exists because the answer is not the limit of any computable sequence.
 
-\textbf{Obstruction 3: Quantum measurement irreducibility}. Individual measurement outcomes governed by the Born rule. Only probability distributions---not individual realizations---are computable. Example: ``Which detector clicks in a Stern--Gerlach experiment?'' is inherently stochastic. Note: the \emph{distribution} of outcomes is in $\Sclass$ (via Monte Carlo sampling). This obstruction violates $\Sclass$ condition (2): the individual-outcome ``problem'' is not well-posed (no unique solution exists).
+\textbf{Obstruction 2: Real uncomputability} (Blum--Shub--Smale). Decision problems over $\R$ requiring infinite-precision predicates. Example: Mandelbrot set membership for general $c \in \mathbb{C}$ requires determining whether an orbit remains bounded, which is BSS-undecidable for boundary points. These problems violate \textbf{S3}: no convergent discretization exists at the decision boundary.
 
-\textbf{Obstruction 4: Infinite-precision barriers}. Solutions depending on non-computable real numbers such as Chaitin's $\Omega$ (the halting probability of a universal Turing machine). No finite computation can approximate $\Omega$ to arbitrary precision. This violates $\Sclass$ condition (3): no convergent approximation scheme exists.
+\textbf{Obstruction 3: Quantum measurement irreducibility}. Individual measurement outcomes governed by the Born rule. Only probability distributions---not individual realizations---are computable. Example: ``Which detector clicks in a Stern--Gerlach experiment?'' is inherently stochastic. Note: the \emph{distribution} of outcomes is in $\Sclass$ (via Monte Carlo sampling). This obstruction violates \textbf{S2} (Hadamard stability): the individual-outcome ``problem'' is not well-posed (no unique solution exists).
 
-Whether these four obstructions are the \emph{only} barriers to membership in $\Sclass$ remains an open question. We state this as a conjecture grounded in the current state of computability theory, not as a proven result.
+\textbf{Obstruction 4: Infinite-precision barriers}. Solutions depending on non-computable real numbers such as Chaitin's $\Omega$ (the halting probability of a universal Turing machine). No finite computation can approximate $\Omega$ to arbitrary precision. This violates \textbf{S4} (certifiability): no computable error bound can be produced, even though finite approximations may exist.
 
-\textbf{Practical implications for the Judge Agent.} The four obstructions are theoretical; in practice, the scientific event horizon is encountered through \emph{near-violations} of $\Sclass$ conditions---particularly condition (4) (bounded Lipschitz composition) near bifurcation points. The Judge Agent's current gates detect exact violations (e.g., clearly ill-posed problems, missing BCs) but cannot detect proximity to $\partial \Sclass$. The bifurcation-sensitive rejection heuristics proposed in the main text (parameter continuation, Lyapunov exponent estimation, ensemble perturbation) aim to extend the Judge's detection capability to near-violations of condition (4).
+Whether these four obstructions are the \emph{only} barriers to membership in $\Sclass$ is stated as Conjecture~1 in the main text (Obstruction Completeness). The non-trivial direction---that every problem outside $\Sclass$ fails due to one of these four---is an open question connecting AI-assisted simulation to the foundations of computable analysis.
+
+\textbf{Practical implications for the Judge Agent.} The four obstructions are theoretical; in practice, the scientific event horizon is encountered through \emph{near-violations} of $\Sclass$ conditions---particularly S4 (certifiability) near bifurcation points, where the error bound diverges as $L \sim |\theta - \theta_c|^{-\alpha}$. The Judge Agent's current gates detect exact violations (e.g., clearly ill-posed problems violating S2, missing BCs violating S1) but cannot detect proximity to $\partial \Sclass$. The bifurcation-sensitive rejection heuristics proposed in the main text (parameter continuation, Lyapunov exponent estimation, ensemble perturbation) aim to extend the Judge's detection capability to near-violations of S4.
 
 % =====================================================================
 \section{Six Additional Domain Validations}
@@ -216,15 +235,17 @@ SEIR-D compartmental model with county-specific contact rates, fitted to Johns H
 \textbf{Fresnel diffraction.} Single-slit diffraction pattern computed via Fresnel--Kirchhoff integral. Sanity check; error $1.6 \times 10^{-6}$ vs.\ analytical result. $\rho = 432\times$.
 
 % =====================================================================
-\section{Primitive Basis and Minimality}
+\section{Primitive Basis and Realizability}
 \label{sec:s4}
 % =====================================================================
 
-The 12 computational primitives define the operations from which all DAG decompositions within $\Sclass$ are constructed. We prove that each primitive is necessary by exhibiting a witness problem $P_k \in \Sclass$ that requires primitive $p_k$ and cannot be solved using only the remaining 11.
+The definition of $\Sclass$ (Definition~1, main text) is implementation-independent: it does not prescribe a specific set of computational primitives. The Primitive Realizability proposition (Proposition~3, main text) connects $\Sclass$ to a concrete 12-primitive basis: for problems whose discretization belongs to one of 25 standard numerical method families, S3 (approximability) can be decomposed into a DAG over these 12 primitives, and S4 (certifiability) is realized by the Judge Agent.
+
+Below we prove that each primitive is necessary by exhibiting a witness problem $P_k \in \Sclass$ that requires primitive $p_k$ and cannot be solved using only the remaining 11.
 
 \begin{table}[htbp]
 \centering
-\caption{Table S1. 25 numerical method families decomposed over the 12-primitive basis. All 25 families have been verified to satisfy $\Sclass$ conditions (2)--(4) for standard problem instances.}
+\caption{Table S1. 25 numerical method families decomposed over the 12-primitive basis. All 25 families have been verified to satisfy $\Sclass$ conditions S2--S4 for standard problem instances, establishing Proposition~3 (main text).}
 \small
 \begin{tabularx}{\textwidth}{lX}
 \toprule
@@ -257,7 +278,7 @@ Compressed Sensing & $F, \Pi, O, B$ \\
 Particle-in-Cell (PIC) & $\partial, N, E, S, K, G$ \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize We do not claim this basis is provably minimal or sufficient for all possible numerical methods. The 25 families listed are those encountered in our 12 development domains and 72 prospective tasks. Extending $\Sclass$ to additional primitives is straightforward but requires verification of conditions (2)--(4) for each new primitive.
+\raggedright\scriptsize We do not claim this basis is provably minimal or sufficient for all possible numerical methods. The 25 families listed are those encountered in our 12 development domains and 72 prospective tasks. Extending the primitive basis is straightforward but requires verification of S2--S4 for each new primitive. The research agenda toward primitive completeness (Extended Data Table~3, main text) aims to prove sufficiency for all convergent discretizations.
 \end{table}
 
 \textbf{Witness problems for each primitive:}
@@ -529,23 +550,23 @@ Frontier (near $\partial \Sclass$) & 24 & 19 (79\%) & 15 (63\%) & 89\% \\
 
 \begin{table}[htbp]
 \centering
-\caption{Table S10. Per-gate ablation of Judge Agent on 12 development problems. Gates mapped to $\Sclass$ conditions ($n = 5$ trials each, mean $\pm$ s.d.).}
+\caption{Table S10. Per-gate ablation of Judge Agent on 12 development problems. Gates mapped to $\Sclass$ conditions S1--S4 ($n = 5$ trials each, mean $\pm$ s.d.).}
 \small
 \begin{tabularx}{\textwidth}{Xccl}
 \toprule
 \textbf{Configuration} & \textbf{Valid} & \textbf{Bounded} & \textbf{$\Sclass$ condition tested} \\
 \midrule
-Full $\Agent_J$ (all gates + audit) & 12/12 & 12/12 & All conditions verified \\
-Remove Gate 1 (dimensional) & 11.4/12 & 10.8/12 & Cond.\ (1): DAG decomposition \\
-Remove Gate 2 (BC/IC) & 11.0/12 & 10.2/12 & Cond.\ (2): well-posedness \\
-Remove Gate 3 (well-posedness) & 8.2/12 & 7.4/12 & Cond.\ (2)+(3): well-posed + stable \\
-Remove Gate 4 (classification) & 11.8/12 & 11.6/12 & Cond.\ (1): correct primitives \\
-Remove Gate 5 (cost estimation) & 12/12 & 11.4/12 & Cond.\ (4): bounded $L_{\text{DAG}}$ \\
-Remove quality audit only & 12/12 & 12/12 & Post-hoc $\Sclass$ consistency \\
-Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & No $\Sclass$-verification \\
+Full $\Agent_J$ (all gates + audit) & 12/12 & 12/12 & S1--S4 verified \\
+Remove Gate 1 (dimensional) & 11.4/12 & 10.8/12 & S1: specifiability \\
+Remove Gate 2 (BC/IC) & 11.0/12 & 10.2/12 & S2: well-posedness \\
+Remove Gate 3 (well-posedness) & 8.2/12 & 7.4/12 & S2+S3: stability + approx. \\
+Remove Gate 4 (classification) & 11.8/12 & 11.6/12 & S1: correct encoding \\
+Remove Gate 5 (cost estimation) & 12/12 & 11.4/12 & S4: certifiability feasibility \\
+Remove quality audit only & 12/12 & 12/12 & S4: post-hoc certification \\
+Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & No S1--S4 verification \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize The well-posedness gate (conditions 2+3 of $\Sclass$) is the most critical single gate, catching CFL violations and ill-posed problems that cause 3.8/12 failures when removed. The quality audit is non-redundant: it catches the one qualitative failure (symmetric solution for symmetry-breaking bifurcation near $\partial \Sclass$) invisible to all pre-execution gates.
+\raggedright\scriptsize The well-posedness gate (S2+S3) is the most critical single gate, catching CFL violations and ill-posed problems that cause 3.8/12 failures when removed. The quality audit (S4) is non-redundant: it catches the one qualitative failure (symmetric solution for symmetry-breaking bifurcation near $\partial \Sclass$) invisible to all pre-execution gates.
 \end{table}
 
 % =====================================================================
@@ -554,13 +575,13 @@ Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & No $\Sclass$-verification \
 
 \begin{table}[htbp]
 \centering
-\caption{Table S3. Full list of 50 adversarial test inputs, designed to probe the boundary $\partial \Sclass$.}
+\caption{Table S3. Full list of 50 adversarial test inputs, designed to probe the boundary $\partial \Sclass$. Each category targets specific $\Sclass$ conditions.}
 \small
 \begin{tabularx}{\textwidth}{clXl}
 \toprule
 \# & \textbf{Category} & \textbf{Problem Description} & \textbf{Outcome} \\
 \midrule
-\multicolumn{4}{l}{\textbf{(a) Ambiguous/incomplete NL} (20 tests, targeting $\Sclass$ cond.\ 1 via $\Agent_P$)} \\
+\multicolumn{4}{l}{\textbf{(a) Ambiguous/incomplete NL} (20 tests, targeting S1 via $\Agent_P$)} \\
 1 & (a) & ``Solve the wave equation'' (no BC, no IC, no domain) & Redesign $\to$ correct \\
 2 & (a) & ``$k = 0.1$, solve diffusion'' ($k$ ambiguous: conductivity or rate?) & Redesign $\to$ correct \\
 3 & (a) & ``Large Reynolds number flow past cylinder'' (no Re value) & Redesign $\to$ correct \\
@@ -570,14 +591,14 @@ Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & No $\Sclass$-verification \
 11--15 & (a) & Mixed units, implicit assumptions, domain jargon & 5 correct after redesign \\
 16--20 & (a) & Contradictory BC, over-specified systems, incomplete models & 4 correct, 1 human \\
 \midrule
-\multicolumn{4}{l}{\textbf{(b) Subtle $\Sclass$-boundary issues} (20 tests, targeting conds.\ 2--4 via $\Agent_J$)} \\
-21 & (b) & Heat eq.\ with no IC ($\mathcal{I} = \emptyset$) --- cond.\ 2 violation & REJECT (correct) \\
+\multicolumn{4}{l}{\textbf{(b) Subtle $\Sclass$-boundary issues} (20 tests, targeting S2--S4 via $\Agent_J$)} \\
+21 & (b) & Heat eq.\ with no IC ($\mathcal{I} = \emptyset$) --- S2 violation & REJECT (correct) \\
 22 & (b) & Nearly incompressible elasticity ($\nu = 0.4999$) --- near $\partial \Sclass$ & Accept (locking$^\dagger$) \\
-23 & (b) & Reaction-diffusion with extreme ratio ($10^{12}$) --- cond.\ 4 & Accept (caught by $\Agent_E$) \\
+23 & (b) & Reaction-diffusion with extreme ratio ($10^{12}$) --- S4 fragile & Accept (caught by $\Agent_E$) \\
 24 & (b) & Predict which slit a photon passes through --- $\notin \Sclass$ & REJECT (correct) \\
-25 & (b) & Near-singular Helmholtz at resonance --- cond.\ 2 & REJECT (correct) \\
-26--30 & (b) & Ill-conditioned systems, degenerate BCs --- conds.\ 2--3 & 4 reject, 1 accept \\
-31--35 & (b) & Near-critical parameters, bifurcation --- cond.\ 4 ($\partial \Sclass$) & 3 reject, 2 correct \\
+25 & (b) & Near-singular Helmholtz at resonance --- S2 & REJECT (correct) \\
+26--30 & (b) & Ill-conditioned systems, degenerate BCs --- S2--S3 & 4 reject, 1 accept \\
+31--35 & (b) & Near-critical parameters, bifurcation --- S4 ($\partial \Sclass$) & 3 reject, 2 correct \\
 36--40 & (b) & Stiff systems near stability boundary, chaotic regimes & 5 correct \\
 \midrule
 \multicolumn{4}{l}{\textbf{(c) Event-horizon probes} (10 tests, $L^2$ correct but qualitatively wrong)} \\
@@ -589,7 +610,7 @@ Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & No $\Sclass$-verification \
 46--50 & (c) & Conservation violations, wrong attractor, missing boundary layer & 4 audit catches, 1 miss \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize $^\dagger$$\Agent_J$ false negative: condition number $> 10^{12}$ but coercivity formally satisfied; near $\partial \Sclass$ (cond.\ 4). $^\ddagger$Both misses are at the scientific event horizon where $L_{\text{DAG}} \to \infty$; bifurcation detection remains an open problem (see proposed heuristics in main text).
+\raggedright\scriptsize $^\dagger$$\Agent_J$ false negative: condition number $> 10^{12}$ but coercivity formally satisfied; S4 (certifiability) fragile near $\partial \Sclass$. $^\ddagger$Both misses are at the scientific event horizon where S4 fails ($L_{\text{DAG}} \to \infty$); bifurcation detection remains an open problem (see proposed heuristics in main text).
 \end{table}
 
 % =====================================================================
@@ -616,10 +637,10 @@ Claude-3-Opus & 12/12 & 12/12 & 93\% \\
 GPT-4-Turbo & 11/12 & 11/12 & 91\% \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize GPT-4-Turbo failure: GRI-Mech ignition delay. $\Agent_P$ generated a spec with explicit Euler (stiffness ratio $10^{10}$); $\Agent_J$ correctly rejected ($\Sclass$ condition 3 violated) and triggered redesign, but GPT-4-Turbo's redesign selected LSODA with insufficient absolute tolerance, producing 18\% error (above the 10\% threshold). The $\Sclass$-verification caught the initial violation; the redesign failure is an LLM capability issue, not a $\Sclass$-verification issue.
+\raggedright\scriptsize GPT-4-Turbo failure: GRI-Mech ignition delay. $\Agent_P$ generated a \texttt{spec.md} with explicit Euler (stiffness ratio $10^{10}$); $\Agent_J$ correctly rejected (S3 violated: explicit Euler does not converge for stiff systems) and triggered redesign, but GPT-4-Turbo's redesign selected LSODA with insufficient absolute tolerance, producing 18\% error (above the 10\% threshold). The S1--S4 verification caught the initial violation; the redesign failure is an LLM capability issue, not a verification issue.
 \end{table}
 
-\textbf{Fragility disclosure.} We cannot guarantee that future LLM updates will preserve current performance. The $\Agent_J$ $\Sclass$-verification gates provide a safety net---they will reject specifications that violate $\Sclass$ conditions regardless of which LLM generated them---but the pipeline's \emph{success rate} depends on $\Agent_P$'s ability to generate correct specifications within 3 redesign attempts. We recommend pinning model versions for production use and re-validating after any model update.
+\textbf{Fragility disclosure.} We cannot guarantee that future LLM updates will preserve current performance. The $\Agent_J$ S1--S4 verification gates provide a safety net---they will reject \texttt{spec.md} files that violate $\Sclass$ conditions regardless of which LLM generated them---but the pipeline's \emph{success rate} depends on $\Agent_P$'s ability to generate correct \texttt{spec.md} files within 3 redesign attempts. We recommend pinning model versions for production use and re-validating after any model update.
 
 % =====================================================================
 % EXTENDED COMPARISON AND ABLATION ON 72 PROSPECTIVE TASKS
@@ -645,23 +666,23 @@ Frontier (near $\partial \Sclass$, 24) & 19/24 (79\%) & 7/24 (29\%) & 5/24 (21\%
 
 \begin{table}[htbp]
 \centering
-\caption{Table S13. Per-gate ablation of Judge Agent on 72 prospective tasks. Gates mapped to $\Sclass$ conditions ($n = 3$ trials each).}
+\caption{Table S13. Per-gate ablation of Judge Agent on 72 prospective tasks. Gates mapped to $\Sclass$ conditions S1--S4 ($n = 3$ trials each).}
 \small
 \begin{tabularx}{\textwidth}{Xccc}
 \toprule
 \textbf{Configuration} & \textbf{Correct + Bounded} & \textbf{Quality Pass} & \textbf{$\Sclass$ cond.} \\
 \midrule
-Full $\Agent_J$ (all gates + audit) & 64/72 (89\%) & 58/72 (81\%) & All \\
-Remove well-posedness gate & 50/72 (69\%) & 44/72 (61\%) & 2+3 \\
-Remove BC/IC compatibility & 56/72 (78\%) & 48/72 (67\%) & 2 \\
-Remove dimensional consistency & 60/72 (83\%) & 52/72 (72\%) & 1 \\
-Remove classification & 62/72 (86\%) & 56/72 (78\%) & 1 \\
-Remove cost estimation & 64/72 (89\%) & 54/72 (75\%) & 4 \\
-Remove quality audit only & 64/72 (89\%) & 52/72 (72\%) & Post-hoc \\
+Full $\Agent_J$ (all gates + audit) & 64/72 (89\%) & 58/72 (81\%) & S1--S4 \\
+Remove well-posedness gate & 50/72 (69\%) & 44/72 (61\%) & S2+S3 \\
+Remove BC/IC compatibility & 56/72 (78\%) & 48/72 (67\%) & S2 \\
+Remove dimensional consistency & 60/72 (83\%) & 52/72 (72\%) & S1 \\
+Remove classification & 62/72 (86\%) & 56/72 (78\%) & S1 \\
+Remove cost estimation & 64/72 (89\%) & 54/72 (75\%) & S4 feasibility \\
+Remove quality audit only & 64/72 (89\%) & 52/72 (72\%) & S4 post-hoc \\
 Remove all (no $\Agent_J$) & 38/72 (53\%) & 28/72 (39\%) & None \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize The well-posedness gate ($\Sclass$ conditions 2+3) remains the most critical single gate. The quality audit's contribution is most visible in the gap between ``Correct + Bounded'' and ``Quality Pass'': removing the audit does not change the bounded-error count but allows 6 additional qualitative failures (near $\partial \Sclass$) to pass undetected.
+\raggedright\scriptsize The well-posedness gate (S2+S3) remains the most critical single gate. The quality audit's contribution (S4) is most visible in the gap between ``Correct + Bounded'' and ``Quality Pass'': removing the audit does not change the bounded-error count but allows 6 additional qualitative failures (near $\partial \Sclass$, where S4 is fragile) to pass undetected.
 \end{table}
 
 % =====================================================================
