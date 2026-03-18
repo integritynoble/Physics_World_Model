@@ -320,7 +320,7 @@ We validated the framework on all 173 modalities.  For each, the Plan Agent gene
 
 \begin{table}[htbp]
 \centering
-\caption{Cross-modality validation (17 of 39 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data (challenging conditions: 60-view CT, 4-coil MRI); $\dagger$ = self-reference metric (no ground truth); $*$ = new system designs validated in the algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}).  $\Phi_z$ denotes depth-parameterised convolution: $C$ applied with a depth-dependent PSF $\Phi(z)$; it is the convolution primitive $C$, not a 12th element of the FPB.}
+\caption{Cross-modality validation (22 of 39 modalities), grouped by carrier family.  $\rho_{\text{recov}}$: 4-scenario recovery ratio~\cite{paperII}.  95\% CIs via bootstrap ($n{=}1000$).  Bold = real measured data (challenging conditions: 60-view CT, 4-coil MRI); $\dagger$ = self-reference metric (no ground truth); $*$ = new system designs validated in the algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}).  $\Phi_z$ denotes depth-parameterised convolution: $C$ applied with a depth-dependent PSF $\Phi(z)$; it is the convolution primitive $C$, not a 12th element of the FPB.}
 \label{tab:cross}
 \small
 \begin{tabularx}{\textwidth}{@{}llccc@{\hspace{4pt}}c@{\hspace{4pt}}l@{}}
@@ -579,7 +579,7 @@ Tier-lifting validated on DOT (Tier-2${\to}$3: $\eps_{\text{unmod}}$ from 7.8\% 
 \section{Discussion}
 % ========================================================================
 
-The central finding of this work is that a structured specification format (\texttt{spec.md}), a three-agent pipeline, and a five-term error decomposition together automate the design of computational imaging systems across 173 modalities and 5 carrier families.  The framework matches expert-library quality ($99.8\pm3.2$\%) with order-of-magnitude reductions in development time (Table~\ref{tab:expert}), as validated on real measured data from CT, MRI, and CASSI (Figure~\ref{fig:design_to_real}), because the agents automate the specification and validation steps that constitute the bulk of expert effort.
+The central finding of this work is that a structured specification format (\texttt{spec.md}), a three-agent pipeline, and a five-term error decomposition together automate the design of computational imaging systems across 173 modalities and 5 carrier families.  The framework matches expert-library quality ($98.1\pm4.2$\%) with order-of-magnitude reductions in development time (Table~\ref{tab:expert}), as validated on real measured data from CT, MRI, and CASSI (Figure~\ref{fig:design_to_real}), because the agents automate the specification and validation steps that constitute the bulk of expert effort.
 
 \texttt{spec.md} decouples physics (\emph{what}) from numerics (\emph{how}) and hardware (\emph{with what}), enabling sharing and peer review at the physics level~\cite{wilkinson2016fair}.  The \texttt{system\_elements} field connects specifications to hardware feasibility, transforming the Judge from a mathematical validator into a system feasibility checker.  Three \texttt{spec.md} files reproduced PSNR within $\pm 0.3$\,dB across independent agent instances.  This reproducibility---identical physics from independent instances---is the property that made FASTA transformative for genomics: a shared, verifiable format that decouples the science from the implementation.
 
@@ -591,10 +591,10 @@ Theorem~\ref{thm:design} thus functions as a design-to-deployment diagnostic: wh
 AI for scientific discovery~\cite{jumper2021alphafold,merchant2023gnome,wang2023scientific,boiko2023autonomous} and automated experiment design~\cite{tian2023ci,boiko2023autonomous} address related problems but none provide a formal error decomposition from natural-language intent to reconstruction quality.  Operator libraries (ASTRA~\cite{aarle2016}, SigPy~\cite{ong2019sigpy}, ODL~\cite{adler2017odl}, DeepInverse~\cite{tachella2023deepinverse}) provide modular forward operators but require manual composition and parameter selection per modality; our contribution is the \emph{automated specification layer} above such libraries.  Learned reconstruction methods (MoDL~\cite{aggarwal2019modl}, learned primal-dual~\cite{adler2018learned}, PnP~\cite{kamilov2023pnp}) achieve higher per-modality PSNR than our model-based reconstructions but require training data and are single-modality; our framework trades per-modality optimality for cross-modality generality (173 modalities from one system).
 
 \textbf{Algorithm sensitivity and the role of specification.}
-The algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}, Extended Data Figure~\ref{fig:spec_dominance}) sheds light on why the framework achieves expert-equivalent quality with model-based algorithms.  For well-conditioned systems (CT, MRI, CASSI), the specification constrains the quality envelope: inter-method CoV remains low ($\approx$3.5--6.2\%) across the top-5 published algorithms, indicating that a correct forward model leaves comparatively little room for solver improvement.  This explains the framework's $99.8\pm3.2$\% quality ratio without per-modality algorithm tuning.  However, compressive systems with high condition numbers (lensless: CoV $>$40\%; SIM: CoV 15\%) would clearly benefit from learned reconstruction methods that exploit data-driven priors beyond what model-based solvers provide.  We view this as motivation for future integration of learned methods into the Execute Agent, particularly for ill-conditioned modalities where the gap between model-based and data-driven approaches is largest.
+The algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}, Extended Data Figure~\ref{fig:spec_dominance}) sheds light on why the framework achieves expert-equivalent quality with model-based algorithms.  For well-conditioned systems (CT, MRI, CASSI), the specification constrains the quality envelope: inter-method CoV remains low ($\approx$3.5--6.2\%) across the top-5 published algorithms, indicating that a correct forward model leaves comparatively little room for solver improvement.  This explains the framework's $98.1\pm4.2$\% quality ratio without per-modality algorithm tuning.  However, compressive systems with high condition numbers (lensless: CoV $>$40\%; SIM: CoV 15\%) would clearly benefit from learned reconstruction methods that exploit data-driven priors beyond what model-based solvers provide.  We view this as motivation for future integration of learned methods into the Execute Agent, particularly for ill-conditioned modalities where the gap between model-based and data-driven approaches is largest.
 
 \textbf{Limitations.}
-(1)~For most modalities, reconstruction uses model-based algorithms (FISTA+TV, ADMM+TV).  For CASSI, the Execute Agent selects DAUHST-9stg~\cite{cai2022dauhst}, a deep unrolling method, reflecting the algorithm-sensitive regime identified in the CoV analysis (Extended Data Figure~\ref{fig:spec_dominance}).  Learned methods~\cite{aggarwal2019modl,adler2018learned} achieve higher per-modality PSNR (typically 3--8\,dB) but require training data unavailable for novel designs.
+(1)~For all modalities, reconstruction uses model-based algorithms (FISTA+TV, GAP-TV, ADMM+TV) that require no training data.  The algorithm-comparison study (Extended Data Table~\ref{tab:expert_study}) shows that deep unrolling methods such as DAUHST-9stg~\cite{cai2022dauhst} achieve substantially higher per-modality PSNR (typically 3--8\,dB above model-based methods), reflecting the algorithm-sensitive regime identified in the CoV analysis (Extended Data Figure~\ref{fig:spec_dominance}).  Integrating learned methods~\cite{aggarwal2019modl,adler2018learned} into the Execute Agent is future work but requires training data unavailable for novel designs.
 (2)~The agents depend on LLM capabilities (Claude Sonnet 4 in all experiments); robustness across LLM backends is not tested.  The 4\% misspecification rate (7/173 modalities) may vary with different models.
 (3)~Development-time ratios ($\rho_{\text{time}}$) rely partly on published estimates of expert development timelines, not prospective head-to-head comparisons.  The ratios should be interpreted as order-of-magnitude indicators.
 (4)~Quantitative reconstruction validated for 39/173 modalities; real data for 6.  Novel system designs are validated only in simulation.
@@ -816,8 +816,6 @@ CT & Medical & X-ray & 1--2 & $\Pi \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
 CBCT & Medical & X-ray & 2 & $\Pi \to \Lambda \to D$ & T & No & $\eps_{\text{param}}$ \\
 CT (polychromatic) & Medical & X-ray & 2 & $\Pi \to \Lambda \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Phase contrast & Medical & X-ray & 1--2 & $\Pi \to P \to M \to D$ & HO & No & $\eps_{\text{param}}$ \\
-PET & Nuclear & X-ray & 2 & $\Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
-SPECT & Nuclear & X-ray & 2 & $\Pi \to S \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 DEXA & Medical & X-ray & 2 & $M \to \Pi \to D$ & T & No & $\eps_{\text{param}}$ \\
 Compton & Nuclear & X-ray & 2 & $M \to R \to D$ & HO & No & $\eps_{\text{unmod}}$ \\
 \addlinespace
@@ -849,7 +847,7 @@ MRI & Medical & Spin & 1--2 & $M \to F \to S \to D$ & FV & Yes & $\eps_{\text{pa
 MRI (phase) & Medical & Spin & 2 & $M \to F \to S \to \Lambda \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 \addlinespace
 \multicolumn{8}{@{}l}{\textit{Acoustic}} \\
-Ultrasound & Medical & Acoustic & 2 & $P \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
+Ultrasound & Medical & Acoustic & 2 & $P \to R \to P \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
 Doppler US & Medical & Acoustic & 2 & $P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Elastography & Medical & Acoustic & 2 & $P \to P \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Photoacoustic & Medical & Acoustic & 2 & $M \to P \to D$ & HO & No & $\eps_{\text{param}}$ \\
@@ -860,6 +858,8 @@ TEM & Material & Electron & 2 & $M \to C \to D$ & T & No & $\eps_{\text{param}}$
 E-ptychography & Material & Electron & 2 & $M \to P \to D$ & FV & Yes & $\eps_{\text{param}}$ \\
 \addlinespace
 \multicolumn{8}{@{}l}{\textit{Particle}} \\
+PET & Nuclear & Particle & 2 & $\Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
+SPECT & Nuclear & Particle & 2 & $M \to \Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Muon tomography & Security & Particle & 2 & $R \to \Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 Proton therapy & Medical & Particle & 2 & $\Lambda \to \Pi \to D$ & T & No & $\eps_{\text{unmod}}$ \\
 \bottomrule

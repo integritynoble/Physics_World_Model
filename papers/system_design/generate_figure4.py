@@ -206,12 +206,12 @@ def draw_panel_b(ax):
             color=C_DARK, ha="left", va="center")
 
     compiler_gates = [
-        ("C1", "Dim. consistency"),
-        ("C2", "Adjoint test"),
-        ("C3", "Noise model"),
-        ("C4", "Param. bounds"),
-        ("C5", "Invertibility"),
-        ("C6", "Dtype check"),
+        ("C1", "DAG acyclicity"),
+        ("C2", "Chain fidelity"),
+        ("C3", "Complexity bounds"),
+        ("C4", "Nonlinear family"),
+        ("C5", "Adjoint test"),
+        ("C6", "Repr. error"),
     ]
 
     # Draw in a 2x3 grid (2 columns, 3 rows) for more breathing room
