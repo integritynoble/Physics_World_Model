@@ -693,7 +693,7 @@ $O$ & Optimize & Iterative optimization (gradient descent, adjoint, ADMM, topolo
 
 A minimality argument (each primitive has a witness problem that requires it) is given in Supplementary Section~S4. This proposition separates the \emph{theoretical claim} ($\Sclass$ is the right class) from the \emph{engineering claim} (12 primitives cover a large practical subset). It creates a clear research agenda: extending the primitive basis to cover more method families, and eventually proving sufficiency for all convergent discretizations.
 
-\textbf{Relationship to imaging-specific primitives.} In the companion benchmark framework, 11 imaging primitives (modulate, propagate, disperse, accumulate, project, convolve, subsample, reflect, detect, noise, encode) define the physical forward-model language for imaging systems---they describe how photons, X-rays, or acoustic waves interact with matter to produce measurements. The 12 general primitives in Table~\ref{tab:primitives} serve a different role: they define the \emph{computational} language used to discretize, simulate, invert, and validate those imaging systems (and all other scientific computation problems). The relationship is implementation-level subsumption, not literal basis identity. For example, the imaging primitive ``propagate'' (Fresnel diffraction of a wavefield) is \emph{implemented} using the general primitives transform ($F$, FFT-based angular spectrum), differentiate ($\partial$, finite-difference Helmholtz), and evolve ($E$, split-step marching). Similarly, ``detect'' maps to constrain ($B$, non-negativity) plus evaluate ($N$, nonlinear intensity). The two primitive sets operate at complementary levels of abstraction: physics-level (what the imaging system does) and computation-level (how the solver executes it).
+\textbf{Relationship to imaging-specific primitives.} In the companion benchmark framework~\cite{yang2026pwm}, 11 imaging primitives (modulate, propagate, disperse, accumulate, project, convolve, subsample, reflect, detect, noise, encode) define the physical forward-model language for imaging systems---they describe how photons, X-rays, or acoustic waves interact with matter to produce measurements. The 12 general primitives in Table~\ref{tab:primitives} serve a different role: they define the \emph{computational} language used to discretize, simulate, invert, and validate those imaging systems (and all other scientific computation problems). The relationship is implementation-level subsumption, not literal basis identity. For example, the imaging primitive ``propagate'' (Fresnel diffraction of a wavefield) is \emph{implemented} using the general primitives transform ($F$, FFT-based angular spectrum), differentiate ($\partial$, finite-difference Helmholtz), and evolve ($E$, split-step marching). Similarly, ``detect'' maps to constrain ($B$, non-negativity) plus evaluate ($N$, nonlinear intensity). The two primitive sets operate at complementary levels of abstraction: physics-level (what the imaging system does) and computation-level (how the solver executes it).
 
 \begin{conjecture}[Obstruction Completeness]
 \label{conj:obstruction}
@@ -884,6 +884,9 @@ S.~Boldo et~al. Verified compilation of floating-point computations. \emph{J.\ A
 
 \bibitem{jasak2007openfoam}
 H.~Jasak, A.~Jemcov, and Z.~Tukovic. OpenFOAM: a C++ library for complex physics simulations. \emph{Int.\ Workshop Coupled Meth.\ Numer.\ Dyn.}, 1000:1--20, 2007.
+
+\bibitem{yang2026pwm}
+C.~Yang. Physics World Model: a 168-modality computational imaging benchmark with forward-model mismatch. \emph{In preparation}, 2026. Code at \url{https://github.com/integritynoble/Physics_World_Model}.
 
 \end{thebibliography}
 
