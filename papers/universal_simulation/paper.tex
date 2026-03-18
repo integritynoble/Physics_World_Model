@@ -637,6 +637,33 @@ The definition of $\Sclass$ is implementation-independent: it does not prescribe
 For problems in $\Sclass$ whose discretization belongs to one of 25 standard numerical method families (Supplementary Table~S1), the approximation required by S3 can be decomposed into a finite directed acyclic graph (DAG) over 12 computational primitives: differentiate, integrate, solve (linear), evaluate (nonlinear), evolve, transform, project, sample, couple, constrain, discretize, and optimize. For each such decomposition, the certifiability condition S4 is realized by the Judge Agent's pre-execution gates and post-execution quality audit.
 \end{proposition}
 
+\noindent The 12 primitives, their symbols, and representative operations are:
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{clX}
+\toprule
+\textbf{Symbol} & \textbf{Primitive} & \textbf{Operation} \\
+\midrule
+$\partial$ & Differentiate & Spatial/temporal derivatives (finite differences, spectral, finite elements) \\
+$\int$ & Integrate & Quadrature, line/surface/volume integrals (Gauss, Monte Carlo) \\
+$L$ & Solve (linear) & Direct or iterative solution of $\mathbf{A}\mathbf{x} = \mathbf{b}$ (LU, CG, GMRES, multigrid) \\
+$N$ & Evaluate (nonlinear) & Pointwise nonlinear function evaluation ($|\psi|^2\psi$, reaction rates, constitutive laws) \\
+$E$ & Evolve & Time integration (Euler, Runge--Kutta, BDF, symplectic, exponential integrators) \\
+$F$ & Transform & Basis change (FFT, wavelet, spherical harmonics, Radon) \\
+$\Pi$ & Project & Dimensionality reduction (SVD/POD truncation, Galerkin projection) \\
+$S$ & Sample & Stochastic sampling (Monte Carlo, MCMC, Langevin dynamics, importance sampling) \\
+$K$ & Couple & Multi-physics coupling (fluid--structure, thermo-mechanical, radiation--matter) \\
+$B$ & Constrain & Enforce algebraic/inequality constraints (divergence-free, non-negativity, contact) \\
+$G$ & Discretize & Mesh/grid generation and adaptive refinement (structured, unstructured, AMR) \\
+$O$ & Optimize & Iterative optimization (gradient descent, adjoint, ADMM, topology optimization) \\
+\bottomrule
+\end{tabularx}
+\caption{The 12 computational primitives. Every problem in the benchmark decomposes into a DAG over these primitives. Each primitive is necessary (witness problems in Supplementary Section~S4); the basis covers 25 numerical method families (Supplementary Table~S1).}
+\label{tab:primitives}
+\end{table}
+
 A minimality argument (each primitive has a witness problem that requires it) is given in Supplementary Section~S4. This proposition separates the \emph{theoretical claim} ($\Sclass$ is the right class) from the \emph{engineering claim} (12 primitives cover a large practical subset). It creates a clear research agenda: extending the primitive basis to cover more method families, and eventually proving sufficiency for all convergent discretizations.
 
 \begin{conjecture}[Obstruction Completeness]
