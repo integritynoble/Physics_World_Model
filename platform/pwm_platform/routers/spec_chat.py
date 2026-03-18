@@ -239,7 +239,7 @@ async def common_chat(
 # MUST be registered before /{variant_key} to avoid route shadowing.
 
 
-@router.post("/reconstruct-common", response_class=HTMLResponse)
+@router.post("/reconstruct-common")
 async def reconstruct_common(
     request: Request,
     modality: str = Form(...),
@@ -248,8 +248,14 @@ async def reconstruct_common(
     measurement_file: Optional[UploadFile] = File(None),
     matrix_file: Optional[UploadFile] = File(None),
 ):
-    """Run common-mode reconstruction (no login required for standard data)."""
+    """Run common-mode reconstruction (no login required for standard data).
+
+    Uses a streaming response to send keepalive whitespace every 5 s while
+    the CPU inference runs.  This prevents NAT/firewall idle-connection drops
+    that cause 'Failed to fetch' on long reconstructions (RDLUF ~60–100 s).
+    """
     import numpy as np
+    from fastapi.responses import StreamingResponse
 
     from pwm_platform.services.common_reconstructor import run_common_reconstruction
 
@@ -285,27 +291,43 @@ async def reconstruct_common(
             status_code=200,
         )
 
-    try:
-        async with _recon_semaphore:
-            result = await run_common_reconstruction(
-                variant_key=modality,
-                algorithm_name=algorithm,
-                user_measurement=user_measurement,
-                user_matrix=user_matrix,
-                sample_index=sample_index,
-            )
-    except Exception as exc:
-        logger.error("Common reconstruction error: %s", exc, exc_info=True)
-        return HTMLResponse(
-            '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">'
-            f'Reconstruction failed: {type(exc).__name__}: {exc}</div>',
-            status_code=200,
-        )
+    async def _stream():
+        try:
+            async with _recon_semaphore:
+                # Launch reconstruction as a background task so we can interleave keepalives
+                recon_task = _asyncio.create_task(run_common_reconstruction(
+                    variant_key=modality,
+                    algorithm_name=algorithm,
+                    user_measurement=user_measurement,
+                    user_matrix=user_matrix,
+                    sample_index=sample_index,
+                ))
+                # Send a keepalive space every 5 s while inference runs.
+                # HTML whitespace is harmless; it prevents NAT/firewall from
+                # dropping idle TCP connections on long reconstructions.
+                while not recon_task.done():
+                    done, _ = await _asyncio.wait({recon_task}, timeout=5.0)
+                    if not done:
+                        yield b' '
 
-    return templates.TemplateResponse("_spec_common_result.html", {
-        "request": request,
-        "result": result,
-    })
+                result = recon_task.result()
+
+        except Exception as exc:
+            logger.error("Common reconstruction error: %s", exc, exc_info=True)
+            yield (
+                '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">'
+                f'Reconstruction failed: {type(exc).__name__}: {exc}</div>'
+            ).encode()
+            return
+
+        # Render the result template and stream the HTML
+        rendered = templates.TemplateResponse("_spec_common_result.html", {
+            "request": request,
+            "result": result,
+        })
+        yield rendered.body
+
+    return StreamingResponse(_stream(), media_type="text/html")
 
 
 @router.post("/{variant_key}", response_class=HTMLResponse)
