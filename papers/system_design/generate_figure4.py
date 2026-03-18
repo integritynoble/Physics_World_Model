@@ -149,24 +149,23 @@ def draw_panel_a(ax):
 def draw_panel_b(ax):
     """Draw gate certificate checklist."""
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 6)
-    ax.set_aspect("equal")
+    ax.set_ylim(0, 8)
     ax.axis("off")
 
     # Title banner
     title_box = FancyBboxPatch(
-        (0.3, 4.7), 9.4, 1.0,
+        (0.3, 6.6), 9.4, 1.1,
         boxstyle="round,pad=0.12",
         facecolor=C_GREEN_LIGHT, edgecolor=C_GREEN,
         linewidth=1.2, zorder=2,
     )
     ax.add_patch(title_box)
-    ax.text(5.0, 5.2, "\u2713  Gate Certificate: ALL PASSED",
-            fontsize=8.5, fontweight="bold", color=C_GREEN_CHECK,
+    ax.text(5.0, 7.15, "\u2713  Gate Certificate: ALL PASSED",
+            fontsize=9, fontweight="bold", color=C_GREEN_CHECK,
             ha="center", va="center", zorder=3)
 
     # --- Triad Gates ---
-    ax.text(0.6, 4.3, "Triad Gates", fontsize=7.5, fontweight="bold",
+    ax.text(0.6, 6.1, "Triad Gates", fontsize=8, fontweight="bold",
             color=C_DARK, ha="left", va="center")
 
     triad_gates = [
@@ -175,11 +174,11 @@ def draw_panel_b(ax):
         ("G3", "Model Mismatch", r"$\|\hat{A}-A\|_F / \|A\|_F < \epsilon$"),
     ]
 
-    y = 3.75
+    y = 5.3
     for gid, name, formula in triad_gates:
         # Row background
         row_bg = FancyBboxPatch(
-            (0.5, y - 0.27), 9.0, 0.54,
+            (0.5, y - 0.32), 9.0, 0.64,
             boxstyle="round,pad=0.04",
             facecolor="#FAFAFA", edgecolor="#E5E7EB",
             linewidth=0.5, zorder=1,
@@ -187,23 +186,23 @@ def draw_panel_b(ax):
         ax.add_patch(row_bg)
 
         # Gate ID
-        ax.text(0.9, y, gid, fontsize=7.5, fontweight="bold",
+        ax.text(0.9, y, gid, fontsize=8, fontweight="bold",
                 color=C_DARK, ha="left", va="center", zorder=3,
                 family="monospace")
         # Gate name
-        ax.text(1.7, y, name, fontsize=7, color=C_DARK,
+        ax.text(1.7, y, name, fontsize=7.5, color=C_DARK,
                 ha="left", va="center", zorder=3)
         # Formula (right-aligned)
-        ax.text(7.8, y, formula, fontsize=6.5, color=C_GRAY,
+        ax.text(7.8, y, formula, fontsize=7, color=C_GRAY,
                 ha="right", va="center", zorder=3)
         # Checkmark
-        ax.text(9.0, y, "\u2713", fontsize=12, fontweight="bold",
+        ax.text(9.0, y, "\u2713", fontsize=13, fontweight="bold",
                 color=C_GREEN_CHECK, ha="center", va="center", zorder=3)
-        y -= 0.6
+        y -= 0.8
 
     # --- Compiler Gates ---
-    y -= 0.15
-    ax.text(0.6, y, "Compiler Checks (6/6)", fontsize=7.5, fontweight="bold",
+    y -= 0.3
+    ax.text(0.6, y, "Compiler Checks (6/6)", fontsize=8, fontweight="bold",
             color=C_DARK, ha="left", va="center")
 
     compiler_gates = [
@@ -216,9 +215,9 @@ def draw_panel_b(ax):
     ]
 
     # Draw in a 3x2 grid
-    y -= 0.5
+    y -= 0.6
     row_bg = FancyBboxPatch(
-        (0.5, y - 0.42), 9.0, 0.85,
+        (0.5, y - 0.55), 9.0, 1.1,
         boxstyle="round,pad=0.04",
         facecolor="#FAFAFA", edgecolor="#E5E7EB",
         linewidth=0.5, zorder=1,
@@ -229,10 +228,10 @@ def draw_panel_b(ax):
         col = i % 3
         row = i // 3
         x_pos = 0.9 + col * 3.1
-        y_pos = y + 0.2 - row * 0.42
-        ax.text(x_pos, y_pos, "\u2713", fontsize=9, fontweight="bold",
+        y_pos = y - row * 0.5
+        ax.text(x_pos, y_pos, "\u2713", fontsize=10, fontweight="bold",
                 color=C_GREEN_CHECK, ha="left", va="center", zorder=3)
-        ax.text(x_pos + 0.35, y_pos, f"{cid} {cname}", fontsize=6.5,
+        ax.text(x_pos + 0.35, y_pos, f"{cid} {cname}", fontsize=7,
                 color=C_DARK, ha="left", va="center", zorder=3)
 
 
