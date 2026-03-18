@@ -154,9 +154,9 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 % --- Flag loop (right side, from audit back to execute) ---
 \draw[rej] (judgepost.east) -- ++(0.6,0) |- node[pos=0.25, right, font=\scriptsize, red!70!black]{Flag} (exec.east);
 
-% --- Gate annotations (placed to the SIDE of nodes, not below, to avoid overlap) ---
+% --- Gate annotations ---
 \node[annot, above=0.15cm of judgepre] {\itshape Pre-gates: well-posedness,\\stability, Lipschitz, cost};
-\node[annot, left=0.3cm of judgepost] {\itshape Post-audit: conservation,\\monotonicity, symmetry, bounds};
+\node[annot, below=0.3cm of judgepost] {\itshape Post-audit: conservation,\\monotonicity, symmetry, bounds};
 \end{tikzpicture}%
 }% end resizebox
 \caption{Three-agent pipeline grounded in the simulability class $\Sclass$. The Plan Agent translates natural language into a \texttt{spec.md} file (realizing S1). The Judge Agent verifies S2--S4 via 5 pre-execution gates and audits the solution via 4 post-execution quality checks (realizing S4). Rejection triggers redesign (up to 3 rounds) or a certificate that the problem lies outside $\Sclass$.}
