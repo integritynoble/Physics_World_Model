@@ -172,8 +172,9 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 \draw[arr] (plan) -- (specmd);
 \draw[arr] (specmd) -- (judge.west |- s1);
 
-% Pass: Judge → Execute (label above, clearly separated)
-\draw[arr, green!50!black] (judge.east |- s2) -- node[lbl, above, yshift=4pt] {\scriptsize pass: certificate} (exec.west);
+% Pass: Judge → Execute (label above, no background fill)
+\draw[arr, green!50!black] (judge.east |- s2) -- (exec.west);
+\path (judge.east |- s2) -- (exec.west) node[midway, above, yshift=5pt, font=\scriptsize, text=green!50!black, inner sep=0pt] {pass: certificate};
 
 \draw[arr] (exec) -- (ahat);
 \draw[arr] (ahat) -- (epsbox);
