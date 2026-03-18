@@ -359,6 +359,14 @@ Without the Judge, the pipeline produces wrong answers on 42\% of development pr
 \label{fig:comparison}
 \end{figure}
 
+\textbf{Difficulty stratification.} Tasks are assigned to four tiers based on proximity to $\partial \Sclass$:
+\begin{itemize}[nosep]
+\item \textbf{Dev (12):} Development problems used to design the Judge's checks---well-understood problems with known analytical or high-fidelity reference solutions (e.g., Poisson equation, Shepp--Logan CT, Couette flow). 100\% success is expected and not informative.
+\item \textbf{Textbook (18):} Problems with analytical solutions or established benchmarks, requiring correct method selection but no novel numerical treatment (e.g., hydrogen atom, cantilever beam, Kepler orbit, 1D wave propagation). All $\Sclass$ conditions are comfortably satisfied.
+\item \textbf{Standard (30):} Graduate-level or standard benchmark suite problems requiring non-trivial solver choices, regularization, or multi-step workflows (e.g., compressed sensing MRI, phase-field solidification, seismic tomography, neutron transport). S1--S4 hold but method selection matters.
+\item \textbf{Frontier (24):} Research-level problems near $\partial \Sclass$, where bifurcations, strong nonlinearity, ill-conditioning, or multi-physics coupling challenge automation (e.g., chromium dimer, tokamak edge plasma, stratospheric sudden warming, dislocation dynamics). All 8 non-successes across the 72 tasks occur in the standard or frontier tiers.
+\end{itemize}
+
 Alternative backbones (Claude-3-Opus: 12/12; GPT-4-Turbo: 11/12 on dev problems) suggest moderate robustness to backbone choice (Supplementary Section~S7). We cite SciCode~\cite{tian2024scicode} as motivation but do not evaluate directly on it: SciCode tasks are single-function coding problems, whereas our pipeline operates on full simulation workflows from natural language to validated solution. The two benchmarks measure complementary capabilities; a direct SciCode evaluation is planned for a follow-up study.
 
 % -------------------------------------------------------------------
