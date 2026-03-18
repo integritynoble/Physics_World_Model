@@ -510,11 +510,12 @@ We submitted 50 adversarial inputs specifically designed to probe $\partial \Scl
     symbolic x coords={No Judge, Pre-gates only, Full Judge},
     xtick=data,
     x tick label style={font=\small},
-    ymin=0, ymax=50,
+    ymin=0, ymax=55,
     ytick={0,10,20,30,40,50},
     nodes near coords,
     every node near coord/.append style={font=\small\bfseries},
-    enlarge x limits=0.25,
+    clip=false,
+    enlarge x limits=0.35,
     title={\small\textbf{(a)} $\Sclass$-verification reduces failures},
 ]
 \addplot[fill=red!50] coordinates {(No Judge,42)};
