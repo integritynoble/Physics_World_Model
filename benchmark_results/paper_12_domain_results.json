@@ -1,0 +1,181 @@
+{
+  "title": "Paper Table 1: 12-domain benchmark results",
+  "backbone_models": [
+    "Claude Sonnet 4.6",
+    "Claude Opus 4.6",
+    "GPT-5.4"
+  ],
+  "date": "2026-03-18T11:16:41.681178",
+  "total_elapsed_sec": 277.4,
+  "summary": {
+    "n_pass": 12,
+    "n_fail": 0,
+    "n_error": 0,
+    "median_quality_ratio": 1.0
+  },
+  "results": [
+    {
+      "domain": "Clinical CT",
+      "metric": "PSNR",
+      "metric_unit": "dB",
+      "n_samples": 200,
+      "framework_mean": 25.6,
+      "framework_std": 0.3,
+      "framework_ci95": [
+        25.5,
+        25.6
+      ],
+      "expert_reference": 32.1,
+      "quality_ratio": 0.8,
+      "status": "PASS",
+      "elapsed_sec": 89.8,
+      "error": null
+    },
+    {
+      "domain": "Seismic FWI",
+      "metric": "PSNR",
+      "metric_unit": "dB",
+      "n_samples": 5,
+      "framework_mean": 20.5,
+      "framework_std": 0.4,
+      "expert_reference": 27.8,
+      "quality_ratio": 0.74,
+      "status": "PASS",
+      "elapsed_sec": 29.2,
+      "error": null
+    },
+    {
+      "domain": "Combustion (GRI-Mech)",
+      "metric": "ignition delay relative error",
+      "metric_unit": "fraction (lower is better)",
+      "n_samples": 15,
+      "framework_mean": 0.0,
+      "framework_std": 0.0,
+      "expert_reference": 0.0,
+      "quality_ratio": 1.0,
+      "status": "PASS",
+      "elapsed_sec": 1.8,
+      "error": null
+    },
+    {
+      "domain": "Granular flow",
+      "metric": "L2 relative error",
+      "metric_unit": "dimensionless (lower is better)",
+      "n_samples": 3,
+      "framework_mean": 0.00020556,
+      "framework_std": 1.9677e-06,
+      "expert_reference": 0.0,
+      "quality_ratio": 1.0,
+      "status": "PASS",
+      "elapsed_sec": 1.1,
+      "error": null
+    },
+    {
+      "domain": "Helium ground state",
+      "metric": "energy error",
+      "metric_unit": "mHa (lower is better)",
+      "n_samples": 1,
+      "framework_value": -2.903556,
+      "exact_value": -2.903724,
+      "framework_error_mHa": 0.17,
+      "expert_reference": -2.903724,
+      "quality_ratio": 1.0,
+      "status": "PASS",
+      "elapsed_sec": 0.0,
+      "error": null
+    },
+    {
+      "domain": "BFS turbulent flow",
+      "metric": "L2 relative error (mean velocity)",
+      "metric_unit": "fraction (lower is better)",
+      "n_samples": 3,
+      "framework_mean": 0.0359,
+      "framework_std": 0.0,
+      "expert_reference": 0.0,
+      "quality_ratio": 0.96,
+      "status": "PASS",
+      "elapsed_sec": 24.1,
+      "error": null
+    },
+    {
+      "domain": "Topology optimization",
+      "metric": "compliance relative error",
+      "metric_unit": "fraction (lower is better)",
+      "n_samples": 5,
+      "framework_compliance": -17003630354460.95,
+      "reference_compliance": -17003630354460.95,
+      "framework_mean": 0.0,
+      "framework_std": 0.0,
+      "expert_reference": 0.0,
+      "quality_ratio": 1.0,
+      "status": "PASS",
+      "elapsed_sec": 120.2,
+      "error": null
+    },
+    {
+      "domain": "Waveguide modes",
+      "metric": "eigenvalue relative error",
+      "metric_unit": "fraction (lower is better)",
+      "n_samples": 4,
+      "framework_mean": 0.000963,
+      "framework_std": 0.000599,
+      "expert_reference": 0.0,
+      "quality_ratio": 1.0,
+      "status": "PASS",
+      "elapsed_sec": 0.6,
+      "error": null
+    },
+    {
+      "domain": "Heat equation",
+      "metric": "L_inf error",
+      "metric_unit": "dimensionless (lower is better)",
+      "n_samples": 10,
+      "framework_mean": 8.87e-06,
+      "framework_std": 0.0,
+      "expert_reference": 2.8e-05,
+      "quality_ratio": 1.0,
+      "status": "PASS",
+      "elapsed_sec": 0.1,
+      "error": null
+    },
+    {
+      "domain": "Fresnel diffraction",
+      "metric": "L2 relative error",
+      "metric_unit": "fraction (lower is better)",
+      "n_samples": 5,
+      "framework_mean": 0.0384,
+      "framework_std": 0.00581,
+      "expert_reference": 0.0,
+      "quality_ratio": 0.96,
+      "status": "PASS",
+      "elapsed_sec": 0.0,
+      "error": null
+    },
+    {
+      "domain": "Rossby waves",
+      "metric": "pattern correlation",
+      "metric_unit": "dimensionless [0,1] (higher is better)",
+      "n_samples": 3,
+      "framework_mean": 1.0,
+      "framework_std": 0.0,
+      "expert_reference": 0.98,
+      "quality_ratio": 1.02,
+      "status": "PASS",
+      "elapsed_sec": 0.0,
+      "error": null
+    },
+    {
+      "domain": "Reaction-diffusion",
+      "metric": "L2 relative error",
+      "metric_unit": "fraction (lower is better)",
+      "n_samples": 5,
+      "framework_mean": 0.055536,
+      "framework_std": 0.033383,
+      "expert_reference": 0.0,
+      "quality_ratio": 0.94,
+      "status": "PASS",
+      "elapsed_sec": 10.5,
+      "error": null
+    }
+  ]
+}
