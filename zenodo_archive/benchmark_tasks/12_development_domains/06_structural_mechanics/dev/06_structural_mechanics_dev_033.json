@@ -1,0 +1,11 @@
+{
+  "V_frac": 0.5464616915097965,
+  "E_GPa": 210,
+  "load_N": 5209,
+  "support": "cantilever",
+  "penalization": 3,
+  "_task_id": "06_structural_mechanics_dev_033",
+  "_seed": 3538925887,
+  "_tier": "dev",
+  "_domain": "06_structural_mechanics"
+}

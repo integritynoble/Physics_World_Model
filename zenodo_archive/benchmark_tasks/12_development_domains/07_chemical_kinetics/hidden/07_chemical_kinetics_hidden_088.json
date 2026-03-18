@@ -1,0 +1,11 @@
+{
+  "T_K": 980,
+  "p_atm": 10,
+  "phi": 1.9113562255118073,
+  "fuel": "CH4",
+  "reactor": "constant_volume",
+  "_task_id": "07_chemical_kinetics_hidden_088",
+  "_seed": 3904986239,
+  "_tier": "hidden",
+  "_domain": "07_chemical_kinetics"
+}

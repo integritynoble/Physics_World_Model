@@ -1,0 +1,11 @@
+{
+  "Z": 3,
+  "basis": "cc-pVDZ",
+  "n_max": 4,
+  "l_max": 3,
+  "method": "CISD",
+  "_task_id": "03_quantum_chemistry_dev_001",
+  "_seed": 1887705705,
+  "_tier": "dev",
+  "_domain": "03_quantum_chemistry"
+}

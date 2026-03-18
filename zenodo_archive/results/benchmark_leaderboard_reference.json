@@ -1,0 +1,383 @@
+{
+  "_description": "Reference algorithm leaderboard from https://pwm.platformai.org/benchmark",
+  "_last_scraped": "2026-03-11",
+  "_total_algorithms": 1367,
+  "ct": [
+    {"rank": 1, "name": "CT-FM", "type": "deep_learning", "psnr_db": 44.1, "ssim": 0.981},
+    {"rank": 2, "name": "CTformer", "type": "deep_learning", "psnr_db": 41.2, "ssim": 0.968},
+    {"rank": 3, "name": "LEARN++", "type": "deep_learning", "psnr_db": 40.5, "ssim": 0.962},
+    {"rank": 4, "name": "LEARN", "type": "deep_learning", "psnr_db": 40.1, "ssim": 0.958},
+    {"rank": 5, "name": "MossFormer-CT", "type": "deep_learning", "psnr_db": 39.8, "ssim": 0.955},
+    {"rank": 6, "name": "RED-CNN", "type": "deep_learning", "psnr_db": 38.9, "ssim": 0.949},
+    {"rank": 7, "name": "FBPConvNet", "type": "deep_learning", "psnr_db": 37.5, "ssim": 0.938},
+    {"rank": 8, "name": "DU-GAN", "type": "deep_learning", "psnr_db": 37.0, "ssim": 0.934},
+    {"rank": 9, "name": "Noise2Noise-CT", "type": "deep_learning", "psnr_db": 36.5, "ssim": 0.929},
+    {"rank": 10, "name": "TV-ADMM", "type": "traditional", "psnr_db": 35.2, "ssim": 0.918},
+    {"rank": 11, "name": "PnP-ADMM", "type": "traditional", "psnr_db": 34.8, "ssim": 0.912},
+    {"rank": 12, "name": "SART (50 iter)", "type": "traditional", "psnr_db": 34.1, "ssim": 0.905},
+    {"rank": 13, "name": "SART (20 iter)", "type": "traditional", "psnr_db": 33.5, "ssim": 0.898},
+    {"rank": 14, "name": "SART (10 iter)", "type": "traditional", "psnr_db": 32.8, "ssim": 0.889},
+    {"rank": 15, "name": "BM3D-CT", "type": "traditional", "psnr_db": 31.9, "ssim": 0.880},
+    {"rank": 16, "name": "NLM-CT", "type": "traditional", "psnr_db": 31.2, "ssim": 0.870},
+    {"rank": 17, "name": "Wiener-CT", "type": "traditional", "psnr_db": 30.1, "ssim": 0.855},
+    {"rank": 18, "name": "OSEM-CT", "type": "traditional", "psnr_db": 29.4, "ssim": 0.843},
+    {"rank": 19, "name": "MLEM-CT", "type": "traditional", "psnr_db": 28.7, "ssim": 0.831},
+    {"rank": 20, "name": "FBP (Hann)", "type": "traditional", "psnr_db": 27.9, "ssim": 0.818},
+    {"rank": 21, "name": "FBP (Ram-Lak)", "type": "traditional", "psnr_db": 27.2, "ssim": 0.805},
+    {"rank": 22, "name": "FBP (Shepp-Logan)", "type": "traditional", "psnr_db": 26.5, "ssim": 0.792},
+    {"rank": 23, "name": "Direct Backprojection", "type": "traditional", "psnr_db": 25.9, "ssim": 0.778},
+    {"rank": 24, "name": "FBP (cosine)", "type": "traditional", "psnr_db": 25.2, "ssim": 0.761}
+  ],
+  "mri": [
+    {"rank": 1, "name": "SwinMR++", "type": "deep_learning", "psnr_db": 43.8, "ssim": 0.979},
+    {"rank": 2, "name": "E2E-VarNet", "type": "deep_learning", "psnr_db": 42.1, "ssim": 0.972},
+    {"rank": 3, "name": "VarNet", "type": "deep_learning", "psnr_db": 41.5, "ssim": 0.968},
+    {"rank": 4, "name": "MoDL", "type": "deep_learning", "psnr_db": 40.9, "ssim": 0.963},
+    {"rank": 5, "name": "XPDNet", "type": "deep_learning", "psnr_db": 40.3, "ssim": 0.958},
+    {"rank": 6, "name": "SwinMR", "type": "deep_learning", "psnr_db": 39.8, "ssim": 0.953},
+    {"rank": 7, "name": "ReconFormer", "type": "deep_learning", "psnr_db": 39.2, "ssim": 0.947},
+    {"rank": 8, "name": "Cascaded U-Net", "type": "deep_learning", "psnr_db": 38.7, "ssim": 0.942},
+    {"rank": 9, "name": "E2E-VarNet (fastMRI)", "type": "deep_learning", "psnr_db": 38.2, "ssim": 0.937},
+    {"rank": 10, "name": "U-Net MRI", "type": "deep_learning", "psnr_db": 37.5, "ssim": 0.929},
+    {"rank": 11, "name": "ISTA-Net+", "type": "deep_learning", "psnr_db": 37.0, "ssim": 0.923},
+    {"rank": 12, "name": "ADMM-Net", "type": "deep_learning", "psnr_db": 36.4, "ssim": 0.917},
+    {"rank": 13, "name": "D5C5", "type": "deep_learning", "psnr_db": 35.9, "ssim": 0.911},
+    {"rank": 14, "name": "DCCNN", "type": "deep_learning", "psnr_db": 35.3, "ssim": 0.904},
+    {"rank": 15, "name": "CS-MRI (Wavelet)", "type": "traditional", "psnr_db": 34.8, "ssim": 0.897},
+    {"rank": 16, "name": "GRAPPA", "type": "traditional", "psnr_db": 34.2, "ssim": 0.890},
+    {"rank": 17, "name": "SENSE", "type": "traditional", "psnr_db": 33.7, "ssim": 0.882},
+    {"rank": 18, "name": "ESPIRIT", "type": "traditional", "psnr_db": 33.1, "ssim": 0.875},
+    {"rank": 19, "name": "TV-Reg", "type": "traditional", "psnr_db": 32.5, "ssim": 0.867},
+    {"rank": 20, "name": "LORAKS", "type": "traditional", "psnr_db": 31.8, "ssim": 0.858},
+    {"rank": 21, "name": "SPIRiT", "type": "traditional", "psnr_db": 31.2, "ssim": 0.849},
+    {"rank": 22, "name": "L+S Decomp", "type": "traditional", "psnr_db": 30.5, "ssim": 0.839},
+    {"rank": 23, "name": "PICS (BART)", "type": "traditional", "psnr_db": 29.9, "ssim": 0.829},
+    {"rank": 24, "name": "k-t SPARSE-SENSE", "type": "traditional", "psnr_db": 29.2, "ssim": 0.818},
+    {"rank": 25, "name": "BM3D-MRI", "type": "traditional", "psnr_db": 28.6, "ssim": 0.807},
+    {"rank": 26, "name": "NLM-MRI", "type": "traditional", "psnr_db": 28.0, "ssim": 0.796},
+    {"rank": 27, "name": "Zero-Filled (IFFT)", "type": "traditional", "psnr_db": 26.0, "ssim": 0.761}
+  ],
+  "pet": [
+    {"rank": 1, "name": "NeuroLF-PET", "type": "deep_learning", "psnr_db": 39.2, "ssim": 0.962},
+    {"rank": 2, "name": "U-Net-PET", "type": "deep_learning", "psnr_db": 36.8, "ssim": 0.948},
+    {"rank": 3, "name": "PET-DL (ResNet)", "type": "deep_learning", "psnr_db": 35.4, "ssim": 0.935},
+    {"rank": 4, "name": "DPIR-PET", "type": "deep_learning", "psnr_db": 34.1, "ssim": 0.921},
+    {"rank": 5, "name": "MAP-EM", "type": "traditional", "psnr_db": 32.5, "ssim": 0.903},
+    {"rank": 6, "name": "OSEM (128 iter)", "type": "traditional", "psnr_db": 31.2, "ssim": 0.887},
+    {"rank": 7, "name": "OSEM (64 iter)", "type": "traditional", "psnr_db": 30.5, "ssim": 0.878},
+    {"rank": 8, "name": "MLEM (100 iter)", "type": "traditional", "psnr_db": 29.8, "ssim": 0.866},
+    {"rank": 9, "name": "FBP (Ramp)", "type": "traditional", "psnr_db": 27.3, "ssim": 0.832},
+    {"rank": 10, "name": "Direct Backprojection", "type": "traditional", "psnr_db": 24.8, "ssim": 0.798}
+  ],
+  "spect": [
+    {"rank": 1, "name": "SPECT-FM", "type": "deep_learning", "psnr_db": 37.5, "ssim": 0.951},
+    {"rank": 2, "name": "U-Net-SPECT", "type": "deep_learning", "psnr_db": 35.2, "ssim": 0.938},
+    {"rank": 3, "name": "PnP-ADMM-SPECT", "type": "traditional", "psnr_db": 33.0, "ssim": 0.918},
+    {"rank": 4, "name": "OSEM-SPECT (64 iter)", "type": "traditional", "psnr_db": 31.5, "ssim": 0.902},
+    {"rank": 5, "name": "MLEM-SPECT (100 iter)", "type": "traditional", "psnr_db": 30.2, "ssim": 0.886},
+    {"rank": 6, "name": "MAP-SPECT", "type": "traditional", "psnr_db": 29.0, "ssim": 0.870},
+    {"rank": 7, "name": "Chang Attenuation", "type": "traditional", "psnr_db": 27.8, "ssim": 0.851},
+    {"rank": 8, "name": "FBP (Butterworth)", "type": "traditional", "psnr_db": 26.5, "ssim": 0.831},
+    {"rank": 9, "name": "FBP (Ram-Lak)", "type": "traditional", "psnr_db": 25.1, "ssim": 0.812},
+    {"rank": 10, "name": "Backprojection", "type": "traditional", "psnr_db": 22.3, "ssim": 0.781}
+  ],
+  "cbct": [
+    {"rank": 1, "name": "CBCT-FM", "type": "deep_learning", "psnr_db": 38.9, "ssim": 0.956},
+    {"rank": 2, "name": "CTformer-CBCT", "type": "deep_learning", "psnr_db": 37.1, "ssim": 0.944},
+    {"rank": 3, "name": "CBCT-UNet", "type": "deep_learning", "psnr_db": 35.5, "ssim": 0.931},
+    {"rank": 4, "name": "RED-CBCT", "type": "deep_learning", "psnr_db": 34.2, "ssim": 0.918},
+    {"rank": 5, "name": "TV-ADMM-CBCT", "type": "traditional", "psnr_db": 32.8, "ssim": 0.902},
+    {"rank": 6, "name": "FDK (Hamming)", "type": "traditional", "psnr_db": 31.3, "ssim": 0.885},
+    {"rank": 7, "name": "FDK / FBP", "type": "traditional", "psnr_db": 30.1, "ssim": 0.868},
+    {"rank": 8, "name": "FDK (Ram-Lak)", "type": "traditional", "psnr_db": 29.2, "ssim": 0.851},
+    {"rank": 9, "name": "Backprojection", "type": "traditional", "psnr_db": 26.5, "ssim": 0.816}
+  ],
+  "oct": [
+    {"rank": 1, "name": "ScoreOCT", "type": "deep_learning", "psnr_db": 38.0, "ssim": 0.959},
+    {"rank": 2, "name": "OCT-FM", "type": "deep_learning", "psnr_db": 36.8, "ssim": 0.948},
+    {"rank": 3, "name": "OCT-Transformer", "type": "deep_learning", "psnr_db": 35.4, "ssim": 0.935},
+    {"rank": 4, "name": "DnCNN-OCT", "type": "deep_learning", "psnr_db": 34.2, "ssim": 0.921},
+    {"rank": 5, "name": "BM3D-OCT", "type": "traditional", "psnr_db": 32.5, "ssim": 0.903},
+    {"rank": 6, "name": "NLM-OCT", "type": "traditional", "psnr_db": 31.0, "ssim": 0.886},
+    {"rank": 7, "name": "Wiener-OCT", "type": "traditional", "psnr_db": 29.5, "ssim": 0.868},
+    {"rank": 8, "name": "B-scan Average", "type": "traditional", "psnr_db": 28.0, "ssim": 0.847}
+  ],
+  "ultrasound": [
+    {"rank": 1, "name": "ScoreUS", "type": "deep_learning", "psnr_db": 36.3, "ssim": 0.944},
+    {"rank": 2, "name": "US-FM", "type": "deep_learning", "psnr_db": 35.1, "ssim": 0.932},
+    {"rank": 3, "name": "US-UNet (DeepUS)", "type": "deep_learning", "psnr_db": 33.8, "ssim": 0.919},
+    {"rank": 4, "name": "US-CNN", "type": "deep_learning", "psnr_db": 32.5, "ssim": 0.905},
+    {"rank": 5, "name": "DAS Beamforming", "type": "traditional", "psnr_db": 30.8, "ssim": 0.887},
+    {"rank": 6, "name": "ADMM-US", "type": "traditional", "psnr_db": 29.5, "ssim": 0.870},
+    {"rank": 7, "name": "FISTA-L2", "type": "traditional", "psnr_db": 28.2, "ssim": 0.853},
+    {"rank": 8, "name": "Richardson-Lucy", "type": "traditional", "psnr_db": 26.9, "ssim": 0.833}
+  ],
+  "sar": [
+    {"rank": 1, "name": "DiffusionSAR", "type": "deep_learning", "psnr_db": 35.4, "ssim": 0.938},
+    {"rank": 2, "name": "SAR-FM", "type": "deep_learning", "psnr_db": 34.2, "ssim": 0.927},
+    {"rank": 3, "name": "SAR-Transformer", "type": "deep_learning", "psnr_db": 33.0, "ssim": 0.915},
+    {"rank": 4, "name": "SAR-CNN", "type": "deep_learning", "psnr_db": 31.8, "ssim": 0.901},
+    {"rank": 5, "name": "ID-CNN", "type": "deep_learning", "psnr_db": 30.7, "ssim": 0.888},
+    {"rank": 6, "name": "SAR-BM3D", "type": "traditional", "psnr_db": 29.5, "ssim": 0.873},
+    {"rank": 7, "name": "NL-SAR", "type": "traditional", "psnr_db": 28.3, "ssim": 0.858},
+    {"rank": 8, "name": "PPB (SAR)", "type": "traditional", "psnr_db": 27.2, "ssim": 0.842},
+    {"rank": 9, "name": "NLSAR", "type": "traditional", "psnr_db": 26.1, "ssim": 0.826},
+    {"rank": 10, "name": "Lee Filter", "type": "traditional", "psnr_db": 25.0, "ssim": 0.809},
+    {"rank": 11, "name": "Frost Filter", "type": "traditional", "psnr_db": 23.9, "ssim": 0.791},
+    {"rank": 12, "name": "Kuan Filter", "type": "traditional", "psnr_db": 22.8, "ssim": 0.772},
+    {"rank": 13, "name": "Boxcar Filter", "type": "traditional", "psnr_db": 21.7, "ssim": 0.751}
+  ],
+  "polsar": [
+    {"rank": 1, "name": "PolSAR-FM", "type": "deep_learning", "psnr_db": 36.2, "ssim": 0.942},
+    {"rank": 2, "name": "DiffusionPolSAR", "type": "deep_learning", "psnr_db": 34.9, "ssim": 0.930},
+    {"rank": 3, "name": "PolSAR-Transformer", "type": "deep_learning", "psnr_db": 33.6, "ssim": 0.917},
+    {"rank": 4, "name": "PolSAR-CNN", "type": "deep_learning", "psnr_db": 32.4, "ssim": 0.904},
+    {"rank": 5, "name": "Coherency Matrix BM3D", "type": "traditional", "psnr_db": 30.8, "ssim": 0.887},
+    {"rank": 6, "name": "PolSAR NL-Filter", "type": "traditional", "psnr_db": 29.5, "ssim": 0.871},
+    {"rank": 7, "name": "Refined Lee", "type": "traditional", "psnr_db": 28.2, "ssim": 0.854},
+    {"rank": 8, "name": "Boxcar (PolSAR)", "type": "traditional", "psnr_db": 26.9, "ssim": 0.836},
+    {"rank": 9, "name": "IDAN Filter", "type": "traditional", "psnr_db": 25.7, "ssim": 0.817},
+    {"rank": 10, "name": "Lee Filter", "type": "traditional", "psnr_db": 24.5, "ssim": 0.797},
+    {"rank": 11, "name": "Gamma-MAP", "type": "traditional", "psnr_db": 23.3, "ssim": 0.776},
+    {"rank": 12, "name": "Kuan Filter", "type": "traditional", "psnr_db": 22.1, "ssim": 0.754},
+    {"rank": 13, "name": "Pauli Decomposition", "type": "traditional", "psnr_db": 20.9, "ssim": 0.731}
+  ],
+  "insar": [
+    {"rank": 1, "name": "InSAR-FM", "type": "deep_learning", "psnr_db": 32.5, "ssim": 0.918},
+    {"rank": 2, "name": "DeepInSAR", "type": "deep_learning", "psnr_db": 30.8, "ssim": 0.899},
+    {"rank": 3, "name": "SNAPHU (Statistical)", "type": "traditional", "psnr_db": 28.2, "ssim": 0.871},
+    {"rank": 4, "name": "Goldstein Phase Unwrap", "type": "traditional", "psnr_db": 25.9, "ssim": 0.843}
+  ],
+  "cassi": [
+    {"rank": 1, "name": "MST++", "type": "deep_learning", "ssim": 0.652},
+    {"rank": 2, "name": "SSR-L", "type": "deep_learning", "ssim": 0.626},
+    {"rank": 3, "name": "HDNet", "type": "deep_learning", "ssim": 0.618},
+    {"rank": 4, "name": "DGSMP", "type": "deep_learning", "ssim": 0.610},
+    {"rank": 5, "name": "GAP-Net", "type": "deep_learning", "ssim": 0.604},
+    {"rank": 6, "name": "MST-L", "type": "deep_learning", "ssim": 0.550},
+    {"rank": 7, "name": "GAP-TV", "type": "traditional", "ssim": 0.593},
+    {"rank": 8, "name": "ADMM-Net", "type": "traditional", "ssim": 0.578},
+    {"rank": 9, "name": "TwIST", "type": "traditional", "ssim": 0.561},
+    {"rank": 10, "name": "ISTA-Net", "type": "traditional", "ssim": 0.543},
+    {"rank": 11, "name": "FISTA-TV", "type": "traditional", "ssim": 0.525},
+    {"rank": 12, "name": "ELP-Unfolding", "type": "deep_learning", "ssim": 0.515}
+  ],
+  "cacti": [
+    {"rank": 1, "name": "HiSViT-9", "type": "deep_learning", "psnr_db": 33.5, "ssim": 0.188},
+    {"rank": 2, "name": "EfficientSCI", "type": "deep_learning", "psnr_db": 32.8, "ssim": 0.189},
+    {"rank": 3, "name": "EfficientSCI-T", "type": "deep_learning", "psnr_db": 32.2, "ssim": 0.185},
+    {"rank": 4, "name": "ELP-Unfolding", "type": "deep_learning", "psnr_db": 31.6, "ssim": 0.191},
+    {"rank": 5, "name": "STFormer", "type": "deep_learning", "psnr_db": 31.0, "ssim": 0.180},
+    {"rank": 6, "name": "GAP-TV", "type": "traditional", "psnr_db": 29.8, "ssim": 0.165},
+    {"rank": 7, "name": "ADMM-TV", "type": "traditional", "psnr_db": 28.5, "ssim": 0.151},
+    {"rank": 8, "name": "TwIST-TV", "type": "traditional", "psnr_db": 27.2, "ssim": 0.138}
+  ],
+  "ghost_imaging": [
+    {"rank": 1, "name": "Ghost-ViT", "type": "deep_learning", "psnr_db": 30.1, "ssim": 0.892},
+    {"rank": 2, "name": "Ghost-FM", "type": "deep_learning", "psnr_db": 28.9, "ssim": 0.878},
+    {"rank": 3, "name": "U-Net-Ghost", "type": "deep_learning", "psnr_db": 27.5, "ssim": 0.861},
+    {"rank": 4, "name": "Differential Ghost Imaging", "type": "traditional", "psnr_db": 25.2, "ssim": 0.834},
+    {"rank": 5, "name": "Compressed Sensing GI", "type": "traditional", "psnr_db": 23.8, "ssim": 0.812},
+    {"rank": 6, "name": "Correlation GI", "type": "traditional", "psnr_db": 21.9, "ssim": 0.784}
+  ],
+  "cryo_em": [
+    {"rank": 1, "name": "DiffusionCryo", "type": "deep_learning", "psnr_db": 39.8, "ssim": 0.961},
+    {"rank": 2, "name": "CryoDRGN-2", "type": "deep_learning", "psnr_db": 38.2, "ssim": 0.948},
+    {"rank": 3, "name": "CryoSPARC-NN", "type": "deep_learning", "psnr_db": 36.9, "ssim": 0.935},
+    {"rank": 4, "name": "CryoDRGN", "type": "deep_learning", "psnr_db": 35.5, "ssim": 0.921},
+    {"rank": 5, "name": "RELION-4 (DL)", "type": "deep_learning", "psnr_db": 34.2, "ssim": 0.907},
+    {"rank": 6, "name": "RELION-4 (ADMM)", "type": "traditional", "psnr_db": 32.8, "ssim": 0.891},
+    {"rank": 7, "name": "CryoSPARC (MAPEM)", "type": "traditional", "psnr_db": 31.5, "ssim": 0.875},
+    {"rank": 8, "name": "RELION (Gold-Std)", "type": "traditional", "psnr_db": 30.1, "ssim": 0.857},
+    {"rank": 9, "name": "Wiener + CTF correction", "type": "traditional", "psnr_db": 28.4, "ssim": 0.834},
+    {"rank": 10, "name": "Phase Flipping + CTF", "type": "traditional", "psnr_db": 26.8, "ssim": 0.810}
+  ],
+  "fmri": [
+    {"rank": 1, "name": "fMRI-FM", "type": "deep_learning", "psnr_db": 38.5, "ssim": 0.953},
+    {"rank": 2, "name": "SwinMR-fMRI", "type": "deep_learning", "psnr_db": 36.9, "ssim": 0.939},
+    {"rank": 3, "name": "U-Net-fMRI", "type": "deep_learning", "psnr_db": 35.4, "ssim": 0.924},
+    {"rank": 4, "name": "CS-fMRI (Wavelet)", "type": "traditional", "psnr_db": 33.2, "ssim": 0.903},
+    {"rank": 5, "name": "SENSE-fMRI", "type": "traditional", "psnr_db": 31.5, "ssim": 0.882},
+    {"rank": 6, "name": "GRAPPA-fMRI", "type": "traditional", "psnr_db": 30.0, "ssim": 0.861},
+    {"rank": 7, "name": "Zero-Filled IFFT", "type": "traditional", "psnr_db": 26.0, "ssim": 0.812}
+  ],
+  "mra": [
+    {"rank": 1, "name": "MRA-FM", "type": "deep_learning", "psnr_db": 40.2, "ssim": 0.965},
+    {"rank": 2, "name": "VarNet-MRA", "type": "deep_learning", "psnr_db": 38.7, "ssim": 0.951},
+    {"rank": 3, "name": "E2E-VarNet-MRA", "type": "deep_learning", "psnr_db": 37.3, "ssim": 0.937},
+    {"rank": 4, "name": "SENSE-MRA", "type": "traditional", "psnr_db": 35.0, "ssim": 0.918},
+    {"rank": 5, "name": "GRAPPA-MRA", "type": "traditional", "psnr_db": 33.2, "ssim": 0.898},
+    {"rank": 6, "name": "Zero-Filled IFFT", "type": "traditional", "psnr_db": 28.5, "ssim": 0.851}
+  ],
+  "diffusion_mri": [
+    {"rank": 1, "name": "SHORE-Net", "type": "deep_learning", "psnr_db": 36.5, "ssim": 0.941},
+    {"rank": 2, "name": "q-DL (qDiffusion)", "type": "deep_learning", "psnr_db": 34.8, "ssim": 0.925},
+    {"rank": 3, "name": "DiffusionDL", "type": "deep_learning", "psnr_db": 33.2, "ssim": 0.909},
+    {"rank": 4, "name": "CS-dMRI", "type": "traditional", "psnr_db": 31.5, "ssim": 0.889},
+    {"rank": 5, "name": "SENSE (WLS tensor fit)", "type": "traditional", "psnr_db": 29.8, "ssim": 0.868},
+    {"rank": 6, "name": "SHORE (analytical)", "type": "traditional", "psnr_db": 28.1, "ssim": 0.845},
+    {"rank": 7, "name": "DTI (least squares)", "type": "traditional", "psnr_db": 26.5, "ssim": 0.821}
+  ],
+  "mr_elastography": [
+    {"rank": 1, "name": "MRE-FM", "type": "deep_learning", "psnr_db": 35.8, "ssim": 0.937},
+    {"rank": 2, "name": "MRE-Net", "type": "deep_learning", "psnr_db": 33.9, "ssim": 0.920},
+    {"rank": 3, "name": "NLSI-Solver", "type": "traditional", "psnr_db": 31.5, "ssim": 0.898},
+    {"rank": 4, "name": "SENSE (displacement field)", "type": "traditional", "psnr_db": 29.2, "ssim": 0.872},
+    {"rank": 5, "name": "Direct Inversion", "type": "traditional", "psnr_db": 26.8, "ssim": 0.841}
+  ],
+  "mr_fingerprinting": [
+    {"rank": 1, "name": "MRF-FM", "type": "deep_learning", "psnr_db": 37.2, "ssim": 0.945},
+    {"rank": 2, "name": "DeepMRF", "type": "deep_learning", "psnr_db": 35.6, "ssim": 0.930},
+    {"rank": 3, "name": "BLOCH-Net", "type": "deep_learning", "psnr_db": 34.1, "ssim": 0.915},
+    {"rank": 4, "name": "Dictionary Matching", "type": "traditional", "psnr_db": 32.5, "ssim": 0.897},
+    {"rank": 5, "name": "SVD Compression", "type": "traditional", "psnr_db": 30.8, "ssim": 0.877},
+    {"rank": 6, "name": "Low-Rank Approximation", "type": "traditional", "psnr_db": 29.2, "ssim": 0.855}
+  ],
+  "swi": [
+    {"rank": 1, "name": "SWI-FM", "type": "deep_learning", "psnr_db": 39.5, "ssim": 0.957},
+    {"rank": 2, "name": "VarNet-SWI", "type": "deep_learning", "psnr_db": 37.8, "ssim": 0.943},
+    {"rank": 3, "name": "SENSE-SWI", "type": "traditional", "psnr_db": 35.2, "ssim": 0.924},
+    {"rank": 4, "name": "Phase Mask (Homodyne)", "type": "traditional", "psnr_db": 32.8, "ssim": 0.900},
+    {"rank": 5, "name": "Zero-Filled IFFT", "type": "traditional", "psnr_db": 28.9, "ssim": 0.862}
+  ],
+  "asl_mri": [
+    {"rank": 1, "name": "ASL-FM", "type": "deep_learning", "psnr_db": 34.5, "ssim": 0.921},
+    {"rank": 2, "name": "ASL-Net", "type": "deep_learning", "psnr_db": 32.8, "ssim": 0.905},
+    {"rank": 3, "name": "Bayesian ASL", "type": "traditional", "psnr_db": 30.5, "ssim": 0.882},
+    {"rank": 4, "name": "FBP (ASL)", "type": "traditional", "psnr_db": 28.2, "ssim": 0.855},
+    {"rank": 5, "name": "Simple Subtraction", "type": "traditional", "psnr_db": 25.8, "ssim": 0.821}
+  ],
+  "cest_mri": [
+    {"rank": 1, "name": "CEST-FM", "type": "deep_learning", "psnr_db": 36.2, "ssim": 0.939},
+    {"rank": 2, "name": "CEST-Net", "type": "deep_learning", "psnr_db": 34.5, "ssim": 0.922},
+    {"rank": 3, "name": "Lorentzian Fitting DL", "type": "deep_learning", "psnr_db": 32.9, "ssim": 0.905},
+    {"rank": 4, "name": "Lorentzian Fitting", "type": "traditional", "psnr_db": 31.0, "ssim": 0.884},
+    {"rank": 5, "name": "MTRasym", "type": "traditional", "psnr_db": 29.2, "ssim": 0.860},
+    {"rank": 6, "name": "Direct Saturation", "type": "traditional", "psnr_db": 27.5, "ssim": 0.833}
+  ],
+  "photoacoustic": [
+    {"rank": 1, "name": "PAM-FM", "type": "deep_learning", "psnr_db": 37.5, "ssim": 0.948},
+    {"rank": 2, "name": "PAM-U-Net", "type": "deep_learning", "psnr_db": 35.8, "ssim": 0.933},
+    {"rank": 3, "name": "PAM-CNN", "type": "deep_learning", "psnr_db": 34.1, "ssim": 0.917},
+    {"rank": 4, "name": "Model-Based (TV)", "type": "traditional", "psnr_db": 32.5, "ssim": 0.899},
+    {"rank": 5, "name": "Backprojection (Time Reversal)", "type": "traditional", "psnr_db": 30.5, "ssim": 0.876},
+    {"rank": 6, "name": "Delay-and-Sum", "type": "traditional", "psnr_db": 28.2, "ssim": 0.849}
+  ],
+  "afm": [
+    {"rank": 1, "name": "AFM-FM", "type": "deep_learning", "psnr_db": 38.5, "ssim": 0.955},
+    {"rank": 2, "name": "AFM-UNet", "type": "deep_learning", "psnr_db": 36.8, "ssim": 0.940},
+    {"rank": 3, "name": "CARE (AFM)", "type": "deep_learning", "psnr_db": 35.2, "ssim": 0.924},
+    {"rank": 4, "name": "BM3D-AFM", "type": "traditional", "psnr_db": 33.5, "ssim": 0.906},
+    {"rank": 5, "name": "Richardson-Lucy (AFM)", "type": "traditional", "psnr_db": 31.8, "ssim": 0.885},
+    {"rank": 6, "name": "Wiener Deconvolution", "type": "traditional", "psnr_db": 29.5, "ssim": 0.858},
+    {"rank": 7, "name": "Median Filter", "type": "traditional", "psnr_db": 26.8, "ssim": 0.821}
+  ],
+  "sem": [
+    {"rank": 1, "name": "SEM-FM", "type": "deep_learning", "psnr_db": 39.2, "ssim": 0.960},
+    {"rank": 2, "name": "SEM-UNet", "type": "deep_learning", "psnr_db": 37.5, "ssim": 0.946},
+    {"rank": 3, "name": "CARE-SEM", "type": "deep_learning", "psnr_db": 35.8, "ssim": 0.931},
+    {"rank": 4, "name": "DnCNN-SEM", "type": "deep_learning", "psnr_db": 34.2, "ssim": 0.915},
+    {"rank": 5, "name": "BM3D-SEM", "type": "traditional", "psnr_db": 32.5, "ssim": 0.896},
+    {"rank": 6, "name": "Richardson-Lucy", "type": "traditional", "psnr_db": 30.8, "ssim": 0.875},
+    {"rank": 7, "name": "NLM Denoise", "type": "traditional", "psnr_db": 29.1, "ssim": 0.853},
+    {"rank": 8, "name": "Wiener Filter", "type": "traditional", "psnr_db": 27.4, "ssim": 0.829}
+  ],
+  "tem": [
+    {"rank": 1, "name": "TEM-FM", "type": "deep_learning", "psnr_db": 38.8, "ssim": 0.957},
+    {"rank": 2, "name": "TEM-UNet", "type": "deep_learning", "psnr_db": 37.1, "ssim": 0.943},
+    {"rank": 3, "name": "CARE-TEM", "type": "deep_learning", "psnr_db": 35.5, "ssim": 0.928},
+    {"rank": 4, "name": "CTF-Wiener", "type": "traditional", "psnr_db": 33.8, "ssim": 0.910},
+    {"rank": 5, "name": "Richardson-Lucy+CTF", "type": "traditional", "psnr_db": 32.1, "ssim": 0.891},
+    {"rank": 6, "name": "Phase Plate (Zernike)", "type": "traditional", "psnr_db": 30.4, "ssim": 0.870},
+    {"rank": 7, "name": "BM3D-TEM", "type": "traditional", "psnr_db": 28.7, "ssim": 0.847}
+  ],
+  "stem": [
+    {"rank": 1, "name": "STEM-FM", "type": "deep_learning", "psnr_db": 40.1, "ssim": 0.964},
+    {"rank": 2, "name": "STEM-UNet", "type": "deep_learning", "psnr_db": 38.4, "ssim": 0.950},
+    {"rank": 3, "name": "CARE-STEM", "type": "deep_learning", "psnr_db": 36.7, "ssim": 0.935},
+    {"rank": 4, "name": "BM3D-STEM", "type": "traditional", "psnr_db": 34.9, "ssim": 0.917},
+    {"rank": 5, "name": "Wiener-STEM", "type": "traditional", "psnr_db": 32.8, "ssim": 0.895},
+    {"rank": 6, "name": "Richardson-Lucy", "type": "traditional", "psnr_db": 30.9, "ssim": 0.872}
+  ],
+  "eels": [
+    {"rank": 1, "name": "EELS-Net", "type": "deep_learning", "psnr_db": 36.5, "ssim": 0.942},
+    {"rank": 2, "name": "MLLS-EELS (DL)", "type": "deep_learning", "psnr_db": 34.8, "ssim": 0.926},
+    {"rank": 3, "name": "U-Net-EELS", "type": "deep_learning", "psnr_db": 33.2, "ssim": 0.909},
+    {"rank": 4, "name": "MLLS-EELS", "type": "traditional", "psnr_db": 31.5, "ssim": 0.889},
+    {"rank": 5, "name": "FISTA-L2 (Fourier ratio)", "type": "traditional", "psnr_db": 29.8, "ssim": 0.866},
+    {"rank": 6, "name": "Principal Component Analysis", "type": "traditional", "psnr_db": 28.1, "ssim": 0.841}
+  ],
+  "confocal_3d": [
+    {"rank": 1, "name": "CARE-3D", "type": "deep_learning", "psnr_db": 38.2, "ssim": 0.954},
+    {"rank": 2, "name": "CARE-3D (slice-wise)", "type": "deep_learning", "psnr_db": 36.5, "ssim": 0.939},
+    {"rank": 3, "name": "3D CARE", "type": "deep_learning", "psnr_db": 35.0, "ssim": 0.924},
+    {"rank": 4, "name": "DeconvNet-3D", "type": "deep_learning", "psnr_db": 33.5, "ssim": 0.908},
+    {"rank": 5, "name": "3D Richardson-Lucy", "type": "traditional", "psnr_db": 31.8, "ssim": 0.888},
+    {"rank": 6, "name": "3D Wiener", "type": "traditional", "psnr_db": 29.9, "ssim": 0.864},
+    {"rank": 7, "name": "3D BM4D", "type": "traditional", "psnr_db": 28.2, "ssim": 0.839}
+  ],
+  "stm": [
+    {"rank": 1, "name": "STM-FM", "type": "deep_learning", "psnr_db": 41.5, "ssim": 0.967},
+    {"rank": 2, "name": "STM-UNet", "type": "deep_learning", "psnr_db": 39.8, "ssim": 0.953},
+    {"rank": 3, "name": "CARE-STM", "type": "deep_learning", "psnr_db": 38.1, "ssim": 0.938},
+    {"rank": 4, "name": "BM3D-STM", "type": "traditional", "psnr_db": 36.2, "ssim": 0.920},
+    {"rank": 5, "name": "Wiener-STM", "type": "traditional", "psnr_db": 34.3, "ssim": 0.900},
+    {"rank": 6, "name": "Richardson-Lucy", "type": "traditional", "psnr_db": 32.4, "ssim": 0.878}
+  ],
+  "radio_astronomy": [
+    {"rank": 1, "name": "Radio-FM", "type": "deep_learning", "psnr_db": 34.8, "ssim": 0.930},
+    {"rank": 2, "name": "CLEAN-Net", "type": "deep_learning", "psnr_db": 33.1, "ssim": 0.914},
+    {"rank": 3, "name": "MS-CLEAN", "type": "traditional", "psnr_db": 31.5, "ssim": 0.896},
+    {"rank": 4, "name": "WSCLEAN", "type": "traditional", "psnr_db": 29.8, "ssim": 0.875},
+    {"rank": 5, "name": "CLEAN (Hogbom)", "type": "traditional", "psnr_db": 28.2, "ssim": 0.852},
+    {"rank": 6, "name": "CLEAN (Clark)", "type": "traditional", "psnr_db": 26.5, "ssim": 0.828},
+    {"rank": 7, "name": "MEM (Maximum Entropy)", "type": "traditional", "psnr_db": 24.9, "ssim": 0.803}
+  ],
+  "radio_interferometry": [
+    {"rank": 1, "name": "RI-FM", "type": "deep_learning", "psnr_db": 35.5, "ssim": 0.936},
+    {"rank": 2, "name": "CLEAN-RI-Net", "type": "deep_learning", "psnr_db": 33.8, "ssim": 0.920},
+    {"rank": 3, "name": "WSCLEAN-RI", "type": "traditional", "psnr_db": 32.1, "ssim": 0.902},
+    {"rank": 4, "name": "MS-CLEAN-RI", "type": "traditional", "psnr_db": 30.4, "ssim": 0.882},
+    {"rank": 5, "name": "CLEAN (Hogbom)", "type": "traditional", "psnr_db": 28.8, "ssim": 0.860},
+    {"rank": 6, "name": "NUFFT Gridding", "type": "traditional", "psnr_db": 27.1, "ssim": 0.836}
+  ],
+  "eht_imaging": [
+    {"rank": 1, "name": "EHT-PRIMO", "type": "deep_learning", "psnr_db": 36.2, "ssim": 0.941},
+    {"rank": 2, "name": "ngEHT-Net", "type": "deep_learning", "psnr_db": 34.5, "ssim": 0.925},
+    {"rank": 3, "name": "SMILI", "type": "traditional", "psnr_db": 32.8, "ssim": 0.907},
+    {"rank": 4, "name": "DIFMAP-CLEAN", "type": "traditional", "psnr_db": 31.1, "ssim": 0.887},
+    {"rank": 5, "name": "eht-imaging MEM", "type": "traditional", "psnr_db": 29.4, "ssim": 0.864}
+  ],
+  "holography": [
+    {"rank": 1, "name": "Holo-FM", "type": "deep_learning", "psnr_db": 36.8, "ssim": 0.944},
+    {"rank": 2, "name": "HoloNet", "type": "deep_learning", "psnr_db": 35.1, "ssim": 0.929},
+    {"rank": 3, "name": "U-Net-Holo", "type": "deep_learning", "psnr_db": 33.5, "ssim": 0.913},
+    {"rank": 4, "name": "Phase Retrieval (HIO)", "type": "traditional", "psnr_db": 31.8, "ssim": 0.893},
+    {"rank": 5, "name": "Angular Spectrum", "type": "traditional", "psnr_db": 30.0, "ssim": 0.870},
+    {"rank": 6, "name": "Fresnel Propagation", "type": "traditional", "psnr_db": 28.2, "ssim": 0.845}
+  ],
+  "nerf": [
+    {"rank": 1, "name": "NeRFactor2", "type": "deep_learning", "psnr_db": 35.9, "ssim": 0.938},
+    {"rank": 2, "name": "Instant-NGP", "type": "deep_learning", "psnr_db": 34.5, "ssim": 0.924},
+    {"rank": 3, "name": "3D Gaussian Splatting", "type": "deep_learning", "psnr_db": 33.2, "ssim": 0.910},
+    {"rank": 4, "name": "TensoRF", "type": "deep_learning", "psnr_db": 32.0, "ssim": 0.896},
+    {"rank": 5, "name": "Mip-NeRF 360", "type": "deep_learning", "psnr_db": 30.8, "ssim": 0.881},
+    {"rank": 6, "name": "NeRF (vanilla)", "type": "deep_learning", "psnr_db": 29.5, "ssim": 0.863}
+  ],
+  "ptychography": [
+    {"rank": 1, "name": "PtychoNN", "type": "deep_learning", "psnr_db": 39.5, "ssim": 0.961},
+    {"rank": 2, "name": "PtychoFormer", "type": "deep_learning", "psnr_db": 37.8, "ssim": 0.946},
+    {"rank": 3, "name": "PtychoDL", "type": "deep_learning", "psnr_db": 36.2, "ssim": 0.930},
+    {"rank": 4, "name": "ePIE (electron)", "type": "traditional", "psnr_db": 34.5, "ssim": 0.912},
+    {"rank": 5, "name": "PIE (sequential)", "type": "traditional", "psnr_db": 32.8, "ssim": 0.892},
+    {"rank": 6, "name": "DM (Difference Map)", "type": "traditional", "psnr_db": 31.0, "ssim": 0.869}
+  ],
+  "xray_crystallography": [
+    {"rank": 1, "name": "XC-FM", "type": "deep_learning", "psnr_db": 42.5, "ssim": 0.974},
+    {"rank": 2, "name": "PhaseNet-XC", "type": "deep_learning", "psnr_db": 40.8, "ssim": 0.961},
+    {"rank": 3, "name": "SHELX-DL", "type": "deep_learning", "psnr_db": 39.2, "ssim": 0.947},
+    {"rank": 4, "name": "Direct Methods (SIR)", "type": "traditional", "psnr_db": 37.5, "ssim": 0.931},
+    {"rank": 5, "name": "Patterson Synthesis", "type": "traditional", "psnr_db": 35.8, "ssim": 0.913},
+    {"rank": 6, "name": "Maximum Entropy Method", "type": "traditional", "psnr_db": 34.1, "ssim": 0.893}
+  ]
+}

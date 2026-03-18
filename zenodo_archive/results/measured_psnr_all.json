@@ -1,0 +1,1534 @@
+{
+  "acoustic_emission": {
+    "measured_psnr": 21.06,
+    "n_samples": 5,
+    "min": 18.15,
+    "max": 23.51,
+    "current_done": 3,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "acoustic_microscopy": {
+    "measured_psnr": 24.3,
+    "n_samples": 5,
+    "min": 22.76,
+    "max": 25.22,
+    "current_done": 3,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "active_thermography": {
+    "measured_psnr": 7.09,
+    "n_samples": 5,
+    "min": 6.43,
+    "max": 7.74,
+    "current_done": 1,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "angiography": {
+    "measured_psnr": 14.4,
+    "n_samples": 5,
+    "min": 12.05,
+    "max": 16.11,
+    "current_done": 1,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "asl_mri": {
+    "measured_psnr": 11.83,
+    "n_samples": 5,
+    "min": 11.71,
+    "max": 11.94,
+    "current_done": 1,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "atom_probe": {
+    "measured_psnr": 41.06,
+    "n_samples": 5,
+    "min": 37.55,
+    "max": 42.87,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "bioluminescence_tomo": {
+    "measured_psnr": 15.03,
+    "n_samples": 5,
+    "min": 10.96,
+    "max": 17.99,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 1
+  },
+  "brachytherapy_img": {
+    "measured_psnr": 31.78,
+    "n_samples": 5,
+    "min": 30.67,
+    "max": 32.99,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "brillouin": {
+    "measured_psnr": 40.6,
+    "n_samples": 5,
+    "min": 36.3,
+    "max": 43.26,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cacti": {
+    "measured_psnr": 10.41,
+    "n_samples": 5,
+    "min": 6.55,
+    "max": 11.58,
+    "current_done": 4,
+    "total_algos": 17,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cars": {
+    "measured_psnr": 29.12,
+    "n_samples": 5,
+    "min": 27.44,
+    "max": 30.61,
+    "current_done": 6,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cathodoluminescence": {
+    "measured_psnr": 37.73,
+    "n_samples": 5,
+    "min": 36.16,
+    "max": 38.89,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cbct": {
+    "measured_psnr": 3.9,
+    "n_samples": 5,
+    "min": 3.9,
+    "max": 3.9,
+    "current_done": 6,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cest_mri": {
+    "measured_psnr": 42.58,
+    "n_samples": 5,
+    "min": 41.13,
+    "max": 43.21,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ceus": {
+    "measured_psnr": 25.66,
+    "n_samples": 5,
+    "min": 24.31,
+    "max": 27.11,
+    "current_done": 3,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "clem": {
+    "measured_psnr": 38.86,
+    "n_samples": 5,
+    "min": 37.76,
+    "max": 40.12,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "coded_exposure": {
+    "measured_psnr": 34.07,
+    "n_samples": 5,
+    "min": 30.68,
+    "max": 38.98,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "confocal_3d": {
+    "measured_psnr": 23.45,
+    "n_samples": 5,
+    "min": 19.5,
+    "max": 28.83,
+    "current_done": 6,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "confocal_endomicroscopy": {
+    "measured_psnr": 40.25,
+    "n_samples": 5,
+    "min": 39.45,
+    "max": 40.58,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "confocal_livecell": {
+    "measured_psnr": 39.45,
+    "n_samples": 5,
+    "min": 38.31,
+    "max": 40.92,
+    "current_done": 4,
+    "total_algos": 4,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "coronagraphy": {
+    "measured_psnr": 26.01,
+    "n_samples": 5,
+    "min": 24.41,
+    "max": 28.06,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cryo_em": {
+    "measured_psnr": 20.62,
+    "n_samples": 5,
+    "min": 19.59,
+    "max": 22.82,
+    "current_done": 6,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cryo_et": {
+    "measured_psnr": 9.51,
+    "n_samples": 5,
+    "min": 8.14,
+    "max": 10.71,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ct_fluorescence": {
+    "measured_psnr": 10.27,
+    "n_samples": 5,
+    "min": 9.4,
+    "max": 11.21,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "cup": {
+    "measured_psnr": 27.6,
+    "n_samples": 5,
+    "min": 25.16,
+    "max": 29.92,
+    "current_done": 7,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "dark_field": {
+    "measured_psnr": 32.77,
+    "n_samples": 5,
+    "min": 27.36,
+    "max": 37.53,
+    "current_done": 7,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "desi": {
+    "measured_psnr": 14.09,
+    "n_samples": 5,
+    "min": 12.41,
+    "max": 15.29,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "dexa": {
+    "measured_psnr": 11.42,
+    "n_samples": 5,
+    "min": 9.55,
+    "max": 13.72,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "dic": {
+    "measured_psnr": 10.73,
+    "n_samples": 5,
+    "min": 8.96,
+    "max": 13.27,
+    "current_done": 5,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "diffusion_mri": {
+    "measured_psnr": 12.09,
+    "n_samples": 5,
+    "min": 11.58,
+    "max": 13.19,
+    "current_done": 5,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "digital_breast_tomo": {
+    "measured_psnr": 9.8,
+    "n_samples": 5,
+    "min": 8.34,
+    "max": 12.8,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "dna_paint": {
+    "measured_psnr": 30.54,
+    "n_samples": 5,
+    "min": 28.65,
+    "max": 34.68,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "doppler_ultrasound": {
+    "measured_psnr": 15.93,
+    "n_samples": 5,
+    "min": 13.85,
+    "max": 18.83,
+    "current_done": 7,
+    "total_algos": 12,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "dot": {
+    "measured_psnr": 4.5,
+    "n_samples": 5,
+    "min": 4.45,
+    "max": 4.57,
+    "current_done": 3,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ebsd": {
+    "measured_psnr": 35.55,
+    "n_samples": 5,
+    "min": 26.85,
+    "max": 39.42,
+    "current_done": 3,
+    "total_algos": 5,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "eddy_current": {
+    "measured_psnr": 23.66,
+    "n_samples": 5,
+    "min": 22.55,
+    "max": 25.23,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "edx_mapping": {
+    "measured_psnr": 24.58,
+    "n_samples": 5,
+    "min": 22.92,
+    "max": 26.3,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "eht_imaging": {
+    "measured_psnr": 12.0,
+    "n_samples": 5,
+    "min": 11.09,
+    "max": 13.12,
+    "current_done": 2,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "elastography": {
+    "measured_psnr": 9.6,
+    "n_samples": 5,
+    "min": 7.95,
+    "max": 11.45,
+    "current_done": 3,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "electron_diffraction": {
+    "measured_psnr": 43.85,
+    "n_samples": 5,
+    "min": 41.55,
+    "max": 45.18,
+    "current_done": 4,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "electron_holography": {
+    "measured_psnr": 10.68,
+    "n_samples": 5,
+    "min": 9.39,
+    "max": 11.57,
+    "current_done": 2,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "electron_tomography": {
+    "measured_psnr": 22.36,
+    "n_samples": 5,
+    "min": 19.45,
+    "max": 24.82,
+    "current_done": 5,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "endoscopy": {
+    "measured_psnr": 18.1,
+    "n_samples": 5,
+    "min": 16.99,
+    "max": 20.55,
+    "current_done": 9,
+    "total_algos": 13,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "entangled_photon": {
+    "measured_psnr": 31.0,
+    "n_samples": 5,
+    "min": 27.68,
+    "max": 33.9,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "event_camera": {
+    "measured_psnr": 9.15,
+    "n_samples": 5,
+    "min": 8.17,
+    "max": 10.13,
+    "current_done": 5,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "expansion": {
+    "measured_psnr": 36.17,
+    "n_samples": 5,
+    "min": 35.42,
+    "max": 36.62,
+    "current_done": 5,
+    "total_algos": 5,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "fib_sem": {
+    "measured_psnr": 36.15,
+    "n_samples": 5,
+    "min": 35.72,
+    "max": 36.94,
+    "current_done": 7,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "flash_lidar": {
+    "measured_psnr": 3.3,
+    "n_samples": 5,
+    "min": 2.05,
+    "max": 4.25,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "flim": {
+    "measured_psnr": 31.71,
+    "n_samples": 5,
+    "min": 30.35,
+    "max": 33.03,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "fluoroscopy": {
+    "measured_psnr": 54.12,
+    "n_samples": 5,
+    "min": 52.28,
+    "max": 56.3,
+    "current_done": 5,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "fmri": {
+    "measured_psnr": 8.83,
+    "n_samples": 5,
+    "min": 8.49,
+    "max": 9.36,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "fpm": {
+    "measured_psnr": 18.11,
+    "n_samples": 10,
+    "min": 16.23,
+    "max": 21.78,
+    "current_done": 4,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ftir_imaging": {
+    "measured_psnr": 31.99,
+    "n_samples": 5,
+    "min": 28.59,
+    "max": 36.63,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "fundus": {
+    "measured_psnr": 30.43,
+    "n_samples": 5,
+    "min": 28.09,
+    "max": 32.31,
+    "current_done": 9,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "fwi": {
+    "measured_psnr": 15.22,
+    "n_samples": 5,
+    "min": 10.47,
+    "max": 20.87,
+    "current_done": 1,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ghost_imaging": {
+    "measured_psnr": 7.71,
+    "n_samples": 5,
+    "min": 7.57,
+    "max": 7.86,
+    "current_done": 4,
+    "total_algos": 14,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "gpr": {
+    "measured_psnr": 11.27,
+    "n_samples": 5,
+    "min": 8.55,
+    "max": 12.52,
+    "current_done": 2,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "hdr_imaging": {
+    "measured_psnr": 38.31,
+    "n_samples": 5,
+    "min": 37.23,
+    "max": 39.44,
+    "current_done": 4,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "hyperspectral_remote": {
+    "measured_psnr": 46.73,
+    "n_samples": 5,
+    "min": 41.07,
+    "max": 53.26,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "impedance_tomo": {
+    "measured_psnr": 14.06,
+    "n_samples": 5,
+    "min": 6.75,
+    "max": 17.72,
+    "current_done": 3,
+    "total_algos": 12,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "industrial_ct": {
+    "measured_psnr": 19.22,
+    "n_samples": 5,
+    "min": 15.96,
+    "max": 21.51,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "insar": {
+    "measured_psnr": 10.82,
+    "n_samples": 5,
+    "min": 8.6,
+    "max": 13.09,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "integral": {
+    "measured_psnr": 42.77,
+    "n_samples": 5,
+    "min": 40.5,
+    "max": 45.71,
+    "current_done": 4,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ism": {
+    "measured_psnr": 34.48,
+    "n_samples": 5,
+    "min": 26.69,
+    "max": 42.77,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ivus": {
+    "measured_psnr": 18.16,
+    "n_samples": 5,
+    "min": 17.14,
+    "max": 19.96,
+    "current_done": 2,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "lattice_lightsheet": {
+    "measured_psnr": 30.51,
+    "n_samples": 5,
+    "min": 23.2,
+    "max": 44.4,
+    "current_done": 4,
+    "total_algos": 4,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "lensless": {
+    "measured_psnr": 15.27,
+    "n_samples": 5,
+    "min": 12.45,
+    "max": 18.97,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "libs": {
+    "measured_psnr": 30.17,
+    "n_samples": 5,
+    "min": 30.13,
+    "max": 30.24,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "lidar": {
+    "measured_psnr": 50.08,
+    "n_samples": 5,
+    "min": 47.96,
+    "max": 52.37,
+    "current_done": 6,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "lightsheet": {
+    "measured_psnr": 21.72,
+    "n_samples": 5,
+    "min": 12.96,
+    "max": 27.76,
+    "current_done": 8,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "lucky_imaging": {
+    "measured_psnr": 31.17,
+    "n_samples": 5,
+    "min": 30.43,
+    "max": 32.87,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "machine_vision": {
+    "measured_psnr": 35.22,
+    "n_samples": 5,
+    "min": 34.3,
+    "max": 35.98,
+    "current_done": 4,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "magnetic_particle": {
+    "measured_psnr": 22.36,
+    "n_samples": 5,
+    "min": 15.97,
+    "max": 28.57,
+    "current_done": 4,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "maldi_msi": {
+    "measured_psnr": 33.53,
+    "n_samples": 5,
+    "min": 32.84,
+    "max": 33.91,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "matrix": {
+    "measured_psnr": 22.2,
+    "n_samples": 5,
+    "min": 20.78,
+    "max": 23.62,
+    "current_done": 3,
+    "total_algos": 5,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "mfm": {
+    "measured_psnr": 25.28,
+    "n_samples": 5,
+    "min": 17.35,
+    "max": 33.27,
+    "current_done": 7,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "minflux": {
+    "measured_psnr": 28.09,
+    "n_samples": 5,
+    "min": 27.11,
+    "max": 29.52,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "mr_elastography": {
+    "measured_psnr": 12.06,
+    "n_samples": 5,
+    "min": 11.94,
+    "max": 12.23,
+    "current_done": 1,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "mr_fingerprinting": {
+    "measured_psnr": 11.97,
+    "n_samples": 5,
+    "min": 11.88,
+    "max": 12.09,
+    "current_done": 1,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "mra": {
+    "measured_psnr": 17.69,
+    "n_samples": 5,
+    "min": 16.14,
+    "max": 19.53,
+    "current_done": 1,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "mrs": {
+    "measured_psnr": 12.05,
+    "n_samples": 5,
+    "min": 12.0,
+    "max": 12.1,
+    "current_done": 2,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "multispectral_sat": {
+    "measured_psnr": 12.54,
+    "n_samples": 5,
+    "min": 11.6,
+    "max": 13.4,
+    "current_done": 1,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "muon_tomo": {
+    "measured_psnr": 17.82,
+    "n_samples": 5,
+    "min": 12.3,
+    "max": 21.57,
+    "current_done": 6,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "nerf": {
+    "measured_psnr": 29.28,
+    "n_samples": 5,
+    "min": 26.01,
+    "max": 32.2,
+    "current_done": 12,
+    "total_algos": 12,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "neutron_diffraction": {
+    "measured_psnr": 9.02,
+    "n_samples": 5,
+    "min": 8.64,
+    "max": 9.69,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "neutron_tomo": {
+    "measured_psnr": 8.16,
+    "n_samples": 5,
+    "min": 5.63,
+    "max": 12.82,
+    "current_done": 1,
+    "total_algos": 5,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "nirs_brain": {
+    "measured_psnr": 20.28,
+    "n_samples": 5,
+    "min": 19.79,
+    "max": 20.61,
+    "current_done": 3,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "nsom": {
+    "measured_psnr": 25.97,
+    "n_samples": 5,
+    "min": 24.72,
+    "max": 26.52,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ocean_acoustic_tomo": {
+    "measured_psnr": 12.6,
+    "n_samples": 5,
+    "min": 11.41,
+    "max": 15.23,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ocean_color": {
+    "measured_psnr": 52.52,
+    "n_samples": 5,
+    "min": 52.03,
+    "max": 53.21,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "octa": {
+    "measured_psnr": 19.0,
+    "n_samples": 5,
+    "min": 18.69,
+    "max": 19.22,
+    "current_done": 5,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "odt": {
+    "measured_psnr": 28.29,
+    "n_samples": 10,
+    "min": 15.01,
+    "max": 36.75,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "palm_storm": {
+    "measured_psnr": 30.04,
+    "n_samples": 5,
+    "min": 27.16,
+    "max": 32.53,
+    "current_done": 8,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "panorama": {
+    "measured_psnr": 18.4,
+    "n_samples": 5,
+    "min": 17.37,
+    "max": 19.24,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "particle_calorimetry": {
+    "measured_psnr": 34.71,
+    "n_samples": 5,
+    "min": 32.14,
+    "max": 36.28,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "passive_microwave": {
+    "measured_psnr": 27.45,
+    "n_samples": 5,
+    "min": 26.38,
+    "max": 28.86,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "pet_ct": {
+    "measured_psnr": 6.66,
+    "n_samples": 5,
+    "min": 6.09,
+    "max": 7.53,
+    "current_done": 2,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "pet_mr": {
+    "measured_psnr": 14.42,
+    "n_samples": 5,
+    "min": 10.91,
+    "max": 20.64,
+    "current_done": 3,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "phase_contrast": {
+    "measured_psnr": 40.79,
+    "n_samples": 5,
+    "min": 39.54,
+    "max": 41.7,
+    "current_done": 8,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "phase_retrieval": {
+    "measured_psnr": 11.65,
+    "n_samples": 10,
+    "min": 9.7,
+    "max": 14.32,
+    "current_done": 2,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "photoacoustic": {
+    "measured_psnr": 20.03,
+    "n_samples": 5,
+    "min": 16.87,
+    "max": 22.49,
+    "current_done": 6,
+    "total_algos": 11,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "photometric_stereo": {
+    "measured_psnr": 21.05,
+    "n_samples": 5,
+    "min": 19.41,
+    "max": 24.52,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "polarization": {
+    "measured_psnr": 46.75,
+    "n_samples": 5,
+    "min": 46.3,
+    "max": 47.3,
+    "current_done": 7,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "polsar": {
+    "measured_psnr": 21.46,
+    "n_samples": 5,
+    "min": 20.7,
+    "max": 22.44,
+    "current_done": 4,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "portal_imaging": {
+    "measured_psnr": 23.07,
+    "n_samples": 5,
+    "min": 22.46,
+    "max": 24.14,
+    "current_done": 3,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "proton_radiography": {
+    "measured_psnr": 8.55,
+    "n_samples": 5,
+    "min": 7.86,
+    "max": 9.53,
+    "current_done": 1,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "proton_therapy_img": {
+    "measured_psnr": 29.15,
+    "n_samples": 5,
+    "min": 27.83,
+    "max": 31.8,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ptychography": {
+    "measured_psnr": 15.43,
+    "n_samples": 5,
+    "min": 11.22,
+    "max": 21.14,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "pump_probe": {
+    "measured_psnr": 20.19,
+    "n_samples": 5,
+    "min": 18.36,
+    "max": 22.01,
+    "current_done": 3,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "quantum_illumination": {
+    "measured_psnr": 22.4,
+    "n_samples": 5,
+    "min": 19.84,
+    "max": 24.83,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "radio_astronomy": {
+    "measured_psnr": 39.52,
+    "n_samples": 5,
+    "min": 36.94,
+    "max": 43.34,
+    "current_done": 3,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "radio_interferometry": {
+    "measured_psnr": 23.38,
+    "n_samples": 5,
+    "min": 21.49,
+    "max": 25.14,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "raman_imaging": {
+    "measured_psnr": 21.24,
+    "n_samples": 5,
+    "min": 17.46,
+    "max": 26.79,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "sar": {
+    "measured_psnr": 22.92,
+    "n_samples": 5,
+    "min": 20.61,
+    "max": 25.06,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "saxs": {
+    "measured_psnr": 9.52,
+    "n_samples": 5,
+    "min": 8.21,
+    "max": 10.63,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "sd_cassi": {
+    "measured_psnr": 14.52,
+    "n_samples": 5,
+    "min": 10.64,
+    "max": 18.74
+  },
+  "seismic_tomo": {
+    "measured_psnr": 9.3,
+    "n_samples": 5,
+    "min": 5.13,
+    "max": 16.12,
+    "current_done": 2,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "sem": {
+    "measured_psnr": 27.35,
+    "n_samples": 5,
+    "min": 25.0,
+    "max": 29.68,
+    "current_done": 6,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "shearography": {
+    "measured_psnr": 16.66,
+    "n_samples": 5,
+    "min": 14.23,
+    "max": 20.68,
+    "current_done": 4,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "shg": {
+    "measured_psnr": 26.36,
+    "n_samples": 5,
+    "min": 24.47,
+    "max": 28.82,
+    "current_done": 6,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "sim": {
+    "measured_psnr": 25.97,
+    "n_samples": 5,
+    "min": 24.01,
+    "max": 28.06,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "sims": {
+    "measured_psnr": 19.78,
+    "n_samples": 5,
+    "min": 16.7,
+    "max": 23.0,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "solar_imaging": {
+    "measured_psnr": 29.55,
+    "n_samples": 5,
+    "min": 28.37,
+    "max": 32.69,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "sonar": {
+    "measured_psnr": 11.12,
+    "n_samples": 5,
+    "min": 9.78,
+    "max": 11.78,
+    "current_done": 2,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "spc_kronecker": {
+    "measured_psnr": 6.29,
+    "n_samples": 5,
+    "min": 4.78,
+    "max": 6.87
+  },
+  "spect": {
+    "measured_psnr": 0.2,
+    "n_samples": 5,
+    "min": 0.14,
+    "max": 0.4,
+    "current_done": 7,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "spect_ct": {
+    "measured_psnr": 13.63,
+    "n_samples": 5,
+    "min": 12.07,
+    "max": 15.68,
+    "current_done": 3,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "spectral_ct": {
+    "measured_psnr": 10.75,
+    "n_samples": 5,
+    "min": 10.54,
+    "max": 10.85,
+    "current_done": 1,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "spinning_disk": {
+    "measured_psnr": 40.0,
+    "n_samples": 5,
+    "min": 38.93,
+    "max": 41.22,
+    "current_done": 4,
+    "total_algos": 4,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "srs": {
+    "measured_psnr": 43.66,
+    "n_samples": 5,
+    "min": 43.25,
+    "max": 44.13,
+    "current_done": 6,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "stem": {
+    "measured_psnr": 35.33,
+    "n_samples": 5,
+    "min": 33.48,
+    "max": 36.08,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "stm": {
+    "measured_psnr": 25.77,
+    "n_samples": 5,
+    "min": 24.12,
+    "max": 26.41,
+    "current_done": 5,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "streak_camera": {
+    "measured_psnr": 36.36,
+    "n_samples": 5,
+    "min": 28.38,
+    "max": 41.72,
+    "current_done": 5,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "structured_light": {
+    "measured_psnr": 11.48,
+    "n_samples": 5,
+    "min": 10.51,
+    "max": 12.08,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "swi": {
+    "measured_psnr": 11.91,
+    "n_samples": 5,
+    "min": 11.86,
+    "max": 11.96,
+    "current_done": 1,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "talbot_lau": {
+    "measured_psnr": 33.82,
+    "n_samples": 5,
+    "min": 31.17,
+    "max": 35.48,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "tem": {
+    "measured_psnr": 24.7,
+    "n_samples": 5,
+    "min": 22.61,
+    "max": 25.95,
+    "current_done": 4,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "terahertz": {
+    "measured_psnr": 47.81,
+    "n_samples": 5,
+    "min": 45.33,
+    "max": 50.0,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "three_photon": {
+    "measured_psnr": 29.12,
+    "n_samples": 5,
+    "min": 26.54,
+    "max": 34.89,
+    "current_done": 5,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "tirf": {
+    "measured_psnr": 29.3,
+    "n_samples": 5,
+    "min": 27.82,
+    "max": 31.24,
+    "current_done": 4,
+    "total_algos": 5,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "tof_camera": {
+    "measured_psnr": 46.03,
+    "n_samples": 5,
+    "min": 45.11,
+    "max": 47.09,
+    "current_done": 4,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "two_photon": {
+    "measured_psnr": 30.46,
+    "n_samples": 5,
+    "min": 26.26,
+    "max": 33.82,
+    "current_done": 6,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "ultrasonic_phased_array": {
+    "measured_psnr": 34.35,
+    "n_samples": 5,
+    "min": 31.62,
+    "max": 35.71,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "us_mri": {
+    "measured_psnr": 27.13,
+    "n_samples": 5,
+    "min": 26.97,
+    "max": 27.43,
+    "current_done": 5,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "waxs": {
+    "measured_psnr": 23.83,
+    "n_samples": 5,
+    "min": 20.63,
+    "max": 26.15,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "weather_radar": {
+    "measured_psnr": 29.59,
+    "n_samples": 5,
+    "min": 27.61,
+    "max": 30.59,
+    "current_done": 2,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "widefield": {
+    "measured_psnr": 25.73,
+    "n_samples": 5,
+    "min": 21.93,
+    "max": 29.37,
+    "current_done": 5,
+    "total_algos": 7,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "widefield_lowdose": {
+    "measured_psnr": 37.96,
+    "n_samples": 5,
+    "min": 35.56,
+    "max": 39.23,
+    "current_done": 5,
+    "total_algos": 5,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "xfel_sfx": {
+    "measured_psnr": 23.67,
+    "n_samples": 5,
+    "min": 20.77,
+    "max": 25.93,
+    "current_done": 3,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "xray_crystallography": {
+    "measured_psnr": 19.22,
+    "n_samples": 5,
+    "min": 16.17,
+    "max": 22.37,
+    "current_done": 2,
+    "total_algos": 6,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "xray_ndt": {
+    "measured_psnr": 18.72,
+    "n_samples": 5,
+    "min": 16.79,
+    "max": 22.39,
+    "current_done": 2,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "xray_radiography": {
+    "measured_psnr": 45.76,
+    "n_samples": 5,
+    "min": 45.06,
+    "max": 46.27,
+    "current_done": 8,
+    "total_algos": 10,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "xrf_imaging": {
+    "measured_psnr": 28.18,
+    "n_samples": 5,
+    "min": 23.64,
+    "max": 33.76,
+    "current_done": 3,
+    "total_algos": 8,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  },
+  "xrf_tomo": {
+    "measured_psnr": 14.83,
+    "n_samples": 5,
+    "min": 13.9,
+    "max": 15.64,
+    "current_done": 1,
+    "total_algos": 9,
+    "missing_psnr": 0,
+    "could_flip_to_done": 0
+  }
+}

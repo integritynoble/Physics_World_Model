@@ -1,0 +1,860 @@
+"""Compressed Sensing Solvers: TVAL3 and ISTA-Net.
+
+Classical algorithms for Single-Pixel Camera and general CS problems.
+
+References:
+- Li, C. et al. (2013). "TVAL3: TV minimization by augmented Lagrangian and ALM"
+- Zhang, J. & Ghanem, B. (2018). "ISTA-Net: Interpretable Optimization-Inspired Deep Network"
+
+Benchmark: Set11 dataset (256×256) with Hadamard measurements
+Expected PSNR (TVAL3):
+- 1%: 18.5 dB, 4%: 23.2 dB, 10%: 27.1 dB, 25%: 32.5 dB, 50%: 38.2 dB
+"""
+
+from __future__ import annotations
+
+from typing import Any, Callable, Dict, Optional, Tuple, Union
+
+import numpy as np
+
+
+def soft_threshold(x: np.ndarray, tau: float, device=None) -> np.ndarray:
+    """Soft thresholding (proximal operator for L1 norm)."""
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        from pwm_core.recon.gpu_utils import to_torch, to_numpy, soft_threshold_torch
+        return to_numpy(soft_threshold_torch(to_torch(x, dev), tau)).astype(np.float32)
+
+    return np.sign(x) * np.maximum(np.abs(x) - tau, 0)
+
+
+def tv_norm_2d(x: np.ndarray) -> float:
+    """Compute isotropic TV norm of 2D image."""
+    dx = np.diff(x, axis=1)
+    dy = np.diff(x, axis=0)
+
+    # Pad to same size
+    dx_pad = np.pad(dx, ((0, 0), (0, 1)), mode='constant')
+    dy_pad = np.pad(dy, ((0, 1), (0, 0)), mode='constant')
+
+    return float(np.sum(np.sqrt(dx_pad**2 + dy_pad**2 + 1e-10)))
+
+
+def tv_prox_2d(
+    x: np.ndarray,
+    lam: float,
+    iterations: int = 20,
+    device=None,
+) -> np.ndarray:
+    """Proximal operator for isotropic TV (Chambolle's algorithm).
+
+    Args:
+        x: Input image
+        lam: Regularization parameter
+        iterations: Number of iterations
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        TV-denoised image
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        from pwm_core.recon.gpu_utils import to_torch, to_numpy, tv_prox_2d_torch
+        x_t = to_torch(x, dev)
+        result = tv_prox_2d_torch(x_t, lam, iterations)
+        return to_numpy(result).astype(np.float32)
+
+    # Chambolle's dual algorithm
+    n, m = x.shape
+    p = np.zeros((n, m, 2), dtype=np.float32)
+
+    tau = 0.25  # Step size
+
+    for _ in range(iterations):
+        # Compute divergence of p
+        div_p = np.zeros_like(x)
+        div_p[:, :-1] += p[:, :-1, 0]
+        div_p[:, 1:] -= p[:, :-1, 0]
+        div_p[:-1, :] += p[:-1, :, 1]
+        div_p[1:, :] -= p[:-1, :, 1]
+
+        # Gradient of (x - lam * div(p))
+        u = x - lam * div_p
+        grad_u = np.zeros((n, m, 2), dtype=np.float32)
+        grad_u[:, :-1, 0] = u[:, 1:] - u[:, :-1]
+        grad_u[:-1, :, 1] = u[1:, :] - u[:-1, :]
+
+        # Update dual variable
+        p_new = p + tau * grad_u
+
+        # Project onto unit ball
+        norm = np.sqrt(p_new[:, :, 0]**2 + p_new[:, :, 1]**2 + 1e-10)
+        norm = np.maximum(norm, 1)
+        p = p_new / norm[:, :, np.newaxis]
+
+    # Final result
+    div_p = np.zeros_like(x)
+    div_p[:, :-1] += p[:, :-1, 0]
+    div_p[:, 1:] -= p[:, :-1, 0]
+    div_p[:-1, :] += p[:-1, :, 1]
+    div_p[1:, :] -= p[:-1, :, 1]
+
+    return (x - lam * div_p).astype(np.float32)
+
+
+def tval3(
+    y: np.ndarray,
+    forward: Callable,
+    adjoint: Callable,
+    x_shape: Tuple[int, ...],
+    mu: float = 256.0,
+    beta: float = 32.0,
+    tol: float = 1e-4,
+    max_iters: int = 200,
+    inner_iters: int = 10,
+    device=None,
+) -> np.ndarray:
+    """TVAL3: TV minimization by Augmented Lagrangian.
+
+    Solves: min_x ||Ax - y||_2^2 + mu * TV(x)
+
+    Args:
+        y: Measurements
+        forward: Forward operator A
+        adjoint: Adjoint operator A^T
+        x_shape: Shape of x to reconstruct
+        mu: TV regularization weight
+        beta: Augmented Lagrangian parameter
+        tol: Convergence tolerance
+        max_iters: Maximum outer iterations
+        inner_iters: Inner CG iterations
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed image
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _tval3_torch(y, forward, adjoint, x_shape, mu, beta, tol,
+                            max_iters, inner_iters, dev)
+
+    # Initialize
+    x = adjoint(y).reshape(x_shape).astype(np.float32)
+
+    # Normalize
+    x_max = np.abs(x).max()
+    if x_max > 1:
+        x = x / x_max
+        y = y / x_max
+
+    n, m = x_shape[:2] if len(x_shape) >= 2 else (int(np.sqrt(np.prod(x_shape))),) * 2
+
+    # Auxiliary variables for TV
+    wx = np.zeros((n, m-1), dtype=np.float32)  # Horizontal differences
+    wy = np.zeros((n-1, m), dtype=np.float32)  # Vertical differences
+
+    # Dual variables (Lagrange multipliers)
+    lam_x = np.zeros_like(wx)
+    lam_y = np.zeros_like(wy)
+
+    for outer in range(max_iters):
+        x_old = x.copy()
+
+        # Subproblem 1: Update x (with fixed w)
+        # Solve: A^T A x + beta * D^T D x = A^T y + beta * D^T (w - lambda/beta)
+        rhs = adjoint(y).reshape(x_shape)
+
+        # Add TV term contribution
+        dwx = np.zeros_like(x)
+        dwy = np.zeros_like(x)
+        dwx[:, :-1] += wx + lam_x / beta
+        dwx[:, 1:] -= wx + lam_x / beta
+        dwy[:-1, :] += wy + lam_y / beta
+        dwy[1:, :] -= wy + lam_y / beta
+
+        rhs = rhs + beta * (dwx + dwy)
+
+        # CG for x-update
+        for _ in range(inner_iters):
+            # A^T A x
+            AtAx = adjoint(forward(x)).reshape(x_shape)
+
+            # D^T D x (Laplacian-like)
+            DtDx = np.zeros_like(x)
+            # Horizontal
+            DtDx[:, :-1] += x[:, :-1] - x[:, 1:]
+            DtDx[:, 1:] += x[:, 1:] - x[:, :-1]
+            # Vertical
+            DtDx[:-1, :] += x[:-1, :] - x[1:, :]
+            DtDx[1:, :] += x[1:, :] - x[:-1, :]
+
+            grad = AtAx + beta * DtDx - rhs
+            x = x - 0.01 * grad
+
+        # Subproblem 2: Update w (shrinkage on TV)
+        # w = prox_{mu/beta * || ||_1} (Dx + lambda/beta)
+        dx = x[:, 1:] - x[:, :-1]  # Horizontal gradient
+        dy = x[1:, :] - x[:-1, :]  # Vertical gradient
+
+        vx = dx + lam_x / beta
+        vy = dy + lam_y / beta
+
+        # Isotropic shrinkage
+        norm_v = np.sqrt(
+            np.pad(vx, ((0, 0), (0, 1)), mode='constant')**2 +
+            np.pad(vy, ((0, 1), (0, 0)), mode='constant')**2 +
+            1e-10
+        )
+        # When norm_v overflows to inf (large gradients), inf/inf = NaN.
+        # The mathematical limit is shrink → 1.0 as norm_v → ∞.
+        with np.errstate(invalid='ignore'):
+            shrink = np.maximum(norm_v - mu / beta, 0) / norm_v
+        shrink = np.nan_to_num(shrink, nan=1.0, posinf=1.0)
+
+        wx = vx * shrink[:, :-1]
+        wy = vy * shrink[:-1, :]
+
+        # Update Lagrange multipliers
+        lam_x = lam_x + beta * (dx - wx)
+        lam_y = lam_y + beta * (dy - wy)
+
+        # Check convergence
+        rel_change = np.linalg.norm(x - x_old) / (np.linalg.norm(x_old) + 1e-10)
+        if rel_change < tol:
+            break
+
+    # Denormalize
+    if x_max > 1:
+        x = x * x_max
+
+    return x.astype(np.float32)
+
+
+def _tval3_torch(y, forward, adjoint, x_shape, mu, beta, tol, max_iters,
+                 inner_iters, dev):
+    """GPU implementation of tval3."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, wrap_operator
+
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+    y_t = to_torch(y, dev)
+
+    x = adj(y_t).reshape(x_shape)
+
+    x_max = float(torch.abs(x).max())
+    if x_max > 1:
+        x = x / x_max
+        y_t = y_t / x_max
+
+    n, m = x_shape[:2] if len(x_shape) >= 2 else (int(np.sqrt(np.prod(x_shape))),) * 2
+
+    wx = torch.zeros(n, m - 1, device=dev, dtype=torch.float32)
+    wy = torch.zeros(n - 1, m, device=dev, dtype=torch.float32)
+    lam_x = torch.zeros_like(wx)
+    lam_y = torch.zeros_like(wy)
+
+    for outer in range(max_iters):
+        x_old = x.clone()
+
+        rhs = adj(y_t).reshape(x_shape)
+
+        dwx = torch.zeros_like(x)
+        dwy = torch.zeros_like(x)
+        dwx[:, :-1] += wx + lam_x / beta
+        dwx[:, 1:] -= wx + lam_x / beta
+        dwy[:-1, :] += wy + lam_y / beta
+        dwy[1:, :] -= wy + lam_y / beta
+        rhs = rhs + beta * (dwx + dwy)
+
+        for _ in range(inner_iters):
+            AtAx = adj(fwd(x)).reshape(x_shape)
+
+            DtDx = torch.zeros_like(x)
+            DtDx[:, :-1] += x[:, :-1] - x[:, 1:]
+            DtDx[:, 1:] += x[:, 1:] - x[:, :-1]
+            DtDx[:-1, :] += x[:-1, :] - x[1:, :]
+            DtDx[1:, :] += x[1:, :] - x[:-1, :]
+
+            grad = AtAx + beta * DtDx - rhs
+            x = x - 0.01 * grad
+
+        dx = x[:, 1:] - x[:, :-1]
+        dy = x[1:, :] - x[:-1, :]
+
+        vx = dx + lam_x / beta
+        vy = dy + lam_y / beta
+
+        vx_pad = torch.nn.functional.pad(vx, (0, 1), mode='constant', value=0)
+        vy_pad = torch.nn.functional.pad(vy, (0, 0, 0, 1), mode='constant', value=0)
+        norm_v = torch.sqrt(vx_pad ** 2 + vy_pad ** 2 + 1e-10)
+        shrink = torch.clamp(norm_v - mu / beta, min=0) / norm_v
+
+        wx = vx * shrink[:, :-1]
+        wy = vy * shrink[:-1, :]
+
+        lam_x = lam_x + beta * (dx - wx)
+        lam_y = lam_y + beta * (dy - wy)
+
+        rel_change = float(torch.linalg.norm(x - x_old)) / (
+            float(torch.linalg.norm(x_old)) + 1e-10)
+        if rel_change < tol:
+            break
+
+    if x_max > 1:
+        x = x * x_max
+
+    return to_numpy(x).astype(np.float32)
+
+
+def ista(
+    y: np.ndarray,
+    forward: Callable,
+    adjoint: Callable,
+    x_shape: Tuple[int, ...],
+    lam: float = 0.01,
+    step: float = 0.01,
+    max_iters: int = 100,
+    use_tv: bool = True,
+    device=None,
+) -> np.ndarray:
+    """ISTA: Iterative Shrinkage-Thresholding Algorithm.
+
+    Solves: min_x 0.5 * ||Ax - y||_2^2 + lam * R(x)
+    where R is either L1 (sparsity) or TV.
+
+    Args:
+        y: Measurements
+        forward: Forward operator A
+        adjoint: Adjoint operator A^T
+        x_shape: Shape of x
+        lam: Regularization weight
+        step: Step size (should be < 1/L where L is Lipschitz constant)
+        max_iters: Maximum iterations
+        use_tv: Use TV instead of L1
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed image
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _ista_torch(y, forward, adjoint, x_shape, lam, step,
+                           max_iters, use_tv, dev)
+
+    # Initialize with adjoint
+    x = adjoint(y).reshape(x_shape).astype(np.float32)
+
+    for k in range(max_iters):
+        # Gradient step
+        residual = forward(x) - y
+        grad = adjoint(residual).reshape(x_shape)
+        x = x - step * grad
+
+        # Proximal step
+        if use_tv:
+            x = tv_prox_2d(x, lam * step)
+        else:
+            x = soft_threshold(x, lam * step)
+
+    return x.astype(np.float32)
+
+
+def _ista_torch(y, forward, adjoint, x_shape, lam, step, max_iters, use_tv,
+                dev):
+    """GPU implementation of ista."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy, wrap_operator,
+                                          soft_threshold_torch, tv_prox_2d_torch)
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+
+    for _ in range(max_iters):
+        residual = fwd(x) - y_t
+        grad = adj(residual).reshape(x_shape)
+        x = x - step * grad
+
+        if use_tv:
+            x = tv_prox_2d_torch(x, lam * step)
+        else:
+            x = soft_threshold_torch(x, lam * step)
+
+    return to_numpy(x).astype(np.float32)
+
+
+def fista(
+    y: np.ndarray,
+    forward: Callable,
+    adjoint: Callable,
+    x_shape: Tuple[int, ...],
+    lam: float = 0.01,
+    step: float = 0.01,
+    max_iters: int = 100,
+    use_tv: bool = True,
+    device=None,
+) -> np.ndarray:
+    """FISTA: Fast ISTA with momentum.
+
+    Faster convergence than ISTA through Nesterov acceleration.
+
+    Args:
+        y: Measurements
+        forward: Forward operator A
+        adjoint: Adjoint operator A^T
+        x_shape: Shape of x
+        lam: Regularization weight
+        step: Step size
+        max_iters: Maximum iterations
+        use_tv: Use TV instead of L1
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed image
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _fista_torch(y, forward, adjoint, x_shape, lam, step,
+                            max_iters, use_tv, dev)
+
+    # Initialize
+    x = adjoint(y).reshape(x_shape).astype(np.float32)
+    z = x.copy()
+    t = 1.0
+
+    for k in range(max_iters):
+        # Gradient step on z
+        residual = forward(z) - y
+        grad = adjoint(residual).reshape(x_shape)
+        v = z - step * grad
+
+        # Proximal step
+        if use_tv:
+            x_new = tv_prox_2d(v, lam * step)
+        else:
+            x_new = soft_threshold(v, lam * step)
+
+        # Momentum update
+        t_new = (1 + np.sqrt(1 + 4 * t * t)) / 2
+        z = x_new + ((t - 1) / t_new) * (x_new - x)
+
+        x = x_new
+        t = t_new
+
+    return x.astype(np.float32)
+
+
+def _fista_torch(y, forward, adjoint, x_shape, lam, step, max_iters, use_tv,
+                 dev):
+    """GPU implementation of fista."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy, wrap_operator,
+                                          soft_threshold_torch, tv_prox_2d_torch)
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+    z = x.clone()
+    t = 1.0
+
+    for _ in range(max_iters):
+        residual = fwd(z) - y_t
+        grad = adj(residual).reshape(x_shape)
+        v = z - step * grad
+
+        if use_tv:
+            x_new = tv_prox_2d_torch(v, lam * step)
+        else:
+            x_new = soft_threshold_torch(v, lam * step)
+
+        t_new = (1 + (1 + 4 * t * t) ** 0.5) / 2
+        z = x_new + ((t - 1) / t_new) * (x_new - x)
+        x = x_new
+        t = t_new
+
+    return to_numpy(x).astype(np.float32)
+
+
+def admm_tv(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    x_shape: Tuple[int, int],
+    mu_tv: float = 0.002,
+    mu_dct: float = 0.008,
+    rho: float = 1.0,
+    max_iters: int = 500,
+    tv_inner_iters: int = 15,
+    non_negative: bool = True,
+    device=None,
+) -> np.ndarray:
+    """ADMM solver with DCT-L1 + TV regularization for block-based CS.
+
+    Solves: min_x ||Phi @ x - y||^2 + mu_dct * ||DCT(x)||_1 + mu_tv * TV(x)
+
+    ADMM splitting with auxiliary z and dual u:
+        x-update: (Phi^T Phi + rho*I) x = Phi^T y + rho*(z - u)  [Cholesky]
+        z-update: DCT soft-threshold then TV denoise on (x + u)
+        u-update: u = u + x - z
+
+    Uses continuation (mu ramps from 10% to 100% over first half of
+    iterations) for better convergence in underdetermined systems.
+
+    For small blocks (e.g. 33x33, n=1089), Cholesky is factored once and
+    reused every iteration, making x-updates O(n^2) per step.
+
+    Args:
+        y: Measurements (m,)
+        Phi: Measurement matrix (m, n)
+        x_shape: Shape of image block (H, W)
+        mu_tv: TV regularization weight
+        mu_dct: DCT-L1 regularization weight
+        rho: ADMM penalty parameter
+        max_iters: Number of ADMM outer iterations
+        tv_inner_iters: Inner iterations for TV denoiser
+        non_negative: Enforce non-negativity
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed image block (H*W,)
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _admm_tv_torch(y, Phi, x_shape, mu_tv, mu_dct, rho, max_iters,
+                              tv_inner_iters, non_negative, dev)
+
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+    except ImportError:
+        denoise_tv_chambolle = None
+
+    from scipy.fft import dctn, idctn
+    from scipy.linalg import cho_factor, cho_solve
+
+    n = Phi.shape[1]
+
+    # Pre-compute Cholesky factorization of (Phi^T Phi + rho * I) — O(n^3) once
+    PhiTPhi = Phi.T @ Phi
+    A = PhiTPhi + rho * np.eye(n, dtype=np.float64)
+    cho = cho_factor(A.astype(np.float64))
+
+    # Constant RHS term: Phi^T y
+    PhiTy = (Phi.T @ y).astype(np.float64)
+
+    # Initialize via regularized least-squares
+    x = cho_solve(cho, PhiTy).astype(np.float32)
+    z = x.copy()
+    u = np.zeros(n, dtype=np.float32)
+
+    for k in range(max_iters):
+        # Continuation: ramp regularization from 10% to 100% over first half
+        frac = min(1.0, 2.0 * k / max_iters)
+        scale = 0.1 + 0.9 * frac
+
+        # x-update: solve (Phi^T Phi + rho I) x = Phi^T y + rho (z - u)
+        rhs = PhiTy + rho * (z - u).astype(np.float64)
+        x = cho_solve(cho, rhs).astype(np.float32)
+
+        # z-update: combined DCT-L1 + TV proximal on (x + u)
+        v = (x + u).reshape(x_shape)
+        if non_negative:
+            v = np.clip(v, 0, 1)
+
+        # Step 1: DCT soft-thresholding (sparsity in frequency domain)
+        if mu_dct > 0:
+            coeffs = dctn(v.astype(np.float64), norm='ortho')
+            dc = coeffs[0, 0]  # Preserve DC component
+            thresh = scale * mu_dct / rho
+            coeffs = np.sign(coeffs) * np.maximum(np.abs(coeffs) - thresh, 0)
+            coeffs[0, 0] = dc
+            v = idctn(coeffs, norm='ortho')
+            if non_negative:
+                v = np.clip(v, 0, 1)
+
+        # Step 2: TV denoising (piecewise smoothness)
+        if mu_tv > 0:
+            tv_weight = scale * mu_tv / rho
+            if denoise_tv_chambolle is not None:
+                v = denoise_tv_chambolle(
+                    v.astype(np.float64), weight=tv_weight,
+                    max_num_iter=tv_inner_iters,
+                )
+            else:
+                v = tv_prox_2d(v.astype(np.float32), lam=tv_weight,
+                               iterations=tv_inner_iters)
+
+        if non_negative:
+            v = np.clip(v, 0, 1)
+        z = np.asarray(v).flatten().astype(np.float32)
+
+        # u-update (dual/scaled)
+        u = u + x - z
+
+    return z
+
+
+def _admm_tv_torch(y, Phi, x_shape, mu_tv, mu_dct, rho, max_iters,
+                   tv_inner_iters, non_negative, dev):
+    """GPU implementation of admm_tv."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy,
+                                          soft_threshold_torch, tv_prox_2d_torch)
+
+    n = Phi.shape[1]
+    Phi_t = to_torch(Phi.astype(np.float64), dev, torch.float64)
+    y_t = to_torch(y.astype(np.float64), dev, torch.float64)
+
+    # Pre-compute Cholesky factorization
+    PhiTPhi = Phi_t.T @ Phi_t
+    A_mat = PhiTPhi + rho * torch.eye(n, device=dev, dtype=torch.float64)
+    L_chol = torch.linalg.cholesky(A_mat)
+
+    PhiTy = Phi_t.T @ y_t
+
+    # Initialize via regularized least-squares
+    x = torch.cholesky_solve(PhiTy.unsqueeze(1), L_chol).squeeze(1).float()
+    z = x.clone()
+    u = torch.zeros(n, device=dev, dtype=torch.float32)
+
+    for k in range(max_iters):
+        frac = min(1.0, 2.0 * k / max_iters)
+        scale = 0.1 + 0.9 * frac
+
+        rhs = PhiTy + rho * (z - u).double()
+        x = torch.cholesky_solve(rhs.unsqueeze(1), L_chol).squeeze(1).float()
+
+        v = (x + u).reshape(x_shape)
+        if non_negative:
+            v = torch.clamp(v, 0, 1)
+
+        # DCT soft-thresholding via symmetric extension + FFT
+        if mu_dct > 0:
+            v_d = v.double()
+            # Type-II DCT via symmetric extension
+            H, W = x_shape
+            # Horizontal symmetric extension
+            v_ext = torch.cat([v_d, v_d.flip(1)], dim=1)
+            # Vertical symmetric extension
+            v_ext = torch.cat([v_ext, v_ext.flip(0)], dim=0)
+            coeffs = torch.fft.fft2(v_ext).real[:H, :W] / (2.0 * H * W) ** 0.5
+
+            dc = coeffs[0, 0].clone()
+            thresh = scale * mu_dct / rho
+            coeffs = torch.sign(coeffs) * torch.clamp(torch.abs(coeffs) - thresh, min=0)
+            coeffs[0, 0] = dc
+
+            # Inverse DCT via symmetric extension + IFFT
+            inv_ext = torch.zeros(2 * H, 2 * W, device=dev, dtype=torch.float64)
+            inv_ext[:H, :W] = coeffs
+            inv_ext[:H, W:] = coeffs.flip(1)
+            inv_ext[H:, :W] = coeffs.flip(0)
+            inv_ext[H:, W:] = coeffs.flip(0).flip(1)
+            v = torch.fft.ifft2(inv_ext).real[:H, :W].float() * (2.0 * H * W) ** 0.5
+
+            if non_negative:
+                v = torch.clamp(v, 0, 1)
+
+        if mu_tv > 0:
+            tv_weight = scale * mu_tv / rho
+            v = tv_prox_2d_torch(v.float(), tv_weight, tv_inner_iters)
+
+        if non_negative:
+            v = torch.clamp(v, 0, 1)
+        z = v.flatten().float()
+
+        u = u + x - z
+
+    return to_numpy(z).astype(np.float32)
+
+
+def run_admm_tv(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    x_shape: Tuple[int, int],
+    cfg: Optional[Dict[str, Any]] = None,
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run ADMM-TV reconstruction for block-based CS.
+
+    Args:
+        y: Measurements (m,)
+        Phi: Measurement matrix (m, n)
+        x_shape: Shape of image block (H, W)
+        cfg: Optional configuration overrides
+
+    Returns:
+        Tuple of (reconstructed_flat, info_dict)
+    """
+    if cfg is None:
+        cfg = {}
+
+    mu_tv = cfg.get("mu_tv", 0.002)
+    mu_dct = cfg.get("mu_dct", 0.008)
+    rho = cfg.get("rho", 1.0)
+    max_iters = cfg.get("iters", 500)
+    tv_inner_iters = cfg.get("tv_inner_iters", 15)
+    device = cfg.get("device", None)
+
+    info = {
+        "solver": "admm_dct_tv",
+        "mu_tv": mu_tv,
+        "mu_dct": mu_dct,
+        "rho": rho,
+        "iters": max_iters,
+        "tv_inner_iters": tv_inner_iters,
+    }
+
+    try:
+        result = admm_tv(
+            y, Phi, x_shape,
+            mu_tv=mu_tv, mu_dct=mu_dct, rho=rho,
+            max_iters=max_iters,
+            tv_inner_iters=tv_inner_iters,
+            device=device,
+        )
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)
+        return (Phi.T @ y).astype(np.float32), info
+
+
+def run_tval3(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run TVAL3 reconstruction.
+
+    Args:
+        y: CS measurements
+        physics: Physics operator with forward/adjoint
+        cfg: Configuration with:
+            - mu: TV weight (default: 256)
+            - beta: ALM parameter (default: 32)
+            - iters: Max iterations (default: 200)
+
+    Returns:
+        Tuple of (reconstructed, info_dict)
+    """
+    mu = cfg.get("mu", 256.0)
+    beta = cfg.get("beta", 32.0)
+    iters = cfg.get("iters", 200)
+    device = cfg.get("device", None)
+
+    info = {
+        "solver": "tval3",
+        "mu": mu,
+        "beta": beta,
+        "iters": iters,
+    }
+
+    try:
+        if not (hasattr(physics, 'forward') and hasattr(physics, 'adjoint')):
+            info["error"] = "no_forward_adjoint"
+            return y.astype(np.float32), info
+
+        x_shape = y.shape
+        if hasattr(physics, 'x_shape'):
+            x_shape = tuple(physics.x_shape)
+        elif hasattr(physics, 'info'):
+            op_info = physics.info()
+            if 'x_shape' in op_info:
+                x_shape = tuple(op_info['x_shape'])
+
+        result = tval3(
+            y, physics.forward, physics.adjoint,
+            x_shape, mu, beta, max_iters=iters, device=device
+        )
+
+        return result, info
+
+    except Exception as e:
+        info["error"] = str(e)
+        if hasattr(physics, 'adjoint'):
+            return physics.adjoint(y).reshape(x_shape).astype(np.float32), info
+        return y.astype(np.float32), info
+
+
+def run_ista(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run ISTA/FISTA reconstruction.
+
+    Args:
+        y: CS measurements
+        physics: Physics operator with forward/adjoint
+        cfg: Configuration with:
+            - lam: Regularization weight (default: 0.01)
+            - step: Step size (default: 0.01)
+            - iters: Max iterations (default: 100)
+            - fista: Use FISTA acceleration (default: True)
+            - use_tv: Use TV regularization (default: True)
+
+    Returns:
+        Tuple of (reconstructed, info_dict)
+    """
+    lam = cfg.get("lam", 0.01)
+    step = cfg.get("step", 0.01)
+    iters = cfg.get("iters", 100)
+    use_fista = cfg.get("fista", True)
+    use_tv = cfg.get("use_tv", True)
+    device = cfg.get("device", None)
+
+    solver_name = "fista" if use_fista else "ista"
+
+    info = {
+        "solver": solver_name,
+        "lam": lam,
+        "step": step,
+        "iters": iters,
+        "use_tv": use_tv,
+    }
+
+    try:
+        if not (hasattr(physics, 'forward') and hasattr(physics, 'adjoint')):
+            info["error"] = "no_forward_adjoint"
+            return y.astype(np.float32), info
+
+        x_shape = y.shape
+        if hasattr(physics, 'x_shape'):
+            x_shape = tuple(physics.x_shape)
+        elif hasattr(physics, 'info'):
+            op_info = physics.info()
+            if 'x_shape' in op_info:
+                x_shape = tuple(op_info['x_shape'])
+
+        if use_fista:
+            result = fista(
+                y, physics.forward, physics.adjoint,
+                x_shape, lam, step, iters, use_tv, device=device
+            )
+        else:
+            result = ista(
+                y, physics.forward, physics.adjoint,
+                x_shape, lam, step, iters, use_tv, device=device
+            )
+
+        return result, info
+
+    except Exception as e:
+        info["error"] = str(e)
+        if hasattr(physics, 'adjoint'):
+            return physics.adjoint(y).reshape(x_shape).astype(np.float32), info
+        return y.astype(np.float32), info

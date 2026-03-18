@@ -1,0 +1,12 @@
+{
+  "county": "SanDiego_CA",
+  "beta_0": 0.35,
+  "sigma": 0.2,
+  "gamma": 0.1,
+  "delta": 0.005,
+  "T_days": 180,
+  "_task_id": "08_epidemiology_dev_027",
+  "_seed": 4294054912,
+  "_tier": "dev",
+  "_domain": "08_epidemiology"
+}

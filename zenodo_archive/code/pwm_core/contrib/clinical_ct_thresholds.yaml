@@ -1,0 +1,195 @@
+# =============================================================================
+# PWM Clinical CT Threshold Registry
+# 4-layer hierarchical threshold system for CT QA/QC metrics.
+#
+# Resolution order (highest priority wins):
+#   Layer 4 — site_override    : Per-site physicist overrides
+#   Layer 3 — protocol         : Protocol-specific tightening/relaxing
+#   Layer 2 — scanner_model    : Vendor/model-specific baselines
+#   Layer 1 — standard_default : Published standard tolerances (ACR, AAPM)
+#
+# The threshold_resolver walks layers 4 -> 3 -> 2 -> 1 and returns the first
+# matching entry.  A metric not listed in layers 2-4 inherits from layer 1.
+#
+# References:
+#   - ACR CT Accreditation Program Testing Instructions (2024)
+#   - AAPM TG-233: Performance Evaluation of CT Systems (2019)
+#   - IEC 61223-3-5: Evaluation and routine testing of CT equipment
+# =============================================================================
+
+version: "1.0.0"
+threshold_set_id: "acr_ct_thresholds"
+
+# =============================================================================
+# Layer 1 — Standard Default Tolerances
+# Authoritative pass/fail criteria from ACR and AAPM publications.
+# =============================================================================
+standard_default:
+
+  ct_number_water:
+    pass_range: [-5, 5]           # HU; ACR: mean HU in water ROI within +/- 5
+    unit: "HU"
+    reference: "ACR CT QC Manual, Section 4.1"
+    description: "Mean CT number in central water ROI"
+
+  ct_number_bone:
+    pass_range: [850, 970]        # HU; ACR tolerance for bone-equivalent insert
+    unit: "HU"
+    reference: "ACR CT QC Manual, Section 4.2"
+    description: "Mean CT number in bone-equivalent insert ROI"
+
+  ct_number_air:
+    pass_range: [-1005, -970]     # HU; ACR tolerance for air insert
+    unit: "HU"
+    reference: "ACR CT QC Manual, Section 4.2"
+    description: "Mean CT number in air insert ROI"
+
+  ct_number_acrylic:
+    pass_range: [110, 135]        # HU; ACR tolerance for acrylic insert
+    unit: "HU"
+    reference: "ACR CT QC Manual, Section 4.2"
+    description: "Mean CT number in acrylic insert ROI"
+
+  ct_number_polyethylene:
+    pass_range: [-107, -84]       # HU; ACR tolerance for polyethylene (LDPE) insert
+    unit: "HU"
+    reference: "ACR CT QC Manual, Section 4.2"
+    description: "Mean CT number in polyethylene insert ROI"
+
+  geometric_accuracy:
+    pass_range: [0, 2]            # mm; ACR: distance measurement within 2 mm of true
+    unit: "mm"
+    reference: "ACR CT QC Manual, Section 4.3"
+    description: "Deviation of measured phantom diameter from true 200 mm"
+
+  slice_thickness:
+    tolerance_from_nominal: 1.5   # mm; ACR: measured thickness within +/- 1.5 mm of nominal
+    unit: "mm"
+    reference: "ACR CT QC Manual, Section 4.4"
+    description: "Deviation of measured slice thickness from protocol nominal"
+
+  uniformity:
+    pass_range: [0, 5]            # HU; ACR: max difference between center and any peripheral ROI
+    unit: "HU"
+    reference: "ACR CT QC Manual, Section 4.5"
+    description: "Maximum |center_HU - peripheral_HU| across 4 peripheral ROIs"
+
+  noise_std:
+    # Noise does not have a fixed ACR range; instead, TG-233 recommends
+    # statistical process control against the scanner's own baseline.
+    tolerance_from_baseline_sigma: 2.0    # Flag if noise > baseline + 2 sigma
+    unit: "HU"
+    reference: "AAPM TG-233, Section 6.3"
+    description: "Standard deviation in central water ROI, compared to baseline"
+
+  low_contrast_detectability:
+    min_visible_targets: 4        # ACR: at least 4 of the target groups must be visible
+    unit: "count"
+    reference: "ACR CT QC Manual, Section 4.7"
+    description: "Number of visible low-contrast target groups in Module 3"
+
+  artifact_evaluation:
+    max_artifact_score: 0         # ACR: no significant artifacts present
+    unit: "score"
+    reference: "ACR CT QC Manual, Section 4.8"
+    description: "Artifact severity score (0 = none, 1 = minor, 2 = major)"
+
+  spatial_resolution:
+    min_resolvable_lp_per_cm: 5   # ACR: at least 5 lp/cm visually resolvable
+    unit: "lp/cm"
+    reference: "ACR CT QC Manual, Section 4.6"
+    description: "Highest resolvable line-pair group in Module 4"
+
+# =============================================================================
+# Layer 2 — Scanner Model Overrides
+# Vendor-specific baselines derived from commissioning data.  These tighten
+# or relax layer 1 defaults when the scanner consistently performs at a
+# different operating point.
+# =============================================================================
+scanner_model:
+
+  siemens_somatom_force:
+    # The Somatom Force typically reads ~1-2 HU higher for acrylic due to
+    # its Stellar detector spectral response.
+    ct_number_acrylic:
+      pass_range: [112, 138]
+      unit: "HU"
+      note: "Adjusted for Stellar detector spectral characteristics"
+    noise_std:
+      tolerance_from_baseline_sigma: 1.8
+      unit: "HU"
+      note: "Force has tighter noise floor; use stricter drift threshold"
+    spatial_resolution:
+      min_resolvable_lp_per_cm: 6
+      unit: "lp/cm"
+      note: "Force routinely resolves 6 lp/cm with UHR comb filter"
+
+  ge_revolution_ct:
+    # GE Revolution tends to read slightly low on polyethylene with ASiR-V.
+    ct_number_polyethylene:
+      pass_range: [-110, -80]
+      unit: "HU"
+      note: "Adjusted for ASiR-V iterative reconstruction bias"
+    noise_std:
+      tolerance_from_baseline_sigma: 2.0
+      unit: "HU"
+      note: "Standard TG-233 threshold"
+    uniformity:
+      pass_range: [0, 4]
+      unit: "HU"
+      note: "Revolution typically achieves < 4 HU uniformity"
+
+# =============================================================================
+# Layer 3 — Protocol Overrides
+# Protocol-specific adjustments that account for reconstruction kernel,
+# tube voltage, or other acquisition-dependent effects.
+# =============================================================================
+protocol:
+
+  adult_abdomen_120kVp_B30f:
+    # 120 kVp with B30f (medium smooth) is the most common ACR test protocol.
+    # These represent tighter expectations for this well-characterized regime.
+    ct_number_water:
+      pass_range: [-4, 4]
+      unit: "HU"
+      note: "Tighter tolerance for standard abdomen protocol"
+    noise_std:
+      tolerance_from_baseline_sigma: 1.5
+      unit: "HU"
+      note: "B30f kernel has well-characterized noise floor"
+    uniformity:
+      pass_range: [0, 4]
+      unit: "HU"
+      note: "Smooth kernel yields more uniform images"
+
+  # Additional protocols can be added here following the same pattern:
+  # pediatric_head_100kVp_H30s:
+  #   ct_number_water:
+  #     pass_range: [-6, 6]
+  #     unit: "HU"
+  #     note: "100 kVp shifts water HU slightly; wider tolerance"
+
+# =============================================================================
+# Layer 4 — Site Override
+# Per-site physicist overrides.  These take highest priority and are intended
+# for institution-specific adjustments documented during commissioning.
+#
+# IMPORTANT: Every site override MUST include a justification and the
+# approving physicist's name for audit trail compliance.
+# =============================================================================
+site_override: {}
+  # Example (uncomment and customize for your site):
+  #
+  # my_hospital_scanner_01:
+  #   ct_number_water:
+  #     pass_range: [-4, 6]
+  #     unit: "HU"
+  #     justification: "Scanner consistently reads +1 HU; shifted range per physicist approval"
+  #     approved_by: "Dr. Jane Smith, DABR"
+  #     approval_date: "2025-10-15"
+  #   noise_std:
+  #     tolerance_from_baseline_sigma: 2.5
+  #     unit: "HU"
+  #     justification: "Older tube produces higher baseline noise; relaxed per TG-233 guidance"
+  #     approved_by: "Dr. Jane Smith, DABR"
+  #     approval_date: "2025-10-15"

@@ -1,0 +1,118 @@
+{
+  "cdi": {
+    "modality": "cdi",
+    "solver": "hio",
+    "per_algorithm": {
+      "hio_500": {
+        "psnr": 22.869383869992266,
+        "tier": "traditional_cpu",
+        "params": 0
+      },
+      "hio_2000": {
+        "psnr": 30.222974531772614,
+        "tier": "best_quality",
+        "params": 0
+      }
+    },
+    "psnr": 30.222974531772614,
+    "reference_psnr": 27.4
+  },
+  "ct_fanbeam": {
+    "modality": "ct_fanbeam",
+    "solver": "sart_tv",
+    "per_algorithm": {
+      "fbp": {
+        "psnr": 24.484018561967908,
+        "tier": "traditional_cpu",
+        "params": 0
+      },
+      "sart_tv": {
+        "psnr": 28.816878161500625,
+        "tier": "best_quality",
+        "params": 0
+      }
+    },
+    "psnr": 28.816878161500625,
+    "reference_psnr": 40.8
+  },
+  "mri_radial": {
+    "modality": "mri_radial",
+    "solver": "fbp",
+    "per_algorithm": {
+      "fbp": {
+        "psnr": 27.414653025281158,
+        "tier": "traditional_cpu",
+        "params": 0
+      }
+    },
+    "psnr": 27.414653025281158,
+    "reference_psnr": 38.7
+  },
+  "mri_spiral": {
+    "modality": "mri_spiral",
+    "solver": "cg_tv",
+    "per_algorithm": {
+      "nn_gridding": {
+        "psnr": 12.128186828213835,
+        "tier": "traditional_cpu",
+        "params": 0
+      },
+      "cg_tv": {
+        "psnr": 29.197468668076997,
+        "tier": "best_quality",
+        "params": 0
+      }
+    },
+    "psnr": 29.197468668076997,
+    "reference_psnr": 37.2
+  },
+  "sar": {
+    "modality": "sar",
+    "solver": "matched_filter",
+    "per_algorithm": {
+      "matched_filter_1pct": {
+        "psnr": 16.740985939307627,
+        "tier": "traditional_cpu",
+        "params": 0
+      },
+      "matched_filter_025pct": {
+        "psnr": 28.770616389002587,
+        "tier": "best_quality",
+        "params": 0
+      }
+    },
+    "psnr": 28.770616389002587,
+    "reference_psnr": 28.4
+  },
+  "structured_illumination": {
+    "modality": "structured_illumination",
+    "solver": "three_step_demod",
+    "per_algorithm": {
+      "three_step_demod": {
+        "psnr": 37.29992860655131,
+        "tier": "traditional_cpu",
+        "params": 0
+      }
+    },
+    "psnr": 37.29992860655131,
+    "reference_psnr": 32.4
+  },
+  "ghost_imaging": {
+    "modality": "ghost_imaging",
+    "solver": "hadamard_differential",
+    "per_algorithm": {
+      "hadamard_scale5": {
+        "psnr": 19.117977154077394,
+        "tier": "traditional_cpu",
+        "params": 0
+      },
+      "hadamard_scale20": {
+        "psnr": 24.625817089451914,
+        "tier": "best_quality",
+        "params": 0
+      }
+    },
+    "psnr": 24.625817089451914,
+    "reference_psnr": 22.8
+  }
+}

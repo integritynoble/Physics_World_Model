@@ -1,0 +1,12 @@
+{
+  "N": 4387,
+  "mu_friction": 0.34661890642945725,
+  "sigma_top_kPa": 8,
+  "R_mean_mm": 2.0,
+  "R_std_mm": 0.5,
+  "gravity_angle_deg": 5,
+  "_task_id": "01_classical_mechanics_dev_096",
+  "_seed": 1343919537,
+  "_tier": "dev",
+  "_domain": "01_classical_mechanics"
+}

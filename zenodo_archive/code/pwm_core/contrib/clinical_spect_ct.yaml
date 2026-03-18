@@ -1,0 +1,121 @@
+# =============================================================================
+# PWM Clinical SPECT/CT CasePack Stub — Phase 3
+# Defines the initial specification for SPECT/CT QA/QC using the Jaszczak
+# phantom.  This is a placeholder for Phase 3 development.
+#
+# References:
+#   - AAPM TG-177: Acceptance Testing and Quality Control of SPECT/CT Systems
+#   - NEMA NU 1-2018: Performance Measurements of Gamma Cameras
+#   - ACR Nuclear Medicine Accreditation Program
+# =============================================================================
+
+status: "stub"
+phase: 3
+target_version: "0.6.0"
+
+casepack:
+  id: "spect_ct_jaszczak_v0.1"
+  name: "SPECT/CT Jaszczak Phantom QC"
+  version: "0.1.0"
+  min_pwm_version: "0.6.0"
+  author: "PWM Clinical Team"
+  phantom_type: "Jaszczak Deluxe SPECT Phantom"
+
+  # The Jaszczak phantom contains:
+  #   - Uniform cylindrical tank (21.6 cm diameter, 18.6 cm height)
+  #   - Cold rod inserts (4.8, 6.4, 7.9, 9.5, 11.1, 12.7 mm diameter)
+  #   - Cold sphere inserts (9.5, 12.7, 15.9, 19.1, 25.4, 31.8 mm diameter)
+  #   - Uniform fill region for uniformity assessment
+
+  # ---------------------------------------------------------------------------
+  # Metric Stubs
+  # Each metric below will require a dedicated implementation in spect_ct/
+  # ---------------------------------------------------------------------------
+  metric_set:
+    - id: "uniformity"
+      name: "Integral and Differential Uniformity"
+      description: >
+        Integral uniformity (max-min)/(max+min) and differential uniformity
+        over 5-pixel neighborhoods in the useful field of view.
+      unit: "percent"
+      reference: "NEMA NU-1 Section 3; AAPM TG-177 Section 5.2"
+      implementation_status: "planned"
+
+    - id: "contrast"
+      name: "Cold Sphere Contrast"
+      description: >
+        Contrast recovery coefficient for cold spheres of varying diameter,
+        assessing system contrast resolution.
+      unit: "fraction"
+      reference: "AAPM TG-177 Section 5.4"
+      implementation_status: "planned"
+
+    - id: "resolution"
+      name: "Spatial Resolution (Cold Rod Visibility)"
+      description: >
+        Smallest visible cold rod group diameter, characterizing
+        reconstructed spatial resolution.
+      unit: "mm"
+      reference: "AAPM TG-177 Section 5.3"
+      implementation_status: "planned"
+
+    - id: "sensitivity"
+      name: "System Sensitivity"
+      description: "Planar sensitivity in counts per second per MBq"
+      unit: "cps/MBq"
+      reference: "NEMA NU-1 Section 4"
+      implementation_status: "planned"
+
+    - id: "count_rate"
+      name: "Count Rate Performance"
+      description: >
+        Observed count rate vs. activity concentration, characterizing
+        dead time losses and maximum count rate capability.
+      unit: "kcps"
+      reference: "NEMA NU-1 Section 5"
+      implementation_status: "planned"
+
+  # ---------------------------------------------------------------------------
+  # Threshold Stubs (to be defined in Phase 3)
+  # ---------------------------------------------------------------------------
+  threshold_set: "spect_ct_thresholds"   # Will be created in clinical_spect_ct_thresholds.yaml
+
+  # ---------------------------------------------------------------------------
+  # Evidence Artifacts (planned)
+  # ---------------------------------------------------------------------------
+  evidence_artifacts:
+    - uniformity_flood_image
+    - cold_rod_reconstructed_slice
+    - cold_sphere_contrast_plot
+    - count_rate_curve_plot
+
+  # ---------------------------------------------------------------------------
+  # CT Component
+  # SPECT/CT QA includes the CT subsystem; reference the existing CT CasePack.
+  # ---------------------------------------------------------------------------
+  ct_component:
+    reference_casepack: "acr_ct_v1.0"
+    note: >
+      CT component QA uses the standard ACR CT phantom CasePack.
+      SPECT/CT-specific CT tests (attenuation correction accuracy,
+      SPECT-CT registration, and collimator-dependent resolution) will
+      be added in Phase 3.
+
+  # ---------------------------------------------------------------------------
+  # SPECT-Specific Acquisition Parameters (for auto-validation)
+  # ---------------------------------------------------------------------------
+  expected_acquisition:
+    collimator: "LEHR"            # Low-Energy High-Resolution (Tc-99m)
+    isotope: "Tc-99m"
+    energy_window_kev: [130, 155] # 140 keV +/- 10%
+    projections: 128              # Typical: 128 projections over 360 degrees
+    rotation: "360"               # Full 360-degree rotation
+    matrix_size: [128, 128]
+    pixel_size_mm: 3.0            # Approximate, varies by collimator
+
+  references:
+    - name: "AAPM TG-177"
+      title: "Acceptance Testing and Quality Control of SPECT/CT Systems"
+      year: 2019
+    - name: "NEMA NU 1-2018"
+      url: "https://www.nema.org/standards/view/Performance-Measurements-of-Gamma-Cameras"

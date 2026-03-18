@@ -1,0 +1,13 @@
+{
+  "a_mm": 56.639943608536875,
+  "b_mm": 10.16,
+  "epsilon_r": 9.424722471921031,
+  "sigma_wall": 1e+30,
+  "n_modes": 10,
+  "freq_min_GHz": 8.0,
+  "freq_max_GHz": 12.0,
+  "_task_id": "02_electromagnetics_dev_088",
+  "_seed": 3572914863,
+  "_tier": "dev",
+  "_domain": "02_electromagnetics"
+}

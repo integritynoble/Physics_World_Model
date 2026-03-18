@@ -1,0 +1,61 @@
+# Perturbation families for calibration experiments
+# Each family groups related mismatch parameters
+# Referenced by calibration loop and experiments
+
+version: "1.0"
+
+families:
+
+  shift_2d:
+    params: [dx0, dy0]
+    description: "2D translation mismatch"
+    modalities: [cassi, cacti, spc, widefield]
+    default_severity:
+      low: {dx0: 0.5, dy0: 0.5}
+      medium: {dx0: 2.0, dy0: 2.0}
+      high: {dx0: 5.0, dy0: 5.0}
+
+  dispersion_poly:
+    params: [disp_poly_x_0, disp_poly_x_1, disp_poly_x_2]
+    description: "Spectral dispersion polynomial"
+    modalities: [cassi]
+    default_severity:
+      low: {disp_poly_x_0: 0.5, disp_poly_x_1: 0.1, disp_poly_x_2: 0.01}
+      medium: {disp_poly_x_0: 2.0, disp_poly_x_1: 0.5, disp_poly_x_2: 0.05}
+      high: {disp_poly_x_0: 5.0, disp_poly_x_1: 1.0, disp_poly_x_2: 0.1}
+
+  gain_bias:
+    params: [gain, bias]
+    description: "Global gain and offset"
+    modalities: [cassi, cacti, spc, widefield, ct, mri]
+    default_severity:
+      low: {gain: 1.05, bias: 0.01}
+      medium: {gain: 1.2, bias: 0.05}
+      high: {gain: 2.0, bias: 0.1}
+
+  psf_blur:
+    params: [psf_sigma]
+    description: "PSF width mismatch"
+    modalities: [widefield, confocal, sim]
+    default_severity:
+      low: {psf_sigma: 0.5}
+      medium: {psf_sigma: 1.0}
+      high: {psf_sigma: 3.0}
+
+  full_cassi:
+    params: [dx0, dy0, disp_poly_x_0, disp_poly_x_1, disp_poly_x_2, L]
+    description: "Full CASSI calibration"
+    modalities: [cassi]
+    default_severity:
+      low: {dx0: 0.5, dy0: 0.5, disp_poly_x_0: 0.5, disp_poly_x_1: 0.1, disp_poly_x_2: 0.01, L: 0}
+      medium: {dx0: 2.0, dy0: 2.0, disp_poly_x_0: 2.0, disp_poly_x_1: 0.5, disp_poly_x_2: 0.05, L: 0}
+      high: {dx0: 5.0, dy0: 5.0, disp_poly_x_0: 5.0, disp_poly_x_1: 1.0, disp_poly_x_2: 0.1, L: 0}
+
+  rotation:
+    params: [theta_rot]
+    description: "In-plane rotation mismatch"
+    modalities: [cassi, cacti, ct]
+    default_severity:
+      low: {theta_rot: 0.5}
+      medium: {theta_rot: 2.0}
+      high: {theta_rot: 5.0}

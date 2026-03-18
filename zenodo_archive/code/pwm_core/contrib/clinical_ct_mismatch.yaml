@@ -1,0 +1,546 @@
+# =============================================================================
+# PWM Clinical CT Mismatch Library
+# Defines 10 common mismatch types encountered in CT QA/QC, their observable
+# artifacts, affected metrics, diagnostic features, severity levels, and
+# recommended remediation.
+#
+# Each mismatch type models a deviation from the expected "ideal operator"
+# for the CT imaging chain.  The diagnostic_features mapping provides
+# feature_name -> {expected_direction, weight} pairs used by the diagnosis
+# engine to compute a weighted mismatch likelihood score.
+#
+# IMPORTANT: All feature names MUST match the keys returned by
+# diagnosis_features.compute_all_features():
+#   ring_index, cupping_index, streak_index,
+#   hu_drift_index, noise_ratio, geometric_distortion_index
+#
+# References:
+#   - ACR CT QC Manual (2024)
+#   - AAPM TG-233: Performance Evaluation of CT Systems
+#   - IEC 61223-3-5: Evaluation and routine testing of CT equipment
+# =============================================================================
+
+version: "1.0.0"
+domain: "clinical_ct"
+
+mismatch_types:
+
+  # ===========================================================================
+  # 1. Tube Output Drift
+  # ===========================================================================
+  - id: "tube_output_drift"
+    name: "X-ray Tube Output Drift"
+    description: >
+      Gradual decrease in tube output (mA or kVp instability) over time,
+      causing systematic shifts in CT numbers and elevated image noise.
+      Common in aging tubes approaching end-of-life.
+
+    observable_artifacts:
+      - "Global CT number shift across all materials"
+      - "Elevated image noise in central water ROI"
+      - "Increased noise variance between sequential scans"
+      - "Subtle uniformity degradation in peripheral ROIs"
+
+    affected_metrics:
+      - ct_number_water
+      - ct_number_bone
+      - ct_number_air
+      - ct_number_acrylic
+      - ct_number_polyethylene
+      - noise_std
+      - uniformity
+
+    diagnostic_features:
+      hu_drift_index:
+        expected_direction: "elevated"     # All insert HU values shift
+        weight: 0.40
+      noise_ratio:
+        expected_direction: "elevated"     # Tube degradation increases noise
+        weight: 0.35
+      cupping_index:
+        expected_direction: "elevated"     # Subtle uniformity change
+        weight: 0.25
+
+    diagnostic_test: "tube_output_constancy_test"
+
+    severity_levels:
+      mild:
+        ct_number_shift_hu: [1, 3]
+        noise_increase_percent: [5, 15]
+      moderate:
+        ct_number_shift_hu: [3, 5]
+        noise_increase_percent: [15, 30]
+      severe:
+        ct_number_shift_hu: [5, 999]
+        noise_increase_percent: [30, 999]
+
+    remediation: >
+      Run tube calibration (air calibration / gain calibration per vendor).
+      If recalibration fails to restore performance, schedule preventive
+      maintenance for tube and generator inspection.  Log trend data for
+      predictive tube replacement planning.
+
+  # ===========================================================================
+  # 2. Detector Element Failure
+  # ===========================================================================
+  - id: "detector_element_failure"
+    name: "Detector Element Failure (Ring Artifact Source)"
+    description: >
+      One or more detector elements produce consistently abnormal response,
+      causing ring artifacts in axial images.  May be a dead channel, noisy
+      channel, or gain-shifted channel.
+
+    observable_artifacts:
+      - "Ring or partial-ring artifacts centered on isocenter"
+      - "Streak artifacts from severe channel failure"
+      - "Localized noise spikes in sinogram domain"
+      - "Artifact score elevation in artifact_evaluation metric"
+
+    affected_metrics:
+      - artifact_evaluation
+      - uniformity
+      - noise_std
+      - ct_number_water
+
+    diagnostic_features:
+      ring_index:
+        expected_direction: "elevated"     # Primary ring artifact signature
+        weight: 0.50
+      streak_index:
+        expected_direction: "elevated"     # Severe channel failure -> streaks
+        weight: 0.30
+      noise_ratio:
+        expected_direction: "elevated"     # Localized noise increase
+        weight: 0.20
+
+    diagnostic_test: "detector_channel_response_map"
+
+    severity_levels:
+      mild:
+        ring_contrast_hu: [1, 5]
+        affected_channels: [1, 3]
+      moderate:
+        ring_contrast_hu: [5, 15]
+        affected_channels: [3, 10]
+      severe:
+        ring_contrast_hu: [15, 999]
+        affected_channels: [10, 999]
+
+    remediation: >
+      Run detector calibration (air scan + dark scan per vendor protocol).
+      If ring persists, identify the failing channel via sinogram analysis
+      and report to service engineer for detector module replacement.
+
+  # ===========================================================================
+  # 3. Beam Hardening Miscalibration
+  # ===========================================================================
+  - id: "beam_hardening_miscalibration"
+    name: "Beam Hardening Correction Miscalibration"
+    description: >
+      Incorrect polynomial coefficients in the beam hardening correction
+      lookup table, causing cupping/capping artifacts and CT number errors
+      that are position-dependent within the FOV.
+
+    observable_artifacts:
+      - "Cupping artifact: center HU lower than periphery"
+      - "Capping artifact: center HU higher than periphery (overcorrection)"
+      - "CT number inaccuracy for high-density inserts (bone)"
+      - "Radially varying noise pattern"
+
+    affected_metrics:
+      - ct_number_water
+      - ct_number_bone
+      - uniformity
+      - artifact_evaluation
+
+    diagnostic_features:
+      cupping_index:
+        expected_direction: "elevated"     # Primary cupping/capping signature
+        weight: 0.50
+      hu_drift_index:
+        expected_direction: "elevated"     # Bone HU most sensitive to BH
+        weight: 0.30
+      ring_index:
+        expected_direction: "elevated"     # Radial structure from BH
+        weight: 0.20
+
+    diagnostic_test: "radial_profile_cupping_analysis"
+
+    severity_levels:
+      mild:
+        uniformity_hu: [5, 8]
+        bone_hu_deviation: [20, 40]
+      moderate:
+        uniformity_hu: [8, 15]
+        bone_hu_deviation: [40, 80]
+      severe:
+        uniformity_hu: [15, 999]
+        bone_hu_deviation: [80, 999]
+
+    remediation: >
+      Recalibrate beam hardening correction using vendor water phantom
+      calibration procedure.  Verify with both small and large phantom
+      bodies to ensure correction spans the clinical range.
+
+  # ===========================================================================
+  # 4. Geometric Calibration Drift
+  # ===========================================================================
+  - id: "geometric_calibration_drift"
+    name: "Geometric Calibration Drift"
+    description: >
+      Drift in gantry geometry parameters (center of rotation, detector
+      tilt, source-to-isocenter distance) causing geometric distortion
+      and blurring in reconstructed images.
+
+    observable_artifacts:
+      - "Phantom diameter measurement exceeds 2 mm tolerance"
+      - "Double-edge or blur at high-contrast boundaries"
+      - "Spatial resolution degradation (fewer lp/cm resolved)"
+      - "Slight elliptical distortion of circular phantom cross-section"
+
+    affected_metrics:
+      - geometric_accuracy
+      - spatial_resolution
+      - slice_thickness
+
+    diagnostic_features:
+      geometric_distortion_index:
+        expected_direction: "elevated"     # Primary geometric error signature
+        weight: 0.55
+      streak_index:
+        expected_direction: "elevated"     # Edge blur affects gradient structure
+        weight: 0.25
+      hu_drift_index:
+        expected_direction: "elevated"     # Subtle HU shifts from geometry
+        weight: 0.20
+
+    diagnostic_test: "geometric_distortion_grid_analysis"
+
+    severity_levels:
+      mild:
+        diameter_error_mm: [1.0, 2.0]
+        resolution_loss_lp_cm: [0, 1]
+      moderate:
+        diameter_error_mm: [2.0, 4.0]
+        resolution_loss_lp_cm: [1, 2]
+      severe:
+        diameter_error_mm: [4.0, 999]
+        resolution_loss_lp_cm: [2, 999]
+
+    remediation: >
+      Run full gantry geometric calibration per vendor service manual.
+      Check for mechanical wear on gantry bearings.  Verify laser alignment
+      with light field.  Re-measure after calibration to confirm restoration.
+
+  # ===========================================================================
+  # 5. Reconstruction Kernel Mismatch
+  # ===========================================================================
+  - id: "reconstruction_kernel_mismatch"
+    name: "Reconstruction Kernel Mismatch"
+    description: >
+      The QC scan was reconstructed with a different kernel than the
+      protocol specification (e.g., sharp kernel instead of smooth, or
+      vice versa).  This causes noise and resolution metrics to deviate
+      from baseline without any hardware fault.
+
+    observable_artifacts:
+      - "Noise level inconsistent with baseline for the protocol"
+      - "Spatial resolution higher or lower than expected"
+      - "CT numbers may shift slightly due to kernel-dependent BH correction"
+      - "Low-contrast detectability change"
+
+    affected_metrics:
+      - noise_std
+      - spatial_resolution
+      - low_contrast_detectability
+      - ct_number_water
+
+    diagnostic_features:
+      noise_ratio:
+        expected_direction: "elevated"     # Sharp kernel -> higher noise
+        weight: 0.45
+      streak_index:
+        expected_direction: "elevated"     # Kernel affects edge/gradient structure
+        weight: 0.30
+      hu_drift_index:
+        expected_direction: "elevated"     # Subtle HU shifts from kernel
+        weight: 0.25
+
+    diagnostic_test: "dicom_header_protocol_comparison"
+
+    severity_levels:
+      mild:
+        noise_deviation_percent: [10, 25]
+        resolution_change_lp_cm: [0, 1]
+      moderate:
+        noise_deviation_percent: [25, 50]
+        resolution_change_lp_cm: [1, 2]
+      severe:
+        noise_deviation_percent: [50, 999]
+        resolution_change_lp_cm: [2, 999]
+
+    remediation: >
+      Verify DICOM header ConvolutionKernel tag matches protocol specification.
+      Re-reconstruct from raw data with correct kernel if available.
+      Update protocol or scanner preset to prevent recurrence.
+
+  # ===========================================================================
+  # 6. Table Height / Centering Error
+  # ===========================================================================
+  - id: "table_centering_error"
+    name: "Patient Table Height / Centering Error"
+    description: >
+      Phantom not centered in the scan FOV, causing bowtie filter
+      mismatch and non-uniform dose distribution.  This creates
+      asymmetric noise and uniformity artifacts without hardware fault.
+
+    observable_artifacts:
+      - "Asymmetric noise: one side noisier than the other"
+      - "Uniformity failure with directional bias"
+      - "CT number shift from bowtie filter dose asymmetry"
+      - "Potential geometric distortion at FOV edges"
+
+    affected_metrics:
+      - uniformity
+      - noise_std
+      - ct_number_water
+      - geometric_accuracy
+
+    diagnostic_features:
+      cupping_index:
+        expected_direction: "elevated"     # Bowtie mismatch -> asymmetric dose
+        weight: 0.35
+      noise_ratio:
+        expected_direction: "elevated"     # Asymmetric noise from off-center
+        weight: 0.30
+      geometric_distortion_index:
+        expected_direction: "elevated"     # Phantom appears off-center
+        weight: 0.20
+      hu_drift_index:
+        expected_direction: "elevated"     # CT number shift from bowtie
+        weight: 0.15
+
+    diagnostic_test: "phantom_centering_offset_measurement"
+
+    severity_levels:
+      mild:
+        center_offset_mm: [5, 15]
+        uniformity_asymmetry_hu: [2, 5]
+      moderate:
+        center_offset_mm: [15, 30]
+        uniformity_asymmetry_hu: [5, 10]
+      severe:
+        center_offset_mm: [30, 999]
+        uniformity_asymmetry_hu: [10, 999]
+
+    remediation: >
+      Re-scan phantom centered at isocenter using scout/topogram alignment.
+      If auto-centering feature is available, verify it is enabled.
+      Train technologists on proper phantom positioning protocol.
+
+  # ===========================================================================
+  # 7. Slice Thickness Calibration Error
+  # ===========================================================================
+  - id: "slice_thickness_calibration_error"
+    name: "Slice Thickness Calibration Error"
+    description: >
+      Collimator or detector row selection produces slices thicker or
+      thinner than nominal, affecting partial-volume averaging, noise
+      levels, and low-contrast detectability.
+
+    observable_artifacts:
+      - "Measured slice thickness deviates > 1.5 mm from nominal"
+      - "Noise change correlated with thickness change"
+      - "Low-contrast detectability shift"
+      - "FWHM of ramp wire profile wider or narrower than expected"
+
+    affected_metrics:
+      - slice_thickness
+      - noise_std
+      - low_contrast_detectability
+
+    diagnostic_features:
+      noise_ratio:
+        expected_direction: "elevated"     # Thinner slice = more noise
+        weight: 0.50
+      hu_drift_index:
+        expected_direction: "elevated"     # Partial volume affects inserts
+        weight: 0.30
+      cupping_index:
+        expected_direction: "elevated"     # Partial volume varies with position
+        weight: 0.20
+
+    diagnostic_test: "wire_ramp_fwhm_measurement"
+
+    severity_levels:
+      mild:
+        thickness_deviation_mm: [0.5, 1.0]
+      moderate:
+        thickness_deviation_mm: [1.0, 1.5]
+      severe:
+        thickness_deviation_mm: [1.5, 999]
+
+    remediation: >
+      Verify collimator settings match protocol.  Run collimator
+      calibration if available.  For helical scans, verify pitch and
+      reconstruction increment.  Report to service if deviation persists.
+
+  # ===========================================================================
+  # 8. Iterative Reconstruction Strength Change
+  # ===========================================================================
+  - id: "iterative_recon_strength_change"
+    name: "Iterative Reconstruction Strength Mismatch"
+    description: >
+      The iterative reconstruction algorithm strength level differs from
+      the protocol baseline (e.g., ADMIRE level 3 vs. expected level 2,
+      or ASiR-V 50% vs. expected 40%).  This changes noise texture
+      and magnitude without hardware change.
+
+    observable_artifacts:
+      - "Noise level lower or higher than baseline"
+      - "Changed noise texture (waxy/plastic appearance at high IR)"
+      - "Potential low-contrast detectability change"
+      - "CT numbers may shift slightly for some vendor implementations"
+
+    affected_metrics:
+      - noise_std
+      - low_contrast_detectability
+      - ct_number_water
+      - spatial_resolution
+
+    diagnostic_features:
+      noise_ratio:
+        expected_direction: "decreased"    # Higher IR -> lower noise
+        weight: 0.50
+      streak_index:
+        expected_direction: "decreased"    # IR reduces streak artifacts
+        weight: 0.30
+      hu_drift_index:
+        expected_direction: "elevated"     # Some IR implementations shift HU
+        weight: 0.20
+
+    diagnostic_test: "dicom_header_ir_level_check"
+
+    severity_levels:
+      mild:
+        noise_change_percent: [10, 20]
+      moderate:
+        noise_change_percent: [20, 40]
+      severe:
+        noise_change_percent: [40, 999]
+
+    remediation: >
+      Verify DICOM header for IR algorithm and strength level against
+      protocol specification.  Re-reconstruct with correct IR level if
+      raw data available.  Update protocol preset to prevent recurrence.
+
+  # ===========================================================================
+  # 9. Phantom Positioning Rotation
+  # ===========================================================================
+  - id: "phantom_rotation"
+    name: "Phantom Rotational Misalignment"
+    description: >
+      ACR phantom rotated about its long axis relative to the expected
+      orientation.  Insert ROIs land on wrong materials, causing
+      apparent CT number failures that are actually positioning errors.
+
+    observable_artifacts:
+      - "CT number values in insert ROIs do not match expected materials"
+      - "Insert HU values appear 'swapped' between positions"
+      - "Water ROI typically unaffected"
+      - "Uniformity typically unaffected"
+
+    affected_metrics:
+      - ct_number_bone
+      - ct_number_air
+      - ct_number_acrylic
+      - ct_number_polyethylene
+
+    diagnostic_features:
+      hu_drift_index:
+        expected_direction: "elevated"     # Inserts measured at wrong positions
+        weight: 0.60
+      geometric_distortion_index:
+        expected_direction: "elevated"     # Apparent position errors
+        weight: 0.25
+      noise_ratio:
+        expected_direction: "decreased"    # Water ROI unaffected -> ratio near 1
+        weight: 0.15
+
+    diagnostic_test: "phantom_rotation_angle_detection"
+
+    severity_levels:
+      mild:
+        rotation_angle_deg: [5, 20]
+      moderate:
+        rotation_angle_deg: [20, 45]
+      severe:
+        rotation_angle_deg: [45, 180]
+
+    remediation: >
+      Auto-detect phantom rotation via orientation_method (phantom_rotation_auto)
+      and re-assign ROIs accordingly.  If auto-detection fails, re-scan
+      with phantom alignment marks visible.  Train technologists on
+      proper phantom orientation.
+
+  # ===========================================================================
+  # 10. Scan Parameter Protocol Deviation
+  # ===========================================================================
+  - id: "scan_parameter_deviation"
+    name: "Scan Parameter Protocol Deviation"
+    description: >
+      One or more scan parameters (kVp, mA, pitch, FOV, slice thickness)
+      differ from the QC protocol specification.  This is a procedural
+      error that affects multiple metrics simultaneously in a correlated
+      pattern.
+
+    observable_artifacts:
+      - "Multiple metrics shift simultaneously from baseline"
+      - "CT number shifts correlate with kVp change"
+      - "Noise level inconsistent with expected mAs"
+      - "Geometric accuracy changes with FOV setting"
+
+    affected_metrics:
+      - ct_number_water
+      - ct_number_bone
+      - ct_number_air
+      - ct_number_acrylic
+      - ct_number_polyethylene
+      - noise_std
+      - spatial_resolution
+      - geometric_accuracy
+      - slice_thickness
+      - low_contrast_detectability
+
+    diagnostic_features:
+      hu_drift_index:
+        expected_direction: "elevated"     # kVp change shifts all HU values
+        weight: 0.35
+      noise_ratio:
+        expected_direction: "elevated"     # mAs change affects noise
+        weight: 0.35
+      geometric_distortion_index:
+        expected_direction: "elevated"     # FOV change causes geometry errors
+        weight: 0.15
+      cupping_index:
+        expected_direction: "elevated"     # Dose distribution changes
+        weight: 0.15
+
+    diagnostic_test: "dicom_header_full_protocol_audit"
+
+    severity_levels:
+      mild:
+        parameter_count_deviated: [1, 1]
+        kvp_deviation: [0, 10]
+      moderate:
+        parameter_count_deviated: [2, 3]
+        kvp_deviation: [10, 20]
+      severe:
+        parameter_count_deviated: [4, 999]
+        kvp_deviation: [20, 999]
+
+    remediation: >
+      Compare DICOM header scan parameters against protocol specification.
+      Re-scan with correct protocol if any parameter deviates.  Verify
+      protocol is correctly saved in scanner preset library.  Implement
+      protocol locking if supported by vendor.

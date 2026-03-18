@@ -1,0 +1,11 @@
+{
+  "Z": 2,
+  "basis": "aug-cc-pVDZ",
+  "n_max": 4,
+  "l_max": 3,
+  "method": "Full-CI",
+  "_task_id": "03_quantum_chemistry_dev_084",
+  "_seed": 2998183809,
+  "_tier": "dev",
+  "_domain": "03_quantum_chemistry"
+}

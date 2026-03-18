@@ -1,0 +1,33 @@
+{
+  "param_pack_version": "0.2.1",
+  "id": "sensor_pipeline_default_v1",
+  "type": "sensor",
+  "params": {
+    "saturation_level": 1.0,
+    "quantization_bits": 12,
+    "fixed_pattern_noise_std": 0.005,
+    "nonlinearity_gamma": 1.0
+  },
+  "units": {
+    "saturation_level": "normalized",
+    "quantization_bits": "bits",
+    "fixed_pattern_noise_std": "norm",
+    "nonlinearity_gamma": "unitless"
+  },
+  "valid_ranges": {
+    "quantization_bits": [
+      8,
+      16
+    ],
+    "fixed_pattern_noise_std": [
+      0.0,
+      0.05
+    ],
+    "nonlinearity_gamma": [
+      0.8,
+      1.2
+    ]
+  },
+  "notes": "A simple sensor pipeline config. Real cameras need per-sensor calibration.",
+  "created": "2026-02-01"
+}

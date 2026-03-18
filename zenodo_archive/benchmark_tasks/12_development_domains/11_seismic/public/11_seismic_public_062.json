@@ -1,0 +1,11 @@
+{
+  "model": "Marmousi-2",
+  "n_sources": 240,
+  "freq_max_Hz": 10,
+  "starting_model": "1D_smoothed",
+  "lambda_TV": 0.001,
+  "_task_id": "11_seismic_public_062",
+  "_seed": 3081682656,
+  "_tier": "public",
+  "_domain": "11_seismic"
+}

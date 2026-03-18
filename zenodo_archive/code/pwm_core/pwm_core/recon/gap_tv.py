@@ -1,0 +1,677 @@
+"""GAP-TV: Generalized Alternating Projection with Total Variation.
+
+Standard baseline algorithm for CASSI (spectral) and CACTI (video) reconstruction.
+
+References:
+- Yuan, X. (2016). "Generalized alternating projection based total variation
+  minimization for compressive sensing"
+
+Benchmark CASSI (KAIST, 256x256x28, 10 scenes):
+- GAP-TV (100 iters, Chambolle TV w=0.1): 24.34 dB mean PSNR
+- Validated via InverseNet ECCV benchmark
+
+Benchmark CACTI (6 videos, 256x256x8):
+- Kobe: 26.8 dB, Traffic: 24.5 dB, Runner: 29.2 dB
+- Drop: 34.1 dB, Crash: 25.3 dB, Aerial: 25.8 dB
+- Average: 27.6 dB
+"""
+
+from __future__ import annotations
+
+from typing import Any, Callable, Dict, Optional, Tuple
+
+import numpy as np
+
+
+def tv_denoiser_3d(
+    x: np.ndarray,
+    lam: float,
+    iterations: int = 10,
+    axis_weights: Tuple[float, float, float] = (1.0, 1.0, 0.5),
+    device=None,
+) -> np.ndarray:
+    """3D anisotropic TV denoising.
+
+    Uses dual Chambolle algorithm extended to 3D.
+
+    Args:
+        x: 3D data cube (H, W, C) where C is spectral or temporal
+        lam: Regularization strength
+        iterations: Number of iterations
+        axis_weights: Relative weights for (y, x, spectral/temporal) gradients
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        TV-denoised 3D cube
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        from pwm_core.recon.gpu_utils import to_torch, to_numpy, tv_denoiser_3d_torch
+        x_t = to_torch(x, dev)
+        result = tv_denoiser_3d_torch(x_t, lam, iterations, axis_weights)
+        return to_numpy(result).astype(np.float32)
+
+    h, w, c = x.shape
+    p = np.zeros((h, w, c, 3), dtype=np.float32)
+
+    tau = 0.125  # Step size for 3D
+    wy, wx, wc = axis_weights
+
+    for _ in range(iterations):
+        # Compute divergence
+        div = np.zeros_like(x)
+
+        # y-component
+        div[:-1, :, :] += p[:-1, :, :, 0]
+        div[1:, :, :] -= p[:-1, :, :, 0]
+        div *= wy
+
+        # x-component
+        divx = np.zeros_like(x)
+        divx[:, :-1, :] += p[:, :-1, :, 1]
+        divx[:, 1:, :] -= p[:, :-1, :, 1]
+        div += wx * divx
+
+        # c-component (spectral/temporal)
+        divc = np.zeros_like(x)
+        divc[:, :, :-1] += p[:, :, :-1, 2]
+        divc[:, :, 1:] -= p[:, :, :-1, 2]
+        div += wc * divc
+
+        # Gradient of (x - lam * div)
+        u = x - lam * div
+
+        grad = np.zeros((h, w, c, 3), dtype=np.float32)
+        grad[:-1, :, :, 0] = wy * (u[1:, :, :] - u[:-1, :, :])
+        grad[:, :-1, :, 1] = wx * (u[:, 1:, :] - u[:, :-1, :])
+        grad[:, :, :-1, 2] = wc * (u[:, :, 1:] - u[:, :, :-1])
+
+        # Update dual
+        p_new = p + tau * grad
+
+        # Project to unit ball
+        norm = np.sqrt(np.sum(p_new**2, axis=3, keepdims=True) + 1e-10)
+        p = p_new / np.maximum(norm, 1)
+
+    # Final result
+    div = np.zeros_like(x)
+    div[:-1, :, :] += p[:-1, :, :, 0]
+    div[1:, :, :] -= p[:-1, :, :, 0]
+    div *= wy
+
+    divx = np.zeros_like(x)
+    divx[:, :-1, :] += p[:, :-1, :, 1]
+    divx[:, 1:, :] -= p[:, :-1, :, 1]
+    div += wx * divx
+
+    divc = np.zeros_like(x)
+    divc[:, :, :-1] += p[:, :, :-1, 2]
+    divc[:, :, 1:] -= p[:, :, :-1, 2]
+    div += wc * divc
+
+    return (x - lam * div).astype(np.float32)
+
+
+def gap_tv_cassi(
+    y: np.ndarray,
+    mask: np.ndarray,
+    n_bands: int,
+    iterations: int = 100,
+    lam: float = 0.1,
+    acc: float = 1.0,
+    step: int = 2,
+    accelerate: bool = True,
+    tv_iter: int = 5,
+    device=None,
+) -> np.ndarray:
+    """GAP-TV for CASSI (Coded Aperture Snapshot Spectral Imaging).
+
+    Uses Nesterov-accelerated GAP with Chambolle TV denoiser (skimage).
+    Validated on KAIST 10 scenes: 24.34 dB mean PSNR at 100 iters, lam=0.1.
+
+    CASSI model: y = sum_k shift_k(mask * x_k)
+    where shift_k shifts band k by k*step pixels (spectral dispersion).
+
+    Args:
+        y: 2D measurement (H, W + (n_bands - 1) * step)
+        mask: 2D coded aperture (H, W)
+        n_bands: Number of spectral bands
+        iterations: Number of GAP iterations (default: 100)
+        lam: TV regularization weight for Chambolle denoiser (default: 0.1)
+        acc: Acceleration parameter (unused in Nesterov mode)
+        step: Dispersion step in pixels per band (2 for standard CASSI)
+        accelerate: Enable Nesterov acceleration (default: True, recommended)
+        tv_iter: Inner TV denoiser iterations per GAP step (default: 5)
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed 3D spectral cube (H, W, n_bands)
+    """
+    from skimage.restoration import denoise_tv_chambolle
+
+    h, w_meas = y.shape
+    w = w_meas - (n_bands - 1) * step  # Object width
+
+    # Clip mask to [0, 1] for numerical stability (warped masks may overshoot)
+    mask = np.clip(mask, 0, 1).astype(np.float32)
+
+    # Phi_sum: sum of mask^2 at each measurement pixel (2D normalization)
+    Phi_sum = np.zeros((h, w_meas), dtype=np.float32)
+    for k in range(n_bands):
+        Phi_sum[:, k * step:k * step + w] += mask ** 2
+    Phi_sum = np.maximum(Phi_sum, 1e-10)
+
+    # Initialize with normalized back-projection
+    x = np.zeros((h, w, n_bands), dtype=np.float32)
+    for k in range(n_bands):
+        x[:, :, k] = mask * y[:, k * step:k * step + w] / np.maximum(
+            Phi_sum[:, k * step:k * step + w], 1e-6)
+
+    # Nesterov accumulated residual (Yuan 2016, Eq. 8)
+    y1 = np.zeros((h, w_meas), dtype=np.float32)
+
+    for it in range(iterations):
+        # Forward: compute estimated measurement
+        y_est = np.zeros((h, w_meas), dtype=np.float32)
+        for k in range(n_bands):
+            y_est[:, k * step:k * step + w] += mask * x[:, :, k]
+
+        # Nesterov acceleration: accumulate residual
+        y1 += (y[:, :w_meas] - y_est)
+        norm_r = (y1 - y_est) / Phi_sum
+        for k in range(n_bands):
+            x[:, :, k] += mask * norm_r[:, k * step:k * step + w]
+
+        # Chambolle TV denoising (per-channel 2D TV via channel_axis)
+        x = denoise_tv_chambolle(
+            np.clip(x, 0, None), weight=lam,
+            max_num_iter=tv_iter, channel_axis=2,
+        ).astype(np.float32)
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def _gap_tv_cassi_torch(y, mask, n_bands, iterations, lam, acc, step,
+                        accelerate, dev):
+    """GPU implementation of gap_tv_cassi."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, tv_denoiser_3d_torch
+
+    h, w_meas = y.shape
+    w = w_meas - (n_bands - 1) * step
+
+    mask_t = torch.clamp(to_torch(mask, dev), 0, 1)
+    y_t = to_torch(y, dev)
+
+    x = torch.zeros(h, w, n_bands, device=dev, dtype=torch.float32)
+
+    Phi_sum = torch.zeros(h, w_meas, device=dev, dtype=torch.float32)
+    for k in range(n_bands):
+        Phi_sum[:, k * step:k * step + w] += mask_t ** 2
+    Phi_sum = torch.clamp(Phi_sum, min=1e-6)
+
+    if not accelerate:
+        y_ones = torch.zeros(h, w_meas, device=dev, dtype=torch.float32)
+        for k in range(n_bands):
+            y_ones[:, k * step:k * step + w] += mask_t
+        mask_sum = torch.zeros(h, w, n_bands, device=dev, dtype=torch.float32)
+        for k in range(n_bands):
+            mask_sum[:, :, k] = mask_t * y_ones[:, k * step:k * step + w]
+        mask_sum = torch.clamp(mask_sum, min=1e-6)
+
+    for k in range(n_bands):
+        x[:, :, k] = mask_t * y_t[:, k * step:k * step + w]
+    if not accelerate:
+        x /= mask_sum
+    else:
+        for k in range(n_bands):
+            x[:, :, k] /= torch.clamp(Phi_sum[:, k * step:k * step + w], min=1e-6)
+
+    y1 = torch.zeros_like(y_t) if accelerate else None
+
+    for it in range(iterations):
+        y_est = torch.zeros_like(y_t)
+        for k in range(n_bands):
+            y_est[:, k * step:k * step + w] += mask_t * x[:, :, k]
+
+        if accelerate:
+            y1 += (y_t - y_est)
+            norm_r = (y1 - y_est) / Phi_sum
+            for k in range(n_bands):
+                x[:, :, k] += acc * mask_t * norm_r[:, k * step:k * step + w]
+        else:
+            residual = y_t - y_est
+            x_update = torch.zeros_like(x)
+            for k in range(n_bands):
+                x_update[:, :, k] = mask_t * residual[:, k * step:k * step + w]
+            x = x + acc * x_update / mask_sum
+
+        x = torch.nan_to_num(x, nan=0.0, posinf=1.0, neginf=0.0)
+        x = tv_denoiser_3d_torch(x, lam, iterations=5)
+        x = torch.clamp(x, min=0)
+
+    return to_numpy(x).astype(np.float32)
+
+
+def gap_tv_cacti(
+    y: np.ndarray,
+    masks: np.ndarray,
+    iterations: int = 50,
+    lam: float = 0.05,
+    acc: float = 1.0,
+    device=None,
+) -> np.ndarray:
+    """GAP-TV for CACTI (Coded Aperture Compressive Temporal Imaging).
+
+    CACTI model: y = sum_t mask_t * x_t
+    where mask_t is a time-varying binary mask.
+
+    Args:
+        y: 2D snapshot measurement (H, W)
+        masks: 3D mask tensor (H, W, n_frames)
+        iterations: Number of GAP iterations
+        lam: TV regularization weight
+        acc: Acceleration parameter
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed video (H, W, n_frames)
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _gap_tv_cacti_torch(y, masks, iterations, lam, acc, dev)
+
+    h, w = y.shape[:2]
+    n_frames = masks.shape[2]
+
+    # Initialize estimate
+    x = np.zeros((h, w, n_frames), dtype=np.float32)
+
+    # Initialize with back-projection
+    mask_sum = np.sum(masks**2, axis=2, keepdims=True) + 1e-10
+    for t in range(n_frames):
+        x[:, :, t] = masks[:, :, t] * y / mask_sum[:, :, 0]
+
+    for it in range(iterations):
+        # Forward model: sum of masked frames
+        y_est = np.sum(masks * x, axis=2)
+
+        # Residual
+        residual = y - y_est
+
+        # Back-project residual
+        x_update = masks * residual[:, :, np.newaxis]
+
+        # Update
+        x = x + acc * x_update / mask_sum
+
+        # TV denoising (spatial + temporal)
+        x = tv_denoiser_3d(x, lam, iterations=5, axis_weights=(1.0, 1.0, 0.3))
+
+        # Non-negativity
+        x = np.maximum(x, 0)
+
+    return x.astype(np.float32)
+
+
+def _gap_tv_cacti_torch(y, masks, iterations, lam, acc, dev):
+    """GPU implementation of gap_tv_cacti."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, tv_denoiser_3d_torch
+
+    y_t = to_torch(y, dev)
+    masks_t = to_torch(masks, dev)
+    h, w = y.shape[:2]
+    n_frames = masks.shape[2]
+
+    x = torch.zeros(h, w, n_frames, device=dev, dtype=torch.float32)
+
+    mask_sum = torch.sum(masks_t ** 2, dim=2, keepdim=True) + 1e-10
+    for t in range(n_frames):
+        x[:, :, t] = masks_t[:, :, t] * y_t / mask_sum[:, :, 0]
+
+    for it in range(iterations):
+        y_est = torch.sum(masks_t * x, dim=2)
+        residual = y_t - y_est
+        x_update = masks_t * residual.unsqueeze(2)
+        x = x + acc * x_update / mask_sum
+
+        x = tv_denoiser_3d_torch(x, lam, iterations=5,
+                                 axis_weights=(1.0, 1.0, 0.3))
+        x = torch.clamp(x, min=0)
+
+    return to_numpy(x).astype(np.float32)
+
+
+def gap_tv_operator(
+    y: np.ndarray,
+    forward: Callable,
+    adjoint: Callable,
+    x_shape: Tuple[int, ...],
+    iterations: int = 50,
+    lam: float = 0.05,
+    acc: float = 1.0,
+    device=None,
+) -> np.ndarray:
+    """General GAP-TV using forward/adjoint operators.
+
+    Works for any linear inverse problem with 3D reconstruction.
+
+    Args:
+        y: Measurements
+        forward: Forward operator
+        adjoint: Adjoint operator
+        x_shape: Shape of 3D reconstruction
+        iterations: Number of iterations
+        lam: TV weight
+        acc: Acceleration
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
+
+    Returns:
+        Reconstructed 3D volume
+    """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _gap_tv_operator_torch(y, forward, adjoint, x_shape,
+                                      iterations, lam, acc, dev)
+
+    # Initialize
+    x = adjoint(y).reshape(x_shape).astype(np.float32)
+
+    # Normalize
+    x_max = np.abs(x).max()
+    if x_max > 1:
+        x = x / x_max
+
+    # Compute normalization factor
+    ones = np.ones(x_shape, dtype=np.float32)
+    AtA_ones = adjoint(forward(ones)).reshape(x_shape)
+    norm = np.maximum(AtA_ones, 1e-10)
+
+    for it in range(iterations):
+        # Forward model
+        y_est = forward(x * x_max if x_max > 1 else x)
+
+        # Residual
+        residual = y - y_est
+
+        # Back-project
+        x_update = adjoint(residual).reshape(x_shape)
+        if x_max > 1:
+            x_update = x_update / x_max
+
+        # Update
+        x = x + acc * x_update / norm
+
+        # TV denoising
+        if x.ndim == 3:
+            x = tv_denoiser_3d(x, lam, iterations=5)
+        else:
+            # 2D TV
+            from pwm_core.recon.cs_solvers import tv_prox_2d
+            x = tv_prox_2d(x, lam)
+
+        # Non-negativity
+        x = np.maximum(x, 0)
+
+    # Denormalize
+    if x_max > 1:
+        x = x * x_max
+
+    return x.astype(np.float32)
+
+
+def _gap_tv_operator_torch(y, forward, adjoint, x_shape, iterations, lam,
+                           acc, dev):
+    """GPU implementation of gap_tv_operator."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy, wrap_operator,
+                                          tv_denoiser_3d_torch, tv_prox_2d_torch)
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+    x_max = float(torch.abs(x).max())
+    if x_max > 1:
+        x = x / x_max
+
+    ones = torch.ones(x_shape, device=dev, dtype=torch.float32)
+    AtA_ones = adj(fwd(ones)).reshape(x_shape)
+    norm = torch.clamp(AtA_ones, min=1e-10)
+
+    for it in range(iterations):
+        y_est = fwd(x * x_max if x_max > 1 else x)
+        residual = y_t - y_est
+        x_update = adj(residual).reshape(x_shape)
+        if x_max > 1:
+            x_update = x_update / x_max
+
+        x = x + acc * x_update / norm
+
+        if x.ndim == 3:
+            x = tv_denoiser_3d_torch(x, lam, iterations=5)
+        else:
+            x = tv_prox_2d_torch(x, lam)
+
+        x = torch.clamp(x, min=0)
+
+    if x_max > 1:
+        x = x * x_max
+
+    return to_numpy(x).astype(np.float32)
+
+
+def run_gap_tv(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run GAP-TV reconstruction.
+
+    Automatically detects CASSI vs CACTI based on physics operator.
+
+    Args:
+        y: Measurements (2D snapshot)
+        physics: Physics operator
+        cfg: Configuration with:
+            - iters: Number of iterations (default: 50)
+            - lam: TV weight (default: 0.05)
+            - acc: Acceleration (default: 1.0)
+
+    Returns:
+        Tuple of (reconstructed 3D cube, info_dict)
+    """
+    iters = cfg.get("iters", 100)
+    lam = cfg.get("lam", 0.1)
+    acc = cfg.get("acc", 1.0)
+    tv_iter = cfg.get("tv_iter", 5)
+    device = cfg.get("device", None)
+
+    info = {
+        "solver": "gap_tv",
+        "iters": iters,
+        "lam": lam,
+    }
+
+    try:
+        # Try to detect modality from physics
+        modality = None
+        mask = None
+        masks = None
+        n_bands = None
+
+        if hasattr(physics, 'info'):
+            op_info = physics.info()
+            modality = op_info.get('modality', None)
+            mask = op_info.get('mask', None)
+            masks = op_info.get('masks', None)
+            n_bands = op_info.get('n_bands', op_info.get('n_channels', None))
+
+        if hasattr(physics, 'mask'):
+            mask = physics.mask
+        if hasattr(physics, 'masks'):
+            masks = physics.masks
+        if hasattr(physics, 'n_bands'):
+            n_bands = physics.n_bands
+        if hasattr(physics, 'n_frames'):
+            n_frames = physics.n_frames
+
+        # CASSI case
+        if modality == 'cassi' or (mask is not None and n_bands is not None):
+            step = 2
+            if hasattr(physics, 'step'):
+                step = physics.step
+            elif hasattr(physics, 'info'):
+                step = op_info.get('step', 2)
+            result = gap_tv_cassi(y, mask, n_bands, iters, lam, acc, step=step,
+                                  tv_iter=tv_iter, device=device)
+            info["modality"] = "cassi"
+            return result, info
+
+        # CACTI case
+        if modality == 'cacti' or masks is not None:
+            if masks is None and hasattr(physics, 'forward'):
+                # Need to construct masks from operator info
+                pass
+            if masks is not None:
+                result = gap_tv_cacti(y, masks, iters, lam, acc, device=device)
+                info["modality"] = "cacti"
+                return result, info
+
+        # General operator case
+        if hasattr(physics, 'forward') and hasattr(physics, 'adjoint'):
+            x_shape = y.shape
+            if hasattr(physics, 'x_shape'):
+                x_shape = tuple(physics.x_shape)
+            elif hasattr(physics, 'info'):
+                op_info = physics.info()
+                if 'x_shape' in op_info:
+                    x_shape = tuple(op_info['x_shape'])
+
+            result = gap_tv_operator(
+                y, physics.forward, physics.adjoint,
+                x_shape, iters, lam, acc, device=device
+            )
+            info["modality"] = "general"
+            return result, info
+
+        info["error"] = "unsupported_physics"
+        return y.astype(np.float32), info
+
+    except Exception as e:
+        info["error"] = str(e)
+        if hasattr(physics, 'adjoint'):
+            result = physics.adjoint(y)
+            return result.astype(np.float32), info
+        return y.astype(np.float32), info
+
+
+def run_gap_denoise(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """GAP with plug-and-play denoiser instead of TV.
+
+    Uses PnP framework with GAP data fidelity step.
+
+    Args:
+        y: Measurements
+        physics: Physics operator
+        cfg: Configuration
+
+    Returns:
+        Tuple of (reconstructed, info_dict)
+    """
+    from pwm_core.recon.pnp import get_denoiser
+
+    iters = cfg.get("iters", 50)
+    sigma = cfg.get("sigma", 0.1)
+    sigma_decay = cfg.get("sigma_decay", 0.95)
+    acc = cfg.get("acc", 1.0)
+    denoiser_type = cfg.get("denoiser", "auto")
+
+    # HSI-SDeCNN integration: use as PnP denoiser for CASSI spectral data
+    if denoiser_type == "hsi_sdecnn":
+        try:
+            from pwm_core.recon.hsi_sdecnn import hsi_sdecnn_denoise
+
+            def denoiser_fn(x_slice, sigma_unused):
+                return hsi_sdecnn_denoise(x_slice, device=cfg.get("device", None))
+
+            denoiser_type = denoiser_fn  # Override with HSI-SDeCNN callable
+        except ImportError:
+            pass  # Fall through to default denoiser
+
+    info = {
+        "solver": "gap_pnp",
+        "iters": iters,
+        "denoiser": denoiser_type,
+    }
+
+    try:
+        if not (hasattr(physics, 'forward') and hasattr(physics, 'adjoint')):
+            return run_gap_tv(y, physics, cfg)
+
+        x_shape = y.shape
+        if hasattr(physics, 'x_shape'):
+            x_shape = tuple(physics.x_shape)
+        elif hasattr(physics, 'info'):
+            op_info = physics.info()
+            if 'x_shape' in op_info:
+                x_shape = tuple(op_info['x_shape'])
+
+        # Get denoiser (supports callable override from HSI-SDeCNN)
+        if callable(denoiser_type):
+            denoiser = denoiser_type
+        else:
+            denoiser = get_denoiser(denoiser_type)
+
+        # Initialize
+        x = physics.adjoint(y).reshape(x_shape).astype(np.float32)
+
+        # Normalize
+        x_max = np.abs(x).max()
+        if x_max > 1:
+            x = x / x_max
+
+        current_sigma = sigma
+
+        for it in range(iters):
+            # GAP data fidelity step
+            y_est = physics.forward(x * x_max if x_max > 1 else x)
+            residual = y - y_est
+            x_update = physics.adjoint(residual).reshape(x_shape)
+            if x_max > 1:
+                x_update = x_update / x_max
+            x = x + acc * x_update
+
+            # Denoising step
+            if x.ndim == 2:
+                x = denoiser(x, current_sigma)
+            elif x.ndim == 3:
+                # Denoise each slice
+                for c in range(x.shape[2]):
+                    x[:, :, c] = denoiser(x[:, :, c], current_sigma)
+
+            x = x.reshape(x_shape)
+            x = np.maximum(x, 0)
+
+            current_sigma *= sigma_decay
+
+        if x_max > 1:
+            x = x * x_max
+
+        return x.astype(np.float32), info
+
+    except Exception as e:
+        info["error"] = str(e)
+        return run_gap_tv(y, physics, cfg)

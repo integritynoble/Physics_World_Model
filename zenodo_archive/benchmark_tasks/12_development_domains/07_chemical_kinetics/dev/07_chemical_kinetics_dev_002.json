@@ -1,0 +1,11 @@
+{
+  "T_K": 1421,
+  "p_atm": 15,
+  "phi": 0.9908773250395551,
+  "fuel": "CH4",
+  "reactor": "constant_volume",
+  "_task_id": "07_chemical_kinetics_dev_002",
+  "_seed": 291768031,
+  "_tier": "dev",
+  "_domain": "07_chemical_kinetics"
+}

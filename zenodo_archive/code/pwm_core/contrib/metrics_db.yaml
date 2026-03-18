@@ -1,0 +1,103 @@
+version: "1.0"
+
+metric_sets:
+  intensity_2d:
+    description: "Standard 2D intensity images"
+    metrics: [psnr, ssim, nrmse]
+    modalities: [widefield, widefield_lowdose, confocal_livecell, confocal_3d,
+                 sim, lensless, lightsheet, matrix, panorama]
+
+  hyperspectral:
+    description: "Spectral datacubes"
+    metrics: [psnr, ssim, sam, ergas]
+    modalities: [cassi]
+
+  video_temporal:
+    description: "Video / temporal sequences"
+    metrics: [psnr, ssim, temporal_consistency]
+    modalities: [cacti]
+
+  compressive_spatial:
+    description: "Compressive sensing (spatial)"
+    metrics: [psnr, ssim, nrmse]
+    modalities: [spc]
+
+  medical_volumetric:
+    description: "Medical imaging (CT/MRI)"
+    metrics: [psnr, ssim, nrmse]
+    modalities: [ct, mri, xray_radiography]
+
+  phase_imaging:
+    description: "Complex-valued / phase objects"
+    metrics: [phase_rmse, magnitude_psnr, wrapped_phase_error, ssim]
+    modalities: [ptychography, holography, phase_retrieval, fpm]
+
+  neural_rendering:
+    description: "Novel view synthesis"
+    metrics: [psnr, ssim, lpips]
+    modalities: [nerf, gaussian_splatting, light_field, integral]
+
+  volumetric_medical:
+    description: "Volumetric medical imaging (DOT, photoacoustic, OCT)"
+    metrics: [psnr, ssim, cnr, dice]
+    modalities: [dot, photoacoustic, oct, ultrasound]
+
+  nuclear_medical:
+    description: "Nuclear medicine imaging (PET, SPECT)"
+    metrics: [psnr, ssim, crc, cnr]
+    modalities: [pet, spect]
+
+  electron_microscopy:
+    description: "Electron microscopy (SEM, TEM, STEM, ET)"
+    metrics: [psnr, ssim, frc, nrmse]
+    modalities: [sem, tem, electron_tomography, stem]
+
+  lifetime:
+    description: "Fluorescence lifetime imaging"
+    metrics: [psnr, lifetime_error, chi_squared]
+    modalities: [flim]
+
+  xray_variants:
+    description: "X-ray projection imaging variants"
+    metrics: [psnr, ssim, nrmse, cnr]
+    modalities: [fluoroscopy, mammography, dexa, cbct, angiography]
+
+  ultrasound_advanced:
+    description: "Advanced ultrasound modes (Doppler, elastography)"
+    metrics: [psnr, ssim, velocity_rmse, modulus_error]
+    modalities: [doppler_ultrasound, elastography]
+
+  mri_advanced:
+    description: "Advanced MRI applications (fMRI, MRS, diffusion)"
+    metrics: [psnr, ssim, nrmse, snr]
+    modalities: [fmri, mrs, diffusion_mri]
+
+  advanced_microscopy:
+    description: "Advanced optical microscopy (two-photon, STED, PALM/STORM, TIRF, polarization)"
+    metrics: [psnr, ssim, frc, nrmse]
+    modalities: [two_photon, sted, palm_storm, tirf, polarization]
+
+  radar_sonar:
+    description: "Radar and sonar imaging modalities"
+    metrics: [psnr, ssim, sar_resolution, cnr]
+    modalities: [sar, sonar]
+
+  electron_spectroscopy:
+    description: "Electron spectroscopy and diffraction modalities"
+    metrics: [psnr, ssim, spectral_fidelity, frc]
+    modalities: [electron_diffraction, ebsd, eels, electron_holography]
+
+  particle_imaging:
+    description: "Particle imaging modalities (neutron, proton, muon)"
+    metrics: [psnr, ssim, nrmse, cnr]
+    modalities: [neutron_tomo, proton_radiography, muon_tomo]
+
+  clinical_optics:
+    description: "Clinical optics (endoscopy, fundus, OCTA)"
+    metrics: [psnr, ssim, cnr, nrmse]
+    modalities: [endoscopy, fundus, octa]
+
+  depth_imaging:
+    description: "Depth / ToF imaging (ToF camera, LiDAR, structured light)"
+    metrics: [mae_depth, rmse_depth, ssim, completeness]
+    modalities: [tof_camera, lidar, structured_light]

@@ -1,0 +1,11 @@
+{
+  "V_frac": 0.41974903394903074,
+  "E_GPa": 210,
+  "load_N": 1039,
+  "support": "L-bracket",
+  "penalization": 3,
+  "_task_id": "06_structural_mechanics_dev_049",
+  "_seed": 3202172009,
+  "_tier": "dev",
+  "_domain": "06_structural_mechanics"
+}

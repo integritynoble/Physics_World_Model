@@ -1,0 +1,11 @@
+{
+  "lambda_nm": 809,
+  "R_mm": 0.5,
+  "z_m": 0.0524637604178757,
+  "aperture_shape": "annular",
+  "grid_N": 512,
+  "_task_id": "09_optics_hidden_048",
+  "_seed": 2119612577,
+  "_tier": "hidden",
+  "_domain": "09_optics"
+}

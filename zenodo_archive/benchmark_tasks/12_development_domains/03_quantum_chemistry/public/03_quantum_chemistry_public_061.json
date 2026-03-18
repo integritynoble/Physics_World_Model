@@ -1,0 +1,11 @@
+{
+  "Z": 2,
+  "basis": "STO-6G",
+  "n_max": 4,
+  "l_max": 3,
+  "method": "Full-CI",
+  "_task_id": "03_quantum_chemistry_public_061",
+  "_seed": 424321209,
+  "_tier": "public",
+  "_domain": "03_quantum_chemistry"
+}

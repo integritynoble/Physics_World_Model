@@ -1,0 +1,11 @@
+{
+  "V_frac": 0.4679384898952564,
+  "E_GPa": 210,
+  "load_N": 1967,
+  "support": "MBB",
+  "penalization": 3,
+  "_task_id": "06_structural_mechanics_dev_057",
+  "_seed": 2177185085,
+  "_tier": "dev",
+  "_domain": "06_structural_mechanics"
+}

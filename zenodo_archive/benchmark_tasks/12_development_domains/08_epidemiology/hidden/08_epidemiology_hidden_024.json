@@ -1,0 +1,12 @@
+{
+  "county": "King_WA",
+  "beta_0": 0.35,
+  "sigma": 0.2,
+  "gamma": 0.1,
+  "delta": 0.005,
+  "T_days": 348,
+  "_task_id": "08_epidemiology_hidden_024",
+  "_seed": 2260985661,
+  "_tier": "hidden",
+  "_domain": "08_epidemiology"
+}

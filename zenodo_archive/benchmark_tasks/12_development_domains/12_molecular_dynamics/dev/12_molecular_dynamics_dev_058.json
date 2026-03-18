@@ -1,0 +1,12 @@
+{
+  "protein": "HP35",
+  "force_field": "OPLS-AA",
+  "solvent": "GB-Neck2",
+  "T_K": 326,
+  "T_sim_ns": 1000,
+  "dt_fs": 2.0,
+  "_task_id": "12_molecular_dynamics_dev_058",
+  "_seed": 1123089075,
+  "_tier": "dev",
+  "_domain": "12_molecular_dynamics"
+}
