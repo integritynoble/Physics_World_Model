@@ -79,13 +79,13 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 | `best_quality` | GAP-TV (200 iter) | 26.04 dB | ~24.9 dB | verified |
 | `tsa_net` | TSA-Net | 25.92 dB | 31.5 dB | verified |
 | `twist` | TwIST | 25.11 dB | 23.1 dB | verified |
-| `mijun_5stg` | MiJUN-5stg | 27.72 dB | 40.9 dB | verified (pure-PyTorch Mamba) |
+| `mijun_5stg` | MiJUN-5stg | 27.72 dB | 40.9 dB | verified (auto-detects CUDA mamba_ssm) |
 
 ## Algorithm Leaderboard (KAIST benchmark reference)
 
 | Algorithm | Year | Ref PSNR | Status |
 |-----------|------|----------|--------|
-| MiJUN | 2025 | 40.9 | verified (pure-PyTorch SSM, no mamba_ssm CUDA needed) |
+| MiJUN | 2025 | 40.9 | verified (auto-detects CUDA mamba_ssm; pure-PyTorch fallback) |
 | RDLUF-MixS2-9stg | 2023 | 39.6 | verified |
 | DAUHST-9stg | 2022 | 38.4 | verified |
 | PADUT-3stg | 2023 | 36.95 | verified |

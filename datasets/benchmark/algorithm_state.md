@@ -520,7 +520,7 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 | 20 | GAP-TV (200 iter) | 2016 | Yuan et al. 2016 | ~24.9 | — | 26.04 | — | done | yes |
 | 21 | TSA-Net | 2020 | Meng et al., ECCV 2020 | 31.5 | 0.8940 | 25.92 | — | done | yes |
 | 22 | TwIST | 2007 | Bioucas-Dias & Figueiredo, TIP 2007 | 23.1 | 0.6690 | 25.11 | — | done | yes |
-| 23 | MiJUN | 2025 | Meng et al., AAAI 2025 | 40.9 | 0.9760 | 27.72 | — | done | yes |
+| 23 | MiJUN | 2025 | Meng et al., AAAI 2025 | 40.9 | 0.9760 | 27.72 | — | done (CUDA mamba_ssm auto-detected) | yes |
 
 ### 23. Generic Matrix Sensing (`matrix`)
 
