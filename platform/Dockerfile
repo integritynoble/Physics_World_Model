@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install torch CPU-only for CASSI DL model inference
 RUN pip install --no-cache-dir "torch==2.3.0" \
     --index-url https://download.pytorch.org/whl/cpu
-RUN pip install --no-cache-dir "einops>=0.6.0"
+RUN pip install --no-cache-dir "einops>=0.6.0" "tqdm>=4.66" "timm>=0.9.0"
 
 # Copy and install pwm_core (simulation engine dependency)
 COPY packages/pwm_core/ /tmp/pwm_core/
