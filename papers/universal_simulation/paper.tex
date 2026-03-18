@@ -120,14 +120,14 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  node distance=0.8cm and 1.4cm,
-  box/.style={draw, rounded corners=3pt, minimum width=1.8cm, minimum height=0.75cm, font=\footnotesize, align=center, thick},
+  node distance=1.0cm and 1.6cm,
+  box/.style={draw, rounded corners=3pt, minimum width=2.0cm, minimum height=0.8cm, font=\footnotesize, align=center, thick},
   agent/.style={box, fill=blue!12},
   io/.style={box, fill=gray!15, dashed},
   sclass/.style={box, fill=green!8, thick, draw=green!50!black},
   arr/.style={-{Stealth[length=5pt]}, thick},
   rej/.style={-{Stealth[length=5pt]}, thick, red!70!black, dashed},
-  annot/.style={font=\scriptsize, text=black!50, align=center, text width=2.0cm},
+  annot/.style={font=\scriptsize, text=black!50, align=left, text width=2.4cm},
 ]
 % --- Top row ---
 \node[io] (input) {NL problem};
@@ -136,9 +136,9 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \node[sclass, right=of spec] (judgepre) {$\Agent_J$\\$\in\Sclass$\,?};
 \node[agent, right=of judgepre] (exec) {$\Agent_E$\\Execute};
 
-% --- Bottom row (shifted down to leave room for rejection path) ---
-\node[agent, below=2.2cm of exec] (judgepost) {$\Agent_J$\\Audit};
-\node[io, left=1.4cm of judgepost] (output) {Bounded-error\\solution $\hat{x}$};
+% --- Bottom row ---
+\node[agent, below=3.2cm of exec] (judgepost) {$\Agent_J$\\Audit};
+\node[io, left=1.6cm of judgepost] (output) {Bounded-error\\solution $\hat{x}$};
 
 % --- Forward arrows ---
 \draw[arr] (input) -- (plan);
@@ -148,15 +148,15 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \draw[arr] (exec) -- (judgepost);
 \draw[arr] (judgepost) -- node[above, font=\scriptsize]{Pass} (output);
 
-% --- Rejection / redesign loop (routed well below the top row) ---
-\draw[rej] (judgepre.south) -- ++(0,-0.8) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{$\notin\Sclass$ / Redesign} (plan.south);
+% --- Rejection / redesign loop ---
+\draw[rej] (judgepre.south) -- ++(0,-0.6) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{$\notin\Sclass$ / Redesign} (plan.south);
 
 % --- Flag loop (right side, from audit back to execute) ---
-\draw[rej] (judgepost.east) -- ++(0.5,0) |- node[pos=0.25, right, font=\scriptsize, red!70!black]{Flag} (exec.east);
+\draw[rej] (judgepost.east) -- ++(0.6,0) |- node[pos=0.25, right, font=\scriptsize, red!70!black]{Flag} (exec.east);
 
-% --- Gate annotations (placed beside nodes, not below) ---
-\node[annot, below=1.2cm of judgepre] {\itshape Pre-gates:\\well-posedness\\stability, Lipschitz\\dimension, cost};
-\node[annot, below=0.2cm of judgepost] {\itshape Post-audit:\\conservation\\monotonicity\\symmetry, bounds};
+% --- Gate annotations (placed to the SIDE of nodes, not below, to avoid overlap) ---
+\node[annot, above=0.15cm of judgepre] {\itshape Pre-gates: well-posedness,\\stability, Lipschitz, cost};
+\node[annot, left=0.3cm of judgepost] {\itshape Post-audit: conservation,\\monotonicity, symmetry, bounds};
 \end{tikzpicture}%
 }% end resizebox
 \caption{Three-agent pipeline grounded in the simulability class $\Sclass$. The Plan Agent translates natural language into a \texttt{spec.md} file (realizing S1). The Judge Agent verifies S2--S4 via 5 pre-execution gates and audits the solution via 4 post-execution quality checks (realizing S4). Rejection triggers redesign (up to 3 rounds) or a certificate that the problem lies outside $\Sclass$.}
