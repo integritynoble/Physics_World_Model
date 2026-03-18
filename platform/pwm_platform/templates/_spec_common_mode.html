@@ -195,6 +195,12 @@
         }
     }
 
+    // ── Auto-run when algorithm pre-selected from URL (e.g. from /benchmark links) ──
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('algorithm') && reconstructBtn) {
+        setTimeout(function() { reconstructBtn.click(); }, 300);
+    }
+
     // ── Reconstruct button ──
     if (reconstructBtn) {
         reconstructBtn.addEventListener('click', function() {
