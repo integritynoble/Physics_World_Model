@@ -52,6 +52,12 @@ from pwm_platform.services.system_recommender import (
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/spec-chat", tags=["Spec Chat"])
 
+# Limit concurrent heavy reconstructions to prevent thread pool exhaustion.
+# CASSI DL models can take 60–150 s on CPU; without a cap, multiple simultaneous
+# requests fill all executor threads and make the entire server unresponsive.
+import asyncio as _asyncio
+_recon_semaphore = _asyncio.Semaphore(3)
+
 
 def _detect_variant_from_spec(spec: dict) -> str | None:
     """Detect the imaging modality from spec content when variant_key is absent.
@@ -64,7 +70,7 @@ def _detect_variant_from_spec(spec: dict) -> str | None:
     if "gain_alpha" in param_names or param_names & {"sigma_y", "pattern_dx"}:
         return "spc_block"
     if "dispersion_step" in param_names:
-        return "sd_cassi"
+        return "cassi"
     if "timing_offset" in param_names:
         return "cacti"
 
@@ -73,7 +79,7 @@ def _detect_variant_from_spec(spec: dict) -> str | None:
     if any(kw in mm for kw in ("single pixel", "single-pixel", "spc", "block-structured")):
         return "spc_block"
     if any(kw in mm for kw in ("coded aperture", "cassi", "dispersion")):
-        return "sd_cassi"
+        return "cassi"
     if any(kw in mm for kw in ("temporal mask", "cacti", "snapshot compressive", "time-varying")):
         return "cacti"
 
@@ -84,7 +90,7 @@ def _detect_variant_from_spec(spec: dict) -> str | None:
     if "single-pixel" in text or "single pixel" in text or "spatial summation" in text:
         return "spc_block"
     if "dispersion" in text or "spectral" in text:
-        return "sd_cassi"
+        return "cassi"
     if "temporal" in text:
         return "cacti"
 
@@ -272,14 +278,22 @@ async def reconstruct_common(
         except Exception as exc:
             logger.warning("Failed to load matrix file: %s", exc)
 
-    try:
-        result = await run_common_reconstruction(
-            variant_key=modality,
-            algorithm_name=algorithm,
-            user_measurement=user_measurement,
-            user_matrix=user_matrix,
-            sample_index=sample_index,
+    if not _recon_semaphore._value:  # all slots occupied
+        return HTMLResponse(
+            '<div class="p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">'
+            'Server busy — another reconstruction is running. Please wait a moment and try again.</div>',
+            status_code=200,
         )
+
+    try:
+        async with _recon_semaphore:
+            result = await run_common_reconstruction(
+                variant_key=modality,
+                algorithm_name=algorithm,
+                user_measurement=user_measurement,
+                user_matrix=user_matrix,
+                sample_index=sample_index,
+            )
     except Exception as exc:
         logger.error("Common reconstruction error: %s", exc, exc_info=True)
         return HTMLResponse(
@@ -489,7 +503,7 @@ async def simulate_spec(
     # Determine the correct modality:
     #   1. Explicit variant_key in spec JSON (Gemini output)
     #   2. Detected from spec content (mismatch params, measurement matrix, labels)
-    #   3. URL variant_key (fallback — may be the SpecLab default "sd_cassi")
+    #   3. URL variant_key (fallback — may be the SpecLab default "cassi")
     effective_vk = (
         spec.get("variant_key")
         or _detect_variant_from_spec(spec)
@@ -753,7 +767,7 @@ async def load_session(
         raise HTTPException(status_code=403, detail="Not your session")
 
     history = row.history or []
-    variant_key = row.variant_key or "sd_cassi"
+    variant_key = row.variant_key or "cassi"
 
     # Render each user+assistant pair as a _spec_chat_message.html partial
     html_parts: list[str] = []

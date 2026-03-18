@@ -195,10 +195,11 @@
         }
     }
 
-    // ── Auto-run when algorithm pre-selected from URL (e.g. from /benchmark links) ──
+    // ── Highlight Reconstruct button when algorithm pre-selected from URL ──
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('algorithm') && reconstructBtn) {
-        setTimeout(function() { reconstructBtn.click(); }, 300);
+        reconstructBtn.classList.add('animate-pulse');
+        setTimeout(function() { reconstructBtn.classList.remove('animate-pulse'); }, 3000);
     }
 
     // ── Reconstruct button ──
