@@ -20,8 +20,9 @@
 \usepackage{fancyhdr}
 \usepackage[hidelinks,colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
 \usepackage{microtype}
+\usepackage{listings}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,patterns}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,patterns,decorations.pathreplacing}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 
@@ -160,6 +161,66 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 }% end resizebox
 \caption{Three-agent pipeline grounded in the simulability class $\Sclass$. The Plan Agent translates natural language into a \texttt{spec.md} file (realizing S1). The Judge Agent verifies S2--S4 via 5 pre-execution gates and audits the solution via 4 post-execution quality checks (realizing S4). Rejection triggers redesign (up to 3 rounds) or a certificate that the problem lies outside $\Sclass$.}
 \label{fig:pipeline}
+\end{figure}
+
+% =====================================================================
+% FIGURE 2: spec.md as universal specification (annotated example)
+% =====================================================================
+
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}
+\node[draw=black!40, rounded corners=4pt, fill=gray!3, inner sep=0pt, text width=13cm] (code) {%
+\begin{minipage}{13cm}
+\small
+\begin{lstlisting}[
+  basicstyle=\ttfamily\scriptsize,
+  commentstyle=\color{green!40!black}\itshape,
+  keywordstyle=\color{blue!60!black}\bfseries,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=2pt,
+  xrightmargin=2pt,
+  aboveskip=4pt,
+  belowskip=4pt,
+  escapeinside={(*@}{@*)},
+]
+# Specification: CT Reconstruction (LoDoPaB)  (*@\color{red!60!black}\textnormal{\scriptsize\bfseries $\leftarrow$ \texttt{spec.md}}@*)
+
+## Domain (*@$\Domain$@*)                      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.1}@*)
+domain: 2D image grid, 128 x 128 pixels
+pixel_size: 0.7 mm
+
+## Equations (*@$\mathcal{E}$@*)               (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.2}@*)
+forward: y = Radon(x) + eta
+inverse: min_x ||Radon(x)-y||^2 + lam*TV(x)
+parameters: {n_angles: 128, noise: Poisson}
+
+## Boundary Conditions (*@$\mathcal{B}$@*)     (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.3}@*)
+non_negativity: x(i,j) >= 0 for all pixels
+
+## Initial Conditions (*@$\mathcal{I}$@*)      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.4}@*)
+x_0 = FBP result (warm start)
+
+## Observables (*@$\mathcal{O}$@*)             (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.5}@*)
+metrics: [PSNR (dB), SSIM, relative_error]
+
+## Tolerance (*@$\varepsilon$@*)               (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.6}@*)
+PSNR_minimum: 30.0 dB, SSIM_minimum: 0.85
+\end{lstlisting}
+\end{minipage}%
+};
+% Right-side annotation bracket
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, blue!60!black]
+  ([xshift=3pt]code.north east) -- ([xshift=3pt]code.south east)
+  node[midway, right=6pt, align=left, font=\small\itshape, text=blue!60!black]
+  {$\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$\\[2pt]
+   \textnormal{\scriptsize The S1 six-tuple}};
+\end{tikzpicture}%
+}
+\caption{A \texttt{spec.md} file for CT reconstruction---the canonical finite representation required by S1. Each section maps to one component of the six-tuple $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. This format is human-readable, machine-parseable, and solver-independent: any system accepting the same six-tuple can consume a \texttt{spec.md} file. We propose \texttt{spec.md} as a universal exchange format for scientific computation, analogous to FASTA for sequences or CIF for crystal structures. All 72 prospective benchmark tasks are archived as \texttt{spec.md} files.}
+\label{fig:specmd}
 \end{figure}
 
 % =====================================================================
