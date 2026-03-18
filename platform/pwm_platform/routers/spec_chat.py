@@ -877,6 +877,18 @@ async def download_example_dataset(key: str, role: str):
 # ── Algorithm list endpoint (HTMX) ──────────────────────────────────────
 
 
+@router.get("/sidebar-modalities", response_class=HTMLResponse)
+async def sidebar_modalities(request: Request):
+    """Return modalities panel HTML fragment for lazy loading (no login required)."""
+    from pwm_platform.routers.pages import _build_sidebar_data
+
+    sidebar_data = _build_sidebar_data()
+    return templates.TemplateResponse("_spec_modalities_panel.html", {
+        "request": request,
+        "sidebar_categories": sidebar_data["sidebar_categories"],
+    })
+
+
 @router.get("/algorithms/{variant_key}", response_class=HTMLResponse)
 async def get_variant_algorithms(variant_key: str):
     """Return algorithm <option> tags for a variant (HTMX population).
