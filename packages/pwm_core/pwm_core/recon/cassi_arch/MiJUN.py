@@ -121,10 +121,23 @@ class LayerNorm(nn.Module):
         return self.body(x)
 
 
-# ─── Pure-PyTorch Mamba S6 ───────────────────────────────────────────────────
+# ─── Mamba S6 — prefer CUDA mamba_ssm, fallback to pure-PyTorch ──────────────
+
+# Try to import the official CUDA Mamba for best accuracy
+try:
+    from mamba_ssm import Mamba as _CudaMamba
+    _HAS_MAMBA_SSM = True
+except ImportError:
+    _HAS_MAMBA_SSM = False
+
 
 class Mamba(nn.Module):
-    """Pure PyTorch implementation of Mamba selective state space model.
+    """Mamba selective state space model.
+
+    Uses the official mamba_ssm CUDA kernel when available (pip install mamba_ssm).
+    Falls back to a pure-PyTorch sequential scan otherwise. The CUDA kernel is
+    strongly recommended for best accuracy — trained weights are sensitive to the
+    exact numerical behavior of the scan implementation.
 
     Parameter names match the official mamba_ssm.Mamba module exactly.
     """
@@ -137,22 +150,37 @@ class Mamba(nn.Module):
         self.d_inner = d_model * expand
         self.dt_rank = dt_rank if dt_rank is not None else math.ceil(d_model / 16)
 
-        # Projections (parameter names match mamba_ssm)
-        self.in_proj = nn.Linear(d_model, self.d_inner * 2, bias=False)
-        self.conv1d = nn.Conv1d(self.d_inner, self.d_inner, d_conv,
-                                bias=True, groups=self.d_inner,
-                                padding=d_conv - 1)
-        self.x_proj = nn.Linear(self.d_inner, self.dt_rank + d_state * 2, bias=False)
-        self.dt_proj = nn.Linear(self.dt_rank, self.d_inner, bias=True)
-
-        # State space parameters
-        self.A_log = nn.Parameter(torch.randn(self.d_inner, d_state))
-        self.D = nn.Parameter(torch.ones(self.d_inner))
-
-        self.out_proj = nn.Linear(self.d_inner, d_model, bias=False)
+        if _HAS_MAMBA_SSM:
+            # Delegate to official CUDA implementation (best accuracy)
+            self._cuda_mamba = _CudaMamba(
+                d_model=d_model, d_state=d_state, d_conv=d_conv, expand=expand)
+            # Expose sub-module parameters with correct names for checkpoint loading
+            self.in_proj = self._cuda_mamba.in_proj
+            self.conv1d = self._cuda_mamba.conv1d
+            self.x_proj = self._cuda_mamba.x_proj
+            self.dt_proj = self._cuda_mamba.dt_proj
+            self.A_log = self._cuda_mamba.A_log
+            self.D = self._cuda_mamba.D
+            self.out_proj = self._cuda_mamba.out_proj
+        else:
+            # Pure PyTorch fallback
+            self._cuda_mamba = None
+            self.in_proj = nn.Linear(d_model, self.d_inner * 2, bias=False)
+            self.conv1d = nn.Conv1d(self.d_inner, self.d_inner, d_conv,
+                                    bias=True, groups=self.d_inner,
+                                    padding=d_conv - 1)
+            self.x_proj = nn.Linear(self.d_inner, self.dt_rank + d_state * 2, bias=False)
+            self.dt_proj = nn.Linear(self.dt_rank, self.d_inner, bias=True)
+            self.A_log = nn.Parameter(torch.randn(self.d_inner, d_state))
+            self.D = nn.Parameter(torch.ones(self.d_inner))
+            self.out_proj = nn.Linear(self.d_inner, d_model, bias=False)
 
     def forward(self, x):
         """x: (B, L, d_model) -> (B, L, d_model)"""
+        if self._cuda_mamba is not None:
+            return self._cuda_mamba(x)
+
+        # Pure PyTorch fallback
         B, L, _ = x.shape
 
         # 1. Input projection -> x, z
@@ -182,10 +210,7 @@ class Mamba(nn.Module):
         return self.out_proj(y)  # (B, L, d_model)
 
     def _selective_scan(self, u, delta, A, B, C, D):
-        """Selective scan (S6) — chunked implementation for numerical stability.
-
-        Uses float64 accumulation and processes in chunks to match the
-        behavior of the official mamba_ssm CUDA kernel more closely.
+        """Selective scan (S6) — sequential pure-PyTorch implementation.
 
         u: (batch, L, d_inner) — input
         delta: (batch, L, d_inner) — discretization step
@@ -198,19 +223,15 @@ class Mamba(nn.Module):
         d_state = A.shape[1]
         orig_dtype = u.dtype
 
-        # Use float64 for hidden state accumulation to prevent drift
-        h = torch.zeros(batch, d_inner, d_state, device=u.device, dtype=torch.float64)
+        h = torch.zeros(batch, d_inner, d_state, device=u.device, dtype=torch.float32)
         ys = torch.empty(batch, L, d_inner, device=u.device, dtype=orig_dtype)
 
-        # Precompute for efficiency
-        A_64 = A.double()
-
         for t in range(L):
-            dt = delta[:, t].double()  # (batch, d_inner)
-            dA = torch.exp(dt.unsqueeze(-1) * A_64.unsqueeze(0))
-            dBu = dt.unsqueeze(-1) * B[:, t].double().unsqueeze(1) * u[:, t].double().unsqueeze(-1)
+            dt = delta[:, t]  # (batch, d_inner)
+            dA = torch.exp(dt.unsqueeze(-1) * A.unsqueeze(0))
+            dBu = dt.unsqueeze(-1) * B[:, t].unsqueeze(1) * u[:, t].unsqueeze(-1)
             h = dA * h + dBu
-            ys[:, t] = (h * C[:, t].double().unsqueeze(1)).sum(-1).to(orig_dtype)
+            ys[:, t] = (h * C[:, t].unsqueeze(1)).sum(-1)
 
         return ys + u * D.unsqueeze(0).unsqueeze(0)
 
