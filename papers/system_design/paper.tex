@@ -106,92 +106,94 @@ Of 173 compilable modalities, 39 have quantitative reconstruction validation; 6 
 % ---- Three-Agent Pipeline (Figure 1) ----
 \begin{figure*}[htbp]
 \centering
-\begin{tikzpicture}[scale=0.75, every node/.style={transform shape},
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
     node distance=0.4cm and 0.5cm,
-    box/.style={draw, rounded corners=3pt, minimum height=1.0cm, minimum width=1.5cm, align=center, font=\normalsize},
+    box/.style={draw, rounded corners=3pt, minimum height=1.0cm, minimum width=1.4cm, align=center, font=\small},
     agent/.style={box, fill=blue!10, draw=blue!50!black, thick},
-    specbox/.style={draw, rounded corners=2pt, fill=green!8, draw=green!50!black, minimum width=1.6cm, minimum height=1.0cm, align=center, font=\normalsize},
+    specbox/.style={draw, rounded corners=2pt, fill=green!8, draw=green!50!black, minimum width=1.4cm, minimum height=1.0cm, align=center, font=\small},
     outbox/.style={box, fill=green!14, draw=green!50!black},
-    errbox/.style={box, fill=yellow!8, draw=yellow!50!black, font=\small},
-    arr/.style={-{Stealth[length=6pt]}, thick},
-    lbl/.style={font=\small, fill=white, inner sep=2pt},
+    errbox/.style={box, fill=yellow!8, draw=yellow!50!black, font=\footnotesize},
+    arr/.style={-{Stealth[length=5pt]}, thick},
+    lbl/.style={font=\footnotesize, fill=white, inner sep=1.5pt},
 ]
 
 % ===== Column 1: User Input =====
-\node[box, fill=gray!10, minimum height=1.2cm, minimum width=1.8cm] (nl) {NL Prompt};
+\node[box, fill=gray!10, minimum height=1.0cm, minimum width=1.6cm] (nl) {NL Prompt};
 
 % ===== Column 2: Plan Agent =====
-\node[agent, right=0.8cm of nl, minimum height=1.2cm, minimum width=1.5cm] (plan) {$\Agent_P$ Plan};
+\node[agent, right=0.6cm of nl, minimum height=1.0cm, minimum width=1.4cm] (plan) {$\Agent_P$ Plan};
 
 % ===== spec.md artifact =====
-\node[specbox, right=0.6cm of plan, minimum height=1.2cm, minimum width=1.6cm] (specmd) {\texttt{spec.md}};
+\node[specbox, right=0.5cm of plan, minimum height=1.0cm, minimum width=1.4cm] (specmd) {\texttt{spec.md}};
 
 % ===== Column 3: Judge Agent container =====
 % Stage 1: Structural Compiler
 \node[draw=gray!60!black, rounded corners=3pt, fill=gray!12, text=black,
-      minimum width=5.4cm, minimum height=1.2cm, align=center, font=\small,
-      right=1.0cm of specmd] (s1) {%
-\textbf{Structural Compiler}\\[2pt]%
+      minimum width=4.8cm, minimum height=1.0cm, align=center, font=\footnotesize,
+      right=0.8cm of specmd] (s1) {%
+\textbf{Structural Compiler}\\[1pt]%
 {\scriptsize C1\,DAG\;\;C2\,Chain\;\;C3\,Bounds\;\;C4\,Nonlin.\;\;C5\,Adj.\;\;C6\,Err.}};
 
 % Stage 2: Triad Gates
 \node[draw=orange!60!black, rounded corners=3pt, fill=orange!10, text=black,
-      minimum width=5.4cm, minimum height=1.2cm, align=center, font=\small,
-      below=0.6cm of s1] (s2) {%
-\textbf{Triad Gates}\\[2pt]%
+      minimum width=4.8cm, minimum height=1.0cm, align=center, font=\footnotesize,
+      below=0.5cm of s1] (s2) {%
+\textbf{Triad Gates}\\[1pt]%
 {\scriptsize $G_1$\,Recoverability\;\;$G_2$\,Carrier Budget\;\;$G_3$\,Mismatch}};
 
 % Stage 3: Cost & Feasibility
 \node[draw=blue!50!black, rounded corners=3pt, fill=blue!8, text=black,
-      minimum width=5.4cm, minimum height=1.2cm, align=center, font=\small,
-      below=0.6cm of s2] (s3) {%
-\textbf{Cost \& Feasibility}\\[2pt]%
+      minimum width=4.8cm, minimum height=1.0cm, align=center, font=\footnotesize,
+      below=0.5cm of s2] (s3) {%
+\textbf{Cost \& Feasibility}\\[1pt]%
 {\scriptsize power, QE, NA limits; itemised HW cost}};
 
 % Judge container (behind stages)
 \begin{scope}[on background layer]
 \node[draw=gray!50!black, very thick, rounded corners=6pt, fill=gray!4,
-      inner sep=10pt, fit=(s1)(s2)(s3),
-      label={[font=\normalsize\bfseries, anchor=south, yshift=1pt]above:{$\Agent_J$\;\;Judge}}] (judge) {};
+      inner sep=8pt, fit=(s1)(s2)(s3),
+      label={[font=\small\bfseries, anchor=south, yshift=1pt]above:{$\Agent_J$\;\;Judge}}] (judge) {};
 \end{scope}
 
 % Internal arrows
-\draw[arr, gray!70!black] (s1) -- node[lbl, right, xshift=2pt] {all 6 pass} (s2);
-\draw[arr, gray!70!black] (s2) -- node[lbl, right, xshift=2pt] {all 3 pass} (s3);
+\draw[arr, gray!70!black] (s1) -- node[lbl, right, xshift=1pt] {all 6 pass} (s2);
+\draw[arr, gray!70!black] (s2) -- node[lbl, right, xshift=1pt] {all 3 pass} (s3);
 
 % ===== Column 4: Execute Agent + outputs =====
-\node[agent, right=1.8cm of judge.east, minimum height=1.2cm, minimum width=1.5cm, anchor=west] (exec) {$\Agent_E$ Execute};
+\node[agent, right=1.4cm of judge.east, minimum height=1.0cm, minimum width=1.4cm, anchor=west] (exec) {$\Agent_E$ Execute};
 
-% Two outputs side by side
-\node[outbox, right=0.5cm of exec, minimum height=1.0cm, minimum width=1.2cm] (ahat) {$\hat{A}$};
-\node[errbox, right=0.4cm of ahat, minimum width=1.5cm, minimum height=1.0cm] (epsbox) {$\eps$-bound\\report};
+% Two outputs stacked vertically to save width
+\node[outbox, right=0.4cm of exec, minimum height=0.8cm, minimum width=1.0cm] (ahat) {$\hat{A}$};
+\node[errbox, below=0.3cm of ahat, minimum width=1.2cm, minimum height=0.8cm] (epsbox) {$\eps$-bound\\report};
 
 % ===== Main pipeline arrows =====
 \draw[arr] (nl) -- (plan);
 \draw[arr] (plan) -- (specmd);
 \draw[arr] (specmd) -- (judge.west |- s1);
 
-% Pass: Stage 3 → Execute (straight arrow with label above midpoint)
-\draw[arr, green!50!black] (judge.east |- s2) -- node[lbl, above, yshift=3pt, fill=white, fill opacity=0.7, text opacity=1, inner sep=1pt] {\footnotesize pass: certificate} (exec.west);
+% Pass: Judge → Execute (label above, clearly separated)
+\draw[arr, green!50!black] (judge.east |- s2) -- node[lbl, above, yshift=4pt] {\scriptsize pass: certificate} (exec.west);
 
 \draw[arr] (exec) -- (ahat);
 \draw[arr] (ahat) -- (epsbox);
 
 % ===== Inner feedback loop (above) =====
 \draw[arr, dashed, red!60!black, thick]
-  (judge.north) -- ++(0, 0.9)
-  -| node[font=\small, above, pos=0.35, fill=white, inner sep=1.5pt, text=red!60!black]
+  (judge.north) -- ++(0, 0.8)
+  -| node[font=\footnotesize, above, pos=0.35, fill=white, inner sep=1.5pt, text=red!60!black]
      {fail: redesign prompt (up to $3\!\times$)}
   (plan.north);
 
 % ===== Outer feedback loop (below) =====
 \draw[arr, dashed, blue!50!black]
-  (judge.south) -- ++(0, -0.85)
-  -| node[font=\small, below, pos=0.3, fill=white, inner sep=1.5pt, text=blue!50!black]
+  (judge.south) -- ++(0, -0.75)
+  -| node[font=\footnotesize, below, pos=0.3, fill=white, inner sep=1.5pt, text=blue!50!black]
      {$3\!\times$ exhausted: return diagnostic to user}
   (nl.south);
 
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{\textbf{Specification-driven design pipeline.}
 A natural-language prompt is the sole user input.
 $\Agent_P$ generates a \texttt{spec.md}; $\Agent_J$ validates in three sequential stages:
