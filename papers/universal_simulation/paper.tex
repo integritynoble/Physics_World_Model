@@ -364,13 +364,13 @@ The framework selects Tikhonov + TV regularization; $\lambda_{\text{TV}}$ set vi
 
 \begin{figure}[htbp]
 \centering
-\begin{tabular}{@{}c@{\hskip 3pt}c@{\hskip 3pt}c@{\hskip 3pt}c@{}}
-\includegraphics[width=0.21\textwidth]{figures/ct_groundtruth.png} &
-\includegraphics[width=0.21\textwidth]{figures/ct_with_judge.png} &
-\includegraphics[width=0.21\textwidth]{figures/ct_without_judge.png} &
-\includegraphics[width=0.27\textwidth]{figures/ct_psnr_histogram.png} \\
+\begin{tabular}{@{}c@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c@{}}
+\includegraphics[width=0.19\textwidth]{figures/ct_groundtruth.png} &
+\includegraphics[width=0.19\textwidth]{figures/ct_with_judge.png} &
+\includegraphics[width=0.19\textwidth]{figures/ct_without_judge.png} &
+\includegraphics[width=0.25\textwidth]{figures/ct_psnr_histogram.png} \\[2pt]
 {\scriptsize\bfseries (a)} & {\scriptsize\bfseries (b)} & {\scriptsize\bfseries (c)} & {\scriptsize\bfseries (d)}
-\end{tabular}
+\end{tabular}\\[6pt]
 \caption{CT reconstruction comparison (modified Shepp--Logan phantom, 128 projections, Poisson noise, $n = 200$). \textbf{(a)}~Ground truth. \textbf{(b)}~Framework with Judge ($\in \Sclass$ verified): correct angular model, Ram-Lak filter, non-negativity enforced. \textbf{(c)}~Without Judge: wrong angular range (360\textdegree{} assumed instead of 180\textdegree{}), producing doubled edges and streak artifacts; 5{,}326 non-negativity violations. \textbf{(d)}~PSNR distribution: with Judge $25.6 \pm 0.3$\,dB vs.\ without Judge $13.1 \pm 0.1$\,dB ($n = 200$, $p < 10^{-30}$, Wilcoxon).}
 \label{fig:ct_comparison}
 \end{figure}
