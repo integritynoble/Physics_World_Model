@@ -477,6 +477,13 @@ We submitted 50 adversarial inputs specifically designed to probe $\partial \Scl
 
 \textbf{Qualitative failures} (10 adversarial): 3/10 met the $L^2$ error bound but exhibited non-physical artifacts (oscillations, missed symmetry-breaking, wrong shock structure). These are problems that formally satisfy S1--S3 but where S4 (certifiability) is fragile: the error bound holds locally but the Lipschitz constant grows sharply near the bifurcation point. Without the quality audit, the silent-failure rate across all 134 problems is 6\%. With the quality audit: 1.5\% (2/134).
 
+\textbf{Three failure rates (Fig.~\ref{fig:failure}a).} Of the 134 test cases:
+\begin{itemize}[nosep]
+\item \textbf{42\% (No Judge):} 56/134 cases produce silently wrong answers---the pipeline returns a result that \emph{looks} correct but fails the domain-specific tolerance when checked against the expert baseline. The user receives no warning. Failures include wrong equations (S1), unstable discretizations (S2), non-convergent schemes (S3), and qualitative artifacts.
+\item \textbf{6\% (Pre-gates only):} The Judge's 5 pre-execution gates (dimensional consistency, well-posedness, stability, convergence rate, specifiability) catch 48 of the 56 failures \emph{before any code runs}, rejecting or redesigning the pipeline. The remaining 8/134 cases pass all pre-gates but still produce wrong answers---typically problems where the code runs correctly but selects the wrong physical branch or misses a symmetry-breaking event.
+\item \textbf{1.5\% (Full Judge):} The post-execution quality audit (conservation law verification, monotonicity/symmetry checks, physical bounds, residual evaluation) catches 6 of the remaining 8 failures \emph{after} the solution is computed, flagging non-physical artifacts invisible to pre-execution analysis. The final 2/134 cases are the irreducible residual: bifurcation-point problems at $\partial \Sclass$ where the Lipschitz constant diverges and no finite-time check can distinguish the correct branch.
+\end{itemize}
+
 % =====================================================================
 % FIGURE 4: Failure funnel + event horizon scatter
 % =====================================================================
