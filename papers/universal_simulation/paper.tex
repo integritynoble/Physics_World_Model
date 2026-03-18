@@ -171,8 +171,8 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}
-\node[draw=black!40, rounded corners=4pt, fill=gray!3, inner sep=0pt, text width=13cm] (code) {%
-\begin{minipage}{13cm}
+\node[draw=black!40, rounded corners=4pt, fill=gray!3, inner sep=0pt, text width=14cm] (code) {%
+\begin{minipage}{14cm}
 \small
 \begin{lstlisting}[
   basicstyle=\ttfamily\scriptsize,
@@ -180,46 +180,74 @@ The underlying mathematics is entirely classical; the contribution is empirical 
   keywordstyle=\color{blue!60!black}\bfseries,
   columns=fullflexible,
   keepspaces=true,
-  xleftmargin=2pt,
-  xrightmargin=2pt,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
   aboveskip=4pt,
   belowskip=4pt,
   escapeinside={(*@}{@*)},
 ]
-# Specification: CT Reconstruction (LoDoPaB)  (*@\color{red!60!black}\textnormal{\scriptsize\bfseries $\leftarrow$ \texttt{spec.md}}@*)
+# Specification: CT Reconstruction (LoDoPaB)     (*@\color{red!60!black}\textnormal{\scriptsize\bfseries $\leftarrow$ \texttt{spec.md} header}@*)
 
-## Domain (*@$\Domain$@*)                      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.1}@*)
-domain: 2D image grid, 128 x 128 pixels
-pixel_size: 0.7 mm
+## Domain                                         (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.1: $\Domain$}@*)
+domain: 2D image grid
+geometry: 128 x 128 pixels
+pixel_size: 0.7 mm                   # from LoDoPaB-CT
+dimension: 2
 
-## Equations (*@$\mathcal{E}$@*)               (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.2}@*)
-forward: y = Radon(x) + eta
-inverse: min_x ||Radon(x)-y||^2 + lam*TV(x)
-parameters: {n_angles: 128, noise: Poisson}
+## Equations                                      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.2: $\mathcal{E}$}@*)
+equations: |
+  forward: y = Radon(x) + eta
+  inverse: min_x 0.5*||Radon(x)-y||^2 + lam_TV*TV(x) + lam_L2*||x||^2
+  constraint: x >= 0
 
-## Boundary Conditions (*@$\mathcal{B}$@*)     (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.3}@*)
-non_negativity: x(i,j) >= 0 for all pixels
+parameters:
+  n_angles: 128                      # projection angles (0 to pi)
+  n_detectors: 183                   # detector elements per angle
+  geometry: parallel_beam
+  noise_model: Poisson               # realistic clinical noise
+  lambda_TV: 1.0e-3                  # auto-tuned via Morozov
+  lambda_L2: 1.0e-5                  # Tikhonov weight
+  max_iterations: 500                # ADMM iterations
+  image_size: [128, 128]
 
-## Initial Conditions (*@$\mathcal{I}$@*)      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.4}@*)
-x_0 = FBP result (warm start)
+## Boundary Conditions                            (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.3: $\mathcal{B}$}@*)
+boundary: |
+  non_negativity: x(i,j) >= 0 for all pixels
+  support: x = 0 outside patient body contour (if known)
 
-## Observables (*@$\mathcal{O}$@*)             (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.5}@*)
-metrics: [PSNR (dB), SSIM, relative_error]
+## Initial Conditions                             (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.4: $\mathcal{I}$}@*)
+initial: |
+  x_0 = filtered back-projection (FBP) result (warm start)
 
-## Tolerance (*@$\varepsilon$@*)               (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.6}@*)
-PSNR_minimum: 30.0 dB, SSIM_minimum: 0.85
+## Observables                                    (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.5: $\mathcal{O}$}@*)
+observables:
+  - reconstructed_image: x_hat on 128x128 grid
+  - PSNR: dB
+  - SSIM: dimensionless [0, 1]
+  - relative_error: dimensionless
+
+## Tolerance                                      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.6: $\varepsilon$}@*)
+tolerance:
+  PSNR_minimum: 30.0                 # dB
+  SSIM_minimum: 0.85
+  metric: PSNR
+
+## Primitives Required
+primitives: [integrate, solve_linear, optimize, constrain, discretize]
 \end{lstlisting}
 \end{minipage}%
 };
 % Right-side annotation bracket
-\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, blue!60!black]
-  ([xshift=3pt]code.north east) -- ([xshift=3pt]code.south east)
-  node[midway, right=6pt, align=left, font=\small\itshape, text=blue!60!black]
+\draw[decorate, decoration={brace, amplitude=6pt, mirror}, thick, blue!60!black]
+  ([xshift=4pt]code.north east) -- ([xshift=4pt]code.south east)
+  node[midway, right=8pt, align=left, font=\small\itshape, text=blue!60!black]
   {$\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$\\[2pt]
-   \textnormal{\scriptsize The S1 six-tuple}};
+   \textnormal{\scriptsize The S1 six-tuple}\\[4pt]
+   \textnormal{\scriptsize YAML-compatible}\\
+   \textnormal{\scriptsize key-value syntax}};
 \end{tikzpicture}%
 }
-\caption{A \texttt{spec.md} file for CT reconstruction---the canonical finite representation required by S1. Each section maps to one component of the six-tuple $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. This format is human-readable, machine-parseable, and solver-independent: any system accepting the same six-tuple can consume a \texttt{spec.md} file. We propose \texttt{spec.md} as a universal exchange format for scientific computation, analogous to FASTA for sequences or CIF for crystal structures. All 72 prospective benchmark tasks are archived as \texttt{spec.md} files.}
+\caption{A real \texttt{spec.md} file for CT reconstruction (from the benchmark archive), showing the full YAML-compatible format. Each \texttt{\#\#} section maps to one component of the S1 six-tuple $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. Parameters use typed key-value pairs with inline comments; multi-line blocks use YAML \texttt{|} syntax. The format is human-readable, machine-parseable, and solver-independent. The optional \texttt{Primitives Required} section links to the engineering layer (Proposition~\ref{prop:realizability}). All 72 prospective benchmark tasks and 12 development problems are archived as \texttt{spec.md} files. Formal grammar in Supplementary Section~S8.}
 \label{fig:specmd}
 \end{figure}
 
