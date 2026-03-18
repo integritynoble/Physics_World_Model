@@ -19,7 +19,7 @@ from pwm_platform.services.benchmark_database._variant_registry import VARIANT_R
 
 _EXAMPLE_SPECS: dict[str, dict[str, Any]] = {
     "cassi": {
-        "label": "SD-CASSI",
+        "label": "CASSI",
         "variant_key": "sd_cassi",
         "spec_notation": VARIANT_REGISTRY["sd_cassi"]["spec_notation"],
         "forward_model": VARIANT_REGISTRY["sd_cassi"]["spec_dag"],

@@ -16,8 +16,8 @@ VARIANT_REGISTRY: dict[str, dict] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "sd_cassi": {
-        "display_name": "SD-CASSI",
-        "full_name": "Single-Disperser Coded Aperture Snapshot Spectral Imager",
+        "display_name": "CASSI",
+        "full_name": "Coded Aperture Snapshot Spectral Imaging",
         "parent_modality": "cassi",
         "category": "compressive",
         "spec_notation": "M(mask) \u2192 W(\u03b1, a) \u2192 \u03a3_\u03bb \u2192 D(g, \u03b7\u2084)",
