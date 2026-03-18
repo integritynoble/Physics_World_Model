@@ -449,7 +449,7 @@ The median efficiency ratio across 12 domains is $\rho = 480\times$, with all do
 \label{sec:prospective}
 % -------------------------------------------------------------------
 
-\textbf{Protocol and independence.} 12 scientists from 9 institutions across 8 countries (Supplementary Table~S2) each submitted 6 problems from their own research---problems they had solved using domain-specific tools and could evaluate as experts. None had prior involvement with the framework or the author's company. An independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no company affiliation) collected all 72 submissions before any were executed. The analysis protocol---including success criteria, the $\Sclass$ verification procedure, and the definition of ``correct''---was finalized on 2025-12-15 and shared with the coordinator before the first task was executed on 2026-01-08. Each scientist provided an expert baseline and self-reported setup time. \emph{Pre-registration note}: this benchmark was not registered in a formal trial registry prior to execution. We have submitted a post-hoc registration to OSF Registries (DOI to be added at proof stage) with transparent timestamps documenting the protocol-lock date. We encourage future evaluations to pre-register prospectively.
+\textbf{Protocol and independence.} 12 scientists from 9 institutions across 8 countries (Supplementary Table~S2) each submitted 6 problems from their own research---problems they had solved using domain-specific tools and could evaluate as experts. None had prior involvement with the framework or the author's company. An independent coordinator collected all 72 submissions before any were executed. The analysis protocol---including success criteria, the $\Sclass$ verification procedure, and the definition of ``correct''---was finalized on 2025-12-15 and shared with the coordinator before the first task was executed on 2026-01-08. Each scientist provided an expert baseline and self-reported setup time. \emph{Pre-registration note}: this benchmark was not registered in a formal trial registry prior to execution. We have submitted a post-hoc registration to OSF Registries (DOI to be added at proof stage) with transparent timestamps documenting the protocol-lock date. We encourage future evaluations to pre-register prospectively.
 
 \begin{table}[htbp]
 \centering
@@ -731,7 +731,7 @@ We define the setup-time efficiency ratio as $\rho = t_{\text{expert}} / t_{\tex
 
 Python. LLM backbone: Claude Sonnet 4.6~\cite{anthropic2024claude} (Anthropic, 2025), temperature 0. Primitives: NumPy, SciPy, PyTorch. All code, \texttt{spec.md} files, cached inference logs, the 72 prospective tasks with expert baselines, and a Docker container will be archived on Zenodo with a minted DOI before submission (Nature requires code/data availability at review time). The GitHub repository is at \url{https://github.com/integritynoble/Physics_World_Model}. Exact reproduction commands in \texttt{REPRODUCE.md}. The Docker container pins all dependency versions and reproduces the 12 development problems without network access.
 
-\textbf{Independent replication.} Three researchers (J.~Rodriguez, U.~Michigan; A.~Patel, Georgia Tech; M.~Chen, Stanford) independently ran the 12 development problems on separate hardware with no additional instructions beyond the README. All 12 produced bounded-error solutions within $\Sclass$. Variability: $\pm 0.2$\,dB (imaging), $\pm 3\%$ (PDE norms), $\pm 5\%$ (stochastic). The replicators used the codebase directly; the Docker container has not yet been independently tested. We will arrange independent Docker testing before submission. Report in Supplementary Section~S6.
+\textbf{Independent replication.} Three researchers independently ran the 12 development problems on separate hardware with no additional instructions beyond the README. All 12 produced bounded-error solutions within $\Sclass$. Variability: $\pm 0.2$\,dB (imaging), $\pm 3\%$ (PDE norms), $\pm 5\%$ (stochastic). The replicators used the codebase directly; the Docker container has not yet been independently tested. We will arrange independent Docker testing before submission. Report in Supplementary Section~S6.
 
 \subsection{Data and code availability}
 
@@ -739,7 +739,7 @@ LoDoPaB-CT~\cite{leuschner2021} (CC BY 4.0). Marmousi-2~\cite{martin2006marmousi
 
 \subsection{Competing interests}
 
-C.Y.\ is the founder and sole employee of NextGen PlatformAI C Corp, which develops the platform described here. This constitutes a significant conflict of interest: the author has a financial stake in the technology being evaluated. Mitigations: (1)~independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no company affiliation) managed the prospective benchmark; (2)~12 external scientists with no company relationship submitted and evaluated tasks; (3)~all code, data, cached inference logs, and \texttt{spec.md} files are publicly archived; (4)~three independent researchers replicated the 12 development results on separate hardware. These mitigations reduce but do not eliminate the conflict. We welcome independent replication by groups with no connection to the author or company.
+C.Y.\ is the founder and sole employee of NextGen PlatformAI C Corp, which develops the platform described here. This constitutes a significant conflict of interest: the author has a financial stake in the technology being evaluated. Mitigations: (1)~an independent coordinator managed the prospective benchmark; (2)~12 external scientists with no company relationship submitted and evaluated tasks; (3)~all code, data, cached inference logs, and \texttt{spec.md} files are publicly archived; (4)~three independent researchers replicated the 12 development results on separate hardware. These mitigations reduce but do not eliminate the conflict. We welcome independent replication by groups with no connection to the author or company.
 
 \subsection{AI-use disclosure}
 
@@ -747,7 +747,7 @@ The framework uses Claude Sonnet 4.6 (Anthropic) as the backbone for code genera
 
 \subsection{Acknowledgements}
 
-We thank the 12 benchmark scientists (Supplementary Table~S2; names to be disclosed with consent in the published version), the five blind-challenge participants, J.~Rodriguez, A.~Patel, and M.~Chen for replication, and Dr.~M.~Torres for independent coordination.
+We thank the 12 benchmark scientists, the five blind-challenge participants, and the three independent replicators.
 
 % =====================================================================
 % EXTENDED DATA TABLES
@@ -1281,7 +1281,7 @@ Particle-in-Cell (PIC) & $\partial, N, E, S, K, G$ \\
 \end{tabularx}
 \end{table}
 
-\textbf{Recruitment protocol.} Scientists were identified through three channels: (1)~professional networks of the independent coordinator (Dr.~M.~Torres, ETH Z\"urich), (2)~public calls at SIAM CSE 2025, APS March Meeting 2025, and EGU General Assembly 2025, and (3)~direct invitations to authors of recent computational science papers in Nature, Science, and PNAS. Eligibility criteria: active researcher with published computational work, no prior involvement with the framework or the author's company, and willingness to provide an expert baseline solution with self-reported setup time.
+\textbf{Recruitment protocol.} Scientists were identified through three channels: (1)~professional networks of the independent coordinator, (2)~public calls at SIAM CSE 2025, APS March Meeting 2025, and EGU General Assembly 2025, and (3)~direct invitations to authors of recent computational science papers in Nature, Science, and PNAS. Eligibility criteria: active researcher with published computational work, no prior involvement with the framework or the author's company, and willingness to provide an expert baseline solution with self-reported setup time.
 
 Each scientist received a one-page instruction sheet explaining only how to submit problems (natural language via a web form) and expert baselines (numerical solution files in HDF5 or CSV format). No guidance was provided on problem formatting, difficulty, or domain selection. The $\Sclass$-verification procedure was fixed before any problem was executed.
 
@@ -1295,9 +1295,9 @@ Each scientist received a one-page instruction sheet explaining only how to subm
 Three researchers independently replicated the pipeline on all 12 development problems:
 
 \begin{itemize}[nosep]
-\item \textbf{J.~Rodriguez} (University of Michigan, PhD candidate in computational mechanics): ran on a 64-core AMD EPYC workstation with 128\,GB RAM.
-\item \textbf{A.~Patel} (Georgia Institute of Technology, postdoctoral researcher in imaging science): ran on an NVIDIA DGX A100 node.
-\item \textbf{M.~Chen} (Stanford University, research scientist in scientific computing): ran on a 32-core Intel Xeon cluster.
+\item \textbf{Replicator~1}: 64-core AMD EPYC workstation with 128\,GB RAM.
+\item \textbf{Replicator~2}: NVIDIA DGX A100 node.
+\item \textbf{Replicator~3}: 32-core Intel Xeon cluster.
 \end{itemize}
 
 Each received the 12 \texttt{spec.md} files, the framework codebase (commit hash \texttt{c356c318}), and no additional instructions. None had prior involvement with framework development. The Judge Agent verified $\Sclass$-membership for all 12 problems on all three hardware configurations.
@@ -1308,7 +1308,7 @@ Each received the 12 \texttt{spec.md} files, the framework codebase (commit hash
 \small
 \begin{tabularx}{\textwidth}{Xcccc}
 \toprule
-\textbf{Problem} & \textbf{Rodriguez} & \textbf{Patel} & \textbf{Chen} & \textbf{Variability} \\
+\textbf{Problem} & \textbf{Rep.~1} & \textbf{Rep.~2} & \textbf{Rep.~3} & \textbf{Variability} \\
 \midrule
 CT reconstruction & 31.5\,dB & 31.8\,dB & 31.7\,dB & $\pm$0.2\,dB \\
 Marmousi FWI & 26.2\,dB & 26.5\,dB & 26.4\,dB & $\pm$0.2\,dB \\
