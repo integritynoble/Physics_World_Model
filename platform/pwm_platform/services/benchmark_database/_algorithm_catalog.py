@@ -109,6 +109,7 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PnP-HSICNN",  "type": "PnP",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
         {"name": "HDNet",       "type": "Deep Learning",  "mask_aware": False, "params": "2.37M", "source": "InverseNet"},
         {"name": "MST-L",       "type": "Transformer",    "mask_aware": True,  "params": "2.03M", "source": "InverseNet"},
+        {"name": "MiJUN-5stg",  "type": "Mamba",          "mask_aware": True,  "params": "3.76M", "source": "Meng et al., AAAI 2025"},
     ],
     "cacti": [
         # Classical CS

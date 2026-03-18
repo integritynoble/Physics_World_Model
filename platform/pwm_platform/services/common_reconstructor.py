@@ -1349,6 +1349,7 @@ _CASSI_CPU_RUNNABLE: set[str] = {
     "TSA-Net", "λ-Net", "ADMM-Net", "GAP-Net", "DGSMP",
     "HDNet", "MST-L", "MST++", "CST-L-Plus", "BIRNAT",
     "DAUHST-9stg", "BiSRNet", "PADUT-3stg", "RDLUF-MixS2-9stg", "SSR-L",
+    "MiJUN-5stg",
 }
 
 
@@ -1538,6 +1539,8 @@ _CASSI_ALGO_MAP: dict[str, tuple[str, str]] = {
     "rdluf_mixs2_9stg":  ("rdluf_mixs2_9stg", "checkpoint/cassi/rdluf_mixs2/RDLUF_MixS2_9stage.pth"),
     "ssr-l":             ("ssr_l",         "checkpoint/cassi/ssr/model_L.pkl"),
     "ssr_l":             ("ssr_l",         "checkpoint/cassi/ssr/model_L.pkl"),
+    "mijun-5stg":        ("mijun_5stg",    "checkpoint/cassi/our_mamba_5stg_recovered.pth"),
+    "mijun_5stg":        ("mijun_5stg",    "checkpoint/cassi/our_mamba_5stg_recovered.pth"),
 }
 
 
@@ -2158,7 +2161,7 @@ def _run_common_sync(
         is_dl = False
 
     # CASSI DL models with GCS checkpoints run on CPU via _cassi_model_reconstruct
-    if variant_key == "cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
+    if catalog_key == "cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
         is_dl = False
 
     # Run reconstruction via central dispatch
