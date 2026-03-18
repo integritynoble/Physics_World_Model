@@ -201,7 +201,7 @@ def draw_panel_b(ax):
         y -= 0.8
 
     # --- Compiler Gates ---
-    y -= 0.3
+    y -= 0.4
     ax.text(0.6, y, "Compiler Checks (6/6)", fontsize=8, fontweight="bold",
             color=C_DARK, ha="left", va="center")
 
@@ -214,10 +214,10 @@ def draw_panel_b(ax):
         ("C6", "Dtype check"),
     ]
 
-    # Draw in a 3x2 grid
-    y -= 0.6
+    # Draw in a 2x3 grid (2 columns, 3 rows) for more breathing room
+    y -= 0.55
     row_bg = FancyBboxPatch(
-        (0.5, y - 0.55), 9.0, 1.1,
+        (0.5, y - 1.35), 9.0, 1.8,
         boxstyle="round,pad=0.04",
         facecolor="#FAFAFA", edgecolor="#E5E7EB",
         linewidth=0.5, zorder=1,
@@ -225,13 +225,13 @@ def draw_panel_b(ax):
     ax.add_patch(row_bg)
 
     for i, (cid, cname) in enumerate(compiler_gates):
-        col = i % 3
-        row = i // 3
-        x_pos = 0.9 + col * 3.1
-        y_pos = y - row * 0.5
+        col = i % 2
+        row = i // 2
+        x_pos = 1.0 + col * 4.5
+        y_pos = y - row * 0.55
         ax.text(x_pos, y_pos, "\u2713", fontsize=10, fontweight="bold",
                 color=C_GREEN_CHECK, ha="left", va="center", zorder=3)
-        ax.text(x_pos + 0.35, y_pos, f"{cid} {cname}", fontsize=7,
+        ax.text(x_pos + 0.4, y_pos, f"{cid} {cname}", fontsize=7.5,
                 color=C_DARK, ha="left", va="center", zorder=3)
 
 
