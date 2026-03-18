@@ -192,26 +192,33 @@ boot = np.array([np.random.choice(psnr_good_all, len(psnr_good_all), replace=Tru
 ci_lo, ci_hi = np.percentile(boot, [2.5, 97.5])
 print(f"  95% CI: [{ci_lo:.1f}, {ci_hi:.1f}] dB")
 
-# ── PSNR histogram ───────────────────────────────────────────────────
-fig, ax = plt.subplots(1, 1, figsize=(3.5, 2.8), dpi=200)
+# ── PSNR histogram (two panels with per-distribution binning) ────────
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(3.5, 2.8), dpi=200,
+                                gridspec_kw={'width_ratios': [1, 1], 'wspace': 0.4})
 
-lo = min(psnr_bad_all.min(), psnr_good_all.min()) - 1
-hi = max(psnr_bad_all.max(), psnr_good_all.max()) + 1
-bins = np.linspace(lo, hi, 30)
+# Left panel: Without Judge (red)
+bins_bad = np.linspace(psnr_bad_all.min() - 0.3, psnr_bad_all.max() + 0.3, 20)
+ax1.hist(psnr_bad_all, bins=bins_bad, alpha=0.8, color='#F44336', edgecolor='white',
+         linewidth=0.5)
+ax1.set_xlabel('PSNR (dB)', fontsize=8)
+ax1.set_ylabel('Count', fontsize=8)
+ax1.set_title(f'Without Judge\n{psnr_bad_all.mean():.1f} ± {psnr_bad_all.std():.1f} dB',
+              fontsize=7, color='#D32F2F', fontweight='bold')
+ax1.tick_params(labelsize=7)
+ax1.spines['top'].set_visible(False)
+ax1.spines['right'].set_visible(False)
 
-ax.hist(psnr_good_all, bins=bins, alpha=0.75, color='#2196F3', edgecolor='white',
-        linewidth=0.5,
-        label=f'With Judge\n({psnr_good_all.mean():.1f} ± {psnr_good_all.std():.1f} dB)')
-ax.hist(psnr_bad_all, bins=bins, alpha=0.55, color='#F44336', edgecolor='white',
-        linewidth=0.5,
-        label=f'Without Judge\n({psnr_bad_all.mean():.1f} ± {psnr_bad_all.std():.1f} dB)')
+# Right panel: With Judge (blue)
+bins_good = np.linspace(psnr_good_all.min() - 0.3, psnr_good_all.max() + 0.3, 20)
+ax2.hist(psnr_good_all, bins=bins_good, alpha=0.8, color='#2196F3', edgecolor='white',
+         linewidth=0.5)
+ax2.set_xlabel('PSNR (dB)', fontsize=8)
+ax2.set_title(f'With Judge\n{psnr_good_all.mean():.1f} ± {psnr_good_all.std():.1f} dB',
+              fontsize=7, color='#1565C0', fontweight='bold')
+ax2.tick_params(labelsize=7)
+ax2.spines['top'].set_visible(False)
+ax2.spines['right'].set_visible(False)
 
-ax.set_xlabel('PSNR (dB)', fontsize=9)
-ax.set_ylabel('Count', fontsize=9)
-ax.legend(fontsize=7, loc='upper left')
-ax.tick_params(labelsize=8)
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
 fig.tight_layout()
 fig.savefig(os.path.join(OUT, 'ct_psnr_histogram.png'), bbox_inches='tight', dpi=200)
 plt.close(fig)
