@@ -141,7 +141,7 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \node[agent, right=of judgepre] (exec) {$\Agent_E$\\Execute};
 
 % --- Bottom row ---
-\node[agent, below=3.2cm of exec] (judgepost) {$\Agent_J$\\Audit};
+\node[agent, below=1.8cm of exec] (judgepost) {$\Agent_J$\\Audit};
 \node[io, left=1.6cm of judgepost] (output) {Bounded-error\\solution $\hat{x}$};
 
 % --- Forward arrows ---
@@ -153,14 +153,14 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \draw[arr] (judgepost) -- node[above, font=\scriptsize]{Pass} (output);
 
 % --- Rejection / redesign loop ---
-\draw[rej] (judgepre.south) -- ++(0,-0.6) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{$\notin\Sclass$ / Redesign} (plan.south);
+\draw[rej] (judgepre.south) -- ++(0,-0.5) -| node[pos=0.25, below, font=\scriptsize, red!70!black]{$\notin\Sclass$ / Redesign} (plan.south);
 
 % --- Flag loop (right side, from audit back to execute) ---
 \draw[rej] (judgepost.east) -- ++(0.6,0) |- node[pos=0.25, right, font=\scriptsize, red!70!black]{Flag} (exec.east);
 
 % --- Gate annotations ---
 \node[annot, above=0.15cm of judgepre] {\itshape Pre-gates: well-posedness,\\stability, Lipschitz, cost};
-\node[annot, below=0.3cm of judgepost] {\itshape Post-audit: conservation,\\monotonicity, symmetry,\\bounds, residuals, archetype};
+\node[annot, right=0.3cm of judgepost, text width=3.2cm] {\itshape Post-audit: conservation, monotonicity,\\symmetry, bounds, residuals, archetype};
 \end{tikzpicture}%
 }% end resizebox
 \caption{Three-agent pipeline grounded in the simulability class $\Sclass$. The Plan Agent translates natural language into a \texttt{spec.md} file (realizing S1). The Judge Agent verifies S2--S4 via 5 pre-execution gates and audits the solution via post-execution quality checks (realizing S4). Rejection triggers redesign (up to 3 rounds) or a certificate that the problem lies outside $\Sclass$.}
