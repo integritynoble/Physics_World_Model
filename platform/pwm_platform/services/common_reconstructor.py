@@ -2092,7 +2092,7 @@ def _run_common_sync(
 
     # Variant aliases: resolve short names to catalog entries
     _VARIANT_ALIASES: dict[str, str] = {
-        "sd_cassi": "cassi",  # legacy alias → new canonical key
+        "cassi": "sd_cassi",  # short alias → canonical variant key
         "spc": "spc_block",
     }
     catalog_key = _VARIANT_ALIASES.get(variant_key, variant_key)
