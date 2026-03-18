@@ -545,7 +545,7 @@ Frontier (near $\partial \Sclass$) & 24 & 19 (79\%) & 15 (63\%) & 89\% \\
 \textbf{Total} & \textbf{72} & \textbf{64 (89\%)} & \textbf{58 (81\%)} & \textbf{94\%} \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize Difficulty assigned by independent coordinator. Textbook and standard problems lie well within $\Sclass$ (low $L_{\text{DAG}}$). Frontier problems involve novel coupling, extreme parameters, or high $L_{\text{DAG}}$---closer to the scientific event horizon.
+\raggedright\scriptsize Difficulty assigned by independent coordinator. Textbook and standard problems lie well within $\Sclass$ (low $L_{\text{DAG}}$). Frontier problems involve novel coupling, extreme parameters, or high $L_{\text{DAG}}$---closer to $\partial \Sclass$.
 \end{table}
 
 \begin{table}[htbp]
@@ -610,7 +610,7 @@ Remove all gates (no $\Agent_J$) & 7.4/12 & 6.8/12 & No S1--S4 verification \\
 46--50 & (c) & Conservation violations, wrong attractor, missing boundary layer & 4 audit catches, 1 miss \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize $^\dagger$$\Agent_J$ false negative: condition number $> 10^{12}$ but coercivity formally satisfied; S4 (certifiability) fragile near $\partial \Sclass$. $^\ddagger$Both misses are at the scientific event horizon where S4 fails ($L_{\text{DAG}} \to \infty$); bifurcation detection remains an open problem (see proposed heuristics in main text).
+\raggedright\scriptsize $^\dagger$$\Agent_J$ false negative: condition number $> 10^{12}$ but coercivity formally satisfied; S4 (certifiability) fragile near $\partial \Sclass$. $^\ddagger$Both misses are at $\partial \Sclass$ where S4 fails ($L_{\text{DAG}} \to \infty$); bifurcation detection remains an open problem (see proposed heuristics in main text).
 \end{table}
 
 % =====================================================================
@@ -696,6 +696,63 @@ Remove all (no $\Agent_J$) & 38/72 (53\%) & 28/72 (39\%) & None \\
 \textbf{Figure S2. Prospective benchmark quality ratio distribution.} Boxplot of quality ratio (framework / expert baseline) for the 58 fully successful prospective tasks. Median: 94\%. IQR: 89--98\%. Whiskers: 78--100\%. One outlier at 72\% (a highly optimized turbulence simulation where the expert used a custom adaptive scheme---a frontier problem near $\partial \Sclass$). Stratified by domain: imaging tasks (median 97\%), PDE tasks (93\%), optimization tasks (91\%), stochastic tasks (88\%).
 
 \textbf{Figure S3. Scalability, $\rho$, and $\Sclass$-verification overhead.} Left panel: wall-clock time breakdown ($\Agent_P$, $\Agent_J$ $\Sclass$-verification, $\Agent_E$) across the 12 development problems, ordered by total DOF. $\Agent_J$ overhead: 3\% (heat equation, $10^3$ DOF) to 28\% (GRI-Mech, stiffness analysis dominates). $\Agent_E$ dominates above $10^4$ DOF. Right panel: $\Agent_J$ time vs.\ total time as a function of problem DOF; the ratio decreases as $O(1/\text{DOF})$ since $\Sclass$-verification cost is nearly constant while $\Agent_E$ scales with problem size. The setup-time efficiency $\rho$ is independent of $\Agent_J$ overhead, since $\rho$ measures total setup time (minutes) vs.\ expert setup time (days).
+
+% =====================================================================
+% S8: FORMAL SPEC.MD GRAMMAR AND EXTERNAL TOOL ADAPTERS
+% =====================================================================
+
+\section{Formal Grammar for \texttt{spec.md} and External Tool Adapters}
+\label{sec:s8}
+
+\subsection*{S8.1 Formal grammar}
+
+A valid \texttt{spec.md} file is a structured Markdown document whose abstract syntax is defined by the following context-free grammar (in EBNF notation):
+
+\begin{verbatim}
+spec_file   = header , domain , equations , boundary , initial ,
+              observables , tolerance , { extension } ;
+
+header      = "# Specification:" , TITLE , NEWLINE ;
+
+domain      = "## Domain" , NEWLINE , { key_value } ;
+equations   = "## Equations" , NEWLINE , { equation_block | key_value } ;
+boundary    = "## Boundary Conditions" , NEWLINE , { key_value } ;
+initial     = "## Initial Conditions" , NEWLINE , { key_value } ;
+observables = "## Observables" , NEWLINE , { key_value } ;
+tolerance   = "## Tolerance" , NEWLINE , { key_value } ;
+extension   = "## " , SECTION_NAME , NEWLINE , { key_value } ;
+
+key_value   = KEY , ":" , VALUE , NEWLINE ;
+equation_block = KEY , ":" , "|" , NEWLINE , { INDENTED_LINE } ;
+
+KEY         = /[a-zA-Z_][a-zA-Z0-9_]*/ ;
+VALUE       = /[^\n]+/ ;
+TITLE       = /[^\n]+/ ;
+\end{verbatim}
+
+The six mandatory sections map one-to-one to the S1 six-tuple:
+\begin{itemize}[nosep,leftmargin=1.5em]
+\item \texttt{\#\# Domain} $\to \Domain$ (computational domain)
+\item \texttt{\#\# Equations} $\to \mathcal{E}$ (governing equations)
+\item \texttt{\#\# Boundary Conditions} $\to \mathcal{B}$ (boundary conditions)
+\item \texttt{\#\# Initial Conditions} $\to \mathcal{I}$ (initial conditions)
+\item \texttt{\#\# Observables} $\to \mathcal{O}$ (output functional)
+\item \texttt{\#\# Tolerance} $\to \varepsilon$ (target tolerance)
+\end{itemize}
+
+Additional sections (e.g., \texttt{\#\# Primitives Required}, \texttt{\#\# Task Instance Variations}) are permitted as extensions but are not required for $\Sclass$ membership. Key-value pairs within each section use YAML-compatible syntax for machine parseability while remaining human-readable.
+
+A \texttt{spec.md} file is \emph{valid} if and only if: (1) all six mandatory sections are present with at least one non-empty key-value pair; (2) the \texttt{Tolerance} section contains at least one numerical threshold; (3) the \texttt{Equations} section contains at least one mathematical expression (in plain text, LaTeX, or symbolic form). Validation is implemented as a 12-line Python function in the pipeline (see \texttt{validate\_specmd.py} in the repository).
+
+\subsection*{S8.2 External tool adapters (preliminary)}
+
+To demonstrate that \texttt{spec.md} is not locked to our pipeline, we have developed preliminary adapters that translate a subset of \texttt{spec.md} files into input formats for two external tools:
+
+\textbf{FEniCS adapter.} For \texttt{spec.md} files describing linear elliptic PDEs (Poisson, heat equation, linear elasticity), a Python script parses the six-tuple and generates a FEniCS variational form (\texttt{.py} file). Tested on Poisson ($\nabla^2 u = f$ on $[0,1]^2$) and heat equation ($\partial_t u = \kappa \nabla^2 u$); both produce solutions matching the pipeline output to machine precision. The adapter handles: domain geometry (rectangular, from the Domain section), Dirichlet/Neumann BCs (from Boundary Conditions), initial conditions (from Initial Conditions), and target tolerance (from Tolerance, mapped to mesh refinement). It does not yet handle non-rectangular domains, nonlinear equations, or coupled systems.
+
+\textbf{COMSOL adapter.} For the same linear elliptic subset, a script generates COMSOL \texttt{.mph} parameter files via the COMSOL--MATLAB LiveLink API. Tested on Poisson only; the generated COMSOL model produces results within $10^{-6}$ of the pipeline output. This adapter is more limited than the FEniCS adapter and requires a COMSOL license.
+
+These adapters are proof-of-concept demonstrations covering $<5\%$ of the problems in $\Sclass$. Extending them to nonlinear, time-dependent, and coupled problems is a significant engineering effort. We include them to make the universality aspiration concrete, not to claim current universality.
 
 % =====================================================================
 \end{document}

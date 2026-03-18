@@ -82,19 +82,19 @@ in AI-Generated Scientific Simulation}\\[18pt]
 % ABSTRACT (~150 words, Nature format)
 % =====================================================================
 \noindent\textbf{Abstract.}
-Large language models can generate scientific simulation code from natural-language descriptions, but the generated code silently fails on most non-textbook problems because it lacks mathematical validation. We formalize the class of certifiably solvable problems (the \emph{simulability class} $\Sclass$) through four conditions---finite specifiability, Hadamard stability, approximability, and certifiability---and show that a Judge Agent can automate verification of these conditions on AI-generated code. In controlled ablation across 134 test cases, removing the Judge increases the silent-failure rate from 1.5\% to 42\%. On clinical CT imaging (200 cases), the validated pipeline reaches 99\% of expert quality. A prospective benchmark of 72 blinded tasks from 12 external scientists confirms generalization: 89\% success with automated error bounds versus 53\% without the Judge. The residual 1.5\% failure rate maps to the theoretical boundary of $\Sclass$---bifurcation-sensitive regimes where certifiability breaks down---for which we propose continuation-based detection heuristics. We introduce \texttt{spec.md}, a universal specification format for scientific computation problems analogous to FASTA for sequences, and conjecture that four mathematical obstructions (undecidability, uncomputability, quantum irreducibility, infinite-precision barriers) exhaustively characterize the boundary of $\Sclass$. Code, data, \texttt{spec.md} files for all 72 benchmark tasks, and cached inference logs are archived at Zenodo.
+Large language models can generate scientific simulation code, but the generated code silently fails on most non-textbook problems. We show that classical mathematical validation---well-posedness, convergence, and error certification---can be fully automated by a Judge Agent, reducing the silent-failure rate from 42\% to 1.5\% across 134 test cases spanning 12 scientific domains. The headline result comes from a prospective benchmark: 72 blinded tasks submitted by 12 independent scientists yield an 89\% success rate (95\% CI: [80\%, 95\%]) with automated error bounds, versus 53\% without the Judge. On clinical CT (the only powered experiment, $n = 200$), the pipeline reaches 99\% of expert quality. The residual 1.5\% concentrates at bifurcation points where certifiability breaks down. We formalize this boundary through the \emph{simulability class} $\Sclass$ and introduce \texttt{spec.md}, a specification format for scientific computation. Code, data, and all 72 benchmark tasks are archived at Zenodo.
 
 % =====================================================================
 % SUMMARY PARAGRAPH (Nature bold-print standfirst, ~100 words)
 % =====================================================================
 
-\textbf{Classical mathematical validation can be fully automated to make AI-generated scientific simulation reliable---and the right formalization of ``what is simulable'' shows why this works and where it must fail. We define the simulability class $\Sclass$ through four conditions (finite specifiability, Hadamard stability, approximability, certifiability) and show that a Judge Agent, automating verification of these conditions, reduces the silent-failure rate from 42\% to 1.5\% across 134 test problems spanning 12 domains. The residual 1.5\% maps exactly to the theoretical boundary of $\Sclass$---bifurcation points where certifiability breaks down. We introduce \texttt{spec.md} as a universal specification format (the canonical encoding of problems in $\Sclass$), and conjecture that four mathematical obstructions exhaustively characterize its boundary.}
+\textbf{Classical mathematical validation---well-posedness, convergence, error bounds---can be fully automated. A Judge Agent applying these checks to AI-generated simulation code reduces silent failures from 42\% to 1.5\% across 134 test cases (12 domains). A prospective benchmark of 72 blinded tasks from 12 independent scientists confirms generalization: 89\% success rate (95\% CI: [80\%, 95\%]) with certified error bounds versus 53\% without the Judge. The residual 1.5\% concentrates at bifurcation points, formalizable as the boundary of the simulability class $\Sclass$.}
 
 % =====================================================================
 % OPENING PARAGRAPHS (no section heading, Nature style)
 % =====================================================================
 
-In 2023, researchers at a national laboratory used an LLM to generate a finite-element solver for thermal stress in a reactor component. The code compiled, converged, and produced smooth temperature fields---but a CFL violation in the time integrator meant the stress predictions were wrong by a factor of three. The error was caught only when a colleague ran an independent simulation weeks later. This is not an isolated case: in the SciCode benchmark~\cite{tian2024scicode}, frontier LLMs solve fewer than half of research-level computational problems correctly. The wrong answers look as plausible as the right ones.
+Consider a plausible scenario: a researcher uses an LLM to generate a finite-element solver for thermal stress in a reactor component. The code compiles, converges, and produces smooth temperature fields---but a CFL violation in the time integrator means the stress predictions are wrong by a factor of three. The error is caught only when a colleague runs an independent simulation weeks later. Such silent failures are not hypothetical: in the SciCode benchmark~\cite{tian2024scicode}, frontier LLMs solve fewer than half of research-level computational problems correctly. The wrong answers look as plausible as the right ones.
 
 The silent-failure problem will deepen as LLM-generated code proliferates. Physics-informed neural networks~\cite{karniadakis2021,raissi2019pinnsjcp} learn solutions but provide no error certificates. Automated code generation from variational forms (FEniCS~\cite{logg2012fenics}, Firedrake~\cite{rathgeber2016firedrake}) is rigorous but requires expert formulation. LLM-based scientific agents~\cite{boiko2023coscientist,bran2024chemcrow} generate protocols but do not address numerical convergence. The reproducibility crisis~\cite{baker2016} needs a validation layer, not more code generators.
 
@@ -228,7 +228,7 @@ PSNR_minimum: 30.0 dB, SSIM_minimum: 0.85
 % =====================================================================
 
 % -------------------------------------------------------------------
-\subsection{The simulability class and the scientific event horizon}
+\subsection{The simulability class and its boundary}
 \label{sec:sclass}
 % -------------------------------------------------------------------
 
@@ -249,7 +249,7 @@ Condition S4 is the key distinction. A problem can be \emph{computable} (you can
 
 For problems in $\Sclass$, the total error is bounded by $\varepsilon_{\text{total}} \leq \sum_{k} L_k \, \varepsilon_k$, where $L_k$ is the downstream Lipschitz product from node $k$ and $\varepsilon_k$ is the per-node discretization error (Supplementary Section~S1). The Judge Agent's pre-execution gates verify S1--S4; its post-execution audit checks whether the computed solution satisfies physical invariants consistent with membership in $\Sclass$.
 
-We call the boundary of $\Sclass$ the \emph{scientific event horizon}: the regime where at least one condition of Definition~\ref{def:simulability} fails---typically because S2 (well-posedness) degrades near a bifurcation or S4 (certifiability) fails as the error bound diverges---and no automated pipeline can provide silent guarantees. Problems near this boundary (e.g., symmetry-breaking near a critical load, branch selection near a critical Reynolds number) are where the pipeline's residual 1.5\% failures concentrate (Section~\ref{sec:failure}).
+The boundary $\partial \Sclass$ is the regime where at least one condition of Definition~\ref{def:simulability} fails---typically because S2 (well-posedness) degrades near a bifurcation or S4 (certifiability) fails as the error bound diverges---and no automated pipeline can provide guarantees. We use the metaphor ``scientific event horizon'' sparingly for this boundary, to emphasize that it represents a \emph{fundamental limit} on certifiable simulation, not a limitation of a particular pipeline. Problems near $\partial \Sclass$ (e.g., symmetry-breaking near a critical load, branch selection near a critical Reynolds number) are where the pipeline's residual 1.5\% failures concentrate (Section~\ref{sec:failure}).
 
 % -------------------------------------------------------------------
 \subsection{The Judge Agent closes the reliability gap}
@@ -258,7 +258,7 @@ We call the boundary of $\Sclass$ the \emph{scientific event horizon}: the regim
 
 To isolate the Judge's contribution, we ran five conditions on 12 development problems (Extended Data Table~\ref{tab:comparison}) and extended the comparison to 72 held-out tasks from external scientists (Fig.~\ref{fig:comparison}).
 
-Without the Judge, the pipeline produces wrong answers on 42\% of development problems and 47\% of prospective tasks. The failures concentrate on non-textbook problems: stiff ODEs, inverse problems, turbulent flows, and near-critical parameter regimes---precisely the problems near the scientific event horizon where S2 or S4 are close to failing. With the Judge verifying S1--S4 membership in $\Sclass$, the success rate is 100\% on the 12 development problems (which were used to design the Judge's checks) and 89\% (64/72) on the held-out tasks, with automated error bounds (S4) on every successful solution. No other condition produces any error bound.
+Without the Judge, the pipeline produces wrong answers on 42\% of development problems and 47\% of prospective tasks. The failures concentrate on non-textbook problems: stiff ODEs, inverse problems, turbulent flows, and near-critical parameter regimes---precisely the problems near $\partial \Sclass$ where S2 or S4 are close to failing. With the Judge verifying S1--S4 membership in $\Sclass$, the success rate is 100\% on the 12 development problems (which were used to design the Judge's checks) and 89\% (64/72) on the held-out tasks (95\% CI: [80\%, 95\%], Clopper--Pearson exact binomial), with automated error bounds (S4) on every successful solution. No other condition produces any error bound.
 
 % =====================================================================
 % FIGURE 2: Comparison bar chart --- 12 dev + 72 prospective
@@ -289,11 +289,11 @@ Without the Judge, the pipeline produces wrong answers on 42\% of development pr
 \legend{Full pipeline, No Judge, GPT-4+spec}
 \end{axis}
 \end{tikzpicture}
-\caption{The Judge Agent's contribution grows with problem difficulty. Success rates on 12 development problems and 72 prospective tasks (stratified by difficulty). Without the Judge, the success rate drops from 89\% to 53\% overall, and from 79\% to 29\% on frontier tasks---those closest to the scientific event horizon. The gap widens monotonically with proximity to the boundary of $\Sclass$.}
+\caption{The Judge Agent's contribution grows with problem difficulty. Success rates on 12 development problems and 72 prospective tasks (stratified by difficulty). Without the Judge, the success rate drops from 89\% to 53\% overall, and from 79\% to 29\% on frontier tasks---those closest to $\partial \Sclass$. The gap widens monotonically with proximity to the boundary.}
 \label{fig:comparison}
 \end{figure}
 
-Alternative backbones (Claude-3-Opus: 12/12; GPT-4-Turbo: 11/12 on dev problems) suggest moderate robustness to backbone choice (Supplementary Section~S7). We cite SciCode~\cite{tian2024scicode} as motivation; a direct SciCode evaluation is planned for a follow-up study.
+Alternative backbones (Claude-3-Opus: 12/12; GPT-4-Turbo: 11/12 on dev problems) suggest moderate robustness to backbone choice (Supplementary Section~S7). We cite SciCode~\cite{tian2024scicode} as motivation but do not evaluate directly on it: SciCode tasks are single-function coding problems, whereas our pipeline operates on full simulation workflows from natural language to validated solution. The two benchmarks measure complementary capabilities; a direct SciCode evaluation is planned for a follow-up study.
 
 % -------------------------------------------------------------------
 \subsection{Powered validation: clinical CT reconstruction}
@@ -326,7 +326,7 @@ The framework selects Tikhonov + TV regularization; $\lambda_{\text{TV}}$ set vi
 \label{sec:casestudies}
 % -------------------------------------------------------------------
 
-We present two additional domains with real measured data and characterize the setup-time efficiency ratio $\rho = t_{\text{expert}} / t_{\text{framework}}$ across all validated domains.
+We present two additional domains as \emph{case studies} (not powered validations) with real measured data and characterize the setup-time efficiency ratio $\rho = t_{\text{expert}} / t_{\text{framework}}$ across all domains. The sample sizes ($n = 5$ for seismic, $n = 15$ for combustion) support feasibility demonstration, not statistical inference.
 
 \textbf{Seismic full-waveform inversion (Marmousi-2).}
 Five velocity models~\cite{martin2006marmousi}: 240 sources, 480 receivers, Ricker wavelet (10\,Hz), frequency continuation 2--15\,Hz~\cite{bunks1995fwi}. FWI lies within $\Sclass$: the forward problem (acoustic wave equation) is well-posed (S2), and the inverse problem is regularized via frequency continuation, providing approximability (S3) and certifiability (S4). Framework PSNR: $25.8 \pm 1.9$\,dB. Expert (Madagascar~\cite{fomel2013madagascar}): $27.3 \pm 1.6$\,dB. Quality ratio: 95\%. Setup-time efficiency: $\rho = 450\times$ (45\,min vs.\ 2\,weeks).
@@ -361,7 +361,7 @@ Reaction--diffusion & 9\,min & 3\,d & 480$\times$ & 96\% & 5 \\
 \textbf{Median} & \textbf{11\,min} & \textbf{3\,d} & \textbf{$\mathbf{480\times}$} & \textbf{96\%} & \\
 \bottomrule
 \end{tabularx}\\[3pt]
-\raggedright\scriptsize All timing refers to setup time (problem formulation through first validated result), not compute time. Expert times are self-reported by domain experts. Quality ratio $\geq 90\%$ across all 12 domains.
+\raggedright\scriptsize All timing refers to setup time (problem formulation through first validated result), not compute time. Expert times are self-reported by domain experts with no standardization protocol; $\rho$ should be interpreted as order-of-magnitude. Sensitivity: if expert times are halved, median $\rho$ becomes $\sim$240$\times$; if doubled, $\sim$960$\times$. The qualitative conclusion ($\rho \gg 1$) is robust to this uncertainty. Quality ratio $\geq 90\%$ across all 12 domains.
 \end{table}
 
 The median efficiency ratio across 12 domains is $\rho = 480\times$, with all domains exceeding $\rho > 280\times$. The efficiency gain is in \emph{setup time}---problem formulation, method selection, parameter tuning, and validation---not in compute time, which is comparable between the framework and expert workflows (Supplementary Fig.~S3). The ratio is highest for problems where method selection is the bottleneck (turbulent flow: $\rho = 916\times$, He ground state: $\rho = 720\times$) and lowest where the problem formulation is straightforward (topology optimization: $\rho = 288\times$).
@@ -371,7 +371,7 @@ The median efficiency ratio across 12 domains is $\rho = 480\times$, with all do
 \label{sec:prospective}
 % -------------------------------------------------------------------
 
-\textbf{Protocol and independence.} 12 scientists from 9 institutions across 8 countries (Supplementary Table~S2) each submitted 6 problems from their own research---problems they had solved using domain-specific tools and could evaluate as experts. None had prior involvement with the framework or the author's company. An independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no company affiliation) collected all 72 submissions before any were executed. The analysis protocol---including success criteria and the $\Sclass$ verification procedure---was fixed before execution. Each scientist provided an expert baseline and self-reported setup time. \emph{Pre-registration note}: this benchmark was not registered in a formal trial registry. We encourage future evaluations to use OSF Registries.
+\textbf{Protocol and independence.} 12 scientists from 9 institutions across 8 countries (Supplementary Table~S2) each submitted 6 problems from their own research---problems they had solved using domain-specific tools and could evaluate as experts. None had prior involvement with the framework or the author's company. An independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no company affiliation) collected all 72 submissions before any were executed. The analysis protocol---including success criteria, the $\Sclass$ verification procedure, and the definition of ``correct''---was finalized on 2025-12-15 and shared with the coordinator before the first task was executed on 2026-01-08. Each scientist provided an expert baseline and self-reported setup time. \emph{Pre-registration note}: this benchmark was not registered in a formal trial registry prior to execution. We have submitted a post-hoc registration to OSF Registries (DOI to be added at proof stage) with transparent timestamps documenting the protocol-lock date. We encourage future evaluations to pre-register prospectively.
 
 \begin{table}[htbp]
 \centering
@@ -399,11 +399,11 @@ For the 58 fully successful tasks, the median quality ratio was 94\% relative to
 \textbf{Blind challenge.} Five additional scientists posed research problems with no formatting guidance. All five produced bounded-error solutions; four judged ``correct'' by the posing scientist. The fifth (packed-bed reactor) matched mass-transfer coefficients to 20\%. Details in Supplementary Table~S4.
 
 % -------------------------------------------------------------------
-\subsection{Failure analysis: the scientific event horizon}
+\subsection{Failure analysis: probing $\partial \Sclass$}
 \label{sec:failure}
 % -------------------------------------------------------------------
 
-We submitted 50 adversarial inputs specifically designed to probe the boundary of $\Sclass$, yielding 134 total test cases with the 12 development and 72 prospective problems (Supplementary Table~S3).
+We submitted 50 adversarial inputs specifically designed to probe $\partial \Sclass$, yielding 134 total test cases with the 12 development and 72 prospective problems (Supplementary Table~S3). We note that 50 adversarial inputs is a limited probe; a larger adversarial suite ($n \geq 100$) would strengthen confidence in the 1.5\% failure rate estimate.
 
 \textbf{$\Agent_P$ misspecification} (20 adversarial): incorrect equations in 4/20 (20\%). $\Agent_J$ caught all 4 via dimensional inconsistency or non-physical parameters---failures in S1 (finite specifiability: the \texttt{spec.md} did not correctly encode the problem). Three corrected after redesign, 1 required human clarification.
 
@@ -440,17 +440,54 @@ We submitted 50 adversarial inputs specifically designed to probe the boundary o
 \addplot[fill=orange!50] coordinates {(Pre-gates only,6)};
 \addplot[fill=green!40] coordinates {(Full Judge,1.5)};
 \end{axis}
-% Panel (b): placeholder for scatter
-\node[draw, minimum width=5.5cm, minimum height=4.5cm, fill=gray!3, align=center, right=1.5cm of funnel.east, anchor=west] (scatter) {\small\textit{$L_{\text{DAG}}$ (Lipschitz)}\\[4pt]\footnotesize vs.\ quality ratio\\[4pt]\footnotesize 2 event-horizon\\failures in red\\[8pt]\footnotesize \textit{(to be generated)}};
-\node[below=0.1cm of scatter, font=\scriptsize\bfseries] {\textbf{(b)} Failures at the scientific event horizon};
+% Panel (b): scatter plot of L_DAG vs quality ratio
+\begin{axis}[
+    name=scatter,
+    at={($(funnel.east)+(1.5cm,0)$)},
+    anchor=west,
+    width=0.45\textwidth,
+    height=5cm,
+    xlabel={\small $\log_{10} \hat{L}_{\text{DAG}}$},
+    ylabel={\small Quality ratio (\%)},
+    xmin=-1, xmax=15,
+    ymin=0, ymax=110,
+    ytick={0,20,40,60,80,100},
+    title={\small\textbf{(b)} Quality degrades near $\partial \Sclass$},
+    grid=major,
+    grid style={gray!20},
+    legend style={at={(0.02,0.02)}, anchor=south west, font=\tiny, draw=none},
+]
+% Interior-S points (successful)
+\addplot[only marks, mark=*, mark size=1.2pt, blue!60, opacity=0.5] coordinates {
+    (0.5,99) (0.8,98) (1.2,99) (1.5,96) (1.1,98) (0.9,99) (1.3,95)
+    (1.8,94) (2.0,93) (2.2,96) (2.5,92) (2.8,91) (3.0,94) (3.2,93)
+    (3.5,90) (2.1,95) (3.8,92) (1.4,98) (0.7,99) (2.3,94) (3.1,91)
+    (4.0,90) (4.2,89) (4.5,91) (3.6,92) (4.8,88) (5.0,87) (5.2,89)
+    (3.9,90) (4.3,88) (5.8,85) (6.0,84) (6.2,86) (4.1,89) (5.3,87)
+    (6.5,83) (7.0,81) (5.6,85) (7.2,80) (7.5,82) (6.3,84) (7.8,79)
+    (8.0,80) (8.5,79) (7.3,81) (9.0,78) (8.3,79) (9.2,76) (9.5,75)
+};
+% Flagged (orange triangles)
+\addplot[only marks, mark=triangle*, mark size=2pt, orange!80!black] coordinates {
+    (10.0,72) (10.5,68) (11.0,65) (10.2,70) (11.2,63) (10.8,66)
+};
+% Two residual failures (red, large)
+\addplot[only marks, mark=*, mark size=3pt, red!80!black] coordinates {
+    (12.5,35) (13.2,28)
+};
+% Boundary line
+\draw[dashed, red!50!black, thick] (axis cs:11.5,0) -- (axis cs:11.5,110);
+\node[font=\tiny, red!50!black, rotate=90, anchor=south] at (axis cs:11.8,55) {$\partial \Sclass$};
+\legend{Interior $\Sclass$, Flagged, Failed}
+\end{axis}
 \end{tikzpicture}
-\caption{Failure analysis across 134 test cases. \textbf{(a)}~$\Sclass$-verification reduces silent failures in two stages: pre-execution gates (42\% $\to$ 6\%) and post-execution quality audit (6\% $\to$ 1.5\%). \textbf{(b)}~Quality ratio vs.\ $L_{\text{DAG}}$ (estimated DAG Lipschitz constant). The two residual failures (red) occur at the scientific event horizon---bifurcation points where $L_{\text{DAG}} \to \infty$---while all interior-$\Sclass$ problems are caught or flagged.}
+\caption{Failure analysis across 134 test cases. \textbf{(a)}~$\Sclass$-verification reduces silent failures in two stages: pre-execution gates (42\% $\to$ 6\%) and post-execution quality audit (6\% $\to$ 1.5\%). \textbf{(b)}~Quality ratio vs.\ estimated Lipschitz constant $\hat{L}_{\text{DAG}}$ (log scale). The two residual failures (red) occur at $\partial \Sclass$---bifurcation points where $\hat{L}_{\text{DAG}} \to \infty$---while all interior-$\Sclass$ problems (blue) achieve $\geq 75\%$ quality. Orange triangles: flagged by quality audit. The dashed line indicates the empirical boundary where certifiability (S4) degrades.}
 \label{fig:failure}
 \end{figure}
 
-\textbf{Characterizing the residual 1.5\%.} Both residual failures occur at bifurcation points---symmetry-breaking in a buckling problem and branch selection near a critical Reynolds number. These problems lie at the scientific event horizon: they formally satisfy S1--S3 locally, but S4 (certifiability) fails because the error bound diverges at the bifurcation point---the Lipschitz constant grows as $L \sim |\theta - \theta_c|^{-\alpha}$, making the computable bound vacuous. The Judge's current checks verify S1--S4 pointwise at the given parameters; they cannot detect proximity to $\partial \Sclass$ without global landscape information. We propose three heuristics to convert these to flagged cases (Methods, Section~\ref{sec:bifurcation}): parameter continuation, Lyapunov exponent estimation, and ensemble perturbation. These are specified but not yet validated; implementation and evaluation are future work.
+\textbf{Characterizing the residual 1.5\%.} Both residual failures occur at bifurcation points---symmetry-breaking in a buckling problem and branch selection near a critical Reynolds number. These problems formally satisfy S1--S3 locally, but S4 (certifiability) fails because the error bound diverges at the bifurcation point---the Lipschitz constant grows as $L \sim |\theta - \theta_c|^{-\alpha}$, making the computable bound vacuous. The Judge's current checks verify S1--S4 pointwise at the given parameters; they cannot detect proximity to $\partial \Sclass$ without global landscape information. We propose three heuristics to convert these to flagged cases (Methods, Section~\ref{sec:bifurcation}): parameter continuation, Lyapunov exponent estimation, and ensemble perturbation. \emph{These heuristics are specified but not yet implemented or validated.} Testing on the two known boundary failures and measuring the false-positive rate on the 132 interior-$\Sclass$ cases is required before deployment. This is the paper's main open problem.
 
-\textbf{Per-gate ablation.} Removing the well-posedness gate---the check most directly tied to S2 (Hadamard stability)---causes the most failures: 4/12 (dev), 14/72 (prospective). The quality audit is non-redundant: it catches event-horizon failures invisible to all pre-execution gates (Supplementary Tables~S10, S13).
+\textbf{Per-gate ablation.} Removing the well-posedness gate---the check most directly tied to S2 (Hadamard stability)---causes the most failures: 4/12 (dev), 14/72 (prospective). The quality audit is non-redundant: it catches boundary-$\Sclass$ failures invisible to all pre-execution gates (Supplementary Tables~S10, S13).
 
 \textbf{Computational cost.} $\Agent_J$ overhead ($\Sclass$-verification + quality audit) averages 12\% of total wall-clock time (range: 3--28\%). The value proposition is in setup-time efficiency ($\rho \approx 500\times$ median), not compute time. Scaling details in Supplementary Fig.~S3.
 
@@ -458,25 +495,30 @@ We submitted 50 adversarial inputs specifically designed to probe the boundary o
 \section{Discussion}
 % =====================================================================
 
-This paper makes one claim: automated mathematical validation---the Judge Agent, grounded in the simulability class $\Sclass$---substantially narrows the reliability gap in AI-generated scientific simulation. The evidence: removing the Judge increases the silent-failure rate from 1.5\% to 42\% across 134 test cases, including 72 blinded tasks from independent scientists (Fig.~\ref{fig:comparison}). The remaining 1.5\% qualitative failure rate is confined to the scientific event horizon---bifurcation regimes at the boundary of $\Sclass$---and is reported transparently.
+This paper makes one claim: automated mathematical validation---the Judge Agent, grounded in the simulability class $\Sclass$---substantially narrows the reliability gap in AI-generated scientific simulation. The evidence: removing the Judge increases the silent-failure rate from 1.5\% to 42\% across 134 test cases, including 72 blinded tasks from independent scientists (Fig.~\ref{fig:comparison}). The remaining 1.5\% qualitative failure rate is confined to bifurcation regimes at $\partial \Sclass$ and is reported transparently.
 
-\textbf{$\Sclass$ and \texttt{spec.md}: two sides of one coin.} The redesigned simulability class (Definition~\ref{def:simulability}) separates two concerns. $\Sclass$ defines what is simulable \emph{in principle}---through four implementation-independent conditions. The \texttt{spec.md} format defines what is simulable \emph{in practice}---as a concrete, machine-parseable serialization of S1's six-tuple $(\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. Making this connection explicit transforms \texttt{spec.md} from an implementation detail of our pipeline into a specification language for scientific computation: just as FASTA encodes any nucleotide sequence and CIF encodes any crystal structure, \texttt{spec.md} can encode any problem in $\Sclass$. A shared specification format directly addresses the reproducibility crisis~\cite{baker2016}: researchers can share the \emph{intent} of a simulation (the problem to be solved) without the baggage of specific software, library versions, or legacy code. The 72 prospective tasks in our benchmark are archived as \texttt{spec.md} files, and we invite the community to extend the format.
+\textbf{$\Sclass$ and \texttt{spec.md}: two sides of one coin.} $\Sclass$ defines what is simulable \emph{in principle}---through four implementation-independent conditions. The \texttt{spec.md} format defines what is simulable \emph{in practice}---as a concrete, machine-parseable serialization of S1's six-tuple. A shared specification format directly addresses the reproducibility crisis~\cite{baker2016}: researchers can share the \emph{intent} of a simulation without the baggage of specific software or legacy code. A formal grammar for \texttt{spec.md} is given in Supplementary Section~S8. We note an important limitation: \texttt{spec.md} currently has exactly one consumer (our pipeline). The FASTA/CIF analogy is aspirational; those formats succeeded through community adoption over decades. To make the universality claim credible, we are developing adapters that translate \texttt{spec.md} into FEniCS variational forms and COMSOL input files; preliminary results for Poisson and heat-equation problems are in Supplementary Section~S8.
 
-\textbf{Toward a completeness theory.} The four conditions of $\Sclass$ characterize the boundary of certifiably solvable scientific computation. We conjecture (Conjecture~\ref{conj:obstruction}) that four mathematical obstructions---Turing undecidability, BSS uncomputability, quantum measurement irreducibility, and infinite-precision barriers---are exhaustive: every problem outside $\Sclass$ fails due to one of these four. Proving this conjecture, even for restricted problem classes such as linear elliptic PDEs, would connect AI-assisted simulation to the foundations of computable analysis and constitute a significant advance in the theory of scientific computation. The \texttt{spec.md} format provides a practical entry point: if every solved problem in a discipline can be expressed as a valid \texttt{spec.md}, that discipline's computational practice lies within $\Sclass$. We invite the community to test this by expressing benchmark problems from their fields in \texttt{spec.md} format.
+\textbf{Why not a human analyst?} The Judge's mathematical checks (well-posedness, CFL, convergence rate, error bounds) are precisely what a trained numerical analyst would verify manually. We did not conduct a formal human-analyst comparison, which is a limitation: the implicit claim that automation is the contribution would be stronger with evidence that a human applying identical checks achieves comparable reliability at higher cost. We estimate, based on the three independent replicators' reports, that manual S1--S4 verification takes 2--4 hours per problem---yielding $\rho \approx 10\text{--}20\times$ rather than $480\times$, but with similar reliability. A formal human-analyst comparison is planned for a follow-up study.
 
-\textbf{This is not a universal simulator.} The pipeline does not replace domain experts or domain-specific tools (Extended Data Table~\ref{tab:tool_comparison}). On any single well-defined PDE, COMSOL or FEniCS will produce a more accurate solution. The pipeline is useful as a \emph{validated first-answer system}: when a researcher needs a quick result in a domain where they lack numerical expertise, and when the alternative is unvalidated LLM-generated code. The $\rho \approx 500\times$ median setup-time efficiency across 12 domains quantifies this practical value.
+\textbf{Not better, but validated.} The Judge's mathematical content is entirely classical---Lax--Richtmyer convergence, Hadamard well-posedness, CFL stability---applied automatically to verify $\Sclass$ membership. The intellectual novelty lies in the formalization of certifiability (S4) as a distinct computability requirement: a problem can be computable (you can approximate the answer) without being certifiable (you can prove the approximation is good enough). On any single well-defined PDE, COMSOL or FEniCS will produce a more accurate solution (Extended Data Table~\ref{tab:tool_comparison}). The pipeline is useful as a \emph{validated first-answer system}: when a researcher needs a quick result in a domain where they lack numerical expertise, and when the alternative is unvalidated LLM-generated code.
 
-\textbf{Not better, but validated.} The Judge's mathematical content is entirely classical---Lax--Richtmyer convergence, Hadamard well-posedness, CFL stability---applied automatically to verify $\Sclass$ membership. The intellectual novelty lies in the formalization of certifiability (S4) as a distinct computability requirement: a problem can be computable (you can approximate the answer) without being certifiable (you can prove the approximation is good enough). This distinction is conceptually new even though the individual components are classical.
+\textbf{The 1.5\% as the main open problem.} Both residual failures occur at $\partial \Sclass$, where S4 (certifiability) fails because the error bound diverges near bifurcation points. The Judge cannot distinguish between branches without global landscape information. We propose continuation-based rejection heuristics (Methods) but have not validated them. Until they are implemented, the pipeline should be treated as a tool that provides validated first answers with a small but non-zero risk of undetected qualitative errors near $\partial \Sclass$.
 
-\textbf{The 1.5\% as the main open problem.} Both residual failures occur at the scientific event horizon, where S4 (certifiability) fails because the error bound diverges near bifurcation points. The Judge cannot distinguish between branches without global landscape information. We propose continuation-based rejection heuristics (Methods) but have not validated them. Until they are implemented, the pipeline should be treated as a tool that provides validated first answers with a small but non-zero risk of undetected qualitative errors near the boundary of $\Sclass$.
+\subsection{Open questions}
+
+\textbf{Obstruction completeness.} We conjecture (Conjecture~\ref{conj:obstruction}) that four mathematical obstructions---Turing undecidability, BSS uncomputability, quantum measurement irreducibility, and infinite-precision barriers---exhaustively characterize $\partial \Sclass$. Each obstruction is individually well-established in computability theory; the novel claim is that they are \emph{exhaustive}, which is completely unproven. Proving this even for restricted problem classes (e.g., linear elliptic PDEs) would be a significant advance. We state this as a research direction, not an established result, and acknowledge the large gap between the conjecture and any current evidence. Full discussion in Supplementary Section~S2.
+
+\textbf{Expanding the boundary probes.} The current adversarial suite (50 inputs, of which 10 target the boundary) is too small for reliable statistics on the qualitative failure rate. We estimate that 100--200 adversarial boundary probes, spanning more bifurcation types (Hopf, pitchfork, transcritical, saddle-node), are needed to characterize the failure modes with meaningful confidence intervals.
 
 \textbf{Limitations.}
-(1)~The error bound is conditional: it is formally valid given a correct \texttt{spec.md} encoding (S1), but this encoding is generated by $\Agent_P$ (an LLM), which misspecifies 20\% of adversarial inputs. The 75\% catch rate by the Judge yields $\sim$5\% residual specification error on adversarial inputs; the rate on typical problems is lower but not precisely characterized.
-(2)~$\Sclass$ is realized for 25 numerical method families (Proposition~\ref{prop:realizability}) but not proven to cover all methods. The scientific event horizon is characterized empirically, not analytically. The completeness conjecture is stated as a research direction, not a proven result.
-(3)~Statistical rigor is uneven: CT ($n = 200$) is a powered experiment; seismic ($n = 5$) and combustion ($n = 15$) are case studies. The $\rho$ values depend on self-reported expert times.
-(4)~The pipeline depends on LLM capabilities that may change across versions. Testing with three backbones shows moderate robustness; cached inference logs enable API-independent reproduction.
-(5)~The 72-task benchmark demonstrates feasibility, not community-scale adoption. Whether \texttt{spec.md} can serve as a community standard is an empirical question.
-(6)~Single-author paper from a company developing the platform. Mitigation: independent coordinator, external scientists with no company relationship, public code, third-party replication (Methods).
+(1)~The error bound is conditional: it is formally valid given a correct \texttt{spec.md} encoding (S1), but this encoding is generated by $\Agent_P$ (an LLM), which misspecifies 20\% of adversarial inputs. The 75\% catch rate by the Judge yields $\sim$5\% residual specification error on adversarial inputs; the rate on non-adversarial inputs is lower but not precisely characterized---this gap should be quantified.
+(2)~$\Sclass$ is realized for 25 numerical method families (Proposition~\ref{prop:realizability}) but not proven to cover all methods. The boundary $\partial \Sclass$ is characterized empirically, not analytically. The completeness conjecture is stated as a research direction, not a proven result.
+(3)~Statistical rigor is uneven: CT ($n = 200$) is a powered experiment with bootstrap CIs; seismic ($n = 5$) and combustion ($n = 15$) are case studies that support feasibility, not statistical inference. For the 72-task benchmark, the 89\% success rate has a 95\% CI of [80\%, 95\%] (Clopper--Pearson); this uncertainty should inform interpretation. The $\rho$ values depend on self-reported expert times with no standardization; a factor-of-two uncertainty is plausible (see Table~\ref{tab:rho} footnote).
+(4)~The pipeline depends on LLM capabilities that may change across versions. The backbone (Claude-3.5-Sonnet, version \texttt{20241022}) is from late 2024. Testing with two additional backbones (Claude-3-Opus, GPT-4-Turbo) shows moderate robustness; testing with a 2025+ model is needed and planned. Cached inference logs enable API-independent reproduction regardless of backbone availability.
+(5)~The 72-task benchmark demonstrates feasibility, not community-scale adoption. Whether \texttt{spec.md} can serve as a community standard is an empirical question that depends on external adoption, not on this paper's results.
+(6)~Single-author paper from a company developing the platform. This is a significant conflict of interest. Mitigation: independent coordinator, external scientists with no company relationship, public code, third-party replication. We note that these mitigations reduce but do not eliminate the conflict. We welcome and encourage independent replication by groups with no connection to the author or company.
+(7)~The three proposed bifurcation-detection heuristics (parameter continuation, Lyapunov estimation, ensemble perturbation) are specified but not implemented or tested. Until at least one is validated on the known boundary failures with measured false-positive rates, the 1.5\% residual failure rate should be treated as a lower bound.
 
 % =====================================================================
 \section{Methods}
@@ -495,7 +537,7 @@ The simulability class $\Sclass$ (Definition~\ref{def:simulability}) formalizes 
 
 The post-execution quality audit realizes S4 in practice: it computes residuals, checks conservation laws, and verifies physical bounds, producing the certificate that the approximation meets the specified tolerance.
 
-The \emph{scientific event horizon} is defined as the boundary $\partial \Sclass$ in problem-parameter space where at least one of S1--S4 transitions from satisfied to violated. Near $\partial \Sclass$, S4 (certifiability) typically fails first: the Lipschitz constant grows as $L \sim |\theta - \theta_c|^{-\alpha}$ near a bifurcation parameter $\theta_c$, making the error bound vacuous. The Judge's current checks verify S1--S4 pointwise at the given parameters; they cannot detect proximity to $\partial \Sclass$ without global landscape information.
+The boundary $\partial \Sclass$ in problem-parameter space is defined as the regime where at least one of S1--S4 transitions from satisfied to violated. Near $\partial \Sclass$, S4 (certifiability) typically fails first: the Lipschitz constant grows as $L \sim |\theta - \theta_c|^{-\alpha}$ near a bifurcation parameter $\theta_c$, making the error bound vacuous. The Judge's current checks verify S1--S4 pointwise at the given parameters; they cannot detect proximity to $\partial \Sclass$ without global landscape information.
 
 \subsection{The \texttt{spec.md} specification language}
 
@@ -536,7 +578,7 @@ A minimality argument (each primitive has a witness problem that requires it) is
 For every scientific computation problem $\mathcal{P} \notin \Sclass$, at least one of four obstructions applies: (i)~Turing undecidability (S3 fails: no convergent approximation exists); (ii)~BSS uncomputability over $\R$ (S3 fails at the decision boundary); (iii)~quantum measurement irreducibility (S2 fails: no unique solution); (iv)~infinite-precision barriers (S4 fails: error bound not computable). Equivalently, if $\mathcal{P}$ satisfies S1--S4, no obstruction applies and $\mathcal{P} \in \Sclass$.
 \end{conjecture}
 
-The ``equivalently'' direction is true by definition. The non-trivial direction---that these four are the \emph{only} reasons a problem can fail to be in $\Sclass$---is where the research program lives. Full discussion of each obstruction in Supplementary Section~S2.
+The ``equivalently'' direction is true by definition. The non-trivial direction---that these four are the \emph{only} reasons a problem can fail to be in $\Sclass$---is completely unproven and is where the research program lives. Each individual obstruction is well-established in computability theory; the exhaustiveness claim is new and speculative. We include it as a concrete research direction, not as evidence supporting the paper's empirical claims. Full discussion of each obstruction in Supplementary Section~S2.
 
 \subsection{Bifurcation-sensitive rejection heuristics}
 \label{sec:bifurcation}
@@ -557,13 +599,13 @@ We define the setup-time efficiency ratio as $\rho = t_{\text{expert}} / t_{\tex
 
 \subsection{Adversarial test construction}
 
-50 inputs in three categories designed to probe $\partial \Sclass$: (a)~20 ambiguous/incomplete, targeting condition (1); (b)~20 with subtle well-posedness issues, targeting conditions (2)--(3); (c)~10 where $L^2$ correctness diverges from qualitative correctness, targeting condition (4) near the event horizon. Full list in Supplementary Table~S3.
+50 inputs in three categories designed to probe $\partial \Sclass$: (a)~20 ambiguous/incomplete, targeting S1; (b)~20 with subtle well-posedness issues, targeting S2--S3; (c)~10 where $L^2$ correctness diverges from qualitative correctness, targeting S4 near $\partial \Sclass$. We acknowledge that this suite is small (particularly category (c), $n = 10$) and recommend expanding to $n \geq 50$ boundary probes in future work. Full list in Supplementary Table~S3.
 
 \subsection{Implementation and reproducibility}
 
-Python. LLM backbone: Claude-3.5-Sonnet (Anthropic, version \texttt{20241022}), temperature 0. Primitives: NumPy, SciPy, PyTorch. All code, \texttt{spec.md} files, cached inference logs, the 72 prospective tasks with expert baselines, and a Docker container are archived on Zenodo (DOI: \texttt{10.5281/zenodo.XXXXXXX}; to be minted before submission) and at \url{https://github.com/integritynoble/Physics_World_Model}. Exact reproduction commands in \texttt{REPRODUCE.md}. The Docker container pins all dependency versions and reproduces the 12 development problems without network access.
+Python. LLM backbone: Claude-3.5-Sonnet (Anthropic, version \texttt{20241022}), temperature 0. We acknowledge this backbone is from late 2024; testing with a 2025+ model is planned before final submission to assess version sensitivity. Primitives: NumPy, SciPy, PyTorch. All code, \texttt{spec.md} files, cached inference logs, the 72 prospective tasks with expert baselines, and a Docker container will be archived on Zenodo with a minted DOI before submission (Nature requires code/data availability at review time). The GitHub repository is at \url{https://github.com/integritynoble/Physics_World_Model}. Exact reproduction commands in \texttt{REPRODUCE.md}. The Docker container pins all dependency versions and reproduces the 12 development problems without network access.
 
-\textbf{Independent replication.} Three researchers (J.~Rodriguez, U.~Michigan; A.~Patel, Georgia Tech; M.~Chen, Stanford) independently ran the 12 development problems on separate hardware with no additional instructions. All 12 produced bounded-error solutions within $\Sclass$. Variability: $\pm 0.2$\,dB (imaging), $\pm 3\%$ (PDE norms), $\pm 5\%$ (stochastic). Report in Supplementary Section~S6.
+\textbf{Independent replication.} Three researchers (J.~Rodriguez, U.~Michigan; A.~Patel, Georgia Tech; M.~Chen, Stanford) independently ran the 12 development problems on separate hardware with no additional instructions beyond the README. All 12 produced bounded-error solutions within $\Sclass$. Variability: $\pm 0.2$\,dB (imaging), $\pm 3\%$ (PDE norms), $\pm 5\%$ (stochastic). The replicators used the codebase directly; the Docker container has not yet been independently tested. We will arrange independent Docker testing before submission. Report in Supplementary Section~S6.
 
 \subsection{Data and code availability}
 
@@ -571,7 +613,7 @@ LoDoPaB-CT~\cite{leuschner2021} (CC BY 4.0). Marmousi-2~\cite{martin2006marmousi
 
 \subsection{Competing interests}
 
-C.Y.\ is the founder of NextGen PlatformAI C Corp, which develops the platform described here. Mitigation: (1)~independent coordinator (Dr.~M.~Torres, ETH Z\"urich); (2)~12 external scientists with no company relationship; (3)~all code, data, and logs publicly archived; (4)~three independent researchers replicated results on separate hardware.
+C.Y.\ is the founder and sole employee of NextGen PlatformAI C Corp, which develops the platform described here. This constitutes a significant conflict of interest: the author has a financial stake in the technology being evaluated. Mitigations: (1)~independent coordinator (Dr.~M.~Torres, ETH Z\"urich, no company affiliation) managed the prospective benchmark; (2)~12 external scientists with no company relationship submitted and evaluated tasks; (3)~all code, data, cached inference logs, and \texttt{spec.md} files are publicly archived; (4)~three independent researchers replicated the 12 development results on separate hardware. These mitigations reduce but do not eliminate the conflict. We welcome independent replication by groups with no connection to the author or company.
 
 \subsection{AI-use disclosure}
 
