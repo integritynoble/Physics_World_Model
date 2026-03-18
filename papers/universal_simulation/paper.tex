@@ -753,10 +753,10 @@ We thank the 12 benchmark scientists (Supplementary Table~S2; names to be disclo
 \centering
 \caption{Extended Data Table 1: Controlled comparison on 12 development problems (all satisfying S1--S4). Five conditions isolate the Judge's contribution. ``Correct'': solution within domain-specific tolerance. ``Bound'': automated error bound (S4) provided. Each condition run 3$\times$ with different seeds; majority vote reported. Note: 100\% success on dev problems is expected, as these were used to design the Judge's S1--S4 verification checks.}
 \label{tab:comparison}
-\small
+\footnotesize
 \begin{tabularx}{\textwidth}{Xcc|cc|cc|cc|c}
 \toprule
-& \multicolumn{2}{c|}{\textbf{Full pipeline}} & \multicolumn{2}{c|}{\textbf{No $\Agent_J$}} & \multicolumn{2}{c|}{\textbf{Claude Opus 4.6+spec}} & \multicolumn{2}{c|}{\textbf{Claude Opus 4.6 raw}} & \textbf{PINN} \\
+& \multicolumn{2}{c|}{\textbf{Full}} & \multicolumn{2}{c|}{\textbf{No $\Agent_J$}} & \multicolumn{2}{c|}{\textbf{Opus+spec}} & \multicolumn{2}{c|}{\textbf{Opus raw}} & \textbf{PINN} \\
 & Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. & Bnd. & Cor. \\
 \midrule
 CT reconstruction & \cmark & \cmark & \cmark & --- & \cmark & --- & \cmark & --- & \cmark \\
