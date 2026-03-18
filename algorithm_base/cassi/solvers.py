@@ -188,6 +188,14 @@ SOLVERS = {
         "reference": "Li et al., ICCV 2023 — 36.95 dB on KAIST",
         "cfg_override": {"model_key": "padut_3stg"},
     },
+    "mijun_5stg": {
+        "name": "MiJUN-5stg",
+        "module": "pwm_core.recon.cassi_models",
+        "function": "run_cassi_model",
+        "gpu": True,
+        "reference": "Meng et al., AAAI 2025 — 40.9 dB on KAIST",
+        "cfg_override": {"model_key": "mijun_5stg"},
+    },
 }
 
 

@@ -159,6 +159,13 @@ MODEL_REGISTRY = {
         "ckpt_format": "dict_model",
         "nums_stages": 2,
     },
+    # ── MiJUN (Mengjie-s/MiJUN) ──
+    # MiJUN uses circular shift internally and has its own forward_test method
+    "mijun_5stg": {
+        "input_setting": "custom_mijun", "input_mask": None, "binary_mask": True,
+        "ckpt": "mijun/our_mamba_5stg_recovered.pth", "ref_psnr": 40.9,
+        "ckpt_format": "dict_model",
+    },
 }
 
 # ─── Torch utilities ──────────────────────────────────────────────────────────
@@ -418,6 +425,9 @@ def _build_model(model_key: str, device=None):
             n_stg = int(model_key.split("_")[1].replace("stg", ""))
             nums_stages = n_stg - 1
         model = PADUT(in_c=28, n_feat=28, nums_stages=nums_stages)
+    elif model_key == "mijun_5stg":
+        from cassi_arch.MiJUN import MiJUN
+        model = MiJUN(stage=5, n_bands=28, step=2)
     else:
         raise ValueError(f"Unknown model_key: {model_key}")
 
@@ -442,16 +452,23 @@ def _load_checkpoint(model, model_key: str, ckpt_path: str = None):
     if ckpt_fmt == "dict_model":
         # Checkpoint is a dict with 'model' key (RDLUF-MixS2, SSR)
         raw_sd = checkpoint["model"]
-        # For RDLUF-MixS2: use EMA shadow_params for better quality
+        # Use EMA shadow_params for better quality (matches torch_ema convention)
         if "ema" in checkpoint and isinstance(checkpoint.get("ema"), dict):
             ema_data = checkpoint["ema"]
             if "shadow_params" in ema_data:
                 shadow = ema_data["shadow_params"]
-                # shadow_params is ordered the same as model.parameters()
-                # in the original trained model (same order as raw_sd keys)
-                param_names = [k for k in raw_sd.keys()]
+                # shadow_params corresponds to model.parameters() (excludes buffers)
+                # Filter state dict keys to only trainable params (exclude registered buffers)
+                import torch as _t
+                param_names = [k for k, v in raw_sd.items()
+                               if isinstance(v, _t.Tensor) and v.is_floating_point()]
                 if len(shadow) == len(param_names):
-                    raw_sd = {param_names[i]: shadow[i] for i in range(len(shadow))}
+                    ema_sd = {param_names[i]: shadow[i] for i in range(len(shadow))}
+                    # Merge: EMA params + original buffers
+                    for k, v in raw_sd.items():
+                        if k not in ema_sd:
+                            ema_sd[k] = v
+                    raw_sd = ema_sd
     elif ckpt_fmt == "direct":
         # Checkpoint is the state_dict directly
         raw_sd = checkpoint
@@ -567,6 +584,38 @@ def cassi_model_recon(y: np.ndarray, mask_2d: np.ndarray, model_key: str,
     model = _MODEL_CACHE[cache_key]
 
     # Prepare input
+    input_setting = spec["input_setting"]
+
+    # MiJUN: custom forward with circular shift
+    # MiJUN expects shifted mask (Phi) and measurement in shifted domain
+    if input_setting == "custom_mijun":
+        import torch as _torch
+        from cassi_arch.MiJUN import shift_3d
+        H_img, W_img = mask_2d.shape
+
+        # Create mask3d (1, 28, H, W) and shift to get Phi (1, 28, H, W_meas)
+        mask3d = _torch.from_numpy(
+            np.tile(mask_2d[np.newaxis, :, :], (nC, 1, 1))
+        ).unsqueeze(0).float().to(dev)  # (1, 28, H, W=256)
+        Phi = shift_3d(mask3d.clone(), step)  # (1, 28, H, W_meas=310)
+
+        with _torch.no_grad():
+            if x_true is not None:
+                # Regenerate measurement with circular shift convention
+                x_t = _torch.from_numpy(
+                    np.transpose(x_true, (2, 0, 1))
+                ).unsqueeze(0).float().to(dev)  # (1, 28, H, W)
+                x_shifted = shift_3d(x_t.clone(), step)  # (1, 28, H, 310)
+                y_t = _torch.sum(Phi * x_shifted, dim=1)  # (1, H, 310)
+            else:
+                y_t = _torch.from_numpy(y).unsqueeze(0).float().to(dev)  # (1, H, 310)
+            data = {'Y': y_t, 'mask': Phi}
+            out = model.forward_test(data)
+        x_hat = out.detach().cpu().numpy()[0]  # (28, H, W)
+        x_hat = np.transpose(x_hat, (1, 2, 0))  # (H, W, 28)
+        x_hat = np.clip(x_hat, 0, 1).astype(np.float32)
+        return x_hat
+
     input_meas, input_mask = _prepare_input(y, mask_2d, model_key, nC, step, dev)
 
     # Run inference

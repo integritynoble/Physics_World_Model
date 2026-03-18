@@ -27,6 +27,7 @@ Category: Compressive Imaging
 | `rdluf_mixs2_9stg` | RDLUF-MixS2-9stg | `pwm_core.recon.cassi_models.run_cassi_model` | Yes | Dong et al., CVPR 2023 — 39.6 dB on KAIST |
 | `ssr_l` | SSR-L | `pwm_core.recon.cassi_models.run_cassi_model` | Yes | Zhang et al., CVPR 2024 — 34.0 dB on KAIST |
 | `padut_3stg` | PADUT-3stg | `pwm_core.recon.cassi_models.run_cassi_model` | Yes | Li et al., ICCV 2023 — 36.95 dB on KAIST |
+| `mijun_5stg` | MiJUN-5stg | `pwm_core.recon.cassi_models.run_cassi_model` | Yes | Meng et al., AAAI 2025 — 40.9 dB on KAIST |
 
 ## Usage
 
@@ -78,12 +79,13 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 | `best_quality` | GAP-TV (200 iter) | 26.04 dB | ~24.9 dB | verified |
 | `tsa_net` | TSA-Net | 25.92 dB | 31.5 dB | verified |
 | `twist` | TwIST | 25.11 dB | 23.1 dB | verified |
+| `mijun_5stg` | MiJUN-5stg | 27.72 dB | 40.9 dB | verified (pure-PyTorch Mamba) |
 
 ## Algorithm Leaderboard (KAIST benchmark reference)
 
 | Algorithm | Year | Ref PSNR | Status |
 |-----------|------|----------|--------|
-| MiJUN | 2025 | 40.9 | blocked (needs mamba_ssm) |
+| MiJUN | 2025 | 40.9 | verified (pure-PyTorch SSM, no mamba_ssm CUDA needed) |
 | RDLUF-MixS2-9stg | 2023 | 39.6 | verified |
 | DAUHST-9stg | 2022 | 38.4 | verified |
 | PADUT-3stg | 2023 | 36.95 | verified |
