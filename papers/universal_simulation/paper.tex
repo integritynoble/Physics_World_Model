@@ -170,84 +170,110 @@ The underlying mathematics is entirely classical; the contribution is empirical 
 \begin{figure}[htbp]
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tikzpicture}
-\node[draw=black!40, rounded corners=4pt, fill=gray!3, inner sep=0pt, text width=14cm] (code) {%
-\begin{minipage}{14cm}
-\small
-\begin{lstlisting}[
-  basicstyle=\ttfamily\scriptsize,
-  commentstyle=\color{green!40!black}\itshape,
-  keywordstyle=\color{blue!60!black}\bfseries,
-  columns=fullflexible,
-  keepspaces=true,
-  xleftmargin=4pt,
-  xrightmargin=4pt,
-  aboveskip=4pt,
-  belowskip=4pt,
-  escapeinside={(*@}{@*)},
+\begin{tikzpicture}[
+  secbox/.style={draw=black!30, rounded corners=2pt, minimum width=4.2cm, minimum height=0.55cm, font=\scriptsize\ttfamily, align=left, thick, inner sep=3pt},
 ]
-# Specification: CT Reconstruction (LoDoPaB)     (*@\color{red!60!black}\textnormal{\scriptsize\bfseries $\leftarrow$ \texttt{spec.md} header}@*)
+% ===================== Panel (a): Structure =====================
+\node[font=\small\bfseries, anchor=north west] at (0,0) {\textbf{(a)} \texttt{spec.md} structure};
 
-## Domain                                         (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.1: $\Domain$}@*)
-domain: 2D image grid
-geometry: 128 x 128 pixels
-pixel_size: 0.7 mm                   # from LoDoPaB-CT
-dimension: 2
+% Section boxes with S1 mapping and color coding
+\node[secbox, fill=red!8] (hdr) at (2.4,-0.7) {\char`\# Specification: \{Title\}};
+\node[font=\scriptsize, text=red!60!black, right=0.3cm of hdr] {header};
 
-## Equations                                      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.2: $\mathcal{E}$}@*)
-equations: |
-  forward: y = Radon(x) + eta
-  inverse: min_x 0.5*||Radon(x)-y||^2 + lam_TV*TV(x) + lam_L2*||x||^2
-  constraint: x >= 0
+\node[secbox, fill=blue!6] (s1) at (2.4,-1.5) {\char`\#\char`\# Domain};
+\node[font=\scriptsize, text=blue!70!black, right=0.3cm of s1, align=left] {S1.1: $\Domain$ \textnormal{\tiny --- geometry, dimension, grid}};
 
-parameters:
-  n_angles: 128                      # projection angles (0 to pi)
-  n_detectors: 183                   # detector elements per angle
-  geometry: parallel_beam
-  noise_model: Poisson               # realistic clinical noise
-  lambda_TV: 1.0e-3                  # auto-tuned via Morozov
-  lambda_L2: 1.0e-5                  # Tikhonov weight
-  max_iterations: 500                # ADMM iterations
-  image_size: [128, 128]
+\node[secbox, fill=blue!6] (s2) at (2.4,-2.3) {\char`\#\char`\# Equations};
+\node[font=\scriptsize, text=blue!70!black, right=0.3cm of s2, align=left] {S1.2: $\mathcal{E}$ \textnormal{\tiny --- PDEs/operators + parameters}};
 
-## Boundary Conditions                            (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.3: $\mathcal{B}$}@*)
-boundary: |
-  non_negativity: x(i,j) >= 0 for all pixels
-  support: x = 0 outside patient body contour (if known)
+\node[secbox, fill=blue!6] (s3) at (2.4,-3.1) {\char`\#\char`\# Boundary Conditions};
+\node[font=\scriptsize, text=blue!70!black, right=0.3cm of s3, align=left] {S1.3: $\mathcal{B}$ \textnormal{\tiny --- Dirichlet, Neumann, constraints}};
 
-## Initial Conditions                             (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.4: $\mathcal{I}$}@*)
-initial: |
-  x_0 = filtered back-projection (FBP) result (warm start)
+\node[secbox, fill=blue!6] (s4) at (2.4,-3.9) {\char`\#\char`\# Initial Conditions};
+\node[font=\scriptsize, text=blue!70!black, right=0.3cm of s4, align=left] {S1.4: $\mathcal{I}$ \textnormal{\tiny --- starting state or N/A}};
 
-## Observables                                    (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.5: $\mathcal{O}$}@*)
-observables:
-  - reconstructed_image: x_hat on 128x128 grid
-  - PSNR: dB
-  - SSIM: dimensionless [0, 1]
-  - relative_error: dimensionless
+\node[secbox, fill=blue!6] (s5) at (2.4,-4.7) {\char`\#\char`\# Observables};
+\node[font=\scriptsize, text=blue!70!black, right=0.3cm of s5, align=left] {S1.5: $\mathcal{O}$ \textnormal{\tiny --- output quantities + units}};
 
-## Tolerance                                      (*@\color{blue!70!black}\textnormal{\scriptsize\bfseries $\leftarrow$ S1.6: $\varepsilon$}@*)
-tolerance:
-  PSNR_minimum: 30.0                 # dB
-  SSIM_minimum: 0.85
-  metric: PSNR
+\node[secbox, fill=blue!6] (s6) at (2.4,-5.5) {\char`\#\char`\# Tolerance};
+\node[font=\scriptsize, text=blue!70!black, right=0.3cm of s6, align=left] {S1.6: $\varepsilon$ \textnormal{\tiny --- numerical thresholds + metric}};
 
-## Primitives Required
-primitives: [integrate, solve_linear, optimize, constrain, discretize]
-\end{lstlisting}
-\end{minipage}%
+\node[secbox, fill=gray!8, dashed] (s7) at (2.4,-6.3) {\char`\#\char`\# Primitives Required};
+\node[font=\scriptsize, text=black!50, right=0.3cm of s7, align=left] {\textnormal{\tiny optional --- links to 12-primitive basis}};
+
+\node[secbox, fill=gray!8, dashed] (s8) at (2.4,-7.1) {\char`\#\char`\# Task Instance Variations};
+\node[font=\scriptsize, text=black!50, right=0.3cm of s8, align=left] {\textnormal{\tiny optional --- public/dev/hidden splits}};
+
+% Brace for mandatory six
+\draw[decorate, decoration={brace, amplitude=4pt}, thick, blue!60!black]
+  ([xshift=-5pt]s1.north west) -- ([xshift=-5pt]s6.south west)
+  node[midway, left=6pt, align=right, font=\scriptsize\itshape, text=blue!60!black]
+  {6 mandatory\\sections\\(S1 six-tuple)};
+
+% Syntax legend
+\node[font=\scriptsize, anchor=north west, text=black!70, align=left, text width=4.5cm] at (0,-8.0) {%
+\textbf{Syntax:} YAML-compatible\\
+\texttt{key: value} \textnormal{--- simple field}\\
+\texttt{key: \textbar} \textnormal{--- multi-line block}\\
+\texttt{\char`\# comment} \textnormal{--- inline annotation}\\
+\texttt{- item} \textnormal{--- list entry}\\
+\texttt{[a, b]} \textnormal{--- array}};
+
+% ===================== Panel (b): CT Example =====================
+\node[font=\small\bfseries, anchor=north west] at (10.5,0) {\textbf{(b)} Example: CT reconstruction};
+
+\node[draw=black!40, rounded corners=4pt, fill=gray!3, inner sep=4pt, text width=8.5cm, anchor=north west, font=\ttfamily\tiny, align=left] (code) at (10.5,-0.5) {%
+\textcolor{red!60!black}{\bfseries\char`\# Specification: CT Reconstruction (LoDoPaB)}\\[2pt]
+%
+\textcolor{blue!70!black}{\bfseries\char`\#\char`\# Domain}\\
+domain: 2D image grid\\
+geometry: 128 x 128 pixels\\
+pixel\_size: 0.7 mm \textcolor{green!40!black}{\itshape\char`\# from LoDoPaB-CT}\\
+dimension: 2\\[2pt]
+%
+\textcolor{blue!70!black}{\bfseries\char`\#\char`\# Equations}\\
+equations: \textbar\\
+\quad forward: y = Radon(x) + eta\\
+\quad inverse: min\_x 0.5*\textbar\textbar Radon(x)-y\textbar\textbar\^{}2\\
+\qquad\quad + lam\_TV*TV(x) + lam\_L2*\textbar\textbar x\textbar\textbar\^{}2\\
+\quad constraint: x >= 0\\
+parameters:\\
+\quad n\_angles: 128 \textcolor{green!40!black}{\itshape\char`\# projection angles}\\
+\quad n\_detectors: 183 \textcolor{green!40!black}{\itshape\char`\# per angle}\\
+\quad geometry: parallel\_beam\\
+\quad noise\_model: Poisson\\
+\quad lambda\_TV: 1.0e-3 \textcolor{green!40!black}{\itshape\char`\# Morozov}\\
+\quad image\_size: [128, 128]\\[2pt]
+%
+\textcolor{blue!70!black}{\bfseries\char`\#\char`\# Boundary Conditions}\\
+boundary: \textbar\\
+\quad non\_negativity: x(i,j) >= 0\\
+\quad support: x = 0 outside body contour\\[2pt]
+%
+\textcolor{blue!70!black}{\bfseries\char`\#\char`\# Initial Conditions}\\
+initial: \textbar\\
+\quad x\_0 = FBP result (warm start)\\[2pt]
+%
+\textcolor{blue!70!black}{\bfseries\char`\#\char`\# Observables}\\
+observables:\\
+\quad - PSNR: dB\\
+\quad - SSIM: dimensionless [0, 1]\\
+\quad - relative\_error: dimensionless\\[2pt]
+%
+\textcolor{blue!70!black}{\bfseries\char`\#\char`\# Tolerance}\\
+tolerance:\\
+\quad PSNR\_minimum: 30.0 \textcolor{green!40!black}{\itshape\char`\# dB}\\
+\quad SSIM\_minimum: 0.85\\
+\quad metric: PSNR\\[2pt]
+%
+\textcolor{black!50}{\char`\#\char`\# Primitives Required}\\
+\textcolor{black!50}{primitives: [integrate, solve\_linear,}\\
+\textcolor{black!50}{\quad optimize, constrain, discretize]}%
 };
-% Right-side annotation bracket
-\draw[decorate, decoration={brace, amplitude=6pt, mirror}, thick, blue!60!black]
-  ([xshift=4pt]code.north east) -- ([xshift=4pt]code.south east)
-  node[midway, right=8pt, align=left, font=\small\itshape, text=blue!60!black]
-  {$\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$\\[2pt]
-   \textnormal{\scriptsize The S1 six-tuple}\\[4pt]
-   \textnormal{\scriptsize YAML-compatible}\\
-   \textnormal{\scriptsize key-value syntax}};
+
 \end{tikzpicture}%
 }
-\caption{A real \texttt{spec.md} file for CT reconstruction (from the benchmark archive), showing the full YAML-compatible format. Each \texttt{\#\#} section maps to one component of the S1 six-tuple $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$. Parameters use typed key-value pairs with inline comments; multi-line blocks use YAML \texttt{|} syntax. The format is human-readable, machine-parseable, and solver-independent. The optional \texttt{Primitives Required} section links to the engineering layer (Proposition~\ref{prop:realizability}). All 72 prospective benchmark tasks and 12 development problems are archived as \texttt{spec.md} files. Formal grammar in Supplementary Section~S8.}
+\caption{\texttt{spec.md} format and a concrete example. \textbf{(a)}~Generic structure: 6 mandatory sections encode the S1 six-tuple $\Spec = (\Domain, \mathcal{E}, \mathcal{B}, \mathcal{I}, \mathcal{O}, \varepsilon)$; 2 optional sections link to the primitive basis (Proposition~\ref{prop:realizability}) and benchmark variations. The format uses YAML-compatible key-value syntax within Markdown section headers. \textbf{(b)}~A real \texttt{spec.md} file for CT reconstruction from the benchmark archive. All 72 prospective tasks and 12 development problems are archived in this format. Formal grammar in Supplementary Section~S8.}
 \label{fig:specmd}
 \end{figure}
 
