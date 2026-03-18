@@ -98,6 +98,7 @@
 
                 {# Reconstruct button #}
                 <button type="button" id="common-reconstruct-btn"
+                        onclick="runCommonReconstruct()"
                         class="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors text-sm">
                     Reconstruct
                 </button>
@@ -161,196 +162,172 @@
 </div>
 
 <script>
+// ── Reconstruct ──
+function runCommonReconstruct() {
+    var btn = document.getElementById('common-reconstruct-btn');
+    var spinner = document.getElementById('common-spinner');
+    var resultDiv = document.getElementById('common-result');
+    var form = document.getElementById('common-form');
+    if (!form) return;
+    var formData = new FormData(form);
+
+    if (spinner) spinner.classList.remove('hidden');
+    if (resultDiv) resultDiv.innerHTML = '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Running...'; }
+
+    fetch('/api/v1/spec-chat/reconstruct-common', { method: 'POST', body: formData })
+        .then(function(r) { return r.text(); })
+        .then(function(html) { if (resultDiv) resultDiv.innerHTML = html; })
+        .catch(function(err) {
+            if (resultDiv) resultDiv.innerHTML = '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">Request failed: ' + err.message + '</div>';
+        })
+        .finally(function() {
+            if (spinner) spinner.classList.add('hidden');
+            if (btn) { btn.disabled = false; btn.textContent = 'Reconstruct'; }
+        });
+}
+
+// ── Chat assistant ──
+function sendCommonChat() {
+    var input = document.getElementById('common-chat-input');
+    var msg = input ? input.value.trim() : '';
+    if (!msg) return;
+
+    var chatLog = document.getElementById('common-chat-log');
+    var sendBtn = document.getElementById('common-chat-send');
+    var algorithmEl = document.getElementById('common-algorithm');
+
+    if (chatLog) {
+        chatLog.innerHTML += '<div class="flex justify-end"><div class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs max-w-[85%]">'
+            + msg.replace(/</g, '&lt;') + '</div></div>';
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    if (input) input.value = '';
+    if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Thinking...'; }
+
+    var formData = new FormData();
+    formData.append('message', msg);
+
+    fetch('/api/v1/spec-chat/common-chat', { method: 'POST', body: formData })
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+            var data;
+            try { data = JSON.parse(text); } catch(e) { data = { explanation: text }; }
+            var explanation = data.explanation || 'Done.';
+            if (chatLog) {
+                chatLog.innerHTML += '<div class="flex justify-start"><div class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 text-xs max-w-[85%]">'
+                    + explanation.replace(/</g, '&lt;') + '</div></div>';
+                chatLog.scrollTop = chatLog.scrollHeight;
+            }
+            if (data.variant_key) {
+                var modEl = document.getElementById('common-modality');
+                if (modEl) {
+                    for (var i = 0; i < modEl.options.length; i++) {
+                        if (modEl.options[i].value === data.variant_key) { modEl.selectedIndex = i; break; }
+                    }
+                }
+                fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(data.variant_key))
+                    .then(function(r) { return r.text(); })
+                    .then(function(html) {
+                        if (algorithmEl) {
+                            algorithmEl.innerHTML = html;
+                            if (data.algorithm_name) {
+                                for (var j = 0; j < algorithmEl.options.length; j++) {
+                                    if (algorithmEl.options[j].value === data.algorithm_name) { algorithmEl.selectedIndex = j; break; }
+                                }
+                            }
+                        }
+                    });
+                refreshSamples(data.variant_key);
+            }
+        })
+        .catch(function(err) {
+            if (chatLog) {
+                chatLog.innerHTML += '<div class="flex justify-start"><div class="px-3 py-2 rounded-lg bg-red-50 text-red-700 text-xs max-w-[85%]">Error: ' + err.message + '</div></div>';
+                chatLog.scrollTop = chatLog.scrollHeight;
+            }
+        })
+        .finally(function() {
+            if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send'; }
+        });
+}
+
+// ── Sample selector ──
+function selectSample(idx) {
+    var sampleIndexEl = document.getElementById('common-sample-index');
+    if (sampleIndexEl) sampleIndexEl.value = idx;
+    document.querySelectorAll('.sample-btn').forEach(function(btn) {
+        var btnIdx = parseInt(btn.getAttribute('data-idx'));
+        if (btnIdx === idx) {
+            btn.className = 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors';
+            var sp = btn.querySelector('span:first-child');
+            if (sp) sp.className = 'font-medium text-indigo-800';
+        } else {
+            btn.className = 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors';
+            var sp = btn.querySelector('span:first-child');
+            if (sp) sp.className = 'font-medium text-gray-700';
+        }
+    });
+}
+
+// ── Refresh sample list ──
+function refreshSamples(variantKey) {
+    fetch('/api/v1/spec-chat/samples/' + encodeURIComponent(variantKey))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var container = document.getElementById('sample-list');
+            if (!container) return;
+            var html = '';
+            data.samples.forEach(function(s, i) {
+                var isActive = (i === 0);
+                var btnClass = isActive
+                    ? 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors'
+                    : 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors';
+                var textClass = isActive ? 'font-medium text-indigo-800' : 'font-medium text-gray-700';
+                var tagClass = isActive ? 'text-xs text-indigo-500 font-mono' : 'text-xs text-gray-400 font-mono';
+                html += '<button type="button" onclick="selectSample(' + s.index + ')" data-idx="' + s.index + '" class="' + btnClass + '">'
+                     +  '<div class="flex items-center justify-between">'
+                     +  '<span class="' + textClass + '">' + s.label + '</span>'
+                     +  '<span class="' + tagClass + '">' + (isActive ? 'Default' : s.key) + '</span>'
+                     +  '</div></button>';
+            });
+            container.innerHTML = html;
+            selectSample(0);
+        })
+        .catch(function() {});
+}
+
+// ── Init: load algorithms and samples for pre-selected modality ──
 (function() {
     var modalityEl = document.getElementById('common-modality');
     var algorithmEl = document.getElementById('common-algorithm');
-    var reconstructBtn = document.getElementById('common-reconstruct-btn');
-    var spinner = document.getElementById('common-spinner');
-    var resultDiv = document.getElementById('common-result');
-    var sampleIndexEl = document.getElementById('common-sample-index');
-    var currentSampleIndex = 0;
-
-    // ── Fetch algorithms when modality changes ──
+    if (modalityEl && modalityEl.value) {
+        fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(modalityEl.value))
+            .then(function(r) { return r.text(); })
+            .then(function(html) {
+                if (algorithmEl && algorithmEl.options.length <= 1 && algorithmEl.options[0] && algorithmEl.options[0].value === '') {
+                    algorithmEl.innerHTML = html;
+                }
+            });
+        refreshSamples(modalityEl.value);
+    }
+    // Modality change handler
     if (modalityEl) {
-        modalityEl.addEventListener('change', function() {
+        modalityEl.onchange = function() {
             var vk = this.value;
             if (!vk) return;
             fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(vk))
                 .then(function(r) { return r.text(); })
-                .then(function(html) { algorithmEl.innerHTML = html; });
-            // Also refresh sample list
+                .then(function(html) { if (algorithmEl) algorithmEl.innerHTML = html; });
             refreshSamples(vk);
-        });
-        // Trigger initial algorithm + sample load
-        if (modalityEl.value) {
-            fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(modalityEl.value))
-                .then(function(r) { return r.text(); })
-                .then(function(html) {
-                    if (algorithmEl.options.length <= 1 && algorithmEl.options[0] && algorithmEl.options[0].value === '') {
-                        algorithmEl.innerHTML = html;
-                    }
-                });
-            // Also refresh sample list to show real samples for this modality
-            refreshSamples(modalityEl.value);
-        }
+        };
     }
-
-    // ── Highlight Reconstruct button when algorithm pre-selected from URL ──
+    // Pulse animate if algorithm pre-selected via URL
     var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('algorithm') && reconstructBtn) {
-        reconstructBtn.classList.add('animate-pulse');
-        setTimeout(function() { reconstructBtn.classList.remove('animate-pulse'); }, 3000);
+    var btn = document.getElementById('common-reconstruct-btn');
+    if (urlParams.get('algorithm') && btn) {
+        btn.classList.add('animate-pulse');
+        setTimeout(function() { btn.classList.remove('animate-pulse'); }, 3000);
     }
-
-    // ── Reconstruct button ──
-    if (reconstructBtn) {
-        reconstructBtn.addEventListener('click', function() {
-            var form = document.getElementById('common-form');
-            var formData = new FormData(form);
-
-            spinner.classList.remove('hidden');
-            resultDiv.innerHTML = '';
-            reconstructBtn.disabled = true;
-            reconstructBtn.textContent = 'Running...';
-
-            fetch('/api/v1/spec-chat/reconstruct-common', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(function(r) { return r.text(); })
-            .then(function(html) {
-                resultDiv.innerHTML = html;
-            })
-            .catch(function(err) {
-                resultDiv.innerHTML = '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">Request failed: ' + err.message + '</div>';
-            })
-            .finally(function() {
-                spinner.classList.add('hidden');
-                reconstructBtn.disabled = false;
-                reconstructBtn.textContent = 'Reconstruct';
-            });
-        });
-    }
-
-    // ── Sample selector ──
-    window.selectSample = function(idx) {
-        currentSampleIndex = idx;
-        sampleIndexEl.value = idx;
-        // Update button styles
-        document.querySelectorAll('.sample-btn').forEach(function(btn) {
-            var btnIdx = parseInt(btn.getAttribute('data-idx'));
-            if (btnIdx === idx) {
-                btn.className = 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors';
-                btn.querySelector('span:first-child').className = 'font-medium text-indigo-800';
-            } else {
-                btn.className = 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors';
-                btn.querySelector('span:first-child').className = 'font-medium text-gray-700';
-            }
-        });
-    };
-
-    // ── Refresh sample list when modality changes ──
-    window.refreshSamples = function(variantKey) {
-        fetch('/api/v1/spec-chat/samples/' + encodeURIComponent(variantKey))
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                var container = document.getElementById('sample-list');
-                var html = '';
-                data.samples.forEach(function(s, i) {
-                    var isActive = (i === 0);
-                    var btnClass = isActive
-                        ? 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors'
-                        : 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors';
-                    var textClass = isActive ? 'font-medium text-indigo-800' : 'font-medium text-gray-700';
-                    var tagClass = isActive ? 'text-xs text-indigo-500 font-mono' : 'text-xs text-gray-400 font-mono';
-                    var tagText = isActive ? 'Default' : s.key;
-                    html += '<button type="button" onclick="selectSample(' + s.index + ')" data-idx="' + s.index + '" '
-                         +  'class="' + btnClass + '">'
-                         +  '<div class="flex items-center justify-between">'
-                         +  '<span class="' + textClass + '">' + s.label + '</span>'
-                         +  '<span class="' + tagClass + '">' + tagText + '</span>'
-                         +  '</div></button>';
-                });
-                container.innerHTML = html;
-                selectSample(0);
-            })
-            .catch(function() {});
-    };
-
-    // ── Chat assistant ──
-    window.sendCommonChat = function() {
-        var input = document.getElementById('common-chat-input');
-        var msg = input.value.trim();
-        if (!msg) return;
-
-        var chatLog = document.getElementById('common-chat-log');
-        var sendBtn = document.getElementById('common-chat-send');
-
-        // Show user message
-        chatLog.innerHTML += '<div class="flex justify-end">'
-            + '<div class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs max-w-[85%]">'
-            + msg.replace(/</g, '&lt;') + '</div></div>';
-        chatLog.scrollTop = chatLog.scrollHeight;
-        input.value = '';
-        sendBtn.disabled = true;
-        sendBtn.textContent = 'Thinking...';
-
-        var formData = new FormData();
-        formData.append('message', msg);
-
-        fetch('/api/v1/spec-chat/common-chat', { method: 'POST', body: formData })
-            .then(function(r) { return r.text(); })
-            .then(function(text) {
-                var data;
-                try { data = JSON.parse(text); } catch(e) { data = { explanation: text }; }
-
-                var explanation = data.explanation || 'Done.';
-
-                // Show assistant response
-                chatLog.innerHTML += '<div class="flex justify-start">'
-                    + '<div class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 text-xs max-w-[85%]">'
-                    + explanation.replace(/</g, '&lt;') + '</div></div>';
-                chatLog.scrollTop = chatLog.scrollHeight;
-
-                // Set dropdown values if we got a valid match
-                if (data.variant_key) {
-                    // Set modality dropdown
-                    var modEl = document.getElementById('common-modality');
-                    for (var i = 0; i < modEl.options.length; i++) {
-                        if (modEl.options[i].value === data.variant_key) {
-                            modEl.selectedIndex = i;
-                            break;
-                        }
-                    }
-                    // Fetch and set algorithms
-                    fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(data.variant_key))
-                        .then(function(r) { return r.text(); })
-                        .then(function(html) {
-                            algorithmEl.innerHTML = html;
-                            // Set the algorithm if specified
-                            if (data.algorithm_name) {
-                                for (var j = 0; j < algorithmEl.options.length; j++) {
-                                    if (algorithmEl.options[j].value === data.algorithm_name) {
-                                        algorithmEl.selectedIndex = j;
-                                        break;
-                                    }
-                                }
-                            }
-                        });
-                    // Refresh samples
-                    refreshSamples(data.variant_key);
-                }
-            })
-            .catch(function(err) {
-                chatLog.innerHTML += '<div class="flex justify-start">'
-                    + '<div class="px-3 py-2 rounded-lg bg-red-50 text-red-700 text-xs max-w-[85%]">'
-                    + 'Error: ' + err.message + '</div></div>';
-                chatLog.scrollTop = chatLog.scrollHeight;
-            })
-            .finally(function() {
-                sendBtn.disabled = false;
-                sendBtn.textContent = 'Send';
-            });
-    };
 })();
 </script>
