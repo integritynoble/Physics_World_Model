@@ -2007,12 +2007,15 @@ def _pick_baseline_name(
 # ── Modal GPU helper ──────────────────────────────────────────────────────────
 
 
-def _try_modal_gpu(
+async def _try_modal_gpu(
     sample_data: dict,
     variant_key: str,
     use_drunet: bool = False,
 ) -> tuple:
-    """Call Modal T4 GPU reconstruction for DL algorithms.
+    """Call Modal T4 GPU reconstruction for DL algorithms (async, non-blocking).
+
+    Uses remote.aio() so the event loop remains responsive during inference,
+    allowing SSE keepalives to fire and preventing nginx proxy_read_timeout.
 
     When use_drunet=True, sends the raw measurement to the GPU worker which
     applies the pretrained DRUNet denoiser (deepinv / Zhang et al. 2021).
@@ -2045,7 +2048,8 @@ def _try_modal_gpu(
             "cassi_model_key": sample_data.get("cassi_model_key"),
             "ckpt_bytes": sample_data.get("ckpt_bytes"),
         })
-        result_bytes = reconstruct_gpu.remote(payload)
+        # Use async API so the event loop is not blocked during GPU inference
+        result_bytes = await reconstruct_gpu.remote.aio(payload)
         result = pickle.loads(result_bytes)
         x_recon = result.get("x_recon")
         psnr = result.get("psnr")
@@ -2204,7 +2208,7 @@ def _run_common_sync(
             sample_data_for_gpu["cassi_model_key"] = cassi_gpu_key
             sample_data_for_gpu["H_ideal"] = sample_data.get("H_ideal")
             sample_data_for_gpu["ckpt_bytes"] = ckpt_cache.read_bytes()
-            x_gpu, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
+            x_gpu, psnr_from_gpu, ssim_from_gpu = await _try_modal_gpu(
                 sample_data_for_gpu, variant_key
             )
             if x_gpu is not None:
@@ -2238,7 +2242,7 @@ def _run_common_sync(
             # Store CPU baseline so GPU worker can fall back if DRUNet is worse
             sample_data_for_gpu = dict(sample_data)
             sample_data_for_gpu["reconstruction_baseline"] = cpu_baseline
-            x_gpu, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
+            x_gpu, psnr_from_gpu, ssim_from_gpu = await _try_modal_gpu(
                 sample_data_for_gpu, variant_key, use_drunet=True
             )
             if x_gpu is not None:
