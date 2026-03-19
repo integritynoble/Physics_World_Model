@@ -31,6 +31,80 @@ ENV/
 *.swp
 *.swo
 
+# Test outputs
+test_runs/
+test_runs_pnp/
+test_impl/
+test_pnp_all/
+
+# Benchmark results (regenerated)
+packages/pwm_core/benchmarks/results/
+scripts/llm_benchmark_eval/results/
+
+# Model weights (local symlinks)
+packages/pwm_core/pwm_core/weights/
+packages/pwm_core/weights/
+
+# Data directories
+data/
+!packages/pwm_core/pwm_core/data/
+!papers/inversenet/data/
+!platform/pwm_platform/data/
+*.mat
+*.h5
+*.hdf5
+# Allow SPC sampling matrices
+!papers/inversenet/data/spc/sampling_matrix/*.mat
+# Benchmark dataset files served from GCS (not stored in repo)
+# Download: gsutil -m rsync -r gs://pwm-benchmark-datasets/datasets/Benchmark/ datasets/benchmark/
+
+# Large binary data (model checkpoints, datasets, run artifacts)
+# All heavy datasets stored in GCS: gs://pwm-benchmark-datasets/
+# See DATA.md for download instructions
+checkpoint/
+# Ignore heavy dataset binary files (state.md, *.py, *.json remain tracked)
+datasets/benchmark/**/public/
+datasets/benchmark/**/dev/
+datasets/benchmark/**/hidden/
+datasets/benchmark/**/standard/
+datasets/inversenet_cacti/
+datasets/inversenet_cassi/
+datasets/inversenet_spc/
+datasets/lip_arena/
+datasets/real_ct/
+datasets/real_mri/
+!benchmarks/datasets/
+benchmarks/datasets/__pycache__/
+runs/
+
+# Heavy datasets (stored in GCS, not GitHub) — also covered above
+
+# Paper results and model weights (stored in GCS, not GitHub)
+papers/inversenet/results/
+papers/inversenet/data/spc/models/
+papers/pwmi_cassi/results/
+
+# Heavy files — all stored in GCS: gs://pwm-benchmark-datasets/
+# Checkpoints and model weights
+reference/**/*.pth
+reference/**/*.npz
+reference/**/*.pkl
+# Benchmark tarballs (served from GCS)
+platform/pwm_platform/static/benchmark-data/v1.0/*.tar.gz
+# Large benchmark data
+platform/pwm_platform/data/benchmarks/*.npz
+# Zenodo archive weights
+papers/universal_simulation/zenodo_archive/code/pwm_core/weights/
+papers/universal_simulation/zenodo_archive/code/pwm_core/pwm_core/weights/
+# arXiv submission archives
+papers/arxiv_submissions/*.tar.gz
+# System design outputs
+papers/system_design/outputs/*.npz
+
+# Script outputs and repos
+repos/
+bash.exe.stackdump
+
 # Worktrees
 .worktrees/
 
@@ -64,7 +138,31 @@ Thumbs.db
 *_arxiv_submission*.zip
 arxiv_submission*.zip
 
-# (pwm/, pwm_product/, sync_all.sh are tracked — see .gitmodules)
+# Private co-author strategy (local + GCS only, not public)
+papers/pwm_flagship/thoughts/
+papers/pwm_flagship/contribution_packages/
 
+# Pitch deck - confidential
+pitch_deck/
 NUL
-bash.exe.stackdump
+
+# Local dataset files (served from GCS, not stored in repo)
+datasets/SPC/BSDS400/
+datasets/benchmark/fpm/
+datasets/benchmark/fmri/*.json
+datasets/benchmark/build_*.py
+datasets/benchmark/generate_*.py
+datasets/benchmark/README.md
+scripts/add_baselines.py
+
+# Additional local files
+datasets/benchmark/challenge-data/
+datasets/benchmark/gallery/
+datasets/benchmark/**/baseline_summary.json
+datasets/benchmark/mri/*.py
+datasets/benchmark/*/
+!datasets/benchmark/cassi/
+!datasets/benchmark/cassi/manifest.json
+
+# Private repos nested inside this folder (not part of public repo)
+# (tracked as submodules — see .gitmodules)
