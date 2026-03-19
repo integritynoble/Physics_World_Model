@@ -149,31 +149,54 @@ for key, spec in list_solvers():
 
 Note: Iterative solvers (landweber, art, sirt, cgls, sart) show low PSNR because tested with only 2 iterations for speed. With default iterations (15-30), they converge to much higher quality.
 
+## DL Checkpoint Availability (researched 2026-03-18)
+
+| Model | Repository | Checkpoint | LoDoPaB-CT Compatible? |
+|-------|-----------|------------|----------------------|
+| FBP+UNet | DIVal (`jleuschn/dival`) | Yes (programmatic) | **Yes** (pretrained on LoDoPaB) |
+| Learned P-D | DIVal (`jleuschn/dival`) | Yes (programmatic) | **Yes** (pretrained on LoDoPaB) |
+| iRadonMAP | DIVal (`jleuschn/dival`) | Yes (programmatic) | **Yes** (pretrained on LoDoPaB) |
+| Score-CT | `yang-song/score_inverse_problems` | Google Drive (AAPM) | No (320x320, JAX/Flax) |
+| DiffusionMBIR | `HJ-harry/DiffusionMBIR` | Dropbox (AAPM 256x256) | No (different geometry) |
+| DOLCE | `wustl-cig/DOLCE` | Google Drive (512x512) | No (limited-angle, LEAP dep) |
+| FBPConvNet | `panakino/FBPConvNet` | Google Drive (MATLAB) | No (MatConvNet) |
+| CTformer | `wdayang/CTformer` | model_pretrained dir | No (Mayo 64x64 patches) |
+| InDuDoNet | `hongwang01/InDuDoNet` | In repo (19.7 MB) | No (metal artifact reduction) |
+| DPS | `DPS2022/diffusion-posterior-sampling` | Google Drive (FFHQ) | No (face images, no CT) |
+| Learned P-D (orig) | `adler-j/learned_primal_dual` | Never released | No |
+| LEARN | `maybe198376/LEARN` | In repo (.mat) | No (MATLAB only) |
+| WGAN-VGG | `SSinyu/WGAN-VGG` | None | No |
+| DuDoNet | `MIRACLE-Center/DuDoNet` | None (MAR only) | No |
+| DuDoTrans | `DuDoTrans/CODE` | Unclear | No |
+| CT-FM | Not found | Unknown | Unknown |
+
+**GPU server integration path:** Install DIVal + ODL on GPU server to use FBP+UNet, Learned P-D, and iRadonMAP pretrained on LoDoPaB-CT. Score-CT requires JAX/Flax and retraining on LoDoPaB ground truths.
+
 ## Algorithm Leaderboard (LoDoPaB-CT reference)
 
 | # | Algorithm | Year | Ref PSNR | Status |
 |---|-----------|------|----------|--------|
-| 1 | CT-FM | 2024 | 44.1 dB | registered |
-| 2 | DiffusionMBIR | 2023 | 43.8 dB | registered |
-| 3 | InDuDoNet | 2021 | 43.5 dB | registered |
-| 4 | DPS | 2023 | 43.2 dB | registered |
-| 5 | LEARN | 2018 | 43.1 dB | registered |
-| 6 | Score-CT | 2022 | 43.0 dB | registered |
-| 7 | DuDoTrans | 2022 | 42.1 dB | registered |
-| 8 | CTformer | 2023 | 40.8 dB | registered |
-| 9 | DuDoNet | 2019 | 40.2 dB | registered |
-| 10 | PnP-ADMM (NLM) | 2013 | 39.5 dB | verified (44.08 dB PWM) |
-| 11 | PnP-HQS (NLM) | 2017 | 39.1 dB | verified (35.67 dB PWM) |
-| 12 | FBPConvNet | 2017 | 38.5 dB | registered |
-| 13 | iRadonMAP | 2020 | 36.9 dB | registered |
-| 14 | Learned Primal-Dual | 2018 | 36.2 dB | registered |
-| 15 | DOLCE | 2023 | 36.0 dB | registered |
-| 16 | FBP + U-Net | 2021 | 35.8 dB | registered |
-| 17 | WGAN-VGG | 2018 | 34.1 dB | registered |
-| 18 | RED-CNN | 2017 | 33.2 dB | verified |
+| 1 | CT-FM | 2024 | 44.1 dB | stub (checkpoint unknown) |
+| 2 | DiffusionMBIR | 2023 | 43.8 dB | stub (AAPM checkpoint, needs retrain) |
+| 3 | InDuDoNet | 2021 | 43.5 dB | stub (MAR only, not general CT) |
+| 4 | DPS | 2023 | 43.2 dB | stub (FFHQ checkpoint, no CT) |
+| 5 | LEARN | 2018 | 43.1 dB | stub (MATLAB only) |
+| 6 | Score-CT | 2022 | 43.0 dB | stub (JAX/Flax, AAPM checkpoint) |
+| 7 | DuDoTrans | 2022 | 42.1 dB | stub |
+| 8 | CTformer | 2023 | 40.8 dB | stub (Mayo patches) |
+| 9 | DuDoNet | 2019 | 40.2 dB | stub (MAR only) |
+| 10 | PnP-ADMM (NLM) | 2013 | 39.5 dB | verified (41.34 dB PWM) |
+| 11 | PnP-HQS (NLM) | 2017 | 39.1 dB | verified (40.72 dB PWM) |
+| 12 | FBPConvNet | 2017 | 38.5 dB | stub (DIVal has LoDoPaB weights) |
+| 13 | iRadonMAP | 2020 | 36.9 dB | stub (DIVal has LoDoPaB weights) |
+| 14 | Learned Primal-Dual | 2018 | 36.2 dB | stub (DIVal has LoDoPaB weights) |
+| 15 | DOLCE | 2023 | 36.0 dB | stub (limited-angle, LEAP dep) |
+| 16 | FBP + U-Net | 2021 | 35.8 dB | stub (DIVal has LoDoPaB weights) |
+| 17 | WGAN-VGG | 2018 | 34.1 dB | stub (no checkpoint) |
+| 18 | RED-CNN | 2017 | 33.2 dB | verified (29.52 dB PWM, no weights) |
 | 19 | CGLS | 1952 | 30.2 dB | verified |
 | 20 | SIRT | 1972 | 29.5 dB | verified |
 | 21 | SART | 1984 | 29.1 dB | verified |
-| 22 | FBP + NLM | 2005 | 28.5 dB | verified |
-| 23 | TV-ADMM | 2008 | 27.8 dB | verified |
-| 24 | FBP (Ram-Lak) | 1971 | 25.2 dB | verified |
+| 22 | FBP + NLM | 2005 | 28.5 dB | verified (40.10 dB PWM) |
+| 23 | TV-ADMM | 2008 | 27.8 dB | verified (44.07 dB PWM) |
+| 24 | FBP (Ram-Lak) | 1971 | 25.2 dB | verified (43.90 dB PWM) |
