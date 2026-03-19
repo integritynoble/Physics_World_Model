@@ -273,8 +273,8 @@ def fig2_operatorgraph():
     ax_b.text(0, 5.3, 'b', fontsize=10, fontweight='bold')
 
     dags = {
-        'CASSI': [('P', 'Propagate', 0.9, 4.5), ('C', 'Convolve', 0.9, 3.5),
-                  ('W', 'Disperse', 0.9, 2.5), ('S', 'Sample', 0.9, 1.5),
+        'CASSI': [('P', 'Propagate', 0.9, 4.5), ('M', 'Modulate', 0.9, 3.5),
+                  ('W', 'Disperse', 0.9, 2.5), ('\u03A3', 'Accumulate', 0.9, 1.5),
                   ('D', 'Detect', 0.9, 0.5)],
         'MRI': [('P', 'Propagate', 2.5, 4.5), ('M', 'Modulate', 2.5, 3.5),
                 ('F', 'Encode', 2.5, 2.5), ('S', 'Sample', 2.5, 1.5),

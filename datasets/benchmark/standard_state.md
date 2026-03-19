@@ -12,8 +12,8 @@ Last updated: 2026-03-16 -- 169 modalities
 
 | Status | Count | Description |
 |--------|-------|-------------|
-| done | 84 | Uses canonical/real data from this modality |
-| needs_canonical | 24 | Canonical dataset exists, need to download 30 samples |
+| done | 85 | Uses canonical/real data from this modality |
+| needs_canonical | 23 | Canonical dataset exists, need to download 30 samples |
 | simulation | 61 | No public benchmark -- using simulated data |
 | **Total** | **169** | |
 
@@ -47,7 +47,7 @@ Last updated: 2026-03-16 -- 169 modalities
 | 24 | coronagraphy | 20 | ESO VLT coronagraph | [link](https://archive.eso.org/) | done |
 | 25 | cryo_em | 20 | EMPIAR (micrograph archive) | [link](https://www.ebi.ac.uk/empiar/) | needs_canonical |
 | 26 | cryo_et | 20 | SHREC 2021 cryo-ET | [link](https://dataverse.nl/dataset.xhtml?persistentId=doi:10.34894/XRTJMA) | needs_canonical |
-| 27 | ct | 20 | LoDoPaB-CT (42K CT pairs) | [link](https://zenodo.org/records/3384092) | needs_canonical |
+| 27 | ct | 20 | LoDoPaB-CT (real clinical chest CT, LIDC/IDRI) | [link](https://zenodo.org/records/3384092) | done |
 | 28 | ct_fluorescence | 20 | CT fluorescence | -- | simulation |
 | 29 | cup | 20 | BSD68 (CUP test images) | [link](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/) | done |
 | 30 | dark_field | 20 | Dark-field X-ray | -- | simulation |

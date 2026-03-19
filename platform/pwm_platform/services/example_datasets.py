@@ -44,7 +44,7 @@ EXAMPLE_DATASETS: dict[str, dict] = {
         "measurement_shape": "(64, 91)",
         "has_matrix": False,
         "has_gt": True,
-        "prompt_example": "This is SD-CASSI hyperspectral data with 28 spectral bands and binary coded aperture",
+        "prompt_example": "This is CASSI hyperspectral data with 28 spectral bands and binary coded aperture",
         "variant_key": "sd_cassi",
     },
     "cacti": {

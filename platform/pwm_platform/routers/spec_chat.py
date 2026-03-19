@@ -57,6 +57,8 @@ router = APIRouter(prefix="/api/v1/spec-chat", tags=["Spec Chat"])
 # requests fill all executor threads and make the entire server unresponsive.
 import asyncio as _asyncio
 _recon_semaphore = _asyncio.Semaphore(3)
+# One active task per modality — new request cancels previous one
+_active_recon_tasks: dict[str, _asyncio.Task] = {}
 
 
 def _detect_variant_from_spec(spec: dict) -> str | None:
@@ -292,6 +294,15 @@ async def reconstruct_common(
         )
 
     async def _stream():
+        # Cancel any in-progress reconstruction for the same modality
+        old = _active_recon_tasks.get(modality)
+        if old and not old.done():
+            old.cancel()
+            try:
+                await old
+            except Exception:
+                pass
+
         try:
             async with _recon_semaphore:
                 # Launch reconstruction as a background task so we can interleave keepalives
@@ -302,6 +313,8 @@ async def reconstruct_common(
                     user_matrix=user_matrix,
                     sample_index=sample_index,
                 ))
+                _active_recon_tasks[modality] = recon_task
+
                 # Send a keepalive space every 5 s while inference runs.
                 # HTML whitespace is harmless; it prevents NAT/firewall from
                 # dropping idle TCP connections on long reconstructions.
@@ -311,9 +324,15 @@ async def reconstruct_common(
                         yield b' '
 
                 result = recon_task.result()
+                _active_recon_tasks.pop(modality, None)
 
+        except _asyncio.CancelledError:
+            # This task was cancelled by a newer request — exit silently
+            _active_recon_tasks.pop(modality, None)
+            return
         except Exception as exc:
             logger.error("Common reconstruction error: %s", exc, exc_info=True)
+            _active_recon_tasks.pop(modality, None)
             yield (
                 '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">'
                 f'Reconstruction failed: {type(exc).__name__}: {exc}</div>'

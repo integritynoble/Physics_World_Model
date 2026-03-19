@@ -449,11 +449,9 @@ We validate InverseNet's simulation patterns on real CASSI and CACTI data.
 Full methodological details---including dataset provenance, evaluation metric definitions, per-scene results, and a simulation-vs-real comparison table---are provided in the supplementary material.
 
 \paragraph{CASSI real data.}
-We use the TSA real dataset~\cite{choi2017kaist}: 5 real scenes captured on a DD-CASSI prototype with a $660 \times 660$ coded aperture mask and 28 spectral bands (450--650\,nm).
-Measurements are $660 \times 714$ detector images.
-Since \textbf{no ground truth} exists for real CASSI captures (the true spectral cube cannot be independently measured), we use the normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}_{\text{cal}}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$, always evaluated with the \emph{calibrated} mask regardless of which mask was used for reconstruction (see supplementary for why this ``cross-residual'' is essential).
-We evaluate two conditions: \emph{calibrated} (hardware mask as-is) and \emph{mismatched} (mask shifted by $dx{=}0.5$, $dy{=}0.3$\,pixels).
-\Cref{tab:cassi_real} shows the results.
+We use the TSA real dataset~\cite{choi2017kaist}: 5 scenes from a DD-CASSI prototype ($660 \times 660 \times 28$).
+Since no ground truth exists, we use the normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}_{\text{cal}}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$, evaluated with the calibrated mask (see supplementary for details).
+\Cref{tab:cassi_real} compares calibrated vs.\ mismatched ($dx{=}0.5$, $dy{=}0.3$\,px) conditions.
 
 \begin{table}[t]
 \centering
@@ -469,27 +467,18 @@ PnP-HSICNN        & 0.0127 & 0.0142 & 1.1$\times$ \\
 \end{tabular}
 \end{table}
 
-Both mask-aware iterative methods (GAP-TV and PnP-HSICNN) show residual increases under mismatch, because they explicitly fit the forward model during reconstruction: when reconstructed with a wrong mask, the result is inconsistent with the true measurement.
-GAP-TV shows a modest $1.8\times$ increase, while PnP-HSICNN shows only $1.1\times$---the deep denoiser regularises the reconstruction enough to partially mask the forward-model inconsistency.
-This contrasts sharply with CACTI (\cref{sec:cacti_real_data} below), where residuals increase $9.4$--$11.0\times$ under the same spatial shift.
+GAP-TV shows a modest $1.8\times$ residual increase vs.\ PnP-HSICNN's $1.1\times$---the denoiser partially masks forward-model inconsistency.
+This contrasts with CACTI's $10.4\times$ (\cref{sec:cacti_real_data}), confirming that \textbf{dispersion mismatch, not spatial shift, is the dominant CASSI degradation source}.
+Visual comparisons are in the supplementary material.
 
-By contrast, our \emph{simulation} experiments (\cref{tab:cassi}) show 3--14\,dB PSNR degradation because they include dispersion perturbation ($a_1$, $\alpha$)---which the real-data experiment does not.
-The modest $1.8\times$ residual increase from spatial shift alone (vs.\ $10\times$ for CACTI) validates that \textbf{dispersion mismatch, not spatial shift, is the dominant CASSI degradation source} (\cref{fig:cassi_real}).
+% Visual comparison moved to supplementary (Fig.~S1).
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/cassi_real_comparison.pdf}
-\caption{CASSI real data (Scene~1, band~14): calibrated (top) vs.\ mismatched (bottom) reconstructions for GAP-TV and PnP-HSICNN. The visual differences are subtle, consistent with the modest residual ratios in \cref{tab:cassi_real}---spatial mask shift alone is not the dominant degradation source for CASSI.}
-\label{fig:cassi_real}
-\end{figure}
 
 \paragraph{CACTI real data.}
 \label{sec:cacti_real_data}
-We evaluate 4 real CACTI scenes from the EfficientSCI dataset (cr$=$10), using the same measurement residual metric (no ground truth).
-\Cref{tab:cacti_real} shows the results.
-Under mask mismatch, GAP-TV residuals increase $9.4$--$11.0\times$, confirming mismatch severely degrades real data fidelity.
-PnP-FFDNet shows increases of $1.3$--$2.8\times$ (mean $2.0\times$), higher than GAP-TV's baseline but moderated by FFDNet's learned denoiser.
-Mismatched reconstructions exhibit temporal ghosting (\cref{fig:cacti_real}).
+We evaluate 4 real CACTI scenes (EfficientSCI dataset, cr$=$10) using the measurement residual (\cref{tab:cacti_real}).
+GAP-TV residuals increase $9.4$--$11.0\times$ under mismatch, confirming severe real-data degradation; PnP-FFDNet shows $2.0\times$ (moderated by FFDNet's denoiser).
+Visual comparisons showing temporal ghosting are in the supplementary.
 
 \begin{table}[t]
 \centering
@@ -505,12 +494,8 @@ PnP-FFDNet & 0.0041 & 0.0069 & 2.0$\times$ \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.9\textwidth]{figures/cacti_real_comparison.pdf}
-\caption{CACTI real data: calibrated vs.\ mismatched reconstruction for \textit{duomino} and \textit{hand} scenes. Mismatched masks produce temporal ghosting artifacts, mirroring simulation findings.}
-\label{fig:cacti_real}
-\end{figure}
+% Visual comparison moved to supplementary (Fig.~S2).
+
 
 \subsection{Scenario~IV: Blind Calibration Baseline}
 \label{sec:scenario_iv}
@@ -545,29 +530,12 @@ For CASSI ($11 \times 11$ grid over $dx, dy$), calibration recovers 85\% of the 
 The measurement residual provides a strong signal for geometric mismatch because mask shifts cause large, structured data inconsistencies.
 
 \paragraph{SPC results.}
-\Cref{tab:spc_scenario_iv} shows the SPC calibration results using TV minimisation (\cref{eq:scenario_iv_tv}).
-Grid search over $\alpha \in [0, 0.005]$ with 41 points ($33 \times 33$ blocks, ISTA-Net's learned $\mathbf{\Phi}$) estimates $\hat{\alpha} = 0.00125$ vs.\ true $\alpha = 0.0015$ for both methods, recovering 86--92\% of the oracle bound.
-The TV surface exhibits a clear bowl-shaped minimum near the true $\alpha$, confirming that reconstruction sparsity is a viable calibration objective for radiometric mismatch.
-PnP-DRUNet achieves higher recovery (92\%) than FISTA-TV (86\%) because the learned denoiser prior produces sharper reconstructions whose TV is more sensitive to residual gain artifacts.
-This contrasts with the measurement residual, which is flat across all $\alpha$ values for SPC (the underdetermined system can always self-consistently fit any gain-corrected measurements).
+For SPC, TV minimisation (\cref{eq:scenario_iv_tv}) with grid search over $\alpha \in [0, 0.005]$ estimates $\hat{\alpha} = 0.00125$ vs.\ true $0.0015$, recovering 86--92\% of the oracle bound (see supplementary for per-method results).
 
-\begin{table}[t]
-\centering
-\caption{SPC blind calibration via TV minimisation (\cref{eq:scenario_iv_tv}). II: mismatched, no calibration. IV: estimated $\hat{\alpha}$ via TV grid search. III: oracle (true $\alpha$). Recovery: (IV$-$II)\,/\,(III$-$II). True $\alpha{=}0.0015$; estimated $\hat{\alpha}{=}0.00125$.}
-\label{tab:spc_scenario_iv}
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-\textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{Recovery} \\
-\midrule
-FISTA-TV   & 19.78 & 26.54 & 27.60 & 86\% \\
-PnP-DRUNet & 18.34 & 25.39 & 26.01 & 92\% \\
-\bottomrule
-\end{tabular}
-\end{table}
 
-\paragraph{Criterion comparison.}
-The geometric/radiometric distinction reveals that blind calibration requires \emph{matching the objective to the mismatch type}: measurement residual for geometric mismatch (where operator errors create large data infidelities), and reconstruction sparsity for radiometric mismatch (where the operator structure is preserved but measurement values are scaled).
-Across all three modalities, Scenario~IV recovers 85--100\% of the oracle bound, demonstrating that blind calibration is practical for all mismatch types studied.
+
+\paragraph{Summary.}
+Across all modalities, Scenario~IV recovers 85--100\% of the oracle bound---measurement residual for geometric mismatch, reconstruction sparsity for radiometric.
 
 % ============================================================================
 % 5. DISCUSSION

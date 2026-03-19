@@ -105,11 +105,12 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "MRI-FM",                 "type": "Foundation Model",   "mask_aware": True,  "params": "0",    "source": "Wang et al., Nature MI 2026"},
     ],
     "sd_cassi": [
-        {"name": "GAP-TV",      "type": "Classical",      "mask_aware": True,  "params": "0",     "source": "InverseNet"},
-        {"name": "PnP-HSICNN",  "type": "PnP",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
-        {"name": "HDNet",       "type": "Deep Learning",  "mask_aware": False, "params": "2.37M", "source": "InverseNet"},
-        {"name": "MST-L",       "type": "Transformer",    "mask_aware": True,  "params": "2.03M", "source": "InverseNet"},
-        {"name": "MiJUN-5stg",  "type": "Mamba",          "mask_aware": True,  "params": "3.76M", "source": "Meng et al., AAAI 2025"},
+        {"name": "GAP-TV",       "type": "Classical",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
+        {"name": "PnP-HSICNN",   "type": "PnP",                 "mask_aware": True,  "params": "0",     "source": "InverseNet"},
+        {"name": "HDNet",        "type": "Deep Learning",        "mask_aware": False, "params": "2.37M", "source": "InverseNet"},
+        {"name": "MST-L",        "type": "Transformer",          "mask_aware": True,  "params": "2.03M", "source": "InverseNet"},
+        {"name": "DAUHST-9stg",  "type": "Deep Unrolling",       "mask_aware": True,  "params": "6.15M", "source": "Cai et al., NeurIPS 2022"},
+        {"name": "MiJUN-5stg",   "type": "Deep Learning / Mamba","mask_aware": True,  "params": "3.76M", "source": "Meng et al., AAAI 2025"},
     ],
     "cacti": [
         # Classical CS

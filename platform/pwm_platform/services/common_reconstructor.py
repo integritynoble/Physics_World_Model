@@ -1343,13 +1343,22 @@ def _compressive_reconstruct(
 # Physics-informed algorithms we can actually run
 _RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
 
+# CASSI DL models that run on Modal T4 GPU (one invocation per request).
+# Checkpoint bytes are read from local cache and sent in the payload.
+# Falls back to CPU GAP-TV baseline if Modal is unavailable.
+_CASSI_MODAL_GPU: dict[str, tuple[str, str]] = {
+    "DAUHST-9stg": ("dauhst_9stg", "checkpoint/cassi/dauhst/dauhst_9stg.pth"),
+    "MiJUN-5stg":  ("mijun_5stg",  "checkpoint/cassi/our_mamba_5stg_recovered.pth"),
+}
+
 # CASSI DL models that can run on CPU via GCS checkpoint download.
 # Treating them as non-DL routes them through _cassi_reconstruct_by_algo → _cassi_model_reconstruct.
 _CASSI_CPU_RUNNABLE: set[str] = {
     "TSA-Net", "λ-Net", "ADMM-Net", "GAP-Net", "DGSMP",
     "HDNet", "MST-L", "MST++", "CST-L-Plus", "BIRNAT",
-    "DAUHST-9stg", "BiSRNet", "PADUT-3stg", "RDLUF-MixS2-9stg", "SSR-L",
-    "MiJUN-5stg",
+    "BiSRNet", "PADUT-3stg", "RDLUF-MixS2-9stg", "SSR-L",
+    # DAUHST-9stg → _CASSI_MODAL_GPU (Modal T4 GPU)
+    # MiJUN-5stg  → _CASSI_MODAL_GPU (Modal T4 GPU, Mamba too slow on CPU)
 }
 
 
@@ -1998,12 +2007,15 @@ def _pick_baseline_name(
 # ── Modal GPU helper ──────────────────────────────────────────────────────────
 
 
-def _try_modal_gpu(
+async def _try_modal_gpu(
     sample_data: dict,
     variant_key: str,
     use_drunet: bool = False,
 ) -> tuple:
-    """Call Modal T4 GPU reconstruction for DL algorithms.
+    """Call Modal T4 GPU reconstruction for DL algorithms (async, non-blocking).
+
+    Uses remote.aio() so the event loop remains responsive during inference,
+    allowing SSE keepalives to fire and preventing nginx proxy_read_timeout.
 
     When use_drunet=True, sends the raw measurement to the GPU worker which
     applies the pretrained DRUNet denoiser (deepinv / Zhang et al. 2021).
@@ -2030,10 +2042,14 @@ def _try_modal_gpu(
             "mask": sample_data.get("mask"),
             "psf": sample_data.get("psf"),
             "coil_maps": sample_data.get("coil_maps"),
+            "H_ideal": sample_data.get("H_ideal"),
             "reconstruction_baseline": _bl,
             "use_drunet": use_drunet,
+            "cassi_model_key": sample_data.get("cassi_model_key"),
+            "ckpt_bytes": sample_data.get("ckpt_bytes"),
         })
-        result_bytes = reconstruct_gpu.remote(payload)
+        # Use async API so the event loop is not blocked during GPU inference
+        result_bytes = await reconstruct_gpu.remote.aio(payload)
         result = pickle.loads(result_bytes)
         x_recon = result.get("x_recon")
         psnr = result.get("psnr")
@@ -2062,10 +2078,7 @@ async def run_common_reconstruction(
     """
     import asyncio
 
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(
-        None,
-        _run_common_sync,
+    return await _run_common_async(
         variant_key,
         algorithm_name,
         user_measurement,
@@ -2074,14 +2087,14 @@ async def run_common_reconstruction(
     )
 
 
-def _run_common_sync(
+async def _run_common_async(
     variant_key: str,
     algorithm_name: str,
     user_measurement: Optional[np.ndarray],
     user_matrix: Optional[np.ndarray],
     sample_index: int = 0,
 ) -> dict:
-    """Synchronous common-mode reconstruction."""
+    """Async common-mode reconstruction (awaits Modal GPU calls non-blocking)."""
     t0 = time.perf_counter()
 
     from pwm_platform.services.benchmark_database import (
@@ -2092,7 +2105,7 @@ def _run_common_sync(
 
     # Variant aliases: resolve short names to catalog entries
     _VARIANT_ALIASES: dict[str, str] = {
-        "sd_cassi": "cassi",  # legacy alias → new canonical key
+        "cassi": "sd_cassi",  # short alias → canonical variant key
         "spc": "spc_block",
     }
     catalog_key = _VARIANT_ALIASES.get(variant_key, variant_key)
@@ -2161,7 +2174,7 @@ def _run_common_sync(
         is_dl = False
 
     # CASSI DL models with GCS checkpoints run on CPU via _cassi_model_reconstruct
-    if catalog_key == "cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
+    if catalog_key == "sd_cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
         is_dl = False
 
     # Run reconstruction via central dispatch
@@ -2171,7 +2184,40 @@ def _run_common_sync(
     psnr_from_gpu: Optional[float] = None
     ssim_from_gpu: Optional[float] = None
 
-    if not is_dl:
+    # ── CASSI Modal GPU path (DAUHST-9stg, MiJUN-5stg) ───────────────────────
+    # Try Modal T4 GPU first; fall back to GAP-TV baseline only if GPU fails.
+    # One Modal invocation per request — checkpoint bytes sent in the payload.
+    if catalog_key == "sd_cassi" and algorithm_name in _CASSI_MODAL_GPU:
+        cassi_gpu_key, cassi_ckpt_gcs = _CASSI_MODAL_GPU[algorithm_name]
+        ckpt_cache = CACHE_DIR / f"cassi_{cassi_gpu_key}.pth"
+        if not ckpt_cache.exists():
+            try:
+                from google.cloud import storage as _gcs
+                _client = _gcs.Client()
+                _bucket = _client.bucket(GCS_BUCKET)
+                _blob = _bucket.blob(cassi_ckpt_gcs)
+                _blob.download_to_filename(str(ckpt_cache))
+                logger.info("Downloaded %s from GCS", cassi_gpu_key)
+            except Exception as _e:
+                logger.warning("Cannot download %s checkpoint: %s", cassi_gpu_key, _e)
+        if ckpt_cache.exists():
+            sample_data_for_gpu = dict(sample_data)
+            sample_data_for_gpu["cassi_model_key"] = cassi_gpu_key
+            sample_data_for_gpu["H_ideal"] = sample_data.get("H_ideal")
+            sample_data_for_gpu["ckpt_bytes"] = ckpt_cache.read_bytes()
+            x_gpu, psnr_from_gpu, ssim_from_gpu = await _try_modal_gpu(
+                sample_data_for_gpu, variant_key
+            )
+            if x_gpu is not None:
+                x_recon = x_gpu
+                gpu_ran = True
+                dl_note = False
+        if not gpu_ran:
+            # Modal unavailable or checkpoint missing — show GAP-TV baseline
+            x_recon = _dispatch_reconstruction(sample_data, variant_key, category, "")
+            dl_note = True
+
+    elif not is_dl:
         x_recon = _dispatch_reconstruction(
             sample_data, variant_key, category, effective_algo
         )
@@ -2193,7 +2239,7 @@ def _run_common_sync(
             # Store CPU baseline so GPU worker can fall back if DRUNet is worse
             sample_data_for_gpu = dict(sample_data)
             sample_data_for_gpu["reconstruction_baseline"] = cpu_baseline
-            x_gpu, psnr_from_gpu, ssim_from_gpu = _try_modal_gpu(
+            x_gpu, psnr_from_gpu, ssim_from_gpu = await _try_modal_gpu(
                 sample_data_for_gpu, variant_key, use_drunet=True
             )
             if x_gpu is not None:

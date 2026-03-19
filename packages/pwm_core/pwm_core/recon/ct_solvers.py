@@ -102,7 +102,7 @@ def fbp_2d(
                       "cosine": "cosine", "none": None}
         sk_filter = filter_map.get(filter_type, "ramp")
         angles_deg = np.rad2deg(angles)
-        result = iradon(sinogram.T, theta=angles_deg, circle=True,
+        result = iradon(sinogram.T, theta=angles_deg, circle=False,
                         output_size=output_size, filter_name=sk_filter)
         return result.astype(np.float32)
     except ImportError:
