@@ -84,6 +84,23 @@ papers/inversenet/results/
 papers/inversenet/data/spc/models/
 papers/pwmi_cassi/results/
 
+# Heavy files — all stored in GCS: gs://pwm-benchmark-datasets/
+# Checkpoints and model weights
+reference/**/*.pth
+reference/**/*.npz
+reference/**/*.pkl
+# Benchmark tarballs (served from GCS)
+platform/pwm_platform/static/benchmark-data/v1.0/*.tar.gz
+# Large benchmark data
+platform/pwm_platform/data/benchmarks/*.npz
+# Zenodo archive weights
+papers/universal_simulation/zenodo_archive/code/pwm_core/weights/
+papers/universal_simulation/zenodo_archive/code/pwm_core/pwm_core/weights/
+# arXiv submission archives
+papers/arxiv_submissions/*.tar.gz
+# System design outputs
+papers/system_design/outputs/*.npz
+
 # Script outputs and repos
 repos/
 bash.exe.stackdump

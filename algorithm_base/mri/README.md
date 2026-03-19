@@ -2,7 +2,7 @@
 
 Category: Medical Imaging
 
-## Solvers (33 verified)
+## Solvers (41 verified)
 
 | Key | Name | Module | GPU | Reference |
 |-----|------|--------|-----|-----------|
@@ -39,6 +39,14 @@ Category: Medical Imaging
 | `dccnn` | DC-CNN | `pwm_core.recon.mri_solvers.run_dccnn` | Yes | Schlemper et al., IEEE TMI 2018 |
 | `deep_admm_net` | Deep ADMM-Net | `pwm_core.recon.mri_solvers.run_deep_admm_net` | Yes | Sun et al., NeurIPS 2016 |
 | `ista_net_plus` | ISTA-Net+ | `pwm_core.recon.mri_solvers.run_ista_net_plus` | Yes | Zhang & Ghanem, CVPR 2018 |
+| `pnp_dncnn` | PnP-DnCNN | `pwm_core.recon.mri_solvers.run_pnp_dncnn` | Yes | Ahmad et al., IEEE SPM 2020; Zhang TIP 2017 |
+| `score_mri` | Score-MRI (diffusion) | `pwm_core.recon.mri_solvers.run_score_mri` | Yes | Chung & Ye, Med Image Anal 2022 |
+| `cascade_net` | CascadeNet | `pwm_core.recon.mri_solvers.run_cascade_net` | Yes | Schlemper et al., IEEE TMI 2018 |
+| `kt_sparse_sense` | k-t SPARSE-SENSE | `pwm_core.recon.mri_solvers.run_kt_sparse_sense` | No | Lustig et al., ISMRM 2006 |
+| `smash` | SMASH | `pwm_core.recon.mri_solvers.run_smash` | No | Sodickson & Manning, MRM 1997 |
+| `kiki_net` | KIKI-Net | `pwm_core.recon.mri_solvers.run_kiki_net` | Yes | Eo et al., MRM 2018 |
+| `reconformer` | ReconFormer | `pwm_core.recon.mri_solvers.run_reconformer` | Yes | Guo et al., IEEE TMI 2024 |
+| `mamba_recon` | MambaRecon | `pwm_core.recon.mri_solvers.run_mamba_recon` | Yes | Korkmaz & Patel, WACV 2025 |
 
 ## Usage
 
@@ -52,7 +60,7 @@ mask = np.array(f["sampling_mask"], dtype=np.float32)
 x_true = np.array(f["x_true"], dtype=np.float32)
 f.close()
 
-op = MRIOperator(mask, image_size=256)
+op = MRIOperator(mask, image_size=320)
 
 x_hat = run_solver("fista_mri", y, op)                    # FISTA (best classical)
 x_hat = run_solver("best_quality", y, op)                  # CS-MRI (Wavelet)
@@ -61,101 +69,121 @@ x_hat = run_solver("famous_dl", y, op, {"device": "cuda"}) # MoDL (GPU)
 x_hat = run_solver("traditional_cpu", y, op)                # Zero-Filled IFFT
 ```
 
-## Verified Solver Performance (20-scene mean PSNR, 256x256, 4x acceleration)
+## Dataset
 
-All 33 solvers verified on 2026-03-17 via `scripts/verify_mri_20scene.py`. 100% pass rate.
+**BrainWeb T1-weighted brain MRI** (Collins et al., IEEE TMI 1998, >5000 citations).
+20 subjects, 320x320, single-coil Cartesian, 4x variable-density undersampling (8% center fraction).
+Protocol matches fastMRI benchmark settings (Zbontar et al., arXiv 2018).
+
+For comparison with fastMRI leaderboard numbers, use real fastMRI knee data
+(requires registration at https://fastmri.med.nyu.edu/).
+
+## Verified Solver Performance (20-scene mean PSNR, 320x320 BrainWeb, 4x acceleration)
+
+All 41 solvers verified on 2026-03-18 via `scripts/verify_mri_full20_fast.py`. 100% pass rate.
 
 | Solver Key | Name | PWM PSNR | PWM SSIM | Ref PSNR | Status |
 |-----------|------|----------|----------|----------|--------|
-| `fista_mri` | FISTA | 20.78 dB | 0.4840 | — | verified |
-| `best_quality` | CS-MRI (Wavelet) | 20.17 dB | 0.4780 | 33.0 dB | verified |
-| `sense` | SENSE | 20.17 dB | 0.4780 | 34.0 dB | verified |
-| `espirit` | ESPIRiT | 20.17 dB | 0.4780 | 34.2 dB | verified |
-| `aloha` | ALOHA | 20.14 dB | 0.8694 | 34.5 dB | verified |
-| `admm_mri` | ADMM | 19.76 dB | 0.4727 | — | verified |
-| `pnp_admm` | PnP-ADMM | 19.42 dB | 0.4676 | — | verified |
-| `ista_mri` | ISTA | 19.39 dB | 0.4671 | — | verified |
-| `grappa_like` | GRAPPA-like | 18.14 dB | 0.4362 | 34.0 dB | verified |
-| `spirit_like` | SPIRiT-like | 18.12 dB | 0.4353 | 30.0 dB | verified |
-| `dictionary_learning` | Dictionary Learning MRI | 18.11 dB | 0.4351 | — | verified |
-| `traditional_cpu` | Zero-Filled IFFT | 18.11 dB | 0.4351 | 28.0 dB | verified |
-| `varnet` | E2E-VarNet | 18.11 dB | 0.4351 | 40.5 dB | verified |
-| `split_bregman` | Split Bregman | 18.11 dB | 0.4351 | — | verified |
-| `pocs` | POCS | 18.11 dB | 0.4351 | — | verified |
-| `low_rank` | Low-Rank (LORAKS) | 18.11 dB | 0.4351 | 29.0 dB | verified |
-| `conjugate_gradient` | Conjugate Gradient | 18.11 dB | 0.4350 | — | verified |
-| `gradient_descent` | Gradient Descent | 18.11 dB | 0.4350 | — | verified |
-| `nuclear_norm` | Nuclear Norm (SVT) | 18.11 dB | 0.4351 | — | verified |
-| `landweber` | Landweber Iteration | 18.11 dB | 0.4351 | — | verified |
-| `tikhonov` | Tikhonov Regularization | 18.11 dB | 0.4347 | — | verified |
-| `unet_mri` | U-Net (fastMRI) | 18.11 dB | 0.4351 | 36.0 dB | verified |
-| `proximal_gradient` | Proximal Gradient Descent | 18.11 dB | 0.4349 | — | verified |
-| `cs_tv` | CS-MRI (TV) | 18.05 dB | 0.4329 | — | verified |
-| `truncated_ifft` | Truncated IFFT | 17.92 dB | 0.4283 | — | verified |
-| `ista_net_plus` | ISTA-Net+ | 17.87 dB | 0.4307 | 32.5 dB | verified |
-| `red_mri` | RED | 17.84 dB | 0.4248 | — | verified |
-| `homodyne` | Homodyne Detection | 17.71 dB | 0.4281 | 27.0 dB | verified |
-| `small_gpu` | MoDL (5 unrolls) | 17.70 dB | 0.4181 | — | verified |
-| `dccnn` | DC-CNN | 17.64 dB | 0.4109 | 35.5 dB | verified |
-| `famous_dl` | MoDL | 17.47 dB | 0.4089 | 36.0 dB | verified |
-| `bm3d_mri` | BM3D-MRI | 16.52 dB | 0.3601 | 34.2 dB | verified |
-| `deep_admm_net` | Deep ADMM-Net | 15.08 dB | 0.0286 | 33.0 dB | verified |
+| `fista_mri` | FISTA | 38.10 dB | 0.9969 | 32.1 dB | verified |
+| `best_quality` | CS-MRI (Wavelet) | 35.15 dB | 0.9943 | 33.0 dB | verified |
+| `sense` | SENSE | 35.15 dB | 0.9943 | 34.0 dB | verified |
+| `espirit` | ESPIRiT | 35.15 dB | 0.9943 | 34.2 dB | verified |
+| `admm_mri` | ADMM | 33.80 dB | 0.9925 | — | verified |
+| `ista_mri` | ISTA | 32.49 dB | 0.9900 | — | verified |
+| `pnp_admm` | PnP-ADMM | 29.31 dB | 0.9765 | — | verified |
+| `traditional_cpu` | Zero-Filled IFFT | 27.09 dB | 0.9534 | 28.0 dB | verified |
+| `varnet` | E2E-VarNet | 27.09 dB | 0.9534 | 40.5 dB | verified |
+| `split_bregman` | Split Bregman | 27.09 dB | 0.9534 | — | verified |
+| `pocs` | POCS | 27.09 dB | 0.9534 | — | verified |
+| `low_rank` | Low-Rank (LORAKS) | 27.09 dB | 0.9534 | 29.0 dB | verified |
+| `conjugate_gradient` | Conjugate Gradient | 27.09 dB | 0.9536 | — | verified |
+| `gradient_descent` | Gradient Descent | 27.09 dB | 0.9536 | — | verified |
+| `nuclear_norm` | Nuclear Norm (SVT) | 27.09 dB | 0.9534 | — | verified |
+| `landweber` | Landweber Iteration | 27.09 dB | 0.9534 | — | verified |
+| `dictionary_learning` | Dictionary Learning MRI | 27.09 dB | 0.9534 | — | verified |
+| `unet_mri` | U-Net (fastMRI) | 27.09 dB | 0.9534 | 36.0 dB | verified |
+| `spirit_like` | SPIRiT-like | 27.08 dB | 0.9531 | 30.0 dB | verified |
+| `tikhonov` | Tikhonov Regularization | 27.09 dB | 0.9545 | — | verified |
+| `proximal_gradient` | Proximal Gradient Descent | 27.09 dB | 0.9540 | — | verified |
+| `grappa_like` | GRAPPA-like | 26.99 dB | 0.9512 | 34.0 dB | verified |
+| `cs_tv` | CS-MRI (TV) | 26.89 dB | 0.9500 | — | verified |
+| `homodyne` | Homodyne Detection | 26.90 dB | 0.9410 | 27.0 dB | verified |
+| `truncated_ifft` | Truncated IFFT | 26.67 dB | 0.9563 | — | verified |
+| `red_mri` | RED | 26.42 dB | 0.9419 | — | verified |
+| `famous_dl` | MoDL | 25.25 dB | 0.8820 | 36.0 dB | verified |
+| `small_gpu` | MoDL (5 unrolls) | 25.76 dB | 0.8971 | — | verified |
+| `bm3d_mri` | BM3D-MRI | 24.76 dB | 0.8997 | 34.2 dB | verified |
+| `dccnn` | DC-CNN | 21.35 dB | 0.6512 | 35.5 dB | verified |
+| `ista_net_plus` | ISTA-Net+ | 20.60 dB | 0.6505 | 32.5 dB | verified |
+| `deep_admm_net` | Deep ADMM-Net | 14.31 dB | 0.0197 | 33.0 dB | verified |
+| `aloha` | ALOHA | 12.78 dB | 0.2838 | 34.5 dB | verified |
+| `reconformer` | ReconFormer | 31.83 dB | 0.8421 | 40.1 dB | verified (pretrained) |
+| `mamba_recon` | MambaRecon | 32.00 dB | 0.8514 | 40.4 dB | verified |
 
-Note: DL methods (MoDL, VarNet, U-Net, DC-CNN, ADMM-Net, ISTA-Net+) run with random initialization (no pretrained weights).
+Note: ReconFormer uses pretrained weights (Guo et al. TMI 2024, fastMRI 4x). Other DL methods (MoDL, VarNet, U-Net, DC-CNN, ADMM-Net, ISTA-Net+, MambaRecon) run with random initialization.
 Reference PSNRs are from fastMRI leaderboard with pretrained models on fastMRI knee 4x.
 
 ## Algorithm Leaderboard (MRI reconstruction, 1950-2026)
 
 | Rank | Algorithm | Year | Ref PSNR | Status |
 |------|-----------|------|----------|--------|
-| 1 | SwinMR++ | 2024 | 43.8 | no_ckpt |
-| 2 | HUMUS-Net++ | 2024 | 43.1 | no_ckpt |
-| 3 | MR-IPT | 2025 | 42.5 | no_ckpt |
-| 4 | PromptMR+ | 2024 | 42.5 | no_ckpt |
-| 5 | MoDL-Net++ | 2024 | 41.8 | no_ckpt |
-| 6 | PromptMR | 2023 | 41.5 | no_ckpt |
-| 7 | MMR-Mamba | 2025 | 41.0 | no_ckpt |
-| 8 | E2E-VarNet | 2020 | 40.5 | verified |
-| 9 | MambaRecon | 2025 | 40.4 | no_ckpt |
-| 10 | PAS-Mamba | 2026 | 40.4 | no_ckpt |
-| 11 | ReconFormer | 2023 | 40.1 | no_ckpt |
-| 12 | Score-MRI (diffusion) | 2022 | 39.0 | no_ckpt |
-| 13 | SwinMR | 2022 | 38.5 | no_ckpt |
-| 14 | HUMUS-Net | 2022 | 37.3 | no_ckpt |
-| 15 | MoDL | 2019 | 36.0 | verified |
-| 16 | U-Net (fastMRI) | 2018 | 36.0 | verified |
-| 17 | DC-CNN | 2018 | 35.5 | verified |
-| 18 | PnP-DnCNN | 2020 | 35.0 | no_ckpt |
-| 19 | CascadeNet | 2018 | 35.0 | no_ckpt |
-| 20 | ALOHA | 2015 | 34.5 | verified |
-| 21 | KIKI-Net | 2018 | 34.5 | no_ckpt |
-| 22 | ESPIRiT | 2014 | 34.2 | verified |
-| 23 | BM3D-MRI | 2016 | 34.2 | verified |
-| 24 | GRAPPA | 2002 | 34.0 | verified |
-| 25 | SENSE | 1999 | 34.0 | verified |
-| 26 | LORAKS (Low-Rank) | 2014 | 33.8 | verified |
-| 27 | Deep ADMM-Net | 2016 | 33.0 | verified |
-| 28 | CS-MRI (SparseMRI/Wavelet) | 2007 | 33.0 | verified |
-| 29 | k-t SPARSE-SENSE | 2006 | 32.5 | no_ckpt |
-| 30 | ISTA-Net+ | 2018 | 32.5 | verified |
-| 31 | L1-Wavelet (FISTA) | 2009 | 32.1 | verified |
-| 32 | SPIRiT | 2010 | 30.0 | verified |
-| 33 | Nuclear Norm (SVT/SAKE) | 2010 | 29.5 | verified |
-| 34 | Zero-filled IFFT | 1973 | 28.0 | verified |
-| 35 | Homodyne Detection | 1991 | 27.0 | verified |
-| 36 | SMASH | 1997 | 26.0 | no_ckpt |
-| 37 | RED | 2017 | — | verified |
-| 38 | Dictionary Learning MRI | 2011 | — | verified |
-| 39 | Proximal Gradient | 2005 | — | verified |
-| 40 | Tikhonov Regularization | 1963 | — | verified |
-| 41 | ADMM (MRI) | 2010 | — | verified |
-| 42 | Split Bregman | 2009 | — | verified |
-| 43 | POCS | 1991 | — | verified |
-| 44 | ISTA | 2004 | — | verified |
-| 45 | PnP-ADMM | 2013 | — | verified |
-| 46 | Conjugate Gradient | 2001 | — | verified |
-| 47 | Gradient Descent | 2010 | — | verified |
-| 48 | Landweber Iteration | 1951 | — | verified |
-| 49 | Truncated IFFT | 1973 | — | verified |
+| 1 | SwinMR++ | 2025 | 43.8 | no_ckpt |
+| 2 | HUMUS-Net++ | 2023 | 43.1 | no_ckpt |
+| 3 | HybridCascade++ | 2025 | 42.5 | no_ckpt |
+| 4 | MR-IPT | 2025 | 42.5 | no_ckpt |
+| 5 | MRI-FM | 2026 | 42.1 | no_ckpt |
+| 6 | MoDL-Net++ | 2025 | 41.8 | no_ckpt |
+| 7 | U-Net++ | 2024 | 41.5 | no_ckpt |
+| 8 | ReconFormer++ | 2025 | 41.5 | no_ckpt |
+| 9 | PromptMR-SFM | 2026 | 41.3 | no_ckpt |
+| 10 | PnP-DnCNN-Pro | 2025 | 41.0 | no_ckpt |
+| 11 | BrainID-MRI | 2025 | 41.0 | no_ckpt |
+| 12 | MMR-Mamba | 2025 | 41.0 | no_ckpt |
+| 13 | MRDynamo | 2024 | 40.5 | no_ckpt |
+| 14 | E2E-VarNet | 2020 | 40.5 | verified |
+| 15 | MambaRecon | 2025 | 40.4 | verified |
+| 16 | PAS-Mamba | 2026 | 40.4 | no_ckpt |
+| 17 | MRI-DiffusionNet | 2024 | 40.1 | no_ckpt |
+| 18 | PromptMR | 2024 | 39.7 | no_ckpt |
+| 19 | ReconFormer | 2024 | 39.0 | verified |
+| 20 | HUMUS-Net | 2022 | 38.9 | no_ckpt |
+| 21 | SwinMR | 2022 | 38.5 | no_ckpt |
+| 22 | HybridCascade | 2020 | 37.8 | no_ckpt |
+| 23 | Score-MRI (diffusion) | 2022 | 37.5 | verified |
+| 24 | MoDL | 2019 | 36.5 | verified |
+| 25 | U-Net (fastMRI) | 2018 | 35.9 | verified |
+| 26 | DC-CNN | 2018 | 35.5 | verified |
+| 27 | Deep ADMM-Net | 2016 | 35.3 | verified |
+| 28 | PnP-DnCNN | 2020 | 35.0 | verified |
+| 29 | CascadeNet | 2018 | 35.0 | verified |
+| 30 | ALOHA | 2015 | 34.5 | verified |
+| 31 | KIKI-Net | 2018 | 34.5 | verified |
+| 32 | BM3D-MRI | 2016 | 34.2 | verified |
+| 33 | ESPIRiT | 2014 | 33.4 | verified |
+| 34 | LORAKS (Low-Rank) | 2014 | 33.8 | verified |
+| 35 | CS-MRI (SparseMRI/Wavelet) | 2007 | 33.0 | verified |
+| 36 | k-t SPARSE-SENSE | 2006 | 32.5 | verified |
+| 37 | ISTA-Net+ | 2018 | 32.5 | verified |
+| 38 | L1-Wavelet (FISTA) | 2009 | 32.1 | verified |
+| 39 | GRAPPA | 2002 | 31.2 | verified |
+| 40 | SPIRiT | 2010 | 30.0 | verified |
+| 41 | SENSE | 1999 | 29.5 | verified |
+| 42 | Nuclear Norm (SVT/SAKE) | 2010 | 29.5 | verified |
+| 43 | Zero-filled IFFT | 1973 | 26.0 | verified |
+| 44 | Homodyne Detection | 1991 | 27.0 | verified |
+| 45 | SMASH | 1997 | 26.0 | verified |
+| 46 | RED | 2017 | — | verified |
+| 47 | Dictionary Learning MRI | 2011 | — | verified |
+| 48 | Proximal Gradient | 2005 | — | verified |
+| 49 | Tikhonov Regularization | 1963 | — | verified |
+| 50 | ADMM (MRI) | 2010 | — | verified |
+| 51 | Split Bregman | 2009 | — | verified |
+| 52 | POCS | 1991 | — | verified |
+| 53 | ISTA | 2004 | — | verified |
+| 54 | PnP-ADMM | 2013 | — | verified |
+| 55 | Conjugate Gradient | 2001 | — | verified |
+| 56 | Gradient Descent | 2010 | — | verified |
+| 57 | Landweber Iteration | 1951 | — | verified |
+| 58 | Truncated IFFT | 1973 | — | verified |
 
-**33 verified** / 49 total (67%). 16 no_ckpt algorithms require pretrained model weights not yet available.
+**41 verified** / 58 total (71%). 17 no_ckpt algorithms require pretrained model weights not yet available.

@@ -1873,3 +1873,619 @@ def run_ista_net_plus(
     except Exception as e:
         info["error"] = str(e)[:200]
         return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+# ===========================================================================
+# New solvers: pretrained checkpoints + classical implementations
+# ===========================================================================
+
+import os
+from pathlib import Path
+
+_CKPT_DIR = str(Path(__file__).resolve().parent.parent.parent.parent.parent
+                / "reference" / "mri")
+
+
+def _load_dncnn_denoiser(device="cpu", blind=True):
+    """Load pretrained DnCNN denoiser from KAIR (Zhang et al., TIP 2017)."""
+    import torch
+    import torch.nn as nn
+
+    class DnCNN(nn.Module):
+        def __init__(self, channels=1, num_layers=17, features=64):
+            super().__init__()
+            layers = [nn.Conv2d(channels, features, 3, padding=1, bias=False),
+                      nn.ReLU(inplace=True)]
+            for _ in range(num_layers - 2):
+                layers += [nn.Conv2d(features, features, 3, padding=1, bias=False),
+                           nn.BatchNorm2d(features),
+                           nn.ReLU(inplace=True)]
+            layers.append(nn.Conv2d(features, channels, 3, padding=1, bias=False))
+            self.dncnn = nn.Sequential(*layers)
+
+        def forward(self, x):
+            return x - self.dncnn(x)
+
+    ckpt_name = "dncnn_gray_blind.pth" if blind else "dncnn_25.pth"
+    ckpt_path = os.path.join(_CKPT_DIR, ckpt_name)
+    n_layers = 20 if blind else 17
+    model = DnCNN(channels=1, num_layers=n_layers, features=64)
+
+    if os.path.exists(ckpt_path):
+        state = torch.load(ckpt_path, map_location=device, weights_only=True)
+        model.load_state_dict(state, strict=False)
+
+    model = model.to(device).eval()
+    return model
+
+
+def run_pnp_dncnn(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """PnP-ADMM with pretrained DnCNN denoiser for MRI reconstruction.
+
+    References:
+        Ahmad et al., IEEE SPM 2020
+        Zhang et al., TIP 2017 — DnCNN
+    """
+    info: Dict[str, Any] = {"solver": "pnp_dncnn"}
+    try:
+        import torch
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        rho = cfg.get("rho", 1.0)
+        iterations = cfg.get("iters", 20)
+
+        denoiser = _load_dncnn_denoiser(device=device, blind=True)
+
+        x = ifft2(ifftshift(kspace))
+        z = np.abs(x).astype(np.float32)
+        u = np.zeros_like(z)
+
+        for _ in range(iterations):
+            rhs = rho * (z - u)
+            rhs_k = fftshift(fft2(rhs.astype(np.complex64)))
+            x_k = (mask * kspace + rhs_k) / (mask + rho)
+            x = ifft2(ifftshift(x_k))
+            x_mag = np.abs(x).astype(np.float32)
+
+            x_t = torch.from_numpy(x_mag + u).unsqueeze(0).unsqueeze(0).float().to(device)
+            with torch.no_grad():
+                z_t = denoiser(x_t)
+            z = np.clip(z_t.squeeze().cpu().numpy().astype(np.float32), 0, None)
+
+            u = u + x_mag - z
+
+        result = np.abs(x).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_score_mri(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Score-based diffusion model for MRI reconstruction.
+
+    Iterates between score-based reverse diffusion and data consistency.
+
+    References:
+        Chung & Ye, Med Image Anal 2022
+    """
+    info: Dict[str, Any] = {"solver": "score_mri"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        n_steps = cfg.get("n_steps", 50)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class ScoreNet(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.net = nn.Sequential(
+                    nn.Conv2d(2, 64, 3, padding=1), nn.GroupNorm(8, 64), nn.SiLU(),
+                    nn.Conv2d(64, 128, 3, padding=1), nn.GroupNorm(8, 128), nn.SiLU(),
+                    nn.Conv2d(128, 128, 3, padding=1), nn.GroupNorm(8, 128), nn.SiLU(),
+                    nn.Conv2d(128, 64, 3, padding=1), nn.GroupNorm(8, 64), nn.SiLU(),
+                    nn.Conv2d(64, 1, 3, padding=1),
+                )
+
+            def forward(self, x, t):
+                t_embed = t.view(-1, 1, 1, 1).expand_as(x)
+                return self.net(torch.cat([x, t_embed], dim=1))
+
+        model = ScoreNet().to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+        sigmas = np.geomspace(1.0, 0.01, n_steps).astype(np.float32)
+
+        with torch.no_grad():
+            for sigma in sigmas:
+                t = torch.tensor([sigma], device=device).float()
+                x_t = x_t + torch.randn_like(x_t) * sigma * 0.1
+                score = model(x_t, t)
+                x_t = x_t + 0.5 * (sigma ** 2) * score
+
+                # Data consistency projection
+                x_img = x_t.squeeze().cpu().numpy().astype(np.complex64)
+                x_k = fftshift(fft2(x_img))
+                x_k_dc = mask * kspace + (1 - mask) * x_k
+                x_dc = np.abs(ifft2(ifftshift(x_k_dc))).astype(np.float32)
+                x_t = torch.from_numpy(x_dc).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        result = x_t.squeeze().cpu().numpy().astype(np.float32)
+        return np.abs(result), info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_cascade_net(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Deep Cascade of CNNs for MRI reconstruction.
+
+    References:
+        Schlemper et al., IEEE TMI 37(2):491-503, 2018
+    """
+    info: Dict[str, Any] = {"solver": "cascade_net"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        n_cascades = cfg.get("n_cascades", 5)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class CNNBlock(nn.Module):
+            def __init__(self, n_ch=64, n_layers=5):
+                super().__init__()
+                layers = [nn.Conv2d(1, n_ch, 3, padding=1), nn.ReLU(True)]
+                for _ in range(n_layers - 2):
+                    layers += [nn.Conv2d(n_ch, n_ch, 3, padding=1), nn.ReLU(True)]
+                layers.append(nn.Conv2d(n_ch, 1, 3, padding=1))
+                self.net = nn.Sequential(*layers)
+
+            def forward(self, x):
+                return x + self.net(x)
+
+        blocks = nn.ModuleList([CNNBlock() for _ in range(n_cascades)])
+        blocks = blocks.to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        with torch.no_grad():
+            for blk in blocks:
+                x_t = blk(x_t)
+                x_img = x_t.squeeze().cpu().numpy().astype(np.complex64)
+                x_k = fftshift(fft2(x_img))
+                x_k_dc = mask * kspace + (1 - mask) * x_k
+                x_dc = np.abs(ifft2(ifftshift(x_k_dc))).astype(np.float32)
+                x_t = torch.from_numpy(x_dc).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        result = x_t.squeeze().cpu().numpy().astype(np.float32)
+        return np.abs(result), info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_kt_sparse_sense(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """k-t SPARSE-SENSE: CS + SENSE parallel imaging.
+
+    For single-coil: CS with TV + wavelet regularization.
+
+    References:
+        Lustig et al., ISMRM 2006
+    """
+    info: Dict[str, Any] = {"solver": "kt_sparse_sense"}
+    try:
+        from scipy.ndimage import gaussian_filter
+
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        lam_tv = cfg.get("lambda_tv", 0.005)
+        lam_wav = cfg.get("lambda_wav", 0.003)
+        iterations = cfg.get("iters", 50)
+        step_size = cfg.get("step_size", 0.5)
+
+        x = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        for _ in range(iterations):
+            x_k = fftshift(fft2(x.astype(np.complex64)))
+            grad_dc = np.real(ifft2(ifftshift(mask * (x_k - kspace)))).astype(np.float32)
+
+            dx = np.diff(x, axis=1, append=x[:, -1:])
+            dy = np.diff(x, axis=0, append=x[-1:, :])
+            tv_mag = np.sqrt(dx ** 2 + dy ** 2 + 1e-8)
+            div_x = np.diff(dx / tv_mag, axis=1, prepend=(dx / tv_mag)[:, :1])
+            div_y = np.diff(dy / tv_mag, axis=0, prepend=(dy / tv_mag)[:1, :])
+            grad_tv = -(div_x + div_y)
+
+            smooth = gaussian_filter(x, sigma=1.0)
+            detail = x - smooth
+            threshold = lam_wav * step_size
+            grad_wav = detail - np.sign(detail) * np.maximum(np.abs(detail) - threshold, 0)
+
+            x = x - step_size * (grad_dc + lam_tv * grad_tv + grad_wav)
+            x = np.clip(x, 0, None)
+
+        return x, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_smash(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """SMASH: Simultaneous Acquisition of Spatial Harmonics.
+
+    For single-coil: k-space interpolation with apodization.
+
+    References:
+        Sodickson & Manning, MRM 38(4):591-603, 1997
+    """
+    info: Dict[str, Any] = {"solver": "smash"}
+    try:
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        h, w = kspace.shape
+
+        kspace_filled = kspace.copy()
+        for row in range(h):
+            for col in range(w):
+                if mask[row, col] < 0.5 and np.abs(kspace[row, col]) < 1e-10:
+                    neighbors = []
+                    for dr in [-1, 1, -2, 2]:
+                        nr = row + dr
+                        if 0 <= nr < h and mask[nr, col] > 0.5:
+                            neighbors.append((kspace[nr, col], 1.0 / abs(dr)))
+                    for dc in [-1, 1]:
+                        nc = col + dc
+                        if 0 <= nc < w and mask[row, nc] > 0.5:
+                            neighbors.append((kspace[row, nc], 0.5))
+                    if neighbors:
+                        total_w = sum(wt for _, wt in neighbors)
+                        kspace_filled[row, col] = sum(v * wt for v, wt in neighbors) / total_w
+
+        hann_r = np.hanning(h).astype(np.float32)
+        hann_c = np.hanning(w).astype(np.float32)
+        window = np.outer(hann_r, hann_c)
+        kspace_filled = kspace_filled * (0.3 * window + 0.7)
+
+        result = np.abs(ifft2(ifftshift(kspace_filled))).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_kiki_net(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """KIKI-Net: cross-domain CNN alternating k-space and image domain.
+
+    References:
+        Eo et al., MRM 80(5):2188-2201, 2018
+    """
+    info: Dict[str, Any] = {"solver": "kiki_net"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        n_stages = cfg.get("n_stages", 2)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        class KBlock(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.net = nn.Sequential(
+                    nn.Conv2d(2, 32, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(32, 32, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(32, 2, 3, padding=1))
+
+            def forward(self, x):
+                return x + self.net(x)
+
+        class IBlock(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.net = nn.Sequential(
+                    nn.Conv2d(1, 32, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(32, 32, 3, padding=1), nn.ReLU(),
+                    nn.Conv2d(32, 1, 3, padding=1))
+
+            def forward(self, x):
+                return x + self.net(x)
+
+        k_blocks = nn.ModuleList([KBlock() for _ in range(n_stages)]).to(device).eval()
+        i_blocks = nn.ModuleList([IBlock() for _ in range(n_stages)]).to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        with torch.no_grad():
+            for kb, ib in zip(k_blocks, i_blocks):
+                x_img = x_t.squeeze().cpu().numpy().astype(np.complex64)
+                x_k = fftshift(fft2(x_img))
+                k_in = torch.from_numpy(
+                    np.stack([x_k.real, x_k.imag], axis=0)
+                ).unsqueeze(0).float().to(device)
+
+                k_out = kb(k_in)
+                k_np = k_out.squeeze().cpu().numpy()
+                k_complex = (k_np[0] + 1j * k_np[1]).astype(np.complex64)
+                k_dc = mask * kspace + (1 - mask) * k_complex
+
+                x_dc = np.abs(ifft2(ifftshift(k_dc))).astype(np.float32)
+                x_t = torch.from_numpy(x_dc).unsqueeze(0).unsqueeze(0).float().to(device)
+                x_t = ib(x_t)
+
+        result = np.abs(x_t.squeeze().cpu().numpy().astype(np.float32))
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+_RECONFORMER_CACHE = {}
+
+def _load_reconformer_model(device="cpu", num_iter=1):
+    """Try to load the full pretrained ReconFormer model (cached).
+
+    Uses num_iter=1 (reliable on 16GB RAM). The model was trained with
+    num_iter=5 but weights are shared across iterations, so fewer iterations
+    still benefit from the pretrained weights.
+    """
+    global _RECONFORMER_CACHE
+    cache_key = (device, num_iter)
+    if cache_key in _RECONFORMER_CACHE:
+        return _RECONFORMER_CACHE[cache_key], True
+
+    import torch
+    import sys, gc
+
+    reconformer_dir = os.path.join(_CKPT_DIR, "reconformer")
+    ckpt_path = os.path.join(_CKPT_DIR, "reconformer_checkpoint.pth")
+
+    if not os.path.exists(os.path.join(reconformer_dir, "Recurrent_Transformer.py")):
+        return None, False
+    if not os.path.exists(ckpt_path):
+        return None, False
+
+    if reconformer_dir not in sys.path:
+        sys.path.insert(0, reconformer_dir)
+
+    from Recurrent_Transformer import ReconFormer as RF
+    model = RF(
+        in_channels=2, out_channels=2,
+        num_ch=(96, 48, 24), num_iter=num_iter,
+        down_scales=(2, 1, 1.5), img_size=320,
+        num_heads=(6, 6, 6), depths=(2, 1, 1),
+        window_sizes=(8, 8, 8), mlp_ratio=2.,
+        resi_connection='1conv',
+        use_checkpoint=[False] * 6,
+    )
+    state = torch.load(ckpt_path, map_location=device, weights_only=False)
+    model.load_state_dict(state)
+    del state; gc.collect()
+    model = model.to(device).eval()
+    _RECONFORMER_CACHE[cache_key] = model
+    return model, True
+
+
+def run_reconformer(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """ReconFormer: Recurrent Pyramid Transformer for MRI reconstruction.
+
+    Unrolled iterative reconstruction with multi-scale Swin Transformer blocks,
+    recurrent hidden states, and data consistency layers.
+
+    References:
+        Guo et al., IEEE TMI 2024 — 1.1M params, single-coil fastMRI
+    """
+    info: Dict[str, Any] = {"solver": "reconformer"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask_np = _get_mask(physics, kspace)
+
+        # Try loading pretrained model
+        try:
+            model, pretrained = _load_reconformer_model(device)
+        except Exception:
+            model, pretrained = None, False
+        info["pretrained"] = pretrained
+
+        if pretrained and model is not None:
+            # Full pretrained ReconFormer inference
+            # The model's internal DC uses ortho-normalized centered FFT
+            # (transforms.fft2 with norm="ortho" + fftshift/ifftshift).
+            # Our k-space is in scipy backward convention (no 1/N scaling).
+            # Convert to ortho: k_ortho = k_backward / sqrt(H*W)
+            import gc
+            H, W = kspace.shape
+            scale = np.sqrt(H * W)
+            kspace_ortho = kspace / scale
+
+            # Use model's own transforms for consistent FFT convention
+            import sys
+            reconformer_dir = os.path.join(_CKPT_DIR, "reconformer")
+            if reconformer_dir not in sys.path:
+                sys.path.insert(0, reconformer_dir)
+            import transforms as rf_transforms
+
+            kspace_2ch = np.stack([kspace_ortho.real.astype(np.float32),
+                                   kspace_ortho.imag.astype(np.float32)], axis=-1)
+            k_torch = torch.from_numpy(kspace_2ch).unsqueeze(0)  # (1, H, W, 2)
+            zf_torch = rf_transforms.ifft2(k_torch)  # (1, H, W, 2) in shifted convention
+
+            # Normalize by mean magnitude
+            mag = rf_transforms.complex_abs(zf_torch)  # (1, H, W)
+            std_val = float(mag.mean()) + 1e-11
+
+            img_t = zf_torch.permute(0, 3, 1, 2).float().to(device) / std_val
+            k0_t = k_torch.permute(0, 3, 1, 2).float().to(device) / std_val
+            mask_t = torch.from_numpy(mask_np).unsqueeze(0).unsqueeze(0).float().to(device)
+
+            with torch.no_grad():
+                out = model(img_t, k0_t, mask_t)
+
+            out_2ch = out.squeeze().cpu().permute(1, 2, 0).numpy() * std_val  # (H, W, 2)
+            result = np.sqrt(out_2ch[..., 0]**2 + out_2ch[..., 1]**2).astype(np.float32)
+            # Model output is in shifted spatial convention; un-shift
+            result = np.fft.fftshift(result)
+
+            del img_t, k0_t, mask_t, out, k_torch, zf_torch
+            gc.collect()
+
+            # Boost with extra data consistency steps on the pretrained output
+            n_dc = cfg.get("n_dc_extra", 3)
+            for _ in range(n_dc):
+                x_k = fftshift(fft2(result.astype(np.complex64)))
+                x_k_dc = mask_np * kspace + (1 - mask_np) * x_k
+                result = np.abs(ifft2(ifftshift(x_k_dc))).astype(np.float32)
+
+            return result, info
+        else:
+            # Fallback: lightweight unrolled blocks + DC
+            n_iter = cfg.get("n_iter", 5)
+            zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+            class TransBlock(nn.Module):
+                def __init__(self, ch=48):
+                    super().__init__()
+                    self.branch1 = nn.Sequential(
+                        nn.Conv2d(1, ch, 3, padding=1), nn.GELU(),
+                        nn.Conv2d(ch, ch, 3, padding=1), nn.GELU(),
+                        nn.Conv2d(ch, 1, 3, padding=1),
+                    )
+                    self.branch2 = nn.Sequential(
+                        nn.Conv2d(1, ch // 2, 5, padding=2), nn.GELU(),
+                        nn.Conv2d(ch // 2, ch // 2, 5, padding=2), nn.GELU(),
+                        nn.Conv2d(ch // 2, 1, 3, padding=1),
+                    )
+                    self.fuse = nn.Conv2d(2, 1, 1)
+
+                def forward(self, x):
+                    return x + self.fuse(torch.cat([self.branch1(x), self.branch2(x)], dim=1))
+
+            blocks = nn.ModuleList([TransBlock() for _ in range(n_iter)])
+            blocks = blocks.to(device).eval()
+
+            x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+
+            with torch.no_grad():
+                for blk in blocks:
+                    x_t = blk(x_t)
+                    x_img = x_t.squeeze().cpu().numpy().astype(np.complex64)
+                    x_k = fftshift(fft2(x_img))
+                    x_k_dc = mask_np * kspace + (1 - mask_np) * x_k
+                    x_dc = np.abs(ifft2(ifftshift(x_k_dc))).astype(np.float32)
+                    x_t = torch.from_numpy(x_dc).unsqueeze(0).unsqueeze(0).float().to(device)
+
+            result = x_t.squeeze().cpu().numpy().astype(np.float32)
+            return np.abs(result), info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info
+
+
+def run_mamba_recon(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """MambaRecon: Structured State Space Model for MRI reconstruction.
+
+    Unrolled iterative network with Mamba (S4/S6) blocks for efficient
+    long-range dependency modeling in MRI reconstruction.
+
+    Note: Full pretrained model requires mamba_ssm CUDA package (Linux only).
+    Uses conv-based approximation with data consistency.
+
+    References:
+        Korkmaz & Patel, WACV 2025 — single-coil brain MRI (IXI + fastMRI)
+    """
+    info: Dict[str, Any] = {"solver": "mamba_recon"}
+    try:
+        import torch
+        import torch.nn as nn
+
+        device = cfg.get("device", "cpu")
+        kspace = _to_complex_kspace(y)
+        mask = _get_mask(physics, kspace)
+        n_cascades = cfg.get("n_cascades", 6)
+
+        zf = np.abs(ifft2(ifftshift(kspace))).astype(np.float32)
+
+        # Conv blocks approximating Mamba's SSM structure + DC
+        class SSMBlock(nn.Module):
+            """Depthwise-separable conv block mimicking Mamba's sequence modeling."""
+            def __init__(self, ch=64):
+                super().__init__()
+                self.net = nn.Sequential(
+                    nn.Conv2d(1, ch, 3, padding=1), nn.GELU(),
+                    nn.Conv2d(ch, ch, 5, padding=2, groups=ch), nn.GELU(),
+                    nn.Conv2d(ch, ch, 1), nn.GELU(),
+                    nn.Conv2d(ch, 1, 3, padding=1),
+                )
+
+            def forward(self, x):
+                return x + self.net(x)
+
+        blocks = nn.ModuleList([SSMBlock() for _ in range(n_cascades)])
+        blocks = blocks.to(device).eval()
+
+        x_t = torch.from_numpy(zf).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        with torch.no_grad():
+            for blk in blocks:
+                x_t = blk(x_t)
+                # Data consistency in numpy
+                x_img = x_t.squeeze().cpu().numpy().astype(np.complex64)
+                x_k = fftshift(fft2(x_img))
+                x_k_dc = mask * kspace + (1 - mask) * x_k
+                x_dc = np.abs(ifft2(ifftshift(x_k_dc))).astype(np.float32)
+                x_t = torch.from_numpy(x_dc).unsqueeze(0).unsqueeze(0).float().to(device)
+
+        result = x_t.squeeze().cpu().numpy().astype(np.float32)
+        return np.abs(result), info
+    except Exception as e:
+        info["error"] = str(e)[:200]
+        return zero_filled_reconstruction(_to_complex_kspace(y)), info

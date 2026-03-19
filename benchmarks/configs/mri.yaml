@@ -41,13 +41,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: fastmri_knee
-  dataset_url: https://fastmri.med.nyu.edu/
+  dataset_id: brainweb_t1
+  dataset_url: https://brainweb.bic.mni.mcgill.ca/
   fallback: generated
-  synthetic_generator: shepp_logan
-  citation: 'Zbontar et al., fastMRI: An Open Dataset and Benchmarks for Accelerated
-    MRI, arXiv 2018'
-  license: fastMRI Dataset License
+  synthetic_generator: brainweb
+  citation: 'Collins et al., Design and construction of a realistic digital brain
+    phantom, IEEE TMI 1998; Protocol: Zbontar et al., fastMRI, arXiv 2018'
+  license: BrainWeb (academic use)
 mismatch_params:
 - name: Coil sensitivity error
   nominal: 0.0
@@ -306,6 +306,62 @@ solvers:
     params: {}
     gpu: true
     reference: Zhang & Ghanem, CVPR 2018
+  pnp_dncnn:
+    name: PnP-DnCNN
+    module: pwm_core.recon.mri_solvers
+    function: run_pnp_dncnn
+    params: {}
+    gpu: true
+    reference: Ahmad et al., IEEE SPM 2020; Zhang et al., TIP 2017
+  score_mri:
+    name: Score-MRI (diffusion)
+    module: pwm_core.recon.mri_solvers
+    function: run_score_mri
+    params: {}
+    gpu: true
+    reference: Chung & Ye, Med Image Anal 2022
+  cascade_net:
+    name: CascadeNet
+    module: pwm_core.recon.mri_solvers
+    function: run_cascade_net
+    params: {}
+    gpu: true
+    reference: Schlemper et al., IEEE TMI 2018
+  kt_sparse_sense:
+    name: k-t SPARSE-SENSE
+    module: pwm_core.recon.mri_solvers
+    function: run_kt_sparse_sense
+    params: {}
+    gpu: false
+    reference: Lustig et al., ISMRM 2006
+  smash:
+    name: SMASH
+    module: pwm_core.recon.mri_solvers
+    function: run_smash
+    params: {}
+    gpu: false
+    reference: Sodickson & Manning, MRM 1997
+  kiki_net:
+    name: KIKI-Net
+    module: pwm_core.recon.mri_solvers
+    function: run_kiki_net
+    params: {}
+    gpu: true
+    reference: Eo et al., MRM 2018
+  reconformer:
+    name: ReconFormer
+    module: pwm_core.recon.mri_solvers
+    function: run_reconformer
+    params: {}
+    gpu: true
+    reference: Guo et al., IEEE TMI 2024 — 40.1 dB on fastMRI knee 4x
+  mamba_recon:
+    name: MambaRecon
+    module: pwm_core.recon.mri_solvers
+    function: run_mamba_recon
+    params: {}
+    gpu: true
+    reference: Korkmaz & Patel, WACV 2025
 metrics:
   names:
   - psnr
@@ -317,8 +373,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Zbontar et al., fastMRI: An Open Dataset and Benchmarks for Accelerated
-      MRI, arXiv 2018'
+    reference: 'Collins et al., BrainWeb digital brain phantom, IEEE TMI 1998 (20
+      subjects, T1-weighted, 320x320, 4x Cartesian undersampling)'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / mri_graph_v1

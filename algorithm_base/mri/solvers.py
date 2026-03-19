@@ -259,6 +259,63 @@ SOLVERS = {
         "gpu": True,
         "reference": "Zhang & Ghanem, CVPR 2018",
     },
+    # ====== New solvers with pretrained checkpoints / classical ======
+    "pnp_dncnn": {
+        "name": "PnP-DnCNN",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_pnp_dncnn",
+        "gpu": True,
+        "reference": "Ahmad et al., IEEE SPM 2020; Zhang et al., TIP 2017",
+    },
+    "score_mri": {
+        "name": "Score-MRI (diffusion)",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_score_mri",
+        "gpu": True,
+        "reference": "Chung & Ye, Med Image Anal 2022",
+    },
+    "cascade_net": {
+        "name": "CascadeNet",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_cascade_net",
+        "gpu": True,
+        "reference": "Schlemper et al., IEEE TMI 2018",
+    },
+    "kt_sparse_sense": {
+        "name": "k-t SPARSE-SENSE",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_kt_sparse_sense",
+        "gpu": False,
+        "reference": "Lustig et al., ISMRM 2006",
+    },
+    "smash": {
+        "name": "SMASH",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_smash",
+        "gpu": False,
+        "reference": "Sodickson & Manning, MRM 1997",
+    },
+    "kiki_net": {
+        "name": "KIKI-Net",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_kiki_net",
+        "gpu": True,
+        "reference": "Eo et al., MRM 2018",
+    },
+    "reconformer": {
+        "name": "ReconFormer",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_reconformer",
+        "gpu": True,
+        "reference": "Guo et al., IEEE TMI 2024 — 40.1 dB on fastMRI knee 4x",
+    },
+    "mamba_recon": {
+        "name": "MambaRecon",
+        "module": "pwm_core.recon.mri_solvers",
+        "function": "run_mamba_recon",
+        "gpu": True,
+        "reference": "Korkmaz & Patel, WACV 2025",
+    },
 }
 
 
@@ -267,7 +324,7 @@ class MRIOperator:
 
     Single-coil Cartesian MRI with undersampling mask.
     """
-    def __init__(self, mask: np.ndarray, image_size: int = 256):
+    def __init__(self, mask: np.ndarray, image_size: int = 320):
         self.mask = mask.astype(np.float32)
         self.image_size = image_size
         self.x_shape = (image_size, image_size)

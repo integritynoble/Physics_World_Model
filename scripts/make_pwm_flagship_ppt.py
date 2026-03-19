@@ -3,6 +3,11 @@
 
 Title: Eleven Primitives and Three Gates: The Universal Structure of Computational Imaging
 Target: 40-minute talk for Prof. Xin Yuan's group at Westlake University
+
+Core message: 11 primitives + 3 gates = universal grammar for
+  (1) Validating existing imaging systems
+  (2) Correcting existing imaging systems
+  (3) Designing NEW imaging systems
 """
 
 import sys
@@ -10,9 +15,9 @@ if sys.platform == 'win32':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 from pptx import Presentation
-from pptx.util import Inches, Pt, Emu
+from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.enum.text import PP_ALIGN
 from pptx.enum.shapes import MSO_SHAPE
 from pathlib import Path
 
@@ -20,7 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "papers" / "pwm_flagship"
 FIG = OUT / "figures"
 
-# ── Color palette ─────────────────────────────────────────────────
+# ── Colors ────────────────────────────────────────────────────────
 WHITE   = RGBColor(0xFF, 0xFF, 0xFF)
 BLACK   = RGBColor(0x00, 0x00, 0x00)
 DARK    = RGBColor(0x1A, 0x1A, 0x2E)
@@ -30,10 +35,9 @@ GREEN   = RGBColor(0x3D, 0x9E, 0x3F)
 RED     = RGBColor(0xC9, 0x3C, 0x3C)
 PURPLE  = RGBColor(0x7B, 0x4E, 0xA3)
 GRAY    = RGBColor(0x6B, 0x6B, 0x6B)
-LTGRAY  = RGBColor(0xE8, 0xE8, 0xE8)
-GATE1   = RGBColor(0x4A, 0x90, 0xD9)  # blue
-GATE2   = RGBColor(0xE8, 0xA8, 0x38)  # amber
-GATE3   = RGBColor(0xD9, 0x4A, 0x4A)  # red
+GATE1   = RGBColor(0x4A, 0x90, 0xD9)
+GATE2   = RGBColor(0xE8, 0xA8, 0x38)
+GATE3   = RGBColor(0xD9, 0x4A, 0x4A)
 BG_DARK = RGBColor(0x0F, 0x17, 0x2A)
 BG_SLIDE = RGBColor(0xF5, 0xF7, 0xFA)
 
@@ -41,944 +45,866 @@ prs = Presentation()
 prs.slide_width = Inches(13.333)
 prs.slide_height = Inches(7.5)
 
-
-# ── Helper functions ──────────────────────────────────────────────
-def add_bg(slide, color=BG_SLIDE):
-    bg = slide.background
-    fill = bg.fill
-    fill.solid()
-    fill.fore_color.rgb = color
-
-def add_text_box(slide, left, top, width, height, text, font_size=18,
-                 bold=False, color=BLACK, align=PP_ALIGN.LEFT, font_name='Calibri'):
-    txBox = slide.shapes.add_textbox(Inches(left), Inches(top),
-                                     Inches(width), Inches(height))
-    tf = txBox.text_frame
-    tf.word_wrap = True
-    p = tf.paragraphs[0]
-    p.text = text
-    p.font.size = Pt(font_size)
-    p.font.bold = bold
-    p.font.color.rgb = color
-    p.font.name = font_name
-    p.alignment = align
-    return tf
-
-def add_bullet_slide(slide, left, top, width, height, items, font_size=18,
-                     color=BLACK, spacing=Pt(6)):
-    txBox = slide.shapes.add_textbox(Inches(left), Inches(top),
-                                     Inches(width), Inches(height))
-    tf = txBox.text_frame
-    tf.word_wrap = True
-    for i, item in enumerate(items):
-        if i == 0:
-            p = tf.paragraphs[0]
-        else:
-            p = tf.add_paragraph()
-        p.text = item
-        p.font.size = Pt(font_size)
-        p.font.color.rgb = color
-        p.font.name = 'Calibri'
-        p.space_after = spacing
-        p.level = 0
-    return tf
-
-def add_title_bar(slide, title, subtitle=None):
-    """Add a colored title bar at the top of a content slide."""
-    shape = slide.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0), Inches(0),
-        Inches(13.333), Inches(1.1))
-    shape.fill.solid()
-    shape.fill.fore_color.rgb = BLUE
-    shape.line.fill.background()
-    add_text_box(slide, 0.6, 0.15, 12, 0.7, title,
-                 font_size=32, bold=True, color=WHITE)
-    if subtitle:
-        add_text_box(slide, 0.6, 0.7, 12, 0.4, subtitle,
-                     font_size=16, color=RGBColor(0xCC, 0xDD, 0xFF))
-
-def add_section_slide(slide, section_title, section_number=None):
-    """Full-page section divider."""
-    add_bg(slide, DARK)
-    if section_number:
-        add_text_box(slide, 0.6, 2.0, 12, 0.8, section_number,
-                     font_size=24, color=GATE1, bold=False)
-    add_text_box(slide, 0.6, 2.7, 12, 1.5, section_title,
-                 font_size=48, bold=True, color=WHITE)
-
-def add_slide_number(slide, num, total):
-    add_text_box(slide, 12.3, 7.0, 1.0, 0.4, f"{num}/{total}",
-                 font_size=12, color=GRAY, align=PP_ALIGN.RIGHT)
-
-def new_slide():
-    return prs.slides.add_slide(prs.slide_layouts[6])  # blank
-
-
-# ── Total slide count for numbering ──────────────────────────────
-TOTAL = 30
+TOTAL = 32
 sn = 0
 
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 1: Title
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide, BG_DARK)
+# ── Helpers ───────────────────────────────────────────────────────
+def add_bg(slide, color=BG_SLIDE):
+    slide.background.fill.solid()
+    slide.background.fill.fore_color.rgb = color
 
-add_text_box(slide, 0.8, 1.0, 11.7, 1.5,
-             "Eleven Primitives and Three Gates:",
-             font_size=44, bold=True, color=WHITE)
-add_text_box(slide, 0.8, 2.0, 11.7, 1.0,
-             "The Universal Structure of Computational Imaging",
-             font_size=40, bold=True, color=GATE1)
+def tb(slide, l, t, w, h, text, sz=18, bold=False, color=BLACK, align=PP_ALIGN.LEFT, fn='Calibri'):
+    box = slide.shapes.add_textbox(Inches(l), Inches(t), Inches(w), Inches(h))
+    tf = box.text_frame; tf.word_wrap = True
+    p = tf.paragraphs[0]; p.text = text
+    p.font.size = Pt(sz); p.font.bold = bold; p.font.color.rgb = color
+    p.font.name = fn; p.alignment = align
+    return tf
 
-add_text_box(slide, 0.8, 3.5, 11.7, 0.5,
-             "Chengshuai Yang, David J. Brady, Xin Yuan",
-             font_size=24, color=RGBColor(0xBB, 0xBB, 0xBB))
-add_text_box(slide, 0.8, 4.2, 11.7, 0.8,
-             "NextGen PlatformAI C Corp  |  University of Arizona  |  Westlake University",
-             font_size=18, color=GRAY)
+def bullets(slide, l, t, w, h, items, sz=18, color=BLACK, sp=Pt(6)):
+    box = slide.shapes.add_textbox(Inches(l), Inches(t), Inches(w), Inches(h))
+    tf = box.text_frame; tf.word_wrap = True
+    for i, item in enumerate(items):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.text = item; p.font.size = Pt(sz); p.font.color.rgb = color
+        p.font.name = 'Calibri'; p.space_after = sp
+    return tf
 
-add_text_box(slide, 0.8, 5.5, 11.7, 0.5,
-             "Talk for Prof. Yuan's Group  |  March 2026",
-             font_size=18, color=GRAY)
-add_slide_number(slide, sn, TOTAL)
+def title_bar(slide, title, subtitle=None):
+    s = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(1.1))
+    s.fill.solid(); s.fill.fore_color.rgb = BLUE; s.line.fill.background()
+    tb(slide, 0.6, 0.15, 12, 0.7, title, sz=32, bold=True, color=WHITE)
+    if subtitle:
+        tb(slide, 0.6, 0.7, 12, 0.4, subtitle, sz=16, color=RGBColor(0xCC, 0xDD, 0xFF))
+
+def section_slide(slide, title, part=None):
+    add_bg(slide, DARK)
+    if part:
+        tb(slide, 0.6, 2.0, 12, 0.8, part, sz=24, color=GATE1)
+    tb(slide, 0.6, 2.7, 12, 1.5, title, sz=48, bold=True, color=WHITE)
+
+def snum(slide):
+    tb(slide, 12.3, 7.0, 1.0, 0.4, f"{sn}/{TOTAL}", sz=12, color=GRAY, align=PP_ALIGN.RIGHT)
+
+def box(slide, l, t, w, h, fill_rgb, line_rgb):
+    s = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(l), Inches(t), Inches(w), Inches(h))
+    s.fill.solid(); s.fill.fore_color.rgb = fill_rgb; s.line.color.rgb = line_rgb
+    return s
+
+def new_slide():
+    return prs.slides.add_slide(prs.slide_layouts[6])
+
+def pic(slide, name, l, t, w, h):
+    p = FIG / name
+    if p.exists():
+        slide.shapes.add_picture(str(p), Inches(l), Inches(t), Inches(w), Inches(h))
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 2: Outline
+# 1: TITLE
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Talk Outline", "~40 minutes")
-items = [
-    "1.  Motivation: Why do reconstruction algorithms fail on real instruments?",
-    "2.  Key Idea: 11 primitives + 3 gates = universal grammar",
-    "3.  The Finite Primitive Basis Theorem (Theorem 1)",
-    "      - OperatorGraph representation",
-    "      - 11 canonical primitives",
-    "      - Basis-growth saturation",
-    "4.  The Triad Decomposition (Theorem 2)",
-    "      - Three gates: Recoverability, Carrier Budget, Operator Mismatch",
-    "      - Four-Scenario evaluation protocol",
-    "5.  Experimental Validation (12 modalities, 5 carrier families)",
-    "      - CASSI deep dive + hardware validation",
-    "      - Cross-carrier results: CT, MRI, cryo-EM, ultrasound",
-    "6.  Discussion and Future Directions",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=20, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s, BG_DARK)
+tb(s, 0.8, 1.0, 11.7, 1.5, "Eleven Primitives and Three Gates:", sz=44, bold=True, color=WHITE)
+tb(s, 0.8, 2.0, 11.7, 1.0, "The Universal Structure of Computational Imaging", sz=40, bold=True, color=GATE1)
+tb(s, 0.8, 3.5, 11.7, 0.5, "Chengshuai Yang, David J. Brady, Xin Yuan", sz=24, color=RGBColor(0xBB,0xBB,0xBB))
+tb(s, 0.8, 4.2, 11.7, 0.8, "NextGen PlatformAI  |  University of Arizona  |  Westlake University", sz=18, color=GRAY)
+# Three pillars
+box(s, 1.5, 5.3, 3.0, 0.9, RGBColor(0x1E,0x3A,0x5F), GATE1)
+tb(s, 1.5, 5.35, 3.0, 0.8, "DIAGNOSE", sz=26, bold=True, color=GATE1, align=PP_ALIGN.CENTER)
+box(s, 5.2, 5.3, 3.0, 0.9, RGBColor(0x3A,0x1E,0x1E), GATE3)
+tb(s, 5.2, 5.35, 3.0, 0.8, "CORRECT", sz=26, bold=True, color=GATE3, align=PP_ALIGN.CENTER)
+box(s, 8.9, 5.3, 3.0, 0.9, RGBColor(0x1E,0x3A,0x1E), GREEN)
+tb(s, 8.9, 5.35, 3.0, 0.8, "DESIGN NEW", sz=26, bold=True, color=GREEN, align=PP_ALIGN.CENTER)
+tb(s, 0.8, 6.5, 11.7, 0.5, "Talk for Prof. Yuan's Group  |  March 2026", sz=18, color=GRAY)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 3: Motivation - The Problem
+# 2: OUTLINE
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "The Problem: Silent Reconstruction Failure")
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Talk Outline", "~40 minutes")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
+    "1.  Motivation: Why do real systems fail? How to design new ones? (5 min)",
+    "2.  Our Answer: 11 Primitives + 3 Gates (5 min)",
+    "3.  The Finite Primitive Basis (Theorem 1) (7 min)",
+    "      OperatorGraph, 11 primitives, DAG examples, basis saturation",
+    "4.  The Triad Decomposition (Theorem 2) (5 min)",
+    "      Three gates, lifecycle prediction, four-scenario protocol",
+    "5.  Application 1: DIAGNOSE existing systems (3 min)",
+    "6.  Application 2: CORRECT existing systems (5 min)",
+    "      CASSI deep dive, cross-carrier results (+0.8 to +13.9 dB)",
+    "7.  Application 3: DESIGN NEW systems (7 min)",
+    "      Gates as design specs, primitive composition, design exploration",
+    "8.  Discussion and Future Directions (3 min)",
+], sz=19, color=DARK)
+snum(s)
 
-items = [
-    "Computational imaging has made enormous progress in algorithms:",
-    "  - Compressed sensing, Plug-and-Play, deep unrolling, vision transformers...",
+# ══════════════════════════════════════════════════════════════════
+# 3: THE PROBLEM
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Motivation: Two Open Problems in Computational Imaging")
+
+# Left column: Why do real systems fail?
+box(s, 0.4, 1.3, 6.0, 5.0, RGBColor(0xFA,0xE8,0xE8), GATE3)
+tb(s, 0.6, 1.35, 5.6, 0.5, "Problem 1: Why Do Real Systems Fail?", sz=20, bold=True, color=GATE3)
+bullets(s, 0.6, 1.85, 5.6, 4.3, [
+    "Algorithms keep advancing: CS -> PnP -> Unrolling -> Transformers",
+    "Yet they routinely fail on deployed systems.",
     "",
-    "But algorithms routinely fail on deployed instruments.",
+    "Root cause: forward model mismatch (H_nom != H_true)",
+    "Solver faithfully solves the WRONG problem.",
     "",
-    "The root cause is often NOT the algorithm --- it's the forward model.",
+    "Failures are silent, systematic, universal.",
+    "Per-modality calibration exists but NO universal framework.",
+], sz=15, color=DARK, sp=Pt(4))
+
+# Right column: How to design new systems?
+box(s, 6.9, 1.3, 6.0, 5.0, RGBColor(0xE0,0xFA,0xE0), GREEN)
+tb(s, 7.1, 1.35, 5.6, 0.5, "Problem 2: How to Design New Systems?", sz=20, bold=True, color=GREEN)
+bullets(s, 7.1, 1.85, 5.6, 4.3, [
+    "Designing a new system is an open-ended, intuition-driven search.",
+    "No common language across modalities (CT, MRI, CASSI...).",
     "",
-    "When the assumed operator H_nom differs from the true physics H_true,",
-    "the solver faithfully solves the WRONG problem.",
+    "Key unknowns at design time:",
+    "  - How many measurements are enough?",
+    "  - What photon budget is needed?",
+    "  - How precise must calibration be?",
+    "No way to evaluate BEFORE hardware fabrication.",
+], sz=15, color=DARK, sp=Pt(4))
+
+# Bottom: Our answer
+box(s, 0.4, 6.5, 12.5, 0.6, RGBColor(0xE0,0xEE,0xFA), BLUE)
+tb(s, 0.6, 6.55, 12.1, 0.5, "Our answer: 11 Primitives + 3 Gates = universal grammar to DIAGNOSE, CORRECT, and DESIGN NEW", sz=19, bold=True, color=BLUE, align=PP_ALIGN.CENTER)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 4: DIVERSE SYSTEMS
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Diverse Systems, Hidden Universality")
+bullets(s, 0.8, 1.4, 5.8, 5.5, [
+    "5 carrier families:",
+    "  - Optical photons (CASSI, CACTI, SPC...)",
+    "  - X-ray photons (CT, CBCT)",
+    "  - Electrons (ptychography, cryo-EM)",
+    "  - Nuclear spins (MRI)",
+    "  - Acoustic waves (ultrasound)",
     "",
-    "This failure is silent and systematic:",
-    "  - Produces structured artifacts that mimic signal content",
-    "  - Practitioners blame the solver, not the model",
-    "  - No general framework to diagnose or fix it",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=20, color=DARK)
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 4: Motivation - Diversity vs. Universality
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Diverse Systems, Shared Structure")
-
-items = [
-    "A coded-aperture camera, an MRI scanner, and a cryo-electron microscope",
-    "  appear to share nothing: different carriers, geometries, detectors.",
+    "All share the same pipeline:",
+    "  source -> propagation -> interaction",
+    "       -> encoding -> detection",
     "",
-    "Yet each converts a physical scene into measurements by composing",
-    "  a small chain of transformations:",
-    "     propagation  ->  interaction  ->  encoding  ->  detection",
+    "This universality is NOT accidental.",
+    "It reflects the finite structure of",
+    "physical measurement processes.",
+], sz=18, color=DARK)
+bullets(s, 7.0, 1.4, 5.8, 5.5, [
+    "Three fundamental questions:",
     "",
-    "Key insight: This universality is not accidental --- it reflects the",
-    "finite structure of physical measurement processes.",
+    "Q1: What are the minimal building",
+    "    blocks of imaging physics?",
+    "    --> 11 Primitives",
     "",
-    "Question: Can we formalize this?",
-    "  - What are the minimal building blocks?",
-    "  - Why do reconstructions fail, and how to diagnose them?",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=20, color=DARK)
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 5: Big Picture / Overview
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Our Answer: 11 Primitives + 3 Gates", "A universal grammar for computational imaging")
-
-# Two boxes side by side
-# Left: Theorem 1
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.5),
-    Inches(5.5), Inches(2.8))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xE8, 0xF0, 0xFE)
-shape.line.color.rgb = BLUE
-add_text_box(slide, 1.1, 1.6, 5.0, 0.5,
-             "Theorem 1: Finite Primitive Basis",
-             font_size=22, bold=True, color=BLUE)
-items1 = [
-    "Every imaging forward model decomposes",
-    "into a DAG over exactly 11 primitives.",
+    "Q2: Why do reconstructions fail?",
+    "    --> 3 Gates (exhaustive diagnosis)",
     "",
-    "Sufficient + Minimal basis.",
-    "Covers all 5 carrier families.",
-    "170 modalities validated.",
-]
-add_bullet_slide(slide, 1.1, 2.2, 5.0, 2.0, items1, font_size=17, color=DARK)
+    "Q3: Can we use this to design",
+    "    NEW imaging systems?",
+    "    --> YES: compositional design",
+    "    from primitives + gate constraints",
+], sz=18, color=DARK)
+snum(s)
 
-# Right: Theorem 2
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.5),
-    Inches(5.7), Inches(2.8))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xFE, 0xF0, 0xE8)
-shape.line.color.rgb = ORANGE
-add_text_box(slide, 7.1, 1.6, 5.2, 0.5,
-             "Theorem 2: Triad Decomposition",
-             font_size=22, bold=True, color=ORANGE)
-items2 = [
-    "Every reconstruction failure has exactly",
-    "3 independent root causes (gates):",
+# ══════════════════════════════════════════════════════════════════
+# 5: BIG PICTURE - 3 PILLARS
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Our Answer: A Universal Grammar for Computational Imaging")
+
+# Three pillar boxes
+# DIAGNOSE
+box(s, 0.5, 1.4, 3.8, 3.5, RGBColor(0xE0,0xEE,0xFA), GATE1)
+tb(s, 0.7, 1.5, 3.4, 0.4, "DIAGNOSE", sz=24, bold=True, color=GATE1, align=PP_ALIGN.CENTER)
+bullets(s, 0.7, 2.0, 3.4, 2.7, [
+    "Existing Instruments",
     "",
-    "Gate 1: Information deficiency",
-    "Gate 2: Carrier noise",
-    "Gate 3: Operator mismatch",
-]
-add_bullet_slide(slide, 7.1, 2.2, 5.2, 2.0, items2, font_size=17, color=DARK)
+    "Triad diagnoses the",
+    "dominant failure gate:",
+    " - Gate 1: not enough info?",
+    " - Gate 2: too much noise?",
+    " - Gate 3: wrong model?",
+    "",
+    "Tells you WHERE the dB",
+    "are hiding.",
+], sz=14, color=DARK, sp=Pt(2))
 
-# Bottom: Impact
-items3 = [
-    "Together: a compositional language for designing, diagnosing, and correcting ANY imaging system.",
-    "Validation: 12 modalities, 5 carrier families, +0.8 to +13.9 dB recovery on real instruments.",
-]
-add_bullet_slide(slide, 0.8, 4.7, 11.7, 2.0, items3, font_size=20, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+# CORRECT
+box(s, 4.8, 1.4, 3.8, 3.5, RGBColor(0xFA,0xE0,0xE0), GATE3)
+tb(s, 5.0, 1.5, 3.4, 0.4, "CORRECT", sz=24, bold=True, color=GATE3, align=PP_ALIGN.CENTER)
+bullets(s, 5.0, 2.0, 3.4, 2.7, [
+    "Existing Instruments",
+    "",
+    "Solver-agnostic correction:",
+    "fix the operator, not solver.",
+    "",
+    "Any solver benefits without",
+    "retraining:",
+    " GAP-TV, MST-L, HDNet...",
+    "",
+    "+0.8 to +13.9 dB recovery",
+    "across 5 carrier families.",
+], sz=14, color=DARK, sp=Pt(2))
+
+# DESIGN NEW
+box(s, 9.1, 1.4, 3.8, 3.5, RGBColor(0xE0,0xFA,0xE0), GREEN)
+tb(s, 9.3, 1.5, 3.4, 0.4, "DESIGN NEW", sz=24, bold=True, color=GREEN, align=PP_ALIGN.CENTER)
+bullets(s, 9.3, 2.0, 3.4, 2.7, [
+    "New Instruments",
+    "",
+    "Compositional design language:",
+    "select primitives, connect DAG,",
+    "evaluate gates BEFORE building.",
+    "",
+    "Gate 1: min sampling density",
+    "Gate 2: min carrier budget",
+    "Gate 3: max calibration error",
+    "",
+    "From task to hardware specs.",
+], sz=14, color=DARK, sp=Pt(2))
+
+# Foundation
+box(s, 0.5, 5.2, 12.4, 1.8, RGBColor(0xF0,0xF0,0xF8), BLUE)
+tb(s, 0.8, 5.3, 5.5, 0.4, "Theorem 1: Finite Primitive Basis", sz=20, bold=True, color=BLUE)
+bullets(s, 0.8, 5.7, 5.5, 1.2, [
+    "Every forward model = DAG over 11 primitives",
+    "Sufficient, minimal, covers 170 modalities",
+], sz=16, color=DARK, sp=Pt(2))
+tb(s, 7.0, 5.3, 5.5, 0.4, "Theorem 2: Triad Decomposition", sz=20, bold=True, color=ORANGE)
+bullets(s, 7.0, 5.7, 5.5, 1.2, [
+    "Every failure = G1 + G2 + G3 (exhaustive)",
+    "Gate 3 dominant in deployed systems (14/14)",
+], sz=16, color=DARK, sp=Pt(2))
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 6: Figure 1 - Overview
+# 6: Figure 1
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 1: The Universal Grammar of Computational Imaging")
-if (FIG / "fig1_overview.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig1_overview.png"),
-        Inches(0.5), Inches(1.3), Inches(12.3), Inches(5.8))
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 1: Universal Grammar --- Validate, Correct, and Design New")
+pic(s, "fig1_overview.png", 0.5, 1.3, 12.3, 5.8)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 7: Section Divider - Finite Primitive Basis
+# 7: SECTION - Finite Primitive Basis
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_section_slide(slide, "The Finite Primitive Basis", "PART I")
-add_text_box(slide, 0.6, 4.0, 12, 1.0,
-             "Every imaging forward model decomposes into a DAG over exactly 11 primitives",
-             font_size=22, color=GRAY)
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide()
+section_slide(s, "The Finite Primitive Basis", "THEOREM 1")
+tb(s, 0.6, 4.0, 12, 1.0, "Every imaging forward model decomposes into a DAG over exactly 11 primitives", sz=22, color=GRAY)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 8: OperatorGraph
+# 8: OperatorGraph
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "The OperatorGraph Representation")
-
-items = [
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "The OperatorGraph Intermediate Representation")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
     "Every imaging forward model encoded as a typed DAG:",
     "  - Each node wraps a single primitive physical operator",
     "  - Edges define data flow from source to detector",
+    "  - Each edge carries tensor shape + dtype metadata (static validation)",
     "",
-    "Every primitive implements:",
+    "Every linear primitive implements:",
     "  - forward(x) -> y    (physics simulation)",
-    "  - adjoint(y) -> x    (validated: <Hx,y> = <x,H*y>)",
+    "  - adjoint(y) -> x    (validated: <Hx,y> = <x,H*y> to delta < 10^-6)",
     "",
-    "Key properties:",
-    "  - Adjoint consistency: randomized dot-product test, delta < 10^-6",
+    "Mathematical safety rails (NOT a neural network):",
+    "  - Adjoint consistency: physical energy accounting certificate",
     "  - Lipschitz bounds: nonlinear primitives restricted to 5 canonical families",
-    "  - Not a universal approximator (unlike neural networks)",
+    "  - Not a universal approximator --> falsifiable, interpretable, certifiable",
     "",
-    "This makes reconstruction both interpretable and certifiable.",
+    "If a new modality can't be represented --> extension protocol fires",
+    "(This is how Scatter R was discovered when Compton imaging gave e=0.34)",
+], sz=19, color=DARK)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 9: 11 Primitives
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "The 11 Canonical Primitives")
+prims = [
+    "  #    Primitive       Notation            Physical Action",
+    "  1    Propagate       P(d, lambda)         Free-space wave propagation",
+    "  2    Modulate        M(m)                Element-wise multiplication (mask, coil)",
+    "  3    Project         Pi(theta)            Radon line-integral projection",
+    "  4    Encode          F(k)                Fourier-domain encoding (k-space)",
+    "  5    Convolve        C(h)                Spatial convolution (PSF)",
+    "  6    Accumulate      Sigma               Sum over spectral/temporal axis",
+    "  7    Detect          D(g, eta)            Detector response (5 families)",
+    "  8    Sample          S(Omega)            Sub-sampling on index set",
+    "  9    Disperse        W(alpha, a)          Wavelength-dependent shift",
+    " 10    Scatter         R(sigma, dE)         Direction change / energy shift",
+    " 11    Transform       Lambda(f, theta)     Pointwise nonlinear physics",
 ]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=19, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+tb(s, 0.5, 1.3, 12.3, 0.5, prims[0], sz=16, bold=True, color=BLUE, fn='Consolas')
+bullets(s, 0.5, 1.8, 12.3, 4.0, prims[1:], sz=15, color=DARK, sp=Pt(2))
+# Key points
+bullets(s, 0.5, 5.4, 12.3, 2.0, [
+    "6 physics-stage families: propagation, elastic interaction, inelastic interaction (scatter),",
+    "   pointwise nonlinear, encoding-projection, detection-readout",
+    "Minimal basis: removing any primitive leaves >= 1 modality with error > epsilon",
+    "Covers 170 modalities across 5 carrier families + particle beams (neutron, proton, muon CT)",
+], sz=15, color=GRAY, sp=Pt(2))
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 9: The 11 Primitives
+# 10: Figure 2
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "The 11 Canonical Primitives")
-
-# Table header
-header = "  #    Primitive       Notation          Physical Action"
-primitives = [
-    "  1    Propagate       P(d, lambda)       Free-space wave propagation",
-    "  2    Modulate        M(m)              Element-wise multiplication (mask, coil, absorption)",
-    "  3    Project         Pi(theta)          Radon line-integral projection",
-    "  4    Encode          F(k)              Fourier-domain encoding (k-space)",
-    "  5    Convolve        C(h)              Spatial convolution (PSF)",
-    "  6    Accumulate      Sigma             Summation over spectral/temporal axis",
-    "  7    Detect          D(g, eta)          Detector response (5 canonical families)",
-    "  8    Sample          S(Omega)          Sub-sampling on index set",
-    "  9    Disperse        W(alpha, a)        Wavelength-dependent spatial shift",
-    " 10    Scatter         R(sigma, dE)       Direction change and/or energy shift",
-    " 11    Transform       Lambda(f, theta)   Pointwise nonlinear physics operation",
-]
-
-tf = add_text_box(slide, 0.5, 1.3, 12.3, 0.5, header,
-                  font_size=16, bold=True, color=BLUE, font_name='Consolas')
-add_bullet_slide(slide, 0.5, 1.8, 12.3, 5.0, primitives,
-                 font_size=15, color=DARK, spacing=Pt(2))
-
-items_bottom = [
-    "9 linear primitives (have adjoint) + 2 nonlinear (Detect, Transform)",
-    "Detect: 5 families (linear-field, log, sigmoid, intensity |x|^2, coherent) -- max 2 params each",
-    "Transform: 5 families (Beer-Lambert, log, phase wrap, polynomial, saturation) -- bounded Lipschitz",
-]
-add_bullet_slide(slide, 0.5, 5.8, 12.3, 1.5, items_bottom,
-                 font_size=15, color=GRAY, spacing=Pt(2))
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 2: OperatorGraph DAGs, Fidelity Ladder, Basis Growth")
+pic(s, "fig2_operatorgraph.png", 0.5, 1.3, 12.3, 5.8)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 10: Figure 2 - OperatorGraph Examples
+# 11: DAG Examples
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 2: OperatorGraph DAGs + Fidelity Ladder + Basis Growth")
-if (FIG / "fig2_operatorgraph.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig2_operatorgraph.png"),
-        Inches(0.5), Inches(1.3), Inches(12.3), Inches(5.8))
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 11: DAG Examples
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Example DAG Decompositions")
-
-examples = [
-    "CASSI (photon):       M -> W -> Sigma -> D         (4 nodes, depth 4)",
-    "    mask * disperse * sum_spectral * detect",
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "DAG Decompositions: Same Language, Every Carrier")
+bullets(s, 0.8, 1.3, 6.0, 5.5, [
+    "Optical photons:",
+    "  CASSI:  M -> W -> Sigma -> D",
+    "  CACTI:  M -> Sigma -> D",
+    "  SPC:    M -> Sigma -> D",
+    "  Lensless: C -> D",
     "",
-    "CT (X-ray):           Pi -> D                       (2 nodes, depth 2)",
-    "    radon_project * detect",
+    "X-ray photons:",
+    "  CT:     Pi -> D",
+    "  CBCT:   Pi -> D",
     "",
-    "MRI (nuclear spin):   M -> F -> S -> D              (4 nodes, depth 4)",
-    "    coil_modulate * fourier_encode * k-space_sample * detect",
+    "Electrons:",
+    "  Ptycho: M -> P -> D",
+    "  Cryo:   P -> Lambda -> D",
+], sz=18, color=DARK)
+bullets(s, 7.0, 1.3, 5.8, 5.5, [
+    "Nuclear spins:",
+    "  MRI:    M -> F -> S -> D",
     "",
-    "Ptychography (e-):    M -> P -> D                   (3 nodes, depth 3)",
-    "    probe_modulate * fresnel_propagate * detect",
+    "Acoustic waves:",
+    "  US:     P -> Sigma -> D",
     "",
-    "Ultrasound:           P -> Sigma -> D               (3 nodes, depth 3)",
-    "    wave_propagate * delay_sum * detect",
+    "Exotic / held-out (frozen library):",
+    "  Ghost imaging: M -> Sigma -> D",
+    "  THz-TDS: C -> D_coh",
+    "  Compton: M -> R -> D",
+    "  DOT:    M -> R o P o R -> D",
     "",
-    "Median: 3 nodes, depth 3.  Max observed: 5 nodes, depth 5.",
-    "Theoretical bounds: N_max = 20, D_max = 10 (very conservative).",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, examples, font_size=17, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+    "Median: 3 nodes, depth 3",
+    "All e_img < 0.01 (1% relative error)",
+], sz=18, color=DARK)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 12: Theorem Statement
+# 12: Basis saturation
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Theorem 1: Finite Primitive Basis")
-
-# Theorem box
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(1.5),
-    Inches(11.3), Inches(2.5))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xE8, 0xF0, 0xFE)
-shape.line.color.rgb = BLUE
-
-items_thm = [
-    "For every H in C_img (the imaging operator class),",
-    "there exists a typed DAG G with nodes from B = {P, M, Pi, F, C, Sigma, D, S, W, R, Lambda}",
-    "that is an epsilon-approximate representation of H.",
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Basis-Growth Saturation: K=11 Suffices for N=170")
+pic(s, "fig9_basis_growth.png", 0.5, 1.3, 6.0, 5.5)
+bullets(s, 7.0, 1.4, 5.5, 5.5, [
+    "K=11 at N=35 modalities",
+    "No new primitive needed for",
+    "next 135 modalities!",
     "",
-    "The library B has exactly 11 elements and is minimal:",
-    "removing any primitive leaves at least one modality with error > epsilon.",
-]
-add_bullet_slide(slide, 1.3, 1.6, 10.7, 2.2, items_thm, font_size=20, color=DARK)
-
-items_proof = [
-    "Proof sketch:",
-    "  1. H = H_K ... H_1 with K <= N_max stages",
-    "  2. Each stage classified into 6 physics families",
-    "  3. Each family mapped to 1-2 primitives",
-    "  4. Linear composition: sub-multiplicative error ||H - H_G|| <= K * max(eps_k) * B^(K-1)",
-    "  5. Nonlinear: Lipschitz bound ||H(x) - H_G(x)|| <= sum eps_k * prod gamma_j",
-    "",
-    "Minimality: 8 primitives strictly necessary; 3 more needed under complexity bounds.",
-    "Witness modality for each removal (e.g., without Pi, CT has e_img >> 0.01).",
-]
-add_bullet_slide(slide, 0.8, 4.3, 11.7, 3.0, items_proof, font_size=17, color=DARK)
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 13: Decomposition Table
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Decomposition Results: All e_img < 0.01")
-
-items = [
-    "Full-validation modalities (12 with 4-scenario correction):",
-    "  CASSI (photon):      M->W->Sigma->D        e < 10^-4",
-    "  CACTI (photon):      M->Sigma->D            e < 10^-4",
-    "  CT (X-ray):          Pi->D                   e < 10^-5",
-    "  MRI (spin):          M->F->S->D              e < 10^-6",
-    "  Ptychography (e-):   M->P->D                 e = 4.2x10^-4",
-    "  + 7 more modalities (lensless, SPC, fluorescence, holography, CBCT, cryo-EM, ultrasound)",
-    "",
-    "Held-out modalities (frozen library, 0 new primitives):",
-    "  OCT, photoacoustic, SIM, phase-contrast X-ray, electron ptychography",
-    "  All pass: e_img < 0.01",
-    "",
-    "Exotic modalities:",
-    "  Ghost imaging, THz-TDS, Compton*, Raman, fluorescence, DOT, Brillouin",
-    "  *Compton triggered extension protocol: e=0.34 without Scatter R -> e<0.01 with R",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=17, color=DARK)
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 14: Basis Saturation
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Basis-Growth Saturation: K=11 Suffices")
-
-if (FIG / "fig9_basis_growth.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig9_basis_growth.png"),
-        Inches(1.0), Inches(1.5), Inches(5.5), Inches(5.0))
-
-items = [
-    "9 of 11 primitives introduced by",
-    "  first 10 modalities",
-    "",
-    "K = 11 at N = 35 modalities",
-    "No new primitive for next 135",
-    "",
-    "Sublinear, saturating growth:",
-    "  New modalities compose existing",
-    "  primitives rather than requiring",
-    "  new ones",
+    "Including particle-beam probes:",
+    "  Neutron CT, Proton CT,",
+    "  Muon tomography",
+    "  --> 0 new primitives",
     "",
     "Consistent with theorem:",
-    "  Once all 6 physics-stage families",
-    "  are covered, basis is complete.",
-]
-add_bullet_slide(slide, 7.0, 1.4, 5.5, 5.5, items, font_size=18, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+    "  Once all 6 physics-stage",
+    "  families are covered,",
+    "  basis is complete.",
+    "",
+    "New modality = new combination",
+    "of existing primitives.",
+], sz=18, color=DARK)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 15: Section Divider - Triad
+# 13: SECTION - Triad
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_section_slide(slide, "The Triad Decomposition", "PART II")
-add_text_box(slide, 0.6, 4.0, 12, 1.0,
-             "Every reconstruction failure has exactly 3 independent root causes",
-             font_size=22, color=GRAY)
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide()
+section_slide(s, "The Triad Decomposition", "THEOREM 2")
+tb(s, 0.6, 4.0, 12, 1.0, "Every reconstruction failure has exactly 3 independent root causes", sz=22, color=GRAY)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 16: Why Exactly 3 Gates
+# 14: Three Gates
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Why Exactly Three Gates?")
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Three Gates: Exhaustive Failure Decomposition")
 
-items = [
-    "The reconstruction pipeline has exactly 3 inputs:",
-    "",
-    "  1. A sensing geometry H  -->  determines what information is captured",
-    "  2. A physical carrier      -->  determines the noise floor",
-    "  3. A forward model H_nom  -->  what the solver inverts",
-    "",
-    "Any reconstruction error must trace to one of these:",
-    "",
-    "  Gate 1: Information never captured (null space of H)",
-    "  Gate 2: Information captured but corrupted (carrier noise)",
-    "  Gate 3: Information captured but misinterpreted (H_nom != H_true)",
-    "",
-    "This trichotomy is exhaustive:",
-    "  MSE <= MSE^(G1) + MSE^(G2) + MSE^(G3)     (no residual term)",
-    "",
-    "Solver suboptimality is subsumed by Gate 3 (solver's implicit model).",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=19, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+# G1
+box(s, 0.5, 1.3, 3.8, 2.5, RGBColor(0xE0,0xEE,0xFA), GATE1)
+tb(s, 0.7, 1.4, 3.4, 0.4, "Gate 1: Recoverability", sz=20, bold=True, color=GATE1)
+bullets(s, 0.7, 1.9, 3.4, 1.8, [
+    "Is enough information captured?",
+    "Compression ratio gamma = m/n",
+    "Null space --> lost forever",
+    "Fix: more measurements",
+    "Lifecycle: DESIGN stage",
+], sz=14, color=DARK, sp=Pt(2))
 
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 17: Three Gates Details
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "The Three Gates in Detail")
-
-# Gate 1 box
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.5), Inches(1.3),
-    Inches(4.0), Inches(2.5))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xE0, 0xEE, 0xFA)
-shape.line.color.rgb = GATE1
-add_text_box(slide, 0.7, 1.4, 3.6, 0.4,
-             "Gate 1: Recoverability", font_size=20, bold=True, color=GATE1)
-items_g1 = [
-    "Is enough information",
-    "captured?",
-    "",
-    "Compression ratio gamma=m/n",
-    "Null space dimension",
-    "PSNR ceiling from theory",
-    "Fix: acquire more data",
-]
-add_bullet_slide(slide, 0.7, 1.9, 3.6, 1.8, items_g1, font_size=14, color=DARK, spacing=Pt(2))
-
-# Gate 2 box
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.7), Inches(1.3),
-    Inches(4.0), Inches(2.5))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xFA, 0xF0, 0xE0)
-shape.line.color.rgb = GATE2
-add_text_box(slide, 4.9, 1.4, 3.6, 0.4,
-             "Gate 2: Carrier Budget", font_size=20, bold=True, color=GATE2)
-items_g2 = [
+# G2
+box(s, 4.8, 1.3, 3.8, 2.5, RGBColor(0xFA,0xF0,0xE0), GATE2)
+tb(s, 5.0, 1.4, 3.4, 0.4, "Gate 2: Carrier Budget", sz=20, bold=True, color=GATE2)
+bullets(s, 5.0, 1.9, 3.4, 1.8, [
     "Is the SNR sufficient?",
-    "",
-    "Shot noise (photon counting)",
-    "Thermal noise (electronic)",
-    "T1/T2 relaxation (MRI)",
-    "Fix: source/detector",
-    "      improvement",
-]
-add_bullet_slide(slide, 4.9, 1.9, 3.6, 1.8, items_g2, font_size=14, color=DARK, spacing=Pt(2))
+    "Shot noise, thermal, T1/T2",
+    "Noise corrupts information",
+    "Fix: source/detector upgrade",
+    "Lifecycle: DESIGN stage",
+], sz=14, color=DARK, sp=Pt(2))
 
-# Gate 3 box
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(8.9), Inches(1.3),
-    Inches(4.0), Inches(2.5))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xFA, 0xE0, 0xE0)
-shape.line.color.rgb = GATE3
-add_text_box(slide, 9.1, 1.4, 3.6, 0.4,
-             "Gate 3: Operator Mismatch", font_size=20, bold=True, color=GATE3)
-items_g3 = [
+# G3
+box(s, 9.1, 1.3, 3.8, 2.5, RGBColor(0xFA,0xE0,0xE0), GATE3)
+tb(s, 9.3, 1.4, 3.4, 0.4, "Gate 3: Operator Mismatch", sz=20, bold=True, color=GATE3)
+bullets(s, 9.3, 1.9, 3.4, 1.8, [
     "Does H_nom match H_true?",
-    "",
-    "Geometric misalignment",
-    "Parameter drift",
-    "Model simplification",
-    "Fix: calibration /",
-    "      operator correction",
-]
-add_bullet_slide(slide, 9.1, 1.9, 3.6, 1.8, items_g3, font_size=14, color=DARK, spacing=Pt(2))
+    "Misalignment, drift, model error",
+    "Solver solves wrong problem",
+    "Fix: calibrate the operator",
+    "Lifecycle: DEPLOYMENT stage",
+], sz=14, color=DARK, sp=Pt(2))
 
-# Bottom: Key insight
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.5), Inches(4.2),
-    Inches(12.3), Inches(2.5))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xE8, 0xFE, 0xE8)
-shape.line.color.rgb = GREEN
-add_text_box(slide, 0.8, 4.3, 11.7, 0.4,
-             "Key Insight: Gate 3 dominates in well-designed instruments",
-             font_size=20, bold=True, color=GREEN)
-items_key = [
-    "Gates 1 & 2 are addressed at design time (sampling geometry, carrier selection).",
-    "Gate 3 (operator mismatch) is the deployment-stage bottleneck: 14/14 configurations show Gate 3 dominant.",
-    "This is why algorithms often fail on real instruments: the model is wrong, not the solver.",
-    "The Triad tells you WHERE the error is, and WHAT to fix.",
-]
-add_bullet_slide(slide, 0.8, 4.8, 11.7, 1.8, items_key, font_size=16, color=DARK, spacing=Pt(2))
-add_slide_number(slide, sn, TOTAL)
+# MSE decomposition
+box(s, 0.5, 4.1, 12.4, 1.0, RGBColor(0xF8,0xF8,0xFF), BLUE)
+tb(s, 0.8, 4.15, 11.8, 0.9,
+   "MSE  <=  MSE^(G1) + MSE^(G2) + MSE^(G3)    (exhaustive, no residual term)", sz=22, bold=True, color=DARK, align=PP_ALIGN.CENTER)
+
+# Lifecycle insight
+box(s, 0.5, 5.3, 12.4, 1.8, RGBColor(0xE8,0xFE,0xE8), GREEN)
+tb(s, 0.8, 5.35, 11.8, 0.4, "Lifecycle Prediction (confirmed: 14/14 configurations)", sz=20, bold=True, color=GREEN)
+bullets(s, 0.8, 5.8, 11.8, 1.2, [
+    "Design stage: Gates 1 & 2 are optimized (sampling geometry, carrier selection)",
+    "Deployment stage: Gate 3 (mismatch) is the residual bottleneck --- this is why algorithms fail!",
+    "The Triad tells you WHERE the dB are hiding, so effort targets the largest marginal return.",
+], sz=16, color=DARK, sp=Pt(2))
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 18: Figure 3 - Triad
+# 15: Figure 3 - Triad
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 3: Triad Decomposition Validated Across All Carriers")
-if (FIG / "fig3_triad.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig3_triad.png"),
-        Inches(0.5), Inches(1.3), Inches(12.3), Inches(5.8))
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 3: Triad Decomposition Validated Across All Carriers")
+pic(s, "fig3_triad.png", 0.5, 1.3, 12.3, 5.8)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 19: Four-Scenario Protocol
+# 16: 4-Scenario Protocol
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Evaluation: The Four-Scenario Protocol")
-
-items = [
-    "Every modality evaluated under 4 standardized scenarios:",
-    "",
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "The Four-Scenario Evaluation Protocol")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
     "  Scenario I  (Ideal):     y = H_true * x,  reconstruct with H_true",
-    "       --> Oracle upper bound. Best possible quality.",
+    "       --> Oracle upper bound. Best achievable quality.",
     "",
-    "  Scenario II (Mismatch):  y = H_true * x,  reconstruct with H_nom (H_nom != H_true)",
-    "       --> Standard operating condition. The model is WRONG.",
+    "  Scenario II (Mismatch):  y = H_true * x,  reconstruct with H_nom  (H_nom != H_true)",
+    "       --> Standard deployment condition. The model is WRONG.",
     "",
     "  Scenario III (Oracle):   Same y as Sc. II, reconstruct with H_true",
     "       --> Correction ceiling. What's achievable if you knew the truth.",
     "",
     "  Scenario IV (Corrected): Same y as Sc. II, reconstruct with H_hat (estimated)",
-    "       --> Our contribution. Autonomous calibration recovers quality.",
+    "       --> Our contribution. Autonomous calibration.",
     "",
-    "Recovery ratio: rho = (PSNR_IV - PSNR_II) / (PSNR_I - PSNR_II)",
-    "  rho=0: calibration useless.  rho=1: fully closes the gap.",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=18, color=DARK)
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 20: Section Divider - Results
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_section_slide(slide, "Experimental Results", "PART III")
-add_text_box(slide, 0.6, 4.0, 12, 1.0,
-             "12 modalities, 5 carrier families, +0.8 to +13.9 dB recovery",
-             font_size=22, color=GRAY)
-add_slide_number(slide, sn, TOTAL)
-
-# ══════════════════════════════════════════════════════════════════
-# SLIDE 21: Figure 4 - Correction Bar Chart
-# ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 4: Correction Results Across 14 Configurations")
-if (FIG / "fig4_correction_bar.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig4_correction_bar.png"),
-        Inches(0.3), Inches(1.3), Inches(6.0), Inches(5.5))
-
-items = [
-    "14 configurations across 5 carriers:",
+    "Recovery ratio:  rho = (PSNR_IV - PSNR_II) / (PSNR_I - PSNR_II)",
+    "  rho = 0: calibration useless.  rho = 1: fully closes the gap.",
     "",
-    "Optical photons:",
-    "  CASSI: +6.68 dB (10 scenes)",
-    "  CACTI: +4.37 dB (6 videos)",
-    "  SPC: +2.31 dB (11 images)",
+    "This protocol applies identically across ALL modalities and carriers.",
+], sz=18, color=DARK)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 17: SECTION - DIAGNOSE
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide()
+section_slide(s, "Application 1: DIAGNOSE", "EXISTING INSTRUMENTS")
+tb(s, 0.6, 4.0, 12, 1.0, "Diagnose the dominant failure gate before attempting any fix", sz=22, color=GRAY)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 18: Validate details
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Validation: Root-Cause Diagnosis Across 12 Modalities")
+bullets(s, 0.8, 1.3, 5.8, 5.5, [
+    "For every imaging configuration, the",
+    "Triad produces a TriadReport:",
+    "",
+    "  - dominant_gate (enum)",
+    "  - evidence_scores (3 floats)",
+    "  - confidence_interval (95% CI)",
+    "  - recommended_action (string)",
+    "  - parameter_sensitivities (dict)",
+    "",
+    "Result: Gate 3 dominant in 14/14!",
+    "",
+    "Falsifiable predictions confirmed:",
+    "  SPC: G1 at <5% compression",
+    "  MRI: G2 at noise sigma > 1%",
+    "  CT: pure G3 even at extremes",
+    "  US: G2-immune at 50% RF noise",
+], sz=17, color=DARK)
+bullets(s, 7.0, 1.3, 5.8, 5.5, [
+    "Cross-over thresholds:",
+    "",
+    "SPC: G1<->G3 at ~5% compression",
+    "  Below: more data helps most",
+    "  Above: fix the model instead",
+    "",
+    "MRI: G2<->G3 at sigma ~1%",
+    "  Sharpest transition in framework",
+    "  G3 dominated -> G2 dominated",
+    "  in one order of magnitude",
+    "",
+    "These thresholds convert",
+    "'is this design adequate?'",
+    "into quantitative pass/fail.",
+    "",
+    "8/12 predictions confirmed by",
+    "simulation or hardware data.",
+], sz=17, color=DARK)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 19: SECTION - CORRECT
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide()
+section_slide(s, "Application 2: CORRECT", "EXISTING INSTRUMENTS")
+tb(s, 0.6, 4.0, 12, 1.0, "Fix the operator, not the solver --- any solver benefits without retraining", sz=22, color=GRAY)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 20: Correction pipeline
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Solver-Agnostic Operator Correction")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
+    "Key insight: correct the forward model parameters, not the solver weights.",
+    "",
+    "Two-stage correction pipeline (when Gate 3 is dominant):",
+    "",
+    "  Algorithm 1: Hierarchical Beam Search (~300s/scene)",
+    "    1D sweeps -> 3D beam search -> 2D beam search -> coordinate descent",
+    "    Accuracy: +/-0.1-0.2 pixels",
+    "",
+    "  Algorithm 2: Joint Gradient Refinement (~3200s/scene)",
+    "    Differentiable forward model + Adam optimizer + multi-start restarts",
+    "    Accuracy: +/-0.05-0.1 pixels (3-5x improvement over Alg. 1)",
+    "",
+    "Critical property: SOLVER-AGNOSTIC",
+    "  The corrected operator H_hat benefits ANY downstream solver:",
+    "  TwIST, GAP-TV, DGSMP, MST-L, CST-L, HDNet, EfficientSCI...",
+    "  ALL improve without retraining!",
+    "",
+    "Better solvers + better operators = compounding gains.",
+], sz=18, color=DARK)
+snum(s)
+
+# ══════════════════════════════════════════════════════════════════
+# 21: Figure 4 - Correction results
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 4: Correction Results Across 14 Configurations, 5 Carriers")
+pic(s, "fig4_correction_bar.png", 0.3, 1.3, 6.0, 5.5)
+bullets(s, 6.5, 1.3, 6.3, 6.0, [
+    "Optical photons (6 modalities):",
+    "  CASSI:  +6.68 dB (10 scenes, MST-L)",
+    "  CACTI:  +4.37 dB (6 videos)",
+    "  SPC:    +2.31 dB (11 images)",
     "  Lensless: +13.9 dB",
     "  Holography: +7.41 dB",
     "  Fluorescence: +0.80 dB",
     "",
     "X-ray: CT +3.10 dB, CBCT +5.0 dB",
-    "Electron: Ptycho +6.77 dB, Cryo +2.4 dB",
-    "Spin: MRI +2.5 dB",
+    "Electrons: Ptycho +6.77, Cryo +2.4 dB",
+    "Spins: MRI +2.5 dB (ESPIRiT adopted)",
     "Acoustic: Ultrasound +1.8 dB",
     "",
-    "Gate 3 dominant in ALL 14/14 cases!",
-]
-add_bullet_slide(slide, 6.5, 1.3, 6.3, 6.0, items, font_size=16, color=DARK, spacing=Pt(2))
-add_slide_number(slide, sn, TOTAL)
+    "Gate 3 dominant in ALL 14/14!",
+    "Recovery ratio: 0.82-1.00",
+    "(82-100% of oracle ceiling)",
+], sz=16, color=DARK, sp=Pt(2))
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 22: CASSI Deep Dive
+# 22: CASSI deep dive
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "CASSI Deep Dive: Coded Aperture Spectral Imaging")
-
-items = [
-    "CASSI forward model:  M(mask) -> W(dispersion) -> Sigma(spectral sum) -> D(detect)",
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "CASSI Deep Dive: Prof. Yuan's SCI Framework")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
+    "CASSI DAG:  M(mask) -> W(dispersion) -> Sigma(spectral sum) -> D(detect)",
     "",
-    "5-parameter mismatch model:",
-    "  (dx, dy, theta, a1, alpha) = spatial shifts + rotation + dispersion slope + axis angle",
-    "  True values: dx=0.5 px, dy=0.3 px, theta=0.1 deg, a1=2.02, alpha=0.15 deg",
+    "5-parameter mismatch: (dx, dy, theta, a1, alpha)",
+    "  True: dx=0.5 px, dy=0.3 px, theta=0.1 deg, a1=2.02, alpha=0.15 deg",
     "",
-    "Correction algorithms:",
-    "  Algorithm 1: Hierarchical beam search (~300s/scene)",
-    "    1D sweeps -> 3D beam search -> 2D beam search -> coordinate descent",
-    "    Accuracy: +/-0.1-0.2 pixels",
+    "What happens when H_nom != H_true?",
+    "  A sub-pixel mask shift collapses ALL solvers to ~21 dB (from 24-35 dB)",
+    "  MST-L drops by 13.98 +/- 0.62 dB --- catastrophic and silent!",
     "",
-    "  Algorithm 2: Joint gradient refinement (~3200s/scene)",
-    "    Differentiable forward model + Adam optimizer + multi-start",
-    "    Accuracy: +/-0.05-0.1 pixels (3-5x improvement)",
+    "Correction recovers quality WITHOUT retraining any solver:",
+    "  GAP-TV:  Sc.II = 25.39 -> Sc.IV = 26.15 dB  (rho = 0.85)",
+    "  MST-L:   Sc.II = 21.05 -> Sc.IV = 27.73 dB  (rho = 0.46 for 5-param)",
     "",
-    "Both are SOLVER-AGNOSTIC: corrected operator benefits any downstream solver",
-    "  (TwIST, GAP-TV, DGSMP, MST-L, CST-L) without retraining!",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=17, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+    "Key finding for SCI community:",
+    "  The solver with highest ideal PSNR (MST-L) is MOST sensitive to mismatch!",
+    "  Solver quality and model fidelity are complementary, not redundant.",
+    "",
+    "Real-data validation: TSA scenes (5 scenes, 660x660, 28 bands) confirmed.",
+], sz=17, color=DARK)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 23: Figure 5 - CASSI Deep Dive + Hardware
+# 23: Figure 5 - CASSI
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 5: CASSI Results + Hardware Validation")
-if (FIG / "fig5_deepdive.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig5_deepdive.png"),
-        Inches(0.3), Inches(1.3), Inches(6.0), Inches(5.5))
-if (FIG / "fig5_hardware.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig5_hardware.png"),
-        Inches(6.5), Inches(1.3), Inches(6.3), Inches(5.5))
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 5: CASSI Results + Hardware Validation")
+pic(s, "fig5_deepdive.png", 0.3, 1.3, 6.2, 5.5)
+pic(s, "fig5_hardware.png", 6.7, 1.3, 6.2, 5.5)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 24: Cross-Carrier Validation
+# 24: Visual comparison
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Cross-Carrier Validation: 5 Carrier Families")
-
-items = [
-    "OPTICAL PHOTONS (6 modalities):",
-    "  CASSI:  Sc.II = 27.63 dB -> Sc.IV = 34.31 dB  (recovery ratio 0.95)",
-    "  CACTI:  +4.37 dB correction, EfficientSCI solver",
-    "  SPC:    3 compression ratios (10%, 25%, 50%), exponential gain drift",
-    "",
-    "X-RAY PHOTONS (2 modalities):",
-    "  CT: center-of-rotation offset correction, FBP + SART solvers",
-    "  CBCT: detector offset, 5 real images (LoDoPaB-CT, FIPS, HTC)",
-    "",
-    "ELECTRONS (2 modalities):",
-    "  Ptychography: probe position jitter correction via ePIE",
-    "  Cryo-EM: defocus error correction, CTF-based Wiener filtering",
-    "",
-    "NUCLEAR SPINS (1 modality):",
-    "  MRI: coil sensitivity error correction, ESPIRiT calibration adopted",
-    "",
-    "ACOUSTIC WAVES (1 modality):",
-    "  Ultrasound: speed-of-sound error correction, delay-and-sum beamforming",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=17, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 8: Visual Comparison Across All Scenarios")
+pic(s, "fig8_visual_comparison.png", 0.3, 1.3, 12.7, 5.8)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 25: Figure 6 - Zero-shot
+# 25: Cross-carrier
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 6: Cross-Carrier Zero-Shot Generalization")
-if (FIG / "fig6_zeroshot.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig6_zeroshot.png"),
-        Inches(1.0), Inches(1.3), Inches(11.0), Inches(5.8))
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Figure 6: Cross-Carrier Zero-Shot Generalization")
+pic(s, "fig6_zeroshot.png", 1.0, 1.3, 11.0, 5.8)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 26: Visual Comparison
+# 26: SECTION - DESIGN NEW
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Figure 8: Visual Comparison Across All Scenarios")
-if (FIG / "fig8_visual_comparison.png").exists():
-    slide.shapes.add_picture(
-        str(FIG / "fig8_visual_comparison.png"),
-        Inches(0.3), Inches(1.3), Inches(12.7), Inches(5.8))
-add_slide_number(slide, sn, TOTAL)
+sn += 1; s = new_slide()
+add_bg(s, BG_DARK)
+tb(s, 0.6, 1.5, 12, 0.8, "APPLICATION 3", sz=24, color=GREEN)
+tb(s, 0.6, 2.3, 12, 1.5, "Design NEW Imaging Systems", sz=48, bold=True, color=WHITE)
+tb(s, 0.6, 4.0, 12, 1.5,
+   "The 11 primitives provide a compositional design language.\n"
+   "The 3 gates provide quantitative design specifications.\n"
+   "Evaluate a candidate system BEFORE any hardware is fabricated.",
+   sz=22, color=GRAY)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 27: Solver-Agnostic Nature
+# 27: Gates as design specs
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Key Property: Solver-Agnostic Correction")
-
-items = [
-    "Critical distinction from previous work:",
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Gates as Quantitative Design Specifications")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
+    "The three gates, when INVERTED, yield design constraints:",
     "",
-    "  Traditional approach:  Fix the algorithm (better solver, more training data)",
-    "  Our approach:          Fix the operator (calibrate H_nom -> H_true)",
+    "  Gate 1 --> Minimum measurement budget",
+    "    Given target signal class + quality, what's the minimum compression ratio?",
+    "    Example: SPC needs gamma >= 5% (below: -7.1 dB irrecoverable loss)",
     "",
-    "The corrected operator benefits ANY downstream solver:",
-    "  - TwIST, GAP-TV (optimization-based)",
-    "  - DGSMP, MST-L, CST-L, HDNet (deep learning)",
-    "  - All improve without retraining!",
+    "  Gate 2 --> Minimum carrier budget",
+    "    What's the minimum photon flux / SNR for the solver to work?",
+    "    Example: MRI needs noise sigma < 1% (below: -11.7 dB, correction fails)",
     "",
-    "Why this matters:",
-    "  - Solver design and operator correction are orthogonal",
-    "  - Better solvers + better operators = compounding gains",
-    "  - One calibration serves the entire solver ecosystem",
+    "  Gate 3 --> Maximum tolerable calibration error",
+    "    How precisely must you calibrate for < 1 dB degradation?",
+    "    Example: CT center-of-rotation must be within ~2 px",
+    "    Example: CASSI mask alignment must be within < 0.25 px",
     "",
-    "Relationship to Prof. Yuan's SCI work:",
-    "  - The SCI framework unifies coded-aperture modalities",
-    "  - Our 11 primitives provide the structural explanation of why SCI works",
-    "  - Gate 3 analysis extends SCI to deployment-stage robustness",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=18, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+    "These convert 'is this design adequate?' into 3 quantitative pass/fail tests.",
+    "All derived from the primitive DAG --- no hardware needed!",
+], sz=18, color=DARK)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 28: Discussion
+# 28: Design by composition
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Discussion and Broader Impact")
-
-items = [
-    "What this paper establishes:",
-    "  1. Universal structure: 11 primitives cover 170+ modalities (all 5 carrier families)",
-    "  2. Complete diagnosis: 3 gates exhaust all root causes of reconstruction failure",
-    "  3. Actionable correction: +0.8 to +13.9 dB on 12 validated modalities",
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Design by Primitive Composition: A Worked Example")
+bullets(s, 0.8, 1.3, 11.7, 5.8, [
+    "Task: Design a snapshot compressive video imager (like CACTI).",
     "",
-    "Relationship to existing work:",
-    "  - Not a better solver: COMSOL/FEniCS solve single problems better",
-    "  - Complementary: fixes the operator so that ANY solver works better",
-    "  - Extends SCI (Yuan et al.) from optical to all 5 carrier families",
+    "Step 1: Compose primitives from the library:",
+    "  Select:  Modulate M (binary coded mask)  +  Accumulate Sigma (temporal sum)  +  Detect D",
+    "  DAG:     M -> Sigma -> D    (3 nodes, depth 3)",
     "",
-    "Generalization beyond imaging:",
-    "  - Seismology: wave propagation + attenuation + sensor response",
-    "  - Radio astronomy: aperture synthesis + ionospheric distortion + noise",
-    "  - Particle physics: interaction model + detector response + pile-up",
-    "  - All exhibit the same 3-gate failure structure",
+    "Step 2: Evaluate Gate 1 (Recoverability):",
+    "  At compression B=8, measurement matrix retains sufficient rank for ~27 dB (GAP-TV)",
     "",
-    "Limitation: formal proof in companion paper [yang2026fpt]",
-]
-add_bullet_slide(slide, 0.8, 1.4, 11.7, 5.5, items, font_size=18, color=DARK)
-add_slide_number(slide, sn, TOTAL)
+    "Step 3: Evaluate Gate 2 (Carrier Budget):",
+    "  Minimum ~5,000 peak photons per compressed frame for solver to work above noise floor",
+    "",
+    "Step 4: Evaluate Gate 3 (Calibration Tolerance):",
+    "  Mask alignment is dominant sensitivity: sub-pixel shift causes 13 dB degradation!",
+    "  Design spec: mask fabrication tolerance < 0.25 px",
+    "",
+    "Output: Complete design specification BEFORE building anything!",
+    "  - Min compression ratio, min photon budget, max alignment error",
+    "  - All derived from the primitive DAG + gate analysis",
+], sz=17, color=DARK)
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 29: Summary
+# 29: Systematic design exploration
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide)
-add_title_bar(slide, "Summary")
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Systematic Design Exploration: 170-Modality Registry")
+bullets(s, 0.8, 1.3, 5.8, 5.8, [
+    "The registry enables purpose-conditioned",
+    "system selection:",
+    "",
+    "Input: task requirements",
+    "  - Target resolution, bandwidth",
+    "  - Budget, sample constraints",
+    "  - Spectral range, frame rate...",
+    "",
+    "Output: ranked feasible architectures",
+    "  Each with 3-gate design specs",
+    "",
+    "Example: spectral imager for",
+    "precision agriculture",
+    "  - 400-1000 nm, >= 20 bands,",
+    "    >= 30 fps, field-portable",
+], sz=17, color=DARK)
+bullets(s, 7.0, 1.3, 5.8, 5.8, [
+    "Registry returns candidates:",
+    "",
+    "  1. CASSI (coded aperture)",
+    "     G1: min spatial*spectral density",
+    "     G2: min illumination for 30fps",
+    "     G3: mask alignment < 0.25 px",
+    "",
+    "  2. Mosaic filter sensor",
+    "     G3: filter registration accuracy",
+    "",
+    "  3. Filter wheel system",
+    "     G1: temporal sampling limit",
+    "",
+    "Gate-based specs enable quantitative",
+    "comparison across architecturally",
+    "distinct systems on common footing!",
+    "",
+    "From TASK -> HARDWARE TOLERANCES",
+], sz=17, color=DARK)
+snum(s)
 
-# Two highlight boxes
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.5), Inches(1.5),
-    Inches(6.0), Inches(2.0))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xE8, 0xF0, 0xFE)
-shape.line.color.rgb = BLUE
-items_s1 = [
-    "11 Primitives (Theorem 1):",
-    "  Every imaging forward model = DAG over 11 primitives",
-    "  Minimal, sufficient, covers 170 modalities",
-    "  Basis-growth saturates at K=11",
-]
-add_bullet_slide(slide, 0.7, 1.6, 5.6, 1.8, items_s1, font_size=17, color=DARK, spacing=Pt(2))
+# ══════════════════════════════════════════════════════════════════
+# 30: Implications for design
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Why This Changes How We Design Imaging Systems")
+bullets(s, 0.8, 1.4, 11.7, 5.5, [
+    "Before: imaging system design is an open-ended search.",
+    "  Intuition-driven, modality-specific, no cross-domain comparison.",
+    "",
+    "After: imaging system design is a COMBINATORIAL OPTIMIZATION over 11 typed primitives.",
+    "  Select primitives, connect DAG, evaluate 3 gates --> done.",
+    "",
+    "Directly relevant to:",
+    "  - Multi-scale camera architectures (Brady et al. 2012):",
+    "    Dozens of sub-apertures must be jointly calibrated --> Gate 3 tolerance analysis",
+    "  - Snapshot compressive imaging systems (Yuan et al. 2021):",
+    "    Measurement operator encodes the entire recovery problem --> Gate 1 + Gate 3",
+    "",
+    "For AI Scientists: not open-ended function approximation, but a FINITE search",
+    "  over 11 known primitives. Identify which subset is active + estimate parameters.",
+    "",
+    "Broader question: do other measurement domains (seismology, radio astronomy,",
+    "particle physics) admit similarly compact grammars?",
+], sz=18, color=DARK)
+snum(s)
 
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.5),
-    Inches(6.0), Inches(2.0))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xFE, 0xF0, 0xE8)
-shape.line.color.rgb = ORANGE
-items_s2 = [
-    "3 Gates (Theorem 2):",
-    "  Every failure = G1 (info) + G2 (noise) + G3 (mismatch)",
-    "  Gate 3 dominates in deployed instruments (14/14)",
-    "  Autonomous correction: +0.8 to +13.9 dB",
-]
-add_bullet_slide(slide, 7.0, 1.6, 5.6, 1.8, items_s2, font_size=17, color=DARK, spacing=Pt(2))
+# ══════════════════════════════════════════════════════════════════
+# 31: Summary
+# ══════════════════════════════════════════════════════════════════
+sn += 1; s = new_slide(); add_bg(s)
+title_bar(s, "Summary: The Universal Grammar of Computational Imaging")
+
+# Three pillar summary
+box(s, 0.5, 1.4, 3.8, 2.3, RGBColor(0xE0,0xEE,0xFA), GATE1)
+tb(s, 0.7, 1.45, 3.4, 0.4, "DIAGNOSE", sz=22, bold=True, color=GATE1, align=PP_ALIGN.CENTER)
+bullets(s, 0.7, 1.9, 3.4, 1.6, [
+    "Triad diagnoses root cause",
+    "Gate 3 dominant 14/14",
+    "Cross-over thresholds",
+    "8/12 predictions confirmed",
+], sz=14, color=DARK, sp=Pt(2))
+
+box(s, 4.8, 1.4, 3.8, 2.3, RGBColor(0xFA,0xE0,0xE0), GATE3)
+tb(s, 5.0, 1.45, 3.4, 0.4, "CORRECT", sz=22, bold=True, color=GATE3, align=PP_ALIGN.CENTER)
+bullets(s, 5.0, 1.9, 3.4, 1.6, [
+    "Solver-agnostic correction",
+    "+0.8 to +13.9 dB recovery",
+    "12 modalities, 5 carriers",
+    "82-100% of oracle ceiling",
+], sz=14, color=DARK, sp=Pt(2))
+
+box(s, 9.1, 1.4, 3.8, 2.3, RGBColor(0xE0,0xFA,0xE0), GREEN)
+tb(s, 9.3, 1.45, 3.4, 0.4, "DESIGN NEW", sz=22, bold=True, color=GREEN, align=PP_ALIGN.CENTER)
+bullets(s, 9.3, 1.9, 3.4, 1.6, [
+    "Compose from 11 primitives",
+    "3 gates = design specs",
+    "Evaluate before fabrication",
+    "170-modality registry",
+], sz=14, color=DARK, sp=Pt(2))
 
 # Key numbers
-shape = slide.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.5), Inches(3.8),
-    Inches(12.3), Inches(3.0))
-shape.fill.solid()
-shape.fill.fore_color.rgb = RGBColor(0xE8, 0xFE, 0xE8)
-shape.line.color.rgb = GREEN
-
-items_nums = [
-    "Key Numbers:",
-    "  - 11 primitives, minimal and sufficient",
-    "  - 3 gates, exhaustive decomposition (MSE = MSE_G1 + MSE_G2 + MSE_G3)",
-    "  - 170 modality templates, 5 carrier families",
-    "  - 12 modalities with full 4-scenario validation (including 2 Nobel Prize techniques)",
-    "  - +0.8 to +13.9 dB recovery on deployed instruments",
-    "  - Gate 3 dominant in 14/14 validated configurations (100%)",
-    "  - Solver-agnostic: one calibration benefits all downstream solvers",
+box(s, 0.5, 4.0, 12.4, 3.0, RGBColor(0xF0,0xF0,0xF8), BLUE)
+bullets(s, 0.8, 4.1, 11.8, 2.8, [
+    "11 primitives --- sufficient and minimal basis for every imaging forward model",
+    "3 gates --- exhaustive failure decomposition: MSE = MSE_G1 + MSE_G2 + MSE_G3",
+    "170 modality templates across 5 carrier families (+ particle beams)",
+    "12 modalities with full 4-scenario validation (2 Nobel Prize techniques, 3 clinical instruments)",
+    "+0.8 to +13.9 dB recovery on deployed instruments through operator correction alone",
+    "Solver-agnostic: one calibration benefits ALL downstream solvers",
+    "NEW: compositional design language turns system design into constrained DAG optimization",
     "",
-    "The first universal grammar for designing, diagnosing, and correcting",
-    "computational imaging systems.",
-]
-add_bullet_slide(slide, 0.7, 3.9, 11.9, 2.8, items_nums, font_size=18, color=DARK, spacing=Pt(2))
-add_slide_number(slide, sn, TOTAL)
+    "The first universal grammar for validating, correcting, and designing computational imaging systems.",
+], sz=17, color=DARK, sp=Pt(3))
+snum(s)
 
 # ══════════════════════════════════════════════════════════════════
-# SLIDE 30: Thank You
+# 32: Thank you
 # ══════════════════════════════════════════════════════════════════
-sn += 1
-slide = new_slide()
-add_bg(slide, BG_DARK)
+sn += 1; s = new_slide(); add_bg(s, BG_DARK)
+tb(s, 0.8, 1.8, 11.7, 1.0, "Thank You!", sz=56, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+tb(s, 0.8, 2.9, 11.7, 0.8, "Questions & Discussion", sz=32, color=GATE1, align=PP_ALIGN.CENTER)
 
-add_text_box(slide, 0.8, 2.0, 11.7, 1.0,
-             "Thank You!", font_size=56, bold=True, color=WHITE,
-             align=PP_ALIGN.CENTER)
-add_text_box(slide, 0.8, 3.2, 11.7, 0.8,
-             "Questions & Discussion",
-             font_size=32, color=GATE1, align=PP_ALIGN.CENTER)
+# Three pillars again
+box(s, 1.5, 4.0, 3.0, 0.7, RGBColor(0x1E,0x3A,0x5F), GATE1)
+tb(s, 1.5, 4.05, 3.0, 0.6, "DIAGNOSE", sz=22, bold=True, color=GATE1, align=PP_ALIGN.CENTER)
+box(s, 5.2, 4.0, 3.0, 0.7, RGBColor(0x3A,0x1E,0x1E), GATE3)
+tb(s, 5.2, 4.05, 3.0, 0.6, "CORRECT", sz=22, bold=True, color=GATE3, align=PP_ALIGN.CENTER)
+box(s, 8.9, 4.0, 3.0, 0.7, RGBColor(0x1E,0x3A,0x1E), GREEN)
+tb(s, 8.9, 4.05, 3.0, 0.6, "DESIGN NEW", sz=22, bold=True, color=GREEN, align=PP_ALIGN.CENTER)
 
-add_text_box(slide, 0.8, 4.5, 11.7, 0.5,
-             "Chengshuai Yang  |  integrityyang@gmail.com",
-             font_size=20, color=GRAY, align=PP_ALIGN.CENTER)
-add_text_box(slide, 0.8, 5.0, 11.7, 0.5,
-             "Code: github.com/integritynoble/Physics_World_Model",
-             font_size=18, color=GRAY, align=PP_ALIGN.CENTER)
-add_text_box(slide, 0.8, 5.5, 11.7, 0.5,
-             "Acknowledgments: Prof. David Brady (U. Arizona), Prof. Xin Yuan (Westlake)",
-             font_size=18, color=GRAY, align=PP_ALIGN.CENTER)
-add_slide_number(slide, sn, TOTAL)
+tb(s, 0.8, 5.2, 11.7, 0.5, "Chengshuai Yang  |  integrityyang@gmail.com", sz=20, color=GRAY, align=PP_ALIGN.CENTER)
+tb(s, 0.8, 5.7, 11.7, 0.5, "github.com/integritynoble/Physics_World_Model", sz=18, color=GRAY, align=PP_ALIGN.CENTER)
+tb(s, 0.8, 6.2, 11.7, 0.5, "Acknowledgments: Prof. David Brady (U. Arizona)  |  Prof. Xin Yuan (Westlake)", sz=18, color=GRAY, align=PP_ALIGN.CENTER)
+snum(s)
 
 # ── Save ──────────────────────────────────────────────────────────
-out_path = OUT / "talk_pwm_flagship.pptx"
-prs.save(str(out_path))
+out_path = OUT / "talk_pwm_flagship_new.pptx"
+for suffix in ["_new", "", "_v2", "_v3"]:
+    out_path = OUT / f"talk_pwm_flagship{suffix}.pptx"
+    try:
+        prs.save(str(out_path))
+        break
+    except PermissionError:
+        print(f"(Locked: {out_path.name})")
+        continue
 print(f"\nPresentation saved: {out_path}")
 print(f"Total slides: {sn}")
-print(f"Estimated duration: ~40 minutes (1.3 min/slide)")
