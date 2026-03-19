@@ -1051,22 +1051,51 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 
 ### 65. X-ray Computed Tomography (CT) (`ct`)
 
-Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, parallel beam). Verified on 2026-03-18.
+Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 512 detectors, parallel beam, 20 samples). 41 solvers registered. Verified on 2026-03-18.
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | LEARN | 2019 | Chen et al., TMI 2018 | 43.1 | — | — | — | — | yes |
-| 2 | Score-CT | 2022 | Song et al., ICLR 2022 | 43.0 | — | — | — | — | yes |
-| 3 | DuDoTrans | 2022 | Wang et al., MICCAI 2022 | 42.1 | — | — | — | — | yes |
-| 4 | FBP (1000 angles, noiseless) | 1971 | Ramachandran & Lakshminarayanan 1971 | 30.2 | 0.8200 | 41.02 | — | done | yes |
-| 5 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 38.5 | 0.9590 | — | — | — | yes |
-| 6 | iRadonMAP | 2019 | He et al., 2019 | 36.9 | 0.9420 | — | — | — | yes |
-| 7 | Learned Primal-Dual | 2018 | Adler & Oktem, TMI 2018 | 36.2 | 0.9590 | — | — | — | yes |
-| 8 | DOLCE | 2023 | Liu et al., 2023 | 36.0 | — | — | — | — | yes |
-| 9 | FBP + U-Net | 2021 | Leuschner et al. 2021 | 35.8 | 0.8440 | — | — | — | yes |
-| 10 | TV regularization | 2006 | Sidky et al., PMB 2006 | 33.4 | 0.9000 | — | — | — | yes |
-| 11 | RED-CNN | 2017 | Chen et al., TMI 2017 | 33.2 | 0.9150 | — | — | — | yes |
-| 12 | FBP + NLM (PWM) | — | Buades et al. 2005 | — | — | — | — | — | yes |
+| 1 | CT-FM | 2024 | Denker et al., 2024 | 44.1 | — | — | — | registered | yes |
+| 2 | DiffusionMBIR | 2023 | Chung & Ye, NeurIPS 2023 | 43.8 | — | — | — | registered | yes |
+| 3 | InDuDoNet | 2021 | Song et al., MICCAI 2021 | 43.5 | — | — | — | registered | yes |
+| 4 | DPS | 2023 | Chung et al., ICML 2023 | 43.2 | — | — | — | registered | yes |
+| 5 | LEARN | 2018 | Chen et al., TMI 2018 | 43.1 | — | — | — | registered | yes |
+| 6 | Score-CT | 2022 | Song et al., ICLR 2022 | 43.0 | — | — | — | registered | yes |
+| 7 | DuDoTrans | 2022 | Wang et al., MICCAI 2022 | 42.1 | — | — | — | registered | yes |
+| 8 | CTformer | 2023 | Wang et al., IEEE TMI 2023 | 40.8 | — | — | — | registered | yes |
+| 9 | DuDoNet | 2019 | Lin et al., CVPR 2019 | 40.2 | — | — | — | registered | yes |
+| 10 | PnP-ADMM (NLM) | 2013 | Venkatakrishnan et al. 2013 | 39.5 | — | — | — | done | yes |
+| 11 | PnP-HQS (NLM) | 2017 | Zhang et al. 2017 | 39.1 | — | — | — | done | yes |
+| 12 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 38.5 | — | — | — | registered | yes |
+| 13 | iRadonMAP | 2020 | He et al., MICCAI 2020 | 36.9 | — | — | — | registered | yes |
+| 14 | Learned Primal-Dual | 2018 | Adler & Oktem, TMI 2018 | 36.2 | — | — | — | registered | yes |
+| 15 | DOLCE | 2023 | Liu et al., 2023 | 36.0 | — | — | — | registered | yes |
+| 16 | FBP + U-Net | 2021 | Ronneberger et al. 2015 | 35.8 | — | — | — | registered | yes |
+| 17 | WGAN-VGG | 2018 | Yang et al., TMI 2018 | 34.1 | — | — | — | registered | yes |
+| 18 | RED-CNN | 2017 | Chen et al., TMI 2017 | 33.2 | — | 29.52 | — | done | yes |
+| 19 | CGLS | 1952 | Hestenes & Stiefel 1952 | 30.2 | — | 43.90 | — | done | yes |
+| 20 | SIRT | 1972 | Gilbert 1972 | 29.5 | — | 20.90 | — | done | yes |
+| 21 | SART | 1984 | Andersen & Kak 1984 | 29.1 | — | — | — | done | yes |
+| 22 | FBP + NLM | 2005 | Buades et al. 2005 | 28.5 | — | 40.10 | — | done | yes |
+| 23 | TV-ADMM | 2008 | Sidky & Pan 2008 | 27.8 | — | 44.07 | — | done | yes |
+| 24 | FBP (Ram-Lak) | 1971 | Ramachandran & Lakshminarayanan 1971 | 25.2 | — | 43.90 | — | done | yes |
+| 25 | FBP (Shepp-Logan) | 1974 | Shepp & Logan 1974 | — | — | 41.65 | — | done | yes |
+| 26 | FBP (Cosine) | — | Standard windowed FBP | — | — | 38.27 | — | done | yes |
+| 27 | FBP (Hamming) | — | Hamming-windowed FBP | — | — | 36.93 | — | done | yes |
+| 28 | FBP (Hann) | — | Hann-windowed FBP | — | — | 36.50 | — | done | yes |
+| 29 | FBP + BM3D | 2007 | Dabov et al. 2007 | — | — | 40.10 | — | done | yes |
+| 30 | FBP + Bilateral | 1998 | Tomasi & Manduchi 1998 | — | — | 36.10 | — | done | yes |
+| 31 | FBP + TV | 1992 | Rudin, Osher & Fatemi 1992 | — | — | 38.35 | — | done | yes |
+| 32 | Chambolle-Pock | 2011 | Chambolle & Pock 2011 | — | — | 44.06 | — | done | yes |
+| 33 | Tikhonov | 1963 | Tikhonov 1963 | — | — | 44.09 | — | done | yes |
+| 34 | MLEM | 1982 | Shepp & Vardi 1982 | — | — | 44.27 | — | done | yes |
+| 35 | OSEM | 1994 | Hudson & Larkin 1994 | — | — | — | — | done | yes |
+| 36 | Landweber | 1951 | Landweber 1951 | — | — | — | — | done | yes |
+| 37 | ART | 1970 | Gordon et al. 1970 | — | — | — | — | done | yes |
+| 38 | PnP-FISTA (NLM) | 2009 | Beck & Teboulle 2009 + PnP | — | — | — | — | done | yes |
+| 39 | PnP-ADMM (BM3D) | 2013 | Venkatakrishnan et al. 2013 + BM3D | — | — | — | — | done | yes |
+| 40 | FBP + Wavelet | 1995 | Donoho 1995 | — | — | 40.10 | — | done | yes |
+| 41 | FBP + U-Net (registered) | 2015 | Ronneberger et al. 2015 | — | — | — | — | registered | yes |
 
 ### 66. Dual-Energy X-ray Absorptiometry (DEXA) (`dexa`)
 
@@ -1289,41 +1318,41 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, pa
 | 14 | MMR-Mamba | 2025 | Med Image Anal 2025 | 41.0 | 0.9690 | — | — | no_ckpt | yes |
 | 15 | MRDynamo | 2024 | Dynamic MRI recon, 2024 | 40.5 | — | — | — | no_ckpt | yes |
 | 16 | E2E-VarNet | 2020 | Sriram et al., MICCAI 2020 | 40.5 | 0.9720 | 27.08 | 0.9535 | done | yes |
-| 17 | MambaRecon | 2025 | Korkmaz et al., WACV 2025 | 40.4 | — | — | — | no_ckpt | yes |
+| 17 | MambaRecon | 2025 | Korkmaz et al., WACV 2025 | 40.4 | — | 32.00 | 0.8514 | done | yes |
 | 18 | PAS-Mamba | 2026 | arXiv:2601.14530 | 40.4 | — | — | — | no_ckpt | yes |
 | 19 | MRI-DiffusionNet | 2024 | Diffusion-based recon, 2024 | 40.1 | — | — | — | no_ckpt | yes |
-| 20 | ReconFormer | 2023 | Guo et al., TMI 2024 | 40.1 | 0.9750 | — | — | no_ckpt | yes |
-| 21 | Score-MRI | 2022 | Chung & Ye, Med Image Anal 2022 | 39.0 | — | — | — | no_ckpt | yes |
+| 20 | ReconFormer | 2023 | Guo et al., TMI 2024 | 40.1 | 0.9750 | 31.83 | 0.8421 | done | yes |
+| 21 | Score-MRI | 2022 | Chung & Ye, Med Image Anal 2022 | 39.0 | — | 24.10 | 0.9227 | done | yes |
 | 22 | SwinMR | 2022 | Huang et al., Neurocomputing 2022 | 38.5 | 0.9210 | — | — | no_ckpt | yes |
 | 23 | HybridCascade | 2020 | Schlemper et al., 2020 | 37.8 | — | — | — | no_ckpt | yes |
 | 24 | HUMUS-Net | 2022 | Fabian et al., NeurIPS 2022 | 37.3 | 0.9500 | — | — | no_ckpt | yes |
-| 25 | MoDL | 2019 | Aggarwal et al., IEEE TMI 2019 | 36.0 | — | 25.83 | 0.9042 | done | yes |
+| 25 | MoDL | 2019 | Aggarwal et al., IEEE TMI 2019 | 36.0 | — | 25.51 | 0.8891 | done | yes |
 | 26 | U-Net (fastMRI) | 2018 | Zbontar et al., fastMRI 2018 | 36.0 | 0.9470 | 27.08 | 0.9535 | done | yes |
-| 27 | DC-CNN | 2018 | Schlemper et al., IEEE TMI 2018 | 35.5 | — | 20.24 | 0.5775 | done | yes |
-| 28 | Deep ADMM-Net | 2016 | Sun et al., NeurIPS 2016 | 35.3 | — | 14.87 | 0.0240 | done | yes |
-| 29 | PnP-DnCNN | 2020 | Ahmad et al., IEEE SPM 2020 | 35.0 | — | — | — | no_ckpt | yes |
-| 30 | CascadeNet | 2018 | Schlemper et al., 2018 | 35.0 | — | — | — | no_ckpt | yes |
-| 31 | ALOHA | 2015 | Jin & Ye, IEEE TIP 2015 | 34.5 | — | 12.36 | 0.2646 | done | yes |
-| 32 | KIKI-Net | 2018 | Eo et al., MRM 2018 | 34.5 | — | — | — | no_ckpt | yes |
-| 33 | ESPIRiT | 2014 | Uecker et al., MRM 2014 | 34.2 | — | 34.87 | 0.9941 | done | yes |
-| 34 | BM3D-MRI | 2016 | Eksioglu, IEEE SPL 2016 | 34.2 | — | 24.80 | 0.9005 | done | yes |
+| 27 | DC-CNN | 2018 | Schlemper et al., IEEE TMI 2018 | 35.5 | — | 22.13 | 0.6890 | done | yes |
+| 28 | Deep ADMM-Net | 2016 | Sun et al., NeurIPS 2016 | 35.3 | — | 14.64 | 0.0213 | done | yes |
+| 29 | PnP-DnCNN | 2020 | Ahmad et al., IEEE SPM 2020 | 35.0 | — | 32.62 | 0.9897 | done | yes |
+| 30 | CascadeNet | 2018 | Schlemper et al., 2018 | 35.0 | — | 31.54 | 0.9851 | done | yes |
+| 31 | ALOHA | 2015 | Jin & Ye, IEEE TIP 2015 | 34.5 | — | 12.31 | 0.2634 | done | yes |
+| 32 | KIKI-Net | 2018 | Eo et al., MRM 2018 | 34.5 | — | 26.10 | 0.8318 | done | yes |
+| 33 | ESPIRiT | 2014 | Uecker et al., MRM 2014 | 34.2 | — | 35.15 | 0.9943 | done | yes |
+| 34 | BM3D-MRI | 2016 | Eksioglu, IEEE SPL 2016 | 34.2 | — | 24.76 | 0.8997 | done | yes |
 | 35 | GRAPPA-like | 2002 | Griswold et al., MRM 2002 | 34.0 | 0.9200 | 26.98 | 0.9513 | done | yes |
-| 36 | SENSE | 1999 | Pruessmann et al., MRM 1999 | 34.0 | — | 34.87 | 0.9941 | done | yes |
+| 36 | SENSE | 1999 | Pruessmann et al., MRM 1999 | 34.0 | — | 35.15 | 0.9943 | done | yes |
 | 37 | LORAKS (Low-Rank) | 2014 | Haldar, IEEE TMI 2014 | 33.8 | — | 27.08 | 0.9535 | done | yes |
-| 38 | CS-MRI (Wavelet) | 2007 | Lustig et al., MRM 2007 | 33.0 | 0.9000 | 34.87 | 0.9941 | done | yes |
-| 39 | k-t SPARSE-SENSE | 2006 | Lustig et al., 2006 | 32.5 | — | — | — | no_ckpt | yes |
-| 40 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.5 | — | 18.48 | 0.5260 | done | yes |
-| 41 | FISTA | 2009 | Beck & Teboulle, SIAM 2009 | 32.1 | — | 37.92 | 0.9968 | done | yes |
+| 38 | CS-MRI (Wavelet) | 2007 | Lustig et al., MRM 2007 | 33.0 | 0.9000 | 35.15 | 0.9943 | done | yes |
+| 39 | k-t SPARSE-SENSE | 2006 | Lustig et al., 2006 | 32.5 | — | 34.28 | 0.9910 | done | yes |
+| 40 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.5 | — | 20.17 | 0.6148 | done | yes |
+| 41 | FISTA | 2009 | Beck & Teboulle, SIAM 2009 | 32.1 | — | 38.10 | 0.9969 | done | yes |
 | 42 | SPIRiT-like | 2010 | Lustig & Pauly, MRM 2010 | 30.0 | — | 27.07 | 0.9532 | done | yes |
 | 43 | Nuclear Norm (SVT) | 2010 | Cai et al., SIAM 2010 | 29.5 | — | 27.08 | 0.9535 | done | yes |
 | 44 | Zero-filled IFFT | 1973 | Lauterbur, Nature 1973 | 28.0 | 0.6400 | 27.08 | 0.9535 | done | yes |
 | 45 | Homodyne Detection | 1991 | Noll et al., IEEE TMI 1991 | 27.0 | — | 26.85 | 0.9404 | done | yes |
-| 46 | SMASH | 1997 | Sodickson & Manning, MRM 1997 | 26.0 | — | — | — | no_ckpt | yes |
-| 47 | ADMM | 2010 | Yang et al., MRM 2010 | — | — | 33.52 | 0.9921 | done | yes |
-| 48 | PnP-ADMM | 2013 | Venkatakrishnan et al., GlobalSIP 2013 | — | — | 29.15 | 0.9757 | done | yes |
-| 49 | ISTA | 2004 | Daubechies et al., Comm Pure Appl Math 2004 | — | — | 32.22 | 0.9895 | done | yes |
-| 50 | RED | 2017 | Romano et al., SIAM 2017 | — | — | 26.40 | 0.9418 | done | yes |
-| 51 | CS-MRI (TV) | 2007 | Block et al., MRM 2007 | — | — | 26.88 | 0.9499 | done | yes |
+| 46 | SMASH | 1997 | Sodickson & Manning, MRM 1997 | 26.0 | — | 24.47 | 0.9089 | done | yes |
+| 47 | ADMM | 2010 | Yang et al., MRM 2010 | — | — | 33.80 | 0.9925 | done | yes |
+| 48 | PnP-ADMM | 2013 | Venkatakrishnan et al., GlobalSIP 2013 | — | — | 29.31 | 0.9765 | done | yes |
+| 49 | ISTA | 2004 | Daubechies et al., Comm Pure Appl Math 2004 | — | — | 32.49 | 0.9900 | done | yes |
+| 50 | RED | 2017 | Romano et al., SIAM 2017 | — | — | 26.42 | 0.9419 | done | yes |
+| 51 | CS-MRI (TV) | 2007 | Block et al., MRM 2007 | — | — | 26.89 | 0.9500 | done | yes |
 | 52 | Dictionary Learning MRI | 2011 | Ravishankar & Bresler, IEEE TMI 2011 | — | — | 27.08 | 0.9535 | done | yes |
 | 53 | Landweber Iteration | 1951 | Landweber, Amer J Math 1951 | — | — | 27.08 | 0.9535 | done | yes |
 | 54 | Tikhonov Regularization | 1963 | Tikhonov, Soviet Math Dokl 1963 | — | — | 27.08 | 0.9545 | done | yes |
@@ -1333,7 +1362,7 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, pa
 | 58 | Conjugate Gradient | 2001 | Pruessmann et al., MRM 2001 | — | — | 27.08 | 0.9536 | done | yes |
 | 59 | Gradient Descent | 2010 | Fessler, IEEE SPM 2010 | — | — | 27.08 | 0.9536 | done | yes |
 | 60 | POCS | 1991 | Haacke et al., MRM 1991 | — | — | 27.08 | 0.9535 | done | yes |
-| 61 | MoDL (5 unrolls) | 2019 | Aggarwal et al., IEEE TMI 2019 | — | — | 25.66 | 0.8950 | done | yes |
+| 61 | MoDL (5 unrolls) | 2019 | Aggarwal et al., IEEE TMI 2019 | — | — | 25.54 | 0.8886 | done | yes |
 
 ### 82. MR Spectroscopy (MRS) (`mrs`)
 
