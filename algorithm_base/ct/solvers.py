@@ -54,7 +54,7 @@ class CTOperator:
 
     Uses skimage radon/iradon with parallel-beam geometry.
     """
-    def __init__(self, n_angles: int, n_detectors: int, output_size: int = 256):
+    def __init__(self, n_angles: int, n_detectors: int, output_size: int = 362):
         self.n_angles = n_angles
         self.n_detectors = n_detectors
         self.output_size = output_size
@@ -65,13 +65,13 @@ class CTOperator:
     def forward(self, x):
         from skimage.transform import radon
         x_2d = x.reshape(self.output_size, self.output_size)
-        sino = radon(x_2d, theta=self.angles_deg, circle=True)
+        sino = radon(x_2d, theta=self.angles_deg, circle=False)
         return sino.T.astype(np.float32)  # (n_angles, n_det)
 
     def adjoint(self, y):
         from skimage.transform import iradon
         y_2d = y.reshape(self.n_angles, self.n_detectors)
-        recon = iradon(y_2d.T, theta=self.angles_deg, circle=True,
+        recon = iradon(y_2d.T, theta=self.angles_deg, circle=False,
                        output_size=self.output_size, filter_name=None)
         return recon.astype(np.float32)
 

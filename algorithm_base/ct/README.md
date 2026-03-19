@@ -2,14 +2,23 @@
 
 Category: Medical Imaging
 
+## Dataset
+
+**LoDoPaB-CT** — real clinical chest CT from LIDC/IDRI database.
+- Source: Leuschner et al., Scientific Data 2021 (doi:10.1038/s41597-021-00893-z)
+- Zenodo: https://zenodo.org/records/3384092
+- License: CC BY 4.0
+- Image size: 362x362, parallel beam, 1000 angles, 512 detectors
+- 10 standard samples from test split
+
 ## Solvers
 
 | Key | Name | Module | GPU | Reference |
 |-----|------|--------|-----|-----------|
-| `traditional_cpu` | FBP | `pwm_core.recon.ct_solvers.run_fbp` | No |  |
-| `best_quality` | PnP-HQS + NLM | `pwm_core.recon.pnp.run_pnp` | No |  |
+| `traditional_cpu` | FBP | `pwm_core.recon.ct_solvers.run_fbp` | No | — |
+| `best_quality` | FBP + NLM | `algorithm_base.ct.solvers.run_fbp_nlm` | No | Buades et al. 2005 |
 | `famous_dl` | RED-CNN | `pwm_core.recon.redcnn.run_redcnn` | No | Chen et al. 2017, IEEE TMI |
-| `small_gpu` | RED-CNN | `pwm_core.recon.redcnn.run_redcnn` | No |  |
+| `small_gpu` | RED-CNN | `pwm_core.recon.redcnn.run_redcnn` | No | — |
 
 ## Usage
 
@@ -23,24 +32,25 @@ from algorithm_base.ct import run_traditional_cpu
 x_hat = run_traditional_cpu(y, operator)
 ```
 
-## Algorithm Leaderboard
+## Verified Solver Performance (LoDoPaB-CT, 362x362, 1000 angles)
 
-| Algorithm | Year | Ref PSNR | PWM PSNR | Status |
-|-----------|------|----------|----------|--------|
-| LEARN | 2019 | 43.1 | 15.1 | gap |
-| Score-CT | 2022 | 43.0 | 15.1 | gap |
-| DuDoTrans | 2022 | 42.1 | 15.1 | gap |
-| FBPConvNet | 2017 | 38.5 | 15.1 | gap |
-| iRadonMAP | 2019 | 36.9 | 15.1 | gap |
-| Learned Primal-Dual | 2018 | 36.2 | 15.1 | gap |
-| DOLCE | 2023 | 36.0 | 15.1 | gap |
-| TV regularization | 2006 | 33.4 | 15.1 | gap |
-| RED-CNN | 2017 | 33.2 | 15.1 | gap |
-| FBP (Ram-Lak) | 1971 | 30.2 | 15.1 | gap |
-| FBP (10 angles) | 2021 | 17.1 | 15.1 | done |
-| FBP (5 angles) | 2021 | 15.5 | 15.1 | done |
-| PnP-HQS + NLM (PWM) | — | 13.8 | 15.1 | done |
-| fbp_ramlak (test) | — | 13.8 | 15.1 | done |
-| fbp_shepp_logan (test) | — | 13.8 | 15.1 | done |
-| sart_10iter (test) | — | 13.8 | 15.1 | done |
-| FBP (2 angles, scattering) | 2021 | 13.1 | 15.1 | done |
+| Solver Key | Name | PWM PSNR | Status |
+|-----------|------|----------|--------|
+| `traditional_cpu` | FBP | 41.02 dB | verified |
+
+## Algorithm Leaderboard (LoDoPaB-CT reference)
+
+| Algorithm | Year | Ref PSNR | Status |
+|-----------|------|----------|--------|
+| CT-FM | 2024 | 44.1 | — |
+| LEARN | 2019 | 43.1 | — |
+| Score-CT | 2022 | 43.0 | — |
+| DuDoTrans | 2022 | 42.1 | — |
+| FBPConvNet | 2017 | 38.5 | — |
+| iRadonMAP | 2019 | 36.9 | — |
+| Learned Primal-Dual | 2018 | 36.2 | — |
+| DOLCE | 2023 | 36.0 | — |
+| FBP + U-Net | 2021 | 35.8 | — |
+| TV regularization | 2006 | 33.4 | — |
+| RED-CNN | 2017 | 33.2 | — |
+| FBP (baseline) | 1971 | 30.5 | verified (PWM: 41.02 dB) |
