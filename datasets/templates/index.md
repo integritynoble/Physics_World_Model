@@ -5,6 +5,242 @@ Each template covers: (1) Verify Standard Dataset, (2) List All Algorithms, (3) 
 
 ---
 
+## Implementation Tracking — 12 Flagship Paper Modalities
+
+Each algorithm must be implemented at least **5 times** (5 independent verification runs on the standard dataset).
+When all 5 runs are complete, the algorithm status is marked **done**.
+
+Progress: **0 / 131 algorithms done** | Last updated: 2026-03-19
+
+---
+
+### 1. CASSI — Coded Aperture Snapshot Spectral Imaging (`cassi`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | TwIST | — | — | — | — | — | pending |
+| 2 | GAP-TV | — | — | — | — | — | pending |
+| 3 | PnP-HSICNN | — | — | — | — | — | pending |
+| 4 | ADMM-Net | — | — | — | — | — | pending |
+| 5 | GAP-Net | — | — | — | — | — | pending |
+| 6 | Lambda-Net | — | — | — | — | — | pending |
+| 7 | TSA-Net | — | — | — | — | — | pending |
+| 8 | DGSMP | — | — | — | — | — | pending |
+| 9 | BIRNAT | — | — | — | — | — | pending |
+| 10 | BiSRNet | — | — | — | — | — | pending |
+| 11 | HDNet | — | — | — | — | — | pending |
+| 12 | MST-L | — | — | — | — | — | pending |
+| 13 | MST++ | — | — | — | — | — | pending |
+| 14 | CST-L-Plus | — | — | — | — | — | pending |
+| 15 | DAUHST-9stg | — | — | — | — | — | pending |
+| 16 | RDLUF-MixS2-9stg | — | — | — | — | — | pending |
+| 17 | SSR-L | — | — | — | — | — | pending |
+| 18 | PADUT-3stg | — | — | — | — | — | pending |
+| 19 | MiJUN-5stg | — | — | — | — | — | pending |
+
+---
+
+### 2. CACTI — Coded Aperture Compressive Temporal Imaging (`cacti`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | GAP-TV | — | — | — | — | — | pending |
+| 2 | PnP-FFDNet | — | — | — | — | — | pending |
+| 3 | EfficientSCI | — | — | — | — | — | pending |
+| 4 | EfficientSCI-T | — | — | — | — | — | pending |
+| 5 | ELP-Unfolding | — | — | — | — | — | pending |
+| 6 | HiSViT-9 | — | — | — | — | — | pending |
+| 7 | HiSViT-13 | — | — | — | — | — | pending |
+
+---
+
+### 3. SPC — Single-Pixel Camera (`spc`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | TVAL3 | — | — | — | — | — | pending |
+| 2 | ADMM-L1 | — | — | — | — | — | pending |
+| 3 | FISTA-L1 | — | — | — | — | — | pending |
+| 4 | ISTA-Net+ | — | — | — | — | — | pending |
+| 5 | HATNet | — | — | — | — | — | pending |
+
+---
+
+### 4. Lensless Imaging (`lensless`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | ADMM-TV | — | — | — | — | — | pending |
+| 2 | FlatNet | — | — | — | — | — | pending |
+| 3 | FlatNet-Lite | — | — | — | — | — | pending |
+
+---
+
+### 5. Digital Holographic Microscopy / Compressive Holography (`holography`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | Angular Spectrum | — | — | — | — | — | pending |
+| 2 | PhaseNet | — | — | — | — | — | pending |
+
+---
+
+### 6. Ptychographic Imaging / Electron Ptychography (`ptychography`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | ePIE | — | — | — | — | — | pending |
+| 2 | PtychoNN | — | — | — | — | — | pending |
+| 3 | PtychoNN 2.0 | — | — | — | — | — | pending |
+
+---
+
+### 7. CT — X-ray Computed Tomography (`ct`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | FBP (Ram-Lak) | — | — | — | — | — | pending |
+| 2 | FBP (Shepp-Logan) | — | — | — | — | — | pending |
+| 3 | FBP (Cosine) | — | — | — | — | — | pending |
+| 4 | FBP (Hamming) | — | — | — | — | — | pending |
+| 5 | FBP (Hann) | — | — | — | — | — | pending |
+| 6 | Landweber | — | — | — | — | — | pending |
+| 7 | ART | — | — | — | — | — | pending |
+| 8 | SIRT | — | — | — | — | — | pending |
+| 9 | CGLS | — | — | — | — | — | pending |
+| 10 | MLEM | — | — | — | — | — | pending |
+| 11 | SART | — | — | — | — | — | pending |
+| 12 | OSEM | — | — | — | — | — | pending |
+| 13 | Tikhonov | — | — | — | — | — | pending |
+| 14 | TV-ADMM | — | — | — | — | — | pending |
+| 15 | Chambolle-Pock | — | — | — | — | — | pending |
+| 16 | PnP-ADMM (NLM) | — | — | — | — | — | pending |
+| 17 | PnP-HQS (NLM) | — | — | — | — | — | pending |
+| 18 | PnP-FISTA (NLM) | — | — | — | — | — | pending |
+| 19 | PnP-ADMM (BM3D) | — | — | — | — | — | pending |
+| 20 | FBP + NLM | — | — | — | — | — | pending |
+| 21 | FBP + BM3D | — | — | — | — | — | pending |
+| 22 | FBP + Bilateral | — | — | — | — | — | pending |
+| 23 | FBP + Wavelet | — | — | — | — | — | pending |
+| 24 | FBP + TV | — | — | — | — | — | pending |
+| 25 | RED-CNN | — | — | — | — | — | pending |
+| 26 | FBPConvNet | — | — | — | — | — | pending |
+| 27 | WGAN-VGG | — | — | — | — | — | pending |
+| 28 | LEARN | — | — | — | — | — | pending |
+| 29 | Learned Primal-Dual | — | — | — | — | — | pending |
+| 30 | iRadonMAP | — | — | — | — | — | pending |
+| 31 | FBP + U-Net | — | — | — | — | — | pending |
+| 32 | DuDoNet | — | — | — | — | — | pending |
+| 33 | InDuDoNet | — | — | — | — | — | pending |
+| 34 | DuDoTrans | — | — | — | — | — | pending |
+| 35 | CTformer | — | — | — | — | — | pending |
+| 36 | Score-CT | — | — | — | — | — | pending |
+| 37 | DPS | — | — | — | — | — | pending |
+| 38 | DiffusionMBIR | — | — | — | — | — | pending |
+| 39 | DOLCE | — | — | — | — | — | pending |
+| 40 | CT-FM | — | — | — | — | — | pending |
+
+---
+
+### 8. CBCT — Cone-Beam CT (`cbct`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | FDK / FBP | — | — | — | — | — | pending |
+| 2 | FDK-DL | — | — | — | — | — | pending |
+| 3 | CBCT-UNet | — | — | — | — | — | pending |
+
+---
+
+### 9. Ultrasound B-mode (`ultrasound`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | Richardson-Lucy (ultrasound) | — | — | — | — | — | pending |
+| 2 | US-UNet (DeepUS) | — | — | — | — | — | pending |
+| 3 | US-CNN | — | — | — | — | — | pending |
+
+---
+
+### 10. Cryo-EM — Single-Particle Cryo-Electron Microscopy (`cryo_em`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | Adjoint | — | — | — | — | — | pending |
+| 2 | PnP-ADMM | — | — | — | — | — | pending |
+| 3 | CryoDRGN | — | — | — | — | — | pending |
+
+---
+
+### 11. MRI — Magnetic Resonance Imaging (`mri`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | Zero-Filled IFFT | — | — | — | — | — | pending |
+| 2 | CS-MRI (Wavelet) | — | — | — | — | — | pending |
+| 3 | CS-MRI (TV) | — | — | — | — | — | pending |
+| 4 | SENSE | — | — | — | — | — | pending |
+| 5 | ESPIRiT | — | — | — | — | — | pending |
+| 6 | POCS | — | — | — | — | — | pending |
+| 7 | ADMM | — | — | — | — | — | pending |
+| 8 | Conjugate Gradient | — | — | — | — | — | pending |
+| 9 | Truncated IFFT | — | — | — | — | — | pending |
+| 10 | Gradient Descent | — | — | — | — | — | pending |
+| 11 | Split Bregman | — | — | — | — | — | pending |
+| 12 | GRAPPA-like | — | — | — | — | — | pending |
+| 13 | ISTA | — | — | — | — | — | pending |
+| 14 | FISTA | — | — | — | — | — | pending |
+| 15 | Landweber Iteration | — | — | — | — | — | pending |
+| 16 | Tikhonov Regularization | — | — | — | — | — | pending |
+| 17 | Homodyne Detection | — | — | — | — | — | pending |
+| 18 | PnP-ADMM | — | — | — | — | — | pending |
+| 19 | Low-Rank (LORAKS) | — | — | — | — | — | pending |
+| 20 | Nuclear Norm (SVT/SAKE) | — | — | — | — | — | pending |
+| 21 | Proximal Gradient Descent | — | — | — | — | — | pending |
+| 22 | BM3D-MRI | — | — | — | — | — | pending |
+| 23 | SPIRiT-like | — | — | — | — | — | pending |
+| 24 | RED (Regularization by Denoising) | — | — | — | — | — | pending |
+| 25 | Dictionary Learning MRI | — | — | — | — | — | pending |
+| 26 | ALOHA (Hankel Low-Rank) | — | — | — | — | — | pending |
+| 27 | MoDL | — | — | — | — | — | pending |
+| 28 | MoDL (5 unrolls) | — | — | — | — | — | pending |
+| 29 | E2E-VarNet | — | — | — | — | — | pending |
+| 30 | U-Net (fastMRI) | — | — | — | — | — | pending |
+| 31 | DC-CNN | — | — | — | — | — | pending |
+| 32 | Deep ADMM-Net | — | — | — | — | — | pending |
+| 33 | ISTA-Net+ | — | — | — | — | — | pending |
+
+---
+
+### 12. Widefield Fluorescence Microscopy (`widefield`)
+
+| # | Algorithm | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Status |
+|---|-----------|-------|-------|-------|-------|-------|--------|
+| 1 | Richardson-Lucy | — | — | — | — | — | pending |
+| 2 | CARE | — | — | — | — | — | pending |
+
+---
+
+## Flagship Summary
+
+| # | Modality | Algorithms | Done | Progress |
+|---|----------|-----------|------|----------|
+| 1 | CASSI | 19 | 0 | 0% |
+| 2 | CACTI | 7 | 0 | 0% |
+| 3 | SPC | 5 | 0 | 0% |
+| 4 | Lensless | 3 | 0 | 0% |
+| 5 | Holography | 2 | 0 | 0% |
+| 6 | Ptychography | 3 | 0 | 0% |
+| 7 | CT | 40 | 0 | 0% |
+| 8 | CBCT | 3 | 0 | 0% |
+| 9 | Ultrasound | 3 | 0 | 0% |
+| 10 | Cryo-EM | 3 | 0 | 0% |
+| 11 | MRI | 33 | 0 | 0% |
+| 12 | Widefield | 2 | 0 | 0% |
+| | **Total** | **123** | **0** | **0%** |
+
+---
+
 ## Template Files in This Folder (55 modalities)
 
 These templates cover all modalities that were not already in `_templates_part1.md` through `_templates_part8.md`.
@@ -88,34 +324,6 @@ These templates cover all modalities that were not already in `_templates_part1.
 | 10 | `streak_camera` | Streak Camera |
 | 11 | `pump_probe` | Pump-Probe Spectroscopy / Imaging |
 | 12 | `radio_interferometry` | Radio Interferometry |
-
----
-
-## Previously Written Templates (113 modalities in `_templates_part1.md` — `_templates_part8.md`)
-
-### `_templates_part1.md` — Astronomy & Space Imaging (4 modalities)
-- `coronagraphy`, `eht_imaging`, `lucky_imaging`, `solar_imaging`
-
-### `_templates_part2.md` — Broader Experimental Science (11 modalities)
-- `acoustic_emission`, `adaptive_optics`, `bioluminescence_tomo`, `fwi`, `gravitational_wave`, `impedance_tomo`, `magnetic_particle`, `ocean_acoustic_tomo`, `particle_calorimetry`, `radio_astronomy`, `seismic_tomo`
-
-### `_templates_part3.md` — Coherent Imaging + Compressive Imaging (9 modalities)
-- `holography`, `odt`, `phase_retrieval`, `ptychography`, `talbot_lau`, `cacti`, `cassi`, `matrix`, `spc`
-
-### `_templates_part4.md` — Computational Optics + Photography + Depth Imaging (12 modalities)
-- `integral`, `light_field`, `coded_exposure`, `event_camera`, `hdr_imaging`, `lensless`, `panorama`, `flash_lidar`, `lidar`, `photometric_stereo`, `structured_light`, `tof_camera`
-
-### `_templates_part5.md` — Electron Microscopy + Industrial Inspection (21 modalities)
-- `cryo_et`, `ebsd`, `edx_mapping`, `eels`, `electron_diffraction`, `electron_holography`, `electron_tomography`, `fib_sem`, `sem`, `stem`, `tem`, `acoustic_microscopy`, `active_thermography`, `eddy_current`, `industrial_ct`, `machine_vision`, `shearography`, `terahertz`, `ultrasonic_phased_array`, `xray_ndt`, `xrf_imaging`
-
-### `_templates_part6.md` — Medical Imaging Part 1 (20 modalities)
-- `angiography`, `asl_mri`, `brachytherapy_img`, `cbct`, `cest_mri`, `ceus`, `confocal_endomicroscopy`, `dexa`, `diffusion_mri`, `digital_breast_tomo`, `doppler_ultrasound`, `dot`, `elastography`, `endoscopy`, `fluoroscopy`, `fmri`, `fundus`, `ivus`, `mammography`, `mr_elastography`
-
-### `_templates_part7.md` — Medical Imaging Part 2 (15 modalities)
-- `mr_fingerprinting`, `mra`, `mrs`, `nirs_brain`, `oct`, `octa`, `pet`, `photoacoustic`, `portal_imaging`, `proton_therapy_img`, `spect`, `spectral_ct`, `swi`, `ultrasound`, `xray_radiography`
-
-### `_templates_part8.md` — Microscopy (24 modalities)
-- `confocal_3d`, `confocal_livecell`, `dark_field`, `dic`, `dna_paint`, `expansion`, `flim`, `fpm`, `ism`, `lattice_lightsheet`, `lightsheet`, `minflux`, `palm_storm`, `phase_contrast`, `polarization`, `shg`, `sim`, `spinning_disk`, `sted`, `three_photon`, `tirf`, `two_photon`, `widefield`, `widefield_lowdose`
 
 ---
 
