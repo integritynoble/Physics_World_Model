@@ -1349,7 +1349,7 @@ _CASSI_CPU_RUNNABLE: set[str] = {
     "TSA-Net", "λ-Net", "ADMM-Net", "GAP-Net", "DGSMP",
     "HDNet", "MST-L", "MST++", "CST-L-Plus", "BIRNAT",
     "DAUHST-9stg", "BiSRNet", "PADUT-3stg", "RDLUF-MixS2-9stg", "SSR-L",
-    "MiJUN-5stg",
+    # MiJUN-5stg excluded: Mamba CPU inference ~355 s (71 s/stage × 5) → too slow
 }
 
 
@@ -2161,7 +2161,7 @@ def _run_common_sync(
         is_dl = False
 
     # CASSI DL models with GCS checkpoints run on CPU via _cassi_model_reconstruct
-    if catalog_key == "cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
+    if catalog_key == "sd_cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
         is_dl = False
 
     # Run reconstruction via central dispatch
