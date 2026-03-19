@@ -12,6 +12,20 @@ import modal
 
 app = modal.App("pwm-speclab-gpu")
 
+_cassi_arch_path = (
+    __file__
+    .replace("platform/pwm_platform/services/modal_gpu.py", "")
+    .replace("pwm_platform/services/modal_gpu.py", "")
+    + "packages/pwm_core/pwm_core/recon/cassi_arch"
+)
+# Resolve relative to this file's location (works both locally and after install)
+import os as _os
+_cassi_arch_path = _os.path.join(
+    _os.path.dirname(_os.path.abspath(__file__)),
+    "../../../packages/pwm_core/pwm_core/recon/cassi_arch",
+)
+_cassi_arch_path = _os.path.normpath(_cassi_arch_path)
+
 _image = (
     modal.Image.debian_slim(python_version="3.11")
     .pip_install(
@@ -26,6 +40,7 @@ _image = (
         "torchmetrics",
         "requests",
     )
+    .add_local_dir(_cassi_arch_path, remote_path="/root/cassi_arch")
 )
 
 
@@ -398,13 +413,127 @@ def _gpu_drunet_denoise(image: "np.ndarray", sigma: float = 0.05) -> "np.ndarray
     return result * (hi - lo) + lo
 
 
+def _gpu_cassi_model(y, h_ideal, x_true, model_key: str, ckpt_bytes: bytes):
+    """Run CASSI reconstruction on T4 GPU.
+
+    Supports DAUHST-9stg and MiJUN-5stg.  cassi_arch is bundled in the image
+    at /root/cassi_arch/ (on PYTHONPATH), so `import cassi_arch.X` works.
+
+    Args:
+        y:          measurement array (H, W_meas)
+        h_ideal:    2-D coded aperture mask (H, W) continuous values
+        x_true:     ground truth HSI cube (H, W, nC) or None
+        model_key:  "dauhst_9stg" or "mijun_5stg"
+        ckpt_bytes: raw bytes of the .pth checkpoint file
+
+    Returns:
+        x_hat: reconstructed HSI cube (H, W, 28), float32, clipped [0, 1]
+    """
+    import io
+    import numpy as np
+    import torch
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    nC, step = 28, 2
+
+    # Binarize mask (DAUHST and MiJUN both trained with binary masks)
+    mask = (np.asarray(h_ideal) > 0.5).astype(np.float32)  # (H, W)
+    H, W = mask.shape
+    W_meas = W + (nC - 1) * step  # 256 + 54 = 310
+
+    def _linear_shift_y(x_cube, mask_2d, nC, step):
+        """Regenerate CASSI measurement with linear dispersion (DAUHST convention)."""
+        W_m = mask_2d.shape[1] + (nC - 1) * step
+        y_new = np.zeros((mask_2d.shape[0], W_m), dtype=np.float32)
+        for k in range(nC):
+            y_new[:, step * k: step * k + mask_2d.shape[1]] += mask_2d * x_cube[:, :, k]
+        return y_new
+
+    # DAUHST: regenerate with linear shift (matching training forward model)
+    # MiJUN:  regenerate with circular shift later in its own block
+    if model_key == "dauhst_9stg":
+        if x_true is not None and np.asarray(x_true).ndim == 3 and x_true.shape[2] == nC:
+            y = _linear_shift_y(np.asarray(x_true, dtype=np.float32), mask, nC, step)
+        else:
+            y = np.asarray(y, dtype=np.float32)
+            if y.shape[1] > W_meas:
+                y = y[:, :W_meas]
+            elif y.shape[1] < W_meas:
+                pad = np.zeros((H, W_meas), dtype=np.float32)
+                pad[:, :y.shape[1]] = y
+                y = pad
+
+    # ── DAUHST-9stg ──────────────────────────────────────────────────────────
+    if model_key == "dauhst_9stg":
+        from cassi_arch.DAUHST import DAUHST
+
+        model = DAUHST(num_iterations=9).to(device)
+        ckpt = torch.load(io.BytesIO(ckpt_bytes), map_location="cpu", weights_only=False)
+        sd = {k.replace("module.", ""): v for k, v in ckpt.items()}
+        model.load_state_dict(sd, strict=True)
+        model.eval()
+
+        y_t = torch.from_numpy(y).unsqueeze(0).float().to(device)         # (1, H, W_meas)
+        # Phi: linear-shifted mask → (1, nC, H, W_meas). Each band k is shifted
+        # right by step*k pixels, creating a W_meas-wide "dispersed" mask.
+        # Note: cassi_arch.shift_3d uses torch.roll (same-width circular shift),
+        # which is used INSIDE the model between denoising stages; the input Phi
+        # must use the linear shift that matches the measurement geometry.
+        mask3d = torch.from_numpy(
+            np.stack([mask] * nC, axis=0)
+        ).unsqueeze(0).float().to(device)                                  # (1, nC, H, W)
+        Phi = torch.zeros(1, nC, H, W_meas, dtype=torch.float32, device=device)
+        for k in range(nC):
+            Phi[0, k, :, step * k: step * k + W] = mask3d[0, k, :, :]    # linear shift
+        Phi_s = Phi.pow(2).sum(dim=1)                                      # (1, H, W_meas)
+        Phi_s[Phi_s == 0] = 1                                              # avoid zero division
+
+        with torch.no_grad():
+            out = model(y_t, (Phi, Phi_s))                                 # (1, 28, H, W)
+
+    # ── MiJUN-5stg ───────────────────────────────────────────────────────────
+    elif model_key == "mijun_5stg":
+        from cassi_arch.MiJUN import MiJUN, shift_3d as mijun_shift_3d
+
+        model = MiJUN(stage=5, n_bands=28, step=2).to(device)
+        ckpt = torch.load(io.BytesIO(ckpt_bytes), map_location="cpu", weights_only=False)
+        raw_sd = ckpt.get("model", ckpt)
+        sd = {k.replace("module.", ""): v for k, v in raw_sd.items()}
+        model.load_state_dict(sd, strict=True)
+        model.eval()
+
+        mask3d = torch.from_numpy(
+            np.tile(mask[np.newaxis, :, :], (nC, 1, 1))
+        ).unsqueeze(0).float().to(device)                                  # (1, 28, H, W)
+        Phi = mijun_shift_3d(mask3d.clone(), step)                         # (1, 28, H, W_meas)
+
+        if x_true is not None:
+            x_t = torch.from_numpy(
+                np.transpose(np.asarray(x_true, dtype=np.float32), (2, 0, 1))
+            ).unsqueeze(0).float().to(device)                              # (1, 28, H, W)
+            x_shifted = mijun_shift_3d(x_t.clone(), step)
+            y_t = torch.sum(Phi * x_shifted, dim=1)                       # (1, H, W_meas)
+        else:
+            y_t = torch.from_numpy(y).unsqueeze(0).float().to(device)     # (1, H, W_meas)
+
+        with torch.no_grad():
+            out = model.forward_test({"Y": y_t, "mask": Phi})             # (1, 28, H, W)
+
+    else:
+        raise ValueError(f"Unknown CASSI model: {model_key}")
+
+    x_hat = out.detach().cpu().numpy()[0]          # (28, H, W)
+    x_hat = np.transpose(x_hat, (1, 2, 0))        # (H, W, 28)
+    return np.clip(x_hat, 0, 1).astype(np.float32)
+
+
 # ── Modal function ────────────────────────────────────────────────────────────
 
 
 @app.function(
     image=_image,
     gpu="T4",
-    timeout=120,
+    timeout=300,
 )
 def reconstruct_gpu(payload: bytes) -> bytes:
     """Run GPU reconstruction on a single sample.
@@ -415,6 +544,9 @@ def reconstruct_gpu(payload: bytes) -> bytes:
             optional: x_true, angles, mask, psf, coil_maps,
                       reconstruction_baseline (ndarray),
                       use_drunet (bool) — apply pretrained DRUNet as DL denoiser
+                      cassi_model_key (str) — e.g. "dauhst_9stg" or "mijun_5stg"
+                      H_ideal (ndarray)    — 2-D coded aperture mask (for CASSI)
+                      ckpt_bytes (bytes)   — raw checkpoint file bytes (for CASSI)
 
     Returns:
         pickled dict: {x_recon (ndarray), psnr (float|None), ssim (float|None)}
@@ -431,6 +563,29 @@ def reconstruct_gpu(payload: bytes) -> bytes:
     coil_maps = data.get("coil_maps")
     stored_baseline = data.get("reconstruction_baseline")
     use_drunet = data.get("use_drunet", False)
+    cassi_model_key = data.get("cassi_model_key")
+
+    # ── CASSI DL model path (DAUHST-9stg, MiJUN-5stg, …) ─────────────────────
+    if cassi_model_key:
+        h_ideal = data.get("H_ideal")
+        ckpt_bytes = data.get("ckpt_bytes")
+        try:
+            x_hat = _gpu_cassi_model(y, h_ideal, x_true, cassi_model_key, ckpt_bytes)
+            # Compute PSNR on the full HSI cube (max=1.0, standard CASSI metric)
+            psnr_val = None
+            ssim_val = None
+            if x_true is not None and np.asarray(x_true).ndim == 3:
+                xt = np.asarray(x_true, dtype=np.float64)
+                xh = x_hat.astype(np.float64)
+                if xh.shape == xt.shape:
+                    mse = float(np.mean((xh - xt) ** 2))
+                    psnr_val = float(10.0 * np.log10(1.0 / max(mse, 1e-12)))
+            return pickle.dumps({"x_recon": x_hat, "psnr": psnr_val, "ssim": ssim_val})
+        except Exception as exc:
+            import traceback
+            print(f"CASSI GPU model {cassi_model_key} failed: {exc}")
+            traceback.print_exc()
+            return pickle.dumps({"x_recon": None, "psnr": None, "ssim": None})
 
     # Normalize to 2D float64
     def to2d(a):
