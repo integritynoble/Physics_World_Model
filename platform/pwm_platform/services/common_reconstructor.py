@@ -2078,10 +2078,7 @@ async def run_common_reconstruction(
     """
     import asyncio
 
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(
-        None,
-        _run_common_sync,
+    return await _run_common_async(
         variant_key,
         algorithm_name,
         user_measurement,
@@ -2090,14 +2087,14 @@ async def run_common_reconstruction(
     )
 
 
-def _run_common_sync(
+async def _run_common_async(
     variant_key: str,
     algorithm_name: str,
     user_measurement: Optional[np.ndarray],
     user_matrix: Optional[np.ndarray],
     sample_index: int = 0,
 ) -> dict:
-    """Synchronous common-mode reconstruction."""
+    """Async common-mode reconstruction (awaits Modal GPU calls non-blocking)."""
     t0 = time.perf_counter()
 
     from pwm_platform.services.benchmark_database import (
