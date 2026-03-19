@@ -1,0 +1,6 @@
+[submodule "pwm"]
+	path = pwm
+	url = git@github-integritynoble:integritynoble/pwm.git
+[submodule "pwm_product"]
+	path = pwm_product
+	url = git@github-integritynoble:integritynoble/pwm_product.git

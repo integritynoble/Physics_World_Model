@@ -64,10 +64,7 @@ Thumbs.db
 *_arxiv_submission*.zip
 arxiv_submission*.zip
 
-# Private repos nested inside this folder (not part of public repo)
-pwm/
-pwm_product/
-sync_all.sh
+# (pwm/, pwm_product/, sync_all.sh are tracked — see .gitmodules)
 
 NUL
 bash.exe.stackdump
