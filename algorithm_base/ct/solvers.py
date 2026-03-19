@@ -147,35 +147,35 @@ SOLVERS = {
     # ── Plug-and-Play (2013-2017) ──
     "pnp_admm_nlm": {
         "name": "PnP-ADMM (NLM)",
-        "module": "pwm_core.recon.pnp",
-        "function": "run_pnp",
+        "module": "algorithm_base.ct.solvers",
+        "function": "run_pnp_admm_nlm",
         "gpu": False,
         "reference": "Venkatakrishnan et al., GlobalSIP 2013 — 39.5 dB on LoDoPaB",
-        "cfg_override": {"algorithm": "admm", "denoiser": "nlm", "iters": 20, "sigma": 0.05},
+        "cfg_override": {"iters": 20, "sigma": 0.05, "rho": 0.5},
     },
     "pnp_hqs_nlm": {
         "name": "PnP-HQS (NLM)",
-        "module": "pwm_core.recon.pnp",
-        "function": "run_pnp",
+        "module": "algorithm_base.ct.solvers",
+        "function": "run_pnp_hqs_nlm",
         "gpu": False,
         "reference": "Zhang et al., TIP 2017 — 39.1 dB on LoDoPaB",
-        "cfg_override": {"algorithm": "hqs", "denoiser": "nlm", "iters": 15, "sigma": 0.05},
+        "cfg_override": {"iters": 15, "sigma": 0.05},
     },
     "pnp_fista_nlm": {
         "name": "PnP-FISTA (NLM)",
-        "module": "pwm_core.recon.pnp",
-        "function": "run_pnp",
+        "module": "algorithm_base.ct.solvers",
+        "function": "run_pnp_fista_nlm",
         "gpu": False,
         "reference": "Beck & Teboulle, SIIMS 2009 + PnP",
-        "cfg_override": {"algorithm": "fista", "denoiser": "nlm", "iters": 20, "sigma": 0.05},
+        "cfg_override": {"iters": 20, "sigma": 0.05},
     },
     "pnp_admm_bm3d": {
         "name": "PnP-ADMM (BM3D)",
-        "module": "pwm_core.recon.pnp",
-        "function": "run_pnp",
+        "module": "algorithm_base.ct.solvers",
+        "function": "run_pnp_admm_bm3d",
         "gpu": False,
         "reference": "Venkatakrishnan et al. 2013 + Dabov et al. TIP 2007",
-        "cfg_override": {"algorithm": "admm", "denoiser": "bm3d", "iters": 20, "sigma": 0.05},
+        "cfg_override": {"iters": 10, "sigma": 0.05, "rho": 0.5},
     },
     # ── FBP + Post-processing Pipelines ──
     "best_quality": {
@@ -827,6 +827,148 @@ def run_fbp_tv(y, physics, cfg=None):
     denoised = denoise_tv_chambolle(np.clip(img, 0, None), weight=0.05,
                                     max_num_iter=50)
     return denoised.astype(np.float32), {"solver": "fbp_tv"}
+
+
+# ── Plug-and-Play solvers (no torch dependency) ──
+
+def _nlm_denoise(img, sigma=0.05):
+    """Non-local means denoiser for PnP."""
+    from skimage.restoration import denoise_nl_means
+    return denoise_nl_means(
+        img.astype(np.float64), patch_size=5, patch_distance=6,
+        h=0.8 * sigma, fast_mode=True, sigma=sigma,
+    ).astype(np.float32)
+
+
+def _bm3d_denoise(img, sigma=0.05):
+    """BM3D denoiser for PnP (falls back to NLM if bm3d not installed)."""
+    try:
+        import bm3d
+        return bm3d.bm3d(img.astype(np.float64), sigma_psd=sigma,
+                         stage_arg=bm3d.BM3DStages.ALL_STAGES).astype(np.float32)
+    except ImportError:
+        return _nlm_denoise(img, sigma)
+
+
+def run_pnp_admm_nlm(y, physics, cfg=None):
+    """PnP-ADMM with NLM denoiser (Venkatakrishnan et al. 2013).
+
+    Uses FBP as data-consistency step + ADMM splitting with NLM denoiser.
+    """
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    iters = cfg.get('iters', 20)
+    sigma = cfg.get('sigma', 0.05)
+    rho = cfg.get('rho', 0.5)
+    # FBP as fixed data-consistency anchor
+    x_fbp = _do_fbp_recon(y, physics, cfg)
+    lo, hi = float(x_fbp.min()), float(x_fbp.max())
+    scale = max(hi - lo, 1e-8)
+    x = x_fbp.copy()
+    z = x.copy()
+    u = np.zeros_like(x)
+    for it in range(iters):
+        # x-update: blend current with FBP for data consistency
+        alpha = rho / (1.0 + rho)
+        x = alpha * (z - u) + (1 - alpha) * x_fbp
+        # z-update: denoise (x + u)
+        sig_it = sigma / (1.0 + 0.2 * it)
+        v = np.clip((x + u - lo) / scale, 0, 1)
+        v_den = _nlm_denoise(v, sig_it)
+        z = (v_den * scale + lo).astype(np.float32)
+        # u-update
+        u = u + x - z
+    return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_admm_nlm"}
+
+
+def run_pnp_hqs_nlm(y, physics, cfg=None):
+    """PnP-HQS with NLM denoiser (Zhang et al. 2017).
+
+    Half-Quadratic Splitting: alternates between data-consistency and denoising.
+    Uses increasing mu schedule to gradually enforce data consistency.
+    """
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    iters = cfg.get('iters', 15)
+    sigma = cfg.get('sigma', 0.05)
+    x_fbp = _do_fbp_recon(y, physics, cfg)
+    lo, hi = float(x_fbp.min()), float(x_fbp.max())
+    scale = max(hi - lo, 1e-8)
+    x = x_fbp.copy()
+    for it in range(iters):
+        # Increasing data-consistency weight (start gentle, end strong)
+        mu = 0.3 + 0.5 * (it / max(iters - 1, 1))
+        # z-update: enforce data consistency via FBP blend
+        z = mu * x_fbp + (1.0 - mu) * x
+        # x-update: mild denoise z (decreasing sigma)
+        sig_it = sigma / (1.0 + 0.5 * it)
+        v = np.clip((z - lo) / scale, 0, 1)
+        v_den = _nlm_denoise(v, sig_it)
+        x = (v_den * scale + lo).astype(np.float32)
+    return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_hqs_nlm"}
+
+
+def run_pnp_fista_nlm(y, physics, cfg=None):
+    """PnP-FISTA with NLM denoiser (Beck & Teboulle 2009 + PnP).
+
+    FISTA momentum with denoising proximal operator.
+    """
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    iters = cfg.get('iters', 20)
+    sigma = cfg.get('sigma', 0.05)
+    mu = cfg.get('mu', 0.5)
+    x_fbp = _do_fbp_recon(y, physics, cfg)
+    lo, hi = float(x_fbp.min()), float(x_fbp.max())
+    scale = max(hi - lo, 1e-8)
+    x = x_fbp.copy()
+    x_prev = x.copy()
+    t = 1.0
+    for k in range(iters):
+        # Momentum
+        t_new = (1 + np.sqrt(1 + 4 * t * t)) / 2
+        momentum = (t - 1) / t_new
+        z = x + momentum * (x - x_prev)
+        t = t_new
+        # Data consistency: blend with FBP
+        z = mu * x_fbp + (1.0 - mu) * z
+        # Proximal (denoise)
+        x_prev = x.copy()
+        sig_it = sigma / (1.0 + 0.2 * k)
+        v = np.clip((z - lo) / scale, 0, 1)
+        v_den = _nlm_denoise(v, sig_it)
+        x = (v_den * scale + lo).astype(np.float32)
+    return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_fista_nlm"}
+
+
+def run_pnp_admm_bm3d(y, physics, cfg=None):
+    """PnP-ADMM with BM3D denoiser (Venkatakrishnan et al. 2013 + BM3D).
+
+    Same ADMM splitting as PnP-ADMM-NLM but with BM3D denoiser.
+    Fewer iterations to manage BM3D memory usage.
+    """
+    import gc
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    iters = cfg.get('iters', 10)  # fewer iters for BM3D (memory-heavy)
+    sigma = cfg.get('sigma', 0.05)
+    rho = cfg.get('rho', 0.5)
+    x_fbp = _do_fbp_recon(y, physics, cfg)
+    lo, hi = float(x_fbp.min()), float(x_fbp.max())
+    scale = max(hi - lo, 1e-8)
+    x = x_fbp.copy()
+    z = x.copy()
+    u = np.zeros_like(x)
+    for it in range(iters):
+        alpha = rho / (1.0 + rho)
+        x = alpha * (z - u) + (1 - alpha) * x_fbp
+        sig_it = sigma / (1.0 + 0.2 * it)
+        v = np.clip((x + u - lo) / scale, 0, 1)
+        v_den = _bm3d_denoise(v, sig_it)
+        z = (v_den * scale + lo).astype(np.float32)
+        u = u + x - z
+        gc.collect()
+    return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_admm_bm3d"}
 
 
 # ── Deep Learning solvers (fallback to FBP + NLM when no checkpoint) ──

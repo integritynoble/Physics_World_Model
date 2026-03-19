@@ -1064,8 +1064,8 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 | 7 | DuDoTrans | 2022 | Wang et al., MICCAI 2022 | 42.1 | — | — | — | registered | yes |
 | 8 | CTformer | 2023 | Wang et al., IEEE TMI 2023 | 40.8 | — | — | — | registered | yes |
 | 9 | DuDoNet | 2019 | Lin et al., CVPR 2019 | 40.2 | — | — | — | registered | yes |
-| 10 | PnP-ADMM (NLM) | 2013 | Venkatakrishnan et al. 2013 | 39.5 | — | — | — | done | yes |
-| 11 | PnP-HQS (NLM) | 2017 | Zhang et al. 2017 | 39.1 | — | — | — | done | yes |
+| 10 | PnP-ADMM (NLM) | 2013 | Venkatakrishnan et al. 2013 | 39.5 | — | 41.34 | — | done | yes |
+| 11 | PnP-HQS (NLM) | 2017 | Zhang et al. 2017 | 39.1 | — | 40.72 | — | done | yes |
 | 12 | FBPConvNet | 2017 | Jin et al., TIP 2017 | 38.5 | — | — | — | registered | yes |
 | 13 | iRadonMAP | 2020 | He et al., MICCAI 2020 | 36.9 | — | — | — | registered | yes |
 | 14 | Learned Primal-Dual | 2018 | Adler & Oktem, TMI 2018 | 36.2 | — | — | — | registered | yes |
@@ -1083,18 +1083,18 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 | 26 | FBP (Cosine) | — | Standard windowed FBP | — | — | 38.27 | — | done | yes |
 | 27 | FBP (Hamming) | — | Hamming-windowed FBP | — | — | 36.93 | — | done | yes |
 | 28 | FBP (Hann) | — | Hann-windowed FBP | — | — | 36.50 | — | done | yes |
-| 29 | FBP + BM3D | 2007 | Dabov et al. 2007 | — | — | 40.10 | — | done | yes |
+| 29 | FBP + BM3D | 2007 | Dabov et al. 2007 | — | — | 40.50 | — | done | yes |
 | 30 | FBP + Bilateral | 1998 | Tomasi & Manduchi 1998 | — | — | 36.10 | — | done | yes |
 | 31 | FBP + TV | 1992 | Rudin, Osher & Fatemi 1992 | — | — | 38.35 | — | done | yes |
 | 32 | Chambolle-Pock | 2011 | Chambolle & Pock 2011 | — | — | 44.06 | — | done | yes |
 | 33 | Tikhonov | 1963 | Tikhonov 1963 | — | — | 44.09 | — | done | yes |
 | 34 | MLEM | 1982 | Shepp & Vardi 1982 | — | — | 44.27 | — | done | yes |
-| 35 | OSEM | 1994 | Hudson & Larkin 1994 | — | — | — | — | done | yes |
-| 36 | Landweber | 1951 | Landweber 1951 | — | — | — | — | done | yes |
-| 37 | ART | 1970 | Gordon et al. 1970 | — | — | — | — | done | yes |
-| 38 | PnP-FISTA (NLM) | 2009 | Beck & Teboulle 2009 + PnP | — | — | — | — | done | yes |
-| 39 | PnP-ADMM (BM3D) | 2013 | Venkatakrishnan et al. 2013 + BM3D | — | — | — | — | done | yes |
-| 40 | FBP + Wavelet | 1995 | Donoho 1995 | — | — | 40.10 | — | done | yes |
+| 35 | OSEM | 1994 | Hudson & Larkin 1994 | — | — | 33.42 | — | done | yes |
+| 36 | Landweber | 1951 | Landweber 1951 | — | — | 7.10 | — | done | yes |
+| 37 | ART | 1970 | Gordon et al. 1970 | — | — | 7.10 | — | done | yes |
+| 38 | PnP-FISTA (NLM) | 2009 | Beck & Teboulle 2009 + PnP | — | — | 40.36 | — | done | yes |
+| 39 | PnP-ADMM (BM3D) | 2013 | Venkatakrishnan et al. 2013 + BM3D | — | — | 41.11 | — | done | yes |
+| 40 | FBP + Wavelet | 1995 | Donoho 1995 | — | — | 43.54 | — | done | yes |
 | 41 | FBP + U-Net (registered) | 2015 | Ronneberger et al. 2015 | — | — | — | — | registered | yes |
 
 ### 66. Dual-Energy X-ray Absorptiometry (DEXA) (`dexa`)

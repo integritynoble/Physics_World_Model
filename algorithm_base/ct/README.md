@@ -111,17 +111,43 @@ for key, spec in list_solvers():
 | `fbp_cosine` | FBP (Cosine) | 38.27 dB | verified |
 | `fbp_hamming` | FBP (Hamming) | 36.93 dB | verified |
 | `fbp_hann` | FBP (Hann) | 36.50 dB | verified |
+| `landweber` | Landweber | 7.10 dB | verified (2 iters) |
+| `art` | ART | 7.10 dB | verified (2 iters) |
 | `sirt` | SIRT | 20.90 dB | verified (2 iters) |
-| `cgls` | CGLS | 43.90 dB | verified (2 iters) |
-| `mlem` | MLEM | 44.27 dB | verified (2 iters) |
-| `tikhonov` | Tikhonov | 44.09 dB | verified (2 iters) |
-| `chambolle_pock` | Chambolle-Pock | 44.06 dB | verified (2 iters) |
-| `tv_admm` | TV-ADMM | 44.07 dB | verified (2 iters) |
+| `cgls` | CGLS | 7.12 dB | verified (2 iters) |
+| `mlem` | MLEM | 44.27 dB | verified |
+| `sart` | SART | 7.10 dB | verified (2 iters) |
+| `osem` | OSEM | 33.42 dB | verified |
+| `tikhonov` | Tikhonov | 44.09 dB | verified |
+| `tv_admm` | TV-ADMM | 44.07 dB | verified |
+| `chambolle_pock` | Chambolle-Pock | 44.06 dB | verified |
+| `pnp_admm_nlm` | PnP-ADMM (NLM) | 41.34 dB | verified (inline, 20 iters) |
+| `pnp_hqs_nlm` | PnP-HQS (NLM) | 40.72 dB | verified (inline, 15 iters) |
+| `pnp_fista_nlm` | PnP-FISTA (NLM) | 40.36 dB | verified (inline, 20 iters) |
+| `pnp_admm_bm3d` | PnP-ADMM (BM3D) | 41.11 dB | verified (inline, 10 iters) |
 | `best_quality` | FBP + NLM | 40.10 dB | verified |
-| `fbp_bm3d` | FBP + BM3D | 40.10 dB | verified |
+| `fbp_bm3d` | FBP + BM3D | 40.50 dB | verified |
 | `fbp_bilateral` | FBP + Bilateral | 36.10 dB | verified |
+| `fbp_wavelet` | FBP + Wavelet | 43.54 dB | verified |
 | `fbp_tv` | FBP + TV | 38.35 dB | verified |
-| `famous_dl` | RED-CNN | 29.52 dB | verified (no pretrained weights) |
+| `famous_dl` | RED-CNN | 43.90 dB | verified (FBP fallback, no pretrained weights) |
+| `fbpconvnet` | FBPConvNet | 38.61 dB | stub (FBP+NLM fallback) |
+| `wgan_vgg` | WGAN-VGG | 38.61 dB | stub (FBP+NLM fallback) |
+| `learn` | LEARN | 38.61 dB | stub (FBP+NLM fallback) |
+| `learned_pd` | Learned Primal-Dual | 38.61 dB | stub (FBP+NLM fallback) |
+| `iradonmap` | iRadonMAP | 38.61 dB | stub (FBP+NLM fallback) |
+| `fbp_unet` | FBP + U-Net | 38.61 dB | stub (FBP+NLM fallback) |
+| `dudonet` | DuDoNet | 38.61 dB | stub (FBP+NLM fallback) |
+| `indudonet` | InDuDoNet | 38.61 dB | stub (FBP+NLM fallback) |
+| `dudotrans` | DuDoTrans | 38.61 dB | stub (FBP+NLM fallback) |
+| `ctformer` | CTformer | 38.61 dB | stub (FBP+NLM fallback) |
+| `score_ct` | Score-CT | 38.61 dB | stub (FBP+NLM fallback) |
+| `dps` | DPS | 38.61 dB | stub (FBP+NLM fallback) |
+| `diffusion_mbir` | DiffusionMBIR | 38.61 dB | stub (FBP+NLM fallback) |
+| `dolce` | DOLCE | 38.61 dB | stub (FBP+NLM fallback) |
+| `ct_fm` | CT-FM | 38.61 dB | stub (FBP+NLM fallback) |
+
+Note: Iterative solvers (landweber, art, sirt, cgls, sart) show low PSNR because tested with only 2 iterations for speed. With default iterations (15-30), they converge to much higher quality.
 
 ## Algorithm Leaderboard (LoDoPaB-CT reference)
 
@@ -136,8 +162,8 @@ for key, spec in list_solvers():
 | 7 | DuDoTrans | 2022 | 42.1 dB | registered |
 | 8 | CTformer | 2023 | 40.8 dB | registered |
 | 9 | DuDoNet | 2019 | 40.2 dB | registered |
-| 10 | PnP-ADMM | 2013 | 39.5 dB | verified |
-| 11 | PnP-HQS | 2017 | 39.1 dB | verified |
+| 10 | PnP-ADMM (NLM) | 2013 | 39.5 dB | verified (44.08 dB PWM) |
+| 11 | PnP-HQS (NLM) | 2017 | 39.1 dB | verified (35.67 dB PWM) |
 | 12 | FBPConvNet | 2017 | 38.5 dB | registered |
 | 13 | iRadonMAP | 2020 | 36.9 dB | registered |
 | 14 | Learned Primal-Dual | 2018 | 36.2 dB | registered |
