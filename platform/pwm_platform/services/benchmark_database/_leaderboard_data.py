@@ -7,37 +7,37 @@ from __future__ import annotations
 LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
 
     # ══════════════════════════════════════════════════════════════════════════
-    #  SD-CASSI — Evaluated results (5 solvers on 3-tier challenge)
+    #  CASSI — Evaluated results (5 solvers on 3-tier challenge)
     #  Public: 10 KAIST scenes 256×256, clean step=2 (v2.0 regenerated)
     #  Dev: 20 Pavia crops 500×500, mismatch slope=1.95
     #  Hidden: 20 PnP-CASSI crops 500×500, mismatch slope=2.08
     #  Oracle mask correction applied for dev/hidden tiers
     # ══════════════════════════════════════════════════════════════════════════
 
-    "cassi": {
+    "sd_cassi": {
         # Normal leaderboard — Standard reconstruction (known forward model, no mismatch)
         # Dataset: 10 KAIST simulation scenes, 256×256×28 spectral channels
         # Score: 0.5 × clip((PSNR−15)/30, 0, 1) + 0.5 × SSIM  (no consistency term)
         # Sources: literature averages over KAIST 10-scene test set
         "normal": [
-            {"rank":  1, "method": "RDLUF-MixS2-9stg", "psnr": 39.60, "ssim": 0.988, "score": 0.904, "dataset": "KAIST simu, 256×256×28", "source": "Dong et al. CVPR 2023"},
-            {"rank":  2, "method": "DAUHST-9stg",       "psnr": 38.36, "ssim": 0.985, "score": 0.882, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. NeurIPS 2022"},
-            {"rank":  3, "method": "PADUT-3stg",        "psnr": 36.95, "ssim": 0.975, "score": 0.854, "dataset": "KAIST simu, 256×256×28", "source": "Li et al. ICCV 2023"},
-            {"rank":  4, "method": "CST-L-Plus",        "psnr": 36.10, "ssim": 0.967, "score": 0.836, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. ECCV 2022"},
-            {"rank":  5, "method": "MST++",             "psnr": 36.00, "ssim": 0.966, "score": 0.833, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. CVPRW 2022"},
-            {"rank":  6, "method": "HDNet",             "psnr": 35.14, "ssim": 0.952, "score": 0.812, "dataset": "KAIST simu, 256×256×28", "source": "Hu et al. CVPR 2022"},
-            {"rank":  7, "method": "MST-L",             "psnr": 34.81, "ssim": 0.958, "score": 0.809, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. CVPR 2022"},
-            {"rank":  8, "method": "SSR-L",             "psnr": 34.00, "ssim": 0.960, "score": 0.797, "dataset": "KAIST simu, 256×256×28", "source": "Zhang et al. CVPR 2024"},
-            {"rank":  9, "method": "BiSRNet",           "psnr": 33.00, "ssim": 0.926, "score": 0.763, "dataset": "KAIST simu, 256×256×28", "source": "BiSRNet 2023"},
-            {"rank": 10, "method": "DGSMP",             "psnr": 32.63, "ssim": 0.917, "score": 0.752, "dataset": "KAIST simu, 256×256×28", "source": "Huang et al. CVPR 2021"},
-            {"rank": 11, "method": "TSA-Net",           "psnr": 31.46, "ssim": 0.894, "score": 0.722, "dataset": "KAIST simu, 256×256×28", "source": "Meng et al. ECCV 2020"},
-            {"rank": 12, "method": "λ-Net",             "psnr": 30.10, "ssim": 0.887, "score": 0.696, "dataset": "KAIST simu, 256×256×28", "source": "Miao et al. ICCV 2019"},
-            {"rank": 13, "method": "BIRNAT",            "psnr": 30.00, "ssim": 0.887, "score": 0.694, "dataset": "KAIST simu, 256×256×28", "source": "Cheng et al. ECCV 2022"},
-            {"rank": 14, "method": "ADMM-Net",          "psnr": 29.10, "ssim": 0.877, "score": 0.674, "dataset": "KAIST simu, 256×256×28", "source": "Ma et al. ICCV 2019"},
-            {"rank": 15, "method": "GAP-Net",           "psnr": 29.10, "ssim": 0.867, "score": 0.669, "dataset": "KAIST simu, 256×256×28", "source": "Meng et al. 2020"},
-            {"rank": 16, "method": "GAP-TV",            "psnr": 26.86, "ssim": 0.861, "score": 0.629, "dataset": "KAIST simu, 256×256×28", "source": "Yuan et al. 2016"},
-            {"rank": 17, "method": "PnP-HSICNN",        "psnr": 26.70, "ssim": 0.821, "score": 0.606, "dataset": "KAIST simu, 256×256×28", "source": "Maffei et al. 2020"},
-            {"rank": 18, "method": "TwIST",             "psnr": 25.16, "ssim": 0.833, "score": 0.586, "dataset": "KAIST simu, 256×256×28", "source": "Bioucas-Dias & Figueiredo 2007"},
+            {"rank":  1, "method": "MiJUN-5stg",        "psnr": 40.90, "ssim": 0.991, "score": 0.927, "dataset": "KAIST simu, 256×256×28", "source": "Meng et al. AAAI 2025"},
+            {"rank":  2, "method": "RDLUF-MixS2-9stg", "psnr": 39.60, "ssim": 0.988, "score": 0.904, "dataset": "KAIST simu, 256×256×28", "source": "Dong et al. CVPR 2023"},
+            {"rank":  3, "method": "DAUHST-9stg",        "psnr": 38.40, "ssim": 0.985, "score": 0.883, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. NeurIPS 2022"},
+            {"rank":  4, "method": "PADUT-3stg",         "psnr": 36.95, "ssim": 0.975, "score": 0.854, "dataset": "KAIST simu, 256×256×28", "source": "Li et al. ICCV 2023"},
+            {"rank":  5, "method": "CST-L-Plus",         "psnr": 36.10, "ssim": 0.967, "score": 0.836, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. ECCV 2022"},
+            {"rank":  6, "method": "MST++",              "psnr": 36.00, "ssim": 0.966, "score": 0.833, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. CVPRW 2022"},
+            {"rank":  7, "method": "MST-L",              "psnr": 34.81, "ssim": 0.958, "score": 0.809, "dataset": "KAIST simu, 256×256×28", "source": "Cai et al. CVPR 2022"},
+            {"rank":  8, "method": "HDNet",              "psnr": 34.66, "ssim": 0.952, "score": 0.804, "dataset": "KAIST simu, 256×256×28", "source": "Hu et al. CVPR 2022"},
+            {"rank":  9, "method": "SSR-L",              "psnr": 34.00, "ssim": 0.960, "score": 0.797, "dataset": "KAIST simu, 256×256×28", "source": "Zhang et al. CVPR 2024"},
+            {"rank": 10, "method": "DGSMP",              "psnr": 32.60, "ssim": 0.917, "score": 0.752, "dataset": "KAIST simu, 256×256×28", "source": "Huang et al. CVPR 2021"},
+            {"rank": 11, "method": "TSA-Net",            "psnr": 31.50, "ssim": 0.894, "score": 0.722, "dataset": "KAIST simu, 256×256×28", "source": "Meng et al. ECCV 2020"},
+            {"rank": 12, "method": "λ-Net",              "psnr": 30.10, "ssim": 0.887, "score": 0.696, "dataset": "KAIST simu, 256×256×28", "source": "Miao et al. ICCV 2019"},
+            {"rank": 13, "method": "BIRNAT",             "psnr": 30.00, "ssim": 0.887, "score": 0.694, "dataset": "KAIST simu, 256×256×28", "source": "Cheng et al. ECCV 2022"},
+            {"rank": 14, "method": "ADMM-Net",           "psnr": 29.10, "ssim": 0.877, "score": 0.674, "dataset": "KAIST simu, 256×256×28", "source": "Ma et al. ICCV 2019"},
+            {"rank": 15, "method": "GAP-Net",            "psnr": 29.10, "ssim": 0.867, "score": 0.669, "dataset": "KAIST simu, 256×256×28", "source": "Meng et al. 2020"},
+            {"rank": 16, "method": "GAP-TV",             "psnr": 24.34, "ssim": 0.820, "score": 0.577, "dataset": "KAIST simu, 256×256×28", "source": "Yuan et al. 2016"},
+            {"rank": 17, "method": "PnP-HSICNN",         "psnr": 25.12, "ssim": 0.810, "score": 0.573, "dataset": "KAIST simu, 256×256×28", "source": "Maffei et al. 2020"},
+            {"rank": 18, "method": "TwIST",              "psnr": 23.10, "ssim": 0.800, "score": 0.538, "dataset": "KAIST simu, 256×256×28", "source": "Bioucas-Dias & Figueiredo 2007"},
         ],
         # Challenge leaderboard — Blind Reconstruction Challenge (3-tier)
         # Scores: 0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × consistency; overall = mean(public, dev, hidden)
