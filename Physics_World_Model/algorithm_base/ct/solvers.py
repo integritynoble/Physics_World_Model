@@ -19,7 +19,7 @@ DISPLAY_NAME = "X-ray Computed Tomography (CT)"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 39 solvers from 1951 to 2024
+# Solver registry — 41 solvers from 1951 to 2026
 # Reference PSNR from LoDoPaB-CT benchmark (pwm.platformai.org/benchmark/ct)
 # ---------------------------------------------------------------------------
 SOLVERS = {

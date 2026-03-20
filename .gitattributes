@@ -1,3 +1,0 @@
-# LFS rules removed — large binaries stored in GCS, not GitHub
-# Previously: *.npz and *.pth were LFS-tracked
-# Now: these files are gitignored and uploaded to gs://pwm-benchmark-datasets/
