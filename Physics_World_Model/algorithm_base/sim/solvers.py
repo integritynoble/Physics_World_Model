@@ -75,14 +75,8 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
         result = np.asarray(result[0], dtype=np.float32)
     else:
         result = np.asarray(result, dtype=np.float32)
-    # SIM upsamples 2x. Resize back to input spatial size so shape matches x_true.
-    if result.ndim == 2:
-        h_in = y_in.shape[-2] if y_in.ndim >= 2 else result.shape[0]
-        w_in = y_in.shape[-1] if y_in.ndim >= 1 else result.shape[1]
-        if result.shape != (h_in, w_in):
-            from scipy.ndimage import zoom
-            z = (h_in / result.shape[0], w_in / result.shape[1])
-            result = zoom(result, z, order=1).astype(np.float32)
+    # SIM correctly produces 2x super-resolved output (x_true matches 2x input frame size).
+    # No resize needed — the 2x output IS the expected shape.
     return result
 
 

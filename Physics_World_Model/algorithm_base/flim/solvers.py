@@ -77,6 +77,11 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     # run_flim returns (H, W, 2) stacking [lifetime, amplitude]. Keep amplitude channel.
     if result.ndim == 3 and result.shape[2] <= 4:
         result = result[..., 1] if result.shape[2] == 2 else result[..., 0]
+    # Resize to 256x256 if needed (e.g., when input was small spatial patch)
+    if result.ndim == 2 and result.shape != (256, 256):
+        from scipy.ndimage import zoom
+        z = (256 / result.shape[0], 256 / result.shape[1])
+        result = zoom(result, z, order=1).astype(np.float32)
     return result
 
 

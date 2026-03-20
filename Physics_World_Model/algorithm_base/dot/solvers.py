@@ -70,6 +70,18 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     # run_dot returns a 3D volume (nz, ny, nx). Take max-intensity projection along z.
     if result.ndim == 3:
         result = result.max(axis=0)
+    # Resize to 256x256 if result is not the right shape
+    if result.ndim == 2 and result.shape != (256, 256):
+        from scipy.ndimage import zoom
+        z = (256 / result.shape[0], 256 / result.shape[1])
+        result = zoom(result, z, order=1).astype(np.float32)
+    # Handle 1D output (fallback from DOT when no operator provided)
+    if result.ndim == 1:
+        n = int(result.shape[0] ** 0.5) or 1
+        result = result[:n*n].reshape(n, n)
+        from scipy.ndimage import zoom
+        z = (256 / result.shape[0], 256 / result.shape[1])
+        result = zoom(result, z, order=1).astype(np.float32)
     return result
 
 

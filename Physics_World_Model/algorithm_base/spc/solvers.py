@@ -85,8 +85,18 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # Without operator, TVAL3 returns y unchanged. Handle 1D/non-square cases.
+    if result.ndim == 1:
+        n = int(result.shape[0] ** 0.5)
+        result = result[:n*n].reshape(n, n)
+    if result.ndim == 2 and result.shape != (256, 256):
+        from scipy.ndimage import zoom
+        z = (256 / result.shape[0], 256 / result.shape[1])
+        result = zoom(result, z, order=1).astype(np.float32)
+    return result
 
 
 def list_solvers():
