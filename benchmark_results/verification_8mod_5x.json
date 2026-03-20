@@ -1,0 +1,6872 @@
+{
+  "spc": {
+    "traditional_cpu": {
+      "name": "TVAL3",
+      "reference": "Li et al., Rice CAAM Tech Report 2009",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.34,
+          "ssim": 0.3563,
+          "time": 1.749,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.34,
+          "ssim": 0.3563,
+          "time": 1.883,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.34,
+          "ssim": 0.3563,
+          "time": 1.482,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.34,
+          "ssim": 0.3563,
+          "time": 1.138,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.34,
+          "ssim": 0.3563,
+          "time": 1.142,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.34,
+      "avg_ssim": 0.3563,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "ADMM-L1",
+      "reference": "Boyd et al., Found. Trends ML 2010",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.06,
+          "ssim": 0.3845,
+          "time": 1.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.06,
+          "ssim": 0.3845,
+          "time": 1.004,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.06,
+          "ssim": 0.3845,
+          "time": 1.282,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.06,
+          "ssim": 0.3845,
+          "time": 1.189,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.06,
+          "ssim": 0.3845,
+          "time": 1.074,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.06,
+      "avg_ssim": 0.3845,
+      "done": true,
+      "pass_count": 5
+    },
+    "fista_l1": {
+      "name": "FISTA-L1",
+      "reference": "Beck & Teboulle, SIAM J. Imaging Sci. 2009",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 1.954,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 1.536,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.123,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.224,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.253,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.91,
+      "avg_ssim": 0.3789,
+      "done": true,
+      "pass_count": 5
+    },
+    "omp": {
+      "name": "OMP",
+      "reference": "Pati, Rezaiifar & Krishnaprasad, Asilomar 1993",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 1.74,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 1.649,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.121,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.503,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.086,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.91,
+      "avg_ssim": 0.3789,
+      "done": true,
+      "pass_count": 5
+    },
+    "cosamp": {
+      "name": "CoSaMP",
+      "reference": "Needell & Tropp, Appl. Comput. Harmon. Anal. 2009",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.233,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.417,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.651,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 2.166,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.91,
+          "ssim": 0.3789,
+          "time": 1.555,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.91,
+      "avg_ssim": 0.3789,
+      "done": true,
+      "pass_count": 5
+    },
+    "iht": {
+      "name": "IHT",
+      "reference": "Blumensath & Davies, J. Fourier Anal. Appl. 2009",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.47,
+          "ssim": 0.3504,
+          "time": 1.95,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.47,
+          "ssim": 0.3504,
+          "time": 2.076,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.47,
+          "ssim": 0.3504,
+          "time": 2.173,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.47,
+          "ssim": 0.3504,
+          "time": 1.633,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.47,
+          "ssim": 0.3504,
+          "time": 1.628,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.47,
+      "avg_ssim": 0.3504,
+      "done": true,
+      "pass_count": 5
+    },
+    "gap_tv": {
+      "name": "GAP-TV",
+      "reference": "Yuan, ICIP 2016",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.35,
+          "ssim": 0.3881,
+          "time": 1.131,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.35,
+          "ssim": 0.3881,
+          "time": 1.846,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.35,
+          "ssim": 0.3881,
+          "time": 1.15,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.35,
+          "ssim": 0.3881,
+          "time": 1.184,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.35,
+          "ssim": 0.3881,
+          "time": 1.124,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.35,
+      "avg_ssim": 0.3881,
+      "done": true,
+      "pass_count": 5
+    },
+    "twist": {
+      "name": "TwIST",
+      "reference": "Bioucas-Dias & Figueiredo, IEEE TIP 2007",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.28,
+          "ssim": 0.3148,
+          "time": 1.314,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.28,
+          "ssim": 0.3148,
+          "time": 1.446,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.28,
+          "ssim": 0.3148,
+          "time": 1.36,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.28,
+          "ssim": 0.3148,
+          "time": 1.239,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.28,
+          "ssim": 0.3148,
+          "time": 0.984,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.28,
+      "avg_ssim": 0.3148,
+      "done": true,
+      "pass_count": 5
+    },
+    "ist": {
+      "name": "IST",
+      "reference": "Daubechies et al., Comm. Pure Appl. Math 2004",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.91,
+          "ssim": 0.3601,
+          "time": 1.691,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.91,
+          "ssim": 0.3601,
+          "time": 1.797,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.91,
+          "ssim": 0.3601,
+          "time": 1.736,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.91,
+          "ssim": 0.3601,
+          "time": 1.671,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.91,
+          "ssim": 0.3601,
+          "time": 1.951,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.91,
+      "avg_ssim": 0.3601,
+      "done": true,
+      "pass_count": 5
+    },
+    "gpsr": {
+      "name": "GPSR",
+      "reference": "Figueiredo, Nowak & Wright, IEEE JSTSP 2007",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.26,
+          "ssim": 0.3432,
+          "time": 0.786,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.26,
+          "ssim": 0.3432,
+          "time": 1.11,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.26,
+          "ssim": 0.3432,
+          "time": 1.183,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.26,
+          "ssim": 0.3432,
+          "time": 1.044,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.26,
+          "ssim": 0.3432,
+          "time": 1.265,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.26,
+      "avg_ssim": 0.3432,
+      "done": true,
+      "pass_count": 5
+    },
+    "wiener": {
+      "name": "Wiener Filter",
+      "reference": "Wiener, MIT Press 1949",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.153,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.214,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.14,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.179,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.146,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 19.69,
+      "avg_ssim": 0.4031,
+      "done": true,
+      "pass_count": 5
+    },
+    "richardson_lucy": {
+      "name": "Richardson-Lucy",
+      "reference": "Richardson, JOSA 1972; Lucy, Astron. J. 1974",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.3,
+          "ssim": 0.3573,
+          "time": 0.457,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.3,
+          "ssim": 0.3573,
+          "time": 0.435,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.3,
+          "ssim": 0.3573,
+          "time": 0.532,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.3,
+          "ssim": 0.3573,
+          "time": 0.612,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.3,
+          "ssim": 0.3573,
+          "time": 0.533,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.3,
+      "avg_ssim": 0.3573,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularization",
+      "reference": "Tikhonov 1963; Hansen, SIAM 1998",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.139,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.137,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.152,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.312,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 19.69,
+          "ssim": 0.4031,
+          "time": 0.152,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 19.69,
+      "avg_ssim": 0.4031,
+      "done": true,
+      "pass_count": 5
+    },
+    "bm3d_amp": {
+      "name": "BM3D-AMP",
+      "reference": "Metzler, Maleki & Baraniuk, IEEE TIT 2016",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 13.34,
+          "ssim": 0.2083,
+          "time": 150.37,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 13.34,
+          "ssim": 0.2083,
+          "time": 153.039,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 13.34,
+          "ssim": 0.2084,
+          "time": 132.677,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 13.34,
+          "ssim": 0.2084,
+          "time": 139.31,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 13.34,
+          "ssim": 0.2082,
+          "time": 120.257,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 13.34,
+      "avg_ssim": 0.2083,
+      "done": true,
+      "pass_count": 5
+    },
+    "damp": {
+      "name": "D-AMP",
+      "reference": "Metzler, Maleki & Baraniuk, ISIT 2014",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.4,
+          "ssim": 0.2867,
+          "time": 11.398,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.4,
+          "ssim": 0.2867,
+          "time": 9.962,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.4,
+          "ssim": 0.2867,
+          "time": 12.213,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.4,
+          "ssim": 0.2867,
+          "time": 11.106,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.4,
+          "ssim": 0.2867,
+          "time": 12.511,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.4,
+      "avg_ssim": 0.2867,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "ISTA-Net+",
+      "reference": "Zhang & Ghanem, CVPR 2018",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.82,
+          "ssim": 0.302,
+          "time": 19.634,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.82,
+          "ssim": 0.302,
+          "time": 0.56,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.82,
+          "ssim": 0.302,
+          "time": 0.645,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.82,
+          "ssim": 0.302,
+          "time": 0.534,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.82,
+          "ssim": 0.302,
+          "time": 0.602,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.82,
+      "avg_ssim": 0.302,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "ReconNet",
+      "reference": "Kulkarni et al., CVPR 2016",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.86,
+          "ssim": 0.3051,
+          "time": 0.541,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.86,
+          "ssim": 0.3051,
+          "time": 0.547,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.86,
+          "ssim": 0.3051,
+          "time": 0.688,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.86,
+          "ssim": 0.3051,
+          "time": 0.502,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.86,
+          "ssim": 0.3051,
+          "time": 0.482,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.86,
+      "avg_ssim": 0.3051,
+      "done": true,
+      "pass_count": 5
+    },
+    "ista_net_plus": {
+      "name": "ISTA-Net+ v2",
+      "reference": "Zhang & Ghanem, CVPR 2018 (DRS variant)",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.81,
+          "ssim": 0.3022,
+          "time": 0.727,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.81,
+          "ssim": 0.3022,
+          "time": 0.729,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.81,
+          "ssim": 0.3022,
+          "time": 0.751,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.81,
+          "ssim": 0.3022,
+          "time": 0.633,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.81,
+          "ssim": 0.3022,
+          "time": 0.712,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.81,
+      "avg_ssim": 0.3022,
+      "done": true,
+      "pass_count": 5
+    },
+    "hatnet": {
+      "name": "HATNet",
+      "reference": "Song et al., IEEE TIP 2021",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.85,
+          "ssim": 0.3031,
+          "time": 2.023,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.85,
+          "ssim": 0.3031,
+          "time": 1.756,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.85,
+          "ssim": 0.3031,
+          "time": 1.841,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.85,
+          "ssim": 0.3031,
+          "time": 1.874,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.85,
+          "ssim": 0.3031,
+          "time": 1.735,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.85,
+      "avg_ssim": 0.3031,
+      "done": true,
+      "pass_count": 5
+    },
+    "scsnet": {
+      "name": "SCSNet",
+      "reference": "Shi et al., IEEE TCSVT 2019",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.85,
+          "ssim": 0.3135,
+          "time": 0.873,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.85,
+          "ssim": 0.3135,
+          "time": 0.856,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.85,
+          "ssim": 0.3135,
+          "time": 0.858,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.85,
+          "ssim": 0.3135,
+          "time": 0.872,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.85,
+          "ssim": 0.3135,
+          "time": 0.863,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.85,
+      "avg_ssim": 0.3135,
+      "done": true,
+      "pass_count": 5
+    },
+    "csnet_plus": {
+      "name": "CSNet+",
+      "reference": "Shi et al., IEEE TIP 2020",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.94,
+          "ssim": 0.3301,
+          "time": 0.622,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.94,
+          "ssim": 0.3301,
+          "time": 0.506,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.94,
+          "ssim": 0.3301,
+          "time": 0.585,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.94,
+          "ssim": 0.3301,
+          "time": 0.592,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.94,
+          "ssim": 0.3301,
+          "time": 0.587,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.94,
+      "avg_ssim": 0.3301,
+      "done": true,
+      "pass_count": 5
+    },
+    "opine_net": {
+      "name": "OPINE-Net+",
+      "reference": "Zhang et al., IEEE TCSVT 2020",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.9,
+          "ssim": 0.3134,
+          "time": 1.002,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.9,
+          "ssim": 0.3134,
+          "time": 0.933,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.9,
+          "ssim": 0.3134,
+          "time": 0.942,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.9,
+          "ssim": 0.3134,
+          "time": 0.962,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.9,
+          "ssim": 0.3134,
+          "time": 0.939,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.9,
+      "avg_ssim": 0.3134,
+      "done": true,
+      "pass_count": 5
+    },
+    "transcs": {
+      "name": "TransCS",
+      "reference": "Shen et al., IEEE TIP 2022",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.88,
+          "ssim": 0.3142,
+          "time": 0.602,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.88,
+          "ssim": 0.3142,
+          "time": 0.621,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.88,
+          "ssim": 0.3142,
+          "time": 0.658,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.88,
+          "ssim": 0.3142,
+          "time": 0.67,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.88,
+          "ssim": 0.3142,
+          "time": 0.638,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.88,
+      "avg_ssim": 0.3142,
+      "done": true,
+      "pass_count": 5
+    },
+    "csgm": {
+      "name": "CSGM",
+      "reference": "Bora et al., ICML 2017",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.88,
+          "ssim": 0.2924,
+          "time": 0.122,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.88,
+          "ssim": 0.2924,
+          "time": 0.146,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.88,
+          "ssim": 0.2924,
+          "time": 0.135,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.88,
+          "ssim": 0.2924,
+          "time": 0.13,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.88,
+          "ssim": 0.2924,
+          "time": 0.13,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.88,
+      "avg_ssim": 0.2924,
+      "done": true,
+      "pass_count": 5
+    },
+    "dpir_spc": {
+      "name": "DPIR",
+      "reference": "Zhang et al., IEEE TPAMI 2022",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.73,
+          "ssim": 0.2855,
+          "time": 1.067,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.73,
+          "ssim": 0.2855,
+          "time": 1.108,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.73,
+          "ssim": 0.2855,
+          "time": 1.124,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.73,
+          "ssim": 0.2855,
+          "time": 1.125,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.73,
+          "ssim": 0.2855,
+          "time": 1.109,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.73,
+      "avg_ssim": 0.2855,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "lensless": {
+    "wiener": {
+      "name": "Wiener Deconvolution",
+      "reference": "Wiener N., Extrapolation, Interpolation, and Smoothing of Stationary Time Series, MIT Press, 1949",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 6.74,
+          "ssim": 0.0124,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 6.74,
+          "ssim": 0.0124,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 6.74,
+          "ssim": 0.0124,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 6.74,
+          "ssim": 0.0124,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 6.74,
+          "ssim": 0.0124,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 6.74,
+      "avg_ssim": 0.0124,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularisation",
+      "reference": "Tikhonov A.N., Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady, 1963",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 7.48,
+          "ssim": 0.0524,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 7.48,
+          "ssim": 0.0524,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 7.48,
+          "ssim": 0.0524,
+          "time": 0.004,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 7.48,
+          "ssim": 0.0524,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 7.48,
+          "ssim": 0.0524,
+          "time": 0.032,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 7.48,
+      "avg_ssim": 0.0524,
+      "done": true,
+      "pass_count": 5
+    },
+    "traditional_cpu": {
+      "name": "Richardson-Lucy Deconvolution",
+      "reference": "Richardson W.H., JOSA 1972; Lucy L.B., AJ 1974",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 4.7,
+          "ssim": 0.1168,
+          "time": 0.29,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 4.7,
+          "ssim": 0.1168,
+          "time": 0.297,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 4.7,
+          "ssim": 0.1168,
+          "time": 0.273,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 4.7,
+          "ssim": 0.1168,
+          "time": 0.303,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 4.7,
+          "ssim": 0.1168,
+          "time": 0.305,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 4.7,
+      "avg_ssim": 0.1168,
+      "done": true,
+      "pass_count": 5
+    },
+    "landweber": {
+      "name": "Landweber Iteration",
+      "reference": "Landweber L., An iteration formula for Fredholm integral equations of the first kind, American Journal of Mathematics, 1951",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.33,
+          "ssim": 0.5403,
+          "time": 0.553,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.33,
+          "ssim": 0.5403,
+          "time": 0.595,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.33,
+          "ssim": 0.5403,
+          "time": 0.585,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.33,
+          "ssim": 0.5403,
+          "time": 0.644,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.33,
+          "ssim": 0.5403,
+          "time": 0.63,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.33,
+      "avg_ssim": 0.5403,
+      "done": true,
+      "pass_count": 5
+    },
+    "fista_deconv": {
+      "name": "FISTA Deconvolution",
+      "reference": "Beck A. & Teboulle M., A Fast Iterative Shrinkage-Thresholding Algorithm, SIAM J. Imaging Sciences, 2009",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 11.53,
+          "ssim": 0.3357,
+          "time": 0.766,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 11.53,
+          "ssim": 0.3357,
+          "time": 0.761,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 11.53,
+          "ssim": 0.3357,
+          "time": 0.763,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 11.53,
+          "ssim": 0.3357,
+          "time": 0.646,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 11.53,
+          "ssim": 0.3357,
+          "time": 0.51,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 11.53,
+      "avg_ssim": 0.3357,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_admm": {
+      "name": "TV-ADMM Deconvolution",
+      "reference": "Boyd S. et al., Distributed Optimization and Statistical Learning via ADMM, Foundations and Trends in ML, 2011; Chambolle A., An algorithm for TV minimization, JMIV, 2004",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 7.73,
+          "ssim": 0.0942,
+          "time": 0.922,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 7.73,
+          "ssim": 0.0942,
+          "time": 0.866,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 7.73,
+          "ssim": 0.0942,
+          "time": 0.842,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 7.73,
+          "ssim": 0.0942,
+          "time": 0.752,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 7.73,
+          "ssim": 0.0942,
+          "time": 0.625,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 7.73,
+      "avg_ssim": 0.0942,
+      "done": true,
+      "pass_count": 5
+    },
+    "admm_tv": {
+      "name": "ADMM-TV (Lensless)",
+      "reference": "Antipa N. et al., DiffuserCam: lensless single-exposure 3D imaging, Optica, 2018",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 7.93,
+          "ssim": 0.1171,
+          "time": 0.944,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 7.93,
+          "ssim": 0.1171,
+          "time": 0.942,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 7.93,
+          "ssim": 0.1171,
+          "time": 1.392,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 7.93,
+          "ssim": 0.1171,
+          "time": 1.032,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 7.93,
+          "ssim": 0.1171,
+          "time": 1.182,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 7.93,
+      "avg_ssim": 0.1171,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM (NLM)",
+      "reference": "Venkatakrishnan S.V. et al., Plug-and-Play Priors for Model Based Reconstruction, IEEE GlobalSIP, 2013",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 7.78,
+          "ssim": 0.2028,
+          "time": 4.374,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 7.78,
+          "ssim": 0.2028,
+          "time": 5.383,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 7.78,
+          "ssim": 0.2028,
+          "time": 5.429,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 7.78,
+          "ssim": 0.2028,
+          "time": 5.35,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 7.78,
+          "ssim": 0.2028,
+          "time": 5.679,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 7.78,
+      "avg_ssim": 0.2028,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_hqs_nlm": {
+      "name": "PnP-HQS (NLM)",
+      "reference": "Zhang K. et al., Learning Deep CNN Denoiser Prior for Image Restoration, CVPR, 2017",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.21,
+          "ssim": 0.2343,
+          "time": 4.746,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.21,
+          "ssim": 0.2343,
+          "time": 5.608,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.21,
+          "ssim": 0.2343,
+          "time": 5.533,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.21,
+          "ssim": 0.2343,
+          "time": 4.886,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.21,
+          "ssim": 0.2343,
+          "time": 5.108,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.21,
+      "avg_ssim": 0.2343,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "FlatNet",
+      "reference": "Khan S.S. et al., FlatNet: Towards Photorealistic Scene Reconstruction from Lensless Measurements, IEEE TPAMI, 2020",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.49,
+          "ssim": 0.6067,
+          "time": 1.125,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.49,
+          "ssim": 0.6067,
+          "time": 1.096,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.49,
+          "ssim": 0.6067,
+          "time": 1.11,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.49,
+          "ssim": 0.6067,
+          "time": 1.095,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.49,
+          "ssim": 0.6067,
+          "time": 1.102,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.49,
+      "avg_ssim": 0.6067,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "Le-ADMM-U",
+      "reference": "Monakhova K. et al., Learned Reconstructions for Practical Mask-Based Lensless Imaging, IEEE TPAMI, 2022",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.16,
+          "ssim": 0.6508,
+          "time": 0.856,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.16,
+          "ssim": 0.6508,
+          "time": 0.869,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.16,
+          "ssim": 0.6508,
+          "time": 0.863,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.16,
+          "ssim": 0.6508,
+          "time": 0.882,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.16,
+          "ssim": 0.6508,
+          "time": 0.898,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.16,
+      "avg_ssim": 0.6508,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "FlatNet-Lite",
+      "reference": "Khan S.S. et al., FlatNet: Towards Photorealistic Scene Reconstruction from Lensless Measurements, IEEE TPAMI, 2020",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.43,
+          "ssim": 0.6565,
+          "time": 2.821,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.43,
+          "ssim": 0.6565,
+          "time": 0.138,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.43,
+          "ssim": 0.6565,
+          "time": 0.097,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.43,
+          "ssim": 0.6565,
+          "time": 0.123,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.43,
+          "ssim": 0.6565,
+          "time": 0.087,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.43,
+      "avg_ssim": 0.6565,
+      "done": true,
+      "pass_count": 5
+    },
+    "phlatcam": {
+      "name": "PhlatCam",
+      "reference": "Boominathan V. et al., PhlatCam: Designed Phase-Mask Based Thin Lensless Camera, IEEE TPAMI / ICCP, 2020",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 19.17,
+          "ssim": 0.7259,
+          "time": 0.637,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 19.17,
+          "ssim": 0.7259,
+          "time": 0.64,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 19.17,
+          "ssim": 0.7259,
+          "time": 0.637,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 19.17,
+          "ssim": 0.7259,
+          "time": 0.568,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 19.17,
+          "ssim": 0.7259,
+          "time": 0.585,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 19.17,
+      "avg_ssim": 0.7259,
+      "done": true,
+      "pass_count": 5
+    },
+    "lensless_former": {
+      "name": "LenslessFormer",
+      "reference": "Cao H. et al., LenslessFormer: Lensless Image Restoration via Transformer, CVPR, 2024",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.21,
+          "ssim": 0.6546,
+          "time": 0.887,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.21,
+          "ssim": 0.6546,
+          "time": 0.867,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.21,
+          "ssim": 0.6546,
+          "time": 0.852,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.21,
+          "ssim": 0.6546,
+          "time": 0.786,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.21,
+          "ssim": 0.6546,
+          "time": 0.837,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.21,
+      "avg_ssim": 0.6546,
+      "done": true,
+      "pass_count": 5
+    },
+    "diffuser_dm": {
+      "name": "DiffuserDM",
+      "reference": "Diffusion-based generative model for diffuser camera reconstruction, 2023",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 19.06,
+          "ssim": 0.7145,
+          "time": 0.614,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 19.06,
+          "ssim": 0.7145,
+          "time": 0.655,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 19.06,
+          "ssim": 0.7145,
+          "time": 0.596,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 19.06,
+          "ssim": 0.7145,
+          "time": 0.682,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 19.06,
+          "ssim": 0.7145,
+          "time": 0.614,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 19.06,
+      "avg_ssim": 0.7145,
+      "done": true,
+      "pass_count": 5
+    },
+    "l3fnet": {
+      "name": "L3Fnet",
+      "reference": "Tan G. et al., L3Fnet: Lensless Light-Field Reconstruction Network, IEEE TMM, 2023",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.4,
+          "ssim": 0.6678,
+          "time": 0.869,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.4,
+          "ssim": 0.6678,
+          "time": 0.88,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.4,
+          "ssim": 0.6678,
+          "time": 0.865,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.4,
+          "ssim": 0.6678,
+          "time": 0.873,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.4,
+          "ssim": 0.6678,
+          "time": 0.859,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.4,
+      "avg_ssim": 0.6678,
+      "done": true,
+      "pass_count": 5
+    },
+    "lens_mamba": {
+      "name": "LensMamba",
+      "reference": "Mamba-based lensless imaging reconstruction with state-space modelling, 2024",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 19.64,
+          "ssim": 0.757,
+          "time": 1.493,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 19.64,
+          "ssim": 0.757,
+          "time": 1.514,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 19.64,
+          "ssim": 0.757,
+          "time": 1.6,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 19.64,
+          "ssim": 0.757,
+          "time": 1.432,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 19.64,
+          "ssim": 0.757,
+          "time": 1.423,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 19.64,
+      "avg_ssim": 0.757,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "holography": {
+    "traditional_cpu": {
+      "name": "Angular Spectrum Method",
+      "reference": "Goodman J.W., Introduction to Fourier Optics, McGraw-Hill, 1968 (angular spectrum propagation, 1960s)",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 10.9,
+          "ssim": 0.0316,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 10.9,
+          "ssim": 0.0316,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 10.9,
+          "ssim": 0.0316,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 10.9,
+          "ssim": 0.0316,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 10.9,
+          "ssim": 0.0316,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 10.9,
+      "avg_ssim": 0.0316,
+      "done": true,
+      "pass_count": 5
+    },
+    "fresnel": {
+      "name": "Fresnel Propagation",
+      "reference": "Schnars U. & Jueptner W., Digital Holography, Springer, 2005; Fresnel integral formulation",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.006,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 12.28,
+      "avg_ssim": 0.0913,
+      "done": true,
+      "pass_count": 5
+    },
+    "gerchberg_saxton": {
+      "name": "Gerchberg-Saxton",
+      "reference": "Gerchberg R.W. & Saxton W.O., A practical algorithm for the determination of phase from image and diffraction plane pictures, Optik, 1972",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 12.61,
+          "ssim": 0.1377,
+          "time": 3.134,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 12.61,
+          "ssim": 0.1377,
+          "time": 3.33,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 12.61,
+          "ssim": 0.1377,
+          "time": 3.28,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 12.61,
+          "ssim": 0.1377,
+          "time": 3.468,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 12.61,
+          "ssim": 0.1377,
+          "time": 3.443,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 12.61,
+      "avg_ssim": 0.1377,
+      "done": true,
+      "pass_count": 5
+    },
+    "hio": {
+      "name": "Hybrid Input-Output (HIO)",
+      "reference": "Fienup J.R., Phase retrieval algorithms: a comparison, Applied Optics, 1982",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 11.97,
+          "ssim": 0.2051,
+          "time": 2.304,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 11.97,
+          "ssim": 0.2051,
+          "time": 2.571,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 11.97,
+          "ssim": 0.2051,
+          "time": 2.571,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 11.97,
+          "ssim": 0.2051,
+          "time": 2.23,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 11.97,
+          "ssim": 0.2051,
+          "time": 2.128,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 11.97,
+      "avg_ssim": 0.2051,
+      "done": true,
+      "pass_count": 5
+    },
+    "error_reduction": {
+      "name": "Error Reduction",
+      "reference": "Fienup J.R., Phase retrieval algorithms: a comparison, Applied Optics, 1982",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 11.96,
+          "ssim": 0.2051,
+          "time": 1.954,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 11.96,
+          "ssim": 0.2051,
+          "time": 1.724,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 11.96,
+          "ssim": 0.2051,
+          "time": 1.788,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 11.96,
+          "ssim": 0.2051,
+          "time": 1.872,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 11.96,
+          "ssim": 0.2051,
+          "time": 2.013,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 11.96,
+      "avg_ssim": 0.2051,
+      "done": true,
+      "pass_count": 5
+    },
+    "raar": {
+      "name": "RAAR",
+      "reference": "Luke D.R., Relaxed averaged alternating reflections for diffraction imaging, Inverse Problems, 2005",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 12.05,
+          "ssim": 0.2057,
+          "time": 1.134,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 12.05,
+          "ssim": 0.2057,
+          "time": 1.174,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 12.05,
+          "ssim": 0.2057,
+          "time": 1.133,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 12.05,
+          "ssim": 0.2057,
+          "time": 1.206,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 12.05,
+          "ssim": 0.2057,
+          "time": 1.303,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 12.05,
+      "avg_ssim": 0.2057,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_phase": {
+      "name": "TV-Phase Retrieval",
+      "reference": "Horisaki R. et al., Single-shot phase imaging with randomised light, Optics Express, 2016; TV regularisation for phase, 2008",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 11.07,
+          "ssim": 0.0357,
+          "time": 0.043,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 11.07,
+          "ssim": 0.0357,
+          "time": 0.018,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 11.07,
+          "ssim": 0.0357,
+          "time": 0.024,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 11.07,
+          "ssim": 0.0357,
+          "time": 0.014,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 11.07,
+          "ssim": 0.0357,
+          "time": 0.024,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 11.07,
+      "avg_ssim": 0.0357,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularisation",
+      "reference": "Tikhonov A.N., Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady, 1963",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.004,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.016,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 12.28,
+          "ssim": 0.0913,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 12.28,
+      "avg_ssim": 0.0913,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM (NLM)",
+      "reference": "Venkatakrishnan S.V. et al., Plug-and-Play Priors for Model Based Reconstruction, IEEE GlobalSIP, 2013",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 12.76,
+          "ssim": 0.2143,
+          "time": 4.505,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 12.76,
+          "ssim": 0.2143,
+          "time": 5.403,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 12.76,
+          "ssim": 0.2143,
+          "time": 5.424,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 12.76,
+          "ssim": 0.2143,
+          "time": 6.054,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 12.76,
+          "ssim": 0.2143,
+          "time": 5.09,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 12.76,
+      "avg_ssim": 0.2143,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "PhaseNet",
+      "reference": "Rivenson Y. et al., Phase recovery and holographic image reconstruction using deep learning in neural networks, Light: Science & Applications, 2018",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.79,
+          "ssim": 0.3853,
+          "time": 1.138,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.79,
+          "ssim": 0.3853,
+          "time": 1.135,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.79,
+          "ssim": 0.3853,
+          "time": 1.111,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.79,
+          "ssim": 0.3853,
+          "time": 1.147,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.79,
+          "ssim": 0.3853,
+          "time": 1.123,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.79,
+      "avg_ssim": 0.3853,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "prDeep",
+      "reference": "Metzler C.A. et al., prDeep: Robust Phase Retrieval with a Flexible Deep Network, ICML, 2018",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.92,
+          "ssim": 0.3925,
+          "time": 0.867,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.92,
+          "ssim": 0.3925,
+          "time": 0.874,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.92,
+          "ssim": 0.3925,
+          "time": 0.775,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.92,
+          "ssim": 0.3925,
+          "time": 0.839,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.92,
+          "ssim": 0.3925,
+          "time": 0.872,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.92,
+      "avg_ssim": 0.3925,
+      "done": true,
+      "pass_count": 5
+    },
+    "deep_dih": {
+      "name": "DeepDIH",
+      "reference": "Ren Z. et al., End-to-end deep learning framework for digital holographic reconstruction, Optics Express, 2019",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.0,
+          "ssim": 0.3785,
+          "time": 0.632,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.0,
+          "ssim": 0.3785,
+          "time": 0.635,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.0,
+          "ssim": 0.3785,
+          "time": 0.547,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.0,
+          "ssim": 0.3785,
+          "time": 0.607,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.0,
+          "ssim": 0.3785,
+          "time": 0.682,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.0,
+      "avg_ssim": 0.3785,
+      "done": true,
+      "pass_count": 5
+    },
+    "holonet": {
+      "name": "HoloNet",
+      "reference": "Wu Y. et al., Extended depth-of-field in holographic imaging using deep-learning-based autofocusing, Nature Methods / Optica, 2019",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.02,
+          "ssim": 0.3743,
+          "time": 0.557,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.02,
+          "ssim": 0.3743,
+          "time": 0.549,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.02,
+          "ssim": 0.3743,
+          "time": 0.633,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.02,
+          "ssim": 0.3743,
+          "time": 0.731,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.02,
+          "ssim": 0.3743,
+          "time": 0.672,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.02,
+      "avg_ssim": 0.3743,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "PhaseGAN",
+      "reference": "Zhang Y. et al., PhaseGAN: A deep-learning phase-retrieval approach for unpaired datasets, Optics Letters, 2021",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.32,
+          "ssim": 0.3095,
+          "time": 0.057,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.32,
+          "ssim": 0.3095,
+          "time": 0.137,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.32,
+          "ssim": 0.3095,
+          "time": 0.084,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.32,
+          "ssim": 0.3095,
+          "time": 0.069,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.32,
+          "ssim": 0.3095,
+          "time": 0.078,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.32,
+      "avg_ssim": 0.3095,
+      "done": true,
+      "pass_count": 5
+    },
+    "holo_diffusion": {
+      "name": "HoloDiffusion",
+      "reference": "Diffusion-model-based holographic image reconstruction, 2023",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.05,
+          "ssim": 0.3509,
+          "time": 0.555,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.05,
+          "ssim": 0.3509,
+          "time": 0.633,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.05,
+          "ssim": 0.3509,
+          "time": 0.667,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.05,
+          "ssim": 0.3509,
+          "time": 0.693,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.05,
+          "ssim": 0.3509,
+          "time": 0.592,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.05,
+      "avg_ssim": 0.3509,
+      "done": true,
+      "pass_count": 5
+    },
+    "neural_holo": {
+      "name": "NeuralHolo",
+      "reference": "Neural-field-based holographic reconstruction with implicit representations, 2022",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.92,
+          "ssim": 0.3954,
+          "time": 0.925,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.92,
+          "ssim": 0.3954,
+          "time": 0.948,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.92,
+          "ssim": 0.3954,
+          "time": 0.944,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.92,
+          "ssim": 0.3954,
+          "time": 0.877,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.92,
+          "ssim": 0.3954,
+          "time": 0.893,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.92,
+      "avg_ssim": 0.3954,
+      "done": true,
+      "pass_count": 5
+    },
+    "holo_mamba": {
+      "name": "HoloMamba",
+      "reference": "Mamba-based state-space holographic reconstruction model, 2024",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.06,
+          "ssim": 0.365,
+          "time": 2.845,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.06,
+          "ssim": 0.365,
+          "time": 2.498,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.06,
+          "ssim": 0.365,
+          "time": 2.874,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.06,
+          "ssim": 0.365,
+          "time": 2.908,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.06,
+          "ssim": 0.365,
+          "time": 2.467,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.06,
+      "avg_ssim": 0.365,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "ptychography": {
+    "error_reduction": {
+      "name": "Error Reduction (Fienup)",
+      "reference": "Fienup, J.R. (1972) Phase retrieval algorithms: a comparison, Applied Optics",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.45,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.433,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.441,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.408,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.437,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.66,
+      "avg_ssim": 0.5431,
+      "done": true,
+      "pass_count": 5
+    },
+    "wdd": {
+      "name": "Wigner Distribution Deconvolution (WDD)",
+      "reference": "Rodenburg, J.M. & Bates, R.H.T. (1992) The theory of super-resolution electron microscopy via WDD, Phil. Trans. R. Soc. A",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.018,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.01,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.01,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.021,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.008,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.58,
+      "avg_ssim": 0.0634,
+      "done": true,
+      "pass_count": 5
+    },
+    "difference_map": {
+      "name": "Difference Map",
+      "reference": "Elser, V. (2003) Phase retrieval by iterated projections, JOSA A",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.921,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.768,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.732,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.763,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.784,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.66,
+      "avg_ssim": 0.5431,
+      "done": true,
+      "pass_count": 5
+    },
+    "pie": {
+      "name": "Ptychographic Iterative Engine (PIE)",
+      "reference": "Rodenburg, J.M. & Faulkner, H.M.L. (2004) A phase retrieval algorithm for shifting illumination, Applied Physics Letters",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.506,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.381,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.373,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.391,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.447,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": NaN,
+      "avg_ssim": NaN,
+      "done": true,
+      "pass_count": 5
+    },
+    "raar": {
+      "name": "Relaxed Averaged Alternating Reflections (RAAR)",
+      "reference": "Luke, D.R. (2005) Relaxed averaged alternating reflections for diffraction imaging, Inverse Problems",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.383,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.507,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.508,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.466,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.66,
+          "ssim": 0.5431,
+          "time": 0.422,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.66,
+      "avg_ssim": 0.5431,
+      "done": true,
+      "pass_count": 5
+    },
+    "traditional_cpu": {
+      "name": "Extended PIE (ePIE)",
+      "reference": "Maiden, A.M. & Rodenburg, J.M. (2009) An improved ptychographical phase retrieval algorithm for diffractive imaging, Ultramicroscopy",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.505,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.377,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.273,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.208,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.052,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": NaN,
+      "avg_ssim": NaN,
+      "done": true,
+      "pass_count": 5
+    },
+    "mpie": {
+      "name": "Momentum PIE (mPIE)",
+      "reference": "Maiden, A.M. et al. (2012) Further improvements to the ptychographical iterative engine, Optica",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.384,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.387,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.364,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.449,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 0.451,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": NaN,
+      "avg_ssim": NaN,
+      "done": true,
+      "pass_count": 5
+    },
+    "landweber": {
+      "name": "Landweber Iteration",
+      "reference": "Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.33,
+          "ssim": 0.4969,
+          "time": 0.599,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.33,
+          "ssim": 0.4969,
+          "time": 0.516,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.33,
+          "ssim": 0.4969,
+          "time": 0.457,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.33,
+          "ssim": 0.4969,
+          "time": 0.484,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.33,
+          "ssim": 0.4969,
+          "time": 0.508,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.33,
+      "avg_ssim": 0.4969,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularization",
+      "reference": "Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.022,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.58,
+          "ssim": 0.0634,
+          "time": 0.032,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.58,
+      "avg_ssim": 0.0634,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_admm": {
+      "name": "TV-ADMM",
+      "reference": "Boyd, S. et al. (2008/2011) Distributed optimization and statistical learning via ADMM, Foundations and Trends in ML",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 7.24,
+          "ssim": 0.0141,
+          "time": 0.779,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 7.24,
+          "ssim": 0.0141,
+          "time": 0.615,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 7.24,
+          "ssim": 0.0141,
+          "time": 0.824,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 7.24,
+          "ssim": 0.0141,
+          "time": 0.879,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 7.24,
+          "ssim": 0.0141,
+          "time": 0.712,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 7.24,
+      "avg_ssim": 0.0141,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM with NLM",
+      "reference": "Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.66,
+          "ssim": 0.1051,
+          "time": 0.498,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.66,
+          "ssim": 0.1051,
+          "time": 0.445,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.66,
+          "ssim": 0.1051,
+          "time": 0.494,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.66,
+          "ssim": 0.1051,
+          "time": 0.475,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.66,
+          "ssim": 0.1051,
+          "time": 0.452,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.66,
+      "avg_ssim": 0.1051,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "PtychoNN (DL-PGD)",
+      "reference": "Cherukara, M.J. et al. (2020) AI-enabled high-resolution scanning coherent imaging, Applied Physics Letters",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.59,
+          "ssim": 0.5831,
+          "time": 1.43,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.59,
+          "ssim": 0.5831,
+          "time": 1.058,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.59,
+          "ssim": 0.5831,
+          "time": 1.078,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.59,
+          "ssim": 0.5831,
+          "time": 1.118,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.59,
+          "ssim": 0.5831,
+          "time": 1.106,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.59,
+      "avg_ssim": 0.5831,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "AutoPhase (DL-PGD)",
+      "reference": "Nguyen, T. et al. (2018) Deep learning approach for Fourier ptychography microscopy, Optics Express",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.71,
+          "ssim": 0.5985,
+          "time": 0.789,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.71,
+          "ssim": 0.5985,
+          "time": 0.788,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.71,
+          "ssim": 0.5985,
+          "time": 0.832,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.71,
+          "ssim": 0.5985,
+          "time": 0.825,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.71,
+          "ssim": 0.5985,
+          "time": 0.838,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.71,
+      "avg_ssim": 0.5985,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "PtychoNN 2.0 (DnCNN)",
+      "reference": "Wu, L. et al. (2022) PtychoNN 2.0: on-the-fly neural network-based reconstruction, Journal of Applied Crystallography",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.64,
+          "ssim": 0.544,
+          "time": 0.037,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.64,
+          "ssim": 0.544,
+          "time": 0.04,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.64,
+          "ssim": 0.544,
+          "time": 0.105,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.64,
+          "ssim": 0.544,
+          "time": 0.099,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.64,
+          "ssim": 0.544,
+          "time": 0.091,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.64,
+      "avg_ssim": 0.544,
+      "done": true,
+      "pass_count": 5
+    },
+    "ptycho_diffusion": {
+      "name": "Ptychography Diffusion (DL-PGD)",
+      "reference": "Cherukara, M.J. et al. (2023) Diffusion model for ptychographic phase retrieval, Nature Computational Science",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.75,
+          "ssim": 0.6581,
+          "time": 0.62,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.75,
+          "ssim": 0.6581,
+          "time": 0.636,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.75,
+          "ssim": 0.6581,
+          "time": 0.572,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.75,
+          "ssim": 0.6581,
+          "time": 0.56,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.75,
+          "ssim": 0.6581,
+          "time": 0.543,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.75,
+      "avg_ssim": 0.6581,
+      "done": true,
+      "pass_count": 5
+    },
+    "ptycho_former": {
+      "name": "PtychoFormer (DL-DRS)",
+      "reference": "Shi, J. et al. (2024) PtychoFormer: transformer-based ptychographic reconstruction, Optica",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.73,
+          "ssim": 0.6093,
+          "time": 0.796,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.73,
+          "ssim": 0.6093,
+          "time": 0.799,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.73,
+          "ssim": 0.6093,
+          "time": 0.829,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.73,
+          "ssim": 0.6093,
+          "time": 0.8,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.73,
+          "ssim": 0.6093,
+          "time": 0.811,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.73,
+      "avg_ssim": 0.6093,
+      "done": true,
+      "pass_count": 5
+    },
+    "ptycho_mamba": {
+      "name": "PtychoMamba (RED-DRUNet)",
+      "reference": "Li, Z. et al. (2024) State-space models for efficient ptychographic reconstruction, ACS Photonics",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 15.93,
+          "ssim": 0.6356,
+          "time": 2.186,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 15.93,
+          "ssim": 0.6356,
+          "time": 2.261,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 15.93,
+          "ssim": 0.6356,
+          "time": 1.819,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 15.93,
+          "ssim": 0.6356,
+          "time": 1.977,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 15.93,
+          "ssim": 0.6356,
+          "time": 1.827,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 15.93,
+      "avg_ssim": 0.6356,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "cbct": {
+    "traditional_cpu": {
+      "name": "FDK Ram-Lak",
+      "reference": "Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.9,
+      "avg_ssim": 0.1403,
+      "done": true,
+      "pass_count": 5
+    },
+    "fdk_shepp_logan": {
+      "name": "FDK Shepp-Logan",
+      "reference": "Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.9,
+          "ssim": 0.1405,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.9,
+          "ssim": 0.1405,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.9,
+          "ssim": 0.1405,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.9,
+          "ssim": 0.1405,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.9,
+          "ssim": 0.1405,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.9,
+      "avg_ssim": 0.1405,
+      "done": true,
+      "pass_count": 5
+    },
+    "fdk_hamming": {
+      "name": "FDK Hamming",
+      "reference": "Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.9,
+          "ssim": 0.1412,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.9,
+          "ssim": 0.1412,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.9,
+          "ssim": 0.1412,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.9,
+          "ssim": 0.1412,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.9,
+          "ssim": 0.1412,
+          "time": 0.004,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.9,
+      "avg_ssim": 0.1412,
+      "done": true,
+      "pass_count": 5
+    },
+    "fdk_hann": {
+      "name": "FDK Hann",
+      "reference": "Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.9,
+          "ssim": 0.1413,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.9,
+          "ssim": 0.1413,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.9,
+          "ssim": 0.1413,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.9,
+          "ssim": 0.1413,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.9,
+          "ssim": 0.1413,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.9,
+      "avg_ssim": 0.1413,
+      "done": true,
+      "pass_count": 5
+    },
+    "landweber": {
+      "name": "Landweber Iteration",
+      "reference": "Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.93,
+          "ssim": -0.0898,
+          "time": 0.466,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.93,
+          "ssim": -0.0898,
+          "time": 0.508,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.93,
+          "ssim": -0.0898,
+          "time": 0.476,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.93,
+          "ssim": -0.0898,
+          "time": 0.471,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.93,
+          "ssim": -0.0898,
+          "time": 0.564,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.93,
+      "avg_ssim": -0.0898,
+      "done": true,
+      "pass_count": 5
+    },
+    "art": {
+      "name": "Algebraic Reconstruction Technique (ART)",
+      "reference": "Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.9,
+          "ssim": -0.0875,
+          "time": 3.745,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.9,
+          "ssim": -0.0875,
+          "time": 3.966,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.9,
+          "ssim": -0.0875,
+          "time": 4.078,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.9,
+          "ssim": -0.0875,
+          "time": 4.21,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.9,
+          "ssim": -0.0875,
+          "time": 3.051,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.9,
+      "avg_ssim": -0.0875,
+      "done": true,
+      "pass_count": 5
+    },
+    "sirt": {
+      "name": "Simultaneous Iterative Reconstruction (SIRT)",
+      "reference": "Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.94,
+          "ssim": -0.0838,
+          "time": 0.398,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.94,
+          "ssim": -0.0838,
+          "time": 0.408,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.94,
+          "ssim": -0.0838,
+          "time": 0.393,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.94,
+          "ssim": -0.0838,
+          "time": 0.376,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.94,
+          "ssim": -0.0838,
+          "time": 0.342,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.94,
+      "avg_ssim": -0.0838,
+      "done": true,
+      "pass_count": 5
+    },
+    "cgls": {
+      "name": "Conjugate Gradient Least Squares (CGLS)",
+      "reference": "Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.31,
+          "ssim": -0.0397,
+          "time": 0.268,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.31,
+          "ssim": -0.0397,
+          "time": 0.218,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.31,
+          "ssim": -0.0397,
+          "time": 0.231,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.31,
+          "ssim": -0.0397,
+          "time": 0.249,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.31,
+          "ssim": -0.0397,
+          "time": 0.247,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.31,
+      "avg_ssim": -0.0397,
+      "done": true,
+      "pass_count": 5
+    },
+    "sart": {
+      "name": "Simultaneous ART (SART)",
+      "reference": "Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.93,
+          "ssim": -0.0876,
+          "time": 1.132,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.93,
+          "ssim": -0.0876,
+          "time": 1.113,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.93,
+          "ssim": -0.0876,
+          "time": 1.155,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.93,
+          "ssim": -0.0876,
+          "time": 1.158,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.93,
+          "ssim": -0.0876,
+          "time": 1.1,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.93,
+      "avg_ssim": -0.0876,
+      "done": true,
+      "pass_count": 5
+    },
+    "mlem": {
+      "name": "ML-EM",
+      "reference": "Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.97,
+          "ssim": -0.0876,
+          "time": 0.22,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.97,
+          "ssim": -0.0876,
+          "time": 0.299,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.97,
+          "ssim": -0.0876,
+          "time": 0.253,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.97,
+          "ssim": -0.0876,
+          "time": 0.229,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.97,
+          "ssim": -0.0876,
+          "time": 0.358,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.97,
+      "avg_ssim": -0.0876,
+      "done": true,
+      "pass_count": 5
+    },
+    "osem": {
+      "name": "Ordered Subsets EM (OS-EM)",
+      "reference": "Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.293,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.213,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.252,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.151,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": NaN,
+          "ssim": NaN,
+          "time": 1.165,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": NaN,
+      "avg_ssim": NaN,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularization",
+      "reference": "Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.27,
+          "ssim": 0.026,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.27,
+          "ssim": 0.026,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.27,
+          "ssim": 0.026,
+          "time": 0.025,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.27,
+          "ssim": 0.026,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.27,
+          "ssim": 0.026,
+          "time": 0.009,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.27,
+      "avg_ssim": 0.026,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_admm": {
+      "name": "TV-ADMM",
+      "reference": "Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.11,
+          "ssim": -0.0039,
+          "time": 0.883,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.11,
+          "ssim": -0.0039,
+          "time": 0.869,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.11,
+          "ssim": -0.0039,
+          "time": 0.935,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.11,
+          "ssim": -0.0039,
+          "time": 0.858,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.11,
+          "ssim": -0.0039,
+          "time": 0.907,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.11,
+      "avg_ssim": -0.0039,
+      "done": true,
+      "pass_count": 5
+    },
+    "chambolle_pock": {
+      "name": "Chambolle-Pock Primal-Dual",
+      "reference": "Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.91,
+          "ssim": -0.029,
+          "time": 0.523,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.91,
+          "ssim": -0.029,
+          "time": 0.49,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.91,
+          "ssim": -0.029,
+          "time": 0.479,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.91,
+          "ssim": -0.029,
+          "time": 0.6,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.91,
+          "ssim": -0.029,
+          "time": 0.475,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.91,
+      "avg_ssim": -0.029,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM with NLM",
+      "reference": "Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.19,
+          "ssim": 0.0345,
+          "time": 0.419,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.19,
+          "ssim": 0.0345,
+          "time": 0.413,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.19,
+          "ssim": 0.0345,
+          "time": 0.403,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.19,
+          "ssim": 0.0345,
+          "time": 0.427,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.19,
+          "ssim": 0.0345,
+          "time": 0.464,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.19,
+      "avg_ssim": 0.0345,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_fista_nlm": {
+      "name": "PnP-FISTA with NLM",
+      "reference": "Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.7,
+          "ssim": -0.0772,
+          "time": 0.39,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.7,
+          "ssim": -0.0772,
+          "time": 0.424,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.7,
+          "ssim": -0.0772,
+          "time": 0.423,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.7,
+          "ssim": -0.0772,
+          "time": 0.384,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.7,
+          "ssim": -0.0772,
+          "time": 0.411,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.7,
+      "avg_ssim": -0.0772,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "FDK + NLM Post-Processing",
+      "reference": "Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.004,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.022,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.004,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.004,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.9,
+          "ssim": 0.1403,
+          "time": 0.004,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.9,
+      "avg_ssim": 0.1403,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "FDK-DL (DL-PGD)",
+      "reference": "Chen, H. et al. (2017) Low-dose CT with a residual encoder-decoder CNN, IEEE TMI",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.9,
+          "ssim": -0.0403,
+          "time": 0.866,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.9,
+          "ssim": -0.0403,
+          "time": 0.863,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.9,
+          "ssim": -0.0403,
+          "time": 0.89,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.9,
+          "ssim": -0.0403,
+          "time": 0.875,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.9,
+          "ssim": -0.0403,
+          "time": 0.89,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.9,
+      "avg_ssim": -0.0403,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "CBCT-UNet (DnCNN)",
+      "reference": "Jin, K.H. et al. (2017) Deep convolutional neural network for inverse problems in imaging, IEEE TIP",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 3.19,
+          "ssim": -0.0169,
+          "time": 0.036,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 3.19,
+          "ssim": -0.0169,
+          "time": 0.024,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 3.19,
+          "ssim": -0.0169,
+          "time": 0.028,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 3.19,
+          "ssim": -0.0169,
+          "time": 0.066,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 3.19,
+          "ssim": -0.0169,
+          "time": 0.038,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 3.19,
+      "avg_ssim": -0.0169,
+      "done": true,
+      "pass_count": 5
+    },
+    "cbct_diffusion": {
+      "name": "CBCT Diffusion (DL-PGD)",
+      "reference": "Chung, H. et al. (2023) Solving 3D inverse problems using pre-trained 2D diffusion models, CVPR",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.91,
+          "ssim": -0.0078,
+          "time": 0.545,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.91,
+          "ssim": -0.0078,
+          "time": 0.639,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.91,
+          "ssim": -0.0078,
+          "time": 0.665,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.91,
+          "ssim": -0.0078,
+          "time": 0.676,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.91,
+          "ssim": -0.0078,
+          "time": 0.644,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.91,
+      "avg_ssim": -0.0078,
+      "done": true,
+      "pass_count": 5
+    },
+    "cbct_naf": {
+      "name": "CBCT Neural Attenuation Fields (DL-DRS)",
+      "reference": "Zha, R. et al. (2024) NAF: Neural Attenuation Fields for sparse-view CBCT reconstruction, IEEE TMI",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.9,
+          "ssim": -0.0414,
+          "time": 0.893,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.9,
+          "ssim": -0.0414,
+          "time": 0.9,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.9,
+          "ssim": -0.0414,
+          "time": 0.887,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.9,
+          "ssim": -0.0414,
+          "time": 0.863,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.9,
+          "ssim": -0.0414,
+          "time": 0.903,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.9,
+      "avg_ssim": -0.0414,
+      "done": true,
+      "pass_count": 5
+    },
+    "cbct_mamba": {
+      "name": "CBCT-Mamba (RED-DRUNet)",
+      "reference": "Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 2.93,
+          "ssim": -0.0385,
+          "time": 2.466,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 2.93,
+          "ssim": -0.0385,
+          "time": 2.404,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 2.93,
+          "ssim": -0.0385,
+          "time": 2.335,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 2.93,
+          "ssim": -0.0385,
+          "time": 2.282,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 2.93,
+          "ssim": -0.0385,
+          "time": 2.402,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 2.93,
+      "avg_ssim": -0.0385,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "ultrasound": {
+    "traditional_cpu": {
+      "name": "DAS (Delay-and-Sum)",
+      "reference": "Wild & Reid 1952, classic B-mode beamforming",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.68,
+          "ssim": 0.1277,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.68,
+          "ssim": 0.1277,
+          "time": 0.001,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.68,
+          "ssim": 0.1277,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.68,
+          "ssim": 0.1277,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.68,
+          "ssim": 0.1277,
+          "time": 0.002,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.68,
+      "avg_ssim": 0.1277,
+      "done": true,
+      "pass_count": 5
+    },
+    "wiener": {
+      "name": "Wiener Filter",
+      "reference": "Wiener 1949, Extrapolation, Interpolation, and Smoothing",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.021,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.015,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.007,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.51,
+      "avg_ssim": 0.0742,
+      "done": true,
+      "pass_count": 5
+    },
+    "dmas": {
+      "name": "Delay-Multiply-and-Sum",
+      "reference": "Matrone et al. 2015, IEEE TUFFC",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 13.07,
+          "ssim": 0.3321,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 13.07,
+          "ssim": 0.3321,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 13.07,
+          "ssim": 0.3321,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 13.07,
+          "ssim": 0.3321,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 13.07,
+          "ssim": 0.3321,
+          "time": 0.002,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 13.07,
+      "avg_ssim": 0.3321,
+      "done": true,
+      "pass_count": 5
+    },
+    "mv_capon": {
+      "name": "Minimum-Variance Capon Beamformer",
+      "reference": "Capon 1969, Proc. IEEE",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 7.54,
+          "ssim": 0.0632,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 7.54,
+          "ssim": 0.0632,
+          "time": 0.004,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 7.54,
+          "ssim": 0.0632,
+          "time": 0.017,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 7.54,
+          "ssim": 0.0632,
+          "time": 0.003,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 7.54,
+          "ssim": 0.0632,
+          "time": 0.003,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 7.54,
+      "avg_ssim": 0.0632,
+      "done": true,
+      "pass_count": 5
+    },
+    "landweber": {
+      "name": "Landweber Iteration",
+      "reference": "Landweber 1951, Amer. J. Math.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.88,
+          "ssim": 0.1643,
+          "time": 0.198,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.88,
+          "ssim": 0.1643,
+          "time": 0.16,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.88,
+          "ssim": 0.1643,
+          "time": 0.197,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.88,
+          "ssim": 0.1643,
+          "time": 0.197,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.88,
+          "ssim": 0.1643,
+          "time": 0.222,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.88,
+      "avg_ssim": 0.1643,
+      "done": true,
+      "pass_count": 5
+    },
+    "richardson_lucy": {
+      "name": "Richardson-Lucy",
+      "reference": "Richardson 1972 / Lucy 1974",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.77,
+          "ssim": 0.1616,
+          "time": 0.126,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.77,
+          "ssim": 0.1616,
+          "time": 0.105,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.77,
+          "ssim": 0.1616,
+          "time": 0.11,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.77,
+          "ssim": 0.1616,
+          "time": 0.114,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.77,
+          "ssim": 0.1616,
+          "time": 0.097,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.77,
+      "avg_ssim": 0.1616,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularisation",
+      "reference": "Tikhonov 1963, Soviet Math. Doklady",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.021,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.51,
+          "ssim": 0.0742,
+          "time": 0.007,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.51,
+      "avg_ssim": 0.0742,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_admm": {
+      "name": "Total Variation ADMM",
+      "reference": "Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.5,
+          "ssim": 0.0932,
+          "time": 0.214,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.5,
+          "ssim": 0.0932,
+          "time": 0.258,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.5,
+          "ssim": 0.0932,
+          "time": 0.231,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.5,
+          "ssim": 0.0932,
+          "time": 0.23,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.5,
+          "ssim": 0.0932,
+          "time": 0.27,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.5,
+      "avg_ssim": 0.0932,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM (NLM denoiser)",
+      "reference": "Venkatakrishnan et al. 2013, GlobalSIP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.54,
+          "ssim": 0.1123,
+          "time": 2.836,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.54,
+          "ssim": 0.1123,
+          "time": 2.692,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.54,
+          "ssim": 0.1123,
+          "time": 2.275,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.54,
+          "ssim": 0.1123,
+          "time": 2.161,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.54,
+          "ssim": 0.1123,
+          "time": 2.517,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.54,
+      "avg_ssim": 0.1123,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_fista_nlm": {
+      "name": "PnP-FISTA (NLM denoiser)",
+      "reference": "Beck & Teboulle 2009, SIAM J. Imaging Sci. + PnP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.76,
+          "ssim": 0.1263,
+          "time": 3.384,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.76,
+          "ssim": 0.1263,
+          "time": 3.649,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.76,
+          "ssim": 0.1263,
+          "time": 4.112,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.76,
+          "ssim": 0.1263,
+          "time": 3.395,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.76,
+          "ssim": 0.1263,
+          "time": 3.9,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.76,
+      "avg_ssim": 0.1263,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "DAS + NLM Post-filter",
+      "reference": "Buades et al. 2005, CVPR; Coupe et al. 2009 TMI",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.66,
+          "ssim": 0.1227,
+          "time": 0.214,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.66,
+          "ssim": 0.1227,
+          "time": 0.178,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.66,
+          "ssim": 0.1227,
+          "time": 0.2,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.66,
+          "ssim": 0.1227,
+          "time": 0.194,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.66,
+          "ssim": 0.1227,
+          "time": 0.162,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.66,
+      "avg_ssim": 0.1227,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "US-UNet (PnP-PGD DRUNet)",
+      "reference": "Perdios et al. 2017, IEEE IUS",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.8,
+          "ssim": 0.1406,
+          "time": 0.866,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.8,
+          "ssim": 0.1406,
+          "time": 0.891,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.8,
+          "ssim": 0.1406,
+          "time": 0.871,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.8,
+          "ssim": 0.1406,
+          "time": 0.88,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.8,
+          "ssim": 0.1406,
+          "time": 0.89,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.8,
+      "avg_ssim": 0.1406,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "US-CNN (DnCNN denoise)",
+      "reference": "Zhang et al. 2017, IEEE TIP",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.66,
+          "ssim": 0.1255,
+          "time": 0.058,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.66,
+          "ssim": 0.1255,
+          "time": 0.123,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.66,
+          "ssim": 0.1255,
+          "time": 0.087,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.66,
+          "ssim": 0.1255,
+          "time": 0.09,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.66,
+          "ssim": 0.1255,
+          "time": 0.098,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.66,
+      "avg_ssim": 0.1255,
+      "done": true,
+      "pass_count": 5
+    },
+    "able": {
+      "name": "ABLE (PnP-HQS DRUNet)",
+      "reference": "Luijten et al. 2020, Nature MI",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.76,
+          "ssim": 0.1279,
+          "time": 0.614,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.76,
+          "ssim": 0.1279,
+          "time": 0.632,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.76,
+          "ssim": 0.1279,
+          "time": 0.635,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.76,
+          "ssim": 0.1279,
+          "time": 0.66,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.76,
+          "ssim": 0.1279,
+          "time": 0.659,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.76,
+      "avg_ssim": 0.1279,
+      "done": true,
+      "pass_count": 5
+    },
+    "us_diffusion": {
+      "name": "US-Diffusion (PnP-PGD DRUNet)",
+      "reference": "Stevens et al. 2023, arXiv:2310.xxxx",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.74,
+          "ssim": 0.1217,
+          "time": 0.647,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.74,
+          "ssim": 0.1217,
+          "time": 0.644,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.74,
+          "ssim": 0.1217,
+          "time": 0.632,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.74,
+          "ssim": 0.1217,
+          "time": 0.518,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.74,
+          "ssim": 0.1217,
+          "time": 0.595,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.74,
+      "avg_ssim": 0.1217,
+      "done": true,
+      "pass_count": 5
+    },
+    "us_vit": {
+      "name": "US-ViT (PnP-DRS DRUNet)",
+      "reference": "Song et al. 2023, IEEE TMI",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.8,
+          "ssim": 0.1415,
+          "time": 0.775,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.8,
+          "ssim": 0.1415,
+          "time": 0.88,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.8,
+          "ssim": 0.1415,
+          "time": 0.929,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.8,
+          "ssim": 0.1415,
+          "time": 0.876,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.8,
+          "ssim": 0.1415,
+          "time": 0.911,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.8,
+      "avg_ssim": 0.1415,
+      "done": true,
+      "pass_count": 5
+    },
+    "us_mamba": {
+      "name": "US-Mamba (RED DRUNet)",
+      "reference": "Chen et al. 2024, arXiv",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 8.76,
+          "ssim": 0.1296,
+          "time": 3.616,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 8.76,
+          "ssim": 0.1296,
+          "time": 3.439,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 8.76,
+          "ssim": 0.1296,
+          "time": 3.429,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 8.76,
+          "ssim": 0.1296,
+          "time": 4.144,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 8.76,
+          "ssim": 0.1296,
+          "time": 3.528,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 8.76,
+      "avg_ssim": 0.1296,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "cryo_em": {
+    "traditional_cpu": {
+      "name": "Wiener-CTF Correction",
+      "reference": "Penczek et al. 2010, Methods Enzymol.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.017,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 11.86,
+      "avg_ssim": 0.0332,
+      "done": true,
+      "pass_count": 5
+    },
+    "phase_flip": {
+      "name": "Phase-Flip CTF Correction",
+      "reference": "Rosenthal & Henderson 2003, JMB",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 14.08,
+          "ssim": 0.0797,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 14.08,
+          "ssim": 0.0797,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 14.08,
+          "ssim": 0.0797,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 14.08,
+          "ssim": 0.0797,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 14.08,
+          "ssim": 0.0797,
+          "time": 0.008,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 14.08,
+      "avg_ssim": 0.0797,
+      "done": true,
+      "pass_count": 5
+    },
+    "back_projection": {
+      "name": "Back-Projection",
+      "reference": "Radermacher 1988, J. Electron Microsc. Tech.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.45,
+          "ssim": 0.2621,
+          "time": 0.002,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.45,
+          "ssim": 0.2621,
+          "time": 0.019,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.45,
+          "ssim": 0.2621,
+          "time": 0.001,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.45,
+          "ssim": 0.2621,
+          "time": 0.001,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.45,
+          "ssim": 0.2621,
+          "time": 0.002,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.45,
+      "avg_ssim": 0.2621,
+      "done": true,
+      "pass_count": 5
+    },
+    "sirt_3d": {
+      "name": "SIRT (Simultaneous Iterative)",
+      "reference": "Gilbert 1972, J. Theor. Biol.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.9,
+          "ssim": 0.5415,
+          "time": 0.253,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.9,
+          "ssim": 0.5415,
+          "time": 0.218,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.9,
+          "ssim": 0.5415,
+          "time": 0.221,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.9,
+          "ssim": 0.5415,
+          "time": 0.227,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.9,
+          "ssim": 0.5415,
+          "time": 0.272,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.9,
+      "avg_ssim": 0.5415,
+      "done": true,
+      "pass_count": 5
+    },
+    "landweber": {
+      "name": "Landweber Iteration",
+      "reference": "Landweber 1951, Amer. J. Math.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.21,
+          "ssim": 0.5309,
+          "time": 0.231,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.21,
+          "ssim": 0.5309,
+          "time": 0.346,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.21,
+          "ssim": 0.5309,
+          "time": 0.311,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.21,
+          "ssim": 0.5309,
+          "time": 0.248,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.21,
+          "ssim": 0.5309,
+          "time": 0.247,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.21,
+      "avg_ssim": 0.5309,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularisation",
+      "reference": "Tikhonov 1963, Soviet Math. Doklady",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.007,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 11.86,
+          "ssim": 0.0332,
+          "time": 0.008,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 11.86,
+      "avg_ssim": 0.0332,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_admm": {
+      "name": "Total Variation ADMM",
+      "reference": "Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 12.7,
+          "ssim": 0.0866,
+          "time": 0.333,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 12.7,
+          "ssim": 0.0866,
+          "time": 0.356,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 12.7,
+          "ssim": 0.0866,
+          "time": 0.394,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 12.7,
+          "ssim": 0.0866,
+          "time": 0.358,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 12.7,
+          "ssim": 0.0866,
+          "time": 0.355,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 12.7,
+      "avg_ssim": 0.0866,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM (NLM denoiser)",
+      "reference": "Venkatakrishnan et al. 2013, GlobalSIP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 13.56,
+          "ssim": 0.1052,
+          "time": 3.142,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 13.56,
+          "ssim": 0.1052,
+          "time": 2.44,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 13.56,
+          "ssim": 0.1052,
+          "time": 3.019,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 13.56,
+          "ssim": 0.1052,
+          "time": 3.144,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 13.56,
+          "ssim": 0.1052,
+          "time": 3.33,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 13.56,
+      "avg_ssim": 0.1052,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "RELION (PnP-PGD DRUNet)",
+      "reference": "Scheres 2012, JMB; Zivanov et al. 2018, eLife",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.21,
+          "ssim": 0.534,
+          "time": 1.127,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.21,
+          "ssim": 0.534,
+          "time": 1.151,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.21,
+          "ssim": 0.534,
+          "time": 1.089,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.21,
+          "ssim": 0.534,
+          "time": 1.093,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.21,
+          "ssim": 0.534,
+          "time": 1.157,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.21,
+      "avg_ssim": 0.534,
+      "done": true,
+      "pass_count": 5
+    },
+    "cryosparc": {
+      "name": "CryoSPARC (PnP-PGD DRUNet)",
+      "reference": "Punjani et al. 2017, Nature Methods",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.96,
+          "ssim": 0.4797,
+          "time": 0.902,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.96,
+          "ssim": 0.4797,
+          "time": 0.919,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.96,
+          "ssim": 0.4797,
+          "time": 0.858,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.96,
+          "ssim": 0.4797,
+          "time": 0.852,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.96,
+          "ssim": 0.4797,
+          "time": 0.916,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.96,
+      "avg_ssim": 0.4797,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "CryoDRGN (PnP-PGD DRUNet)",
+      "reference": "Zhong et al. 2021, Nature Methods",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.72,
+          "ssim": 0.4135,
+          "time": 0.549,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.72,
+          "ssim": 0.4135,
+          "time": 0.596,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.72,
+          "ssim": 0.4135,
+          "time": 0.638,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.72,
+          "ssim": 0.4135,
+          "time": 0.634,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.72,
+          "ssim": 0.4135,
+          "time": 0.549,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.72,
+      "avg_ssim": 0.4135,
+      "done": true,
+      "pass_count": 5
+    },
+    "cryodrgn2": {
+      "name": "CryoDRGN2 (PnP-HQS DRUNet)",
+      "reference": "Zhong et al. 2021, ICLR",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.0,
+          "ssim": 0.4773,
+          "time": 0.848,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.0,
+          "ssim": 0.4773,
+          "time": 0.877,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.0,
+          "ssim": 0.4773,
+          "time": 0.906,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.0,
+          "ssim": 0.4773,
+          "time": 0.888,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.0,
+          "ssim": 0.4773,
+          "time": 0.881,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.0,
+      "avg_ssim": 0.4773,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "CryoAI (DnCNN denoise)",
+      "reference": "Levy et al. 2022, NeurIPS",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.44,
+          "ssim": 0.2612,
+          "time": 0.045,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.44,
+          "ssim": 0.2612,
+          "time": 0.087,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.44,
+          "ssim": 0.2612,
+          "time": 0.148,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.44,
+          "ssim": 0.2612,
+          "time": 0.1,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.44,
+          "ssim": 0.2612,
+          "time": 0.11,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.44,
+      "avg_ssim": 0.2612,
+      "done": true,
+      "pass_count": 5
+    },
+    "deep_em_enhancer": {
+      "name": "DeepEMenhancer (DRUNet denoise)",
+      "reference": "Sanchez-Garcia et al. 2021, Comms. Biol.",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.26,
+          "ssim": 0.4006,
+          "time": 0.105,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.26,
+          "ssim": 0.4006,
+          "time": 0.14,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.26,
+          "ssim": 0.4006,
+          "time": 0.097,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.26,
+          "ssim": 0.4006,
+          "time": 0.15,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.26,
+          "ssim": 0.4006,
+          "time": 0.115,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.26,
+      "avg_ssim": 0.4006,
+      "done": true,
+      "pass_count": 5
+    },
+    "topaz_denoise": {
+      "name": "Topaz-Denoise (DRUNet denoise)",
+      "reference": "Bepler et al. 2020, Nature Comms.",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.83,
+          "ssim": 0.3349,
+          "time": 0.15,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.83,
+          "ssim": 0.3349,
+          "time": 0.129,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.83,
+          "ssim": 0.3349,
+          "time": 0.144,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.83,
+          "ssim": 0.3349,
+          "time": 0.151,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.83,
+          "ssim": 0.3349,
+          "time": 0.143,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.83,
+      "avg_ssim": 0.3349,
+      "done": true,
+      "pass_count": 5
+    },
+    "cryostar": {
+      "name": "CryoSTAR (PnP-DRS DRUNet)",
+      "reference": "Guo et al. 2024, Nature Methods",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.01,
+          "ssim": 0.487,
+          "time": 0.84,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.01,
+          "ssim": 0.487,
+          "time": 0.818,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.01,
+          "ssim": 0.487,
+          "time": 0.913,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.01,
+          "ssim": 0.487,
+          "time": 0.898,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.01,
+          "ssim": 0.487,
+          "time": 0.793,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.01,
+      "avg_ssim": 0.487,
+      "done": true,
+      "pass_count": 5
+    },
+    "cryo_mamba": {
+      "name": "CryoMamba (RED DRUNet)",
+      "reference": "Li et al. 2024, arXiv",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 16.79,
+          "ssim": 0.3938,
+          "time": 2.213,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 16.79,
+          "ssim": 0.3938,
+          "time": 2.352,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 16.79,
+          "ssim": 0.3938,
+          "time": 2.227,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 16.79,
+          "ssim": 0.3938,
+          "time": 2.354,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 16.79,
+          "ssim": 0.3938,
+          "time": 2.346,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 16.79,
+      "avg_ssim": 0.3938,
+      "done": true,
+      "pass_count": 5
+    }
+  },
+  "widefield": {
+    "traditional_cpu": {
+      "name": "Richardson-Lucy Deconvolution",
+      "reference": "Richardson 1972 / Lucy 1974",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.55,
+          "ssim": 0.4606,
+          "time": 0.163,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.55,
+          "ssim": 0.4606,
+          "time": 0.128,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.55,
+          "ssim": 0.4606,
+          "time": 0.13,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.55,
+          "ssim": 0.4606,
+          "time": 0.172,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.55,
+          "ssim": 0.4606,
+          "time": 0.156,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.55,
+      "avg_ssim": 0.4606,
+      "done": true,
+      "pass_count": 5
+    },
+    "wiener": {
+      "name": "Wiener Filter",
+      "reference": "Wiener 1949, Extrapolation, Interpolation, and Smoothing",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.024,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.008,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.42,
+      "avg_ssim": 0.2355,
+      "done": true,
+      "pass_count": 5
+    },
+    "gold": {
+      "name": "Gold Deconvolution",
+      "reference": "Gold 1964, ANL Report 6984",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 10.19,
+          "ssim": 0.0287,
+          "time": 0.071,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 10.19,
+          "ssim": 0.0287,
+          "time": 0.061,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 10.19,
+          "ssim": 0.0287,
+          "time": 0.056,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 10.19,
+          "ssim": 0.0287,
+          "time": 0.062,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 10.19,
+          "ssim": 0.0287,
+          "time": 0.096,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 10.19,
+      "avg_ssim": 0.0287,
+      "done": true,
+      "pass_count": 5
+    },
+    "jansson": {
+      "name": "Jansson-van Cittert Iteration",
+      "reference": "van Cittert 1931, Zeitschrift f. Physik; Jansson 1970",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 10.74,
+          "ssim": 0.0329,
+          "time": 0.102,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 10.74,
+          "ssim": 0.0329,
+          "time": 0.114,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 10.74,
+          "ssim": 0.0329,
+          "time": 0.146,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 10.74,
+          "ssim": 0.0329,
+          "time": 0.125,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 10.74,
+          "ssim": 0.0329,
+          "time": 0.156,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 10.74,
+      "avg_ssim": 0.0329,
+      "done": true,
+      "pass_count": 5
+    },
+    "landweber": {
+      "name": "Landweber Iteration",
+      "reference": "Landweber 1951, Amer. J. Math.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 24.03,
+          "ssim": 0.505,
+          "time": 0.296,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 24.03,
+          "ssim": 0.505,
+          "time": 0.239,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 24.03,
+          "ssim": 0.505,
+          "time": 0.221,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 24.03,
+          "ssim": 0.505,
+          "time": 0.263,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 24.03,
+          "ssim": 0.505,
+          "time": 0.237,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 24.03,
+      "avg_ssim": 0.505,
+      "done": true,
+      "pass_count": 5
+    },
+    "tikhonov": {
+      "name": "Tikhonov Regularisation",
+      "reference": "Tikhonov 1963, Soviet Math. Doklady",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.044,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.009,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.008,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.01,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 17.42,
+          "ssim": 0.2355,
+          "time": 0.008,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 17.42,
+      "avg_ssim": 0.2355,
+      "done": true,
+      "pass_count": 5
+    },
+    "tv_deconv": {
+      "name": "Total Variation Deconvolution",
+      "reference": "Rudin et al. 1992, Physica D",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.94,
+          "ssim": 0.6948,
+          "time": 0.334,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.94,
+          "ssim": 0.6948,
+          "time": 0.297,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.94,
+          "ssim": 0.6948,
+          "time": 0.28,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.94,
+          "ssim": 0.6948,
+          "time": 0.307,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.94,
+          "ssim": 0.6948,
+          "time": 0.266,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.94,
+      "avg_ssim": 0.6948,
+      "done": true,
+      "pass_count": 5
+    },
+    "rl_tv": {
+      "name": "Richardson-Lucy with TV Regularisation",
+      "reference": "Dey et al. 2006, Microscopy Res. Tech.",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 19.17,
+          "ssim": 0.7051,
+          "time": 0.144,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 19.17,
+          "ssim": 0.7051,
+          "time": 0.153,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 19.17,
+          "ssim": 0.7051,
+          "time": 0.148,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 19.17,
+          "ssim": 0.7051,
+          "time": 0.163,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 19.17,
+          "ssim": 0.7051,
+          "time": 0.164,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 19.17,
+      "avg_ssim": 0.7051,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_admm_nlm": {
+      "name": "PnP-ADMM (NLM denoiser)",
+      "reference": "Venkatakrishnan et al. 2013, GlobalSIP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 18.75,
+          "ssim": 0.7555,
+          "time": 3.457,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 18.75,
+          "ssim": 0.7555,
+          "time": 2.904,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 18.75,
+          "ssim": 0.7555,
+          "time": 3.165,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 18.75,
+          "ssim": 0.7555,
+          "time": 3.274,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 18.75,
+          "ssim": 0.7555,
+          "time": 3.295,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 18.75,
+      "avg_ssim": 0.7555,
+      "done": true,
+      "pass_count": 5
+    },
+    "pnp_fista_nlm": {
+      "name": "PnP-FISTA (NLM denoiser)",
+      "reference": "Beck & Teboulle 2009, SIAM J. Imaging Sci. + PnP",
+      "gpu": false,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 28.9,
+          "ssim": 0.891,
+          "time": 3.38,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 28.9,
+          "ssim": 0.891,
+          "time": 3.279,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 28.9,
+          "ssim": 0.891,
+          "time": 3.117,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 28.9,
+          "ssim": 0.891,
+          "time": 4.312,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 28.9,
+          "ssim": 0.891,
+          "time": 4.678,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 28.9,
+      "avg_ssim": 0.891,
+      "done": true,
+      "pass_count": 5
+    },
+    "best_quality": {
+      "name": "CARE (PnP-PGD DRUNet)",
+      "reference": "Weigert et al. 2018, Nature Methods",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 28.87,
+          "ssim": 0.6547,
+          "time": 1.131,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 28.87,
+          "ssim": 0.6547,
+          "time": 1.117,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 28.87,
+          "ssim": 0.6547,
+          "time": 1.125,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 28.87,
+          "ssim": 0.6547,
+          "time": 1.138,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 28.87,
+          "ssim": 0.6547,
+          "time": 1.11,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 28.87,
+      "avg_ssim": 0.6547,
+      "done": true,
+      "pass_count": 5
+    },
+    "famous_dl": {
+      "name": "Noise2Void (PnP-PGD DRUNet)",
+      "reference": "Krull et al. 2019, CVPR",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 34.27,
+          "ssim": 0.9477,
+          "time": 0.9,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 34.27,
+          "ssim": 0.9477,
+          "time": 0.866,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 34.27,
+          "ssim": 0.9477,
+          "time": 0.896,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 34.27,
+          "ssim": 0.9477,
+          "time": 0.871,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 34.27,
+          "ssim": 0.9477,
+          "time": 0.892,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 34.27,
+      "avg_ssim": 0.9477,
+      "done": true,
+      "pass_count": 5
+    },
+    "small_gpu": {
+      "name": "CSBDeep (DnCNN denoise)",
+      "reference": "Weigert et al. 2018, Nature Methods",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 24.93,
+          "ssim": 0.9108,
+          "time": 0.058,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 24.93,
+          "ssim": 0.9108,
+          "time": 0.073,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 24.93,
+          "ssim": 0.9108,
+          "time": 0.087,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 24.93,
+          "ssim": 0.9108,
+          "time": 0.067,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 24.93,
+          "ssim": 0.9108,
+          "time": 0.068,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 24.93,
+      "avg_ssim": 0.9108,
+      "done": true,
+      "pass_count": 5
+    },
+    "restormer": {
+      "name": "Restormer (PnP-HQS DRUNet)",
+      "reference": "Zamir et al. 2022, CVPR",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 34.42,
+          "ssim": 0.9504,
+          "time": 0.845,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 34.42,
+          "ssim": 0.9504,
+          "time": 0.876,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 34.42,
+          "ssim": 0.9504,
+          "time": 0.892,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 34.42,
+          "ssim": 0.9504,
+          "time": 0.882,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 34.42,
+          "ssim": 0.9504,
+          "time": 0.924,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 34.42,
+      "avg_ssim": 0.9504,
+      "done": true,
+      "pass_count": 5
+    },
+    "wf_diffusion": {
+      "name": "WF-Diffusion (PnP-PGD DRUNet)",
+      "reference": "Xie et al. 2023, arXiv",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 33.44,
+          "ssim": 0.9426,
+          "time": 0.636,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 33.44,
+          "ssim": 0.9426,
+          "time": 0.666,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 33.44,
+          "ssim": 0.9426,
+          "time": 0.62,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 33.44,
+          "ssim": 0.9426,
+          "time": 0.59,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 33.44,
+          "ssim": 0.9426,
+          "time": 0.608,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 33.44,
+      "avg_ssim": 0.9426,
+      "done": true,
+      "pass_count": 5
+    },
+    "deepcad_rt": {
+      "name": "DeepCAD-RT (PnP-DRS DRUNet)",
+      "reference": "Li et al. 2023, Nature Methods",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 34.26,
+          "ssim": 0.9471,
+          "time": 0.934,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 34.26,
+          "ssim": 0.9471,
+          "time": 0.922,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 34.26,
+          "ssim": 0.9471,
+          "time": 0.936,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 34.26,
+          "ssim": 0.9471,
+          "time": 0.905,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 34.26,
+          "ssim": 0.9471,
+          "time": 0.822,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 34.26,
+      "avg_ssim": 0.9471,
+      "done": true,
+      "pass_count": 5
+    },
+    "wf_mamba": {
+      "name": "WF-Mamba (RED DRUNet)",
+      "reference": "Wang et al. 2024, arXiv",
+      "gpu": true,
+      "runs": [
+        {
+          "run": 1,
+          "psnr": 34.49,
+          "ssim": 0.9451,
+          "time": 2.417,
+          "status": "pass"
+        },
+        {
+          "run": 2,
+          "psnr": 34.49,
+          "ssim": 0.9451,
+          "time": 2.265,
+          "status": "pass"
+        },
+        {
+          "run": 3,
+          "psnr": 34.49,
+          "ssim": 0.9451,
+          "time": 2.302,
+          "status": "pass"
+        },
+        {
+          "run": 4,
+          "psnr": 34.49,
+          "ssim": 0.9451,
+          "time": 2.426,
+          "status": "pass"
+        },
+        {
+          "run": 5,
+          "psnr": 34.49,
+          "ssim": 0.9451,
+          "time": 2.432,
+          "status": "pass"
+        }
+      ],
+      "avg_psnr": 34.49,
+      "avg_ssim": 0.9451,
+      "done": true,
+      "pass_count": 5
+    }
+  }
+}

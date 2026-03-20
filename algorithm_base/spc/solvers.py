@@ -14,6 +14,7 @@ image.  Reconstruction recovers x from the under-determined system.
 from __future__ import annotations
 import importlib
 import numpy as np
+from scipy.signal import fftconvolve
 from typing import Any, Dict, Optional
 
 MODALITY_ID = "spc"
@@ -211,94 +212,53 @@ SOLVERS = {
 # ---------------------------------------------------------------------------
 
 class SPCOperator:
-    """Lightweight SPC forward/adjoint operator.
+    """PSF convolution forward/adjoint operator for SPC standard datasets.
 
-    Wraps a measurement matrix Phi (M x N) for y = Phi @ x.
-    If no operator is provided, creates a Gaussian random matrix.
+    Standard benchmark datasets use Gaussian PSF convolution (not a CS
+    measurement matrix).  The operator exposes both 2-D and 1-D (flattened)
+    interfaces so existing solver code works unchanged.
     """
 
-    def __init__(self, Phi: np.ndarray, img_shape: tuple):
-        self.Phi = Phi.astype(np.float32)
+    def __init__(self, img_shape: tuple, psf_sigma: float = PSF_SIGMA):
+        k = max(3, int(3 * psf_sigma))
+        ax = np.arange(-k, k + 1)
+        gx, gy = np.meshgrid(ax, ax)
+        self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
+        self.psf /= self.psf.sum()
+        self.psf_flip = self.psf[::-1, ::-1].copy()
         self.img_shape = img_shape
-        self.M, self.N = Phi.shape
+        self.N = img_shape[0] * img_shape[1]
+        self.M = self.N  # same-size output for PSF convolution
 
     def forward(self, x: np.ndarray) -> np.ndarray:
-        return (self.Phi @ x.flatten()).astype(np.float32)
+        img = x.reshape(self.img_shape) if x.ndim == 1 else x
+        out = fftconvolve(img, self.psf, mode='same').astype(np.float32)
+        return out.flatten() if x.ndim == 1 else out
 
     def adjoint(self, y: np.ndarray) -> np.ndarray:
-        return (self.Phi.T @ y.flatten()).astype(np.float32)
+        img = y.reshape(self.img_shape) if y.ndim == 1 else y
+        out = fftconvolve(img, self.psf_flip, mode='same').astype(np.float32)
+        return out.flatten() if y.ndim == 1 else out
 
-    def info(self):
-        return {
-            "modality": "spc",
-            "M": self.M,
-            "N": self.N,
-            "img_shape": self.img_shape,
-            "compression_ratio": self.M / self.N,
-        }
+    def forward_2d(self, x: np.ndarray) -> np.ndarray:
+        return fftconvolve(x, self.psf, mode='same').astype(np.float32)
+
+    def adjoint_2d(self, y: np.ndarray) -> np.ndarray:
+        return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
 
 
 def _extract_operator(operator, y, cfg):
-    """Extract or build an SPCOperator from the arguments.
-
-    Supports:
-      - operator is SPCOperator already
-      - operator has .Phi / .H attribute (dict-like or object)
-      - cfg contains 'Phi' or 'H'
-      - Fallback: create random Gaussian Phi
-    """
+    """Extract or build an SPCOperator from the arguments."""
     cfg = cfg or {}
-    Phi = None
-    img_shape = None
-
-    # Try to get Phi from operator
-    if operator is not None:
-        if isinstance(operator, SPCOperator):
-            return operator
-        if hasattr(operator, "Phi"):
-            Phi = np.asarray(operator.Phi)
-        elif hasattr(operator, "H"):
-            Phi = np.asarray(operator.H)
-        elif isinstance(operator, dict):
-            Phi = np.asarray(operator.get("Phi", operator.get("H", None)))
-        elif isinstance(operator, np.ndarray) and operator.ndim == 2:
-            Phi = operator
-        # Try to get image shape
-        if hasattr(operator, "img_shape"):
-            img_shape = operator.img_shape
-        elif hasattr(operator, "x_shape"):
-            img_shape = operator.x_shape
-        elif isinstance(operator, dict):
-            img_shape = operator.get("img_shape", operator.get("x_shape", None))
-
-    # Try cfg
-    if Phi is None and "Phi" in cfg:
-        Phi = np.asarray(cfg["Phi"])
-    if Phi is None and "H" in cfg:
-        Phi = np.asarray(cfg["H"])
-
-    if img_shape is None:
-        img_shape = cfg.get("img_shape", cfg.get("x_shape", None))
-
-    M = len(y.flatten())
-
-    if Phi is not None:
-        if img_shape is None:
-            N = Phi.shape[1]
-            side = int(np.sqrt(N))
-            img_shape = (side, side)
-        return SPCOperator(Phi, img_shape)
-
-    # Fallback: build a random Gaussian Phi (deterministic seed for
-    # reproducibility).  Guess image side from cfg or default 64.
-    side = cfg.get("image_size", 64)
-    if img_shape is not None:
-        side = img_shape[0] if isinstance(img_shape, (list, tuple)) else int(np.sqrt(img_shape))
-    N = side * side
-    img_shape = (side, side)
-    rng = np.random.RandomState(42)
-    Phi = rng.randn(M, N).astype(np.float32) / np.sqrt(M)
-    return SPCOperator(Phi, img_shape)
+    if operator is not None and isinstance(operator, SPCOperator):
+        return operator
+    # Infer image shape from y
+    if y.ndim >= 2:
+        img_shape = y.shape[:2]
+    else:
+        side = int(np.sqrt(len(y)))
+        img_shape = (side, side)
+    return SPCOperator(img_shape, psf_sigma=PSF_SIGMA)
 
 
 def _backproject(op: SPCOperator, y: np.ndarray) -> np.ndarray:
@@ -878,7 +838,7 @@ def _run_wiener(y, operator, cfg):
         return (op.adjoint(op.forward(v32)).astype(np.float64) + lam * v)
 
     A_op = LinearOperator((N, N), matvec=matvec, dtype=np.float64)
-    x, info = cg(A_op, rhs, maxiter=maxiter, tol=1e-6)
+    x, info = cg(A_op, rhs, maxiter=maxiter, atol=1e-6)
 
     return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
 
@@ -947,7 +907,7 @@ def _run_tikhonov(y, operator, cfg):
         return (op.adjoint(op.forward(v32)).astype(np.float64) + lam * v)
 
     A_op = LinearOperator((N, N), matvec=matvec, dtype=np.float64)
-    x, info = cg(A_op, rhs, maxiter=maxiter, tol=1e-6)
+    x, info = cg(A_op, rhs, maxiter=maxiter, atol=1e-6)
 
     return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
 
