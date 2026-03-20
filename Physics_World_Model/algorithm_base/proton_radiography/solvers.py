@@ -39,6 +39,17 @@ SOLVERS = {
 }
 
 
+
+def _fbp_from_sinogram(y: np.ndarray, output_size: int = 256) -> np.ndarray:
+    """FBP from sinogram (n_angles, n_det) → image (output_size, output_size)."""
+    from skimage.transform import iradon
+    n_angles = y.shape[0]
+    angles_deg = np.linspace(0.0, 180.0, n_angles, endpoint=False)
+    recon = iradon(y.T, theta=angles_deg, circle=False,
+                   output_size=output_size, filter_name='ramp')
+    return np.clip(recon.astype(np.float32), 0.0, None)
+
+
 def _load_fn(solver_key: str):
     """Dynamically load solver function."""
     spec = SOLVERS[solver_key]
@@ -61,6 +72,11 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+
+    cfg = dict(cfg or {})
+    # For sinogram input (n_angles, n_det), set output_size=256 so FBP returns correct shape
+    if y.ndim == 2 and operator is None and "output_size" not in cfg:
+        cfg["output_size"] = 256
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):

@@ -92,8 +92,14 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # CACTI x_true is (H,W,n_frames) spectral cube; replicate 2D result to 3D
+    if result.ndim == 2:
+        n_frames = 8
+        result = np.stack([result] * n_frames, axis=-1)
+    return result
 
 
 def list_solvers():

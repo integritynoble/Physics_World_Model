@@ -61,8 +61,17 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+    cfg = dict(cfg or {})
+    # For multi-angle complex ODT input (n_angles, H, W, 2), collapse to 2D
+    y_2d = y.astype(np.float32)
+    if y_2d.ndim == 4 and y_2d.shape[-1] == 2:
+        # Take magnitude average over angles
+        mag = np.sqrt(y_2d[..., 0]**2 + y_2d[..., 1]**2)  # (n_angles, H, W)
+        y_2d = mag.mean(axis=0)  # (H, W)
+    elif y_2d.ndim == 3:
+        y_2d = y_2d.mean(axis=0)
     fn = _load_fn(solver_key)
-    result = fn(y.astype(np.float32), operator, cfg or {})
+    result = fn(y_2d, operator, cfg)
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
     return np.asarray(result, dtype=np.float32)

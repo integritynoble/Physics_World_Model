@@ -61,8 +61,13 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+    cfg = dict(cfg or {})
+    # For multi-channel Raman input (n_bands, H, W), collapse to 2D using mean
+    y_2d = y.astype(np.float32)
+    if y_2d.ndim == 3 and y_2d.shape[0] <= 16:
+        y_2d = y_2d.mean(axis=0)
     fn = _load_fn(solver_key)
-    result = fn(y.astype(np.float32), operator, cfg or {})
+    result = fn(y_2d, operator, cfg)
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
     return np.asarray(result, dtype=np.float32)

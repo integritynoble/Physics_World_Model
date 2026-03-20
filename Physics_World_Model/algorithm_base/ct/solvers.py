@@ -463,6 +463,10 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     if operator is None and y.ndim == 2:
         operator = _make_ct_operator(y, cfg)
 
+    # Propagate output_size so pwm_core.recon.ct_solvers.run_fbp uses the right shape
+    if operator is not None and "output_size" not in cfg:
+        cfg["output_size"] = operator.output_size
+
     is_sinogram = y.ndim == 2 and y.shape[0] != y.shape[1]
 
     # Route to correct function
