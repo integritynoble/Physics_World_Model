@@ -149,26 +149,45 @@ for key, spec in list_solvers():
 
 Note: Iterative solvers (landweber, art, sirt, cgls, sart) show low PSNR because tested with only 2 iterations for speed. With default iterations (15-30), they converge to much higher quality.
 
-## DL Checkpoint Availability (researched 2026-03-18)
+## DL Checkpoint Availability (researched 2026-03-19)
 
-| Model | Repository | Checkpoint | LoDoPaB-CT Compatible? |
-|-------|-----------|------------|----------------------|
-| FBP+UNet | DIVal (`jleuschn/dival`) | Yes (programmatic) | **Yes** (pretrained on LoDoPaB) |
-| Learned P-D | DIVal (`jleuschn/dival`) | Yes (programmatic) | **Yes** (pretrained on LoDoPaB) |
-| iRadonMAP | DIVal (`jleuschn/dival`) | Yes (programmatic) | **Yes** (pretrained on LoDoPaB) |
-| Score-CT | `yang-song/score_inverse_problems` | Google Drive (AAPM) | No (320x320, JAX/Flax) |
-| DiffusionMBIR | `HJ-harry/DiffusionMBIR` | Dropbox (AAPM 256x256) | No (different geometry) |
-| DOLCE | `wustl-cig/DOLCE` | Google Drive (512x512) | No (limited-angle, LEAP dep) |
-| FBPConvNet | `panakino/FBPConvNet` | Google Drive (MATLAB) | No (MatConvNet) |
-| CTformer | `wdayang/CTformer` | model_pretrained dir | No (Mayo 64x64 patches) |
-| InDuDoNet | `hongwang01/InDuDoNet` | In repo (19.7 MB) | No (metal artifact reduction) |
-| DPS | `DPS2022/diffusion-posterior-sampling` | Google Drive (FFHQ) | No (face images, no CT) |
-| Learned P-D (orig) | `adler-j/learned_primal_dual` | Never released | No |
-| LEARN | `maybe198376/LEARN` | In repo (.mat) | No (MATLAB only) |
-| WGAN-VGG | `SSinyu/WGAN-VGG` | None | No |
-| DuDoNet | `MIRACLE-Center/DuDoNet` | None (MAR only) | No |
-| DuDoTrans | `DuDoTrans/CODE` | Unclear | No |
-| CT-FM | Not found | Unknown | Unknown |
+### Checkpoints in GCS (`gs://pwm-benchmark-datasets/checkpoint/ct/`)
+
+| GCS File | Size | Model | Source Repo | LoDoPaB-CT? |
+|----------|------|-------|-------------|-------------|
+| `redcnn.pth` | 7 MB | RED-CNN | pwm_core | No (no pretrained weights) |
+| `indudonet_latest.pt` | 20 MB | InDuDoNet | `hongwang01/InDuDoNet` | No (MAR task, 416x416 fan-beam) |
+| `score_ct_brats_checkpoint_26` | 41 MB | Score-CT (BraTS) | `yang-song/score_inverse_problems` | No (brain MRI prior) |
+| `score_ct_ct2d_320_checkpoint_101` | 63 MB | Score-CT (CT 320) | `yang-song/score_inverse_problems` | No (320x320, JAX/Flax, LIDC) |
+| `dps_ffhq_10m.pt` | 358 MB | DPS (FFHQ) | `DPS2022/diffusion-posterior-sampling` | No (face images) |
+| `diffusion_mbir_ct.pt` | 939 MB | DiffusionMBIR | `HJ-harry/DiffusionMBIR` | No (AAPM 256x256) |
+| `dolce_model512_all.pt` | 1.1 GB | DOLCE (all CT) | `wustl-cig/DOLCE` | No (limited-angle, 512x512, LEAP) |
+| `dolce_model512_ckc.pt` | 1.1 GB | DOLCE (medical) | `wustl-cig/DOLCE` | No (limited-angle, 512x512, LEAP) |
+| `score_ct_ldct_512_checkpoint_63` | 1.2 GB | Score-CT (LDCT 512) | `yang-song/score_inverse_problems` | No (512x512, JAX/Flax) |
+| `dps_imagenet256.pt` | 2.1 GB | DPS (ImageNet) | `DPS2022/diffusion-posterior-sampling` | No (natural images) |
+
+**Total: 10 checkpoints, 6.62 GB**
+
+### Not yet in GCS (available via DIVal library on GPU server)
+
+| Model | Repository | LoDoPaB-CT? |
+|-------|-----------|-------------|
+| FBP+UNet | DIVal (`jleuschn/dival`) | **Yes** (pretrained on LoDoPaB) |
+| Learned Primal-Dual | DIVal (`jleuschn/dival`) | **Yes** (pretrained on LoDoPaB) |
+| iRadonMAP | DIVal (`jleuschn/dival`) | **Yes** (pretrained on LoDoPaB) |
+
+### No checkpoint available
+
+| Model | Repository | Reason |
+|-------|-----------|--------|
+| FBPConvNet | `panakino/FBPConvNet` | MATLAB/MatConvNet only |
+| WGAN-VGG | `SSinyu/WGAN-VGG` | No weights released |
+| LEARN | `maybe198376/LEARN` | MATLAB .mat only |
+| Learned P-D (orig) | `adler-j/learned_primal_dual` | Never released |
+| DuDoNet | `MIRACLE-Center/DuDoNet` | MAR only |
+| DuDoTrans | `DuDoTrans/CODE` | Unclear |
+| CTformer | `wdayang/CTformer` | Mayo 64x64 patches |
+| CT-FM | Not found | No repo found |
 
 **GPU server integration path:** Install DIVal + ODL on GPU server to use FBP+UNet, Learned P-D, and iRadonMAP pretrained on LoDoPaB-CT. Score-CT requires JAX/Flax and retraining on LoDoPaB ground truths.
 

@@ -127,63 +127,84 @@ Reference PSNRs are from fastMRI leaderboard with pretrained models on fastMRI k
 
 | Rank | Algorithm | Year | Ref PSNR | Status |
 |------|-----------|------|----------|--------|
-| 1 | SwinMR++ | 2025 | 43.8 | no_ckpt |
-| 2 | HUMUS-Net++ | 2023 | 43.1 | no_ckpt |
+| 1 | SwinMR++ | 2024 | 43.8 | no_ckpt |
+| 2 | HUMUS-Net++ | 2024 | 43.1 | no_ckpt |
 | 3 | HybridCascade++ | 2025 | 42.5 | no_ckpt |
 | 4 | MR-IPT | 2025 | 42.5 | no_ckpt |
-| 5 | MRI-FM | 2026 | 42.1 | no_ckpt |
-| 6 | MoDL-Net++ | 2025 | 41.8 | no_ckpt |
-| 7 | U-Net++ | 2024 | 41.5 | no_ckpt |
-| 8 | ReconFormer++ | 2025 | 41.5 | no_ckpt |
-| 9 | PromptMR-SFM | 2026 | 41.3 | no_ckpt |
-| 10 | PnP-DnCNN-Pro | 2025 | 41.0 | no_ckpt |
-| 11 | BrainID-MRI | 2025 | 41.0 | no_ckpt |
-| 12 | MMR-Mamba | 2025 | 41.0 | no_ckpt |
-| 13 | MRDynamo | 2024 | 40.5 | no_ckpt |
-| 14 | E2E-VarNet | 2020 | 40.5 | verified |
-| 15 | MambaRecon | 2025 | 40.4 | verified |
-| 16 | PAS-Mamba | 2026 | 40.4 | no_ckpt |
-| 17 | MRI-DiffusionNet | 2024 | 40.1 | no_ckpt |
-| 18 | PromptMR | 2024 | 39.7 | no_ckpt |
-| 19 | ReconFormer | 2024 | 39.0 | verified |
-| 20 | HUMUS-Net | 2022 | 38.9 | no_ckpt |
-| 21 | SwinMR | 2022 | 38.5 | no_ckpt |
-| 22 | HybridCascade | 2020 | 37.8 | no_ckpt |
-| 23 | Score-MRI (diffusion) | 2022 | 37.5 | verified |
-| 24 | MoDL | 2019 | 36.5 | verified |
-| 25 | U-Net (fastMRI) | 2018 | 35.9 | verified |
-| 26 | DC-CNN | 2018 | 35.5 | verified |
-| 27 | Deep ADMM-Net | 2016 | 35.3 | verified |
-| 28 | PnP-DnCNN | 2020 | 35.0 | verified |
-| 29 | CascadeNet | 2018 | 35.0 | verified |
-| 30 | ALOHA | 2015 | 34.5 | verified |
-| 31 | KIKI-Net | 2018 | 34.5 | verified |
-| 32 | BM3D-MRI | 2016 | 34.2 | verified |
-| 33 | ESPIRiT | 2014 | 33.4 | verified |
-| 34 | LORAKS (Low-Rank) | 2014 | 33.8 | verified |
-| 35 | CS-MRI (SparseMRI/Wavelet) | 2007 | 33.0 | verified |
-| 36 | k-t SPARSE-SENSE | 2006 | 32.5 | verified |
-| 37 | ISTA-Net+ | 2018 | 32.5 | verified |
-| 38 | L1-Wavelet (FISTA) | 2009 | 32.1 | verified |
-| 39 | GRAPPA | 2002 | 31.2 | verified |
-| 40 | SPIRiT | 2010 | 30.0 | verified |
-| 41 | SENSE | 1999 | 29.5 | verified |
-| 42 | Nuclear Norm (SVT/SAKE) | 2010 | 29.5 | verified |
-| 43 | Zero-filled IFFT | 1973 | 26.0 | verified |
-| 44 | Homodyne Detection | 1991 | 27.0 | verified |
-| 45 | SMASH | 1997 | 26.0 | verified |
-| 46 | RED | 2017 | — | verified |
-| 47 | Dictionary Learning MRI | 2011 | — | verified |
-| 48 | Proximal Gradient | 2005 | — | verified |
-| 49 | Tikhonov Regularization | 1963 | — | verified |
-| 50 | ADMM (MRI) | 2010 | — | verified |
-| 51 | Split Bregman | 2009 | — | verified |
-| 52 | POCS | 1991 | — | verified |
-| 53 | ISTA | 2004 | — | verified |
-| 54 | PnP-ADMM | 2013 | — | verified |
-| 55 | Conjugate Gradient | 2001 | — | verified |
-| 56 | Gradient Descent | 2010 | — | verified |
-| 57 | Landweber Iteration | 1951 | — | verified |
-| 58 | Truncated IFFT | 1973 | — | verified |
+| 5 | PromptMR+ | 2024 | 42.5 | no_ckpt (multi-coil) |
+| 6 | MRI-FM | 2026 | 42.1 | no_ckpt |
+| 7 | MoDL-Net++ | 2024 | 41.8 | no_ckpt |
+| 8 | U-Net++ | 2024 | 41.5 | no_ckpt |
+| 9 | ReconFormer++ | 2025 | 41.5 | no_ckpt |
+| 10 | PromptMR | 2023 | 41.5 | no_ckpt (multi-coil) |
+| 11 | PromptMR-SFM | 2026 | 41.3 | no_ckpt |
+| 12 | PnP-DnCNN-Pro | 2025 | 41.0 | no_ckpt |
+| 13 | BrainID-MRI | 2025 | 41.0 | no_ckpt |
+| 14 | MMR-Mamba | 2025 | 41.0 | no_ckpt |
+| 15 | MRDynamo | 2024 | 40.5 | no_ckpt |
+| 16 | E2E-VarNet | 2020 | 40.5 | verified |
+| 17 | MambaRecon | 2025 | 40.4 | verified |
+| 18 | PAS-Mamba | 2026 | 40.4 | no_ckpt |
+| 19 | MRI-DiffusionNet | 2024 | 40.1 | no_ckpt |
+| 20 | ReconFormer | 2023 | 40.1 | verified (pretrained) |
+| 21 | Score-MRI | 2022 | 39.0 | verified |
+| 22 | SwinMR | 2022 | 38.5 | no_ckpt |
+| 23 | HybridCascade | 2020 | 37.8 | no_ckpt |
+| 24 | HUMUS-Net | 2022 | 37.3 | no_ckpt (multi-coil) |
+| 25 | MoDL | 2019 | 36.0 | verified |
+| 26 | U-Net (fastMRI) | 2018 | 36.0 | verified |
+| 27 | DC-CNN | 2018 | 35.5 | verified |
+| 28 | Deep ADMM-Net | 2016 | 35.3 | verified |
+| 29 | PnP-DnCNN | 2020 | 35.0 | verified |
+| 30 | CascadeNet | 2018 | 35.0 | verified |
+| 31 | ALOHA | 2015 | 34.5 | verified |
+| 32 | KIKI-Net | 2018 | 34.5 | verified |
+| 33 | ESPIRiT | 2014 | 34.2 | verified |
+| 34 | BM3D-MRI | 2016 | 34.2 | verified |
+| 35 | GRAPPA | 2002 | 34.0 | verified |
+| 36 | SENSE | 1999 | 34.0 | verified |
+| 37 | LORAKS (Low-Rank) | 2014 | 33.8 | verified |
+| 38 | CS-MRI (Wavelet) | 2007 | 33.0 | verified |
+| 39 | k-t SPARSE-SENSE | 2006 | 32.5 | verified |
+| 40 | ISTA-Net+ | 2018 | 32.5 | verified |
+| 41 | FISTA | 2009 | 32.1 | verified |
+| 42 | SPIRiT | 2010 | 30.0 | verified |
+| 43 | Nuclear Norm (SVT/SAKE) | 2010 | 29.5 | verified |
+| 44 | Zero-filled IFFT | 1973 | 28.0 | verified |
+| 45 | Homodyne Detection | 1991 | 27.0 | verified |
+| 46 | SMASH | 1997 | 26.0 | verified |
+| 47 | ADMM (MRI) | 2010 | — | verified |
+| 48 | PnP-ADMM | 2013 | — | verified |
+| 49 | ISTA | 2004 | — | verified |
+| 50 | RED | 2017 | — | verified |
+| 51 | CS-MRI (TV) | 2007 | — | verified |
+| 52 | Dictionary Learning MRI | 2011 | — | verified |
+| 53 | Landweber Iteration | 1951 | — | verified |
+| 54 | Tikhonov Regularization | 1963 | — | verified |
+| 55 | Proximal Gradient | 2005 | — | verified |
+| 56 | Truncated IFFT | 1973 | — | verified |
+| 57 | Split Bregman | 2009 | — | verified |
+| 58 | Conjugate Gradient | 2001 | — | verified |
+| 59 | Gradient Descent | 2010 | — | verified |
+| 60 | POCS | 1991 | — | verified |
+| 61 | MoDL (5 unrolls) | 2019 | — | verified |
 
-**41 verified** / 58 total (71%). 17 no_ckpt algorithms require pretrained model weights not yet available.
+**41 verified** / 61 total (67%). 20 no_ckpt algorithms lack public single-coil pretrained weights.
+
+### GCS Checkpoints
+
+All MRI checkpoints stored at `gs://pwm-benchmark-datasets/checkpoint/mri/`:
+
+| File | Size | Model |
+|------|------|-------|
+| `reconformer_checkpoint.pth` | 99 MB | ReconFormer (pretrained, 31.83 dB) |
+| `F_X4_checkpoint.pth` | 99 MB | ReconFormer 4x acceleration |
+| `F_X8_checkpoint.pth` | 99 MB | ReconFormer 8x acceleration |
+| `reconformer/` | 52 KB | Model source (patched PyTorch 2.6) |
+| `varnet_brain_leaderboard.pt` | 115 MB | E2E-VarNet brain |
+| `varnet_knee_leaderboard.pt` | 115 MB | E2E-VarNet knee |
+| `dncnn_25.pth` | 2.2 MB | DnCNN denoiser (PnP) |
+| `dncnn_gray_blind.pth` | 2.6 MB | DnCNN blind denoiser (PnP) |
+| `score_mri_checkpoint_95.pth` | 232 KB | Score-MRI diffusion |
+| `promptmr_4x_8x.zip` | 304 MB | PromptMR (multi-coil) |
+| `humus_net_knee_x8.zip` | 1.5 GB | HUMUS-Net (multi-coil) |
