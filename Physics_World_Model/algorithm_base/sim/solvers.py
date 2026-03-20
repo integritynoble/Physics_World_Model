@@ -69,10 +69,21 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
     fn = _load_fn(solver_key)
-    result = fn(y.astype(np.float32), operator, cfg or {})
+    y_in = y.astype(np.float32)
+    result = fn(y_in, operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # SIM upsamples 2x. Resize back to input spatial size so shape matches x_true.
+    if result.ndim == 2:
+        h_in = y_in.shape[-2] if y_in.ndim >= 2 else result.shape[0]
+        w_in = y_in.shape[-1] if y_in.ndim >= 1 else result.shape[1]
+        if result.shape != (h_in, w_in):
+            from scipy.ndimage import zoom
+            z = (h_in / result.shape[0], w_in / result.shape[1])
+            result = zoom(result, z, order=1).astype(np.float32)
+    return result
 
 
 def list_solvers():

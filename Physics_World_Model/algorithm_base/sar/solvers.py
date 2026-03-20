@@ -61,8 +61,12 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+    cfg = dict(cfg or {})
+    # For sinogram/SAR raw data input (n_angles, n_range), set output_size=256
+    if y.ndim == 2 and operator is None and "output_size" not in cfg:
+        cfg["output_size"] = 256
     fn = _load_fn(solver_key)
-    result = fn(y.astype(np.float32), operator, cfg or {})
+    result = fn(y.astype(np.float32), operator, cfg)
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
     return np.asarray(result, dtype=np.float32)

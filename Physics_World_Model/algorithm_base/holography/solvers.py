@@ -71,8 +71,14 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # run_holography_reconstruction can return (H, W, 2) [amplitude, phase].
+    # Take amplitude (index 0) to produce the standard 2D output.
+    if result.ndim == 3 and result.shape[2] <= 4:
+        result = result[..., 0]
+    return result
 
 
 def list_solvers():

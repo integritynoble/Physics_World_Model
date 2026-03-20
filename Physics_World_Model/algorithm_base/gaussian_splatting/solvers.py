@@ -71,8 +71,13 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # run_gaussian_splatting returns (H, W, 3) RGB. Convert to grayscale.
+    if result.ndim == 3 and result.shape[-1] == 3:
+        result = (0.299 * result[..., 0] + 0.587 * result[..., 1] + 0.114 * result[..., 2]).astype(np.float32)
+    return result
 
 
 def list_solvers():

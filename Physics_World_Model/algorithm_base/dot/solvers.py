@@ -64,8 +64,13 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # run_dot returns a 3D volume (nz, ny, nx). Take max-intensity projection along z.
+    if result.ndim == 3:
+        result = result.max(axis=0)
+    return result
 
 
 def list_solvers():

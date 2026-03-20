@@ -71,8 +71,16 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     fn = _load_fn(solver_key)
     result = fn(y.astype(np.float32), operator, cfg or {})
     if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+        result = np.asarray(result[0], dtype=np.float32)
+    else:
+        result = np.asarray(result, dtype=np.float32)
+    # run_oct halves the spectral axis (FFT → n_depth = n_spectral//2).
+    # Resize to match input spatial dimensions so x_hat shape == y shape.
+    if y.ndim == 2 and result.ndim == 2 and result.shape != y.shape:
+        from scipy.ndimage import zoom
+        z = tuple(t / r for t, r in zip(y.shape, result.shape))
+        result = zoom(result, z, order=1).astype(np.float32)
+    return result
 
 
 def list_solvers():
