@@ -1904,10 +1904,10 @@ def _dispatch_reconstruction(
                                                            "pnp-admm", "pnp_admm", "admm",
                                                            "sart", "sart-tv", "art"))):
                     return _tv_admm_ct_reconstruct(y, angle_arr, output_size=fbp_out_size)
-                # Only the 'ct' benchmark uses a custom fan-beam projector;
-                # cbct/industrial_ct/mammography use skimage.radon (parallel-beam).
-                is_fan = (variant_key == "ct")
-                return _fbp_reconstruct(y, angle_arr, output_size=fbp_out_size, is_fan_beam=is_fan)
+                # All CT variants now use parallel-beam (skimage.radon / iradon).
+                # The 'ct' benchmark was migrated from fan-beam to parallel-beam
+                # so is_fan_beam=False for all variants.
+                return _fbp_reconstruct(y, angle_arr, output_size=fbp_out_size, is_fan_beam=False)
 
             if recon_type == "mri":
                 return _mri_reconstruct(data, algo_name)
