@@ -1,9 +1,56 @@
 # Files inside Physics_World_Model/ that should NOT go to the public GitHub repo.
 # Add any file or folder here to keep it local/private only.
 
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / editor / tool state
+.claude/
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS artifacts
+NUL
+bash.exe.stackdump
+Thumbs.db
+.DS_Store
+
 # Paper source files (kept in pwm/papers/ instead)
 **/*.pdf
 **/*.tex
+
+# Paper build artifacts
+**/*.aux
+**/*.log
+**/*.out
+**/*.toc
+**/*.blg
+**/*.bbl
+**/*.synctex.gz
+
+# Paper archive / submission zips
+papers/**/*.zip
+papers/**/*.tar.gz
+papers/**/talk_*.pptx
+papers/universal_simulation/zenodo_archive/code/pwm_core/weights/
+papers/universal_simulation/zenodo_archive/data/
+papers/universal_simulation/zenodo_archive/code/pwm_core/pwm_core/data/
+papers/universal_simulation/zenodo_archive/code/pwm_core/benchmarks/last_run.log
+papers/inversenet/results/
+papers/inversenet/data/spc/models/
+papers/inversenet/eccv_resubmission/
+papers/pwmi_cassi/results/
+papers/system_design/outputs/*.npz
 
 # Private co-author strategy
 papers/pwm_flagship/thoughts/
@@ -26,17 +73,19 @@ datasets/inversenet_spc/
 datasets/lip_arena/
 datasets/real_ct/
 datasets/real_mri/
+
+# Reference model weights (all formats)
 reference/**/*.pth
+reference/**/*.pt
 reference/**/*.npz
 reference/**/*.pkl
+reference/**/*.zip
+reference/ct/
+reference/mri/
+
+# Platform data
 platform/pwm_platform/static/benchmark-data/v1.0/*.tar.gz
 platform/pwm_platform/data/benchmarks/*.npz
-papers/inversenet/results/
-papers/inversenet/data/spc/models/
-papers/pwmi_cassi/results/
-papers/universal_simulation/zenodo_archive/code/pwm_core/weights/
-papers/arxiv_submissions/*.tar.gz
-papers/system_design/outputs/*.npz
 
 # Local dataset files
 datasets/SPC/BSDS400/
@@ -52,13 +101,19 @@ datasets/benchmark/mri/*.py
 datasets/benchmark/*/
 !datasets/benchmark/cassi/
 !datasets/benchmark/cassi/manifest.json
-scripts/add_baselines.py
-scripts/llm_benchmark_eval/results/
 
-# Test outputs
+# Benchmark results (local verification)
+benchmark_results/
+
+# Temp / scratch dirs
+hisvit_temp/
 test_runs/
 test_runs_pnp/
 test_impl/
 test_pnp_all/
 runs/
 repos/
+
+# One-off scripts (keep only committed ones)
+scripts/add_baselines.py
+scripts/llm_benchmark_eval/results/

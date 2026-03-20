@@ -5,7 +5,7 @@
 [![Discussions](https://img.shields.io/github/discussions/integritynoble/Physics_World_Model?label=Discussions&logo=github)](https://github.com/integritynoble/Physics_World_Model/discussions)
 [![Good First Issues](https://img.shields.io/github/issues/integritynoble/Physics_World_Model/good%20first%20issue?label=Good%20First%20Issues&color=7057ff)](https://github.com/integritynoble/Physics_World_Model/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![Contributing](https://img.shields.io/badge/Contributing-Guide-blue)](CONTRIBUTING.md)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/integritynoble/Physics_World_Model/blob/master/examples/Open_In_Colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/integritynoble/Physics_World_Model/blob/master/examples/PWM_Quickstart.ipynb)
 
 PWM is the **evaluation harness + current best methods** for computational imaging -- an open, reproducible toolkit that aims to make any imaging system **self-specifying, self-diagnosing, and self-correcting**.
 
