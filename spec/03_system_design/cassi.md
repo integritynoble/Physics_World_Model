@@ -1,69 +1,20 @@
 # Coded Aperture Snapshot Spectral Imaging (CASSI) — System Design
 
-## System DAG
-
 ```
-[Broadband Source] → [Coded Aperture] → [Dispersive Prism] → [FPA Detector] → y
-                           ↓                    ↓
-                   [Mask misalign]       [Disp. step ±0.5 px]
+[Scene] → [Coded aperture + prism] → [Detector] → y
+                                          ↓
+                   [ADMM / deep unrolling] → x
+                          ↓ dispersion calibration
 ```
 
-## System Elements
-
-| Element | Type | Key Mismatch |
-|---------|------|-------------|
-| Source | illumination | intensity drift |
-| Forward model | Coded Aperture Snapshot Spectral Imaging (CASSI) physics | dispersion step (px) |
-| Detector | measurement | noise |
-
-**Mismatch**: dispersion step (px) in range `[1, 5] px`
-**Correction**: grid search on sparsity metric
-
-## Reconstruction
-
-**Dataset**: Coded Aperture Snapshot Spectral Imaging (CASSI)
-**Input**: coded snapshot (H × W, float32)
-**Algorithms**: 4 CPU, 18 GPU — see `spec/cassi.md`
-
-## Run
+**Mismatch**: dispersion step `[1, 5] px`
+**Input**: coded snapshot (H × W, float32)  **Algorithms**: 22 — see `spec/cassi.md`
+**Benchmark**: `gs://pwm-benchmark-datasets/datasets/Benchmark/cassi/public/`
 
 ```python
-import sys; sys.path.insert(0, '~/Physics_World_Model/pwm/public')
 from algorithm_base.cassi.solvers import run_solver
-import numpy as np, h5py
-from pwm_core.utils.metrics import compute_psnr, compute_ssim
-
-# Load benchmark data (has ground truth)
-with h5py.File('cassi_public.h5', 'r') as f:   # GCS: gs://pwm-benchmark-datasets/datasets/Benchmark/cassi/public/
-    y, x_true = f['y'][0], f['x_true'][0]
-# Or: y = np.load('your_measurement.npy').astype('float32'); x_true = None
-
-# Forward model + mismatch correction + reconstruction
-x = run_solver('tv_admm', y, cfg={'disp_step': None})  # None = auto-calibrate
-
-if x_true is not None:
-    print(f"PSNR {compute_psnr(x_true, x):.2f} dB  SSIM {compute_ssim(x_true, x):.4f}")
-
-# Visualize (hyperspectral: spatial slice + spectral profile)
-import matplotlib.pyplot as plt
-fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-n_bands = x.shape[-1] if x.ndim == 3 else x.shape[0]
-band = n_bands // 2
-xb = x[..., band] if x.ndim == 3 else x[band]
-axes[0].imshow(xb, cmap='gray'); axes[0].set_title(f'Recon band {band}')
-axes[1].plot(x[x.shape[0]//2, x.shape[1]//2] if x.ndim==3 else x[:,x.shape[1]//2,x.shape[2]//2])
-axes[1].set_title('Spectral profile (center pixel)')
-if x_true is not None:
-    xtb = x_true[..., band] if x_true.ndim == 3 else x_true[band]
-    axes[2].imshow(xtb, cmap='gray'); axes[2].set_title('GT band')
-plt.tight_layout(); plt.savefig('cassi_recon.png'); plt.show()
-```
-
-## Design Your Own
-
-```bash
-# Use the 3-agent pipeline (Plan → Judge → Performance)
-cd papers/system_design/
-python3 main.py --modality cassi --period forward --prompt "your system description"
-python3 main.py --modality cassi --period reconstruction --prompt "your algorithm"
+from pwm_core.mismatch.operators import cassi_calibrate_step
+disp = cassi_calibrate_step(y)
+calib_cfg = {"disp_step": float(disp)}
+x = run_solver('traditional_cpu', y, cfg=calib_cfg)
 ```

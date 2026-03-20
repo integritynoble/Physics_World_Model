@@ -419,3 +419,173 @@ axes[1].imshow(x, cmap='gray'); axes[1].set_title('Reconstruction')
 if x_true is not None:
     axes[2].imshow(x_true, cmap='gray'); axes[2].set_title('Ground Truth')
 plt.tight_layout(); plt.savefig('{mod_id}_{solver_key}.png'); plt.show()"""
+
+
+# ── Calibration functions per modality ───────────────────────────────────
+# Keys: import, call, apply, param, range
+CALIB_FN = {
+    'ct': {
+        'import': 'from pwm_core.mismatch.operators import ct_calibrate_cor',
+        'call': 'cor_offset = ct_calibrate_cor(y, shift_range=5)',
+        'apply': 'calib_cfg = {"cor_offset": float(cor_offset)}',
+        'param': 'center-of-rotation offset', 'range': '[-5, +5] px',
+    },
+    'mri': {
+        'import': 'from pwm_core.mismatch.operators import mri_estimate_sensitivities_acs',
+        'call': 'sens = mri_estimate_sensitivities_acs(y)',
+        'apply': 'calib_cfg = {"sensitivities": sens}',
+        'param': 'coil sensitivity maps', 'range': '[0.9, 1.1] gain per coil',
+    },
+    'cassi': {
+        'import': 'from pwm_core.mismatch.operators import cassi_calibrate_step',
+        'call': 'disp = cassi_calibrate_step(y)',
+        'apply': 'calib_cfg = {"disp_step": float(disp)}',
+        'param': 'dispersion step', 'range': '[1, 5] px',
+    },
+    'lensless': {
+        'import': 'from pwm_core.mismatch.operators import lensless_calibrate_shift',
+        'call': 'shift = lensless_calibrate_shift(y)',
+        'apply': 'calib_cfg = {"psf_shift": shift}',
+        'param': 'PSF shift', 'range': '[-5, +5] px',
+    },
+    'ultrasound': {
+        'import': 'from pwm_core.mismatch.operators import ultrasound_calibrate_sos',
+        'call': 'c0 = ultrasound_calibrate_sos(y)',
+        'apply': 'calib_cfg = {"c0": float(c0)}',
+        'param': 'speed of sound', 'range': '[1400, 1600] m/s',
+    },
+    'cbct': {
+        'import': 'from pwm_core.mismatch.operators import cbct_calibrate_offset',
+        'call': 'geo = cbct_calibrate_offset(y)',
+        'apply': 'calib_cfg = {"geometry_error": geo}',
+        'param': 'source-detector geometry', 'range': 'SAD/SDD ±5 mm',
+    },
+    'ptychography': {
+        'import': 'from pwm_core.mismatch.operators import ptycho_calibrate_offset',
+        'call': 'pos_err = ptycho_calibrate_offset(y)',
+        'apply': 'calib_cfg = {"pos_error": pos_err}',
+        'param': 'probe position error', 'range': '[-3, +3] px',
+    },
+    'cryo_em': {
+        'import': 'from pwm_core.mismatch.operators import cryoem_calibrate_defocus',
+        'call': 'defocus = cryoem_calibrate_defocus(y)',
+        'apply': 'calib_cfg = {"defocus": float(defocus)}',
+        'param': 'defocus value', 'range': '[0.5, 3.0] μm',
+    },
+    'spc': {
+        'import': 'from pwm_core.mismatch.operators import spc_calibrate_gain_bias',
+        'call': 'gain, bias = spc_calibrate_gain_bias(y)',
+        'apply': 'calib_cfg = {"gain": float(gain), "bias": float(bias)}',
+        'param': 'detector gain/bias', 'range': 'gain [0.8, 1.2], bias [-0.1, 0.1]',
+    },
+    'cacti': {
+        'import': 'from pwm_core.mismatch.operators import cacti_calibrate_timing',
+        'call': 'timing = cacti_calibrate_timing(y)',
+        'apply': 'calib_cfg = {"timing_offset": timing}',
+        'param': 'frame timing offset', 'range': '[-1, +1] frames',
+    },
+    'sim': {
+        'import': 'from pwm_core.mismatch.operators import sim_calibrate_phase',
+        'call': 'phase = sim_calibrate_phase(y)',
+        'apply': 'calib_cfg = {"phase_offset": float(phase)}',
+        'param': 'illumination phase offset', 'range': '[0, 2π/3] rad',
+    },
+    'oct': {
+        'import': 'from pwm_core.mismatch.operators import oct_calibrate_dispersion',
+        'call': 'disp = oct_calibrate_dispersion(y)',
+        'apply': 'calib_cfg = {"disp_coeff": disp}',
+        'param': 'dispersion coefficients', 'range': 'β₂ ∈ [-1e-27, 1e-27] s²/m',
+    },
+    'fpm': {
+        'import': 'from pwm_core.mismatch.operators import fpm_calibrate_led_pos',
+        'call': 'led_err = fpm_calibrate_led_pos(y)',
+        'apply': 'calib_cfg = {"led_pos_error": led_err}',
+        'param': 'LED position error', 'range': '[-2, +2] mm',
+    },
+    'pet': {
+        'import': 'from pwm_core.mismatch.operators import pet_calibrate_attenuation',
+        'call': 'mu_map = pet_calibrate_attenuation(y)',
+        'apply': 'calib_cfg = {"mu_map": mu_map}',
+        'param': 'attenuation map', 'range': 'μ ∈ [0, 0.3] cm⁻¹',
+    },
+    'photoacoustic': {
+        'import': 'from pwm_core.mismatch.operators import pa_calibrate_sos',
+        'call': 'c0 = pa_calibrate_sos(y)',
+        'apply': 'calib_cfg = {"c0": float(c0)}',
+        'param': 'speed of sound', 'range': '[1480, 1560] m/s',
+    },
+    'phase_retrieval': {
+        'import': 'from pwm_core.mismatch.operators import phase_calibrate_distance',
+        'call': 'dist_err = phase_calibrate_distance(y)',
+        'apply': 'calib_cfg = {"dist_error": float(dist_err)}',
+        'param': 'detector-sample distance error', 'range': '[-5, +5] mm',
+    },
+    'industrial_ct': {
+        'import': 'from pwm_core.mismatch.operators import ct_calibrate_cor',
+        'call': 'cor_offset = ct_calibrate_cor(y, shift_range=10)',
+        'apply': 'calib_cfg = {"cor_offset": float(cor_offset)}',
+        'param': 'center-of-rotation offset', 'range': '[-10, +10] px',
+    },
+    'spect': {
+        'import': 'from pwm_core.mismatch.operators import spect_calibrate_scatter',
+        'call': 'scatter_frac = spect_calibrate_scatter(y)',
+        'apply': 'calib_cfg = {"scatter_frac": float(scatter_frac)}',
+        'param': 'scatter fraction', 'range': '[0.1, 0.4]',
+    },
+}
+
+# ── System DAGs per modality (ASCII art) ─────────────────────────────────
+SYSTEM_DAGS = {
+    'ct':     '[X-ray tube] → [Patient] → [Detector ring] → sinogram y\n'
+              '                                 ↓\n'
+              '                   [Radon / FBP / iterative] → x\n'
+              '                          ↓ CoR calibration',
+    'mri':    '[RF coils] → [Spin ensemble] → [k-space y]\n'
+              '                                    ↓\n'
+              '                [ESPIRiT / CS-MRI] → x\n'
+              '                       ↓ coil sensitivity calibration',
+    'cassi':  '[Scene] → [Coded aperture + prism] → [Detector] → y\n'
+              '                                          ↓\n'
+              '                   [ADMM / deep unrolling] → x\n'
+              '                          ↓ dispersion calibration',
+    'lensless': '[Scene] → [Random diffuser] → [Sensor] → y\n'
+                '                                   ↓\n'
+                '              [ADMM / gradient descent] → x\n'
+                '                       ↓ PSF shift calibration',
+    'ultrasound': '[Transducer array] → [Tissue] → [Echoes] → RF y\n'
+                  '                                      ↓\n'
+                  '                    [DAS / DMAS / TV] → x\n'
+                  '                       ↓ speed-of-sound calibration',
+    'cbct':   '[X-ray source] → [Patient] → [Flat-panel] → projections y\n'
+              '                                   ↓\n'
+              '                   [FDK / TV-CBCT] → x\n'
+              '                       ↓ geometry calibration',
+    'pet':    '[Radiotracer] → [Annihilation] → [Coincidence ring] → y\n'
+              '                                         ↓\n'
+              '                         [OSEM / MAP-EM] → x\n'
+              '                              ↓ attenuation correction',
+    'spect':  '[Radiotracer] → [Gamma camera] → [Projections] → y\n'
+              '                                       ↓\n'
+              '                       [OS-EM / MLEM] → x\n'
+              '                            ↓ scatter calibration',
+    'oct':    '[Broadband source] → [Interferometer] → [Spectrometer] → y\n'
+              '                                               ↓\n'
+              '                         [iFFT / BM3D-deconv] → x\n'
+              '                                ↓ dispersion compensation',
+    'photoacoustic': '[Laser pulse] → [Tissue] → [Ultrasound array] → y\n'
+                     '                                       ↓\n'
+                     '             [TR / DAS / model-based] → x\n'
+                     '                      ↓ speed-of-sound calibration',
+    'fpm':    '[LED array] → [Sample] → [Low-NA images] → y\n'
+              '                                ↓\n'
+              '         [Ptychographic phase retrieval] → x\n'
+              '                    ↓ LED position calibration',
+    'ptychography': '[Focused probe] → [Sample] → [Diffraction] → y\n'
+                    '                                     ↓\n'
+                    '                  [ePIE / ADMM-ptycho] → x\n'
+                    '                       ↓ position calibration',
+    'phase_retrieval': '[Coherent beam] → [Sample] → [Detector] → y\n'
+                       '                                  ↓\n'
+                       '           [HIO / RAAR / ERα] → x\n'
+                       '                  ↓ distance calibration',
+}
