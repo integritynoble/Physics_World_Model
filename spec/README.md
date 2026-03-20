@@ -1,6 +1,6 @@
 # PWM Spec Database
 
-168 imaging modalities — each spec covers reconstruct, mismatch correction, system design, and simulation.
+4 use cases × 168+ modalities. Each spec has a run button (copy-paste Python), PSNR/SSIM evaluation, and visualization.
 
 ## Setup
 
@@ -15,36 +15,36 @@ pip install -e packages/pwm_core
 import sys; sys.path.insert(0, 'Physics_World_Model/pwm/public')
 ```
 
-## Usage
+## Find a Spec
 
 ```bash
-# Find spec by keyword (no API key needed)
-python3 spec/keyword_match.py "CT reconstruction"
-python3 spec/keyword_match.py "MRI mismatch correction"
-python3 spec/keyword_match.py "lensless imaging system"
-python3 spec/keyword_match.py "list"              # all modalities
+python3 spec/keyword_match.py "CT reconstruction"        # → spec/01_reconstruct/ct/
+python3 spec/keyword_match.py "MRI mismatch"             # → spec/02_mismatch/mri.md
+python3 spec/keyword_match.py "lensless system design"   # → spec/03_system_design/lensless.md
+python3 spec/keyword_match.py "Fresnel diffraction"      # → spec/04_simulation/09_optics/
+python3 spec/keyword_match.py list                       # all 168 modalities
 ```
 
-Then open the spec file shown, copy the **Run** code block, and execute.
+## Structure
 
-## Spec Files
-
-One `.md` per modality in `spec/`. Each contains:
-- Input format + benchmark GCS path
-- All algorithms with PSNR reference (CPU and GPU)
-- Run button (copy-paste Python)
-- Mismatch correction hint
-- Links to papers
-
-## Use Cases
-
-| # | Description | How |
-|---|-------------|-----|
-| 1 | Reconstruct | `run_solver('key', y)` |
-| 2 | Mismatch correction | `cfg={'calibrate': True}` |
-| 3 | System design | See `papers/system_design/outputs/` |
-| 4 | Physics simulation | See `papers/universal_simulation/benchmark/` |
+| Folder | Use Case | Files | Coverage |
+|--------|----------|-------|----------|
+| `01_reconstruct/{modality}/{algorithm}.md` | Reconstruct with specific algorithm | 2571 | 168 modalities × all algorithms |
+| `02_mismatch/{modality}.md` | Mismatch correction + reconstruct | 168 | all benchmark modalities |
+| `03_system_design/{modality}.md` | Imaging system DAG + reconstruct | 168 | all modalities |
+| `04_simulation/{domain}/spec.md` | Physics simulation examples | 12 | from `papers/universal_simulation` |
+| `{modality}.md` | Quick overview | 168 | all algorithms, one-page |
 
 ## GPU Note
 
-GPU solvers raise `RuntimeError` without a GPU — CPU solvers always work.
+GPU solvers raise `RuntimeError` on CPU-only machines — they do not affect CPU solvers.
+
+## Regenerate
+
+```bash
+python3 spec/generators/generate_01_reconstruct.py   # 2571 per-algorithm specs
+python3 spec/generators/generate_02_mismatch.py      # 168 mismatch specs
+python3 spec/generators/generate_03_system_design.py # 168 system design specs
+python3 spec/generators/generate_04_simulation.py    # 12 simulation specs
+python3 spec/generate_specs.py                       # 168 quick-overview specs
+```
