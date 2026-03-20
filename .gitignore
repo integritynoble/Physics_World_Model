@@ -165,4 +165,6 @@ datasets/benchmark/*/
 !datasets/benchmark/cassi/manifest.json
 
 # Private repos nested inside this folder (not part of public repo)
-# (tracked as submodules — see .gitmodules)
+pwm/
+pwm_product/
+sync_all.sh
