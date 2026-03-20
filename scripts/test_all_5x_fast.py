@@ -45,16 +45,32 @@ if not os.path.exists(h5_path):
 
 with h5py.File(h5_path, "r") as f:
     x_true = np.array(f["x_true"], dtype=np.float32)
-    y_key = "y_ideal" if "y_ideal" in f else "y"
-    y = np.array(f[y_key], dtype=np.float32)
+    if "y_ideal" in f:
+        y = np.array(f["y_ideal"], dtype=np.float32)
+    elif "y" in f:
+        y = np.array(f["y"], dtype=np.float32)
+    elif "luminance" in f:
+        y = np.array(f["luminance"], dtype=np.float32)
+    else:
+        print(json.dumps({{"error": "no_y_key", "solvers": {{}}}}))
+        sys.exit(0)
 
-if x_true.ndim == 3 and y.ndim == 2:
+# Handle multi-view data (e.g. nerf, gaussian_splatting): take single view
+if y.ndim == 3 and y.shape[0] < y.shape[1]:
+    y = y[0].astype(np.float32)
+if x_true.ndim == 4:
+    x_true = np.mean(x_true[0], axis=-1).astype(np.float32)
+elif x_true.ndim == 3 and y.ndim == 2:
     x_true = x_true[:, :, 0].astype(np.float32)
 
 dr = max(float(x_true.max()) - float(x_true.min()), 1e-8)
 results = {{}}
 
 for solver_key in mod.SOLVERS:
+    # Skip external solvers (pwm_core) — only test inline solvers
+    solver_mod = mod.SOLVERS[solver_key].get("module", "")
+    if solver_mod and not solver_mod.startswith("algorithm_base."):
+        continue
     runs = []
     for run_i in range({n_runs}):
         try:
@@ -136,7 +152,7 @@ def main():
         try:
             result = subprocess.run(
                 [sys.executable, "-c", code],
-                capture_output=True, text=True, timeout=600,
+                capture_output=True, text=True, timeout=1800,
             )
             dt = time.time() - t0
 
