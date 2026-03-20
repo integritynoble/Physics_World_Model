@@ -18,14 +18,35 @@ import sys; sys.path.insert(0, 'Physics_World_Model/pwm/public')
 !pip install -e Physics_World_Model/pwm/public/packages/pwm_core -q
 ```
 
-## Find a Spec
+## Get a Spec
+
+### Without API key — auto-match preset spec
 
 ```bash
-python3 spec/keyword_match.py "CT reconstruction"        # → spec/01_reconstruct/ct/
-python3 spec/keyword_match.py "MRI mismatch"             # → spec/02_mismatch/mri/
-python3 spec/keyword_match.py "lensless system design"   # → spec/03_system_design/lensless.md
-python3 spec/keyword_match.py "Fresnel diffraction"      # → spec/04_simulation/09_optics/
-python3 spec/keyword_match.py list                       # all 168 modalities
+python3 spec/autospec.py "CT reconstruction low-dose"
+python3 spec/autospec.py "MRI mismatch correction"
+python3 spec/autospec.py "lensless system design"
+python3 spec/autospec.py list                          # all 168 modalities
+```
+
+Returns the closest preset spec.md. Copy-paste the run button and execute.
+
+### With API key — auto-design a custom spec
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+python3 spec/autospec.py "low-dose CT reconstruction with TV regularization"
+python3 spec/autospec.py "MRI mismatch + ESPIRiT sensitivity calibration" --save my_spec.md
+```
+
+LLM reads the relevant preset specs as context, designs a new custom spec, then
+enters a refinement loop:
+
+```
+You: change iterations to 50
+You: add visualization code
+You: save          ← saves to file
+You: quit
 ```
 
 ## Structure
@@ -40,9 +61,10 @@ python3 spec/keyword_match.py list                       # all 168 modalities
 
 ## GPU Note
 
-Specs marked **GPU** require a CUDA-capable GPU. On CPU-only machines they raise `RuntimeError` — this does not affect other **CPU** specs. Skip GPU specs on CPU machines and run CPU ones directly.
+Specs marked **GPU** require a CUDA-capable GPU. On CPU-only machines they raise
+`RuntimeError` — this does not affect **CPU** specs. Skip GPU specs on CPU machines.
 
-## Regenerate
+## Regenerate Presets
 
 ```bash
 python3 spec/generators/generate_01_reconstruct.py
