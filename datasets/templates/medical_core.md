@@ -24,7 +24,7 @@ For MRI, what dataset do you use to verify? Is this dataset used for MRI popular
 
 #### Step 2: List All MRI Algorithms
 
-Please first ensure all the MRI algorithms have been listed in `\Physics_World_Model\algorithm_base\mri\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/mri. Besides, you need to search all algorithms from 1950 to 2026. After listing all the MRI solvers, please update the MRI solver.
+Please first ensure all the MRI algorithms have been listed in `\pwm\public\algorithm_base\mri\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/mri. Besides, you need to search all algorithms from 1950 to 2026. After listing all the MRI solvers, please update the MRI solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -133,7 +133,7 @@ For CT, what dataset do you use to verify? Is this dataset used for CT popular a
 
 #### Step 2: List All CT Algorithms
 
-Please first ensure all the CT algorithms have been listed in `\Physics_World_Model\algorithm_base\ct\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CT solvers, please update the CT solver.
+Please first ensure all the CT algorithms have been listed in `\pwm\public\algorithm_base\ct\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CT solvers, please update the CT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -247,7 +247,7 @@ For X-ray Fluorescence CT, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All CT Fluorescence Algorithms
 
-Please first ensure all the CT fluorescence algorithms have been listed in `\Physics_World_Model\algorithm_base\ct_fluorescence\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ct_fluorescence. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CT fluorescence solvers, please update the CT fluorescence solver.
+Please first ensure all the CT fluorescence algorithms have been listed in `\pwm\public\algorithm_base\ct_fluorescence\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ct_fluorescence. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CT fluorescence solvers, please update the CT fluorescence solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -330,7 +330,7 @@ For PET-CT, what dataset do you use to verify? Is this dataset used for PET-CT p
 
 #### Step 2: List All PET-CT Algorithms
 
-Please first ensure all the PET-CT algorithms have been listed in `\Physics_World_Model\algorithm_base\pet_ct\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/pet_ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PET-CT solvers, please update the PET-CT solver.
+Please first ensure all the PET-CT algorithms have been listed in `\pwm\public\algorithm_base\pet_ct\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/pet_ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PET-CT solvers, please update the PET-CT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -419,7 +419,7 @@ For PET-MR, what dataset do you use to verify? Is this dataset used for PET-MR p
 
 #### Step 2: List All PET-MR Algorithms
 
-Please first ensure all the PET-MR algorithms have been listed in `\Physics_World_Model\algorithm_base\pet_mr\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/pet_mr. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PET-MR solvers, please update the PET-MR solver.
+Please first ensure all the PET-MR algorithms have been listed in `\pwm\public\algorithm_base\pet_mr\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/pet_mr. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PET-MR solvers, please update the PET-MR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -509,7 +509,7 @@ For SPECT-CT, what dataset do you use to verify? Is this dataset used for SPECT-
 
 #### Step 2: List All SPECT-CT Algorithms
 
-Please first ensure all the SPECT-CT algorithms have been listed in `\Physics_World_Model\algorithm_base\spect_ct\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spect_ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPECT-CT solvers, please update the SPECT-CT solver.
+Please first ensure all the SPECT-CT algorithms have been listed in `\pwm\public\algorithm_base\spect_ct\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spect_ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPECT-CT solvers, please update the SPECT-CT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -599,7 +599,7 @@ For Ultrasound-MRI Fusion, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All US-MRI Algorithms
 
-Please first ensure all the US-MRI algorithms have been listed in `\Physics_World_Model\algorithm_base\us_mri\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/us_mri. Besides, you need to search all algorithms from 1950 to 2026. After listing all the US-MRI solvers, please update the US-MRI solver.
+Please first ensure all the US-MRI algorithms have been listed in `\pwm\public\algorithm_base\us_mri\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/us_mri. Besides, you need to search all algorithms from 1950 to 2026. After listing all the US-MRI solvers, please update the US-MRI solver.
 
 **Key algorithms to cover (1950–2026):**
 

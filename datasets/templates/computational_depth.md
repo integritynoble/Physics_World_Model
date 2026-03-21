@@ -22,7 +22,7 @@ For Coded Exposure, what dataset do you use to verify? Is this dataset used for 
 
 #### Step 2: List All Coded Exposure Algorithms
 
-Please first ensure all the coded exposure algorithms have been listed in `\Physics_World_Model\algorithm_base\coded_exposure\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/coded_exposure. Besides, you need to search all algorithms from 1950 to 2026. After listing all the coded exposure solvers, please update the coded exposure solver.
+Please first ensure all the coded exposure algorithms have been listed in `\pwm\public\algorithm_base\coded_exposure\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/coded_exposure. Besides, you need to search all algorithms from 1950 to 2026. After listing all the coded exposure solvers, please update the coded exposure solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -118,7 +118,7 @@ For Event Camera, what dataset do you use to verify? Is this dataset used for ev
 
 #### Step 2: List All Event Camera Algorithms
 
-Please first ensure all the event camera algorithms have been listed in `\Physics_World_Model\algorithm_base\event_camera\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/event_camera. Besides, you need to search all algorithms from 1950 to 2026. After listing all the event camera solvers, please update the event camera solver.
+Please first ensure all the event camera algorithms have been listed in `\pwm\public\algorithm_base\event_camera\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/event_camera. Besides, you need to search all algorithms from 1950 to 2026. After listing all the event camera solvers, please update the event camera solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -216,7 +216,7 @@ For HDR Imaging, what dataset do you use to verify? Is this dataset used for hig
 
 #### Step 2: List All HDR Imaging Algorithms
 
-Please first ensure all the HDR imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\hdr_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/hdr_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the HDR imaging solvers, please update the HDR imaging solver.
+Please first ensure all the HDR imaging algorithms have been listed in `\pwm\public\algorithm_base\hdr_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/hdr_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the HDR imaging solvers, please update the HDR imaging solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -312,7 +312,7 @@ For Panorama Multi-Focus Fusion, what dataset do you use to verify? Is this data
 
 #### Step 2: List All Panorama Algorithms
 
-Please first ensure all the panorama algorithms have been listed in `\Physics_World_Model\algorithm_base\panorama\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/panorama. Besides, you need to search all algorithms from 1950 to 2026. After listing all the panorama solvers, please update the panorama solver.
+Please first ensure all the panorama algorithms have been listed in `\pwm\public\algorithm_base\panorama\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/panorama. Besides, you need to search all algorithms from 1950 to 2026. After listing all the panorama solvers, please update the panorama solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -408,7 +408,7 @@ For Flash LiDAR, what dataset do you use to verify? Is this dataset used for fla
 
 #### Step 2: List All Flash LiDAR Algorithms
 
-Please first ensure all the flash LiDAR algorithms have been listed in `\Physics_World_Model\algorithm_base\flash_lidar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/flash_lidar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the flash LiDAR solvers, please update the flash LiDAR solver.
+Please first ensure all the flash LiDAR algorithms have been listed in `\pwm\public\algorithm_base\flash_lidar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/flash_lidar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the flash LiDAR solvers, please update the flash LiDAR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -504,7 +504,7 @@ For LiDAR Scanner, what dataset do you use to verify? Is this dataset used for L
 
 #### Step 2: List All LiDAR Algorithms
 
-Please first ensure all the LiDAR algorithms have been listed in `\Physics_World_Model\algorithm_base\lidar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lidar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the LiDAR solvers, please update the LiDAR solver.
+Please first ensure all the LiDAR algorithms have been listed in `\pwm\public\algorithm_base\lidar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lidar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the LiDAR solvers, please update the LiDAR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -600,7 +600,7 @@ For Photometric Stereo, what dataset do you use to verify? Is this dataset used 
 
 #### Step 2: List All Photometric Stereo Algorithms
 
-Please first ensure all the photometric stereo algorithms have been listed in `\Physics_World_Model\algorithm_base\photometric_stereo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/photometric_stereo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the photometric stereo solvers, please update the photometric stereo solver.
+Please first ensure all the photometric stereo algorithms have been listed in `\pwm\public\algorithm_base\photometric_stereo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/photometric_stereo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the photometric stereo solvers, please update the photometric stereo solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -694,7 +694,7 @@ For Structured-Light Depth Camera, what dataset do you use to verify? Is this da
 
 #### Step 2: List All Structured-Light Algorithms
 
-Please first ensure all the structured-light algorithms have been listed in `\Physics_World_Model\algorithm_base\structured_light\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/structured_light. Besides, you need to search all algorithms from 1950 to 2026. After listing all the structured-light solvers, please update the structured-light solver.
+Please first ensure all the structured-light algorithms have been listed in `\pwm\public\algorithm_base\structured_light\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/structured_light. Besides, you need to search all algorithms from 1950 to 2026. After listing all the structured-light solvers, please update the structured-light solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -790,7 +790,7 @@ For Time-of-Flight Depth Camera, what dataset do you use to verify? Is this data
 
 #### Step 2: List All ToF Camera Algorithms
 
-Please first ensure all the ToF camera algorithms have been listed in `\Physics_World_Model\algorithm_base\tof_camera\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/tof_camera. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ToF camera solvers, please update the ToF camera solver.
+Please first ensure all the ToF camera algorithms have been listed in `\pwm\public\algorithm_base\tof_camera\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/tof_camera. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ToF camera solvers, please update the ToF camera solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -884,7 +884,7 @@ For Integral Photography, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Integral Photography Algorithms
 
-Please first ensure all the integral photography algorithms have been listed in `\Physics_World_Model\algorithm_base\integral\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/integral. Besides, you need to search all algorithms from 1950 to 2026. After listing all the integral photography solvers, please update the integral photography solver.
+Please first ensure all the integral photography algorithms have been listed in `\pwm\public\algorithm_base\integral\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/integral. Besides, you need to search all algorithms from 1950 to 2026. After listing all the integral photography solvers, please update the integral photography solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -976,7 +976,7 @@ For Light Field Imaging, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Light Field Algorithms
 
-Please first ensure all the light field algorithms have been listed in `\Physics_World_Model\algorithm_base\light_field\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/light_field. Besides, you need to search all algorithms from 1950 to 2026. After listing all the light field solvers, please update the light field solver.
+Please first ensure all the light field algorithms have been listed in `\pwm\public\algorithm_base\light_field\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/light_field. Besides, you need to search all algorithms from 1950 to 2026. After listing all the light field solvers, please update the light field solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1074,7 +1074,7 @@ For Stellar Coronagraphy, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Coronagraphy Algorithms
 
-Please first ensure all the coronagraphy algorithms have been listed in `\Physics_World_Model\algorithm_base\coronagraphy\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/coronagraphy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the coronagraphy solvers, please update the coronagraphy solver.
+Please first ensure all the coronagraphy algorithms have been listed in `\pwm\public\algorithm_base\coronagraphy\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/coronagraphy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the coronagraphy solvers, please update the coronagraphy solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1167,7 +1167,7 @@ For Adaptive Optics Imaging, what dataset do you use to verify? Is this dataset 
 
 #### Step 2: List All Adaptive Optics Algorithms
 
-Please first ensure all the adaptive optics algorithms have been listed in `\Physics_World_Model\algorithm_base\adaptive_optics\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/adaptive_optics. Besides, you need to search all algorithms from 1950 to 2026. After listing all the adaptive optics solvers, please update the adaptive optics solver.
+Please first ensure all the adaptive optics algorithms have been listed in `\pwm\public\algorithm_base\adaptive_optics\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/adaptive_optics. Besides, you need to search all algorithms from 1950 to 2026. After listing all the adaptive optics solvers, please update the adaptive optics solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1263,7 +1263,7 @@ For Lucky Imaging, what dataset do you use to verify? Is this dataset used for l
 
 #### Step 2: List All Lucky Imaging Algorithms
 
-Please first ensure all the lucky imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\lucky_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lucky_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the lucky imaging solvers, please update the lucky imaging solver.
+Please first ensure all the lucky imaging algorithms have been listed in `\pwm\public\algorithm_base\lucky_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lucky_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the lucky imaging solvers, please update the lucky imaging solver.
 
 **Key algorithms to cover (1950–2026):**
 

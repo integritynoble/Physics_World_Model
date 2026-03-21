@@ -34,7 +34,7 @@ For CASSI, what dataset do you use to verify? Is this dataset used for CASSI pop
 
 #### Step 2: List All CASSI Algorithms
 
-Please first ensure all the CASSI algorithms have been listed in `\Physics_World_Model\algorithm_base\cassi\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cassi. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CASSI solvers, please update the CASSI solver.
+Please first ensure all the CASSI algorithms have been listed in `\pwm\public\algorithm_base\cassi\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cassi. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CASSI solvers, please update the CASSI solver.
 
 **Key algorithms to cover (2006–2026):**
 
@@ -139,7 +139,7 @@ For CACTI, what dataset do you use to verify? Is this dataset used for CACTI pop
 
 #### Step 2: List All CACTI Algorithms
 
-Please first ensure all the CACTI algorithms have been listed in `\Physics_World_Model\algorithm_base\cacti\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cacti. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CACTI solvers, please update the CACTI solver.
+Please first ensure all the CACTI algorithms have been listed in `\pwm\public\algorithm_base\cacti\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cacti. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CACTI solvers, please update the CACTI solver.
 
 **Key algorithms to cover (2011–2026):**
 
@@ -237,7 +237,7 @@ For SPC, what dataset do you use to verify? Is this dataset used for SPC popular
 
 #### Step 2: List All SPC Algorithms
 
-Please first ensure all the SPC algorithms have been listed in `\Physics_World_Model\algorithm_base\spc\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spc. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPC solvers, please update the SPC solver.
+Please first ensure all the SPC algorithms have been listed in `\pwm\public\algorithm_base\spc\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spc. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPC solvers, please update the SPC solver.
 
 **Key algorithms to cover (2006–2026):**
 
@@ -346,7 +346,7 @@ For Lensless Imaging, what dataset do you use to verify? Is this dataset used fo
 
 #### Step 2: List All Lensless Algorithms
 
-Please first ensure all the lensless algorithms have been listed in `\Physics_World_Model\algorithm_base\lensless\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lensless. Besides, you need to search all algorithms from 1950 to 2026. After listing all the lensless solvers, please update the lensless solver.
+Please first ensure all the lensless algorithms have been listed in `\pwm\public\algorithm_base\lensless\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lensless. Besides, you need to search all algorithms from 1950 to 2026. After listing all the lensless solvers, please update the lensless solver.
 
 **Key algorithms to cover (2013–2026):**
 
@@ -450,7 +450,7 @@ For Holography, what dataset do you use to verify? Is this dataset used for holo
 
 #### Step 2: List All Holography Algorithms
 
-Please first ensure all the holography algorithms have been listed in `\Physics_World_Model\algorithm_base\holography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the holography solvers, please update the holography solver.
+Please first ensure all the holography algorithms have been listed in `\pwm\public\algorithm_base\holography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the holography solvers, please update the holography solver.
 
 **Key algorithms to cover (1948–2026):**
 
@@ -559,7 +559,7 @@ For Ptychography, what dataset do you use to verify? Is this dataset used for pt
 
 #### Step 2: List All Ptychography Algorithms
 
-Please first ensure all the ptychography algorithms have been listed in `\Physics_World_Model\algorithm_base\ptychography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ptychography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ptychography solvers, please update the ptychography solver.
+Please first ensure all the ptychography algorithms have been listed in `\pwm\public\algorithm_base\ptychography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ptychography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ptychography solvers, please update the ptychography solver.
 
 **Key algorithms to cover (1969–2026):**
 
@@ -667,7 +667,7 @@ For MRI, what dataset do you use to verify? Is this dataset used for MRI popular
 
 #### Step 2: List All MRI Algorithms
 
-Please first ensure all the MRI algorithms have been listed in `\Physics_World_Model\algorithm_base\mri\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/mri. Besides, you need to search all algorithms from 1950 to 2026. After listing all the MRI solvers, please update the MRI solver.
+Please first ensure all the MRI algorithms have been listed in `\pwm\public\algorithm_base\mri\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/mri. Besides, you need to search all algorithms from 1950 to 2026. After listing all the MRI solvers, please update the MRI solver.
 
 **Key algorithms to cover (1970–2026):**
 
@@ -781,7 +781,7 @@ For CT, what dataset do you use to verify? Is this dataset used for CT popular a
 
 #### Step 2: List All CT Algorithms
 
-Please first ensure all the CT algorithms have been listed in `\Physics_World_Model\algorithm_base\ct\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CT solvers, please update the CT solver.
+Please first ensure all the CT algorithms have been listed in `\pwm\public\algorithm_base\ct\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CT solvers, please update the CT solver.
 
 **Key algorithms to cover (1960–2026):**
 
@@ -894,7 +894,7 @@ For CBCT, what dataset do you use to verify? Is this dataset used for CBCT popul
 
 #### Step 2: List All CBCT Algorithms
 
-Please first ensure all the CBCT algorithms have been listed in `\Physics_World_Model\algorithm_base\cbct\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cbct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CBCT solvers, please update the CBCT solver.
+Please first ensure all the CBCT algorithms have been listed in `\pwm\public\algorithm_base\cbct\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cbct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CBCT solvers, please update the CBCT solver.
 
 **Key algorithms to cover (1984–2026):**
 
@@ -1000,7 +1000,7 @@ For Ultrasound, what dataset do you use to verify? Is this dataset used for ultr
 
 #### Step 2: List All Ultrasound Algorithms
 
-Please first ensure all the ultrasound algorithms have been listed in `\Physics_World_Model\algorithm_base\ultrasound\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ultrasound. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ultrasound solvers, please update the ultrasound solver.
+Please first ensure all the ultrasound algorithms have been listed in `\pwm\public\algorithm_base\ultrasound\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ultrasound. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ultrasound solvers, please update the ultrasound solver.
 
 **Key algorithms to cover (1960–2026):**
 
@@ -1109,7 +1109,7 @@ For Cryo-EM, what dataset do you use to verify? Is this dataset used for cryo-EM
 
 #### Step 2: List All Cryo-EM Algorithms
 
-Please first ensure all the cryo-EM algorithms have been listed in `\Physics_World_Model\algorithm_base\cryo_em\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cryo_em. Besides, you need to search all algorithms from 1950 to 2026. After listing all the cryo-EM solvers, please update the cryo-EM solver.
+Please first ensure all the cryo-EM algorithms have been listed in `\pwm\public\algorithm_base\cryo_em\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cryo_em. Besides, you need to search all algorithms from 1950 to 2026. After listing all the cryo-EM solvers, please update the cryo-EM solver.
 
 **Key algorithms to cover (1968–2026):**
 
@@ -1220,7 +1220,7 @@ For Widefield Fluorescence, what dataset do you use to verify? Is this dataset u
 
 #### Step 2: List All Widefield Fluorescence Algorithms
 
-Please first ensure all the widefield fluorescence algorithms have been listed in `\Physics_World_Model\algorithm_base\widefield\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/widefield. Besides, you need to search all algorithms from 1950 to 2026. After listing all the widefield fluorescence solvers, please update the widefield fluorescence solver.
+Please first ensure all the widefield fluorescence algorithms have been listed in `\pwm\public\algorithm_base\widefield\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/widefield. Besides, you need to search all algorithms from 1950 to 2026. After listing all the widefield fluorescence solvers, please update the widefield fluorescence solver.
 
 **Key algorithms to cover (1949–2026):**
 

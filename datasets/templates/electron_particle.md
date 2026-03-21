@@ -22,7 +22,7 @@ For TEM, what dataset do you use to verify? Is this dataset used for TEM popular
 
 #### Step 2: List All TEM Algorithms
 
-Please first ensure all the TEM algorithms have been listed in `\Physics_World_Model\algorithm_base\tem\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/tem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the TEM solvers, please update the TEM solver.
+Please first ensure all the TEM algorithms have been listed in `\pwm\public\algorithm_base\tem\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/tem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the TEM solvers, please update the TEM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -121,7 +121,7 @@ For STEM, what dataset do you use to verify? Is this dataset used for STEM popul
 
 #### Step 2: List All STEM Algorithms
 
-Please first ensure all the STEM algorithms have been listed in `\Physics_World_Model\algorithm_base\stem\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/stem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the STEM solvers, please update the STEM solver.
+Please first ensure all the STEM algorithms have been listed in `\pwm\public\algorithm_base\stem\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/stem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the STEM solvers, please update the STEM solver.
 
 **Key algorithms to cover (1970–2026):**
 
@@ -224,7 +224,7 @@ For SEM, what dataset do you use to verify? Is this dataset used for SEM popular
 
 #### Step 2: List All SEM Algorithms
 
-Please first ensure all the SEM algorithms have been listed in `\Physics_World_Model\algorithm_base\sem\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SEM solvers, please update the SEM solver.
+Please first ensure all the SEM algorithms have been listed in `\pwm\public\algorithm_base\sem\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SEM solvers, please update the SEM solver.
 
 **Key algorithms to cover (1965–2026):**
 
@@ -329,7 +329,7 @@ For FIB-SEM, what dataset do you use to verify? Is this dataset used for FIB-SEM
 
 #### Step 2: List All FIB-SEM Algorithms
 
-Please first ensure all the FIB-SEM algorithms have been listed in `\Physics_World_Model\algorithm_base\fib_sem\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fib_sem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FIB-SEM solvers, please update the FIB-SEM solver.
+Please first ensure all the FIB-SEM algorithms have been listed in `\pwm\public\algorithm_base\fib_sem\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fib_sem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FIB-SEM solvers, please update the FIB-SEM solver.
 
 **Key algorithms to cover (1990–2026):**
 
@@ -428,7 +428,7 @@ For Cryo-ET, what dataset do you use to verify? Is this dataset used for Cryo-ET
 
 #### Step 2: List All Cryo-ET Algorithms
 
-Please first ensure all the Cryo-ET algorithms have been listed in `\Physics_World_Model\algorithm_base\cryo_et\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cryo_et. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Cryo-ET solvers, please update the Cryo-ET solver.
+Please first ensure all the Cryo-ET algorithms have been listed in `\pwm\public\algorithm_base\cryo_et\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cryo_et. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Cryo-ET solvers, please update the Cryo-ET solver.
 
 **Key algorithms to cover (1968–2026):**
 
@@ -544,7 +544,7 @@ For Electron Tomography, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Electron Tomography Algorithms
 
-Please first ensure all the Electron Tomography algorithms have been listed in `\Physics_World_Model\algorithm_base\electron_tomography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/electron_tomography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Electron Tomography solvers, please update the Electron Tomography solver.
+Please first ensure all the Electron Tomography algorithms have been listed in `\pwm\public\algorithm_base\electron_tomography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/electron_tomography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Electron Tomography solvers, please update the Electron Tomography solver.
 
 **Key algorithms to cover (1968–2026):**
 
@@ -650,7 +650,7 @@ For 4D-STEM Electron Diffraction, what dataset do you use to verify? Is this dat
 
 #### Step 2: List All 4D-STEM Electron Diffraction Algorithms
 
-Please first ensure all the 4D-STEM Electron Diffraction algorithms have been listed in `\Physics_World_Model\algorithm_base\electron_diffraction\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/electron_diffraction. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Electron Diffraction solvers, please update the Electron Diffraction solver.
+Please first ensure all the 4D-STEM Electron Diffraction algorithms have been listed in `\pwm\public\algorithm_base\electron_diffraction\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/electron_diffraction. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Electron Diffraction solvers, please update the Electron Diffraction solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -761,7 +761,7 @@ For Electron Holography, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Electron Holography Algorithms
 
-Please first ensure all the Electron Holography algorithms have been listed in `\Physics_World_Model\algorithm_base\electron_holography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/electron_holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Electron Holography solvers, please update the Electron Holography solver.
+Please first ensure all the Electron Holography algorithms have been listed in `\pwm\public\algorithm_base\electron_holography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/electron_holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Electron Holography solvers, please update the Electron Holography solver.
 
 **Key algorithms to cover (1955–2026):**
 
@@ -864,7 +864,7 @@ For EBSD, what dataset do you use to verify? Is this dataset used for EBSD popul
 
 #### Step 2: List All EBSD Algorithms
 
-Please first ensure all the EBSD algorithms have been listed in `\Physics_World_Model\algorithm_base\ebsd\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ebsd. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EBSD solvers, please update the EBSD solver.
+Please first ensure all the EBSD algorithms have been listed in `\pwm\public\algorithm_base\ebsd\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ebsd. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EBSD solvers, please update the EBSD solver.
 
 **Key algorithms to cover (1973–2026):**
 
@@ -966,7 +966,7 @@ For EELS, what dataset do you use to verify? Is this dataset used for EELS popul
 
 #### Step 2: List All EELS Algorithms
 
-Please first ensure all the EELS algorithms have been listed in `\Physics_World_Model\algorithm_base\eels\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/eels. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EELS solvers, please update the EELS solver.
+Please first ensure all the EELS algorithms have been listed in `\pwm\public\algorithm_base\eels\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/eels. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EELS solvers, please update the EELS solver.
 
 **Key algorithms to cover (1962–2026):**
 
@@ -1072,7 +1072,7 @@ For STEM-EDX, what dataset do you use to verify? Is this dataset used for STEM-E
 
 #### Step 2: List All STEM-EDX Algorithms
 
-Please first ensure all the STEM-EDX algorithms have been listed in `\Physics_World_Model\algorithm_base\edx_mapping\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/edx_mapping. Besides, you need to search all algorithms from 1950 to 2026. After listing all the STEM-EDX solvers, please update the STEM-EDX solver.
+Please first ensure all the STEM-EDX algorithms have been listed in `\pwm\public\algorithm_base\edx_mapping\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/edx_mapping. Besides, you need to search all algorithms from 1950 to 2026. After listing all the STEM-EDX solvers, please update the STEM-EDX solver.
 
 **Key algorithms to cover (1968–2026):**
 
@@ -1176,7 +1176,7 @@ For Phase Retrieval / CDI, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All Phase Retrieval Algorithms
 
-Please first ensure all the Phase Retrieval algorithms have been listed in `\Physics_World_Model\algorithm_base\phase_retrieval\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/phase_retrieval. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Phase Retrieval solvers, please update the Phase Retrieval solver.
+Please first ensure all the Phase Retrieval algorithms have been listed in `\pwm\public\algorithm_base\phase_retrieval\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/phase_retrieval. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Phase Retrieval solvers, please update the Phase Retrieval solver.
 
 **Key algorithms to cover (1952–2026):**
 
@@ -1292,7 +1292,7 @@ For Talbot-Lau Interferometry, what dataset do you use to verify? Is this datase
 
 #### Step 2: List All Talbot-Lau Algorithms
 
-Please first ensure all the Talbot-Lau algorithms have been listed in `\Physics_World_Model\algorithm_base\talbot_lau\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/talbot_lau. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Talbot-Lau solvers, please update the Talbot-Lau solver.
+Please first ensure all the Talbot-Lau algorithms have been listed in `\pwm\public\algorithm_base\talbot_lau\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/talbot_lau. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Talbot-Lau solvers, please update the Talbot-Lau solver.
 
 **Key algorithms to cover (1836–2026):**
 

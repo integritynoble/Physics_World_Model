@@ -22,7 +22,7 @@ For EHT imaging, what dataset do you use to verify? Is this dataset used for EHT
 
 #### Step 2: List All EHT Imaging Algorithms
 
-Please first ensure all the EHT imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\eht_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/eht_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EHT imaging solvers, please update the EHT imaging solver.
+Please first ensure all the EHT imaging algorithms have been listed in `\pwm\public\algorithm_base\eht_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/eht_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EHT imaging solvers, please update the EHT imaging solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -118,7 +118,7 @@ For solar imaging, what dataset do you use to verify? Is this dataset used for s
 
 #### Step 2: List All Solar Imaging Algorithms
 
-Please first ensure all the solar imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\solar_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/solar_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the solar imaging solvers, please update the solar imaging solver.
+Please first ensure all the solar imaging algorithms have been listed in `\pwm\public\algorithm_base\solar_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/solar_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the solar imaging solvers, please update the solar imaging solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -215,7 +215,7 @@ For radio aperture synthesis, what dataset do you use to verify? Is this dataset
 
 #### Step 2: List All Radio Astronomy Algorithms
 
-Please first ensure all the radio astronomy algorithms have been listed in `\Physics_World_Model\algorithm_base\radio_astronomy\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/radio_astronomy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the radio astronomy solvers, please update the radio astronomy solver.
+Please first ensure all the radio astronomy algorithms have been listed in `\pwm\public\algorithm_base\radio_astronomy\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/radio_astronomy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the radio astronomy solvers, please update the radio astronomy solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -313,7 +313,7 @@ For seismic tomography, what dataset do you use to verify? Is this dataset used 
 
 #### Step 2: List All Seismic Tomography Algorithms
 
-Please first ensure all the seismic tomography algorithms have been listed in `\Physics_World_Model\algorithm_base\seismic_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/seismic_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the seismic tomography solvers, please update the seismic tomography solver.
+Please first ensure all the seismic tomography algorithms have been listed in `\pwm\public\algorithm_base\seismic_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/seismic_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the seismic tomography solvers, please update the seismic tomography solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -408,7 +408,7 @@ For full-waveform inversion, what dataset do you use to verify? Is this dataset 
 
 #### Step 2: List All FWI Algorithms
 
-Please first ensure all the FWI algorithms have been listed in `\Physics_World_Model\algorithm_base\fwi\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fwi. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FWI solvers, please update the FWI solver.
+Please first ensure all the FWI algorithms have been listed in `\pwm\public\algorithm_base\fwi\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fwi. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FWI solvers, please update the FWI solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -505,7 +505,7 @@ For ocean acoustic tomography, what dataset do you use to verify? Is this datase
 
 #### Step 2: List All Ocean Acoustic Tomography Algorithms
 
-Please first ensure all the ocean acoustic tomography algorithms have been listed in `\Physics_World_Model\algorithm_base\ocean_acoustic_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ocean_acoustic_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ocean acoustic tomography solvers, please update the ocean acoustic tomography solver.
+Please first ensure all the ocean acoustic tomography algorithms have been listed in `\pwm\public\algorithm_base\ocean_acoustic_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ocean_acoustic_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ocean acoustic tomography solvers, please update the ocean acoustic tomography solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -598,7 +598,7 @@ For gravitational wave detection, what dataset do you use to verify? Is this dat
 
 #### Step 2: List All Gravitational Wave Algorithms
 
-Please first ensure all the gravitational wave algorithms have been listed in `\Physics_World_Model\algorithm_base\gravitational_wave\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/gravitational_wave. Besides, you need to search all algorithms from 1950 to 2026. After listing all the gravitational wave solvers, please update the gravitational wave solver.
+Please first ensure all the gravitational wave algorithms have been listed in `\pwm\public\algorithm_base\gravitational_wave\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/gravitational_wave. Besides, you need to search all algorithms from 1950 to 2026. After listing all the gravitational wave solvers, please update the gravitational wave solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -696,7 +696,7 @@ For particle calorimetry, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Particle Calorimetry Algorithms
 
-Please first ensure all the particle calorimetry algorithms have been listed in `\Physics_World_Model\algorithm_base\particle_calorimetry\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/particle_calorimetry. Besides, you need to search all algorithms from 1950 to 2026. After listing all the particle calorimetry solvers, please update the particle calorimetry solver.
+Please first ensure all the particle calorimetry algorithms have been listed in `\pwm\public\algorithm_base\particle_calorimetry\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/particle_calorimetry. Besides, you need to search all algorithms from 1950 to 2026. After listing all the particle calorimetry solvers, please update the particle calorimetry solver.
 
 **Key algorithms to cover (1950-2026):**
 

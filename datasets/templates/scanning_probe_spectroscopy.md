@@ -24,7 +24,7 @@ For AFM, what dataset do you use to verify? Is this dataset used for AFM popular
 
 #### Step 2: List All AFM Algorithms
 
-Please first ensure all the AFM algorithms have been listed in `\Physics_World_Model\algorithm_base\afm\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/afm. Besides, you need to search all algorithms from 1986 to 2026. After listing all the AFM solvers, please update the AFM solver.
+Please first ensure all the AFM algorithms have been listed in `\pwm\public\algorithm_base\afm\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/afm. Besides, you need to search all algorithms from 1986 to 2026. After listing all the AFM solvers, please update the AFM solver.
 
 **Key algorithms to cover (1986--2026):**
 
@@ -131,7 +131,7 @@ For STM, what dataset do you use to verify? Is this dataset used for STM popular
 
 #### Step 2: List All STM Algorithms
 
-Please first ensure all the STM algorithms have been listed in `\Physics_World_Model\algorithm_base\stm\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/stm. Besides, you need to search all algorithms from 1981 to 2026. After listing all the STM solvers, please update the STM solver.
+Please first ensure all the STM algorithms have been listed in `\pwm\public\algorithm_base\stm\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/stm. Besides, you need to search all algorithms from 1981 to 2026. After listing all the STM solvers, please update the STM solver.
 
 **Key algorithms to cover (1981--2026):**
 
@@ -237,7 +237,7 @@ For MFM, what dataset do you use to verify? Is this dataset used for MFM popular
 
 #### Step 2: List All MFM Algorithms
 
-Please first ensure all the MFM algorithms have been listed in `\Physics_World_Model\algorithm_base\mfm\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/mfm. Besides, you need to search all algorithms from 1987 to 2026. After listing all the MFM solvers, please update the MFM solver.
+Please first ensure all the MFM algorithms have been listed in `\pwm\public\algorithm_base\mfm\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/mfm. Besides, you need to search all algorithms from 1987 to 2026. After listing all the MFM solvers, please update the MFM solver.
 
 **Key algorithms to cover (1987--2026):**
 
@@ -337,7 +337,7 @@ For NSOM, what dataset do you use to verify? Is this dataset used for NSOM popul
 
 #### Step 2: List All NSOM Algorithms
 
-Please first ensure all the NSOM algorithms have been listed in `\Physics_World_Model\algorithm_base\nsom\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/nsom. Besides, you need to search all algorithms from 1984 to 2026. After listing all the NSOM solvers, please update the NSOM solver.
+Please first ensure all the NSOM algorithms have been listed in `\pwm\public\algorithm_base\nsom\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/nsom. Besides, you need to search all algorithms from 1984 to 2026. After listing all the NSOM solvers, please update the NSOM solver.
 
 **Key algorithms to cover (1984--2026):**
 
@@ -441,7 +441,7 @@ For Raman Imaging, what dataset do you use to verify? Is this dataset used for R
 
 #### Step 2: List All Raman Imaging Algorithms
 
-Please first ensure all the Raman Imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\raman_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/raman_imaging. Besides, you need to search all algorithms from 1960 to 2026. After listing all the Raman Imaging solvers, please update the Raman Imaging solver.
+Please first ensure all the Raman Imaging algorithms have been listed in `\pwm\public\algorithm_base\raman_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/raman_imaging. Besides, you need to search all algorithms from 1960 to 2026. After listing all the Raman Imaging solvers, please update the Raman Imaging solver.
 
 **Key algorithms to cover (1960--2026):**
 
@@ -545,7 +545,7 @@ For SRS, what dataset do you use to verify? Is this dataset used for SRS popular
 
 #### Step 2: List All SRS Algorithms
 
-Please first ensure all the SRS algorithms have been listed in `\Physics_World_Model\algorithm_base\srs\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/srs. Besides, you need to search all algorithms from 2008 to 2026. After listing all the SRS solvers, please update the SRS solver.
+Please first ensure all the SRS algorithms have been listed in `\pwm\public\algorithm_base\srs\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/srs. Besides, you need to search all algorithms from 2008 to 2026. After listing all the SRS solvers, please update the SRS solver.
 
 **Key algorithms to cover (2008--2026):**
 
@@ -641,7 +641,7 @@ For CARS, what dataset do you use to verify? Is this dataset used for CARS popul
 
 #### Step 2: List All CARS Algorithms
 
-Please first ensure all the CARS algorithms have been listed in `\Physics_World_Model\algorithm_base\cars\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cars. Besides, you need to search all algorithms from 1999 to 2026. After listing all the CARS solvers, please update the CARS solver.
+Please first ensure all the CARS algorithms have been listed in `\pwm\public\algorithm_base\cars\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cars. Besides, you need to search all algorithms from 1999 to 2026. After listing all the CARS solvers, please update the CARS solver.
 
 **Key algorithms to cover (1999--2026):**
 
@@ -739,7 +739,7 @@ For Brillouin Microscopy, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Brillouin Algorithms
 
-Please first ensure all the Brillouin algorithms have been listed in `\Physics_World_Model\algorithm_base\brillouin\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/brillouin. Besides, you need to search all algorithms from 2008 to 2026. After listing all the Brillouin solvers, please update the Brillouin solver.
+Please first ensure all the Brillouin algorithms have been listed in `\pwm\public\algorithm_base\brillouin\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/brillouin. Besides, you need to search all algorithms from 2008 to 2026. After listing all the Brillouin solvers, please update the Brillouin solver.
 
 **Key algorithms to cover (2008--2026):**
 
@@ -837,7 +837,7 @@ For FTIR Imaging, what dataset do you use to verify? Is this dataset used for FT
 
 #### Step 2: List All FTIR Imaging Algorithms
 
-Please first ensure all the FTIR Imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\ftir_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ftir_imaging. Besides, you need to search all algorithms from 1960 to 2026. After listing all the FTIR Imaging solvers, please update the FTIR Imaging solver.
+Please first ensure all the FTIR Imaging algorithms have been listed in `\pwm\public\algorithm_base\ftir_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ftir_imaging. Besides, you need to search all algorithms from 1960 to 2026. After listing all the FTIR Imaging solvers, please update the FTIR Imaging solver.
 
 **Key algorithms to cover (1960--2026):**
 
@@ -940,7 +940,7 @@ For LIBS, what dataset do you use to verify? Is this dataset used for LIBS popul
 
 #### Step 2: List All LIBS Algorithms
 
-Please first ensure all the LIBS algorithms have been listed in `\Physics_World_Model\algorithm_base\libs\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/libs. Besides, you need to search all algorithms from 1960 to 2026. After listing all the LIBS solvers, please update the LIBS solver.
+Please first ensure all the LIBS algorithms have been listed in `\pwm\public\algorithm_base\libs\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/libs. Besides, you need to search all algorithms from 1960 to 2026. After listing all the LIBS solvers, please update the LIBS solver.
 
 **Key algorithms to cover (1960--2026):**
 
@@ -1041,7 +1041,7 @@ For MALDI-MSI, what dataset do you use to verify? Is this dataset used for MALDI
 
 #### Step 2: List All MALDI-MSI Algorithms
 
-Please first ensure all the MALDI-MSI algorithms have been listed in `\Physics_World_Model\algorithm_base\maldi_msi\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/maldi_msi. Besides, you need to search all algorithms from 1997 to 2026. After listing all the MALDI-MSI solvers, please update the MALDI-MSI solver.
+Please first ensure all the MALDI-MSI algorithms have been listed in `\pwm\public\algorithm_base\maldi_msi\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/maldi_msi. Besides, you need to search all algorithms from 1997 to 2026. After listing all the MALDI-MSI solvers, please update the MALDI-MSI solver.
 
 **Key algorithms to cover (1997--2026):**
 
@@ -1149,7 +1149,7 @@ For DESI, what dataset do you use to verify? Is this dataset used for DESI popul
 
 #### Step 2: List All DESI Algorithms
 
-Please first ensure all the DESI algorithms have been listed in `\Physics_World_Model\algorithm_base\desi\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/desi. Besides, you need to search all algorithms from 2004 to 2026. After listing all the DESI solvers, please update the DESI solver.
+Please first ensure all the DESI algorithms have been listed in `\pwm\public\algorithm_base\desi\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/desi. Besides, you need to search all algorithms from 2004 to 2026. After listing all the DESI solvers, please update the DESI solver.
 
 **Key algorithms to cover (2004--2026):**
 
@@ -1251,7 +1251,7 @@ For SIMS, what dataset do you use to verify? Is this dataset used for SIMS popul
 
 #### Step 2: List All SIMS Algorithms
 
-Please first ensure all the SIMS algorithms have been listed in `\Physics_World_Model\algorithm_base\sims\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sims. Besides, you need to search all algorithms from 1960 to 2026. After listing all the SIMS solvers, please update the SIMS solver.
+Please first ensure all the SIMS algorithms have been listed in `\pwm\public\algorithm_base\sims\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sims. Besides, you need to search all algorithms from 1960 to 2026. After listing all the SIMS solvers, please update the SIMS solver.
 
 **Key algorithms to cover (1960--2026):**
 

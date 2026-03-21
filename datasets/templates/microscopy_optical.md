@@ -21,7 +21,7 @@ For confocal 3D Z-Stack, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Confocal 3D Algorithms
 
-Please first ensure all the confocal 3D algorithms have been listed in `\Physics_World_Model\algorithm_base\confocal_3d\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/confocal_3d. Besides, you need to search all algorithms from 1950 to 2026. After listing all the confocal 3D solvers, please update the confocal 3D solver.
+Please first ensure all the confocal 3D algorithms have been listed in `\pwm\public\algorithm_base\confocal_3d\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/confocal_3d. Besides, you need to search all algorithms from 1950 to 2026. After listing all the confocal 3D solvers, please update the confocal 3D solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -113,7 +113,7 @@ For confocal laser endomicroscopy (CLE), what dataset do you use to verify? Is t
 
 #### Step 2: List All CLE Algorithms
 
-Please first ensure all the CLE algorithms have been listed in `\Physics_World_Model\algorithm_base\confocal_endomicroscopy\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/confocal_endomicroscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CLE solvers, please update the CLE solver.
+Please first ensure all the CLE algorithms have been listed in `\pwm\public\algorithm_base\confocal_endomicroscopy\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/confocal_endomicroscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CLE solvers, please update the CLE solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -205,7 +205,7 @@ For confocal live-cell microscopy, what dataset do you use to verify? Is this da
 
 #### Step 2: List All Confocal Live-Cell Algorithms
 
-Please first ensure all the confocal live-cell algorithms have been listed in `\Physics_World_Model\algorithm_base\confocal_livecell\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/confocal_livecell. Besides, you need to search all algorithms from 1950 to 2026. After listing all the confocal live-cell solvers, please update the confocal live-cell solver.
+Please first ensure all the confocal live-cell algorithms have been listed in `\pwm\public\algorithm_base\confocal_livecell\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/confocal_livecell. Besides, you need to search all algorithms from 1950 to 2026. After listing all the confocal live-cell solvers, please update the confocal live-cell solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -299,7 +299,7 @@ For spinning disk confocal microscopy, what dataset do you use to verify? Is thi
 
 #### Step 2: List All Spinning Disk Confocal Algorithms
 
-Please first ensure all the spinning disk confocal algorithms have been listed in `\Physics_World_Model\algorithm_base\spinning_disk\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spinning_disk. Besides, you need to search all algorithms from 1950 to 2026. After listing all the spinning disk solvers, please update the spinning disk solver.
+Please first ensure all the spinning disk confocal algorithms have been listed in `\pwm\public\algorithm_base\spinning_disk\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spinning_disk. Besides, you need to search all algorithms from 1950 to 2026. After listing all the spinning disk solvers, please update the spinning disk solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -393,7 +393,7 @@ For light-sheet fluorescence microscopy (LSFM), what dataset do you use to verif
 
 #### Step 2: List All LSFM Algorithms
 
-Please first ensure all the LSFM algorithms have been listed in `\Physics_World_Model\algorithm_base\lightsheet\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lightsheet. Besides, you need to search all algorithms from 1950 to 2026. After listing all the LSFM solvers, please update the LSFM solver.
+Please first ensure all the LSFM algorithms have been listed in `\pwm\public\algorithm_base\lightsheet\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lightsheet. Besides, you need to search all algorithms from 1950 to 2026. After listing all the LSFM solvers, please update the LSFM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -489,7 +489,7 @@ For lattice light-sheet microscopy (LLSM), what dataset do you use to verify? Is
 
 #### Step 2: List All LLSM Algorithms
 
-Please first ensure all the LLSM algorithms have been listed in `\Physics_World_Model\algorithm_base\lattice_lightsheet\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lattice_lightsheet. Besides, you need to search all algorithms from 1950 to 2026. After listing all the LLSM solvers, please update the LLSM solver.
+Please first ensure all the LLSM algorithms have been listed in `\pwm\public\algorithm_base\lattice_lightsheet\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/lattice_lightsheet. Besides, you need to search all algorithms from 1950 to 2026. After listing all the LLSM solvers, please update the LLSM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -583,7 +583,7 @@ For structured illumination microscopy (SIM), what dataset do you use to verify?
 
 #### Step 2: List All SIM Algorithms
 
-Please first ensure all the SIM algorithms have been listed in `\Physics_World_Model\algorithm_base\sim\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sim. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SIM solvers, please update the SIM solver.
+Please first ensure all the SIM algorithms have been listed in `\pwm\public\algorithm_base\sim\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sim. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SIM solvers, please update the SIM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -679,7 +679,7 @@ For image scanning microscopy (ISM), what dataset do you use to verify? Is this 
 
 #### Step 2: List All ISM Algorithms
 
-Please first ensure all the ISM algorithms have been listed in `\Physics_World_Model\algorithm_base\ism\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ism. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ISM solvers, please update the ISM solver.
+Please first ensure all the ISM algorithms have been listed in `\pwm\public\algorithm_base\ism\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ism. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ISM solvers, please update the ISM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -772,7 +772,7 @@ For Fourier ptychographic microscopy (FPM), what dataset do you use to verify? I
 
 #### Step 2: List All FPM Algorithms
 
-Please first ensure all the FPM algorithms have been listed in `\Physics_World_Model\algorithm_base\fpm\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fpm. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FPM solvers, please update the FPM solver.
+Please first ensure all the FPM algorithms have been listed in `\pwm\public\algorithm_base\fpm\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fpm. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FPM solvers, please update the FPM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -866,7 +866,7 @@ For optical diffraction tomography (ODT), what dataset do you use to verify? Is 
 
 #### Step 2: List All ODT Algorithms
 
-Please first ensure all the ODT algorithms have been listed in `\Physics_World_Model\algorithm_base\odt\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/odt. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ODT solvers, please update the ODT solver.
+Please first ensure all the ODT algorithms have been listed in `\pwm\public\algorithm_base\odt\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/odt. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ODT solvers, please update the ODT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -961,7 +961,7 @@ For differential interference contrast (DIC) microscopy, what dataset do you use
 
 #### Step 2: List All DIC Algorithms
 
-Please first ensure all the DIC algorithms have been listed in `\Physics_World_Model\algorithm_base\dic\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/dic. Besides, you need to search all algorithms from 1950 to 2026. After listing all the DIC solvers, please update the DIC solver.
+Please first ensure all the DIC algorithms have been listed in `\pwm\public\algorithm_base\dic\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/dic. Besides, you need to search all algorithms from 1950 to 2026. After listing all the DIC solvers, please update the DIC solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1057,7 +1057,7 @@ For dark-field microscopy, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All Dark-Field Algorithms
 
-Please first ensure all the dark-field algorithms have been listed in `\Physics_World_Model\algorithm_base\dark_field\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/dark_field. Besides, you need to search all algorithms from 1950 to 2026. After listing all the dark-field solvers, please update the dark-field solver.
+Please first ensure all the dark-field algorithms have been listed in `\pwm\public\algorithm_base\dark_field\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/dark_field. Besides, you need to search all algorithms from 1950 to 2026. After listing all the dark-field solvers, please update the dark-field solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1153,7 +1153,7 @@ For phase contrast microscopy, what dataset do you use to verify? Is this datase
 
 #### Step 2: List All Phase Contrast Algorithms
 
-Please first ensure all the phase contrast algorithms have been listed in `\Physics_World_Model\algorithm_base\phase_contrast\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/phase_contrast. Besides, you need to search all algorithms from 1950 to 2026. After listing all the phase contrast solvers, please update the phase contrast solver.
+Please first ensure all the phase contrast algorithms have been listed in `\pwm\public\algorithm_base\phase_contrast\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/phase_contrast. Besides, you need to search all algorithms from 1950 to 2026. After listing all the phase contrast solvers, please update the phase contrast solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1250,7 +1250,7 @@ For total internal reflection fluorescence (TIRF) microscopy, what dataset do yo
 
 #### Step 2: List All TIRF Algorithms
 
-Please first ensure all the TIRF algorithms have been listed in `\Physics_World_Model\algorithm_base\tirf\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/tirf. Besides, you need to search all algorithms from 1950 to 2026. After listing all the TIRF solvers, please update the TIRF solver.
+Please first ensure all the TIRF algorithms have been listed in `\pwm\public\algorithm_base\tirf\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/tirf. Besides, you need to search all algorithms from 1950 to 2026. After listing all the TIRF solvers, please update the TIRF solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1346,7 +1346,7 @@ For two-photon microscopy (2PM), what dataset do you use to verify? Is this data
 
 #### Step 2: List All 2PM Algorithms
 
-Please first ensure all the 2PM algorithms have been listed in `\Physics_World_Model\algorithm_base\two_photon\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/two_photon. Besides, you need to search all algorithms from 1950 to 2026. After listing all the 2PM solvers, please update the 2PM solver.
+Please first ensure all the 2PM algorithms have been listed in `\pwm\public\algorithm_base\two_photon\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/two_photon. Besides, you need to search all algorithms from 1950 to 2026. After listing all the 2PM solvers, please update the 2PM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1443,7 +1443,7 @@ For three-photon microscopy (3PM), what dataset do you use to verify? Is this da
 
 #### Step 2: List All 3PM Algorithms
 
-Please first ensure all the 3PM algorithms have been listed in `\Physics_World_Model\algorithm_base\three_photon\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/three_photon. Besides, you need to search all algorithms from 1950 to 2026. After listing all the 3PM solvers, please update the 3PM solver.
+Please first ensure all the 3PM algorithms have been listed in `\pwm\public\algorithm_base\three_photon\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/three_photon. Besides, you need to search all algorithms from 1950 to 2026. After listing all the 3PM solvers, please update the 3PM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1537,7 +1537,7 @@ For stimulated emission depletion (STED) microscopy, what dataset do you use to 
 
 #### Step 2: List All STED Algorithms
 
-Please first ensure all the STED algorithms have been listed in `\Physics_World_Model\algorithm_base\sted\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sted. Besides, you need to search all algorithms from 1950 to 2026. After listing all the STED solvers, please update the STED solver.
+Please first ensure all the STED algorithms have been listed in `\pwm\public\algorithm_base\sted\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sted. Besides, you need to search all algorithms from 1950 to 2026. After listing all the STED solvers, please update the STED solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1633,7 +1633,7 @@ For PALM/STORM single-molecule localization microscopy (SMLM), what dataset do y
 
 #### Step 2: List All PALM/STORM Algorithms
 
-Please first ensure all the PALM/STORM algorithms have been listed in `\Physics_World_Model\algorithm_base\palm_storm\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/palm_storm. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PALM/STORM solvers, please update the PALM/STORM solver.
+Please first ensure all the PALM/STORM algorithms have been listed in `\pwm\public\algorithm_base\palm_storm\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/palm_storm. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PALM/STORM solvers, please update the PALM/STORM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1734,7 +1734,7 @@ For DNA-PAINT super-resolution microscopy, what dataset do you use to verify? Is
 
 #### Step 2: List All DNA-PAINT Algorithms
 
-Please first ensure all the DNA-PAINT algorithms have been listed in `\Physics_World_Model\algorithm_base\dna_paint\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/dna_paint. Besides, you need to search all algorithms from 1950 to 2026. After listing all the DNA-PAINT solvers, please update the DNA-PAINT solver.
+Please first ensure all the DNA-PAINT algorithms have been listed in `\pwm\public\algorithm_base\dna_paint\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/dna_paint. Besides, you need to search all algorithms from 1950 to 2026. After listing all the DNA-PAINT solvers, please update the DNA-PAINT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1829,7 +1829,7 @@ For MINFLUX nanoscopy, what dataset do you use to verify? Is this dataset used f
 
 #### Step 2: List All MINFLUX Algorithms
 
-Please first ensure all the MINFLUX algorithms have been listed in `\Physics_World_Model\algorithm_base\minflux\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/minflux. Besides, you need to search all algorithms from 1950 to 2026. After listing all the MINFLUX solvers, please update the MINFLUX solver.
+Please first ensure all the MINFLUX algorithms have been listed in `\pwm\public\algorithm_base\minflux\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/minflux. Besides, you need to search all algorithms from 1950 to 2026. After listing all the MINFLUX solvers, please update the MINFLUX solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1924,7 +1924,7 @@ For expansion microscopy (ExM), what dataset do you use to verify? Is this datas
 
 #### Step 2: List All ExM Algorithms
 
-Please first ensure all the ExM algorithms have been listed in `\Physics_World_Model\algorithm_base\expansion\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/expansion. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ExM solvers, please update the ExM solver.
+Please first ensure all the ExM algorithms have been listed in `\pwm\public\algorithm_base\expansion\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/expansion. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ExM solvers, please update the ExM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2020,7 +2020,7 @@ For low-dose widefield microscopy, what dataset do you use to verify? Is this da
 
 #### Step 2: List All Low-Dose Widefield Algorithms
 
-Please first ensure all the low-dose widefield algorithms have been listed in `\Physics_World_Model\algorithm_base\widefield_lowdose\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/widefield_lowdose. Besides, you need to search all algorithms from 1950 to 2026. After listing all the low-dose widefield solvers, please update the low-dose widefield solver.
+Please first ensure all the low-dose widefield algorithms have been listed in `\pwm\public\algorithm_base\widefield_lowdose\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/widefield_lowdose. Besides, you need to search all algorithms from 1950 to 2026. After listing all the low-dose widefield solvers, please update the low-dose widefield solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2117,7 +2117,7 @@ For fluorescence lifetime imaging microscopy (FLIM), what dataset do you use to 
 
 #### Step 2: List All FLIM Algorithms
 
-Please first ensure all the FLIM algorithms have been listed in `\Physics_World_Model\algorithm_base\flim\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/flim. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FLIM solvers, please update the FLIM solver.
+Please first ensure all the FLIM algorithms have been listed in `\pwm\public\algorithm_base\flim\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/flim. Besides, you need to search all algorithms from 1950 to 2026. After listing all the FLIM solvers, please update the FLIM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2213,7 +2213,7 @@ For second harmonic generation (SHG) microscopy, what dataset do you use to veri
 
 #### Step 2: List All SHG Algorithms
 
-Please first ensure all the SHG algorithms have been listed in `\Physics_World_Model\algorithm_base\shg\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/shg. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SHG solvers, please update the SHG solver.
+Please first ensure all the SHG algorithms have been listed in `\pwm\public\algorithm_base\shg\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/shg. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SHG solvers, please update the SHG solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2310,7 +2310,7 @@ For bioluminescence tomography (BLT), what dataset do you use to verify? Is this
 
 #### Step 2: List All BLT Algorithms
 
-Please first ensure all the BLT algorithms have been listed in `\Physics_World_Model\algorithm_base\bioluminescence_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/bioluminescence_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the BLT solvers, please update the BLT solver.
+Please first ensure all the BLT algorithms have been listed in `\pwm\public\algorithm_base\bioluminescence_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/bioluminescence_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the BLT solvers, please update the BLT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2408,7 +2408,7 @@ For polarization microscopy, what dataset do you use to verify? Is this dataset 
 
 #### Step 2: List All Polarization Microscopy Algorithms
 
-Please first ensure all the polarization microscopy algorithms have been listed in `\Physics_World_Model\algorithm_base\polarization\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/polarization. Besides, you need to search all algorithms from 1950 to 2026. After listing all the polarization microscopy solvers, please update the polarization microscopy solver.
+Please first ensure all the polarization microscopy algorithms have been listed in `\pwm\public\algorithm_base\polarization\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/polarization. Besides, you need to search all algorithms from 1950 to 2026. After listing all the polarization microscopy solvers, please update the polarization microscopy solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2506,7 +2506,7 @@ For compressive digital holography, what dataset do you use to verify? Is this d
 
 #### Step 2: List All Compressive Holography Algorithms
 
-Please first ensure all the compressive holography algorithms have been listed in `\Physics_World_Model\algorithm_base\compressive_holography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/compressive_holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the compressive holography solvers, please update the compressive holography solver.
+Please first ensure all the compressive holography algorithms have been listed in `\pwm\public\algorithm_base\compressive_holography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/compressive_holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the compressive holography solvers, please update the compressive holography solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -2602,7 +2602,7 @@ For fluorescence microscopy with dual-PSF Stokes shift, what dataset do you use 
 
 #### Step 2: List All Fluorescence Microscopy Algorithms
 
-Please first ensure all the fluorescence microscopy algorithms have been listed in `\Physics_World_Model\algorithm_base\fluorescence_microscopy\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fluorescence_microscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the fluorescence microscopy solvers, please update the fluorescence microscopy solver.
+Please first ensure all the fluorescence microscopy algorithms have been listed in `\pwm\public\algorithm_base\fluorescence_microscopy\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fluorescence_microscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the fluorescence microscopy solvers, please update the fluorescence microscopy solver.
 
 **Key algorithms to cover (1950–2026):**
 

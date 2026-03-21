@@ -23,7 +23,7 @@ For Cryo-EM, what dataset do you use to verify? Is this dataset used for Cryo-EM
 
 #### Step 2: List All Cryo-EM Algorithms
 
-Please first ensure all the Cryo-EM algorithms have been listed in `\Physics_World_Model\algorithm_base\cryo_em\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cryo_em. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Cryo-EM solvers, please update the Cryo-EM solver.
+Please first ensure all the Cryo-EM algorithms have been listed in `\pwm\public\algorithm_base\cryo_em\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cryo_em. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Cryo-EM solvers, please update the Cryo-EM solver.
 
 **Key algorithms to cover (1968-2026):**
 
@@ -165,7 +165,7 @@ For Cathodoluminescence, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Cathodoluminescence Algorithms
 
-Please first ensure all the Cathodoluminescence algorithms have been listed in `\Physics_World_Model\algorithm_base\cathodoluminescence\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cathodoluminescence. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CL solvers, please update the CL solver.
+Please first ensure all the Cathodoluminescence algorithms have been listed in `\pwm\public\algorithm_base\cathodoluminescence\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cathodoluminescence. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CL solvers, please update the CL solver.
 
 **Key algorithms to cover (1965-2026):**
 
@@ -261,7 +261,7 @@ For Correlative Light-Electron Microscopy, what dataset do you use to verify? Is
 
 #### Step 2: List All CLEM Algorithms
 
-Please first ensure all the CLEM algorithms have been listed in `\Physics_World_Model\algorithm_base\clem\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/clem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CLEM solvers, please update the CLEM solver.
+Please first ensure all the CLEM algorithms have been listed in `\pwm\public\algorithm_base\clem\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/clem. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CLEM solvers, please update the CLEM solver.
 
 **Key algorithms to cover (1990-2026):**
 
@@ -360,7 +360,7 @@ For Atom Probe Tomography, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All Atom Probe Algorithms
 
-Please first ensure all the Atom Probe algorithms have been listed in `\Physics_World_Model\algorithm_base\atom_probe\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/atom_probe. Besides, you need to search all algorithms from 1950 to 2026. After listing all the APT solvers, please update the APT solver.
+Please first ensure all the Atom Probe algorithms have been listed in `\pwm\public\algorithm_base\atom_probe\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/atom_probe. Besides, you need to search all algorithms from 1950 to 2026. After listing all the APT solvers, please update the APT solver.
 
 **Key algorithms to cover (1968-2026):**
 
@@ -459,7 +459,7 @@ For Muon Tomography, what dataset do you use to verify? Is this dataset used for
 
 #### Step 2: List All Muon Tomography Algorithms
 
-Please first ensure all the Muon Tomography algorithms have been listed in `\Physics_World_Model\algorithm_base\muon_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/muon_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the muon tomography solvers, please update the muon tomography solver.
+Please first ensure all the Muon Tomography algorithms have been listed in `\pwm\public\algorithm_base\muon_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/muon_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the muon tomography solvers, please update the muon tomography solver.
 
 **Key algorithms to cover (1955-2026):**
 
@@ -560,7 +560,7 @@ For Neutron Tomography, what dataset do you use to verify? Is this dataset used 
 
 #### Step 2: List All Neutron Tomography Algorithms
 
-Please first ensure all the Neutron Tomography algorithms have been listed in `\Physics_World_Model\algorithm_base\neutron_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/neutron_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the neutron tomography solvers, please update the neutron tomography solver.
+Please first ensure all the Neutron Tomography algorithms have been listed in `\pwm\public\algorithm_base\neutron_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/neutron_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the neutron tomography solvers, please update the neutron tomography solver.
 
 **Key algorithms to cover (1975-2026):**
 
@@ -660,7 +660,7 @@ For Neutron Diffraction, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Neutron Diffraction Algorithms
 
-Please first ensure all the Neutron Diffraction algorithms have been listed in `\Physics_World_Model\algorithm_base\neutron_diffraction\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/neutron_diffraction. Besides, you need to search all algorithms from 1950 to 2026. After listing all the neutron diffraction solvers, please update the neutron diffraction solver.
+Please first ensure all the Neutron Diffraction algorithms have been listed in `\pwm\public\algorithm_base\neutron_diffraction\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/neutron_diffraction. Besides, you need to search all algorithms from 1950 to 2026. After listing all the neutron diffraction solvers, please update the neutron diffraction solver.
 
 **Key algorithms to cover (1964-2026):**
 
@@ -768,7 +768,7 @@ For Proton Radiography, what dataset do you use to verify? Is this dataset used 
 
 #### Step 2: List All Proton Radiography Algorithms
 
-Please first ensure all the Proton Radiography algorithms have been listed in `\Physics_World_Model\algorithm_base\proton_radiography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/proton_radiography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the proton radiography solvers, please update the proton radiography solver.
+Please first ensure all the Proton Radiography algorithms have been listed in `\pwm\public\algorithm_base\proton_radiography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/proton_radiography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the proton radiography solvers, please update the proton radiography solver.
 
 **Key algorithms to cover (1963-2026):**
 
@@ -877,7 +877,7 @@ For Small-Angle X-ray Scattering, what dataset do you use to verify? Is this dat
 
 #### Step 2: List All SAXS Algorithms
 
-Please first ensure all the SAXS algorithms have been listed in `\Physics_World_Model\algorithm_base\saxs\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/saxs. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SAXS solvers, please update the SAXS solver.
+Please first ensure all the SAXS algorithms have been listed in `\pwm\public\algorithm_base\saxs\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/saxs. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SAXS solvers, please update the SAXS solver.
 
 **Key algorithms to cover (1938-2026):**
 
@@ -995,7 +995,7 @@ For Wide-Angle X-ray Scattering, what dataset do you use to verify? Is this data
 
 #### Step 2: List All WAXS Algorithms
 
-Please first ensure all the WAXS algorithms have been listed in `\Physics_World_Model\algorithm_base\waxs\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/waxs. Besides, you need to search all algorithms from 1950 to 2026. After listing all the WAXS solvers, please update the WAXS solver.
+Please first ensure all the WAXS algorithms have been listed in `\pwm\public\algorithm_base\waxs\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/waxs. Besides, you need to search all algorithms from 1950 to 2026. After listing all the WAXS solvers, please update the WAXS solver.
 
 **Key algorithms to cover (1912-2026):**
 
@@ -1107,7 +1107,7 @@ For Serial Femtosecond Crystallography, what dataset do you use to verify? Is th
 
 #### Step 2: List All XFEL-SFX Algorithms
 
-Please first ensure all the XFEL-SFX algorithms have been listed in `\Physics_World_Model\algorithm_base\xfel_sfx\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xfel_sfx. Besides, you need to search all algorithms from 1950 to 2026. After listing all the XFEL-SFX solvers, please update the XFEL-SFX solver.
+Please first ensure all the XFEL-SFX algorithms have been listed in `\pwm\public\algorithm_base\xfel_sfx\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xfel_sfx. Besides, you need to search all algorithms from 1950 to 2026. After listing all the XFEL-SFX solvers, please update the XFEL-SFX solver.
 
 **Key algorithms to cover (2006-2026):**
 
@@ -1225,7 +1225,7 @@ For X-ray Crystallography, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All X-ray Crystallography Algorithms
 
-Please first ensure all the X-ray Crystallography algorithms have been listed in `\Physics_World_Model\algorithm_base\xray_crystallography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xray_crystallography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the X-ray crystallography solvers, please update the X-ray crystallography solver.
+Please first ensure all the X-ray Crystallography algorithms have been listed in `\pwm\public\algorithm_base\xray_crystallography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xray_crystallography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the X-ray crystallography solvers, please update the X-ray crystallography solver.
 
 **Key algorithms to cover (1913-2026):**
 
@@ -1360,7 +1360,7 @@ For X-ray Fluorescence Tomography, what dataset do you use to verify? Is this da
 
 #### Step 2: List All XRF Tomography Algorithms
 
-Please first ensure all the XRF Tomography algorithms have been listed in `\Physics_World_Model\algorithm_base\xrf_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xrf_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the XRF-CT solvers, please update the XRF-CT solver.
+Please first ensure all the XRF Tomography algorithms have been listed in `\pwm\public\algorithm_base\xrf_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xrf_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the XRF-CT solvers, please update the XRF-CT solver.
 
 **Key algorithms to cover (1986-2026):**
 

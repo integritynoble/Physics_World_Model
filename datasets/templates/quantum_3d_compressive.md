@@ -23,7 +23,7 @@ For Ghost Imaging, what dataset do you use to verify? Is this dataset used for g
 
 #### Step 2: List All Ghost Imaging Algorithms
 
-Please first ensure all the ghost imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\ghost_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ghost_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ghost imaging solvers, please update the ghost imaging solver.
+Please first ensure all the ghost imaging algorithms have been listed in `\pwm\public\algorithm_base\ghost_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ghost_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ghost imaging solvers, please update the ghost imaging solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -122,7 +122,7 @@ For Quantum Illumination, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Quantum Illumination Algorithms
 
-Please first ensure all the quantum illumination algorithms have been listed in `\Physics_World_Model\algorithm_base\quantum_illumination\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/quantum_illumination. Besides, you need to search all algorithms from 1950 to 2026. After listing all the QI solvers, please update the QI solver.
+Please first ensure all the quantum illumination algorithms have been listed in `\pwm\public\algorithm_base\quantum_illumination\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/quantum_illumination. Besides, you need to search all algorithms from 1950 to 2026. After listing all the QI solvers, please update the QI solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -218,7 +218,7 @@ For Entangled Photon Imaging, what dataset do you use to verify? Is this dataset
 
 #### Step 2: List All Entangled Photon Algorithms
 
-Please first ensure all the entangled photon imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\entangled_photon\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/entangled_photon. Besides, you need to search all algorithms from 1950 to 2026. After listing all the entangled photon imaging solvers, please update the entangled photon imaging solver.
+Please first ensure all the entangled photon imaging algorithms have been listed in `\pwm\public\algorithm_base\entangled_photon\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/entangled_photon. Besides, you need to search all algorithms from 1950 to 2026. After listing all the entangled photon imaging solvers, please update the entangled photon imaging solver.
 
 **Key algorithms to cover (1950-2026):**
 
@@ -317,7 +317,7 @@ For NeRF (Neural Radiance Fields), what dataset do you use to verify? Is this da
 
 #### Step 2: List All NeRF Algorithms
 
-Please first ensure all the NeRF algorithms have been listed in `\Physics_World_Model\algorithm_base\nerf\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/nerf. Besides, you need to search all algorithms from 1950 to 2026. After listing all the NeRF solvers, please update the NeRF solver.
+Please first ensure all the NeRF algorithms have been listed in `\pwm\public\algorithm_base\nerf\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/nerf. Besides, you need to search all algorithms from 1950 to 2026. After listing all the NeRF solvers, please update the NeRF solver.
 
 **Key algorithms to cover (2020-2026):**
 
@@ -426,7 +426,7 @@ For 3D Gaussian Splatting, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All Gaussian Splatting Algorithms
 
-Please first ensure all the Gaussian Splatting algorithms have been listed in `\Physics_World_Model\algorithm_base\gaussian_splatting\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/gaussian_splatting. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Gaussian Splatting solvers, please update the Gaussian Splatting solver.
+Please first ensure all the Gaussian Splatting algorithms have been listed in `\pwm\public\algorithm_base\gaussian_splatting\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/gaussian_splatting. Besides, you need to search all algorithms from 1950 to 2026. After listing all the Gaussian Splatting solvers, please update the Gaussian Splatting solver.
 
 **Key algorithms to cover (2023-2026):**
 
@@ -532,7 +532,7 @@ For Compressed Ultrafast Photography (CUP), what dataset do you use to verify? I
 
 #### Step 2: List All CUP Algorithms
 
-Please first ensure all the CUP algorithms have been listed in `\Physics_World_Model\algorithm_base\cup\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cup. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CUP solvers, please update the CUP solver.
+Please first ensure all the CUP algorithms have been listed in `\pwm\public\algorithm_base\cup\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/cup. Besides, you need to search all algorithms from 1950 to 2026. After listing all the CUP solvers, please update the CUP solver.
 
 **Key algorithms to cover (2014-2026):**
 
@@ -623,7 +623,7 @@ For Single-Disperser CASSI (SD-CASSI), what dataset do you use to verify? Is thi
 
 #### Step 2: List All SD-CASSI Algorithms
 
-Please first ensure all the SD-CASSI algorithms have been listed in `\Physics_World_Model\algorithm_base\sd_cassi\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sd_cassi. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SD-CASSI solvers, please update the SD-CASSI solver.
+Please first ensure all the SD-CASSI algorithms have been listed in `\pwm\public\algorithm_base\sd_cassi\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sd_cassi. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SD-CASSI solvers, please update the SD-CASSI solver.
 
 **Key algorithms to cover (2007-2026):**
 
@@ -717,7 +717,7 @@ For Block-Diagonal SPC (Single-Pixel Camera with block-diagonal measurement matr
 
 #### Step 2: List All SPC Block Algorithms
 
-Please first ensure all the SPC block algorithms have been listed in `\Physics_World_Model\algorithm_base\spc_block\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spc_block. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPC block solvers, please update the SPC block solver.
+Please first ensure all the SPC block algorithms have been listed in `\pwm\public\algorithm_base\spc_block\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spc_block. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPC block solvers, please update the SPC block solver.
 
 **Key algorithms to cover (2006-2026):**
 
@@ -812,7 +812,7 @@ For Kronecker Product SPC (Single-Pixel Camera with Kronecker-structured measure
 
 #### Step 2: List All SPC Kronecker Algorithms
 
-Please first ensure all the SPC Kronecker algorithms have been listed in `\Physics_World_Model\algorithm_base\spc_kronecker\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spc_kronecker. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPC Kronecker solvers, please update the SPC Kronecker solver.
+Please first ensure all the SPC Kronecker algorithms have been listed in `\pwm\public\algorithm_base\spc_kronecker\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/spc_kronecker. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SPC Kronecker solvers, please update the SPC Kronecker solver.
 
 **Key algorithms to cover (2008-2026):**
 
@@ -905,7 +905,7 @@ For Streak Camera imaging, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All Streak Camera Algorithms
 
-Please first ensure all the streak camera algorithms have been listed in `\Physics_World_Model\algorithm_base\streak_camera\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/streak_camera. Besides, you need to search all algorithms from 1950 to 2026. After listing all the streak camera solvers, please update the streak camera solver.
+Please first ensure all the streak camera algorithms have been listed in `\pwm\public\algorithm_base\streak_camera\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/streak_camera. Besides, you need to search all algorithms from 1950 to 2026. After listing all the streak camera solvers, please update the streak camera solver.
 
 **Key algorithms to cover (1970-2026):**
 
@@ -999,7 +999,7 @@ For Pump-Probe Spectroscopy/Imaging, what dataset do you use to verify? Is this 
 
 #### Step 2: List All Pump-Probe Algorithms
 
-Please first ensure all the pump-probe algorithms have been listed in `\Physics_World_Model\algorithm_base\pump_probe\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/pump_probe. Besides, you need to search all algorithms from 1950 to 2026. After listing all the pump-probe solvers, please update the pump-probe solver.
+Please first ensure all the pump-probe algorithms have been listed in `\pwm\public\algorithm_base\pump_probe\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/pump_probe. Besides, you need to search all algorithms from 1950 to 2026. After listing all the pump-probe solvers, please update the pump-probe solver.
 
 **Key algorithms to cover (1980-2026):**
 
@@ -1094,7 +1094,7 @@ For Radio Interferometry, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Radio Interferometry Algorithms
 
-Please first ensure all the radio interferometry algorithms have been listed in `\Physics_World_Model\algorithm_base\radio_interferometry\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/radio_interferometry. Besides, you need to search all algorithms from 1950 to 2026. After listing all the radio interferometry solvers, please update the radio interferometry solver.
+Please first ensure all the radio interferometry algorithms have been listed in `\pwm\public\algorithm_base\radio_interferometry\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/radio_interferometry. Besides, you need to search all algorithms from 1950 to 2026. After listing all the radio interferometry solvers, please update the radio interferometry solver.
 
 **Key algorithms to cover (1960-2026):**
 

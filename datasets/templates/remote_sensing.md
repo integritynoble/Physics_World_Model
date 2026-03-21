@@ -24,7 +24,7 @@ For SAR, what dataset do you use to verify? Is this dataset used for SAR popular
 
 #### Step 2: List All SAR Algorithms
 
-Please first ensure all the SAR algorithms have been listed in `\Physics_World_Model\algorithm_base\sar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SAR solvers, please update the SAR solver.
+Please first ensure all the SAR algorithms have been listed in `\pwm\public\algorithm_base\sar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SAR solvers, please update the SAR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -138,7 +138,7 @@ For PolSAR, what dataset do you use to verify? Is this dataset used for PolSAR p
 
 #### Step 2: List All PolSAR Algorithms
 
-Please first ensure all the PolSAR algorithms have been listed in `\Physics_World_Model\algorithm_base\polsar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/polsar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PolSAR solvers, please update the PolSAR solver.
+Please first ensure all the PolSAR algorithms have been listed in `\pwm\public\algorithm_base\polsar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/polsar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the PolSAR solvers, please update the PolSAR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -245,7 +245,7 @@ For InSAR, what dataset do you use to verify? Is this dataset used for InSAR pop
 
 #### Step 2: List All InSAR Algorithms
 
-Please first ensure all the InSAR algorithms have been listed in `\Physics_World_Model\algorithm_base\insar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/insar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the InSAR solvers, please update the InSAR solver.
+Please first ensure all the InSAR algorithms have been listed in `\pwm\public\algorithm_base\insar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/insar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the InSAR solvers, please update the InSAR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -350,7 +350,7 @@ For GPR, what dataset do you use to verify? Is this dataset used for GPR popular
 
 #### Step 2: List All GPR Algorithms
 
-Please first ensure all the GPR algorithms have been listed in `\Physics_World_Model\algorithm_base\gpr\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/gpr. Besides, you need to search all algorithms from 1950 to 2026. After listing all the GPR solvers, please update the GPR solver.
+Please first ensure all the GPR algorithms have been listed in `\pwm\public\algorithm_base\gpr\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/gpr. Besides, you need to search all algorithms from 1950 to 2026. After listing all the GPR solvers, please update the GPR solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -456,7 +456,7 @@ For Hyperspectral Remote Sensing, what dataset do you use to verify? Is this dat
 
 #### Step 2: List All Hyperspectral Remote Sensing Algorithms
 
-Please first ensure all the hyperspectral remote sensing algorithms have been listed in `\Physics_World_Model\algorithm_base\hyperspectral_remote\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/hyperspectral_remote. Besides, you need to search all algorithms from 1950 to 2026. After listing all the hyperspectral remote sensing solvers, please update the hyperspectral remote sensing solver.
+Please first ensure all the hyperspectral remote sensing algorithms have been listed in `\pwm\public\algorithm_base\hyperspectral_remote\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/hyperspectral_remote. Besides, you need to search all algorithms from 1950 to 2026. After listing all the hyperspectral remote sensing solvers, please update the hyperspectral remote sensing solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -576,7 +576,7 @@ For Multispectral Satellite, what dataset do you use to verify? Is this dataset 
 
 #### Step 2: List All Multispectral Satellite Algorithms
 
-Please first ensure all the multispectral satellite algorithms have been listed in `\Physics_World_Model\algorithm_base\multispectral_sat\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/multispectral_sat. Besides, you need to search all algorithms from 1950 to 2026. After listing all the multispectral satellite solvers, please update the multispectral satellite solver.
+Please first ensure all the multispectral satellite algorithms have been listed in `\pwm\public\algorithm_base\multispectral_sat\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/multispectral_sat. Besides, you need to search all algorithms from 1950 to 2026. After listing all the multispectral satellite solvers, please update the multispectral satellite solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -689,7 +689,7 @@ For Ocean Color, what dataset do you use to verify? Is this dataset used for oce
 
 #### Step 2: List All Ocean Color Algorithms
 
-Please first ensure all the ocean color algorithms have been listed in `\Physics_World_Model\algorithm_base\ocean_color\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ocean_color. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ocean color solvers, please update the ocean color solver.
+Please first ensure all the ocean color algorithms have been listed in `\pwm\public\algorithm_base\ocean_color\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ocean_color. Besides, you need to search all algorithms from 1950 to 2026. After listing all the ocean color solvers, please update the ocean color solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -796,7 +796,7 @@ For Passive Microwave, what dataset do you use to verify? Is this dataset used f
 
 #### Step 2: List All Passive Microwave Algorithms
 
-Please first ensure all the passive microwave algorithms have been listed in `\Physics_World_Model\algorithm_base\passive_microwave\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/passive_microwave. Besides, you need to search all algorithms from 1950 to 2026. After listing all the passive microwave solvers, please update the passive microwave solver.
+Please first ensure all the passive microwave algorithms have been listed in `\pwm\public\algorithm_base\passive_microwave\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/passive_microwave. Besides, you need to search all algorithms from 1950 to 2026. After listing all the passive microwave solvers, please update the passive microwave solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -902,7 +902,7 @@ For Weather Radar, what dataset do you use to verify? Is this dataset used for w
 
 #### Step 2: List All Weather Radar Algorithms
 
-Please first ensure all the weather radar algorithms have been listed in `\Physics_World_Model\algorithm_base\weather_radar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/weather_radar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the weather radar solvers, please update the weather radar solver.
+Please first ensure all the weather radar algorithms have been listed in `\pwm\public\algorithm_base\weather_radar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/weather_radar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the weather radar solvers, please update the weather radar solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1017,7 +1017,7 @@ For Sonar, what dataset do you use to verify? Is this dataset used for sonar pop
 
 #### Step 2: List All Sonar Algorithms
 
-Please first ensure all the sonar algorithms have been listed in `\Physics_World_Model\algorithm_base\sonar\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sonar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the sonar solvers, please update the sonar solver.
+Please first ensure all the sonar algorithms have been listed in `\pwm\public\algorithm_base\sonar\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/sonar. Besides, you need to search all algorithms from 1950 to 2026. After listing all the sonar solvers, please update the sonar solver.
 
 **Key algorithms to cover (1950–2026):**
 

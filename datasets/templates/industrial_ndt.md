@@ -21,7 +21,7 @@ For Acoustic Emission Testing, what dataset do you use to verify? Is this datase
 
 #### Step 2: List All Acoustic Emission Algorithms
 
-Please first ensure all the acoustic emission algorithms have been listed in `\Physics_World_Model\algorithm_base\acoustic_emission\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/acoustic_emission. Besides, you need to search all algorithms from 1950 to 2026. After listing all the acoustic emission solvers, please update the acoustic emission solver.
+Please first ensure all the acoustic emission algorithms have been listed in `\pwm\public\algorithm_base\acoustic_emission\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/acoustic_emission. Besides, you need to search all algorithms from 1950 to 2026. After listing all the acoustic emission solvers, please update the acoustic emission solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -117,7 +117,7 @@ For Scanning Acoustic Microscopy (SAM), what dataset do you use to verify? Is th
 
 #### Step 2: List All Acoustic Microscopy Algorithms
 
-Please first ensure all the acoustic microscopy algorithms have been listed in `\Physics_World_Model\algorithm_base\acoustic_microscopy\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/acoustic_microscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SAM solvers, please update the SAM solver.
+Please first ensure all the acoustic microscopy algorithms have been listed in `\pwm\public\algorithm_base\acoustic_microscopy\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/acoustic_microscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the SAM solvers, please update the SAM solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -213,7 +213,7 @@ For Active Thermography (IR), what dataset do you use to verify? Is this dataset
 
 #### Step 2: List All Active Thermography Algorithms
 
-Please first ensure all the active thermography algorithms have been listed in `\Physics_World_Model\algorithm_base\active_thermography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/active_thermography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the active thermography solvers, please update the active thermography solver.
+Please first ensure all the active thermography algorithms have been listed in `\pwm\public\algorithm_base\active_thermography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/active_thermography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the active thermography solvers, please update the active thermography solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -310,7 +310,7 @@ For Eddy Current Imaging, what dataset do you use to verify? Is this dataset use
 
 #### Step 2: List All Eddy Current Algorithms
 
-Please first ensure all the eddy current algorithms have been listed in `\Physics_World_Model\algorithm_base\eddy_current\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/eddy_current. Besides, you need to search all algorithms from 1950 to 2026. After listing all the eddy current solvers, please update the eddy current solver.
+Please first ensure all the eddy current algorithms have been listed in `\pwm\public\algorithm_base\eddy_current\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/eddy_current. Besides, you need to search all algorithms from 1950 to 2026. After listing all the eddy current solvers, please update the eddy current solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -407,7 +407,7 @@ For Industrial X-ray CT, what dataset do you use to verify? Is this dataset used
 
 #### Step 2: List All Industrial CT Algorithms
 
-Please first ensure all the industrial CT algorithms have been listed in `\Physics_World_Model\algorithm_base\industrial_ct\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/industrial_ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the industrial CT solvers, please update the industrial CT solver.
+Please first ensure all the industrial CT algorithms have been listed in `\pwm\public\algorithm_base\industrial_ct\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/industrial_ct. Besides, you need to search all algorithms from 1950 to 2026. After listing all the industrial CT solvers, please update the industrial CT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -507,7 +507,7 @@ For Machine Vision / Automated Optical Inspection (AOI), what dataset do you use
 
 #### Step 2: List All Machine Vision Algorithms
 
-Please first ensure all the machine vision algorithms have been listed in `\Physics_World_Model\algorithm_base\machine_vision\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/machine_vision. Besides, you need to search all algorithms from 1950 to 2026. After listing all the machine vision solvers, please update the machine vision solver.
+Please first ensure all the machine vision algorithms have been listed in `\pwm\public\algorithm_base\machine_vision\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/machine_vision. Besides, you need to search all algorithms from 1950 to 2026. After listing all the machine vision solvers, please update the machine vision solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -609,7 +609,7 @@ For Shearography, what dataset do you use to verify? Is this dataset used for sh
 
 #### Step 2: List All Shearography Algorithms
 
-Please first ensure all the shearography algorithms have been listed in `\Physics_World_Model\algorithm_base\shearography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/shearography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the shearography solvers, please update the shearography solver.
+Please first ensure all the shearography algorithms have been listed in `\pwm\public\algorithm_base\shearography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/shearography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the shearography solvers, please update the shearography solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -706,7 +706,7 @@ For Terahertz Imaging, what dataset do you use to verify? Is this dataset used f
 
 #### Step 2: List All Terahertz Algorithms
 
-Please first ensure all the terahertz algorithms have been listed in `\Physics_World_Model\algorithm_base\terahertz\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/terahertz. Besides, you need to search all algorithms from 1950 to 2026. After listing all the terahertz solvers, please update the terahertz solver.
+Please first ensure all the terahertz algorithms have been listed in `\pwm\public\algorithm_base\terahertz\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/terahertz. Besides, you need to search all algorithms from 1950 to 2026. After listing all the terahertz solvers, please update the terahertz solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -804,7 +804,7 @@ For Ultrasonic Phased Array (TFM/FMC), what dataset do you use to verify? Is thi
 
 #### Step 2: List All Ultrasonic Phased Array Algorithms
 
-Please first ensure all the ultrasonic phased array algorithms have been listed in `\Physics_World_Model\algorithm_base\ultrasonic_phased_array\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ultrasonic_phased_array. Besides, you need to search all algorithms from 1950 to 2026. After listing all the phased array solvers, please update the phased array solver.
+Please first ensure all the ultrasonic phased array algorithms have been listed in `\pwm\public\algorithm_base\ultrasonic_phased_array\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/ultrasonic_phased_array. Besides, you need to search all algorithms from 1950 to 2026. After listing all the phased array solvers, please update the phased array solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -904,7 +904,7 @@ For X-ray NDT Radiography, what dataset do you use to verify? Is this dataset us
 
 #### Step 2: List All X-ray NDT Algorithms
 
-Please first ensure all the X-ray NDT algorithms have been listed in `\Physics_World_Model\algorithm_base\xray_ndt\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xray_ndt. Besides, you need to search all algorithms from 1950 to 2026. After listing all the X-ray NDT solvers, please update the X-ray NDT solver.
+Please first ensure all the X-ray NDT algorithms have been listed in `\pwm\public\algorithm_base\xray_ndt\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xray_ndt. Besides, you need to search all algorithms from 1950 to 2026. After listing all the X-ray NDT solvers, please update the X-ray NDT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1004,7 +1004,7 @@ For X-ray Fluorescence (XRF) Imaging, what dataset do you use to verify? Is this
 
 #### Step 2: List All XRF Imaging Algorithms
 
-Please first ensure all the XRF imaging algorithms have been listed in `\Physics_World_Model\algorithm_base\xrf_imaging\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xrf_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the XRF imaging solvers, please update the XRF imaging solver.
+Please first ensure all the XRF imaging algorithms have been listed in `\pwm\public\algorithm_base\xrf_imaging\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/xrf_imaging. Besides, you need to search all algorithms from 1950 to 2026. After listing all the XRF imaging solvers, please update the XRF imaging solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1102,7 +1102,7 @@ For Electrical Impedance Tomography (EIT), what dataset do you use to verify? Is
 
 #### Step 2: List All EIT Algorithms
 
-Please first ensure all the EIT algorithms have been listed in `\Physics_World_Model\algorithm_base\impedance_tomo\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/impedance_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EIT solvers, please update the EIT solver.
+Please first ensure all the EIT algorithms have been listed in `\pwm\public\algorithm_base\impedance_tomo\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/impedance_tomo. Besides, you need to search all algorithms from 1950 to 2026. After listing all the EIT solvers, please update the EIT solver.
 
 **Key algorithms to cover (1950–2026):**
 
@@ -1203,7 +1203,7 @@ For Generic Matrix Sensing, what dataset do you use to verify? Is this dataset u
 
 #### Step 2: List All Matrix Sensing Algorithms
 
-Please first ensure all the matrix sensing algorithms have been listed in `\Physics_World_Model\algorithm_base\matrix\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/matrix. Besides, you need to search all algorithms from 1950 to 2026. After listing all the matrix sensing solvers, please update the matrix sensing solver.
+Please first ensure all the matrix sensing algorithms have been listed in `\pwm\public\algorithm_base\matrix\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/matrix. Besides, you need to search all algorithms from 1950 to 2026. After listing all the matrix sensing solvers, please update the matrix sensing solver.
 
 **Key algorithms to cover (1950–2026):**
 
