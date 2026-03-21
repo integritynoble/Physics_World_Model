@@ -3104,8 +3104,8 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 3 | Lorentzian Curve Fitting | 2005 | -- | -- | -- | -- | -- | 20.5 | 0.6000 | no_ckpt | Scarcelli et al., Appl. Phys. Lett., 2006; https://doi.org/10.1063/1.2335803 |
 | 4 | VIPA Spectrometer | 2008 | -- | -- | -- | -- | -- | 24.0 | 0.7200 | no_ckpt | Scarcelli & Yun, Nat. Photonics, 2008; https://doi.org/10.1038/nphoton.2007.250 |
 | 5 | Dual-Stage VIPA | 2012 | -- | -- | -- | -- | -- | 25.5 | 0.7600 | no_ckpt | Scarcelli & Yun, Opt. Express, 2011; https://doi.org/10.1364/OE.19.010913 |
-| 6 | Line-Scanning VIPA | 2015 | -- | -- | -- | -- | -- | 26.0 | 0.7800 | no_ckpt | Zhang et al., Nat. Protoc., 2015 |
-| 7 | Bayesian Spectral Estimation | 2016 | -- | -- | -- | -- | -- | 25.0 | 0.7400 | no_ckpt | Fiore et al., Opt. Express, 2016 |
+| 6 | Line-Scanning VIPA | 2015 | -- | -- | -- | -- | -- | 26.0 | 0.7800 | no_ckpt | Zhang & Scarcelli, Nat. Protoc., 2021; https://doi.org/10.1038/s41596-020-00457-2 |
+| 7 | Bayesian Spectral Estimation | 2016 | -- | -- | -- | -- | -- | 25.0 | 0.7400 | no_ckpt | Fiore et al., Appl. Phys. Lett., 2016; https://doi.org/10.1063/1.4948353 |
 | 8 | Stimulated Brillouin Scattering (SBS) Microscopy | 2016 | -- | -- | -- | -- | -- | 26.5 | 0.7900 | no_ckpt | Ballmann et al., J. Biophotonics, 2016; https://doi.org/10.1038/srep18139 |
 | 9 | Impulsive SBS | 2019 | -- | -- | -- | -- | -- | 27.0 | 0.8100 | no_ckpt | Remer et al., Nat. Methods, 2020; https://doi.org/10.1038/s41592-020-0882-0 |
 | 10 | DL-Brillouin Spectral Fitting | 2020 | -- | -- | -- | -- | -- | 27.5 | 0.8400 | no_ckpt | Kabakova et al., Nat. Methods, 2020 |
@@ -3128,7 +3128,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 3 | Multivariate Curve Resolution-ALS | 2005 | -- | -- | -- | -- | -- | 22.0 | 0.6200 | no_ckpt | de Juan & Tauler, Crit. Rev. Anal. Chem., 2006; https://doi.org/10.1080/10408340600970005 |
 | 4 | PCA-DESI | 2010 | -- | -- | -- | -- | -- | 22.5 | 0.6400 | no_ckpt | Dill et al., Chem. Eur. J., 2011; https://doi.org/10.1002/chem.201001692 |
 | 5 | Non-Negative Matrix Factorization | 2012 | -- | -- | -- | -- | -- | 23.0 | 0.6600 | no_ckpt | Alexandrov et al., Anal. Chem., 2012 |
-| 6 | Spatial-Spectral Binning | 2014 | -- | -- | -- | -- | -- | 23.5 | 0.6800 | no_ckpt | Abbassi-Ghadi et al., Chem. Sci., 2014 |
+| 6 | Spatial-Spectral Binning | 2014 | -- | -- | -- | -- | -- | 23.5 | 0.6800 | no_ckpt | Abbassi-Ghadi et al., Chem. Commun., 2014; https://doi.org/10.1039/C3CC48927B |
 | 7 | Lasso Regularized Regression | 2015 | -- | -- | -- | -- | -- | 24.0 | 0.7000 | no_ckpt | Sans et al., Anal. Chem., 2015 |
 | 8 | Random Forest Classifier (DESI) | 2016 | -- | -- | -- | -- | -- | 24.5 | 0.7200 | no_ckpt | Calligaris et al., Proteomics, 2016 |
 | 9 | CNN-DESI Classification | 2019 | -- | -- | -- | -- | -- | 26.0 | 0.7800 | no_ckpt | Behrman et al., Anal. Bioanal. Chem., 2019 |
@@ -3149,7 +3149,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 |---|-----------|------|-------|-------|-------|-------|-------|----------|----------|--------|-----------|
 | 1 | Fundamental Parameters Method | 1966 | -- | -- | -- | -- | -- | 22.0 | 0.5800 | no_ckpt | Criss & Birks, Anal. Chem., 1968; https://doi.org/10.1021/ac60263a023 |
 | 2 | Empirical Coefficients Method | 1972 | -- | -- | -- | -- | -- | 23.0 | 0.6000 | no_ckpt | Lachance & Traill, Can. Spectrosc., 1966 |
-| 3 | Peak Fitting (Gaussian/Voigt) | 1990 | -- | -- | -- | -- | -- | 24.5 | 0.6500 | no_ckpt | Van Espen et al., Anal. Chem., 1977 |
+| 3 | Peak Fitting (Gaussian/Voigt) | 1990 | -- | -- | -- | -- | -- | 24.5 | 0.6500 | no_ckpt | Van Espen et al., Nucl. Instrum. Methods, 1977; https://doi.org/10.1016/0029-554X(77)90834-5 |
 | 4 | Monte Carlo XRF Simulation | 1999 | -- | -- | -- | -- | -- | 25.0 | 0.6800 | no_ckpt | Vincze et al., Spectrochim. Acta B, 1999; https://doi.org/10.1016/S0584-8547(99)00094-4 |
 | 5 | PyMCA Spectral Analysis | 2004 | -- | -- | -- | -- | -- | 26.0 | 0.7200 | no_ckpt | Sole et al., Spectrochim. Acta B, 2007; https://doi.org/10.1016/j.sab.2006.12.002 |
 | 6 | PCA-XRF Elemental Mapping | 2005 | -- | -- | -- | -- | -- | 26.5 | 0.7400 | no_ckpt | Smit et al., Nucl. Instr. Meth. B, 2004 |
@@ -3158,7 +3158,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 9 | CNN-XRF Spectral Deconvolution | 2019 | -- | -- | -- | -- | -- | 32.0 | 0.8800 | no_ckpt | Bombini et al., X-Ray Spectrom., 2019 |
 | 10 | DL-XRF Elemental Mapping | 2020 | -- | -- | -- | -- | -- | 34.0 | 0.9200 | no_ckpt | Kim et al., Sci. Rep., 2020 |
 | 11 | XRF Super-Resolution (ResNet) | 2021 | -- | -- | -- | -- | -- | 36.0 | 0.9500 | no_ckpt | Anand et al., Appl. Phys. Lett., 2021 |
-| 12 | Deep Residual Network XRF-SR | 2023 | -- | -- | -- | -- | -- | 39.1 | 0.9791 | no_ckpt | Chen et al., npj Comput. Mater., 2023 |
+| 12 | Deep Residual Network XRF-SR | 2023 | -- | -- | -- | -- | -- | 39.1 | 0.9791 | no_ckpt | Wu et al., npj Comput. Mater., 2023; https://doi.org/10.1038/s41524-023-00995-9 |
 | 13 | GAN-XRF Enhancement | 2022 | -- | -- | -- | -- | -- | 37.5 | 0.9600 | no_ckpt | Dai et al., Anal. Chem., 2022 |
 | 14 | U-Net XRF-CT Reconstruction | 2023 | -- | -- | -- | -- | -- | 39.1 | 0.9791 | no_ckpt | Li et al., Sci. Rep., 2025 |
 | 15 | Transformer-XRF Quantification | 2024 | -- | -- | -- | -- | -- | 38.0 | 0.9700 | no_ckpt | Wang et al., Spectrochim. Acta B, 2024 |
@@ -3227,7 +3227,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 6 | NMF-SIMS | 2013 | -- | -- | -- | -- | -- | 24.0 | 0.7200 | no_ckpt | Henderson et al., Surf. Interface Anal., 2009; https://doi.org/10.1002/sia.3084 |
 | 7 | Maximum Autocorrelation Factor (MAF) | 2014 | -- | -- | -- | -- | -- | 24.5 | 0.7400 | no_ckpt | Keenan & Kotula, Surf. Interface Anal., 2004; https://doi.org/10.1002/sia.1657 |
 | 8 | G-SIMS Deconvolution | 2015 | -- | -- | -- | -- | -- | 25.0 | 0.7600 | no_ckpt | Gilmore et al., Appl. Surf. Sci., 2000; https://doi.org/10.1016/S0169-4332(00)00317-2 |
-| 9 | Random Forest SIMS Classification | 2018 | -- | -- | -- | -- | -- | 26.0 | 0.7900 | no_ckpt | Madiona et al., Biointerphases, 2018 |
+| 9 | Random Forest SIMS Classification | 2018 | -- | -- | -- | -- | -- | 26.0 | 0.7900 | no_ckpt | Madiona et al., Surf. Interface Anal., 2018; https://doi.org/10.1002/sia.6462 |
 | 10 | CNN-SIMS Spectral Analysis | 2020 | -- | -- | -- | -- | -- | 27.0 | 0.8200 | no_ckpt | Ovchinnikova et al., npj Comput. Mater., 2020; https://doi.org/10.1038/s41524-020-00357-9 |
 | 11 | DL-SIMS Image Segmentation | 2020 | -- | -- | -- | -- | -- | 27.5 | 0.8500 | no_ckpt | Gardner et al., Anal. Chem., 2020; https://doi.org/10.1021/acs.analchem.0c00349 |
 | 12 | ToF-SIMS DL Classification | 2022 | -- | -- | -- | -- | -- | 28.5 | 0.8800 | no_ckpt | Wucher et al., Anal. Chem., 2022 |
@@ -3249,10 +3249,10 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 4 | Compressive Sensing GI (CS-GI) | 2009 | -- | -- | -- | -- | -- | 22.0 | 0.6500 | no_ckpt | Katz et al., Appl. Phys. Lett., 2009; https://doi.org/10.1063/1.3238296 |
 | 5 | Normalized Ghost Imaging (NGI) | 2012 | -- | -- | -- | -- | -- | 17.5 | 0.4000 | no_ckpt | Sun et al., Opt. Express, 2012; https://doi.org/10.1364/OE.20.016892 |
 | 6 | Hadamard Basis GI | 2012 | -- | -- | -- | -- | -- | 20.0 | 0.5500 | no_ckpt | Sun et al., Opt. Express, 2012 |
-| 7 | Total Variation Regularized GI | 2014 | -- | -- | -- | -- | -- | 23.5 | 0.7000 | no_ckpt | Yu et al., Opt. Express, 2014 |
+| 7 | Total Variation Regularized GI | 2014 | -- | -- | -- | -- | -- | 23.5 | 0.7000 | no_ckpt | Yu et al., Opt. Express, 2014; https://doi.org/10.1364/OE.22.007133 |
 | 8 | Fourier Single-Pixel Imaging | 2015 | -- | -- | -- | -- | -- | 24.0 | 0.7200 | no_ckpt | Zhang et al., Nat. Commun., 2015; https://doi.org/10.1038/ncomms7225 |
 | 9 | DGI-CNN (Deep GI) | 2018 | -- | -- | -- | -- | -- | 26.0 | 0.7800 | no_ckpt | Lyu et al., Sci. Rep., 2017; Shimobaba et al., Opt. Commun., 2018; https://doi.org/10.1038/s41598-017-18171-7 |
-| 10 | U-Net Ghost Imaging | 2018 | -- | -- | -- | -- | -- | 27.5 | 0.8200 | no_ckpt | He et al., Opt. Express, 2018 |
+| 10 | U-Net Ghost Imaging | 2018 | -- | -- | -- | -- | -- | 27.5 | 0.8200 | no_ckpt | He et al., Sci. Rep., 2018; https://doi.org/10.1038/s41598-018-24731-2 |
 | 11 | GAN-Based GI Enhancement | 2019 | -- | -- | -- | -- | -- | 28.0 | 0.8500 | no_ckpt | Wang et al., Opt. Express, 2019; https://doi.org/10.1364/OE.27.025560 |
 | 12 | Physics-Informed Neural Network GI | 2020 | -- | -- | -- | -- | -- | 30.2 | 0.9200 | no_ckpt | Li et al., Opt. Express, 2020 |
 | 13 | Single-Pixel DL Imaging | 2021 | -- | -- | -- | -- | -- | 29.5 | 0.9000 | no_ckpt | Higham et al., Sci. Rep., 2018; improved 2021; https://doi.org/10.1038/s41598-018-20521-y |
@@ -3464,7 +3464,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 1 | Spatial Carrier Shearography | 1985 | -- | -- | -- | -- | -- | 18.0 | 0.4800 | no_ckpt | Hung et al., Opt. Eng., 1982; https://doi.org/10.1117/12.7972920 |
 | 2 | Temporal Phase Stepping | 1993 | -- | -- | -- | -- | -- | 22.0 | 0.6200 | no_ckpt | Steinchen & Yang, Digital Shearography, SPIE Press, 2003 |
 | 3 | Phase Unwrapping (Quality-Guided) | 1994 | -- | -- | -- | -- | -- | 24.0 | 0.6800 | no_ckpt | Ghiglia & Pritt, Two-Dimensional Phase Unwrapping, Wiley, 1998 |
-| 4 | Wavelet Transform Filtering | 2003 | -- | -- | -- | -- | -- | 25.0 | 0.7200 | no_ckpt | Federico & Kaufmann, Opt. Eng., 2001 |
+| 4 | Wavelet Transform Filtering | 2003 | -- | -- | -- | -- | -- | 25.0 | 0.7200 | no_ckpt | Federico & Kaufmann, Opt. Eng., 2002; https://doi.org/10.1117/1.1518032 |
 | 5 | Windowed Fourier Transform | 2004 | -- | -- | -- | -- | -- | 26.0 | 0.7600 | no_ckpt | Kemao, Appl. Opt., 2004; https://doi.org/10.1364/AO.43.002695 |
 | 6 | Spatial Phase Shift Shearography | 2010 | -- | -- | -- | -- | -- | 26.5 | 0.7800 | no_ckpt | Xie et al., Opt. Eng., 2010 |
 | 7 | Dynamic Shearography (High-Speed) | 2013 | -- | -- | -- | -- | -- | 25.5 | 0.7400 | no_ckpt | Francis et al., Meas. Sci. Technol., 2013 |
@@ -3491,7 +3491,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 4 | Tikhonov-Regularized DOT | 2005 | -- | -- | -- | -- | -- | 22.0 | 0.6200 | no_ckpt | Pogue et al., Appl. Opt., 1999; https://doi.org/10.1364/AO.38.002950 |
 | 5 | Time-Domain DOT (TD-DOT) | 2006 | -- | -- | -- | -- | -- | 23.0 | 0.6600 | no_ckpt | Ntziachristos et al., Nat. Biotechnol., 2005; https://doi.org/10.1038/nbt1074 |
 | 6 | Frequency-Domain DOT (FD-DOT) | 2007 | -- | -- | -- | -- | -- | 23.5 | 0.6800 | no_ckpt | Culver et al., Opt. Lett., 2003; https://doi.org/10.1364/OL.28.002061 |
-| 7 | Total Variation Regularized DOT | 2010 | -- | -- | -- | -- | -- | 24.5 | 0.7200 | no_ckpt | Douiri et al., Phys. Med. Biol., 2007 |
+| 7 | Total Variation Regularized DOT | 2010 | -- | -- | -- | -- | -- | 24.5 | 0.7200 | no_ckpt | Douiri et al., Meas. Sci. Technol., 2007; https://doi.org/10.1088/0957-0233/18/1/011 |
 | 8 | Structured Light DOT | 2013 | -- | -- | -- | -- | -- | 25.0 | 0.7400 | no_ckpt | Konecky et al., Opt. Express, 2008; https://doi.org/10.1364/OE.16.005048 |
 | 9 | Back-Propagation NN DOT | 2020 | -- | -- | -- | -- | -- | 27.0 | 0.8000 | no_ckpt | Feng et al., J. Biomed. Opt., 2019; https://doi.org/10.1117/1.JBO.24.5.051407 |
 | 10 | DL-DOT (FC + Decoder) | 2019 | -- | -- | -- | -- | -- | 28.0 | 0.8200 | no_ckpt | Yoo et al., IEEE Trans. Med. Imaging, 2020; https://doi.org/10.1109/TMI.2019.2936522 |
@@ -3540,12 +3540,12 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 3 | Unsharp Masking | 1980 | -- | -- | -- | -- | -- | 23.0 | 0.6200 | no_ckpt | Rosenfeld & Kak, Digital Picture Processing, 1982 |
 | 4 | CLAHE (Contrast-Limited Adaptive HE) | 1994 | -- | -- | -- | -- | -- | 25.0 | 0.7000 | no_ckpt | Zuiderveld, IEEE Comp. Graph. Appl., 1994 |
 | 5 | Multiscale Retinex Enhancement | 2003 | -- | -- | -- | -- | -- | 26.0 | 0.7400 | no_ckpt | Jobson et al., IEEE TIP, 1997; https://doi.org/10.1109/83.597272 |
-| 6 | Dual-Energy Bone Suppression | 2006 | -- | -- | -- | -- | -- | 28.0 | 0.7800 | no_ckpt | Kuhlman et al., Radiology, 2006 |
+| 6 | Dual-Energy Bone Suppression | 2006 | -- | -- | -- | -- | -- | 28.0 | 0.7800 | no_ckpt | Kuhlman et al., Radiographics, 2006; https://doi.org/10.1148/rg.261055034 |
 | 7 | CheXNet (DenseNet-121) | 2017 | -- | -- | -- | -- | -- | 29.0 | 0.8200 | no_ckpt | Rajpurkar et al., arXiv, 2017; https://arxiv.org/abs/1711.05225 |
 | 8 | ResNet Bone Suppression | 2020 | -- | -- | -- | -- | -- | 34.1 | 0.9828 | no_ckpt | Rajaraman et al., Diagnostics, 2021; https://doi.org/10.3390/diagnostics11050840 |
 | 9 | DL-CXR Enhancement (EDSR) | 2020 | -- | -- | -- | -- | -- | 32.0 | 0.9200 | no_ckpt | Kim et al., IEEE Access, 2020 |
-| 10 | Cascade CNN Bone Suppression | 2021 | -- | -- | -- | -- | -- | 20.9 | 0.8458 | no_ckpt | Li et al., Phys. Med. Biol., 2021 |
-| 11 | xU-NetFullSharp Bone Suppression | 2024 | -- | -- | -- | -- | -- | 35.5 | 0.9846 | no_ckpt | Gusarev et al., Biomed. Signal Process. Control, 2024 |
+| 10 | Cascade CNN Bone Suppression | 2021 | -- | -- | -- | -- | -- | 20.9 | 0.8458 | no_ckpt | Yang et al., Med. Image Anal., 2017; https://doi.org/10.1016/j.media.2016.08.004 |
+| 11 | xU-NetFullSharp Bone Suppression | 2024 | -- | -- | -- | -- | -- | 35.5 | 0.9846 | no_ckpt | Schiller et al., Biomed. Signal Process. Control, 2025; https://doi.org/10.1016/j.bspc.2024.106983 |
 | 12 | DeBoNet (Ensemble Bone Suppression) | 2022 | -- | -- | -- | -- | -- | 36.8 | 0.9848 | no_ckpt | Rajaraman et al., PLOS ONE, 2022; https://doi.org/10.1371/journal.pone.0265691 |
 | 13 | GAN-CXR Super-Resolution | 2022 | -- | -- | -- | -- | -- | 33.0 | 0.9400 | no_ckpt | Park et al., Sci. Rep., 2022 |
 | 14 | Diffusion-Model CXR Enhancement | 2023 | -- | -- | -- | -- | -- | 35.0 | 0.9600 | no_ckpt | Chambon et al., NeurIPS, 2022; https://arxiv.org/abs/2211.12737 |
@@ -3564,7 +3564,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 2 | Histogram-Based Contrast Enhancement | 1985 | -- | -- | -- | -- | -- | 22.0 | 0.5800 | no_ckpt | Mery & Filbert, Insight, 2002 |
 | 3 | DICONDE Digital Radiography | 2004 | -- | -- | -- | -- | -- | 25.0 | 0.6800 | no_ckpt | ASTM E2339, 2004 |
 | 4 | Template Matching Defect Detection | 2006 | -- | -- | -- | -- | -- | 26.0 | 0.7200 | no_ckpt | Mery et al., Insight, 2006 |
-| 5 | Active Contour Segmentation | 2008 | -- | -- | -- | -- | -- | 27.0 | 0.7600 | no_ckpt | Mery & Arteta, J. Nondestruct. Eval., 2017 |
+| 5 | Active Contour Segmentation | 2008 | -- | -- | -- | -- | -- | 27.0 | 0.7600 | no_ckpt | Mery & Arteta, WACV, 2017; https://doi.org/10.1109/WACV.2017.119 |
 | 6 | Random Forest NDT Classifier | 2015 | -- | -- | -- | -- | -- | 28.0 | 0.7900 | no_ckpt | Mery et al., J. Nondestruct. Eval., 2015; https://doi.org/10.1007/s10921-015-0315-7 |
 | 7 | GDXray Benchmark (SVM) | 2015 | -- | -- | -- | -- | -- | 27.5 | 0.7700 | no_ckpt | Mery et al., J. Nondestruct. Eval., 2015; https://doi.org/10.1007/s10921-015-0315-7 |
 | 8 | Faster R-CNN NDT | 2018 | -- | -- | -- | -- | -- | 30.0 | 0.8500 | no_ckpt | Du et al., NDT E Int., 2019; https://doi.org/10.1016/j.ndteint.2019.102144 |
@@ -3643,7 +3643,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 3 | SIRT-XRF | 2002 | -- | -- | -- | -- | -- | 26.0 | 0.7200 | no_ckpt | de Jonge et al., PNAS, 2010; https://doi.org/10.1073/pnas.1001469107 |
 | 4 | Expectation Maximization (ML-EM) | 2004 | -- | -- | -- | -- | -- | 28.0 | 0.7800 | no_ckpt | Schroer, Appl. Phys. Lett., 2001; https://doi.org/10.1063/1.1402643 |
 | 5 | Self-Absorption Correction | 2013 | -- | -- | -- | -- | -- | 29.0 | 0.8000 | no_ckpt | Golosio et al., J. Appl. Phys., 2003; https://doi.org/10.1063/1.1578176 |
-| 6 | Total Variation XRF-Tomo | 2015 | -- | -- | -- | -- | -- | 30.0 | 0.8400 | no_ckpt | Guizar-Sicairos et al., Optica, 2015 |
+| 6 | Total Variation XRF-Tomo | 2015 | -- | -- | -- | -- | -- | 30.0 | 0.8400 | no_ckpt | Guizar-Sicairos et al., Optica, 2015; https://doi.org/10.1364/OPTICA.2.000259 |
 | 7 | Sparse-View XRF-CT Reconstruction | 2017 | -- | -- | -- | -- | -- | 31.0 | 0.8600 | no_ckpt | Hong et al., Opt. Express, 2014 |
 | 8 | CNN-XRF-CT Reconstruction | 2020 | -- | -- | -- | -- | -- | 34.0 | 0.9200 | no_ckpt | Ge et al., Sci. Rep., 2020 |
 | 9 | U-Net XRF-Tomo | 2021 | -- | -- | -- | -- | -- | 36.0 | 0.9500 | no_ckpt | Kim et al., J. Synchrotron Radiat., 2021 |
@@ -4437,7 +4437,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | Total modalities | 156 |
 | Total algorithms | 2,419 |
 | Algorithms with paper-sourced PSNR/SSIM | 2,419 (100%) |
-| Algorithms with DOI/arxiv links | 1,689 (70%) |
+| Algorithms with DOI/arxiv links | 1,706 (71%) |
 | Real published algorithm names | 2,419 (100%) |
 | Specific publication years | 2,419 (100%) |
 
