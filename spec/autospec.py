@@ -196,7 +196,7 @@ def _llm_call(provider: str, key: str, messages: list, system: str) -> str:
     if provider == 'gemini':
         import urllib.request, json
         url = (f'https://generativelanguage.googleapis.com/v1beta/models/'
-               f'gemini-1.5-flash:generateContent?key={key}')
+               f'gemini-2.5-flash:generateContent?key={key}')
         # Prepend system as first user turn for Gemini
         parts = [{'text': system + '\n\n---\n'}]
         for m in messages:
