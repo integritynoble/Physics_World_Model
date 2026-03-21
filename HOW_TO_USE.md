@@ -28,8 +28,7 @@ import sys; sys.path.insert(0, 'Physics_World_Model/pwm/public')
 
 ## 2. Get a Spec
 
-A **spec** is a minimal recipe (~15 lines) that tells you exactly what code to run for
-your imaging task. There are two ways to get one:
+A **spec** is a minimal recipe (~15 lines) that tells you exactly what code to run.
 
 ### Without API key — returns the closest preset spec
 
@@ -37,42 +36,22 @@ your imaging task. There are two ways to get one:
 python3 spec/autospec.py "CT reconstruction low-dose"
 python3 spec/autospec.py "MRI mismatch correction"
 python3 spec/autospec.py "lensless imaging system design"
-python3 spec/autospec.py "photoacoustic speed-of-sound calibration"
 python3 spec/autospec.py list    # show all 168 modalities
-```
-
-Example output:
-```
-Match: X-ray CT
-Spec:  spec/ct.md
-
-# X-ray Computed Tomography (CT) — PnP-ADMM (NLM)
-**CPU**  **PSNR**: ~39.5 dB
-**Input**: sinogram (angles × detectors, float32)
-**Benchmark**: gs://pwm-benchmark-datasets/datasets/Benchmark/ct/public/
-
-```python
-from algorithm_base.ct.solvers import run_solver
-cfg = {'iters': 20, 'sigma': 0.05, 'rho': 0.5}
-x = run_solver('pnp_admm_nlm', y, cfg=cfg)
-```
 ```
 
 ### With API key — LLM auto-designs a custom spec
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-python3 spec/autospec.py "low-dose CT with TV regularization and CoR mismatch correction"
+python3 spec/autospec.py "low-dose CT with TV regularization and CoR mismatch"
 python3 spec/autospec.py "MRI ESPIRiT with coil sensitivity mismatch" --save my_spec.md
 ```
 
-The LLM reads relevant preset specs as context and generates a spec tailored to your
-prompt. Then refine in plain English:
+Refine in plain English after the spec is generated:
 
 ```
 You: add data loading from GCS
 You: change iterations to 100
-You: add visualization
 You: save
 You: quit
 ```
@@ -81,24 +60,55 @@ You: quit
 
 ## 3. Run the Spec
 
-Copy the run button from the spec and execute it:
+### Step 1 — Load benchmark data
 
 ```python
-import numpy as np
-from pwm_core.data.loaders import load_benchmark_sample
+import sys
+sys.path.insert(0, 'Physics_World_Model/pwm/public')   # adjust path if needed
+
+# Option A: download from GCS (requires gsutil or google-cloud-storage)
+from scripts.gcs_dataset_helper import ensure_challenge_dataset
+import h5py, numpy as np
+
+h5_path = ensure_challenge_dataset('ct', 'public')  # downloads to /tmp/pwm_challenge_cache/
+with h5py.File(h5_path, 'r') as f:
+    y      = f['y'][0].astype('float32')     # sinogram, shape (angles, detectors)
+    x_true = f['x_true'][0].astype('float32')
+
+# Option B: use your own measurement
+y = np.load('my_sinogram.npy').astype('float32')
+```
+
+### Step 2 — Run the solver (copy from spec run button)
+
+```python
 from algorithm_base.ct.solvers import run_solver
-from pwm_core.utils.metrics import compute_psnr, compute_ssim
 
-# Load one benchmark sample
-y, x_true = load_benchmark_sample('ct', tier='public', index=0)
-
-# Run (from the spec run button)
 cfg = {'iters': 20, 'sigma': 0.05, 'rho': 0.5}
 x = run_solver('pnp_admm_nlm', y, cfg=cfg)
+print('reconstruction shape:', x.shape)
+```
 
-# Evaluate
-print(f"PSNR: {compute_psnr(x_true, x):.2f} dB")
-print(f"SSIM: {compute_ssim(x_true, x):.4f}")
+### Step 3 — Evaluate
+
+```python
+from pwm_core.analysis.metrics import psnr, mse
+import numpy as np
+
+print(f"PSNR: {psnr(x_true, x):.2f} dB")
+print(f"MSE:  {mse(x_true, x):.6f}")
+```
+
+### Step 4 — Visualize
+
+```python
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+axes[0].imshow(y,      cmap='gray'); axes[0].set_title('Measurement (sinogram)')
+axes[1].imshow(x,      cmap='gray'); axes[1].set_title('Reconstruction')
+axes[2].imshow(x_true, cmap='gray'); axes[2].set_title('Ground Truth')
+plt.tight_layout(); plt.savefig('ct_result.png'); plt.show()
 ```
 
 ---
@@ -108,21 +118,17 @@ print(f"SSIM: {compute_ssim(x_true, x):.4f}")
 ### Use Case 1 — Reconstruct with a specific algorithm
 
 ```bash
-# Browse all CT algorithms
-ls spec/01_reconstruct/ct/
-
-# Read a specific one
+ls spec/01_reconstruct/ct/      # 41 CT algorithms
 cat spec/01_reconstruct/ct/tv_admm.md
 ```
 
 ```python
-x = run_solver('tv_admm', y)            # CPU
-x = run_solver('ct_fm', y)              # GPU (best quality, ~44.1 dB)
+x = run_solver('tv_admm', y)             # CPU
+x = run_solver('pnp_admm_nlm', y)        # CPU, ~39.5 dB
+x = run_solver('ct_fm', y)               # GPU, ~44.1 dB
 ```
 
 ### Use Case 2 — Mismatch correction + reconstruct
-
-Handles real-world mismatches (calibration errors, drift, model mismatch):
 
 ```bash
 cat spec/02_mismatch/ct/pnp_admm_nlm.md
@@ -133,25 +139,25 @@ from algorithm_base.ct.solvers import run_solver
 from pwm_core.mismatch.operators import ct_calibrate_cor
 
 x_wrong = run_solver('pnp_admm_nlm', y)              # no correction
-cor_offset = ct_calibrate_cor(y, shift_range=5)       # auto-calibrate
+cor_offset = ct_calibrate_cor(y, shift_range=5)       # auto-calibrate CoR
 calib_cfg = {"cor_offset": float(cor_offset)}
 x = run_solver('pnp_admm_nlm', y, cfg=calib_cfg)     # corrected
+
+print(f"Before: {psnr(x_true, x_wrong):.2f} dB")
+print(f"After:  {psnr(x_true, x):.2f} dB")
 ```
 
 ### Use Case 3 — System design
 
-Full imaging pipeline: source → physics → detector → mismatch → reconstruct:
-
 ```bash
-cat spec/03_system_design/ct.md
+cat spec/03_system_design/ct.md    # shows full pipeline DAG + run button
 ```
 
 ### Use Case 4 — Physics simulation
 
-Reproduce benchmark simulations from papers:
-
 ```bash
 cat spec/04_simulation/09_optics/spec.md   # Fresnel diffraction
+# full spec at: papers/universal_simulation/benchmark/09_optics/spec.md
 ```
 
 ---
@@ -160,14 +166,17 @@ cat spec/04_simulation/09_optics/spec.md   # Fresnel diffraction
 
 ```python
 from algorithm_base.ct.solvers import run_solver, list_solvers
+from pwm_core.analysis.metrics import psnr
 
-list_solvers()   # prints all 41 CT algorithms with CPU/GPU labels
+# See all available algorithms
+for key, info in list_solvers():
+    gpu = 'GPU' if info.get('gpu') else 'CPU'
+    print(f"{key:<25} {gpu}  {info.get('name','')}")
 
-results = {}
-for key in ['traditional_cpu', 'tv_admm', 'pnp_admm_nlm']:   # CPU only
+# Compare CPU algorithms
+for key in ['traditional_cpu', 'tv_admm', 'pnp_admm_nlm']:
     x = run_solver(key, y)
-    results[key] = compute_psnr(x_true, x)
-    print(f"{key}: {results[key]:.2f} dB")
+    print(f"{key}: {psnr(x_true, x):.2f} dB")
 ```
 
 ---
@@ -176,14 +185,14 @@ for key in ['traditional_cpu', 'tv_admm', 'pnp_admm_nlm']:   # CPU only
 
 Specs are labelled **GPU** or **CPU** in the metadata line.
 
-- **CPU** specs run on any machine.
-- **GPU** specs raise `RuntimeError` on CPU-only machines — they do not affect CPU specs.
+- **CPU** specs run on any machine — no GPU needed.
+- **GPU** specs raise `RuntimeError` on CPU-only machines — this does not affect CPU specs.
 
 ```python
 try:
-    x = run_solver('ct_fm', y)       # GPU
+    x = run_solver('ct_fm', y)              # GPU — best quality
 except RuntimeError:
-    x = run_solver('pnp_admm_nlm', y)  # CPU fallback
+    x = run_solver('pnp_admm_nlm', y)       # CPU fallback
 ```
 
 ---
@@ -192,35 +201,14 @@ except RuntimeError:
 
 ```bash
 python3 spec/autospec.py list
-# acoustic_emission          Acoustic Emission
-# acoustic_microscopy        Acoustic Microscopy
 # ct                         X-ray CT
 # mri                        MRI
+# ultrasound                 Ultrasound
 # ...168 total
+
+ls spec/               # 168 overview specs + 4 use-case subdirectories
+ls spec/01_reconstruct/ct/     # all 41 CT algorithm specs
 ```
-
-Or browse spec files directly:
-```bash
-ls spec/               # 168 overview specs + subdirectories
-ls spec/01_reconstruct/   # per-algorithm specs
-ls spec/02_mismatch/      # mismatch correction specs
-ls spec/03_system_design/ # system design specs
-ls spec/04_simulation/    # physics simulation specs
-```
-
----
-
-## 8. Benchmark Data
-
-All benchmark data is stored in GCS and downloaded automatically on first use:
-
-```
-gs://pwm-benchmark-datasets/datasets/Benchmark/{modality}/public/   ← 20 samples, with x_true
-gs://pwm-benchmark-datasets/datasets/Benchmark/{modality}/dev/      ← 20 samples, blind
-gs://pwm-benchmark-datasets/datasets/Benchmark/{modality}/hidden/   ← server-only
-```
-
-5 real datasets: CT (LoDoPaB-CT), MRI (M4Raw), SD-CASSI (KAIST TSA), CACTI, Hyperspectral (Indian Pines).
 
 ---
 
@@ -229,9 +217,10 @@ gs://pwm-benchmark-datasets/datasets/Benchmark/{modality}/hidden/   ← server-o
 | Task | Command |
 |------|---------|
 | Get a spec (no API key) | `python3 spec/autospec.py "your query"` |
-| Get a spec (with API key) | `ANTHROPIC_API_KEY=... python3 spec/autospec.py "your query"` |
+| Get a spec (with API key) | `ANTHROPIC_API_KEY=... python3 spec/autospec.py "query"` |
 | List all modalities | `python3 spec/autospec.py list` |
-| List algorithms for a modality | `ls spec/01_reconstruct/{modality}/` |
+| List algorithms | `ls spec/01_reconstruct/{modality}/` |
+| Download benchmark data | `ensure_challenge_dataset('ct', 'public')` |
 | Run an algorithm | `run_solver('key', y)` |
-| Evaluate | `compute_psnr(x_true, x)` / `compute_ssim(x_true, x)` |
+| Evaluate | `psnr(x_true, x)` / `mse(x_true, x)` |
 | GPU fallback | `try: run_solver('gpu_key', y) except RuntimeError: run_solver('cpu_key', y)` |
