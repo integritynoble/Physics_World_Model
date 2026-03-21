@@ -6,12 +6,17 @@ Without API key:  keyword-match → print the closest preset spec.md
 With API key:     LLM reads preset specs as context → auto-designs a custom spec
                   then enters multi-round refinement loop
 
+Supported keys (auto-detected in order):
+    ANTHROPIC_API_KEY   → Claude
+    OPENAI_API_KEY      → GPT-4o
+    GEMINI_API_KEY      → Gemini
+
 Usage:
     python3 spec/autospec.py "low-dose CT reconstruction with TV regularization"
     python3 spec/autospec.py "MRI mismatch correction with ESPIRiT"
     python3 spec/autospec.py "lensless imaging system design" --api-key sk-ant-...
     python3 spec/autospec.py "CT reconstruction" --save output.md
-    ANTHROPIC_API_KEY=sk-ant-... python3 spec/autospec.py "photoacoustic speed-of-sound mismatch"
+    OPENAI_API_KEY=sk-... python3 spec/autospec.py "photoacoustic speed-of-sound mismatch"
 """
 import argparse, os, re, sys
 from pathlib import Path
@@ -146,22 +151,82 @@ def run_preset(prompt: str):
     print(f"\nTo auto-design a custom spec, set ANTHROPIC_API_KEY or pass --api-key")
 
 
+# ── LLM backend (auto-detect provider) ───────────────────────────────────
+
+def _detect_provider(api_key: str) -> tuple[str, str]:
+    """Return (provider, key). Auto-detect from env if api_key not given."""
+    if api_key:
+        if api_key.startswith('sk-ant-'):
+            return 'anthropic', api_key
+        if api_key.startswith('sk-') or api_key.startswith('sk-proj-'):
+            return 'openai', api_key
+        return 'gemini', api_key
+    # Auto-detect from environment
+    for env, provider in [
+        ('ANTHROPIC_API_KEY', 'anthropic'),
+        ('OPENAI_API_KEY',    'openai'),
+        ('GEMINI_API_KEY',    'gemini'),
+    ]:
+        v = os.environ.get(env, '')
+        if v:
+            return provider, v
+    return '', ''
+
+
+def _llm_call(provider: str, key: str, messages: list, system: str) -> str:
+    """Single LLM call → returns reply text."""
+    if provider == 'anthropic':
+        import anthropic
+        client = anthropic.Anthropic(api_key=key)
+        resp = client.messages.create(
+            model='claude-opus-4-6', max_tokens=1024,
+            system=system, messages=messages,
+        )
+        return resp.content[0].text
+
+    if provider == 'openai':
+        import openai
+        client = openai.OpenAI(api_key=key)
+        full = [{'role': 'system', 'content': system}] + messages
+        resp = client.chat.completions.create(
+            model='gpt-4o-mini', max_tokens=1024, messages=full,
+        )
+        return resp.choices[0].message.content
+
+    if provider == 'gemini':
+        import urllib.request, json
+        url = (f'https://generativelanguage.googleapis.com/v1beta/models/'
+               f'gemini-1.5-flash:generateContent?key={key}')
+        # Prepend system as first user turn for Gemini
+        parts = [{'text': system + '\n\n---\n'}]
+        for m in messages:
+            parts.append({'text': f"[{m['role']}]: {m['content']}"})
+        body = json.dumps({'contents': [{'parts': parts}]}).encode()
+        req = urllib.request.Request(
+            url, data=body, headers={'Content-Type': 'application/json'})
+        resp = json.loads(urllib.request.urlopen(req).read())
+        return resp['candidates'][0]['content']['parts'][0]['text']
+
+    raise ValueError(f"Unknown provider: {provider}")
+
+
 # ── API path ──────────────────────────────────────────────────────────────
 
 def run_llm(prompt: str, api_key: str, save_path: Path | None):
-    import anthropic
-    client = anthropic.Anthropic(api_key=api_key)
+    provider, key = _detect_provider(api_key)
+    if not provider:
+        print("No API key found. Set ANTHROPIC_API_KEY, OPENAI_API_KEY, or GEMINI_API_KEY.")
+        sys.exit(1)
 
     mod_id, disp_name = _match(prompt)
     if not mod_id:
         print("No modality match found. Try a more specific prompt.")
         sys.exit(1)
 
-    print(f"\n[Auto-designing spec for: {disp_name}]")
+    print(f"\n[Provider: {provider} | Modality: {disp_name}]")
     ctx = _load_preset_context(mod_id, prompt)
     context_text = _format_context(ctx)
 
-    # Initial design
     messages = [
         {
             "role": "user",
@@ -172,14 +237,10 @@ def run_llm(prompt: str, api_key: str, save_path: Path | None):
             )
         }
     ]
-    resp = client.messages.create(
-        model="claude-opus-4-6",
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=messages,
-    )
-    current = _extract_spec(resp.content[0].text)
-    messages.append({"role": "assistant", "content": resp.content[0].text})
+
+    reply = _llm_call(provider, key, messages, SYSTEM_PROMPT)
+    current = _extract_spec(reply)
+    messages.append({"role": "assistant", "content": reply})
 
     _print_spec(current, f'Auto-designed: {mod_id}')
 
@@ -210,13 +271,7 @@ def run_llm(prompt: str, api_key: str, save_path: Path | None):
             continue
 
         messages.append({"role": "user", "content": user_input})
-        resp = client.messages.create(
-            model="claude-opus-4-6",
-            max_tokens=1024,
-            system=SYSTEM_PROMPT,
-            messages=messages,
-        )
-        reply = resp.content[0].text
+        reply = _llm_call(provider, key, messages, SYSTEM_PROMPT)
         messages.append({"role": "assistant", "content": reply})
         current = _extract_spec(reply)
         _print_spec(current)
@@ -228,8 +283,17 @@ def run_llm(prompt: str, api_key: str, save_path: Path | None):
 
 def _extract_spec(text: str) -> str:
     """Extract markdown spec from LLM reply (unwrap outer code fence if present)."""
-    m = re.search(r'```(?:markdown)?\n(.*?)```', text, re.DOTALL)
-    return m.group(1).strip() if m else text.strip()
+    t = text.strip()
+    # If wrapped in outer ``` fence (no language or 'markdown'), strip only that
+    m = re.match(r'^```(?:markdown)?\n(.*)\n```$', t, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    # If starts with # heading directly, return as-is
+    if t.startswith('#'):
+        return t
+    # Fallback: strip any single outer fence
+    m2 = re.search(r'```(?:markdown)?\n(.*?)```', t, re.DOTALL)
+    return m2.group(1).strip() if m2 else t
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────
@@ -248,8 +312,8 @@ Examples:
         """
     )
     parser.add_argument('prompt', nargs='+', help='Natural language prompt or "list"')
-    parser.add_argument('--api-key', default=os.environ.get('ANTHROPIC_API_KEY', ''),
-                        help='Anthropic API key (or set ANTHROPIC_API_KEY env var)')
+    parser.add_argument('--api-key', default='',
+                        help='API key (Anthropic/OpenAI/Gemini) — or set env var')
     parser.add_argument('--save', metavar='FILE',
                         help='Save resulting spec to this file')
     args = parser.parse_args()
