@@ -131,6 +131,25 @@ def run_wiener(y, physics=None, cfg=None):
     return np.clip(np.real(np.fft.ifft2(X)), 0, 1).astype(np.float32)
 
 
+def run_landweber(y, physics=None, cfg=None):
+    """Landweber iteration: gradient descent x += step * A^T(y - Ax).
+
+    Reference: Landweber 1951, Amer. J. Math.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else FluorescenceOperator(y.shape)
+    n_iter = cfg.get("iterations", 60)
+    step = cfg.get("step", 0.5)
+
+    x = op.adjoint(y)
+    for _ in range(n_iter):
+        residual = y - op.forward(x)
+        x = x + step * op.adjoint(residual)
+        x = np.clip(x, 0, 1)
+    return x.astype(np.float32)
+
+
 def run_tikhonov(y, physics=None, cfg=None):
     """Tikhonov-regularised fluorescence deconvolution."""
     cfg = cfg or {}
@@ -325,6 +344,12 @@ SOLVERS = {
         "function": "run_richardson_lucy",
         "gpu": False,
     },
+    "landweber": {
+        "name": "Landweber Iteration",
+        "module": "algorithm_base.fluorescence_microscopy.solvers",
+        "function": "run_landweber",
+        "gpu": False,
+    },
     "tikhonov": {
         "name": "Tikhonov Regularisation",
         "module": "algorithm_base.fluorescence_microscopy.solvers",
@@ -400,8 +425,24 @@ SOLVERS = {
 }
 
 
+def list_solvers():
+    """List all available solvers for fluorescence microscopy."""
+    return [(k, v) for k, v in SOLVERS.items()]
+
+
 def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
                cfg: Optional[Dict] = None) -> np.ndarray:
+    """Run a solver by registry key.
+
+    Args:
+        solver_key: One of the keys in SOLVERS dict.
+        y: Measurement data (float32).
+        physics: Forward operator (optional; each solver creates its own).
+        cfg: Hyperparameters override (optional).
+
+    Returns:
+        x_hat: Reconstructed image, float32, same spatial shape as y.
+    """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver '{solver_key}'. Available: {list(SOLVERS.keys())}")
     spec = SOLVERS[solver_key]
@@ -417,3 +458,26 @@ def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
     if isinstance(result, tuple):
         result = result[0]
     return np.asarray(result, dtype=np.float32)
+
+
+def run_traditional_cpu(y: np.ndarray, physics: Any = None,
+                        cfg: Optional[Dict] = None) -> np.ndarray:
+    """Richardson-Lucy Deconvolution. CPU only.
+    Reference: Richardson 1972 / Lucy 1974.
+    """
+    return run_solver("traditional_cpu", y, physics, cfg)
+
+
+def run_best_quality(y: np.ndarray, physics: Any = None,
+                     cfg: Optional[Dict] = None) -> np.ndarray:
+    """DeconvNet (PnP-PGD DRUNet). GPU.
+    Reference: Weigert et al. 2020.
+    """
+    return run_solver("best_quality", y, physics, cfg)
+
+
+def run_famous_dl(y: np.ndarray, physics: Any = None,
+                  cfg: Optional[Dict] = None) -> np.ndarray:
+    """PnP-PGD (DRUNet). GPU.
+    """
+    return run_solver("famous_dl", y, physics, cfg)

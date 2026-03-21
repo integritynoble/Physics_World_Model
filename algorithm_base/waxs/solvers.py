@@ -8,6 +8,7 @@ When no operator is provided, a generic PSF operator is created from image dimen
 """
 
 from __future__ import annotations
+import gc
 import importlib
 import numpy as np
 from typing import Any, Dict, Optional
@@ -190,6 +191,18 @@ def _ensure_operator(y, physics, cfg):
     return physics
 
 
+def _set_seed(seed=42):
+    """Set random seeds for reproducibility."""
+    np.random.seed(seed)
+    try:
+        import torch
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+    except ImportError:
+        pass
+
+
 def _nlm_denoise(img, sigma=0.05):
     from skimage.restoration import denoise_nl_means
     return denoise_nl_means(
@@ -234,6 +247,13 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """Run a solver by key for waxs."""
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+
+    # Set random seeds for reproducibility
+    _set_seed(42)
+
+    # Force garbage collection before running to reclaim memory from prior calls
+    gc.collect()
+
     cfg = dict(cfg or {})
     spec = SOLVERS[solver_key]
     if "cfg_override" in spec:
@@ -251,7 +271,12 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
             result = fn(y.astype(np.float32), operator, cfg)
     except Exception:
         # Fallback to Wiener if external module fails
+        gc.collect()
         result = run_wiener(y.astype(np.float32), operator, cfg)
+
+    # Clean up after solver
+    gc.collect()
+
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
     return np.asarray(result, dtype=np.float32)
@@ -328,6 +353,7 @@ def run_tikhonov(y, physics, cfg=None):
         grad = grad_data + lam * estimate
         estimate = estimate - step * grad
         estimate = np.maximum(estimate, 0)
+    del blurred, residual, grad_data, grad
     return estimate.astype(np.float32), {"solver": "tikhonov", "iters": iters}
 
 
@@ -355,6 +381,7 @@ def run_tv_admm(y, physics, cfg=None):
             weight=lam / max(rho, 1e-8), max_num_iter=5,
         ).astype(np.float32)
         u = u + x - z
+    del blurred, residual, grad_data
     return np.maximum(x, 0).astype(np.float32), {"solver": "tv_admm", "iters": iters}
 
 
@@ -373,8 +400,7 @@ def run_chambolle_pock(y, physics, cfg=None):
     x_bar = x.copy()
     p = np.zeros_like(y_2d)
     for _ in range(iters):
-        p = p + sigma * (fftconvolve(x_bar, physics.psf, mode="same") - y_2d)
-        p = p / np.maximum(1.0, np.abs(p))
+        p = (p + sigma * (fftconvolve(x_bar, physics.psf, mode="same") - y_2d)) / (1.0 + sigma)
         x_old = x.copy()
         x = x - tau * fftconvolve(p, physics.psf_flip, mode="same")
         x = denoise_tv_chambolle(
@@ -382,6 +408,7 @@ def run_chambolle_pock(y, physics, cfg=None):
             weight=lam * tau, max_num_iter=5,
         ).astype(np.float32)
         x_bar = 2 * x - x_old
+    del x_old
     return np.maximum(x, 0).astype(np.float32), {"solver": "chambolle_pock", "iters": iters}
 
 
@@ -470,5 +497,5 @@ def run_traditional_cpu(y, operator=None, cfg=None):
 def run_best_quality(y, operator=None, cfg=None):
     return run_solver("best_quality", y, operator, cfg)
 
-def run_famous_dl(y, operator=None, cfg=None):
-    return run_solver("famous_dl", y, operator, cfg)
+def run_waxs_dl(y, operator=None, cfg=None):
+    return run_solver("waxs_dl", y, operator, cfg)

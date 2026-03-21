@@ -8,6 +8,7 @@ When no operator is provided, a generic PSF operator is created from image dimen
 """
 
 from __future__ import annotations
+import gc
 import importlib
 import numpy as np
 from typing import Any, Dict, Optional
@@ -155,22 +156,54 @@ SOLVERS = {
 # Generic PSF-based forward/adjoint operator
 # ---------------------------------------------------------------------------
 
-class IntegralOperator:
-    """Generic PSF-convolution operator for Integral Photography."""
+# ---------------------------------------------------------------------------
+# Multi-view reduction: average (4, H, W) -> (H, W)
+# ---------------------------------------------------------------------------
 
-    def __init__(self, shape, psf_sigma=2.0):
-        from scipy.signal import fftconvolve
-        self.shape = shape
-        self.x_shape = shape
+def _reduce_views(y: np.ndarray) -> np.ndarray:
+    """If y is 3-D (multi-view light-field), average the views to get a 2-D image.
+
+    Integral imaging captures multiple views (e.g. shape (4, 128, 128)).
+    Averaging across views is a physically valid operation that produces
+    a single 2-D measurement suitable for standard deconvolution solvers.
+    """
+    if y.ndim == 3:
+        return y.mean(axis=0).astype(np.float32)
+    return y
+
+
+class IntegralOperator:
+    """Generic PSF-convolution operator for Integral Photography.
+
+    Uses a compact Gaussian kernel (matching the dataset-generation forward
+    model) and pre-computes the full-size OTF for Wiener-style solvers.
+    """
+
+    def __init__(self, img_shape, psf_sigma=2.0, psf_kernel=None):
+        self.shape = img_shape[:2]
+        self.x_shape = img_shape[:2]
         self.psf_sigma = psf_sigma
-        h, w = shape[:2]
-        cy, cx = h // 2, w // 2
-        yy, xx = np.mgrid[0:h, 0:w]
-        psf = np.exp(-((yy - cy)**2 + (xx - cx)**2) / (2.0 * psf_sigma**2))
-        psf /= psf.sum()
-        self.psf = psf.astype(np.float32)
+
+        # Build a compact PSF kernel (size 21, matching _make_psf in generator)
+        if psf_kernel is not None:
+            psf = np.asarray(psf_kernel, dtype=np.float32)
+        else:
+            ksz = 21
+            k = ksz // 2
+            yy, xx = np.ogrid[-k:k+1, -k:k+1]
+            psf = np.exp(-(xx**2 + yy**2) / (2.0 * psf_sigma**2))
+            psf = (psf / psf.sum()).astype(np.float32)
+        self.psf = psf
         self.psf_flip = self.psf[::-1, ::-1].copy()
-        self.otf = np.fft.rfft2(np.fft.ifftshift(self.psf))
+
+        # Compute full-size OTF by zero-padding the compact kernel
+        h, w = self.shape
+        pad = np.zeros((h, w), dtype=np.float64)
+        pad[:psf.shape[0], :psf.shape[1]] = psf
+        # Roll so that the PSF centre lands at (0, 0) for correct FFT phase
+        pad = np.roll(pad, -(psf.shape[0] // 2), axis=0)
+        pad = np.roll(pad, -(psf.shape[1] // 2), axis=1)
+        self.otf = np.fft.rfft2(pad)
         self.otf_conj = np.conj(self.otf)
 
     def forward(self, x):
@@ -185,10 +218,28 @@ class IntegralOperator:
         return {"modality": "integral", "x_shape": self.x_shape, "psf_sigma": self.psf_sigma}
 
 
+# Module-level operator cache to avoid re-creating operators repeatedly
+_operator_cache: Dict[tuple, IntegralOperator] = {}
+
+
 def _make_operator(y, cfg):
     cfg = cfg or {}
+    y = _reduce_views(y)
+    # Use H_ideal PSF from the dataset when available
+    psf_kernel = cfg.get("H_ideal", cfg.get("mask", None))
     sigma = cfg.get("psf_sigma", 2.0)
-    return IntegralOperator(y.shape[:2], sigma)
+
+    # Cache key: (shape, sigma, psf_kernel identity)
+    shape_key = y.shape[:2]
+    psf_key = id(psf_kernel) if psf_kernel is not None else None
+    cache_key = (shape_key, sigma, psf_key)
+
+    if cache_key in _operator_cache:
+        return _operator_cache[cache_key]
+
+    op = IntegralOperator(y.shape[:2], psf_sigma=sigma, psf_kernel=psf_kernel)
+    _operator_cache[cache_key] = op
+    return op
 
 
 def _ensure_operator(y, physics, cfg):
@@ -196,6 +247,18 @@ def _ensure_operator(y, physics, cfg):
     if physics is None and y.ndim >= 2:
         physics = _make_operator(y, cfg)
     return physics
+
+
+def _set_seed(seed=42):
+    """Set random seeds for reproducibility."""
+    np.random.seed(seed)
+    try:
+        import torch
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+    except ImportError:
+        pass
 
 
 def _nlm_denoise(img, sigma=0.05):
@@ -209,6 +272,7 @@ def _nlm_denoise(img, sigma=0.05):
 def _dl_fallback(y, physics, cfg, solver_name):
     """Fallback for DL models: Wiener + NLM denoising."""
     from skimage.restoration import denoise_nl_means
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     img = run_wiener(y, physics, {"reg": 0.01})[0]
@@ -242,6 +306,16 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
     """Run a solver by key for integral."""
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
+
+    # Set random seeds for reproducibility
+    _set_seed(42)
+
+    # Force garbage collection before running to reclaim memory from prior calls
+    gc.collect()
+
+    # Reduce multi-view light-field data (e.g. (4,128,128)) to 2-D
+    y = _reduce_views(y)
+
     cfg = dict(cfg or {})
     spec = SOLVERS[solver_key]
     if "cfg_override" in spec:
@@ -259,7 +333,12 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
             result = fn(y.astype(np.float32), operator, cfg)
     except Exception:
         # Fallback to Wiener if external module fails
+        gc.collect()
         result = run_wiener(y.astype(np.float32), operator, cfg)
+
+    # Clean up after solver
+    gc.collect()
+
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
     return np.asarray(result, dtype=np.float32)
@@ -271,6 +350,7 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
 
 def run_wiener(y, physics, cfg=None):
     """Wiener deconvolution (Wiener 1949)."""
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     reg = cfg.get("reg", 0.01)
@@ -280,12 +360,15 @@ def run_wiener(y, physics, cfg=None):
     denom = H * np.conj(H) + reg
     X = (np.conj(H) * Y) / denom
     estimate = np.fft.irfft2(X, s=physics.shape)
+    # Clean up FFT intermediates
+    del Y, X, denom
     return np.clip(estimate, 0, None).astype(np.float32), {"solver": "wiener"}
 
 
 def run_landweber(y, physics, cfg=None):
     """Landweber iteration (Landweber 1951)."""
     from scipy.signal import fftconvolve
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 50)
@@ -298,12 +381,14 @@ def run_landweber(y, physics, cfg=None):
         grad = fftconvolve(residual, physics.psf_flip, mode="same")
         estimate = estimate + step * grad
         estimate = np.maximum(estimate, 0)
+    del blurred, residual, grad
     return estimate.astype(np.float32), {"solver": "landweber", "iters": iters}
 
 
 def run_richardson_lucy(y, physics, cfg=None):
     """Richardson-Lucy deconvolution (Richardson 1972; Lucy 1974)."""
     from scipy.signal import fftconvolve
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 50)
@@ -316,12 +401,14 @@ def run_richardson_lucy(y, physics, cfg=None):
         correction = fftconvolve(ratio, physics.psf_flip, mode="same")
         estimate = estimate * np.maximum(correction, 0)
         estimate = np.maximum(estimate, eps)
+    del blurred, ratio, correction
     return np.clip(estimate, 0, None).astype(np.float32), {"solver": "richardson_lucy", "iters": iters}
 
 
 def run_tikhonov(y, physics, cfg=None):
     """Tikhonov-regularized deconvolution (Tikhonov 1963)."""
     from scipy.signal import fftconvolve
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 50)
@@ -336,6 +423,7 @@ def run_tikhonov(y, physics, cfg=None):
         grad = grad_data + lam * estimate
         estimate = estimate - step * grad
         estimate = np.maximum(estimate, 0)
+    del blurred, residual, grad_data, grad
     return estimate.astype(np.float32), {"solver": "tikhonov", "iters": iters}
 
 
@@ -343,6 +431,7 @@ def run_tv_admm(y, physics, cfg=None):
     """TV-regularized deconvolution via ADMM (Rudin, Osher & Fatemi 1992)."""
     from scipy.signal import fftconvolve
     from skimage.restoration import denoise_tv_chambolle
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 20)
@@ -363,6 +452,7 @@ def run_tv_admm(y, physics, cfg=None):
             weight=lam / max(rho, 1e-8), max_num_iter=5,
         ).astype(np.float32)
         u = u + x - z
+    del blurred, residual, grad_data
     return np.maximum(x, 0).astype(np.float32), {"solver": "tv_admm", "iters": iters}
 
 
@@ -370,6 +460,7 @@ def run_chambolle_pock(y, physics, cfg=None):
     """Chambolle-Pock primal-dual for TV-regularized reconstruction (2011)."""
     from scipy.signal import fftconvolve
     from skimage.restoration import denoise_tv_chambolle
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 30)
@@ -390,11 +481,13 @@ def run_chambolle_pock(y, physics, cfg=None):
             weight=lam * tau, max_num_iter=5,
         ).astype(np.float32)
         x_bar = 2 * x - x_old
+    del x_old
     return np.maximum(x, 0).astype(np.float32), {"solver": "chambolle_pock", "iters": iters}
 
 
 def run_pnp_admm_nlm(y, physics, cfg=None):
     """PnP-ADMM with NLM denoiser (Venkatakrishnan et al. 2013)."""
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 20)
@@ -414,11 +507,13 @@ def run_pnp_admm_nlm(y, physics, cfg=None):
         v_den = _nlm_denoise(v, sig_it)
         z = (v_den * scale + lo).astype(np.float32)
         u = u + x - z
+    del v, v_den
     return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_admm_nlm"}
 
 
 def run_pnp_fista_nlm(y, physics, cfg=None):
     """PnP-FISTA with NLM denoiser (Beck & Teboulle 2009 + PnP)."""
+    y = _reduce_views(y)
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
     iters = cfg.get("iters", 20)
@@ -441,6 +536,7 @@ def run_pnp_fista_nlm(y, physics, cfg=None):
         v = np.clip((z - lo) / scale, 0, 1)
         v_den = _nlm_denoise(v, sig_it)
         x = (v_den * scale + lo).astype(np.float32)
+    del v, v_den, z
     return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_fista_nlm"}
 
 
@@ -480,3 +576,6 @@ def run_best_quality(y, operator=None, cfg=None):
 
 def run_famous_dl(y, operator=None, cfg=None):
     return run_solver("famous_dl", y, operator, cfg)
+
+def run_small_gpu(y, operator=None, cfg=None):
+    return run_solver("small_gpu", y, operator, cfg)

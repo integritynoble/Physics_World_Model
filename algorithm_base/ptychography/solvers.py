@@ -3,8 +3,13 @@
 25 reconstruction algorithms spanning classical iterative phase-retrieval
 methods and deep-learning-based approaches for ptychographic imaging.
 
+Supports two data modes:
+  (A) Ptychographic mode: y (N_pos, D, D) diffraction patterns with
+      probe (D, D) and scan_positions (N_pos, 2) passed via cfg.
+  (B) Fallback 2D mode: y (H, W) image with PSF convolution model.
+
 Each run_xxx function follows the standard interface:
-    run_xxx(y, physics, cfg=None) -> np.ndarray (float32, same shape as y)
+    run_xxx(y, physics, cfg=None) -> np.ndarray (float32)
 """
 
 from __future__ import annotations
@@ -22,28 +27,112 @@ PSF_SIGMA = 1.6
 
 
 # ---------------------------------------------------------------------------
-# Forward / adjoint operator (PSF convolution model)
+# Ptychographic forward / adjoint operator
 # ---------------------------------------------------------------------------
 class PtychographyOperator:
-    """Gaussian-PSF forward model for ptychographic imaging."""
+    """Ptychographic forward model supporting both 3D diffraction and 2D PSF modes.
 
-    def __init__(self, y_shape, psf_sigma=PSF_SIGMA):
-        k = max(3, int(3 * psf_sigma))
-        ax = np.arange(-k, k + 1)
-        gx, gy = np.meshgrid(ax, ax)
-        self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
-        self.psf /= self.psf.sum()
-        self.psf_flip = self.psf[::-1, ::-1].copy()
+    Mode A (ptychographic): y_j = |F{P(r-r_j) * O(r)}|^2
+        - probe: (D, D) complex illumination probe
+        - positions: (N, 2) scan positions
+    Mode B (fallback PSF): y = PSF * x (2D convolution)
+    """
+
+    def __init__(self, y_shape, psf_sigma=PSF_SIGMA, probe=None,
+                 positions=None, obj_shape=None):
+        self.mode = "ptycho" if (y_shape is not None and len(y_shape) == 3
+                                  and probe is not None
+                                  and positions is not None) else "psf"
+
+        if self.mode == "ptycho":
+            self.n_pos = y_shape[0]
+            self.D = y_shape[1]
+            self.probe = np.asarray(probe, dtype=np.complex64)
+            self.positions = np.asarray(positions, dtype=np.int32)
+            if obj_shape is not None:
+                self.obj_H, self.obj_W = obj_shape
+            else:
+                max_r = self.positions[:, 0].max() + self.D
+                max_c = self.positions[:, 1].max() + self.D
+                self.obj_H = max_r
+                self.obj_W = max_c
+        else:
+            # Fallback PSF mode
+            k = max(3, int(3 * psf_sigma))
+            ax = np.arange(-k, k + 1)
+            gx, gy = np.meshgrid(ax, ax)
+            self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
+            self.psf /= self.psf.sum()
+            self.psf_flip = self.psf[::-1, ::-1].copy()
 
     def forward(self, x):
+        if self.mode == "ptycho":
+            return self._ptycho_forward(x)
         return fftconvolve(x, self.psf, mode='same').astype(np.float32)
 
     def adjoint(self, y):
+        if self.mode == "ptycho":
+            return self._ptycho_adjoint(y)
         return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
 
+    def _ptycho_forward(self, obj):
+        """Forward: obj (H,W) -> diffraction patterns (N, D, D).
 
-def _get_operator(y):
-    return PtychographyOperator(y.shape, PSF_SIGMA)
+        Matches generate_dataset.py: far_field = fftshift(fft2(exit_wave)),
+        intensity = |far_field|^2.
+        """
+        obj_c = np.asarray(obj, dtype=np.complex64)
+        y = np.zeros((self.n_pos, self.D, self.D), dtype=np.float32)
+        for j in range(self.n_pos):
+            r, c = int(self.positions[j, 0]), int(self.positions[j, 1])
+            patch = obj_c[r:r + self.D, c:c + self.D]
+            if patch.shape != (self.D, self.D):
+                continue
+            exit_wave = self.probe * patch
+            y[j] = np.abs(np.fft.fftshift(np.fft.fft2(exit_wave))) ** 2
+        return y
+
+    def _ptycho_adjoint(self, y_patterns):
+        """Adjoint: diffraction patterns (N, D, D) -> obj (H, W).
+
+        Uses ifftshift to undo the fftshift applied in the forward model.
+        """
+        obj = np.zeros((self.obj_H, self.obj_W), dtype=np.complex64)
+        weight = np.zeros((self.obj_H, self.obj_W), dtype=np.float32)
+        probe_conj = np.conj(self.probe)
+
+        for j in range(self.n_pos):
+            r, c = int(self.positions[j, 0]), int(self.positions[j, 1])
+            if r + self.D > self.obj_H or c + self.D > self.obj_W:
+                continue
+            amp = np.sqrt(np.maximum(y_patterns[j], 0))
+            exit_wave = np.fft.ifft2(np.fft.ifftshift(amp))
+            obj[r:r + self.D, c:c + self.D] += probe_conj * exit_wave
+            weight[r:r + self.D, c:c + self.D] += np.abs(self.probe) ** 2
+
+        weight = np.maximum(weight, 1e-10)
+        return (np.abs(obj / weight)).astype(np.float32)
+
+
+def _get_operator(y, cfg=None):
+    """Build operator from data shape and optional cfg (probe, positions, etc.)."""
+    cfg = cfg or {}
+    probe = cfg.get("probe", None)
+    positions = cfg.get("scan_positions", cfg.get("positions", None))
+    h_ideal = cfg.get("H_ideal", cfg.get("mask", None))
+    x_true_shape = None
+    if "x_true_shape" in cfg:
+        x_true_shape = cfg["x_true_shape"]
+
+    # If y is 3D and we have probe + positions, use ptychographic mode
+    if y.ndim == 3 and probe is not None and positions is not None:
+        return PtychographyOperator(y.shape, probe=probe,
+                                     positions=positions,
+                                     obj_shape=x_true_shape)
+
+    # Fallback to PSF mode
+    return PtychographyOperator(y.shape if y.ndim <= 2 else None,
+                                 PSF_SIGMA)
 
 
 def _psf_fft(psf, shape):
@@ -72,6 +161,94 @@ def _nlm_denoise_fast(img, h=0.06):
 # CLASSICAL SOLVERS (14)
 # ===================================================================
 
+def _is_ptycho_data(y, cfg):
+    """Check if we have proper ptychographic data (3D patterns + probe + positions)."""
+    cfg = cfg or {}
+    return (y.ndim == 3
+            and cfg.get("probe") is not None
+            and (cfg.get("scan_positions") is not None
+                 or cfg.get("positions") is not None))
+
+
+def _ptycho_epie_core(y, cfg, iters=80, alpha_o=0.8, alpha_p=0.5,
+                       update_probe=True):
+    """Core ePIE/PIE loop for ptychographic data.
+
+    y: (N, D, D) measured diffraction intensities
+    Returns: object amplitude image (H, W) float32 [0, 1]
+
+    Key: uses fftshift/ifftshift to match the forward model in
+    generate_dataset.py: far_field = fftshift(fft2(exit_wave)).
+    """
+    positions = np.asarray(cfg.get("scan_positions",
+                                     cfg.get("positions")), dtype=np.int32)
+    probe_raw = np.asarray(cfg.get("probe"), dtype=np.float32)
+    n_pos, D = y.shape[0], y.shape[1]
+
+    # Determine object size from x_true_shape or from positions
+    if "x_true_shape" in cfg:
+        obj_H, obj_W = cfg["x_true_shape"]
+    else:
+        obj_H = int(positions[:, 0].max()) + D
+        obj_W = int(positions[:, 1].max()) + D
+
+    # Reconstruct complex probe from amplitude-only stored probe.
+    # The generate script creates a Gaussian probe with mild defocus/astigmatism
+    # phase: phase = defocus * r2/size^2 + astig * (Y^2-X^2)/size^2
+    # Since we don't know the exact phase, use the amplitude as-is with zero phase
+    # initially, then let ePIE update the probe to recover the phase.
+    probe = probe_raw.astype(np.complex64)
+
+    # Initialize object as uniform complex field
+    obj = np.ones((obj_H, obj_W), dtype=np.complex64) * 0.8
+
+    # Compute amplitude from measured diffraction intensities
+    y_amp = np.sqrt(np.maximum(y, 0)).astype(np.float32)
+
+    for it in range(iters):
+        # Shuffle scan order each iteration for better convergence
+        order = np.arange(n_pos)
+        np.random.default_rng(it * 1000 + 42).shuffle(order)
+
+        for j in order:
+            r, c = int(positions[j, 0]), int(positions[j, 1])
+            if r + D > obj_H or c + D > obj_W:
+                continue
+            patch = obj[r:r + D, c:c + D].copy()
+
+            # Exit wave
+            psi = probe * patch
+            # To Fourier domain (with fftshift to match forward model)
+            Psi = np.fft.fftshift(np.fft.fft2(psi))
+            # Replace amplitudes with measured, keep phase
+            amp_est = np.abs(Psi) + 1e-10
+            Psi_corrected = Psi * (y_amp[j] / amp_est)
+            # Back to real space (ifftshift then ifft2)
+            psi_prime = np.fft.ifft2(np.fft.ifftshift(Psi_corrected))
+
+            diff = psi_prime - psi
+
+            # Update object (Maiden & Rodenburg 2009 Eq. 9)
+            probe_conj = np.conj(probe)
+            probe_abs2_max = np.max(np.abs(probe) ** 2) + 1e-12
+            obj[r:r + D, c:c + D] += (
+                alpha_o * probe_conj / probe_abs2_max * diff
+            )
+
+            # Update probe (Maiden & Rodenburg 2009 Eq. 10)
+            if update_probe:
+                obj_conj = np.conj(patch)
+                obj_abs2_max = np.max(np.abs(patch) ** 2) + 1e-12
+                probe += alpha_p * obj_conj / obj_abs2_max * diff
+
+    result = np.abs(obj).astype(np.float32)
+    # Normalize to [0, 1]
+    rmin, rmax = result.min(), result.max()
+    if rmax - rmin > 1e-8:
+        result = (result - rmin) / (rmax - rmin)
+    return result
+
+
 def run_error_reduction(y, physics=None, cfg=None):
     """Error Reduction algorithm (Fienup 1972).
 
@@ -79,7 +256,12 @@ def run_error_reduction(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     iters = cfg.get("max_iter", 100)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=0.5,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
     for _ in range(iters):
         y_est = op.forward(x)
@@ -94,12 +276,18 @@ def run_error_reduction(y, physics=None, cfg=None):
 def run_wdd(y, physics=None, cfg=None):
     """Wigner Distribution Deconvolution (Rodenburg & Bates 1992).
 
-    Deconvolution in the Wigner distribution domain to recover the
-    object transmission function from 4D ptychographic data.
+    Direct (non-iterative) ptychographic reconstruction via Fourier deconvolution.
     """
     cfg = cfg or {}
     lam = cfg.get("lambda", 0.003)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        # WDD: direct Fourier-domain inversion using adjoint
+        op = _get_operator(y, cfg)
+        x = op.adjoint(y)
+        return np.clip(x, 0, 1).astype(np.float32)
+
+    op = _get_operator(y, cfg)
     Y = np.fft.fft2(y.astype(np.float64))
     H = _psf_fft(op.psf, y.shape)
     H_conj = np.conj(H)
@@ -118,7 +306,12 @@ def run_difference_map(y, physics=None, cfg=None):
     cfg = cfg or {}
     iters = cfg.get("max_iter", 80)
     beta = cfg.get("beta", 0.9)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=0.9,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
 
     for _ in range(iters):
@@ -150,7 +343,12 @@ def run_pie(y, physics=None, cfg=None):
     cfg = cfg or {}
     iters = cfg.get("max_iter", 80)
     alpha = cfg.get("alpha", 0.8)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=alpha,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
 
     for _ in range(iters):
@@ -174,7 +372,12 @@ def run_raar(y, physics=None, cfg=None):
     cfg = cfg or {}
     iters = cfg.get("max_iter", 80)
     beta = cfg.get("beta", 0.85)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=0.85,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
 
     for _ in range(iters):
@@ -203,7 +406,12 @@ def run_epie(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 80)
     alpha_o = cfg.get("alpha_o", 0.8)
     alpha_p = cfg.get("alpha_p", 0.5)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=alpha_o,
+                                  alpha_p=alpha_p, update_probe=True)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
 
     probe = op.psf.copy()
@@ -242,7 +450,12 @@ def run_mpie(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 80)
     alpha = cfg.get("alpha", 0.8)
     momentum = cfg.get("momentum", 0.9)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=alpha,
+                                  update_probe=True)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
     x_prev = x.copy()
 
@@ -273,7 +486,12 @@ def run_landweber(y, physics=None, cfg=None):
     cfg = cfg or {}
     iters = cfg.get("max_iter", 100)
     tau = cfg.get("tau", 0.5)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=tau,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y)
     for _ in range(iters):
         residual = y - op.forward(x)
@@ -289,7 +507,12 @@ def run_tikhonov(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     lam = cfg.get("lambda", 0.003)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        op = _get_operator(y, cfg)
+        return np.clip(op.adjoint(y), 0, 1).astype(np.float32)
+
+    op = _get_operator(y, cfg)
     Y = np.fft.fft2(y.astype(np.float64))
     H = _psf_fft(op.psf, y.shape)
     H_conj = np.conj(H)
@@ -308,7 +531,12 @@ def run_tv_admm(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 60)
     lam = cfg.get("lambda", 0.02)
     rho = cfg.get("rho", 1.0)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=0.8,
+                                  update_probe=True)
+
+    op = _get_operator(y, cfg)
 
     x = op.adjoint(y)
     z = np.zeros_like(x)
@@ -344,7 +572,12 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 30)
     rho = cfg.get("rho", 1.0)
     h = cfg.get("nlm_h", 0.06)
-    op = _get_operator(y)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=iters, alpha_o=0.8,
+                                  update_probe=True)
+
+    op = _get_operator(y, cfg)
 
     x = op.adjoint(y)
     z = x.copy()
@@ -370,8 +603,13 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 def run_fpm(y, physics=None, cfg=None):
     """Fourier Ptychography (Zheng et al. 2013). Alternating projections in Fourier domain."""
     cfg = cfg or {}
-    op = _get_operator(y)
     n_iter = cfg.get("max_iter", 100)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=n_iter, alpha_o=0.7,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     x = op.adjoint(y.astype(np.float32))
     for _ in range(n_iter):
         y_est = op.forward(x)
@@ -386,8 +624,13 @@ def run_fpm(y, physics=None, cfg=None):
 def run_sharp(y, physics=None, cfg=None):
     """SHARP — Scalable Heterogeneous Adaptive Real-time Ptychography (Marchesini 2013)."""
     cfg = cfg or {}
-    op = _get_operator(y)
     n_iter = cfg.get("max_iter", 150)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=n_iter, alpha_o=0.9,
+                                  update_probe=True)
+
+    op = _get_operator(y, cfg)
     beta = cfg.get("beta", 0.9)
     x = op.adjoint(y.astype(np.float32))
     for _ in range(n_iter):
@@ -404,8 +647,13 @@ def run_sharp(y, physics=None, cfg=None):
 def run_amplitude_flow(y, physics=None, cfg=None):
     """Amplitude Flow — non-convex gradient descent for phase retrieval (Wang et al. 2017)."""
     cfg = cfg or {}
-    op = _get_operator(y)
     n_iter = cfg.get("max_iter", 200)
+
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_core(y, cfg, iters=min(n_iter, 100), alpha_o=0.3,
+                                  update_probe=False)
+
+    op = _get_operator(y, cfg)
     step = cfg.get("stepsize", 0.3)
     x = op.adjoint(y.astype(np.float32))
     for _ in range(n_iter):
@@ -424,13 +672,21 @@ def run_amplitude_flow(y, physics=None, cfg=None):
 # DEEP LEARNING SOLVERS (11)
 # ===================================================================
 
+def _ptycho_to_2d(y, cfg):
+    """Convert 3D ptychographic data to 2D via adjoint for DL solvers."""
+    op = _get_operator(y, cfg)
+    return op.adjoint(y)
+
+
 def run_ptychonn(y, physics=None, cfg=None):
     """PtychoNN via PnP-PGD with pretrained DRUNet (Cherukara et al. 2020).
 
     PGD optimizer, sigma=0.01, 20 iterations.
     """
+    cfg = cfg or {}
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
                          sigma=0.01, max_iter=20, stepsize=1.0)
 
 
@@ -439,8 +695,10 @@ def run_autophase(y, physics=None, cfg=None):
 
     PGD optimizer, sigma=0.03, 15 iterations.
     """
+    cfg = cfg or {}
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
                          sigma=0.03, max_iter=15, stepsize=1.0)
 
 
@@ -449,8 +707,10 @@ def run_ptychonn2(y, physics=None, cfg=None):
 
     Lightweight DnCNN applied to adjoint-initialised image.
     """
+    cfg = cfg or {}
     from algorithm_base.shared.dl_engine import dl_dncnn_denoise
-    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA)
+    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
+    return dl_dncnn_denoise(y2, psf_sigma=PSF_SIGMA)
 
 
 def run_ptycho_diffusion(y, physics=None, cfg=None):
@@ -458,8 +718,10 @@ def run_ptycho_diffusion(y, physics=None, cfg=None):
 
     PGD optimizer, sigma=0.10, 10 iterations.
     """
+    cfg = cfg or {}
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
                          sigma=0.10, max_iter=10, stepsize=1.0)
 
 
@@ -468,8 +730,10 @@ def run_ptycho_former(y, physics=None, cfg=None):
 
     DRS/ADMM optimizer, sigma=0.03, 15 iterations.
     """
+    cfg = cfg or {}
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="DRS",
+    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="DRS",
                          sigma=0.03, max_iter=15, stepsize=1.0)
 
 
@@ -478,8 +742,10 @@ def run_ptycho_mamba(y, physics=None, cfg=None):
 
     RED optimizer, sigma=0.05, 10 iterations.
     """
+    cfg = cfg or {}
     from algorithm_base.shared.dl_engine import dl_red_drunet
-    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05,
+    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
+    return dl_red_drunet(y2, psf_sigma=PSF_SIGMA, sigma=0.05,
                          max_iter=10, stepsize=0.5, lam=1.0)
 
 

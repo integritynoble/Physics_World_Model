@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 FLAGSHIP = {
-    'cassi', 'cacti', 'mri', 'ct', 'spc', 'lensless', 'holography',
+    'cassi', 'cacti', 'mri', 'ct', 'spc', 'lensless', 'compressive_holography',
     'ptychography', 'cbct', 'ultrasound', 'cryo_em', 'widefield',
 }
 

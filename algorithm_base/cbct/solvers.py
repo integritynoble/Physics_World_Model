@@ -98,6 +98,57 @@ def _tv_denoise(img, weight=0.05):
 
 
 # ---------------------------------------------------------------------------
+# Sinogram detection + iradon reconstruction
+# ---------------------------------------------------------------------------
+def _is_sinogram(y, cfg=None):
+    """Detect if y is a sinogram (n_views, n_det) rather than a 2D image.
+
+    Heuristic: non-square 2D array, OR angles provided in cfg.
+    """
+    cfg = cfg or {}
+    if cfg.get("angles") is not None:
+        return True
+    if y.ndim == 2 and y.shape[0] != y.shape[1]:
+        return True
+    return False
+
+
+def _iradon_reconstruct(y, cfg=None, filter_name="ramp"):
+    """Reconstruct image from sinogram using skimage.transform.iradon.
+
+    Args:
+        y: (n_views, n_det) sinogram
+        cfg: dict with optional 'angles' (degrees) and 'output_size'
+        filter_name: FBP filter ('ramp', 'shepp-logan', 'hamming', 'hann')
+
+    Returns:
+        (output_size, output_size) float32 image clipped to [0, max_val]
+    """
+    from skimage.transform import iradon as sk_iradon
+
+    cfg = cfg or {}
+    output_size = cfg.get("output_size", y.shape[0])
+
+    # Get angles in degrees
+    angles = cfg.get("angles", None)
+    if angles is not None:
+        angles = np.asarray(angles, dtype=np.float64)
+        # Auto-detect radians vs degrees: if max < 2*pi, assume radians
+        if angles.max() < 2 * np.pi + 0.1:
+            angles = np.rad2deg(angles)
+    else:
+        n_views = y.shape[0]
+        angles = np.linspace(0, 180, n_views, endpoint=False)
+
+    # iradon expects (n_det, n_views), so transpose our (n_views, n_det)
+    sino_T = y.T.astype(np.float64)
+
+    recon = sk_iradon(sino_T, theta=angles, output_size=output_size,
+                      filter_name=filter_name, circle=False)
+    return np.clip(recon, 0, None).astype(np.float32)
+
+
+# ---------------------------------------------------------------------------
 # Filter kernels for FDK variants (applied AFTER log-transform)
 # ---------------------------------------------------------------------------
 def _ramp_filter(n):
@@ -132,22 +183,29 @@ def _hann_filter(n):
     return (ramp * hann).astype(np.float32)
 
 
-def _fdk_reconstruct(y, filt_fn):
-    """FDK-style reconstruction on log-transformed data.
+def _fdk_reconstruct(y, filt_fn, cfg=None):
+    """FDK-style reconstruction.
 
-    1. Invert Beer-Lambert to get initial estimate.
-    2. Apply frequency-domain filter along each row for sharpening.
+    If y is a sinogram (non-square or angles in cfg), use iradon.
+    Otherwise fallback to Beer-Lambert inverse + frequency filter.
     """
+    if _is_sinogram(y, cfg):
+        filt_map = {
+            _ramp_filter: "ramp",
+            _shepp_logan_filter: "shepp-logan",
+            _hamming_filter: "hamming",
+            _hann_filter: "hann",
+        }
+        fname = filt_map.get(filt_fn, "ramp")
+        return _iradon_reconstruct(y, cfg, filter_name=fname)
+
     x_init = _beer_lambert_inverse(y)
     n = x_init.shape[-1]
     H = filt_fn(n)
-    # Filter each row in frequency domain
     X_f = np.fft.rfft(x_init.astype(np.float64), axis=-1)
-    # Apply sharpening filter (scale factor to avoid over-amplification)
     scale = 1.0 / (np.max(H) + 1e-8)
     X_filtered = X_f * (H * scale)[np.newaxis, :]
     x_filt = np.fft.irfft(X_filtered, n=n, axis=-1).astype(np.float32)
-    # Blend filtered with initial (avoid over-sharpening)
     alpha = 0.3
     x_out = (1 - alpha) * x_init + alpha * x_filt
     return np.clip(x_out, 0, 1).astype(np.float32)
@@ -162,7 +220,7 @@ def run_fdk_ramlak(y, physics=None, cfg=None):
 
     Log-transform inversion + ramp filter sharpening.
     """
-    return _fdk_reconstruct(y, _ramp_filter)
+    return _fdk_reconstruct(y, _ramp_filter, cfg)
 
 
 def run_fdk_shepp_logan(y, physics=None, cfg=None):
@@ -170,7 +228,7 @@ def run_fdk_shepp_logan(y, physics=None, cfg=None):
 
     Shepp-Logan windowed ramp filter suppresses high-frequency noise.
     """
-    return _fdk_reconstruct(y, _shepp_logan_filter)
+    return _fdk_reconstruct(y, _shepp_logan_filter, cfg)
 
 
 def run_fdk_hamming(y, physics=None, cfg=None):
@@ -178,7 +236,7 @@ def run_fdk_hamming(y, physics=None, cfg=None):
 
     Hamming-windowed ramp filter provides smooth roll-off.
     """
-    return _fdk_reconstruct(y, _hamming_filter)
+    return _fdk_reconstruct(y, _hamming_filter, cfg)
 
 
 def run_fdk_hann(y, physics=None, cfg=None):
@@ -186,7 +244,14 @@ def run_fdk_hann(y, physics=None, cfg=None):
 
     Hann-windowed ramp filter -- strongest noise suppression among FDK variants.
     """
-    return _fdk_reconstruct(y, _hann_filter)
+    return _fdk_reconstruct(y, _hann_filter, cfg)
+
+
+def _sinogram_init(y, cfg=None):
+    """Get initial reconstruction: iradon for sinograms, Beer-Lambert for images."""
+    if _is_sinogram(y, cfg):
+        return _iradon_reconstruct(y, cfg, filter_name="ramp")
+    return _beer_lambert_inverse(y)
 
 
 def run_landweber(y, physics=None, cfg=None):
@@ -198,17 +263,22 @@ def run_landweber(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 80)
     tau = cfg.get("tau", 0.3)
 
+    if _is_sinogram(y, cfg):
+        # For sinogram data, use iradon + TV refinement
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
     for _ in range(iters):
-        # Forward model residual
         y_est = _beer_lambert_forward(x)
         residual = yf - y_est
-        # Gradient of Beer-Lambert: dy/dx = -MU * exp(-MU*x) (after normalization)
         exp_neg_mu = np.exp(-MU)
         grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
-        # Gradient: d/dx ||y - f(x)||^2 = -2 * (y-f(x)) * f'(x)
         grad = -residual * grad_scale
         x = x - tau * grad
         x = np.clip(x, 0, 1).astype(np.float32)
@@ -533,11 +603,17 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
 def run_fdk_nlm(y, physics=None, cfg=None):
     """FDK + Non-Local Means post-processing (Buades, Coll & Morel 2005).
 
-    Log-transform inversion followed by NLM denoising.
+    FBP reconstruction followed by NLM denoising.
     """
     cfg = cfg or {}
     h = cfg.get("nlm_h", 0.05)
-    x = _beer_lambert_inverse(y)
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+    else:
+        x = _beer_lambert_inverse(y)
     x_out = _nlm_denoise(x, h=h)
     return np.clip(x_out, 0, 1).astype(np.float32)
 
@@ -545,13 +621,15 @@ def run_fdk_nlm(y, physics=None, cfg=None):
 def run_fbp(y, physics=None, cfg=None):
     """Filtered Back-Projection with Ram-Lak filter (Ramachandran & Lakshminarayanan 1971).
 
-    Basic FBP using adjoint with Ram-Lak filter in frequency domain.
-    Parallel-beam reference implementation.
+    For sinogram input: uses skimage.transform.iradon.
+    For image input: Beer-Lambert inverse + frequency filter.
     """
+    if _is_sinogram(y, cfg):
+        return _iradon_reconstruct(y, cfg, filter_name="ramp")
+
     x_init = _beer_lambert_inverse(y)
     n = x_init.shape[-1]
     H = _ramp_filter(n)
-    # Apply Ram-Lak filter row-by-row in frequency domain
     X_f = np.fft.rfft(x_init.astype(np.float64), axis=-1)
     scale = 1.0 / (np.max(H) + 1e-8)
     X_filtered = X_f * (H * scale)[np.newaxis, :]
@@ -1013,7 +1091,12 @@ SOLVERS = {
 
 def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
                cfg: Optional[Dict] = None) -> np.ndarray:
-    """Run a solver by registry key."""
+    """Run a solver by registry key.
+
+    For sinogram data, FDK/FBP solvers handle iradon internally.
+    All other solvers receive an iradon-reconstructed image so they
+    can do their image-domain processing (denoising, regularization).
+    """
     if solver_key not in SOLVERS:
         raise ValueError(
             f"Unknown solver '{solver_key}'. Available: {list(SOLVERS.keys())}"
@@ -1021,7 +1104,25 @@ def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
     spec = SOLVERS[solver_key]
     fn = globals()[spec["function"]]
     merged_cfg = {**spec.get("cfg_override", {}), **(cfg or {})}
-    result = fn(y.astype(np.float32), physics, merged_cfg)
+
+    y_input = y.astype(np.float32)
+
+    # For sinogram data, convert to image for non-FDK/FBP solvers
+    # FDK and FBP solvers handle sinograms internally via _fdk_reconstruct
+    _fdk_fbp_fns = {"run_fdk_ramlak", "run_fdk_shepp_logan",
+                    "run_fdk_hamming", "run_fdk_hann", "run_fbp"}
+    if _is_sinogram(y_input, merged_cfg) and spec["function"] not in _fdk_fbp_fns:
+        # Convert sinogram -> image via FBP, then pass as Beer-Lambert-like
+        y_input = _iradon_reconstruct(y_input, merged_cfg, filter_name="ramp")
+        # Normalize to [0, 1] for Beer-Lambert-based solvers
+        mx = y_input.max()
+        if mx > 0:
+            y_input = y_input / mx
+        # Convert to Beer-Lambert measurement: y_bl = forward(x_fbp)
+        # This way iterative solvers work in their native domain
+        y_input = _beer_lambert_forward(y_input)
+
+    result = fn(y_input, physics, merged_cfg)
     return np.asarray(result, dtype=np.float32)
 
 

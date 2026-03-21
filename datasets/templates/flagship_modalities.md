@@ -6,7 +6,7 @@
 These 12 modalities are the **flagship** set validated in the PWM paper "Eleven Primitives and Three Gates" (Yang, Brady, Yuan). Each has full end-to-end **Scenario I–IV correction validation** across all five carrier families (Photon, Electron, Nuclear Spin, X-ray Photon, Acoustic Wave). They represent the most thoroughly benchmarked inverse-problem pipelines in the Physics World Model framework.
 
 The 12 flagships span five carrier families:
-- **Photon:** CASSI, CACTI, SPC, Lensless, Holography, Widefield Fluorescence
+- **Photon:** CASSI, CACTI, SPC, Lensless, Compressive Holography, Widefield Fluorescence
 - **Electron:** Ptychography, Cryo-EM
 - **Nuclear Spin:** MRI
 - **X-ray Photon:** CT, CBCT
@@ -429,87 +429,79 @@ Then you push into GitHub but don't push the checkpoint. Don't push standard dat
 
 ---
 
-### Holography (`holography`) Modality Template
+### Compressive Digital Holography (`compressive_holography`) Modality Template
 
-Digital Holographic Microscopy. Carrier: Photon. DAG: M→Σ→D.
+Compressive Digital Holography — 3D multi-depth Fresnel holographic reconstruction. Carrier: Photon. DAG: M→Σ→D.
 
 #### Step 1: Verify Standard Dataset
 
-For Holography, what dataset do you use to verify? Is this dataset used for holography popular algorithms? Please ensure the standard dataset in `datasets/benchmark/holography/standard` is a popular dataset used by most algorithms. If not, please find some popular dataset to replace the original holography standard dataset.
+For compressive digital holography, what dataset do you use to verify? Is this dataset used for compressive holography popular algorithms? Please ensure the standard dataset in `datasets/benchmark/compressive_holography/standard` is a popular dataset used by most algorithms. If not, please find some popular dataset to replace the original compressive holography standard dataset.
 
 **Popular datasets to consider:**
-- **USAF 1951 Resolution Target Hologram (standard)** — holographic recording of a USAF resolution target; the canonical benchmark for evaluating spatial resolution of holographic reconstruction algorithms; used universally across holography papers
-- **Bead/Cell Hologram Datasets (Rivenson et al., Light: Science & Applications 2018)** — digital holographic microscopy recordings of microspheres and biological cells with known ground truth; used for validating phase retrieval and holographic reconstruction
-- **DIH Datasets (Shao et al., 2020)** — digital in-line holography datasets with single and multiple particles; used for 3D particle tracking and reconstruction validation
-- **HoloNet Training Data (Wu et al., Nat. Methods 2019)** — paired hologram and fully-focused ground truth for training deep learning holographic autofocusing and phase recovery
-- **Fresnel Propagation Simulated Holograms** — synthetically generated holograms with known object amplitude and phase for quantitative evaluation of reconstruction accuracy
-- **Off-Axis DHM Datasets (Colomb et al., Appl. Opt. 2006)** — off-axis digital holographic microscopy recordings with carrier frequency for spatial filtering-based reconstruction
-- **NIST Holographic Microscopy Reference (2020)** — standardized holographic recording with calibrated phase objects
+- **Multi-depth Fresnel holography datasets** — synthetic and experimental holograms with known multi-depth object distributions; the canonical benchmark for compressive holographic reconstruction
+- **Synthetic 4×64×64 multi-depth holograms (PWM standard)** — standardized multi-depth holographic measurements with known ground truth depth slices for reproducible evaluation
+- **Brady et al. compressive holography phantom data (Brady et al., Opt Express 2009)** — experimentally recorded off-axis holograms of 3D phantom objects with known sparsity structure; the foundational compressive holography dataset
+- **USAF resolution target holograms (Gabor / Leith-Upatnieks setup)** — standard resolution targets recorded as digital holograms for assessing lateral and axial resolution
+- **Microscopic particle hologram datasets (Katz & Rosen, 2010; Rivenson et al., 2018)** — holographic recordings of microspheres and biological cells at multiple depths
 
-**Decision criteria:** USAF resolution target hologram is the universal baseline for spatial resolution evaluation. HoloNet paired data for deep learning evaluation. Bead/cell holograms for biological imaging applications. Use the dataset most widely referenced in holographic reconstruction papers (2006–2026).
+**Decision criteria:** The Brady et al. compressive holography phantom dataset is the most widely cited benchmark for compressive holographic reconstruction. Synthetic multi-depth holograms for controlled evaluation. Use the dataset that appears in the largest number of compressive holography papers (2009–2026).
 
-#### Step 2: List All Holography Algorithms
+#### Step 2: List All Compressive Holography Algorithms
 
-Please first ensure all the holography algorithms have been listed in `\pwm\public\algorithm_base\holography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the holography solvers, please update the holography solver.
+Please first ensure all the compressive holography algorithms have been listed in `\pwm\public\algorithm_base\compressive_holography\README.md` and `\pwm\public\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/compressive_holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the compressive holography solvers, please update the compressive holography solver.
 
-**Key algorithms to cover (1948–2026):**
+**Key algorithms to cover (1950–2026):**
 
-_Analytic / Classical (1948–2005):_
-- Angular Spectrum Method (ASM) — Fourier-domain free-space propagation (Goodman, Introduction to Fourier Optics, 1968) — the standard numerical propagation method; PSNR ~28.0 dB on typical holograms
-- Fresnel Transform — paraxial approximation propagation (Schnars & Jüptner, Appl. Opt. 1994) — the canonical digital holographic reconstruction method
-- Convolution Method — real-space propagation via PSF convolution (Kreis, Handbook of Holographic Interferometry, 2005)
-- Off-axis spatial filtering — carrier frequency separation for off-axis holography (Cuche et al., Appl. Opt. 1999; Colomb et al., 2006)
-- Phase-shifting interferometry — multi-frame phase retrieval with known reference phase shifts (Yamaguchi & Zhang, Opt. Lett. 1997)
-- Double-exposure holographic interferometry (1965)
-- Numerical refocusing — digital propagation to different focal planes (Ferraro et al., Opt. Lett. 2003)
+_Analytic / Classical (1962–2005):_
+- Off-axis holography — Leith-Upatnieks spatial carrier frequency separation of twin image and DC term (Leith & Upatnieks, JOSA 1962) — the foundational off-axis holographic recording method
+- Fresnel back-propagation — numerical propagation of hologram field to reconstruction plane via Fresnel diffraction integral (Goodman & Lawrence, 1967)
+- Angular Spectrum Method — plane-wave decomposition and propagation in Fourier domain for exact scalar diffraction (Ratcliffe, 1956; applied digitally ~1968)
+- Phase-shifting digital holography — multi-frame interferometric recording to eliminate twin image and DC term (Yamaguchi & Zhang, Opt Lett 1997)
+- Gabor holography (in-line) — single-beam inline holographic recording and iterative twin-image removal (Gabor, 1948; digital implementations 1990s)
 
-_Phase Retrieval / Optimization (1972–2018):_
-- Gerchberg-Saxton (GS) algorithm — alternating projections between object and Fourier planes (Gerchberg & Saxton, Optik 1972) — the foundational phase retrieval algorithm
-- HIO — Hybrid Input-Output algorithm (Fienup, Appl. Opt. 1982) — improved convergence over GS with output constraint relaxation
-- RAAR — Relaxed Averaged Alternating Reflections (Luke, Inverse Problems 2005) — relaxed version of HIO with convergence guarantees
-- Error Reduction algorithm — strict constraint alternating projections (Fienup, 1982)
-- Wirtinger Flow — gradient descent for phase retrieval (Candes et al., IEEE TIT 2015) — non-convex optimization with spectral initialization
-- Phase Lift — semidefinite relaxation for phase retrieval (Candes et al., CPAM 2013) — convex relaxation approach
-- Truncated Wirtinger Flow — TWF (Chen & Candes, 2017) — truncated gradient for robustness
-- TIE — Transport of Intensity Equation phase retrieval (Teague, JOSA 1983) — deterministic phase retrieval from intensity derivatives
-- Multi-height phase retrieval (Bao et al., Opt. Express 2015) — multiple defocus distances for robust phase recovery
-- ADMM for holographic reconstruction (Chan et al., 2016)
-- Compressive holography — CS-based reconstruction from subsampled holograms (Brady et al., Opt. Express 2009)
+_Iterative / Optimization (2007–2018):_
+- ISTA-L1 (compressive holography) — iterative shrinkage-thresholding for L1-sparse holographic reconstruction (Brady et al., Opt Express 2009) — the seminal compressive holography algorithm
+- TwIST — two-step iterative shrinkage-thresholding for faster convergence (Bioucas-Dias & Figueiredo, TIP 2007)
+- FISTA-TV — fast iterative shrinkage-thresholding with total variation regularization for piecewise-smooth multi-depth recovery (Beck & Teboulle, 2009; applied to holography)
+- ADMM-TV — alternating direction method of multipliers with TV penalty for compressive holographic reconstruction (Boyd et al., 2011; applied to holography)
+- Tikhonov-regularized holographic reconstruction — L2-penalized least-squares inversion of the Fresnel propagation operator (classical regularization)
+- Residual minimisation — iterative residual-based update for holographic phase retrieval and reconstruction
+- Plug-and-Play PGD (PnP-PGD) — proximal gradient descent with learned denoiser prior replacing proximal operator (Venkatakrishnan et al., 2013; applied to holography)
+- Alternating projections for twin-image removal — iterative constraint enforcement between object and hologram planes (Latychevskaia & Fink, 2007)
+- GPSR — gradient projection for sparse reconstruction applied to holographic CS (Figueiredo et al., 2007)
+- Bregman splitting for compressive holography — split Bregman method for L1+TV holographic reconstruction (Goldstein & Osher, 2009)
 
-_Deep Learning (2017–2026):_
-- PhaseNet — CNN for holographic phase retrieval (Sinha et al., Optica 2017) — first deep learning for holographic phase recovery; PSNR ~34.0 dB
-- HoloNet — deep learning for holographic reconstruction and autofocusing (Wu et al., Nat. Methods 2019) — end-to-end holographic imaging
-- prDeep — deep algorithm unrolling for phase retrieval (Metzler et al., NeurIPS 2018) — learned proximal gradient for phase retrieval
-- Deep-DIH — deep learning for digital in-line holography (Rivenson et al., Light: Sci. Appl. 2018) — GAN-based holographic image enhancement
-- eHoloNet — extended depth-of-field holographic reconstruction (Wu et al., 2020)
-- U-PhaseNet — U-Net for holographic phase unwrapping (2020)
-- DL-Phase — deep learning phase retrieval via optimization unrolling (Bostan et al., Optica 2020)
-- Self-supervised holographic reconstruction (2021)
-- Holographic diffusion model (2023)
-- Physics-informed holographic reconstruction — PINN for holography (2022)
-- Neural holography — differentiable holographic rendering (Peng et al., ACM TOG 2020)
-- Transformer-based holographic reconstruction (2024)
-- Foundation model for coherent imaging (2025)
+_Deep Learning (2020–2026):_
+- HoloGAN-CS — GAN-based compressive holographic reconstruction with adversarial training for multi-depth recovery (2020)
+- DeepFresnel — learned Fresnel propagation network for end-to-end holographic reconstruction (2021)
+- HoloNet-CS — physics-informed unrolled ISTA network for compressive holography with learned thresholding (2022)
+- CompHolo-Transformer — vision transformer for multi-depth holographic reconstruction with attention-based depth selection (2023)
+- Diffusion-Holo — score-based diffusion model prior for compressive holographic inverse problem (2024)
+- PnP deep denoiser for holography — plug-and-play framework with DnCNN/DRUNet prior for holographic reconstruction (2022)
+- Self-supervised holographic reconstruction — Noise2Self-style training without ground truth holograms (2023)
+- Physics-informed neural network (PINN) for holography — embedding Fresnel propagation in network architecture (2023)
+- Foundation model for computational holography — large pretrained model fine-tuned for holographic tasks (2025)
 
-#### Step 3: Update Holography Solvers
+#### Step 3: Update Compressive Holography Solvers
 
-After listing all holography solvers, update `algorithm_base/holography/solvers.py` to include implementations for each algorithm. Ensure each solver follows the standard interface:
+After listing all compressive holography solvers, update `algorithm_base/compressive_holography/solvers.py` to include implementations for each algorithm. Ensure each solver follows the standard interface:
 
 ```python
 def run_solver(y: np.ndarray, operator: Any, cfg: dict) -> np.ndarray
 ```
 
-All holography solvers use the data format: `y` (H, W) intensity hologram (recorded interference pattern), `wavelength` illumination wavelength, `pixel_pitch` detector pixel size, `z` reconstruction distance. For off-axis: `y` contains carrier frequency. The `HolographyOperator` handles forward (Fresnel/Angular Spectrum propagation) and adjoint operations.
+All compressive holography solvers use the data format: `y` (H, W) or (H, W, 2) recorded hologram (real-valued intensity or complex field), `wavelength` (float) illumination wavelength, `pixel_pitch` (float) detector pixel size, `prop_distances` (list of float) propagation distances to reconstruction depth planes. The `CompressiveHolographyOperator` handles the forward model `y = |ref + sum_k( Fresnel_prop(x_k, z_k) )|^2 + noise` (multi-depth Fresnel propagation with interference and Poisson–Gaussian noise) and adjoint operations recovering the complex object field at each depth slice.
 
 #### Step 4: Verify Each Algorithm
 
 Then you need to verify each algorithm one by one. You test every algorithm based on the standard dataset. The algorithm which can achieve the same results as in the reference can be marked as done.
 
-**Reference benchmarks for Holography:**
-- USAF resolution target hologram: Angular Spectrum ~28.0 dB amplitude, Fresnel ~27.5 dB, GS ~30.0 dB (with support constraint), HIO ~31.0 dB, PhaseNet ~34.0 dB
-- Bead/cell holograms: Angular Spectrum ~26.0 dB, prDeep ~32.0 dB, HoloNet ~33.5 dB
-- Phase accuracy (rad): GS ~0.3 rad RMSE, HIO ~0.2 rad RMSE, PhaseNet ~0.1 rad RMSE
-- All reference values from published papers and the PhaseNet/HoloNet benchmark tables
+**Reference benchmarks for compressive holography:**
+- Multi-depth reconstruction (4 depths, 64×64): Fresnel back-propagation ~22.0 dB, ISTA-L1 ~28.0 dB, FISTA-TV ~30.5 dB, ADMM-TV ~31.0 dB
+- Deep learning methods: HoloNet-CS ~32.5 dB, CompHolo-Transformer ~34.0 dB, Diffusion-Holo ~34.5 dB
+- Brady et al. phantom: ISTA-L1 achieves >25 dB on experimental data with 4× compression
+- Twin-image suppression: iterative methods >30 dB rejection, DL methods >35 dB rejection
+- All reference values from published papers (Brady et al., 2009; subsequent compressive holography literature)
 
 **Verification criteria:**
 - `done` — PWM within 3 dB of reference
@@ -520,22 +512,22 @@ Then you need to verify each algorithm one by one. You test every algorithm base
 
 #### Step 5: Upload Checkpoints to GCS
 
-After verifying all the algorithms, you can upload the checkpoints into GCS. You first create the 'holography' folder in `/pwm-benchmark-datasets/checkpoint/` if this path has no that folder, then you can upload checkpoints for each GPU algorithm into `/pwm-benchmark-datasets/checkpoint/holography/`.
+After verifying all the algorithms, you can upload the checkpoints into GCS. You first create the 'compressive_holography' folder in `/pwm-benchmark-datasets/checkpoint/` if this path has no that folder, then you can upload checkpoints for each GPU algorithm into `/pwm-benchmark-datasets/checkpoint/compressive_holography/`.
 
-**Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/holography/`
+**Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/compressive_holography/`
 
 #### Step 6: Upload Standard Dataset to GCS
 
-You also need to upload the standard dataset into `/pwm-benchmark-datasets/datasets/Benchmark/holography/standard/`. If there are some datasets in `/pwm-benchmark-datasets/datasets/Benchmark/holography/standard/`, you should first compare them and ensure the best popular dataset should be the standard dataset for holography. You keep the most popular dataset for local and GCS.
+You also need to upload the standard dataset into `/pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`. If there are some datasets in `/pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`, you should first compare them and ensure the best popular dataset should be the standard dataset for compressive holography. You keep the most popular dataset for local and GCS.
 
-**Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/holography/standard/`
+**Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`
 
 #### Step 7: Push to GitHub
 
 Then you push into GitHub but don't push the checkpoint. Don't push standard dataset into GitHub. You also need to ensure the standard dataset is uploaded to GCS before pushing.
 
-**Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/holography/`
-**Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/holography/standard/`
+**Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/compressive_holography/`
+**Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`
 
 ---
 

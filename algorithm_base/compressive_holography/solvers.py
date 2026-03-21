@@ -379,6 +379,10 @@ SOLVERS = {
 }
 
 
+def list_solvers():
+    return [(k, v) for k, v in SOLVERS.items()]
+
+
 def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
                cfg: Optional[Dict] = None) -> np.ndarray:
     if solver_key not in SOLVERS:

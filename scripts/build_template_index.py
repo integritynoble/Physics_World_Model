@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 FLAGSHIP = {
-    'cassi', 'cacti', 'mri', 'ct', 'spc', 'lensless', 'holography',
+    'cassi', 'cacti', 'mri', 'ct', 'spc', 'lensless', 'compressive_holography',
     'ptychography', 'cbct', 'ultrasound', 'cryo_em', 'widefield',
 }
 

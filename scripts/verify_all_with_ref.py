@@ -24,7 +24,7 @@ PSNR_TOL = 0.15   # dB tolerance for matching
 SSIM_TOL = 0.002   # SSIM tolerance for matching
 
 FLAGSHIP = {
-    'cassi', 'cacti', 'mri', 'ct', 'spc', 'lensless', 'holography',
+    'cassi', 'cacti', 'mri', 'ct', 'spc', 'lensless', 'compressive_holography',
     'ptychography', 'cbct', 'ultrasound', 'cryo_em', 'widefield',
 }
 

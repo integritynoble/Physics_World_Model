@@ -1,4 +1,4 @@
-"""Neural Radiance Fields (NeRF) (nerf) — algorithm solvers."""
+"""Neural Radiance Fields (NeRF) (nerf) -- algorithm solvers."""
 from .solvers import run_solver, list_solvers, SOLVERS, MODALITY_ID, DISPLAY_NAME
 from .solvers import run_traditional_cpu
 from .solvers import run_best_quality
