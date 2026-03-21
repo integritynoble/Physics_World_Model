@@ -2486,3 +2486,197 @@ Then you push into GitHub but don't push the checkpoint. Don't push standard dat
 
 **Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/polarization/`
 **Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/polarization/standard/`
+
+---
+
+### Compressive Digital Holography (`compressive_holography`) Modality Template
+
+#### Step 1: Verify Standard Dataset
+
+For compressive digital holography, what dataset do you use to verify? Is this dataset used for compressive holography popular algorithms? Please ensure the standard dataset in `datasets/benchmark/compressive_holography/standard` is a popular dataset used by most algorithms. If not, please find some popular dataset to replace the original compressive holography standard dataset.
+
+**Popular datasets to consider:**
+- **Multi-depth Fresnel holography datasets** — synthetic and experimental holograms with known multi-depth object distributions; the canonical benchmark for compressive holographic reconstruction
+- **Synthetic 4×64×64 multi-depth holograms (PWM standard)** — standardized multi-depth holographic measurements with known ground truth depth slices for reproducible evaluation
+- **Brady et al. compressive holography phantom data (Brady et al., Opt Express 2009)** — experimentally recorded off-axis holograms of 3D phantom objects with known sparsity structure; the foundational compressive holography dataset
+- **USAF resolution target holograms (Gabor / Leith-Upatnieks setup)** — standard resolution targets recorded as digital holograms for assessing lateral and axial resolution
+- **Microscopic particle hologram datasets (Katz & Rosen, 2010; Rivenson et al., 2018)** — holographic recordings of microspheres and biological cells at multiple depths
+
+**Decision criteria:** The Brady et al. compressive holography phantom dataset is the most widely cited benchmark for compressive holographic reconstruction. Synthetic multi-depth holograms for controlled evaluation. Use the dataset that appears in the largest number of compressive holography papers (2009–2026).
+
+#### Step 2: List All Compressive Holography Algorithms
+
+Please first ensure all the compressive holography algorithms have been listed in `\Physics_World_Model\algorithm_base\compressive_holography\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/compressive_holography. Besides, you need to search all algorithms from 1950 to 2026. After listing all the compressive holography solvers, please update the compressive holography solver.
+
+**Key algorithms to cover (1950–2026):**
+
+_Analytic / Classical (1962–2005):_
+- Off-axis holography — Leith-Upatnieks spatial carrier frequency separation of twin image and DC term (Leith & Upatnieks, JOSA 1962) — the foundational off-axis holographic recording method
+- Fresnel back-propagation — numerical propagation of hologram field to reconstruction plane via Fresnel diffraction integral (Goodman & Lawrence, 1967)
+- Angular Spectrum Method — plane-wave decomposition and propagation in Fourier domain for exact scalar diffraction (Ratcliffe, 1956; applied digitally ~1968)
+- Phase-shifting digital holography — multi-frame interferometric recording to eliminate twin image and DC term (Yamaguchi & Zhang, Opt Lett 1997)
+- Gabor holography (in-line) — single-beam inline holographic recording and iterative twin-image removal (Gabor, 1948; digital implementations 1990s)
+
+_Iterative / Optimization (2007–2018):_
+- ISTA-L1 (compressive holography) — iterative shrinkage-thresholding for L1-sparse holographic reconstruction (Brady et al., Opt Express 2009) — the seminal compressive holography algorithm
+- TwIST — two-step iterative shrinkage-thresholding for faster convergence (Bioucas-Dias & Figueiredo, TIP 2007)
+- FISTA-TV — fast iterative shrinkage-thresholding with total variation regularization for piecewise-smooth multi-depth recovery (Beck & Teboulle, 2009; applied to holography)
+- ADMM-TV — alternating direction method of multipliers with TV penalty for compressive holographic reconstruction (Boyd et al., 2011; applied to holography)
+- Tikhonov-regularized holographic reconstruction — L2-penalized least-squares inversion of the Fresnel propagation operator (classical regularization)
+- Residual minimisation — iterative residual-based update for holographic phase retrieval and reconstruction
+- Plug-and-Play PGD (PnP-PGD) — proximal gradient descent with learned denoiser prior replacing proximal operator (Venkatakrishnan et al., 2013; applied to holography)
+- Alternating projections for twin-image removal — iterative constraint enforcement between object and hologram planes (Latychevskaia & Fink, 2007)
+- GPSR — gradient projection for sparse reconstruction applied to holographic CS (Figueiredo et al., 2007)
+- Bregman splitting for compressive holography — split Bregman method for L1+TV holographic reconstruction (Goldstein & Osher, 2009)
+
+_Deep Learning (2020–2026):_
+- HoloGAN-CS — GAN-based compressive holographic reconstruction with adversarial training for multi-depth recovery (2020)
+- DeepFresnel — learned Fresnel propagation network for end-to-end holographic reconstruction (2021)
+- HoloNet-CS — physics-informed unrolled ISTA network for compressive holography with learned thresholding (2022)
+- CompHolo-Transformer — vision transformer for multi-depth holographic reconstruction with attention-based depth selection (2023)
+- Diffusion-Holo — score-based diffusion model prior for compressive holographic inverse problem (2024)
+- PnP deep denoiser for holography — plug-and-play framework with DnCNN/DRUNet prior for holographic reconstruction (2022)
+- Self-supervised holographic reconstruction — Noise2Self-style training without ground truth holograms (2023)
+- Physics-informed neural network (PINN) for holography — embedding Fresnel propagation in network architecture (2023)
+- Foundation model for computational holography — large pretrained model fine-tuned for holographic tasks (2025)
+
+#### Step 3: Update Compressive Holography Solvers
+
+After listing all compressive holography solvers, update `algorithm_base/compressive_holography/solvers.py` to include implementations for each algorithm. Ensure each solver follows the standard interface:
+
+```python
+def run_solver(y: np.ndarray, operator: Any, cfg: dict) -> np.ndarray
+```
+
+All compressive holography solvers use the data format: `y` (H, W) or (H, W, 2) recorded hologram (real-valued intensity or complex field), `wavelength` (float) illumination wavelength, `pixel_pitch` (float) detector pixel size, `prop_distances` (list of float) propagation distances to reconstruction depth planes. The `CompressiveHolographyOperator` handles the forward model `y = |ref + sum_k( Fresnel_prop(x_k, z_k) )|^2 + noise` (multi-depth Fresnel propagation with interference and Poisson–Gaussian noise) and adjoint operations recovering the complex object field at each depth slice.
+
+#### Step 4: Verify Each Algorithm
+
+Then you need to verify each algorithm one by one. You test every algorithm based on the standard dataset. The algorithm which can achieve the same results as in the reference can be marked as done.
+
+**Reference benchmarks for compressive holography:**
+- Multi-depth reconstruction (4 depths, 64×64): Fresnel back-propagation ~22.0 dB, ISTA-L1 ~28.0 dB, FISTA-TV ~30.5 dB, ADMM-TV ~31.0 dB
+- Deep learning methods: HoloNet-CS ~32.5 dB, CompHolo-Transformer ~34.0 dB, Diffusion-Holo ~34.5 dB
+- Brady et al. phantom: ISTA-L1 achieves >25 dB on experimental data with 4× compression
+- Twin-image suppression: iterative methods >30 dB rejection, DL methods >35 dB rejection
+- All reference values from published papers (Brady et al., 2009; subsequent compressive holography literature)
+
+**Verification criteria:**
+- `done` — PWM within 3 dB of reference
+- `partial` — 3–10 dB shortfall
+- `gap` — >10 dB shortfall
+- `no_ckpt` — Algorithm documented but pretrained weights not available
+- `fail` — Solver diverged
+
+#### Step 5: Upload Checkpoints to GCS
+
+After verifying all the algorithms, you can upload the checkpoints into GCS. You first create the 'compressive_holography' folder in `/pwm-benchmark-datasets/checkpoint/` if this path has no that folder, then you can upload checkpoints for each GPU algorithm into `/pwm-benchmark-datasets/checkpoint/compressive_holography/`.
+
+#### Step 6: Upload Standard Dataset to GCS
+
+You also need to upload the standard dataset into `/pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`. If there are some datasets in `/pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`, you should first compare them and ensure the best popular dataset should be the standard dataset for compressive holography. You keep the most popular dataset for local and GCS.
+
+#### Step 7: Push to GitHub
+
+Then you push into GitHub but don't push the checkpoint. Don't push standard dataset into GitHub. You also need to ensure the standard dataset is uploaded to GCS before pushing.
+
+**Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/compressive_holography/`
+**Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/compressive_holography/standard/`
+
+---
+
+### Fluorescence Microscopy — Dual-PSF Stokes Shift (`fluorescence_microscopy`) Modality Template
+
+#### Step 1: Verify Standard Dataset
+
+For fluorescence microscopy with dual-PSF Stokes shift, what dataset do you use to verify? Is this dataset used for fluorescence microscopy popular algorithms? Please ensure the standard dataset in `datasets/benchmark/fluorescence_microscopy/standard` is a popular dataset used by most algorithms. If not, please find some popular dataset to replace the original fluorescence microscopy standard dataset.
+
+**Popular datasets to consider:**
+- **Synthetic dual-PSF phantoms (puncta, filaments, nuclei, 64×64)** — PWM-standard synthetic fluorescence images with known ground truth, separate excitation and emission PSFs incorporating Stokes shift, for controlled deconvolution evaluation
+- **ISBI Deconvolution Grand Challenge (Vonesch et al., 2006; Sage et al., 2017)** — synthetic and real fluorescence microscopy images with known PSFs and ground truth; the canonical benchmark for fluorescence deconvolution algorithms
+- **BioImage Model Zoo test data (von Chamier et al., 2021; Ouyang et al., 2022)** — community-curated fluorescence microscopy images for denoising and restoration benchmarks with standardized evaluation protocols
+- **Hagen et al. dual-PSF fluorescence datasets (2021)** — fluorescence images recorded with explicitly characterized excitation and emission PSFs to test Stokes-shift-aware deconvolution
+- **Widefield fluorescence benchmark (Leutenegger et al., 2006)** — widefield epi-fluorescence images with measured PSF and known specimen for quantitative deconvolution assessment
+
+**Decision criteria:** The ISBI Deconvolution Grand Challenge dataset is the most widely cited benchmark for fluorescence deconvolution. Synthetic dual-PSF phantoms for controlled Stokes shift evaluation. Use the dataset that appears in the largest number of fluorescence deconvolution papers (2006–2026).
+
+#### Step 2: List All Fluorescence Microscopy Algorithms
+
+Please first ensure all the fluorescence microscopy algorithms have been listed in `\Physics_World_Model\algorithm_base\fluorescence_microscopy\README.md` and `\Physics_World_Model\datasets\benchmark\algorithm_state.md`. You can refer to https://pwm.platformai.org/benchmark/fluorescence_microscopy. Besides, you need to search all algorithms from 1950 to 2026. After listing all the fluorescence microscopy solvers, please update the fluorescence microscopy solver.
+
+**Key algorithms to cover (1950–2026):**
+
+_Analytic / Classical (1949–2005):_
+- Inverse filter — naive Fourier-domain division by OTF (early 1970s); demonstrates ringing artifacts and noise amplification
+- Wiener filter — regularized inverse filter balancing signal recovery and noise suppression (Wiener, 1949; applied to fluorescence by Hiraoka et al., 1990)
+- Tikhonov-regularized deconvolution — L2-penalized least-squares inversion for fluorescence PSF (Tikhonov, 1963; applied to microscopy 1980s–1990s)
+- Gold's ratio method — multiplicative iterative deconvolution with positivity constraint (Gold, 1964)
+- Jansson-Van Cittert iterative deconvolution — additive iterative deconvolution with nonlinearity constraint for bounded signals (Van Cittert, 1931; Jansson, 1970)
+
+_Iterative / Optimization (1972–2018):_
+- Richardson-Lucy (RL) deconvolution — iterative maximum likelihood for Poisson noise model (Richardson, 1972; Lucy, 1974) — the most widely used fluorescence deconvolution algorithm
+- RL with Total Variation regularization (RL-TV) — TV-penalized Richardson-Lucy to preserve edges while suppressing noise (Dey et al., J Microsc 2006)
+- Blind Richardson-Lucy — joint estimation of PSF and specimen from fluorescence data (Holmes, 1992; Fish et al., 1995)
+- ADMM-TV — alternating direction method of multipliers with total variation penalty for fluorescence deconvolution (Boyd et al., 2011; applied to microscopy)
+- FISTA-L1 — fast iterative shrinkage-thresholding with L1 sparsity prior for fluorescence deconvolution (Beck & Teboulle, 2009)
+- Grid-search PSF calibration — systematic search over PSF parameters (NA, refractive index, Stokes shift) to find best-fit dual-PSF model before deconvolution
+- Accelerated Richardson-Lucy — Biggs-Andrews acceleration of RL convergence (Biggs & Andrews, 1997)
+- Maximum a Posteriori with Gaussian prior — regularized RL with smoothness constraint (Conchello, 1998)
+- Sparse deconvolution with wavelet prior — wavelet-domain sparsity for fluorescence image recovery (Figueiredo & Nowak, 2003)
+- ISTA for fluorescence deconvolution — iterative shrinkage-thresholding with sparsity prior (Daubechies et al., 2004)
+- Plug-and-Play PGD (PnP-PGD) — proximal gradient descent with learned denoiser prior replacing proximal operator (Venkatakrishnan et al., 2013; applied to fluorescence)
+
+_Deep Learning (2018–2026):_
+- CARE — Content-Aware Image Restoration for fluorescence denoising and deconvolution (Weigert et al., Nat Methods 2018) — the seminal DL microscopy restoration paper
+- Noise2Void — self-supervised denoising without ground truth pairs (Krull et al., CVPR 2019)
+- RCAN — Residual Channel Attention Network for fluorescence image super-resolution and restoration (Zhang et al., ECCV 2018; applied to microscopy)
+- DeconvNet — U-Net-based learned deconvolution for fluorescence microscopy (2020)
+- Diffusion-Fluor — score-based diffusion model prior for fluorescence microscopy inverse problems (2023)
+- PnP deep denoiser for fluorescence — plug-and-play framework with DnCNN/DRUNet prior for fluorescence deconvolution (2022)
+- Richardson-Lucy Network (RLN) — physics-informed unrolled RL with learned regularization (Li et al., Nat Methods 2022)
+- Self-supervised fluorescence deconvolution — self-supervised blind deconvolution network (Chen et al., 2022)
+- Transformer for fluorescence restoration — SwinIR-based architecture adapted for 2D/3D fluorescence data (2023)
+- Foundation model for fluorescence microscopy restoration — large pretrained model fine-tuned for fluorescence tasks (2025)
+
+#### Step 3: Update Fluorescence Microscopy Solvers
+
+After listing all fluorescence microscopy solvers, update `algorithm_base/fluorescence_microscopy/solvers.py` to include implementations for each algorithm. Ensure each solver follows the standard interface:
+
+```python
+def run_solver(y: np.ndarray, operator: Any, cfg: dict) -> np.ndarray
+```
+
+All fluorescence microscopy solvers use the data format: `y` (H, W) or (D, H, W) fluorescence intensity image (widefield or z-stack), `psf_excitation` (H_psf, W_psf) or (D_psf, H_psf, W_psf) excitation point spread function, `psf_emission` (H_psf, W_psf) or (D_psf, H_psf, W_psf) emission PSF incorporating Stokes shift, `wavelength_ex` (float) excitation wavelength, `wavelength_em` (float) emission wavelength. The `FluorescenceMicroscopyOperator` handles the forward model `y = PSF_em * (specimen · PSF_ex) + noise` (dual-PSF convolution with Stokes shift and Poisson–Gaussian noise) and adjoint operations recovering the fluorophore concentration distribution.
+
+#### Step 4: Verify Each Algorithm
+
+Then you need to verify each algorithm one by one. You test every algorithm based on the standard dataset. The algorithm which can achieve the same results as in the reference can be marked as done.
+
+**Reference benchmarks for fluorescence microscopy:**
+- ISBI Deconvolution Challenge (2D fluorescence): Wiener ~24.0 dB, RL (50 iter) ~28.5 dB, RL-TV ~30.0 dB, FISTA-L1 ~29.5 dB
+- Deep learning methods: CARE ~33.0 dB, RLN ~34.5 dB, Diffusion-Fluor ~35.0 dB
+- Fluorescence denoising: raw SNR ~16 dB, Noise2Void ~27 dB, CARE ~29 dB
+- Dual-PSF correction: without Stokes shift correction ~26 dB, with dual-PSF model ~29 dB (3 dB improvement)
+- All reference values from ISBI challenge leaderboard and published papers (Sage et al., 2017; Weigert et al., 2018)
+
+**Verification criteria:**
+- `done` — PWM within 3 dB of reference
+- `partial` — 3–10 dB shortfall
+- `gap` — >10 dB shortfall
+- `no_ckpt` — Algorithm documented but pretrained weights not available
+- `fail` — Solver diverged
+
+#### Step 5: Upload Checkpoints to GCS
+
+After verifying all the algorithms, you can upload the checkpoints into GCS. You first create the 'fluorescence_microscopy' folder in `/pwm-benchmark-datasets/checkpoint/` if this path has no that folder, then you can upload checkpoints for each GPU algorithm into `/pwm-benchmark-datasets/checkpoint/fluorescence_microscopy/`.
+
+#### Step 6: Upload Standard Dataset to GCS
+
+You also need to upload the standard dataset into `/pwm-benchmark-datasets/datasets/Benchmark/fluorescence_microscopy/standard/`. If there are some datasets in `/pwm-benchmark-datasets/datasets/Benchmark/fluorescence_microscopy/standard/`, you should first compare them and ensure the best popular dataset should be the standard dataset for fluorescence microscopy. You keep the most popular dataset for local and GCS.
+
+#### Step 7: Push to GitHub
+
+Then you push into GitHub but don't push the checkpoint. Don't push standard dataset into GitHub. You also need to ensure the standard dataset is uploaded to GCS before pushing.
+
+**Checkpoint Storage:** `gs://pwm-benchmark-datasets/checkpoint/fluorescence_microscopy/`
+**Dataset Storage:** `gs://pwm-benchmark-datasets/datasets/Benchmark/fluorescence_microscopy/standard/`
