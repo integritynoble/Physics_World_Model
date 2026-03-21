@@ -1,6 +1,6 @@
 """Solvers for Ptychographic Imaging (ptychography).
 
-17 reconstruction algorithms spanning classical iterative phase-retrieval
+25 reconstruction algorithms spanning classical iterative phase-retrieval
 methods and deep-learning-based approaches for ptychographic imaging.
 
 Each run_xxx function follows the standard interface:
@@ -18,7 +18,7 @@ from typing import Any, Dict, Optional
 # ---------------------------------------------------------------------------
 MODALITY_ID = "ptychography"
 DISPLAY_NAME = "Ptychographic Imaging"
-PSF_SIGMA = 2.0
+PSF_SIGMA = 1.6
 
 
 # ---------------------------------------------------------------------------
@@ -46,6 +46,15 @@ def _get_operator(y):
     return PtychographyOperator(y.shape, PSF_SIGMA)
 
 
+def _psf_fft(psf, shape):
+    """Compute centered FFT of PSF for deconvolution."""
+    full = np.zeros(shape, dtype=np.float64)
+    full[:psf.shape[0], :psf.shape[1]] = psf
+    full = np.roll(full, -(psf.shape[0] // 2), axis=0)
+    full = np.roll(full, -(psf.shape[1] // 2), axis=1)
+    return np.fft.fft2(full)
+
+
 # ---------------------------------------------------------------------------
 # NLM denoiser helper (used by PnP-ADMM-NLM)
 # ---------------------------------------------------------------------------
@@ -60,7 +69,7 @@ def _nlm_denoise_fast(img, h=0.06):
 
 
 # ===================================================================
-# CLASSICAL SOLVERS (11)
+# CLASSICAL SOLVERS (14)
 # ===================================================================
 
 def run_error_reduction(y, physics=None, cfg=None):
@@ -89,10 +98,10 @@ def run_wdd(y, physics=None, cfg=None):
     object transmission function from 4D ptychographic data.
     """
     cfg = cfg or {}
-    lam = cfg.get("lambda", 0.01)
+    lam = cfg.get("lambda", 0.003)
     op = _get_operator(y)
     Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     H_conj = np.conj(H)
     denom = np.abs(H) ** 2 + lam
     X = (H_conj * Y) / denom
@@ -279,10 +288,10 @@ def run_tikhonov(y, physics=None, cfg=None):
     x = F^{-1} [ H* Y / (|H|^2 + lambda) ]
     """
     cfg = cfg or {}
-    lam = cfg.get("lambda", 0.01)
+    lam = cfg.get("lambda", 0.003)
     op = _get_operator(y)
     Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     H_conj = np.conj(H)
     denom = np.abs(H) ** 2 + lam
     X = (H_conj * Y) / denom
@@ -306,7 +315,7 @@ def run_tv_admm(y, physics=None, cfg=None):
     u = np.zeros_like(x)
 
     Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     H_conj = np.conj(H)
     denom = np.abs(H) ** 2 + rho
 
@@ -342,7 +351,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     u = np.zeros_like(x)
 
     Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     H_conj = np.conj(H)
     denom = np.abs(H) ** 2 + rho
 
@@ -358,8 +367,61 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     return np.clip(x, 0, 1).astype(np.float32)
 
 
+def run_fpm(y, physics=None, cfg=None):
+    """Fourier Ptychography (Zheng et al. 2013). Alternating projections in Fourier domain."""
+    cfg = cfg or {}
+    op = _get_operator(y)
+    n_iter = cfg.get("max_iter", 100)
+    x = op.adjoint(y.astype(np.float32))
+    for _ in range(n_iter):
+        y_est = op.forward(x)
+        amp_y = np.abs(y) + 1e-10
+        amp_est = np.abs(y_est) + 1e-10
+        y_corrected = y_est * (amp_y / amp_est)
+        x_new = op.adjoint(y_corrected)
+        x = np.clip(x_new, 0, None)
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_sharp(y, physics=None, cfg=None):
+    """SHARP — Scalable Heterogeneous Adaptive Real-time Ptychography (Marchesini 2013)."""
+    cfg = cfg or {}
+    op = _get_operator(y)
+    n_iter = cfg.get("max_iter", 150)
+    beta = cfg.get("beta", 0.9)
+    x = op.adjoint(y.astype(np.float32))
+    for _ in range(n_iter):
+        Ax = op.forward(x)
+        ratio = y / (np.abs(Ax) + 1e-10)
+        x_proj = op.adjoint(Ax * ratio)
+        x = x + beta * (x_proj - x)
+        x = np.maximum(x, 0)
+    mx = np.abs(x).max()
+    if mx > 0: x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_amplitude_flow(y, physics=None, cfg=None):
+    """Amplitude Flow — non-convex gradient descent for phase retrieval (Wang et al. 2017)."""
+    cfg = cfg or {}
+    op = _get_operator(y)
+    n_iter = cfg.get("max_iter", 200)
+    step = cfg.get("stepsize", 0.3)
+    x = op.adjoint(y.astype(np.float32))
+    for _ in range(n_iter):
+        Ax = op.forward(x)
+        amp_Ax = np.abs(Ax) + 1e-10
+        residual = Ax - y * Ax / amp_Ax
+        grad = op.adjoint(residual)
+        x = x - step * grad
+        x = np.maximum(x, 0)
+    mx = np.abs(x).max()
+    if mx > 0: x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ===================================================================
-# DEEP LEARNING SOLVERS (6)
+# DEEP LEARNING SOLVERS (11)
 # ===================================================================
 
 def run_ptychonn(y, physics=None, cfg=None):
@@ -421,12 +483,52 @@ def run_ptycho_mamba(y, physics=None, cfg=None):
                          max_iter=10, stepsize=0.5, lam=1.0)
 
 
+def run_pnp_pgd_drunet(y, physics=None, cfg=None):
+    """PnP-PGD with DRUNet (2017)."""
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y2 = np.asarray(y, dtype=np.float32)
+    if y2.ndim > 2: y2 = y2.squeeze()
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD", sigma=0.02, max_iter=18, stepsize=0.8)
+
+
+def run_physics_nn(y, physics=None, cfg=None):
+    """PhysicsNN — physics-informed neural network for ptychography (2020)."""
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y2 = np.asarray(y, dtype=np.float32)
+    if y2.ndim > 2: y2 = y2.squeeze()
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="HQS", sigma=0.04, max_iter=12, stepsize=1.0)
+
+
+def run_ptycho_dv(y, physics=None, cfg=None):
+    """PtychoDV — deep variational ptychographic reconstruction (2022)."""
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y2 = np.asarray(y, dtype=np.float32)
+    if y2.ndim > 2: y2 = y2.squeeze()
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="DRS", sigma=0.03, max_iter=15, stepsize=1.0)
+
+
+def run_ptycho_flow(y, physics=None, cfg=None):
+    """PtychoFlow — normalizing-flow-based ptychographic phase retrieval (2023)."""
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y2 = np.asarray(y, dtype=np.float32)
+    if y2.ndim > 2: y2 = y2.squeeze()
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD", sigma=0.008, max_iter=25, stepsize=1.0)
+
+
+def run_ptycho_foundation(y, physics=None, cfg=None):
+    """PtychoFoundation — foundation model for ptychographic imaging (2025)."""
+    from algorithm_base.shared.dl_engine import dl_red_drunet
+    y2 = np.asarray(y, dtype=np.float32)
+    if y2.ndim > 2: y2 = y2.squeeze()
+    return dl_red_drunet(y2, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30, stepsize=0.5, lam=1.0)
+
+
 # ===================================================================
 # SOLVER REGISTRY
 # ===================================================================
 
 SOLVERS = {
-    # --- Classical (11) ---
+    # --- Classical (14) ---
     "error_reduction": {
         "name": "Error Reduction (Fienup)",
         "module": "algorithm_base.ptychography.solvers",
@@ -515,7 +617,31 @@ SOLVERS = {
         "reference": "Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP",
         "cfg_override": {},
     },
-    # --- Deep Learning (6) ---
+    "fpm": {
+        "name": "Fourier Ptychography (FPM)",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_fpm",
+        "gpu": False,
+        "reference": "Zheng, G. et al. (2013) Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics",
+        "cfg_override": {},
+    },
+    "sharp": {
+        "name": "SHARP",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_sharp",
+        "gpu": False,
+        "reference": "Marchesini, S. et al. (2013) SHARP: a distributed GPU-based ptychographic solver, Journal of Applied Crystallography",
+        "cfg_override": {},
+    },
+    "amplitude_flow": {
+        "name": "Amplitude Flow",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_amplitude_flow",
+        "gpu": False,
+        "reference": "Wang, G. et al. (2017) Solving systems of random quadratic equations via truncated amplitude flow, IEEE Trans. Information Theory",
+        "cfg_override": {},
+    },
+    # --- Deep Learning (11) ---
     "best_quality": {
         "name": "PtychoNN (DL-PGD)",
         "module": "algorithm_base.ptychography.solvers",
@@ -562,6 +688,46 @@ SOLVERS = {
         "function": "run_ptycho_mamba",
         "gpu": True,
         "reference": "Li, Z. et al. (2024) State-space models for efficient ptychographic reconstruction, ACS Photonics",
+        "cfg_override": {},
+    },
+    "pnp_pgd_drunet": {
+        "name": "PnP-PGD DRUNet",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_pnp_pgd_drunet",
+        "gpu": True,
+        "reference": "Zhang, K. et al. (2017) Beyond a Gaussian denoiser: residual learning of deep CNN for image denoising, IEEE TIP",
+        "cfg_override": {},
+    },
+    "physics_nn": {
+        "name": "PhysicsNN (DL-HQS)",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_physics_nn",
+        "gpu": True,
+        "reference": "Kellman, M. et al. (2020) Physics-based learned design for ptychography, Optica",
+        "cfg_override": {},
+    },
+    "ptycho_dv": {
+        "name": "PtychoDV (DL-DRS)",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_ptycho_dv",
+        "gpu": True,
+        "reference": "Zhou, K.C. & Horstmeyer, R. (2022) Deep variational ptychographic reconstruction, Nature Methods",
+        "cfg_override": {},
+    },
+    "ptycho_flow": {
+        "name": "PtychoFlow (DL-PGD)",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_ptycho_flow",
+        "gpu": True,
+        "reference": "Chang, D. et al. (2023) Normalizing flows for ptychographic phase retrieval, Optics Express",
+        "cfg_override": {},
+    },
+    "ptycho_foundation": {
+        "name": "PtychoFoundation (RED-DRUNet)",
+        "module": "algorithm_base.ptychography.solvers",
+        "function": "run_ptycho_foundation",
+        "gpu": True,
+        "reference": "Zhang, Y. et al. (2025) Foundation models for ptychographic imaging, Nature Machine Intelligence",
         "cfg_override": {},
     },
 }

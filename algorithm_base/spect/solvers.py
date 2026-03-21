@@ -247,6 +247,15 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
             fn = globals()[spec["function"]]
             result = fn(y.astype(np.float32), operator, cfg)
         else:
+            # Seed RNG for deterministic DL inference (no pretrained weights)
+            np.random.seed(42)
+            try:
+                import torch
+                torch.manual_seed(42)
+                if torch.cuda.is_available():
+                    torch.cuda.manual_seed_all(42)
+            except ImportError:
+                pass
             fn = _load_fn(solver_key)
             result = fn(y.astype(np.float32), operator, cfg)
     except Exception:

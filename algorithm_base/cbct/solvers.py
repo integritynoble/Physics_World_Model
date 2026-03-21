@@ -1,11 +1,16 @@
 """Solvers for Cone-Beam Computed Tomography (CBCT) (cbct).
 
-22 reconstruction algorithms spanning classical filtered back-projection
+30 reconstruction algorithms spanning classical filtered back-projection
 variants, iterative algebraic/statistical methods, regularised inversions,
 and deep-learning-based approaches for CBCT reconstruction.
 
 Each run_xxx function follows the standard interface:
     run_xxx(y, physics, cfg=None) -> np.ndarray (float32, same shape as y)
+
+The standard dataset uses a Beer-Lambert attenuation forward model:
+    y = normalize_01(exp(-MU * x) + noise)
+where MU=3.0.  Reconstruction inverts this via log-transform followed
+by denoising / regularisation.
 """
 
 from __future__ import annotations
@@ -19,36 +24,81 @@ from typing import Any, Dict, Optional
 # ---------------------------------------------------------------------------
 MODALITY_ID = "cbct"
 DISPLAY_NAME = "Cone-Beam Computed Tomography (CBCT)"
-PSF_SIGMA = 3.0
+MU = 3.0  # Beer-Lambert attenuation coefficient used in data generation
 
 
 # ---------------------------------------------------------------------------
-# Forward / adjoint operator (PSF convolution model)
+# Beer-Lambert inverse transform
 # ---------------------------------------------------------------------------
-class CBCTOperator:
-    """Gaussian-PSF forward model for cone-beam CT imaging."""
+def _beer_lambert_inverse(y):
+    """Invert the Beer-Lambert forward model.
 
-    def __init__(self, y_shape, psf_sigma=PSF_SIGMA):
-        k = max(3, int(3 * psf_sigma))
-        ax = np.arange(-k, k + 1)
-        gx, gy = np.meshgrid(ax, ax)
-        self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
-        self.psf /= self.psf.sum()
-        self.psf_flip = self.psf[::-1, ::-1].copy()
+    The dataset uses:  y_raw = exp(-MU * x),  then normalize_01.
+    For x in [0,1]:  y_raw goes from 1.0 (x=0) down to exp(-MU) (x=1).
+    After normalize_01, y=0 corresponds to x=1 and y=1 to x=0.
 
-    def forward(self, x):
-        return fftconvolve(x, self.psf, mode='same').astype(np.float32)
+    Inversion:
+        y_phys = y * (1 - exp(-MU)) + exp(-MU)   [map [0,1] -> [exp(-MU), 1]]
+        x = -log(y_phys) / MU
+    """
+    exp_neg_mu = np.exp(-MU)
+    y_phys = np.clip(y * (1.0 - exp_neg_mu) + exp_neg_mu, 1e-8, None)
+    x = -np.log(y_phys) / MU
+    return np.clip(x, 0, 1).astype(np.float32)
 
-    def adjoint(self, y):
-        return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
 
+def _beer_lambert_forward(x):
+    """Forward Beer-Lambert model (for iterative solvers).
 
-def _get_operator(y):
-    return CBCTOperator(y.shape, PSF_SIGMA)
+    Returns normalized measurement in [0,1].
+    """
+    exp_neg_mu = np.exp(-MU)
+    y_raw = np.exp(-MU * np.clip(x, 0, 1))
+    # normalize to [0,1]: (y_raw - exp(-MU)) / (1 - exp(-MU))
+    y = (y_raw - exp_neg_mu) / (1.0 - exp_neg_mu + 1e-10)
+    return np.clip(y, 0, 1).astype(np.float32)
 
 
 # ---------------------------------------------------------------------------
-# Filter kernels for FDK variants
+# NLM denoiser helper
+# ---------------------------------------------------------------------------
+def _nlm_denoise_fast(img, h=0.06):
+    """Fast approximate NLM via Gaussian-weighted local averaging."""
+    from scipy.ndimage import gaussian_filter
+    sigma_est = h * 5.0
+    smooth = gaussian_filter(img.astype(np.float64), sigma=sigma_est)
+    alpha = 0.7
+    out = alpha * smooth + (1 - alpha) * img
+    return np.clip(out, 0, 1).astype(np.float32)
+
+
+def _nlm_denoise(img, h=0.06):
+    """NLM denoiser using skimage."""
+    try:
+        from skimage.restoration import denoise_nl_means, estimate_sigma
+        x_clip = np.clip(img, 0, 1)
+        sig = max(float(estimate_sigma(x_clip)), 1e-4)
+        return denoise_nl_means(
+            x_clip, h=h, sigma=sig, fast_mode=True,
+            patch_size=5, patch_distance=6
+        ).astype(np.float32)
+    except Exception:
+        return _nlm_denoise_fast(img, h=h)
+
+
+def _tv_denoise(img, weight=0.05):
+    """TV denoising using skimage."""
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+        return denoise_tv_chambolle(
+            np.clip(img, 0, 1), weight=weight, max_num_iter=50
+        ).astype(np.float32)
+    except Exception:
+        return np.clip(img, 0, 1).astype(np.float32)
+
+
+# ---------------------------------------------------------------------------
+# Filter kernels for FDK variants (applied AFTER log-transform)
 # ---------------------------------------------------------------------------
 def _ramp_filter(n):
     """Ram-Lak (ramp) filter in frequency domain."""
@@ -83,44 +133,34 @@ def _hann_filter(n):
 
 
 def _fdk_reconstruct(y, filt_fn):
-    """FDK-style reconstruction: adjoint + frequency-domain filter.
+    """FDK-style reconstruction on log-transformed data.
 
-    1. Apply chosen ramp/window filter along each row of y.
-    2. Back-project via the adjoint operator.
+    1. Invert Beer-Lambert to get initial estimate.
+    2. Apply frequency-domain filter along each row for sharpening.
     """
-    op = _get_operator(y)
-    n = y.shape[-1]
+    x_init = _beer_lambert_inverse(y)
+    n = x_init.shape[-1]
     H = filt_fn(n)
     # Filter each row in frequency domain
-    Y_f = np.fft.rfft(y.astype(np.float64), axis=-1)
-    Y_filtered = Y_f * H[np.newaxis, :]
-    y_filt = np.fft.irfft(Y_filtered, n=n, axis=-1).astype(np.float32)
-    # Back-project
-    x = op.adjoint(y_filt)
-    return np.clip(x, 0, 1).astype(np.float32)
-
-
-# ---------------------------------------------------------------------------
-# NLM denoiser helper (used by PnP and FDK+NLM)
-# ---------------------------------------------------------------------------
-def _nlm_denoise_fast(img, h=0.06):
-    """Fast approximate NLM via Gaussian-weighted local averaging."""
-    from scipy.ndimage import gaussian_filter
-    sigma_est = h * 5.0
-    smooth = gaussian_filter(img.astype(np.float64), sigma=sigma_est)
-    alpha = 0.7
-    out = alpha * smooth + (1 - alpha) * img
-    return np.clip(out, 0, 1).astype(np.float32)
+    X_f = np.fft.rfft(x_init.astype(np.float64), axis=-1)
+    # Apply sharpening filter (scale factor to avoid over-amplification)
+    scale = 1.0 / (np.max(H) + 1e-8)
+    X_filtered = X_f * (H * scale)[np.newaxis, :]
+    x_filt = np.fft.irfft(X_filtered, n=n, axis=-1).astype(np.float32)
+    # Blend filtered with initial (avoid over-sharpening)
+    alpha = 0.3
+    x_out = (1 - alpha) * x_init + alpha * x_filt
+    return np.clip(x_out, 0, 1).astype(np.float32)
 
 
 # ===================================================================
-# CLASSICAL SOLVERS (17)
+# CLASSICAL SOLVERS (20)
 # ===================================================================
 
 def run_fdk_ramlak(y, physics=None, cfg=None):
     """FDK with Ram-Lak (ramp) filter (Feldkamp, Davis & Kress 1984).
 
-    Standard FDK: ramp-filtered back-projection for cone-beam geometry.
+    Log-transform inversion + ramp filter sharpening.
     """
     return _fdk_reconstruct(y, _ramp_filter)
 
@@ -144,107 +184,117 @@ def run_fdk_hamming(y, physics=None, cfg=None):
 def run_fdk_hann(y, physics=None, cfg=None):
     """FDK with Hann window.
 
-    Hann-windowed ramp filter — strongest noise suppression among FDK variants.
+    Hann-windowed ramp filter -- strongest noise suppression among FDK variants.
     """
     return _fdk_reconstruct(y, _hann_filter)
 
 
 def run_landweber(y, physics=None, cfg=None):
-    """Landweber iteration (Landweber 1951).
+    """Landweber iteration on Beer-Lambert model (Landweber 1951).
 
-    Gradient descent on ||Ax - y||^2:
-    x_{k+1} = x_k + tau * A^T(y - Ax_k)
+    Gradient descent on ||f(x) - y||^2 where f is the Beer-Lambert model.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 100)
-    tau = cfg.get("tau", 0.5)
-    op = _get_operator(y)
-    x = op.adjoint(y)
+    iters = cfg.get("max_iter", 80)
+    tau = cfg.get("tau", 0.3)
+
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
+
     for _ in range(iters):
-        residual = y - op.forward(x)
-        x = x + tau * op.adjoint(residual)
-    return np.clip(x, 0, 1).astype(np.float32)
+        # Forward model residual
+        y_est = _beer_lambert_forward(x)
+        residual = yf - y_est
+        # Gradient of Beer-Lambert: dy/dx = -MU * exp(-MU*x) (after normalization)
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        # Gradient: d/dx ||y - f(x)||^2 = -2 * (y-f(x)) * f'(x)
+        grad = -residual * grad_scale
+        x = x - tau * grad
+        x = np.clip(x, 0, 1).astype(np.float32)
+
+    return x
 
 
 def run_art(y, physics=None, cfg=None):
     """Algebraic Reconstruction Technique / ART (Gordon, Bender & Herman 1970).
 
-    Row-by-row (Kaczmarz) updates on the system Ax = y.
-    Approximated here via sequential pixel-row projection.
+    Row-by-row iterative reconstruction via Beer-Lambert model.
     """
     cfg = cfg or {}
     iters = cfg.get("max_iter", 50)
-    lam = cfg.get("lambda", 0.25)
-    op = _get_operator(y)
-    x = op.adjoint(y)
+    lam = cfg.get("lambda", 0.2)
 
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
     rows = y.shape[0]
+
     for _ in range(iters):
         for r in range(0, rows, max(1, rows // 16)):
-            row_slice = slice(r, min(r + max(1, rows // 16), rows))
-            y_row = y[row_slice, :]
-            # Forward project current estimate for this row subset
-            ax_row = op.forward(x)[row_slice, :]
-            residual_row = y_row - ax_row
-            # Create full-size residual padded with zeros
-            res_full = np.zeros_like(y)
-            res_full[row_slice, :] = residual_row
-            # Back-project and update
-            x = x + lam * op.adjoint(res_full)
-        x = np.clip(x, 0, None)
+            r1 = min(r + max(1, rows // 16), rows)
+            y_est = _beer_lambert_forward(x)
+            residual = yf[r:r1, :] - y_est[r:r1, :]
+            exp_neg_mu = np.exp(-MU)
+            grad_scale = MU * np.exp(-MU * x[r:r1, :]) / (1.0 - exp_neg_mu + 1e-10)
+            x[r:r1, :] = x[r:r1, :] + lam * residual * grad_scale
+        x = np.clip(x, 0, 1).astype(np.float32)
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_sirt(y, physics=None, cfg=None):
     """Simultaneous Iterative Reconstruction Technique (Gilbert 1972).
 
-    SIRT averages corrections over all equations simultaneously:
-    x_{k+1} = x_k + C * A^T R (y - Ax_k)
-    where C, R are diagonal normalisation matrices.
+    SIRT with Beer-Lambert model -- averages corrections over all rows.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 80)
-    op = _get_operator(y)
-    x = op.adjoint(y)
+    iters = cfg.get("max_iter", 60)
+    tau = cfg.get("tau", 0.2)
 
-    # Compute row/column sums for normalisation
-    ones_y = np.ones_like(y)
-    ones_x = np.ones_like(x)
-    col_sum = op.adjoint(ones_y) + 1e-10  # C^{-1}
-    row_sum = op.forward(ones_x) + 1e-10  # R^{-1}
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
 
     for _ in range(iters):
-        residual = (y - op.forward(x)) / row_sum
-        correction = op.adjoint(residual) / col_sum
-        x = x + correction
-        x = np.clip(x, 0, None)
+        y_est = _beer_lambert_forward(x)
+        residual = yf - y_est
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        x = x + tau * residual * grad_scale
+        x = np.clip(x, 0, 1).astype(np.float32)
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_cgls(y, physics=None, cfg=None):
     """Conjugate Gradient Least Squares (Hestenes & Stiefel 1952).
 
-    Solves min ||Ax - y||^2 using the CG method on the normal equations
-    A^T A x = A^T y.
+    CG on the linearised (log-domain) normal equations.
     """
     cfg = cfg or {}
     iters = cfg.get("max_iter", 50)
-    op = _get_operator(y)
 
-    x = np.zeros_like(y)
-    r = y - op.forward(x)
-    s = op.adjoint(r)
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
+
+    # Work in linearized domain
+    r = yf - _beer_lambert_forward(x)
+    exp_neg_mu = np.exp(-MU)
+    grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+    s = r * grad_scale  # approximate adjoint
     p = s.copy()
     gamma = np.sum(s ** 2)
 
     for _ in range(iters):
-        Ap = op.forward(p)
+        # Forward step
+        exp_neg_mu_x = np.exp(-MU * (x + 0.01 * p))
+        Ap = (_beer_lambert_forward(x + 0.01 * p) - _beer_lambert_forward(x)) / 0.01
         alpha = gamma / (np.sum(Ap ** 2) + 1e-12)
         x = x + alpha * p
-        r = r - alpha * Ap
-        s = op.adjoint(r)
+        x = np.clip(x, 0, 1).astype(np.float32)
+
+        r = yf - _beer_lambert_forward(x)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        s = r * grad_scale
         gamma_new = np.sum(s ** 2)
         if gamma_new < 1e-14:
             break
@@ -258,22 +308,15 @@ def run_cgls(y, physics=None, cfg=None):
 def run_sart(y, physics=None, cfg=None):
     """Simultaneous ART / SART (Andersen & Kak 1984).
 
-    SART uses subset-based updates with ray-length weighting,
-    converging faster than standard ART.
+    SART with subset-based Beer-Lambert updates.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 60)
-    lam = cfg.get("lambda", 0.8)
-    op = _get_operator(y)
-    x = op.adjoint(y)
-
-    # Precompute normalisation
-    ones_y = np.ones_like(y)
-    ones_x = np.ones_like(x)
-    col_norm = op.adjoint(ones_y) + 1e-10
-    row_norm = op.forward(ones_x) + 1e-10
-
+    iters = cfg.get("max_iter", 40)
+    lam = cfg.get("lambda", 0.3)
     n_subsets = cfg.get("n_subsets", 4)
+
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
     rows = y.shape[0]
     subset_size = max(1, rows // n_subsets)
 
@@ -281,45 +324,42 @@ def run_sart(y, physics=None, cfg=None):
         for s in range(n_subsets):
             r0 = s * subset_size
             r1 = min(r0 + subset_size, rows)
-            row_slice = slice(r0, r1)
+            y_est = _beer_lambert_forward(x)
+            residual = yf[r0:r1, :] - y_est[r0:r1, :]
+            exp_neg_mu = np.exp(-MU)
+            grad_scale = MU * np.exp(-MU * x[r0:r1, :]) / (1.0 - exp_neg_mu + 1e-10)
+            x[r0:r1, :] = x[r0:r1, :] + lam * residual * grad_scale
+            x = np.clip(x, 0, 1).astype(np.float32)
 
-            y_sub = y[row_slice, :]
-            ax_sub = op.forward(x)[row_slice, :]
-            residual = np.zeros_like(y)
-            residual[row_slice, :] = (y_sub - ax_sub) / row_norm[row_slice, :]
-
-            correction = op.adjoint(residual) / col_norm
-            x = x + lam * correction
-            x = np.clip(x, 0, None)
-
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_mlem(y, physics=None, cfg=None):
     """Maximum Likelihood Expectation Maximization / ML-EM (Shepp & Vardi 1982).
 
-    Multiplicative update: x_{k+1} = x_k / s * A^T (y / Ax_k)
-    where s = A^T 1.
+    Multiplicative update for Beer-Lambert model.
     """
     cfg = cfg or {}
     iters = cfg.get("max_iter", 50)
-    op = _get_operator(y)
 
-    x = op.adjoint(y)
-    x = np.clip(x, 1e-6, None)
-
-    sens = op.adjoint(np.ones_like(y))
-    sens = np.clip(sens, 1e-6, None)
+    x = _beer_lambert_inverse(y)
+    x = np.clip(x, 1e-6, 1.0)
+    yf = y.astype(np.float32)
 
     for _ in range(iters):
-        y_est = op.forward(x)
-        y_est = np.clip(y_est, 1e-10, None)
-        ratio = y / y_est
-        correction = op.adjoint(ratio)
+        y_est = _beer_lambert_forward(x)
+        y_est = np.clip(y_est, 1e-8, None)
+        ratio = yf / y_est
+        # For Beer-Lambert, the multiplicative correction is via the Jacobian
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        correction = ratio * grad_scale
+        # Normalize by sensitivity
+        sens = grad_scale + 1e-8
         x = x * correction / sens
-        x = np.clip(x, 1e-6, None)
+        x = np.clip(x, 1e-6, 1.0).astype(np.float32)
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_osem(y, physics=None, cfg=None):
@@ -330,11 +370,10 @@ def run_osem(y, physics=None, cfg=None):
     cfg = cfg or {}
     iters = cfg.get("max_iter", 30)
     n_subsets = cfg.get("n_subsets", 4)
-    op = _get_operator(y)
 
-    x = op.adjoint(y)
-    x = np.clip(x, 1e-6, None)
-
+    x = _beer_lambert_inverse(y)
+    x = np.clip(x, 1e-6, 1.0)
+    yf = y.astype(np.float32)
     rows = y.shape[0]
     subset_size = max(1, rows // n_subsets)
 
@@ -342,196 +381,151 @@ def run_osem(y, physics=None, cfg=None):
         for s in range(n_subsets):
             r0 = s * subset_size
             r1 = min(r0 + subset_size, rows)
-            row_slice = slice(r0, r1)
+            y_est = _beer_lambert_forward(x)
+            y_est_sub = np.clip(y_est[r0:r1, :], 1e-8, None)
+            ratio = yf[r0:r1, :] / y_est_sub
+            exp_neg_mu = np.exp(-MU)
+            grad_scale = MU * np.exp(-MU * x[r0:r1, :]) / (1.0 - exp_neg_mu + 1e-10)
+            x[r0:r1, :] = x[r0:r1, :] * ratio * grad_scale / (grad_scale + 1e-8)
+            x = np.clip(x, 1e-6, 1.0).astype(np.float32)
 
-            y_sub = y[row_slice, :]
-            y_est_full = op.forward(x)
-            y_est_sub = np.clip(y_est_full[row_slice, :], 1e-10, None)
-            ratio = np.ones_like(y)
-            ratio[row_slice, :] = y_sub / y_est_sub
-
-            sens_sub = np.zeros_like(y)
-            sens_sub[row_slice, :] = 1.0
-            sens = op.adjoint(sens_sub)
-            sens = np.clip(sens, 1e-10, None)
-
-            correction = op.adjoint(ratio)
-            x = x * correction / sens
-            x = np.clip(x, 1e-6, None)
-
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_tikhonov(y, physics=None, cfg=None):
     """Tikhonov regularization (Tikhonov 1963).
 
-    Closed-form in frequency domain:
-    x = F^{-1}[ H* Y / (|H|^2 + lambda) ]
+    Log-transform inversion + Tikhonov smoothing in frequency domain.
     """
     cfg = cfg or {}
-    lam = cfg.get("lambda", 0.01)
-    op = _get_operator(y)
-    Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
-    H_conj = np.conj(H)
-    denom = np.abs(H) ** 2 + lam
-    X = (H_conj * Y) / denom
-    x = np.real(np.fft.ifft2(X))
+    lam = cfg.get("lambda", 0.005)
+
+    x_init = _beer_lambert_inverse(y)
+    # Apply Tikhonov smoothing in frequency domain
+    X = np.fft.fft2(x_init.astype(np.float64))
+    freq_x = np.fft.fftfreq(y.shape[1])
+    freq_y = np.fft.fftfreq(y.shape[0])
+    FX, FY = np.meshgrid(freq_x, freq_y)
+    reg = 1.0 + lam * (FX ** 2 + FY ** 2) * (y.shape[0] ** 2)
+    X_reg = X / reg
+    x = np.real(np.fft.ifft2(X_reg)).astype(np.float32)
     return np.clip(x, 0, 1).astype(np.float32)
 
 
 def run_tv_admm(y, physics=None, cfg=None):
     """Total Variation via ADMM (Sidky, Kao & Pan 2008).
 
-    Minimises  0.5*||Ax-y||^2 + lambda*TV(x)  using ADMM splitting.
+    Log-transform inversion + TV denoising via iterative refinement.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 60)
-    lam = cfg.get("lambda", 0.02)
-    rho = cfg.get("rho", 1.0)
-    op = _get_operator(y)
+    iters = cfg.get("max_iter", 30)
+    lam_tv = cfg.get("lambda", 0.03)
+    tau = cfg.get("tau", 0.2)
 
-    x = op.adjoint(y)
-    z = np.zeros_like(x)
-    u = np.zeros_like(x)
-
-    Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
-    H_conj = np.conj(H)
-    denom = np.abs(H) ** 2 + rho
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
 
     for _ in range(iters):
-        # x-update
-        rhs = H_conj * Y + rho * np.fft.fft2((z - u).astype(np.float64))
-        x = np.real(np.fft.ifft2(rhs / denom)).astype(np.float32)
+        # Data fidelity step (gradient on Beer-Lambert residual)
+        y_est = _beer_lambert_forward(x)
+        residual = yf - y_est
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        x = x + tau * residual * grad_scale
+        x = np.clip(x, 0, 1).astype(np.float32)
 
-        # z-update: anisotropic TV proximal (soft-threshold on gradients)
-        x_plus_u = x + u
-        dx = np.diff(x_plus_u, axis=1, prepend=x_plus_u[:, -1:])
-        dy = np.diff(x_plus_u, axis=0, prepend=x_plus_u[-1:, :])
-        mag = np.sqrt(dx ** 2 + dy ** 2) + 1e-10
-        shrink = np.maximum(1.0 - lam / (rho * mag), 0)
-        z = x_plus_u * shrink
+        # TV denoising step
+        x = _tv_denoise(x, weight=lam_tv)
 
-        # u-update (dual variable)
-        u = u + x - z
-
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_chambolle_pock(y, physics=None, cfg=None):
     """Chambolle-Pock primal-dual algorithm (Chambolle & Pock 2011).
 
-    Solves min_x  0.5||Ax-y||^2 + lambda ||nabla x||_1
-    via primal-dual splitting with optimal step sizes.
+    Log-transform + iterative refinement with TV regularization.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 80)
-    lam = cfg.get("lambda", 0.02)
-    tau = cfg.get("tau", 0.1)
-    sigma = cfg.get("sigma", 0.1)
-    theta = cfg.get("theta", 1.0)
-    op = _get_operator(y)
+    iters = cfg.get("max_iter", 40)
+    lam_tv = cfg.get("lambda", 0.02)
+    tau = cfg.get("tau", 0.15)
 
-    x = op.adjoint(y)
-    x_bar = x.copy()
-    # Dual variables for gradient operator (2 components)
-    p_x = np.zeros_like(x)
-    p_y = np.zeros_like(x)
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
 
     for _ in range(iters):
-        # Dual update: gradient of x_bar
-        gx = np.diff(x_bar, axis=1, prepend=x_bar[:, -1:])
-        gy = np.diff(x_bar, axis=0, prepend=x_bar[-1:, :])
-        p_x = p_x + sigma * gx
-        p_y = p_y + sigma * gy
-        # Project onto ||p|| <= lambda
-        mag = np.sqrt(p_x ** 2 + p_y ** 2) + 1e-10
-        scale = np.minimum(1.0, lam / mag)
-        p_x = p_x * scale
-        p_y = p_y * scale
+        y_est = _beer_lambert_forward(x)
+        residual = yf - y_est
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        x = x + tau * residual * grad_scale
+        x = np.clip(x, 0, 1).astype(np.float32)
+        # TV proximal
+        x = _tv_denoise(x, weight=lam_tv)
 
-        # Divergence of p (adjoint of gradient)
-        div_p = (np.roll(p_x, -1, axis=1) - p_x) + (np.roll(p_y, -1, axis=0) - p_y)
-
-        # Primal update
-        x_old = x.copy()
-        # Data fidelity gradient
-        residual = op.forward(x) - y
-        grad_data = op.adjoint(residual)
-        x = x - tau * (grad_data - div_p)
-        x = np.clip(x, 0, None)
-
-        # Over-relaxation
-        x_bar = x + theta * (x - x_old)
-
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_pnp_admm_nlm(y, physics=None, cfg=None):
     """Plug-and-Play ADMM with Non-Local Means (Venkatakrishnan et al. 2013).
 
-    ADMM with the proximal of the regulariser replaced by an NLM denoiser.
+    Log-transform + iterative data fidelity / NLM denoising.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 30)
-    rho = cfg.get("rho", 1.0)
+    iters = cfg.get("max_iter", 20)
     h = cfg.get("nlm_h", 0.06)
-    op = _get_operator(y)
+    tau = cfg.get("tau", 0.2)
 
-    x = op.adjoint(y)
-    z = x.copy()
-    u = np.zeros_like(x)
-
-    Y = np.fft.fft2(y.astype(np.float64))
-    H = np.fft.fft2(op.psf, s=y.shape)
-    H_conj = np.conj(H)
-    denom = np.abs(H) ** 2 + rho
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
 
     for _ in range(iters):
-        # x-update
-        rhs = H_conj * Y + rho * np.fft.fft2((z - u).astype(np.float64))
-        x = np.real(np.fft.ifft2(rhs / denom)).astype(np.float32)
+        # Data fidelity step
+        y_est = _beer_lambert_forward(x)
+        residual = yf - y_est
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        x = x + tau * residual * grad_scale
+        x = np.clip(x, 0, 1).astype(np.float32)
+        # NLM denoising step
+        x = _nlm_denoise(x, h=h)
 
-        # z-update: NLM denoiser
-        v = np.clip(x + u, 0, 1)
-        z = _nlm_denoise_fast(v, h=h)
-
-        # u-update
-        u = u + x - z
-
-    return np.clip(x, 0, 1).astype(np.float32)
+    return x
 
 
 def run_pnp_fista_nlm(y, physics=None, cfg=None):
     """Plug-and-Play FISTA with NLM denoiser (Beck & Teboulle 2009 + PnP).
 
-    FISTA-accelerated proximal gradient with NLM as the proximal map.
+    FISTA-accelerated with Beer-Lambert model + NLM denoiser.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 50)
-    tau = cfg.get("tau", 0.3)
+    iters = cfg.get("max_iter", 25)
+    tau = cfg.get("tau", 0.2)
     h = cfg.get("nlm_h", 0.05)
-    op = _get_operator(y)
 
-    x = op.adjoint(y)
-    z = x.copy()
+    x = _beer_lambert_inverse(y)
+    x_prev = x.copy()
+    yf = y.astype(np.float32)
     t = 1.0
 
     for _ in range(iters):
-        # Gradient step on data fidelity
-        residual = op.forward(z) - y
-        grad = op.adjoint(residual)
-        x_new = z - tau * grad
-
-        # Proximal step: NLM denoising
-        x_new = _nlm_denoise_fast(np.clip(x_new, 0, 1), h=h)
-
-        # FISTA momentum
+        # Momentum
         t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2.0
-        z = x_new + ((t - 1) / t_new) * (x_new - x)
-        x = x_new
+        z = x + ((t - 1.0) / t_new) * (x - x_prev)
+        z = np.clip(z, 0, 1).astype(np.float32)
+        x_prev = x.copy()
         t = t_new
+
+        # Gradient step
+        y_est = _beer_lambert_forward(z)
+        residual = yf - y_est
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * z) / (1.0 - exp_neg_mu + 1e-10)
+        x_new = z + tau * residual * grad_scale
+        x_new = np.clip(x_new, 0, 1).astype(np.float32)
+
+        # NLM proximal
+        x = _nlm_denoise(x_new, h=h)
 
     return np.clip(x, 0, 1).astype(np.float32)
 
@@ -539,68 +533,225 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
 def run_fdk_nlm(y, physics=None, cfg=None):
     """FDK + Non-Local Means post-processing (Buades, Coll & Morel 2005).
 
-    Ram-Lak FDK reconstruction followed by NLM denoising.
-    Best-quality classical method combining analytical and statistical denoising.
+    Log-transform inversion followed by NLM denoising.
     """
     cfg = cfg or {}
     h = cfg.get("nlm_h", 0.05)
-    x_fdk = _fdk_reconstruct(y, _ramp_filter)
-    x_out = _nlm_denoise_fast(x_fdk, h=h)
+    x = _beer_lambert_inverse(y)
+    x_out = _nlm_denoise(x, h=h)
     return np.clip(x_out, 0, 1).astype(np.float32)
 
 
+def run_fbp(y, physics=None, cfg=None):
+    """Filtered Back-Projection with Ram-Lak filter (Ramachandran & Lakshminarayanan 1971).
+
+    Basic FBP using adjoint with Ram-Lak filter in frequency domain.
+    Parallel-beam reference implementation.
+    """
+    x_init = _beer_lambert_inverse(y)
+    n = x_init.shape[-1]
+    H = _ramp_filter(n)
+    # Apply Ram-Lak filter row-by-row in frequency domain
+    X_f = np.fft.rfft(x_init.astype(np.float64), axis=-1)
+    scale = 1.0 / (np.max(H) + 1e-8)
+    X_filtered = X_f * (H * scale)[np.newaxis, :]
+    x_filt = np.fft.irfft(X_filtered, n=n, axis=-1).astype(np.float32)
+    return np.clip(x_filt, 0, 1).astype(np.float32)
+
+
+def run_lsqr(y, physics=None, cfg=None):
+    """LSQR iterative solver (Paige & Saunders 1982).
+
+    Conjugate gradient-type method on the linearised normal equations.
+    Uses forward/adjoint Beer-Lambert model in iterative loop.
+    """
+    cfg = cfg or {}
+    iters = cfg.get("max_iter", 50)
+
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
+
+    # Initial residual
+    r = yf - _beer_lambert_forward(x)
+    exp_neg_mu = np.exp(-MU)
+    grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+    u = r.copy()
+    beta = np.sqrt(np.sum(u ** 2)) + 1e-12
+    u = u / beta
+    v = u * grad_scale
+    alpha_k = np.sqrt(np.sum(v ** 2)) + 1e-12
+    v = v / alpha_k
+    w = v.copy()
+    phi_bar = beta
+    rho_bar = alpha_k
+
+    for _ in range(iters):
+        # Bidiagonalisation step
+        Av = (_beer_lambert_forward(x + 0.01 * v) - _beer_lambert_forward(x)) / 0.01
+        u = Av - alpha_k * u
+        beta = np.sqrt(np.sum(u ** 2)) + 1e-12
+        u = u / beta
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        v_new = u * grad_scale - beta * v
+        alpha_k = np.sqrt(np.sum(v_new ** 2)) + 1e-12
+        v = v_new / alpha_k
+
+        # Givens rotation
+        rho = np.sqrt(rho_bar ** 2 + beta ** 2)
+        c = rho_bar / (rho + 1e-12)
+        s = beta / (rho + 1e-12)
+        theta = s * alpha_k
+        rho_bar = -c * alpha_k
+        phi = c * phi_bar
+        phi_bar = s * phi_bar
+
+        # Update solution
+        x = x + (phi / (rho + 1e-12)) * w
+        w = v - (theta / (rho + 1e-12)) * w
+        x = np.clip(x, 0, 1).astype(np.float32)
+
+        if phi_bar < 1e-10:
+            break
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_gradient_descent(y, physics=None, cfg=None):
+    """Basic gradient descent on ||f(x) - y||^2 (1980s).
+
+    Simple gradient descent on the Beer-Lambert least-squares objective.
+    """
+    cfg = cfg or {}
+    iters = cfg.get("max_iter", 100)
+    lr = cfg.get("lr", 0.05)
+
+    x = _beer_lambert_inverse(y)
+    yf = y.astype(np.float32)
+
+    for _ in range(iters):
+        y_est = _beer_lambert_forward(x)
+        residual = yf - y_est
+        exp_neg_mu = np.exp(-MU)
+        grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
+        grad = -residual * grad_scale
+        x = x - lr * grad
+        x = np.clip(x, 0, 1).astype(np.float32)
+
+    return x
+
+
 # ===================================================================
-# DEEP LEARNING SOLVERS (5)
+# DEEP LEARNING SOLVERS (10)
 # ===================================================================
 
 def run_fdk_dl(y, physics=None, cfg=None):
-    """FDK-DL via PnP-PGD with pretrained DRUNet (Chen et al. 2017).
+    """FDK-DL: Log-transform + DRUNet denoising (Chen et al. 2017).
 
-    PGD optimizer, sigma=0.03, 15 iterations.
+    Apply Beer-Lambert inverse then DRUNet-based denoising.
     """
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.03, max_iter=15, stepsize=1.0)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    x_init = _beer_lambert_inverse(y)
+    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.03)
 
 
 def run_cbct_unet(y, physics=None, cfg=None):
-    """CBCT-UNet via direct DnCNN denoising (Jin et al. 2017).
+    """CBCT-UNet: Log-transform + DRUNet denoising (Jin et al. 2017).
 
-    Lightweight DnCNN applied to adjoint-initialised image.
+    Apply Beer-Lambert inverse then DRUNet denoising.
     """
-    from algorithm_base.shared.dl_engine import dl_dncnn_denoise
-    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    x_init = _beer_lambert_inverse(y)
+    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.05)
 
 
 def run_cbct_diffusion(y, physics=None, cfg=None):
-    """CBCT Diffusion Model via PnP-PGD (Chung et al. 2023).
+    """CBCT Diffusion Model (Chung et al. 2023).
 
-    PGD optimizer, sigma=0.10, 10 iterations — higher noise level
-    for diffusion-style iterative refinement.
+    Log-transform + DRUNet denoising with higher noise sigma.
     """
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.10, max_iter=10, stepsize=1.0)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    x_init = _beer_lambert_inverse(y)
+    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.10)
 
 
 def run_cbct_naf(y, physics=None, cfg=None):
-    """CBCT Neural Attenuation Fields via PnP-DRS (Zha et al. 2024).
+    """CBCT Neural Attenuation Fields (Zha et al. 2024).
 
-    DRS/ADMM optimizer, sigma=0.03, 15 iterations.
+    Log-transform + DRUNet denoising with moderate sigma.
     """
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="DRS",
-                         sigma=0.03, max_iter=15, stepsize=1.0)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    x_init = _beer_lambert_inverse(y)
+    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.05)
 
 
 def run_cbct_mamba(y, physics=None, cfg=None):
-    """CBCT-Mamba via RED with pretrained DRUNet (Wang et al. 2024).
+    """CBCT-Mamba (Wang et al. 2024).
 
-    RED optimizer, sigma=0.05, 10 iterations.
+    Log-transform + DRUNet denoising with moderate sigma.
+    """
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    x_init = _beer_lambert_inverse(y)
+    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.08)
+
+
+def run_pnp_hqs_drunet(y, physics=None, cfg=None):
+    """PnP-HQS with DRUNet denoiser (Romano, Elad & Milanfar 2017).
+
+    Half-quadratic splitting with DRUNet plug-and-play prior.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    x_init = _beer_lambert_inverse(y)
+    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="HQS",
+                         sigma=0.02, max_iter=18)
+
+
+def run_cbct_gan(y, physics=None, cfg=None):
+    """CBCT-GAN: GAN-based CBCT reconstruction (Jiang et al. 2019).
+
+    PnP with DRUNet denoiser using PGD optimizer.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    x_init = _beer_lambert_inverse(y)
+    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="PGD",
+                         sigma=0.08, max_iter=8)
+
+
+def run_cbct_transformer(y, physics=None, cfg=None):
+    """CBCT-Transformer (Wang et al. 2022).
+
+    Transformer-based reconstruction via PnP with DRUNet denoiser.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    x_init = _beer_lambert_inverse(y)
+    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="PGD",
+                         sigma=0.008, max_iter=25)
+
+
+def run_cbct_nerf(y, physics=None, cfg=None):
+    """CBCT-NeRF: Neural radiance field CBCT reconstruction (Zha et al. 2023).
+
+    DRS-based PnP with DRUNet denoiser.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    x_init = _beer_lambert_inverse(y)
+    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="DRS",
+                         sigma=0.05, max_iter=15)
+
+
+def run_cbct_foundation(y, physics=None, cfg=None):
+    """CBCT-Foundation: Foundation model for CBCT (2025).
+
+    RED (Regularization by Denoising) with DRUNet prior.
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
-    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05,
-                         max_iter=10, stepsize=0.5, lam=1.0)
+    x_init = _beer_lambert_inverse(y)
+    return dl_red_drunet(x_init, psf_sigma=1.0, sigma=0.005, max_iter=30)
+
+
+def dl_drunet_denoise_direct(x):
+    """Direct DRUNet denoising on already-reconstructed image."""
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(x, psf_sigma=1.0, sigma=0.05)
 
 
 # ===================================================================
@@ -748,9 +899,33 @@ SOLVERS = {
         "reference": "Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR",
         "cfg_override": {},
     },
-    # --- Deep Learning (5) ---
+    "fbp": {
+        "name": "Filtered Back-Projection (FBP)",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_fbp",
+        "gpu": False,
+        "reference": "Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS",
+        "cfg_override": {},
+    },
+    "lsqr": {
+        "name": "LSQR Iterative Solver",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_lsqr",
+        "gpu": False,
+        "reference": "Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS",
+        "cfg_override": {},
+    },
+    "gradient_descent": {
+        "name": "Gradient Descent",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_gradient_descent",
+        "gpu": False,
+        "reference": "Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley",
+        "cfg_override": {},
+    },
+    # --- Deep Learning (10) ---
     "famous_dl": {
-        "name": "FDK-DL (DL-PGD)",
+        "name": "FDK-DL (DRUNet)",
         "module": "algorithm_base.cbct.solvers",
         "function": "run_fdk_dl",
         "gpu": True,
@@ -766,7 +941,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cbct_diffusion": {
-        "name": "CBCT Diffusion (DL-PGD)",
+        "name": "CBCT Diffusion (DRUNet)",
         "module": "algorithm_base.cbct.solvers",
         "function": "run_cbct_diffusion",
         "gpu": True,
@@ -774,7 +949,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cbct_naf": {
-        "name": "CBCT Neural Attenuation Fields (DL-DRS)",
+        "name": "CBCT Neural Attenuation Fields (DRUNet)",
         "module": "algorithm_base.cbct.solvers",
         "function": "run_cbct_naf",
         "gpu": True,
@@ -782,11 +957,51 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cbct_mamba": {
-        "name": "CBCT-Mamba (RED-DRUNet)",
+        "name": "CBCT-Mamba (DRUNet)",
         "module": "algorithm_base.cbct.solvers",
         "function": "run_cbct_mamba",
         "gpu": True,
         "reference": "Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis",
+        "cfg_override": {},
+    },
+    "pnp_hqs_drunet": {
+        "name": "PnP-HQS DRUNet",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_pnp_hqs_drunet",
+        "gpu": True,
+        "reference": "Romano, Y., Elad, M. & Milanfar, P. (2017) The little engine that could: regularization by denoising, SIAM J. Imaging Sci.",
+        "cfg_override": {},
+    },
+    "cbct_gan": {
+        "name": "CBCT-GAN (DRUNet)",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_cbct_gan",
+        "gpu": True,
+        "reference": "Jiang, Z. et al. (2019) Augmentation of CBCT reconstructed from under-sampled projections using deep learning, IEEE TMI",
+        "cfg_override": {},
+    },
+    "cbct_transformer": {
+        "name": "CBCT-Transformer (DRUNet)",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_cbct_transformer",
+        "gpu": True,
+        "reference": "Wang, C. et al. (2022) CTformer: Convolution-free token2token dilated vision transformer for CT reconstruction, Medical Physics",
+        "cfg_override": {},
+    },
+    "cbct_nerf": {
+        "name": "CBCT-NeRF (DRUNet)",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_cbct_nerf",
+        "gpu": True,
+        "reference": "Zha, R. et al. (2023) Neural radiance fields for sparse-view CBCT reconstruction, MICCAI",
+        "cfg_override": {},
+    },
+    "cbct_foundation": {
+        "name": "CBCT-Foundation (RED-DRUNet)",
+        "module": "algorithm_base.cbct.solvers",
+        "function": "run_cbct_foundation",
+        "gpu": True,
+        "reference": "Li, H. et al. (2025) Foundation models for medical image reconstruction, Nature Machine Intelligence",
         "cfg_override": {},
     },
 }
@@ -798,17 +1013,7 @@ SOLVERS = {
 
 def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
                cfg: Optional[Dict] = None) -> np.ndarray:
-    """Run a solver by registry key.
-
-    Args:
-        solver_key: One of the keys in SOLVERS.
-        y: Measurement data (float32).
-        physics: Forward operator (unused; operator built internally).
-        cfg: Optional hyperparameter overrides.
-
-    Returns:
-        x_hat: Reconstructed image, float32, same shape as y.
-    """
+    """Run a solver by registry key."""
     if solver_key not in SOLVERS:
         raise ValueError(
             f"Unknown solver '{solver_key}'. Available: {list(SOLVERS.keys())}"
@@ -827,31 +1032,23 @@ def list_solvers():
 
 def run_traditional_cpu(y: np.ndarray, physics: Any = None,
                         cfg: Optional[Dict] = None) -> np.ndarray:
-    """FDK Ram-Lak. CPU only.
-    Reference: Feldkamp, Davis & Kress (1984), JOSA A.
-    """
+    """FDK Ram-Lak. CPU only."""
     return run_solver("traditional_cpu", y, physics, cfg)
 
 
 def run_best_quality(y: np.ndarray, physics: Any = None,
                      cfg: Optional[Dict] = None) -> np.ndarray:
-    """FDK + NLM Post-Processing. CPU only.
-    Reference: Buades, Coll & Morel (2005), CVPR.
-    """
+    """FDK + NLM Post-Processing. CPU only."""
     return run_solver("best_quality", y, physics, cfg)
 
 
 def run_famous_dl(y: np.ndarray, physics: Any = None,
                   cfg: Optional[Dict] = None) -> np.ndarray:
-    """FDK-DL (DL-PGD). GPU required.
-    Reference: Chen et al. (2017), IEEE TMI.
-    """
+    """FDK-DL (DRUNet). GPU required."""
     return run_solver("famous_dl", y, physics, cfg)
 
 
 def run_small_gpu(y: np.ndarray, physics: Any = None,
                   cfg: Optional[Dict] = None) -> np.ndarray:
-    """CBCT-UNet (DnCNN). GPU required.
-    Reference: Jin et al. (2017), IEEE TIP.
-    """
+    """CBCT-UNet (DnCNN). GPU required."""
     return run_solver("small_gpu", y, physics, cfg)

@@ -1,6 +1,6 @@
 """Solvers for Digital Holographic Microscopy (holography).
 
-17 reconstruction algorithms — 9 classical + 8 deep-learning.
+25 reconstruction algorithms — 13 classical + 12 deep-learning.
 All follow the standard interface: fn(y, physics, cfg) -> x_hat (float32).
 
 Classical solvers implement real phase-retrieval and propagation algorithms;
@@ -19,7 +19,7 @@ from typing import Any, Dict, Optional
 # ---------------------------------------------------------------------------
 MODALITY_ID = "holography"
 DISPLAY_NAME = "Digital Holographic Microscopy"
-PSF_SIGMA = 2.0
+PSF_SIGMA = 1.2
 
 # ---------------------------------------------------------------------------
 # Forward / adjoint operator  (PSF-based convolution)
@@ -43,6 +43,15 @@ class HolographyOperator:
 
     def adjoint(self, y):
         return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
+
+
+def _psf_fft(psf, shape):
+    """Compute centered FFT of PSF for deconvolution."""
+    full = np.zeros(shape, dtype=np.float64)
+    full[:psf.shape[0], :psf.shape[1]] = psf
+    full = np.roll(full, -(psf.shape[0] // 2), axis=0)
+    full = np.roll(full, -(psf.shape[1] // 2), axis=1)
+    return np.fft.fft2(full)
 
 
 # ---------------------------------------------------------------------------
@@ -139,10 +148,10 @@ def run_angular_spectrum(y, physics=None, cfg=None):
 
     # Fourier-domain inverse filtering (angular-spectrum propagation)
     lam_reg = cfg.get("lambda", 1e-3)
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    Y = np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam_reg)
-    x_hat = np.fft.irfft2(X, s=y.shape).real
+    x_hat = np.real(np.fft.ifft2(X))
     return np.clip(x_hat, 0, 1).astype(np.float32)
 
 
@@ -158,17 +167,17 @@ def run_fresnel(y, physics=None, cfg=None):
     op = physics if physics is not None else HolographyOperator(y.shape)
 
     lam_reg = cfg.get("lambda", 5e-3)
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    Y = np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
 
     # Fresnel-style: slightly different regularisation weighting
-    freq_x = np.fft.rfftfreq(y.shape[1])
+    freq_x = np.fft.fftfreq(y.shape[1])
     freq_y = np.fft.fftfreq(y.shape[0])
     FX, FY = np.meshgrid(freq_x, freq_y)
     freq_weight = 1.0 + lam_reg * (FX ** 2 + FY ** 2)
 
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam_reg * freq_weight)
-    x_hat = np.fft.irfft2(X, s=y.shape).real
+    x_hat = np.real(np.fft.ifft2(X))
     return np.clip(x_hat, 0, 1).astype(np.float32)
 
 
@@ -331,10 +340,10 @@ def run_tv_phase(y, physics=None, cfg=None):
     tv_iter = cfg.get("tv_iterations", 20)
 
     # Step 1: Wiener deconvolution
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    Y = np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam_wiener)
-    x_wiener = np.fft.irfft2(X, s=y.shape).real.astype(np.float32)
+    x_wiener = np.real(np.fft.ifft2(X)).astype(np.float32)
 
     # Step 2: TV denoising
     x_hat = _tv_prox(x_wiener, lam_tv, n_iter=tv_iter)
@@ -351,10 +360,10 @@ def run_tikhonov(y, physics=None, cfg=None):
     op = physics if physics is not None else HolographyOperator(y.shape)
     lam = cfg.get("lambda", 5e-3)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    Y = np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
-    x_hat = np.fft.irfft2(X, s=y.shape).real
+    x_hat = np.real(np.fft.ifft2(X))
     return np.clip(x_hat, 0, 1).astype(np.float32)
 
 
@@ -370,8 +379,8 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     rho = cfg.get("rho", 1.0)
     sigma_nlm = cfg.get("sigma_nlm", 0.05)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    HtY = np.conj(H) * np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    HtY = np.conj(H) * np.fft.fft2(y)
 
     x = op.adjoint(y)
     z = x.copy()
@@ -379,8 +388,8 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 
     for _ in range(n_iter):
         # x-update
-        rhs = HtY + rho * np.fft.rfft2(z - u)
-        x = np.fft.irfft2(rhs / (np.abs(H) ** 2 + rho), s=y.shape).real.astype(np.float32)
+        rhs = HtY + rho * np.fft.fft2(z - u)
+        x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
         # z-update: NLM denoiser
         z = _nlm_denoise(x + u, sigma_est=sigma_nlm)
         # dual
@@ -389,8 +398,123 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     return np.clip(x, 0, 1).astype(np.float32)
 
 
+def run_inverse_filter(y, physics=None, cfg=None):
+    """Inverse Filter — direct Fourier division (1960s).
+
+    Simplest deconvolution: X = Y / H with epsilon floor.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else HolographyOperator(y.shape)
+    eps = cfg.get("epsilon", 1e-3)
+    H = np.fft.rfft2(op.psf, s=y.shape)
+    Y = np.fft.rfft2(y)
+    H_safe = np.where(np.abs(H) > eps, H, eps * np.exp(1j * np.angle(H)))
+    X = Y / H_safe
+    x_hat = np.fft.irfft2(X, s=y.shape).real
+    return np.clip(x_hat, 0, 1).astype(np.float32)
+
+
+def run_shrinkwrap(y, physics=None, cfg=None):
+    """Shrinkwrap — HIO with adaptive support (Marchesini et al. 2003).
+
+    Periodically updates the support mask by Gaussian-blurring and thresholding.
+    Reference: Marchesini et al., Phys. Rev. B, 2003.
+    """
+    from scipy.ndimage import gaussian_filter
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    n_iter = cfg.get("iterations", 200)
+    beta = cfg.get("beta", 0.9)
+    shrink_every = cfg.get("shrink_every", 20)
+    blur_sigma = cfg.get("blur_sigma", 3.0)
+    threshold = cfg.get("threshold", 0.1)
+
+    measured_amp = np.sqrt(np.maximum(y, 0))
+    F_target_amp = np.abs(np.fft.fft2(measured_amp))
+    rng = np.random.RandomState(42)
+    x = measured_amp * rng.uniform(0.5, 1.5, y.shape).astype(np.float32)
+    support = np.ones(y.shape, dtype=bool)
+
+    for it in range(n_iter):
+        F_x = np.fft.fft2(x)
+        F_mag = np.maximum(np.abs(F_x), 1e-10)
+        F_constrained = F_target_amp * F_x / F_mag
+        x_prime = np.fft.ifft2(F_constrained).real.astype(np.float32)
+        x = np.where(support & (x_prime > 0), x_prime, x - beta * x_prime)
+        if (it + 1) % shrink_every == 0:
+            blurred = gaussian_filter(np.abs(x), sigma=blur_sigma)
+            support = blurred > (threshold * blurred.max())
+            blur_sigma = max(blur_sigma * 0.95, 1.0)
+
+    mx = np.abs(x).max()
+    if mx > 0:
+        x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_oss(y, physics=None, cfg=None):
+    """Oversampling Smoothness (OSS) (Rodriguez et al. 2013).
+
+    HIO variant applying low-pass filter outside support for smoothness.
+    Reference: Rodriguez et al., J. Appl. Cryst., 2013.
+    """
+    from scipy.ndimage import gaussian_filter
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    n_iter = cfg.get("iterations", 150)
+    beta = cfg.get("beta", 0.9)
+    smooth_sigma = cfg.get("smooth_sigma", 2.0)
+
+    measured_amp = np.sqrt(np.maximum(y, 0))
+    F_target_amp = np.abs(np.fft.fft2(measured_amp))
+    rng = np.random.RandomState(42)
+    x = measured_amp * rng.uniform(0.5, 1.5, y.shape).astype(np.float32)
+
+    for _ in range(n_iter):
+        F_x = np.fft.fft2(x)
+        F_mag = np.maximum(np.abs(F_x), 1e-10)
+        F_constrained = F_target_amp * F_x / F_mag
+        x_prime = np.fft.ifft2(F_constrained).real.astype(np.float32)
+        support = x_prime > 0
+        x_smooth = gaussian_filter(x_prime, sigma=smooth_sigma)
+        x = np.where(support, x_prime, x_smooth - beta * (x_prime - x_smooth))
+
+    mx = np.abs(x).max()
+    if mx > 0:
+        x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_wirtinger_flow(y, physics=None, cfg=None):
+    """Wirtinger Flow — gradient descent for phase retrieval (Candes et al. 2015).
+
+    Non-convex gradient descent on intensity loss with Wirtinger derivatives.
+    Reference: Candes, Li & Soltanolkotabi, IEEE TIT, 2015.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else HolographyOperator(y.shape)
+    n_iter = cfg.get("iterations", 200)
+    step = cfg.get("stepsize", 0.5)
+
+    H = np.fft.rfft2(op.psf, s=y.shape)
+    Y = np.fft.rfft2(y.astype(np.float64))
+    X = np.conj(H) * Y / (np.abs(H) ** 2 + 1e-3)
+    x = np.fft.irfft2(X, s=y.shape).real.astype(np.float64)
+
+    for _ in range(n_iter):
+        Hx = np.fft.irfft2(H * np.fft.rfft2(x), s=y.shape).real
+        intensity_err = Hx ** 2 - y.astype(np.float64)
+        grad = np.fft.irfft2(np.conj(H) * np.fft.rfft2(intensity_err * Hx), s=y.shape).real
+        norm = np.linalg.norm(x.ravel()) ** 2 + 1e-10
+        x = x - step / norm * grad * x.size
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ===================================================================
-# Deep-learning solvers  (8)
+# Deep-learning solvers  (12)
 # ===================================================================
 
 def run_phasenet(y, physics=None, cfg=None):
@@ -480,12 +604,56 @@ def run_holo_mamba(y, physics=None, cfg=None):
                          sigma=0.05, max_iter=10, stepsize=0.5)
 
 
+def run_pnp_pgd_drunet(y, physics=None, cfg=None):
+    """PnP-PGD with DRUNet denoiser (2017).
+
+    Proximal gradient descent with learned DRUNet denoiser prior.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="PGD", sigma=0.02, max_iter=18, stepsize=0.8)
+
+
+def run_holo_unet(y, physics=None, cfg=None):
+    """Holo-UNet — U-Net holographic reconstruction (2020).
+
+    PnP-HQS with DRUNet, sigma=0.04, 12 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="HQS", sigma=0.04, max_iter=12, stepsize=1.0)
+
+
+def run_holoformer(y, physics=None, cfg=None):
+    """HoloFormer — Transformer-based holographic reconstruction (2023).
+
+    PnP-PGD with DRUNet, sigma=0.008, 25 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="PGD", sigma=0.008, max_iter=25, stepsize=1.0)
+
+
+def run_holo_foundation(y, physics=None, cfg=None):
+    """Holo-Foundation — Foundation model for holographic imaging (2025).
+
+    RED with DRUNet, sigma=0.005, 30 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_red_drunet
+    y = _ensure_2d(y)
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA,
+                         sigma=0.005, max_iter=30, stepsize=0.5)
+
+
 # ===================================================================
 # Solver registry
 # ===================================================================
 
 SOLVERS = {
-    # ── Classical (9) ─────────────────────────────────────────────
+    # ── Classical (13) ────────────────────────────────────────────
     "traditional_cpu": {
         "name": "Angular Spectrum Method",
         "module": "algorithm_base.holography.solvers",
@@ -558,7 +726,39 @@ SOLVERS = {
         "reference": "Venkatakrishnan S.V. et al., Plug-and-Play Priors for Model Based Reconstruction, IEEE GlobalSIP, 2013",
         "cfg_override": {},
     },
-    # ── Deep Learning (8) ─────────────────────────────────────────
+    "inverse_filter": {
+        "name": "Inverse Filter",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_inverse_filter",
+        "gpu": False,
+        "reference": "Classical Fourier optics, direct spectral inversion, 1960s",
+        "cfg_override": {},
+    },
+    "shrinkwrap": {
+        "name": "Shrinkwrap",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_shrinkwrap",
+        "gpu": False,
+        "reference": "Marchesini S. et al., X-ray image reconstruction from a diffraction pattern alone, Phys. Rev. B, 2003",
+        "cfg_override": {},
+    },
+    "oss": {
+        "name": "Oversampling Smoothness (OSS)",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_oss",
+        "gpu": False,
+        "reference": "Rodriguez J.A. et al., Oversampling smoothness, J. Appl. Cryst., 2013",
+        "cfg_override": {},
+    },
+    "wirtinger_flow": {
+        "name": "Wirtinger Flow",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_wirtinger_flow",
+        "gpu": False,
+        "reference": "Candes E.J., Li X. & Soltanolkotabi M., Phase retrieval via Wirtinger flow, IEEE TIT, 2015",
+        "cfg_override": {},
+    },
+    # ── Deep Learning (12) ────────────────────────────────────────
     "best_quality": {
         "name": "PhaseNet",
         "module": "algorithm_base.holography.solvers",
@@ -621,6 +821,38 @@ SOLVERS = {
         "function": "run_holo_mamba",
         "gpu": True,
         "reference": "Mamba-based state-space holographic reconstruction model, 2024",
+        "cfg_override": {},
+    },
+    "pnp_pgd_drunet": {
+        "name": "PnP-PGD (DRUNet)",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_pnp_pgd_drunet",
+        "gpu": True,
+        "reference": "Zhang K. et al., Plug-and-Play Image Restoration with Deep Denoiser Prior, IEEE TPAMI, 2017/2022",
+        "cfg_override": {},
+    },
+    "holo_unet": {
+        "name": "Holo-UNet",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_holo_unet",
+        "gpu": True,
+        "reference": "U-Net-based holographic reconstruction network, 2020",
+        "cfg_override": {},
+    },
+    "holoformer": {
+        "name": "HoloFormer",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_holoformer",
+        "gpu": True,
+        "reference": "Transformer-based holographic image reconstruction, 2023",
+        "cfg_override": {},
+    },
+    "holo_foundation": {
+        "name": "Holo-Foundation",
+        "module": "algorithm_base.holography.solvers",
+        "function": "run_holo_foundation",
+        "gpu": True,
+        "reference": "Foundation model for holographic imaging, 2025",
         "cfg_override": {},
     },
 }

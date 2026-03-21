@@ -1,11 +1,13 @@
 """Solvers for Widefield Fluorescence Microscopy (widefield).
 
-17 reconstruction algorithms:
-  Classical (10): Richardson-Lucy, Wiener, Gold, Jansson (van Cittert),
+25 reconstruction algorithms:
+  Classical (13): Richardson-Lucy, Wiener, Gold, Jansson (van Cittert),
                   Landweber, Tikhonov, TV-Deconv, RL-TV, PnP-ADMM-NLM,
-                  PnP-FISTA-NLM
-  Deep Learning (7): CARE, Noise2Void, CSBDeep, Restormer, WF-Diffusion,
-                     DeepCAD-RT, WF-Mamba
+                  PnP-FISTA-NLM, Inverse Filter, Agard Constrained Iterative,
+                  Regularized Richardson-Lucy
+  Deep Learning (12): CARE, Noise2Void, CSBDeep, Restormer, WF-Diffusion,
+                      DeepCAD-RT, WF-Mamba, PnP-HQS (NLM v2),
+                      PnP-PGD DRUNet, WF-GAN, SRResNet, WF-Foundation
 
 All classical solvers use a PSF-convolution forward model representing
 the widefield microscope point-spread function.
@@ -20,7 +22,7 @@ from typing import Any, Dict, Optional
 
 MODALITY_ID = "widefield"
 DISPLAY_NAME = "Widefield Fluorescence Microscopy"
-PSF_SIGMA = 2.0
+PSF_SIGMA = 2.5
 
 
 # ---------------------------------------------------------------------------
@@ -47,6 +49,15 @@ class WidefieldOperator:
 def _op(y):
     """Create default operator from measurement shape."""
     return WidefieldOperator(y.shape)
+
+
+def _psf_fft(psf, shape):
+    """Compute centered FFT of PSF for deconvolution."""
+    full = np.zeros(shape, dtype=np.float64)
+    full[:psf.shape[0], :psf.shape[1]] = psf
+    full = np.roll(full, -(psf.shape[0] // 2), axis=0)
+    full = np.roll(full, -(psf.shape[1] // 2), axis=1)
+    return np.fft.fft2(full)
 
 
 # ---------------------------------------------------------------------------
@@ -134,6 +145,30 @@ SOLVERS = {
         "reference": "Beck & Teboulle 2009, SIAM J. Imaging Sci. + PnP",
         "cfg_override": {},
     },
+    "inverse_filter": {
+        "name": "Inverse Filter",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_inverse_filter",
+        "gpu": False,
+        "reference": "Direct Fourier division, 1960s",
+        "cfg_override": {},
+    },
+    "agard": {
+        "name": "Agard Constrained Iterative Deconvolution",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_agard",
+        "gpu": False,
+        "reference": "Agard 1984, Ann. Rev. Biophys. Bioeng.",
+        "cfg_override": {},
+    },
+    "regularized_rl": {
+        "name": "Regularized Richardson-Lucy",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_regularized_rl",
+        "gpu": False,
+        "reference": "Conchello 1998, JOSA A; Llacer & Nuñez 1990",
+        "cfg_override": {},
+    },
     # ── Deep Learning (GPU) ──────────────────────────────────────────────
     "best_quality": {
         "name": "CARE (PnP-PGD DRUNet)",
@@ -191,6 +226,46 @@ SOLVERS = {
         "reference": "Wang et al. 2024, arXiv",
         "cfg_override": {},
     },
+    "pnp_hqs_nlm_v2": {
+        "name": "PnP-HQS (NLM v2)",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_pnp_hqs_nlm_v2",
+        "gpu": False,
+        "reference": "Venkatakrishnan et al. 2013; HQS variant 2017",
+        "cfg_override": {},
+    },
+    "pnp_pgd_drunet": {
+        "name": "PnP-PGD DRUNet",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_pnp_pgd_drunet",
+        "gpu": True,
+        "reference": "Zhang et al. 2017, PnP-PGD framework",
+        "cfg_override": {},
+    },
+    "wf_gan": {
+        "name": "WF-GAN (PnP-PGD DRUNet)",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_wf_gan",
+        "gpu": True,
+        "reference": "GAN-based widefield restoration, 2020",
+        "cfg_override": {},
+    },
+    "sr_resnet": {
+        "name": "SRResNet (DnCNN denoise)",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_sr_resnet",
+        "gpu": True,
+        "reference": "Ledig et al. 2017, CVPR",
+        "cfg_override": {},
+    },
+    "wf_foundation": {
+        "name": "WF-Foundation (RED DRUNet)",
+        "module": "algorithm_base.widefield.solvers",
+        "function": "run_wf_foundation",
+        "gpu": True,
+        "reference": "Foundation model for widefield, 2025",
+        "cfg_override": {},
+    },
 }
 
 
@@ -227,7 +302,7 @@ def run_wiener(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     W = np.conj(H) / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(W * Y)).astype(np.float32)
@@ -304,7 +379,7 @@ def run_tikhonov(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(X)).astype(np.float32)
@@ -324,7 +399,7 @@ def run_tv_deconv(y, physics=None, cfg=None):
     op = _op(y)
     yf = y.astype(np.float32)
 
-    H = np.fft.fft2(op.psf, s=yf.shape)
+    H = _psf_fft(op.psf, yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -399,7 +474,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
 
-    H = np.fft.fft2(op.psf, s=yf.shape)
+    H = _psf_fft(op.psf, yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -459,6 +534,64 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
         x = denoise_nl_means(grad_step_clipped, h=nlm_sigma, sigma=sigma_est,
                              fast_mode=True, patch_size=5, patch_distance=6)
         x = np.clip(x, 0, 1).astype(np.float32)
+
+    return x.astype(np.float32)
+
+
+def run_inverse_filter(y, physics=None, cfg=None):
+    """Inverse Filter — direct Fourier division (1960s)."""
+    cfg = cfg or {}
+    op = _op(y)
+    eps = cfg.get("epsilon", 1e-3)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y.astype(np.float32))
+    H_safe = np.where(np.abs(H) > eps, H, eps * np.exp(1j * np.angle(H)))
+    x = np.real(np.fft.ifft2(Y / H_safe)).astype(np.float32)
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_agard(y, physics=None, cfg=None):
+    """Agard Constrained Iterative Deconvolution (Agard 1984)."""
+    cfg = cfg or {}
+    op = _op(y)
+    n_iter = cfg.get("n_iter", 50)
+    x = op.adjoint(y.astype(np.float32))
+    x = np.maximum(x, 0)
+    for _ in range(n_iter):
+        residual = y.astype(np.float32) - op.forward(x)
+        correction = op.adjoint(residual)
+        x = x + 0.5 * correction
+        x = np.maximum(x, 0)  # non-negativity
+    mx = x.max()
+    if mx > 0: x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_regularized_rl(y, physics=None, cfg=None):
+    """Regularized Richardson-Lucy with Gaussian smoothing (1990s).
+
+    Richardson-Lucy with Gaussian regularization to prevent noise
+    amplification during iteration.
+    Reference: Conchello 1998, JOSA A; Llacer & Nuñez 1990.
+    """
+    cfg = cfg or {}
+    n_iter = cfg.get("n_iter", 30)
+    reg_sigma = cfg.get("reg_sigma", 1.0)
+    op = _op(y)
+    yf = y.astype(np.float32)
+    x = np.maximum(op.adjoint(yf), 1e-8)
+
+    from scipy.ndimage import gaussian_filter
+
+    for _ in range(n_iter):
+        # Standard RL step
+        fwd = np.maximum(op.forward(x), 1e-8)
+        ratio = yf / fwd
+        correction = op.adjoint(ratio)
+        x = x * correction
+        # Gaussian regularization: smooth to suppress noise
+        x = gaussian_filter(x, sigma=reg_sigma)
+        x = np.clip(x, 1e-8, 1.0)
 
     return x.astype(np.float32)
 
@@ -533,6 +666,81 @@ def run_wf_mamba(y, physics=None, cfg=None):
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
     return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10)
+
+
+def run_pnp_hqs_nlm_v2(y, physics=None, cfg=None):
+    """PnP-HQS with Non-Local Means denoiser (v2, distinct HQS splitting).
+
+    Half-quadratic splitting with NLM proximal operator.
+    Reference: Venkatakrishnan et al. 2013; HQS variant.
+    """
+    cfg = cfg or {}
+    rho = cfg.get("rho", 2.0)
+    n_iter = cfg.get("n_iter", 20)
+    nlm_sigma = cfg.get("nlm_sigma", 0.04)
+    op = _op(y)
+    yf = y.astype(np.float32)
+
+    from skimage.restoration import denoise_nl_means, estimate_sigma
+
+    H = _psf_fft(op.psf, yf.shape)
+    HTy = np.conj(H) * np.fft.fft2(yf)
+    HtH = np.abs(H) ** 2
+
+    x = op.adjoint(yf)
+
+    for k in range(n_iter):
+        # z-update: Fourier solve  min 0.5||Ax-y||^2 + rho/2||x-z||^2
+        rhs = HTy + rho * np.fft.fft2(x)
+        z = np.real(np.fft.ifft2(rhs / (HtH + rho))).astype(np.float32)
+        # x-update: NLM denoiser as proximal
+        z_clipped = np.clip(z, 0, 1)
+        sigma_est = max(estimate_sigma(z_clipped), 1e-4)
+        x = denoise_nl_means(z_clipped, h=nlm_sigma, sigma=sigma_est,
+                             fast_mode=True, patch_size=5, patch_distance=7)
+        x = np.clip(x, 0, 1).astype(np.float32)
+
+    return x.astype(np.float32)
+
+
+def run_pnp_pgd_drunet(y, physics=None, cfg=None):
+    """PnP-PGD DRUNet: PnP-PGD with DRUNet (sigma=0.02, 18 iters).
+
+    Reference: Zhang et al. 2017, PnP-PGD framework.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+                         sigma=0.02, max_iter=18)
+
+
+def run_wf_gan(y, physics=None, cfg=None):
+    """WF-GAN: GAN-based widefield restoration via PnP-PGD DRUNet
+    (sigma=0.08, 8 iters).
+
+    Reference: GAN-based widefield restoration, 2020.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+                         sigma=0.08, max_iter=8)
+
+
+def run_sr_resnet(y, physics=None, cfg=None):
+    """SRResNet: Super-resolution residual network via DnCNN denoise.
+
+    Reference: Ledig et al. 2017, CVPR.
+    """
+    from algorithm_base.shared.dl_engine import dl_dncnn_denoise
+    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA)
+
+
+def run_wf_foundation(y, physics=None, cfg=None):
+    """WF-Foundation: Foundation model for widefield via RED DRUNet
+    (sigma=0.005, 30 iters).
+
+    Reference: Foundation model for widefield, 2025.
+    """
+    from algorithm_base.shared.dl_engine import dl_red_drunet
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

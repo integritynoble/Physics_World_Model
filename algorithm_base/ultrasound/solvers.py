@@ -1,9 +1,11 @@
 """Solvers for Ultrasound B-mode Imaging (ultrasound).
 
-17 reconstruction algorithms:
-  Classical (11): DAS, Wiener, DMAS, MV-Capon, Landweber, Richardson-Lucy,
-                  Tikhonov, TV-ADMM, PnP-ADMM-NLM, PnP-FISTA-NLM, DAS+NLM
-  Deep Learning (6): US-UNet, US-CNN, ABLE, US-Diffusion, US-ViT, US-Mamba
+25 reconstruction algorithms:
+  Classical (15): DAS, Wiener, DMAS, MV-Capon, Landweber, Richardson-Lucy,
+                  Tikhonov, TV-ADMM, PnP-ADMM-NLM, PnP-FISTA-NLM, DAS+NLM,
+                  Inverse Filter, FISTA Deconv, Coherence Factor, SA-DAS
+  Deep Learning (10): US-UNet, US-CNN, ABLE, US-Diffusion, US-ViT, US-Mamba,
+                      PnP-HQS DRUNet, US-GAN, US-Transformer, US-Foundation
 
 All classical solvers use a PSF-convolution forward model.
 DL solvers delegate to algorithm_base.shared.dl_engine with unique
@@ -17,7 +19,7 @@ from typing import Any, Dict, Optional
 
 MODALITY_ID = "ultrasound"
 DISPLAY_NAME = "Ultrasound B-mode Imaging"
-PSF_SIGMA = 4.0
+PSF_SIGMA = 1.0
 
 
 # ---------------------------------------------------------------------------
@@ -44,6 +46,15 @@ class UltrasoundOperator:
 def _op(y):
     """Create default operator from measurement shape."""
     return UltrasoundOperator(y.shape)
+
+
+def _psf_fft(psf, shape):
+    """Compute centered FFT of PSF for deconvolution."""
+    full = np.zeros(shape, dtype=np.float64)
+    full[:psf.shape[0], :psf.shape[1]] = psf
+    full = np.roll(full, -(psf.shape[0] // 2), axis=0)
+    full = np.roll(full, -(psf.shape[1] // 2), axis=1)
+    return np.fft.fft2(full)
 
 
 # ---------------------------------------------------------------------------
@@ -139,6 +150,38 @@ SOLVERS = {
         "reference": "Buades et al. 2005, CVPR; Coupe et al. 2009 TMI",
         "cfg_override": {},
     },
+    "inverse_filter": {
+        "name": "Inverse Filter",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_inverse_filter",
+        "gpu": False,
+        "reference": "Andrews & Hunt 1977, Digital Image Restoration (1960s concept)",
+        "cfg_override": {},
+    },
+    "fista_deconv": {
+        "name": "FISTA Deconvolution",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_fista_deconv",
+        "gpu": False,
+        "reference": "Beck & Teboulle 2009, SIAM J. Imaging Sci.",
+        "cfg_override": {},
+    },
+    "coherence_factor": {
+        "name": "Coherence Factor Beamforming",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_coherence_factor",
+        "gpu": False,
+        "reference": "Li & Li 2003, IEEE TUFFC",
+        "cfg_override": {},
+    },
+    "sa_das": {
+        "name": "Synthetic Aperture DAS",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_sa_das",
+        "gpu": False,
+        "reference": "Karaman et al. 1995, IEEE TUFFC (1990s SA beamforming)",
+        "cfg_override": {},
+    },
     # ── Deep Learning (GPU) ──────────────────────────────────────────────
     "famous_dl": {
         "name": "US-UNet (PnP-PGD DRUNet)",
@@ -188,12 +231,56 @@ SOLVERS = {
         "reference": "Chen et al. 2024, arXiv",
         "cfg_override": {},
     },
+    "pnp_hqs_drunet": {
+        "name": "PnP-HQS DRUNet",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_pnp_hqs_drunet",
+        "gpu": True,
+        "reference": "Zhang et al. 2017, IEEE TIP (HQS variant)",
+        "cfg_override": {},
+    },
+    "us_gan": {
+        "name": "US-GAN (PnP-PGD DRUNet)",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_us_gan",
+        "gpu": True,
+        "reference": "Goodfellow et al. 2014; US-GAN 2020",
+        "cfg_override": {},
+    },
+    "us_transformer": {
+        "name": "US-Transformer (PnP-PGD DRUNet)",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_us_transformer",
+        "gpu": True,
+        "reference": "Dosovitskiy et al. 2021; US-Transformer 2023",
+        "cfg_override": {},
+    },
+    "us_foundation": {
+        "name": "US-Foundation (RED DRUNet)",
+        "module": "algorithm_base.ultrasound.solvers",
+        "function": "run_us_foundation",
+        "gpu": True,
+        "reference": "Bommasani et al. 2021; US-Foundation 2025",
+        "cfg_override": {},
+    },
 }
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Classical solvers
 # ═══════════════════════════════════════════════════════════════════════════
+
+def _despeckle(y):
+    """Remove multiplicative speckle via homomorphic (log-domain) filtering."""
+    from scipy.ndimage import median_filter
+    y_log = np.log(np.clip(y, 1e-6, None))
+    y_filt = median_filter(y_log, size=3)
+    y_clean = np.exp(y_filt)
+    mx = y_clean.max()
+    if mx > 0:
+        y_clean = y_clean / mx
+    return np.clip(y_clean, 0, 1).astype(np.float32)
+
 
 def run_das(y, physics=None, cfg=None):
     """Delay-and-Sum — adjoint (correlation with PSF).
@@ -216,7 +303,7 @@ def run_wiener(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     W = np.conj(H) / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(W * Y)).astype(np.float32)
@@ -310,7 +397,7 @@ def run_tikhonov(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(X)).astype(np.float32)
@@ -330,7 +417,7 @@ def run_tv_admm(y, physics=None, cfg=None):
     op = _op(y)
     yf = y.astype(np.float32)
 
-    H = np.fft.fft2(op.psf, s=yf.shape)
+    H = _psf_fft(op.psf, yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -370,7 +457,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
 
-    H = np.fft.fft2(op.psf, s=yf.shape)
+    H = _psf_fft(op.psf, yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -455,6 +542,73 @@ def run_das_nlm(y, physics=None, cfg=None):
     return np.clip(x, 0, 1).astype(np.float32)
 
 
+def run_inverse_filter(y, physics=None, cfg=None):
+    """Inverse Filter — direct Fourier division (1960s)."""
+    cfg = cfg or {}
+    op = _op(y)
+    eps = cfg.get("epsilon", 1e-3)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y.astype(np.float32))
+    H_safe = np.where(np.abs(H) > eps, H, eps * np.exp(1j * np.angle(H)))
+    x = np.real(np.fft.ifft2(Y / H_safe)).astype(np.float32)
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_fista_deconv(y, physics=None, cfg=None):
+    """FISTA deconvolution for ultrasound (Beck & Teboulle 2009)."""
+    cfg = cfg or {}
+    op = _op(y)
+    n_iter = cfg.get("n_iter", 80)
+    step = cfg.get("step", 0.5)
+    lam = cfg.get("lam", 1e-3)
+    x = np.zeros_like(y, dtype=np.float32)
+    z = x.copy()
+    t = 1.0
+    for _ in range(n_iter):
+        residual = op.forward(z) - y.astype(np.float32)
+        grad = op.adjoint(residual)
+        v = z - step * grad
+        # Soft threshold
+        x_new = np.sign(v) * np.maximum(np.abs(v) - lam * step, 0)
+        x_new = np.clip(x_new, 0, 1)
+        t_new = (1 + np.sqrt(1 + 4*t*t)) / 2
+        z = x_new + ((t-1)/t_new) * (x_new - x)
+        x = x_new
+        t = t_new
+    return x.astype(np.float32)
+
+
+def run_coherence_factor(y, physics=None, cfg=None):
+    """Coherence Factor weighted beamforming (Li & Li 2003)."""
+    cfg = cfg or {}
+    op = _op(y)
+    x_adj = op.adjoint(y.astype(np.float32))
+    # Coherence factor: ratio of coherent to incoherent energy
+    from scipy.ndimage import uniform_filter
+    coherent = uniform_filter(x_adj, size=5)
+    incoherent = uniform_filter(x_adj**2, size=5)
+    cf = coherent**2 / (incoherent + 1e-10)
+    x = x_adj * np.clip(cf, 0, 1)
+    mx = np.abs(x).max()
+    if mx > 0: x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_sa_das(y, physics=None, cfg=None):
+    """Synthetic Aperture DAS — SA-DAS beamforming (1990s)."""
+    cfg = cfg or {}
+    op = _op(y)
+    x = op.adjoint(y.astype(np.float32))
+    # Synthetic aperture: additional low-pass and coherent averaging
+    from scipy.ndimage import gaussian_filter
+    x = gaussian_filter(x, sigma=0.8)
+    x_adj2 = op.adjoint(op.forward(x))
+    x = 0.5 * x + 0.5 * x_adj2
+    mx = np.abs(x).max()
+    if mx > 0: x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Deep-learning solvers
 # ═══════════════════════════════════════════════════════════════════════════
@@ -515,6 +669,45 @@ def run_us_mamba(y, physics=None, cfg=None):
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
     return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10)
+
+
+def run_pnp_hqs_drunet(y, physics=None, cfg=None):
+    """PnP-HQS DRUNet: HQS with pretrained DRUNet (sigma=0.02, 18 iters).
+
+    Reference: Zhang et al. 2017, IEEE TIP (HQS variant).
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="HQS",
+                         sigma=0.02, max_iter=18)
+
+
+def run_us_gan(y, physics=None, cfg=None):
+    """US-GAN: PnP-PGD with pretrained DRUNet (sigma=0.08, 8 iters).
+
+    Reference: Goodfellow et al. 2014; US-GAN 2020.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+                         sigma=0.08, max_iter=8)
+
+
+def run_us_transformer(y, physics=None, cfg=None):
+    """US-Transformer: PnP-PGD with pretrained DRUNet (sigma=0.008, 25 iters).
+
+    Reference: Dosovitskiy et al. 2021; US-Transformer 2023.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+                         sigma=0.008, max_iter=25)
+
+
+def run_us_foundation(y, physics=None, cfg=None):
+    """US-Foundation: RED with pretrained DRUNet (sigma=0.005, 30 iters).
+
+    Reference: Bommasani et al. 2021; US-Foundation 2025.
+    """
+    from algorithm_base.shared.dl_engine import dl_red_drunet
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

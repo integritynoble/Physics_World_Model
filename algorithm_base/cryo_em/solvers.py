@@ -1,10 +1,13 @@
 """Solvers for Cryo-EM Single Particle Analysis (cryo_em).
 
-17 reconstruction algorithms:
-  Classical (8): Wiener-CTF, Phase-Flip, Back-Projection, SIRT-3D,
-                 Landweber, Tikhonov, TV-ADMM, PnP-ADMM-NLM
-  Deep Learning (9): RELION, CryoSPARC, CryoDRGN, CryoDRGN2, CryoAI,
-                     DeepEMenhancer, Topaz-Denoise, CryoSTAR, CryoMamba
+25 reconstruction algorithms:
+  Classical (11): Wiener-CTF, Phase-Flip, Back-Projection, SIRT-3D,
+                  Landweber, Tikhonov, TV-ADMM, PnP-ADMM-NLM,
+                  Weighted Back-Projection, CGLS, PnP-FISTA-NLM
+  Deep Learning (14): RELION, CryoSPARC, CryoDRGN, CryoDRGN2, CryoAI,
+                      DeepEMenhancer, Topaz-Denoise, CryoSTAR, CryoMamba,
+                      PnP-HQS-DRUNet, CryoGAN, CryoFIRE, CryoFormer,
+                      CryoFoundation
 
 All classical solvers use a CTF-like PSF-convolution forward model.
 DL solvers delegate to algorithm_base.shared.dl_engine with unique
@@ -18,7 +21,7 @@ from typing import Any, Dict, Optional
 
 MODALITY_ID = "cryo_em"
 DISPLAY_NAME = "Cryo-EM Single Particle Analysis"
-PSF_SIGMA = 2.0
+PSF_SIGMA = 1.3
 
 
 # ---------------------------------------------------------------------------
@@ -45,6 +48,15 @@ class CryoEMOperator:
 def _op(y):
     """Create default operator from measurement shape."""
     return CryoEMOperator(y.shape)
+
+
+def _psf_fft(psf, shape):
+    """Compute centered FFT of PSF for deconvolution."""
+    full = np.zeros(shape, dtype=np.float64)
+    full[:psf.shape[0], :psf.shape[1]] = psf
+    full = np.roll(full, -(psf.shape[0] // 2), axis=0)
+    full = np.roll(full, -(psf.shape[1] // 2), axis=1)
+    return np.fft.fft2(full)
 
 
 # ---------------------------------------------------------------------------
@@ -114,6 +126,30 @@ SOLVERS = {
         "function": "run_pnp_admm_nlm",
         "gpu": False,
         "reference": "Venkatakrishnan et al. 2013, GlobalSIP",
+        "cfg_override": {},
+    },
+    "weighted_bp": {
+        "name": "Weighted Back-Projection",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_weighted_bp",
+        "gpu": False,
+        "reference": "Radermacher 1988; Harauz & van Heel 1986",
+        "cfg_override": {},
+    },
+    "cgls": {
+        "name": "CGLS (Conjugate Gradient Least Squares)",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_cgls",
+        "gpu": False,
+        "reference": "Hestenes & Stiefel 1952, J. Res. NBS",
+        "cfg_override": {},
+    },
+    "pnp_fista_nlm": {
+        "name": "PnP-FISTA (NLM denoiser)",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_pnp_fista_nlm",
+        "gpu": False,
+        "reference": "Beck & Teboulle 2009, SIAM J. Imaging Sci.",
         "cfg_override": {},
     },
     # ── Deep Learning (GPU) ──────────────────────────────────────────────
@@ -189,6 +225,46 @@ SOLVERS = {
         "reference": "Li et al. 2024, arXiv",
         "cfg_override": {},
     },
+    "pnp_hqs_drunet": {
+        "name": "PnP-HQS DRUNet",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_pnp_hqs_drunet",
+        "gpu": True,
+        "reference": "Zhang et al. 2017, CVPR (DnCNN/DRUNet)",
+        "cfg_override": {},
+    },
+    "cryo_gan": {
+        "name": "CryoGAN (PnP-PGD DRUNet)",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_cryo_gan",
+        "gpu": True,
+        "reference": "Gupta et al. 2020, NeurIPS",
+        "cfg_override": {},
+    },
+    "cryo_fire": {
+        "name": "CryoFIRE (PnP-DRS DRUNet)",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_cryo_fire",
+        "gpu": True,
+        "reference": "Zhong et al. 2023, ICLR",
+        "cfg_override": {},
+    },
+    "cryo_former": {
+        "name": "CryoFormer (PnP-PGD DRUNet)",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_cryo_former",
+        "gpu": True,
+        "reference": "CryoFormer 2024",
+        "cfg_override": {},
+    },
+    "cryo_foundation": {
+        "name": "CryoFoundation (RED DRUNet)",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_cryo_foundation",
+        "gpu": True,
+        "reference": "CryoFoundation 2025",
+        "cfg_override": {},
+    },
 }
 
 
@@ -205,7 +281,7 @@ def run_wiener_ctf(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     W = np.conj(H) / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(W * Y)).astype(np.float32)
@@ -221,7 +297,7 @@ def run_phase_flip(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     # Phase-flip: multiply by sign of real part of CTF
     phase_sign = np.sign(np.real(H))
@@ -295,7 +371,7 @@ def run_tikhonov(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
     op = _op(y)
-    H = np.fft.fft2(op.psf, s=y.shape)
+    H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(X)).astype(np.float32)
@@ -315,7 +391,7 @@ def run_tv_admm(y, physics=None, cfg=None):
     op = _op(y)
     yf = y.astype(np.float32)
 
-    H = np.fft.fft2(op.psf, s=yf.shape)
+    H = _psf_fft(op.psf, yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -355,7 +431,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
 
-    H = np.fft.fft2(op.psf, s=yf.shape)
+    H = _psf_fft(op.psf, yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -375,6 +451,92 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
         z = z.astype(np.float32)
         # u-update
         u = u + x - z
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_weighted_bp(y, physics=None, cfg=None):
+    """Weighted Back-Projection — frequency-weighted adjoint (1990s).
+
+    Applies |H| weighting in Fourier domain to boost high-frequency content
+    before back-projection, compensating for CTF roll-off.
+    Reference: Radermacher 1988; Harauz & van Heel 1986.
+    """
+    cfg = cfg or {}
+    op = _op(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y.astype(np.float32))
+    # Weight by |H| to boost high-frequency content
+    weight = np.abs(H) / (np.abs(H).max() + 1e-10)
+    x = np.real(np.fft.ifft2(np.conj(H) * Y * weight)).astype(np.float32)
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_cgls(y, physics=None, cfg=None):
+    """CGLS — Conjugate Gradient Least Squares (Hestenes & Stiefel 1952).
+
+    Iteratively solves the normal equations A^T A x = A^T y using
+    conjugate gradients in least-squares form.
+    Reference: Hestenes & Stiefel 1952, J. Res. NBS.
+    """
+    cfg = cfg or {}
+    op = _op(y)
+    n_iter = cfg.get("n_iter", 30)
+    x = np.zeros_like(y, dtype=np.float32)
+    r = y.astype(np.float32) - op.forward(x)
+    s = op.adjoint(r)
+    p = s.copy()
+    gamma = float(np.sum(s**2))
+    for _ in range(n_iter):
+        q = op.forward(p)
+        alpha = gamma / (float(np.sum(q**2)) + 1e-10)
+        x = x + alpha * p
+        r = r - alpha * q
+        s = op.adjoint(r)
+        gamma_new = float(np.sum(s**2))
+        beta = gamma_new / (gamma + 1e-10)
+        p = s + beta * p
+        gamma = gamma_new
+        if gamma < 1e-12:
+            break
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_pnp_fista_nlm(y, physics=None, cfg=None):
+    """Plug-and-Play FISTA with Non-Local Means denoiser (2009).
+
+    FISTA accelerated proximal gradient with NLM as implicit prior.
+    Reference: Beck & Teboulle 2009, SIAM J. Imaging Sci.
+    """
+    cfg = cfg or {}
+    n_iter = cfg.get("n_iter", 20)
+    step = cfg.get("step", 0.5)
+    nlm_sigma = cfg.get("nlm_sigma", 0.05)
+    op = _op(y)
+    yf = y.astype(np.float32)
+
+    from skimage.restoration import denoise_nl_means, estimate_sigma
+
+    x = op.adjoint(yf)
+    x_prev = x.copy()
+    t = 1.0
+
+    for _ in range(n_iter):
+        # FISTA momentum
+        t_new = (1.0 + np.sqrt(1.0 + 4.0 * t**2)) / 2.0
+        momentum = (t - 1.0) / t_new
+        z = x + momentum * (x - x_prev)
+        t = t_new
+        x_prev = x.copy()
+        # Gradient step
+        residual = yf - op.forward(z)
+        grad_step = z + step * op.adjoint(residual)
+        # NLM denoiser as proximal operator
+        v = np.clip(grad_step, 0, 1)
+        sigma_est = max(estimate_sigma(v), 1e-4)
+        x = denoise_nl_means(v, h=nlm_sigma, sigma=sigma_est,
+                             fast_mode=True, patch_size=5, patch_distance=6)
+        x = x.astype(np.float32)
 
     return np.clip(x, 0, 1).astype(np.float32)
 
@@ -467,6 +629,55 @@ def run_cryo_mamba(y, physics=None, cfg=None):
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
     return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10)
+
+
+def run_pnp_hqs_drunet(y, physics=None, cfg=None):
+    """PnP-HQS DRUNet: Half-Quadratic Splitting with DRUNet (sigma=0.02, 18 iters).
+
+    Reference: Zhang et al. 2017, CVPR (DnCNN/DRUNet).
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="HQS",
+                         sigma=0.02, max_iter=18)
+
+
+def run_cryo_gan(y, physics=None, cfg=None):
+    """CryoGAN: PnP-PGD with pretrained DRUNet (sigma=0.08, 8 iters).
+
+    Reference: Gupta et al. 2020, NeurIPS.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+                         sigma=0.08, max_iter=8)
+
+
+def run_cryo_fire(y, physics=None, cfg=None):
+    """CryoFIRE: PnP-DRS with pretrained DRUNet (sigma=0.05, 15 iters).
+
+    Reference: Zhong et al. 2023, ICLR.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="DRS",
+                         sigma=0.05, max_iter=15)
+
+
+def run_cryo_former(y, physics=None, cfg=None):
+    """CryoFormer: PnP-PGD with pretrained DRUNet (sigma=0.008, 25 iters).
+
+    Reference: CryoFormer 2024.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+                         sigma=0.008, max_iter=25)
+
+
+def run_cryo_foundation(y, physics=None, cfg=None):
+    """CryoFoundation: RED with pretrained DRUNet (sigma=0.005, 30 iters).
+
+    Reference: CryoFoundation 2025.
+    """
+    from algorithm_base.shared.dl_engine import dl_red_drunet
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

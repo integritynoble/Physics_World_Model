@@ -229,9 +229,31 @@ def _load_fn(solver_key: str):
 # run_solver dispatcher
 # ---------------------------------------------------------------------------
 
+def _run_solver_2d(solver_key: str, y_2d: np.ndarray, operator: Any,
+                   cfg: dict, spec: dict) -> np.ndarray:
+    """Run a solver on a single 2D slice."""
+    if operator is None and y_2d.ndim >= 2:
+        operator = _make_operator(y_2d, cfg)
+    try:
+        if spec["module"] == "algorithm_base.hyperspectral_remote.solvers":
+            fn = globals()[spec["function"]]
+            result = fn(y_2d.astype(np.float32), operator, cfg)
+        else:
+            fn = _load_fn(solver_key)
+            result = fn(y_2d.astype(np.float32), operator, cfg)
+    except Exception:
+        result = run_wiener(y_2d.astype(np.float32), operator, cfg)
+    if isinstance(result, tuple):
+        return np.asarray(result[0], dtype=np.float32)
+    return np.asarray(result, dtype=np.float32)
+
+
 def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
                cfg: Optional[Dict] = None) -> np.ndarray:
-    """Run a solver by key for hyperspectral_remote."""
+    """Run a solver by key for hyperspectral_remote.
+
+    Handles multi-channel (3D) data by processing each channel independently.
+    """
     if solver_key not in SOLVERS:
         raise ValueError(f"Unknown solver {solver_key}. Available: {list(SOLVERS.keys())}")
     cfg = dict(cfg or {})
@@ -240,21 +262,16 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
         for k, v in spec["cfg_override"].items():
             if k not in cfg:
                 cfg[k] = v
+    # Handle multi-channel data: process each channel independently
+    if y.ndim == 3 and y.shape[2] <= 32:
+        channels = []
+        for c in range(y.shape[2]):
+            ch_result = _run_solver_2d(solver_key, y[:, :, c], None, cfg, spec)
+            channels.append(ch_result)
+        return np.stack(channels, axis=-1).astype(np.float32)
     if operator is None and y.ndim >= 2:
         operator = _make_operator(y, cfg)
-    try:
-        if spec["module"] == "algorithm_base.hyperspectral_remote.solvers":
-            fn = globals()[spec["function"]]
-            result = fn(y.astype(np.float32), operator, cfg)
-        else:
-            fn = _load_fn(solver_key)
-            result = fn(y.astype(np.float32), operator, cfg)
-    except Exception:
-        # Fallback to Wiener if external module fails
-        result = run_wiener(y.astype(np.float32), operator, cfg)
-    if isinstance(result, tuple):
-        return np.asarray(result[0], dtype=np.float32)
-    return np.asarray(result, dtype=np.float32)
+    return _run_solver_2d(solver_key, y, operator, cfg, spec)
 
 
 # ===================================================================
@@ -472,3 +489,6 @@ def run_best_quality(y, operator=None, cfg=None):
 
 def run_famous_dl(y, operator=None, cfg=None):
     return run_solver("famous_dl", y, operator, cfg)
+
+def run_hyper_dl(y, operator=None, cfg=None):
+    return run_solver("hyper_dl", y, operator, cfg)

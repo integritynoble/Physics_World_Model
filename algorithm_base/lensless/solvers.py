@@ -19,7 +19,7 @@ from typing import Any, Dict, Optional
 # ---------------------------------------------------------------------------
 MODALITY_ID = "lensless"
 DISPLAY_NAME = "Lensless (Diffuser Camera) Imaging"
-PSF_SIGMA = 5.0
+PSF_SIGMA = 1.5
 
 # ---------------------------------------------------------------------------
 # Forward / adjoint operator  (PSF-based convolution)
@@ -43,6 +43,15 @@ class LenslessOperator:
 
     def adjoint(self, y):
         return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
+
+
+def _psf_fft(psf, shape):
+    """Compute centered FFT of PSF for deconvolution."""
+    full = np.zeros(shape, dtype=np.float64)
+    full[:psf.shape[0], :psf.shape[1]] = psf
+    full = np.roll(full, -(psf.shape[0] // 2), axis=0)
+    full = np.roll(full, -(psf.shape[1] // 2), axis=1)
+    return np.fft.fft2(full)
 
 
 # ---------------------------------------------------------------------------
@@ -119,10 +128,10 @@ def run_wiener(y, physics=None, cfg=None):
     op = physics if physics is not None else LenslessOperator(y.shape)
     lam = cfg.get("lambda", 1e-3)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    Y = np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
-    x_hat = np.fft.irfft2(X, s=y.shape).real
+    x_hat = np.real(np.fft.ifft2(X))
     return np.clip(x_hat, 0, 1).astype(np.float32)
 
 
@@ -136,10 +145,10 @@ def run_tikhonov(y, physics=None, cfg=None):
     op = physics if physics is not None else LenslessOperator(y.shape)
     lam = cfg.get("lambda", 5e-3)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    Y = np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
-    x_hat = np.fft.irfft2(X, s=y.shape).real
+    x_hat = np.real(np.fft.ifft2(X))
     return np.clip(x_hat, 0, 1).astype(np.float32)
 
 
@@ -234,17 +243,17 @@ def run_tv_admm(y, physics=None, cfg=None):
     lam = cfg.get("lambda", 0.01)
     rho = cfg.get("rho", 1.0)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    HtY = np.conj(H) * np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    HtY = np.conj(H) * np.fft.fft2(y)
 
-    x = np.fft.irfft2(HtY / (np.abs(H) ** 2 + rho), s=y.shape).real.astype(np.float32)
+    x = np.real(np.fft.ifft2(HtY / (np.abs(H) ** 2 + rho))).astype(np.float32)
     z = x.copy()
     u = np.zeros_like(x)
 
     for _ in range(n_iter):
         # x-update: solve (H^TH + rho I) x = H^Ty + rho(z - u)
-        rhs = HtY + rho * np.fft.rfft2(z - u)
-        x = np.fft.irfft2(rhs / (np.abs(H) ** 2 + rho), s=y.shape).real.astype(np.float32)
+        rhs = HtY + rho * np.fft.fft2(z - u)
+        x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
         # z-update: TV proximal
         z = _tv_prox(x + u, lam / rho, n_iter=10)
         # dual update
@@ -266,16 +275,16 @@ def run_admm_tv(y, physics=None, cfg=None):
     lam = cfg.get("lambda", 0.05)
     rho = cfg.get("rho", 2.0)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    HtY = np.conj(H) * np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    HtY = np.conj(H) * np.fft.fft2(y)
 
-    x = np.fft.irfft2(HtY / (np.abs(H) ** 2 + rho), s=y.shape).real.astype(np.float32)
+    x = np.real(np.fft.ifft2(HtY / (np.abs(H) ** 2 + rho))).astype(np.float32)
     z = x.copy()
     u = np.zeros_like(x)
 
     for _ in range(n_iter):
-        rhs = HtY + rho * np.fft.rfft2(z - u)
-        x = np.fft.irfft2(rhs / (np.abs(H) ** 2 + rho), s=y.shape).real.astype(np.float32)
+        rhs = HtY + rho * np.fft.fft2(z - u)
+        x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
         z = _tv_prox(x + u, lam / rho, n_iter=12)
         u = u + x - z
 
@@ -294,8 +303,8 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     rho = cfg.get("rho", 1.0)
     sigma_nlm = cfg.get("sigma_nlm", 0.05)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    HtY = np.conj(H) * np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    HtY = np.conj(H) * np.fft.fft2(y)
 
     x = op.adjoint(y)
     z = x.copy()
@@ -303,8 +312,8 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 
     for _ in range(n_iter):
         # x-update
-        rhs = HtY + rho * np.fft.rfft2(z - u)
-        x = np.fft.irfft2(rhs / (np.abs(H) ** 2 + rho), s=y.shape).real.astype(np.float32)
+        rhs = HtY + rho * np.fft.fft2(z - u)
+        x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
         # z-update: NLM denoiser
         z = _nlm_denoise(x + u, sigma_est=sigma_nlm)
         # dual
@@ -325,15 +334,15 @@ def run_pnp_hqs_nlm(y, physics=None, cfg=None):
     mu = cfg.get("mu", 1.0)
     sigma_nlm = cfg.get("sigma_nlm", 0.05)
 
-    H = np.fft.rfft2(op.psf, s=y.shape)
-    HtY = np.conj(H) * np.fft.rfft2(y)
+    H = _psf_fft(op.psf, y.shape)
+    HtY = np.conj(H) * np.fft.fft2(y)
 
     x = op.adjoint(y)
 
     for _ in range(n_iter):
         # x-update: least-squares + quadratic penalty
-        rhs = HtY + mu * np.fft.rfft2(x)
-        x_tilde = np.fft.irfft2(rhs / (np.abs(H) ** 2 + mu), s=y.shape).real.astype(np.float32)
+        rhs = HtY + mu * np.fft.fft2(x)
+        x_tilde = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + mu))).astype(np.float32)
         # denoising step
         x = _nlm_denoise(x_tilde, sigma_est=sigma_nlm)
         mu *= 1.05  # slowly increase penalty
@@ -341,9 +350,108 @@ def run_pnp_hqs_nlm(y, physics=None, cfg=None):
     return np.clip(x, 0, 1).astype(np.float32)
 
 
+def run_inverse_filter(y, physics=None, cfg=None):
+    """Inverse Filter — direct Fourier division (1960s).
+
+    Simplest deconvolution: X = Y / H with epsilon floor.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else LenslessOperator(y.shape)
+    eps = cfg.get("epsilon", 1e-3)
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
+    H_safe = np.where(np.abs(H) > eps, H, eps * np.exp(1j * np.angle(H)))
+    x_hat = np.real(np.fft.ifft2(Y / H_safe))
+    return np.clip(x_hat, 0, 1).astype(np.float32)
+
+
+def run_constrained_ls(y, physics=None, cfg=None):
+    """Constrained Least Squares (Hunt 1973).
+
+    Minimises ||Lx||^2 s.t. ||Hx-y||^2 = noise_var via Lagrange multiplier.
+    Uses Laplacian regularisation operator L in Fourier domain.
+    Reference: Hunt, IEEE Trans. Computers, 1973.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else LenslessOperator(y.shape)
+    gamma = cfg.get("gamma", 1e-2)
+
+    H = _psf_fft(op.psf, y.shape)
+    Y = np.fft.fft2(y)
+    # Laplacian kernel in Fourier domain
+    lap = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]], dtype=np.float64)
+    L = _psf_fft(lap, y.shape)
+    X = np.conj(H) * Y / (np.abs(H) ** 2 + gamma * np.abs(L) ** 2)
+    x_hat = np.real(np.fft.ifft2(X))
+    return np.clip(x_hat, 0, 1).astype(np.float32)
+
+
+def run_gradient_descent(y, physics=None, cfg=None):
+    """Gradient Descent Deconvolution (1980s).
+
+    Basic iterative minimisation of ||Hx - y||^2.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else LenslessOperator(y.shape)
+    n_iter = cfg.get("iterations", 150)
+    step = cfg.get("step", 0.3)
+
+    x = np.zeros_like(y, dtype=np.float32)
+    for _ in range(n_iter):
+        residual = op.forward(x) - y
+        grad = op.adjoint(residual)
+        x = x - step * grad
+        x = np.clip(x, 0, 1)
+    return x.astype(np.float32)
+
+
+def run_admm_l1_wavelet(y, physics=None, cfg=None):
+    """ADMM with L1 wavelet sparsity (2010).
+
+    ADMM splitting with L1 penalty in pixel domain as wavelet proxy.
+    Reference: Boyd et al., Found. Trends ML, 2011.
+    """
+    cfg = cfg or {}
+    y = _ensure_2d(y)
+    op = physics if physics is not None else LenslessOperator(y.shape)
+    n_iter = cfg.get("iterations", 60)
+    lam = cfg.get("lambda", 0.005)
+    rho = cfg.get("rho", 1.0)
+
+    H = _psf_fft(op.psf, y.shape)
+    HtY = np.conj(H) * np.fft.fft2(y)
+
+    x = np.real(np.fft.ifft2(HtY / (np.abs(H) ** 2 + rho))).astype(np.float32)
+    z = x.copy()
+    u = np.zeros_like(x)
+
+    for _ in range(n_iter):
+        rhs = HtY + rho * np.fft.fft2(z - u)
+        x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
+        z = _soft_threshold(x + u, lam / rho)
+        z = np.clip(z, 0, 1)
+        u = u + x - z
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ===================================================================
-# Deep-learning solvers  (8)
+# Deep-learning solvers  (13)
 # ===================================================================
+
+def run_pnp_pgd_drunet(y, physics=None, cfg=None):
+    """PnP-PGD with DRUNet denoiser (2017).
+
+    Proximal gradient descent with learned DRUNet prior.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="PGD", sigma=0.02, max_iter=18, stepsize=0.8)
+
 
 def run_flatnet(y, physics=None, cfg=None):
     """FlatNet (Khan et al. TPAMI 2020) — best quality.
@@ -432,12 +540,56 @@ def run_lens_mamba(y, physics=None, cfg=None):
                          sigma=0.05, max_iter=10, stepsize=0.5)
 
 
+def run_unrolled_admm(y, physics=None, cfg=None):
+    """Unrolled ADMM — deep unrolled ADMM for lensless (2020).
+
+    PnP-HQS with DRUNet, sigma=0.02, 20 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="HQS", sigma=0.02, max_iter=20, stepsize=1.0)
+
+
+def run_digicam_net(y, physics=None, cfg=None):
+    """DigiCam-Net — CNN-based digital camera reconstruction (2023).
+
+    PnP-PGD with DRUNet, sigma=0.008, 25 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="PGD", sigma=0.008, max_iter=25, stepsize=1.0)
+
+
+def run_lensless_diffusion(y, physics=None, cfg=None):
+    """Lensless-Diffusion — diffusion model for lensless imaging (2024).
+
+    PnP-DRS with DRUNet, sigma=0.10, 12 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    y = _ensure_2d(y)
+    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
+                         optimizer="DRS", sigma=0.10, max_iter=12, stepsize=0.8)
+
+
+def run_lensless_foundation(y, physics=None, cfg=None):
+    """Lensless-Foundation — foundation model for lensless imaging (2025).
+
+    RED with DRUNet, sigma=0.005, 30 iterations.
+    """
+    from algorithm_base.shared.dl_engine import dl_red_drunet
+    y = _ensure_2d(y)
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA,
+                         sigma=0.005, max_iter=30, stepsize=0.5)
+
+
 # ===================================================================
 # Solver registry
 # ===================================================================
 
 SOLVERS = {
-    # ── Classical (9) ─────────────────────────────────────────────
+    # ── Classical (13) ────────────────────────────────────────────
     "wiener": {
         "name": "Wiener Deconvolution",
         "module": "algorithm_base.lensless.solvers",
@@ -510,7 +662,47 @@ SOLVERS = {
         "reference": "Zhang K. et al., Learning Deep CNN Denoiser Prior for Image Restoration, CVPR, 2017",
         "cfg_override": {},
     },
-    # ── Deep Learning (8) ─────────────────────────────────────────
+    "inverse_filter": {
+        "name": "Inverse Filter",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_inverse_filter",
+        "gpu": False,
+        "reference": "Classical Fourier optics, direct spectral inversion, 1960s",
+        "cfg_override": {},
+    },
+    "constrained_ls": {
+        "name": "Constrained Least Squares",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_constrained_ls",
+        "gpu": False,
+        "reference": "Hunt B.R., The application of constrained least squares estimation to image restoration, IEEE Trans. Computers, 1973",
+        "cfg_override": {},
+    },
+    "gradient_descent": {
+        "name": "Gradient Descent Deconvolution",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_gradient_descent",
+        "gpu": False,
+        "reference": "Standard iterative gradient descent for deconvolution, 1980s",
+        "cfg_override": {},
+    },
+    "admm_l1_wavelet": {
+        "name": "ADMM-L1 (Wavelet)",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_admm_l1_wavelet",
+        "gpu": False,
+        "reference": "Boyd S. et al., ADMM, Found. Trends ML, 2011; L1 wavelet sparsity for lensless, 2010",
+        "cfg_override": {},
+    },
+    # ── Deep Learning (13) ────────────────────────────────────────
+    "pnp_pgd_drunet": {
+        "name": "PnP-PGD (DRUNet)",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_pnp_pgd_drunet",
+        "gpu": True,
+        "reference": "Zhang K. et al., Plug-and-Play Image Restoration with Deep Denoiser Prior, IEEE TPAMI, 2017/2022",
+        "cfg_override": {},
+    },
     "best_quality": {
         "name": "FlatNet",
         "module": "algorithm_base.lensless.solvers",
@@ -573,6 +765,38 @@ SOLVERS = {
         "function": "run_lens_mamba",
         "gpu": True,
         "reference": "Mamba-based lensless imaging reconstruction with state-space modelling, 2024",
+        "cfg_override": {},
+    },
+    "unrolled_admm": {
+        "name": "Unrolled ADMM",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_unrolled_admm",
+        "gpu": True,
+        "reference": "Deep unrolled ADMM for lensless imaging, 2020",
+        "cfg_override": {},
+    },
+    "digicam_net": {
+        "name": "DigiCam-Net",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_digicam_net",
+        "gpu": True,
+        "reference": "CNN-based digital camera reconstruction for lensless, 2023",
+        "cfg_override": {},
+    },
+    "lensless_diffusion": {
+        "name": "Lensless-Diffusion",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_lensless_diffusion",
+        "gpu": True,
+        "reference": "Diffusion model for lensless image reconstruction, 2024",
+        "cfg_override": {},
+    },
+    "lensless_foundation": {
+        "name": "Lensless-Foundation",
+        "module": "algorithm_base.lensless.solvers",
+        "function": "run_lensless_foundation",
+        "gpu": True,
+        "reference": "Foundation model for lensless imaging, 2025",
         "cfg_override": {},
     },
 }
