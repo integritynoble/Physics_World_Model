@@ -22,18 +22,29 @@ DISPLAY_NAME = "Ultrasound B-mode Imaging"
 PSF_SIGMA = 1.0
 
 
+def _final_norm(x):
+    """Clip to [0, 1] for output."""
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ---------------------------------------------------------------------------
 # Forward operator (PSF convolution)
 # ---------------------------------------------------------------------------
 class UltrasoundOperator:
     """Blurring operator modelling the ultrasound point-spread function."""
 
-    def __init__(self, y_shape, psf_sigma=PSF_SIGMA):
-        k = max(3, int(3 * psf_sigma))
-        ax = np.arange(-k, k + 1)
-        gx, gy = np.meshgrid(ax, ax)
-        self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
-        self.psf /= self.psf.sum()
+    def __init__(self, y_shape, psf_sigma=PSF_SIGMA, psf=None):
+        if psf is not None:
+            self.psf = psf.astype(np.float32)
+            s = self.psf.sum()
+            if s > 0:
+                self.psf /= s
+        else:
+            k = max(3, int(3 * psf_sigma))
+            ax = np.arange(-k, k + 1)
+            gx, gy = np.meshgrid(ax, ax)
+            self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
+            self.psf /= self.psf.sum()
         self.psf_flip = self.psf[::-1, ::-1].copy()
 
     def forward(self, x):
@@ -43,8 +54,12 @@ class UltrasoundOperator:
         return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
 
 
-def _op(y):
-    """Create default operator from measurement shape."""
+def _op(y, cfg=None):
+    """Create operator from measurement shape, using dataset PSF if available."""
+    cfg = cfg or {}
+    psf = cfg.get("psf", None)
+    if psf is not None and psf.ndim == 2:
+        return UltrasoundOperator(y.shape, psf=psf)
     return UltrasoundOperator(y.shape)
 
 
@@ -290,7 +305,7 @@ def run_das(y, physics=None, cfg=None):
     Reference: Wild & Reid 1952.
     """
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     x = op.adjoint(y.astype(np.float32))
     return np.clip(x, 0, 1).astype(np.float32)
 
@@ -302,12 +317,12 @@ def run_wiener(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
-    op = _op(y)
+    op = _op(y, cfg)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     W = np.conj(H) / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(W * Y)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_dmas(y, physics=None, cfg=None):
@@ -316,7 +331,7 @@ def run_dmas(y, physics=None, cfg=None):
     Reference: Matrone et al. 2015, IEEE TUFFC.
     """
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     x_adj = op.adjoint(y.astype(np.float32))
     # DMAS applies a sign-preserving square to boost coherent signals
     x = np.sign(x_adj) * (x_adj ** 2)
@@ -336,7 +351,7 @@ def run_mv_capon(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     reg = cfg.get("reg", 1e-3)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
     x_adj = op.adjoint(yf)
 
@@ -360,7 +375,7 @@ def run_landweber(y, physics=None, cfg=None):
     cfg = cfg or {}
     n_iter = cfg.get("n_iter", 50)
     step = cfg.get("step", 0.5)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
     x = op.adjoint(yf)
     for _ in range(n_iter):
@@ -377,7 +392,7 @@ def run_richardson_lucy(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     n_iter = cfg.get("n_iter", 30)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
     x = np.maximum(op.adjoint(yf), 1e-8)
     for _ in range(n_iter):
@@ -396,12 +411,12 @@ def run_tikhonov(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     lam = cfg.get("lam", 1e-2)
-    op = _op(y)
+    op = _op(y, cfg)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(X)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_tv_admm(y, physics=None, cfg=None):
@@ -414,7 +429,7 @@ def run_tv_admm(y, physics=None, cfg=None):
     lam = cfg.get("lam", 0.02)
     rho = cfg.get("rho", 1.0)
     n_iter = cfg.get("n_iter", 30)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
 
     H = _psf_fft(op.psf, yf.shape)
@@ -440,7 +455,7 @@ def run_tv_admm(y, physics=None, cfg=None):
         # u-update
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_pnp_admm_nlm(y, physics=None, cfg=None):
@@ -452,7 +467,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     rho = cfg.get("rho", 1.0)
     n_iter = cfg.get("n_iter", 15)
     nlm_sigma = cfg.get("nlm_sigma", 0.05)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
@@ -478,7 +493,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
         # u-update
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_pnp_fista_nlm(y, physics=None, cfg=None):
@@ -490,7 +505,7 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
     step = cfg.get("step", 0.5)
     n_iter = cfg.get("n_iter", 20)
     nlm_sigma = cfg.get("nlm_sigma", 0.05)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
@@ -529,7 +544,7 @@ def run_das_nlm(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     nlm_h = cfg.get("nlm_h", 0.08)
-    op = _op(y)
+    op = _op(y, cfg)
     yf = y.astype(np.float32)
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
@@ -545,19 +560,19 @@ def run_das_nlm(y, physics=None, cfg=None):
 def run_inverse_filter(y, physics=None, cfg=None):
     """Inverse Filter — direct Fourier division (1960s)."""
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     eps = cfg.get("epsilon", 1e-3)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     H_safe = np.where(np.abs(H) > eps, H, eps * np.exp(1j * np.angle(H)))
     x = np.real(np.fft.ifft2(Y / H_safe)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_fista_deconv(y, physics=None, cfg=None):
     """FISTA deconvolution for ultrasound (Beck & Teboulle 2009)."""
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     n_iter = cfg.get("n_iter", 80)
     step = cfg.get("step", 0.5)
     lam = cfg.get("lam", 1e-3)
@@ -581,7 +596,7 @@ def run_fista_deconv(y, physics=None, cfg=None):
 def run_coherence_factor(y, physics=None, cfg=None):
     """Coherence Factor weighted beamforming (Li & Li 2003)."""
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     x_adj = op.adjoint(y.astype(np.float32))
     # Coherence factor: ratio of coherent to incoherent energy
     from scipy.ndimage import uniform_filter
@@ -597,7 +612,7 @@ def run_coherence_factor(y, physics=None, cfg=None):
 def run_sa_das(y, physics=None, cfg=None):
     """Synthetic Aperture DAS — SA-DAS beamforming (1990s)."""
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     x = op.adjoint(y.astype(np.float32))
     # Synthetic aperture: additional low-pass and coherent averaging
     from scipy.ndimage import gaussian_filter
@@ -613,14 +628,24 @@ def run_sa_das(y, physics=None, cfg=None):
 # Deep-learning solvers
 # ═══════════════════════════════════════════════════════════════════════════
 
+def _get_psf_from_cfg(cfg):
+    """Extract actual PSF from cfg if available."""
+    cfg = cfg or {}
+    psf = cfg.get("psf", None)
+    if psf is not None and hasattr(psf, 'ndim') and psf.ndim == 2:
+        return np.asarray(psf, dtype=np.float32)
+    return None
+
+
 def run_us_unet(y, physics=None, cfg=None):
     """US-UNet: PnP-PGD with pretrained DRUNet (sigma=0.03, 15 iters).
 
     Reference: Perdios et al. 2017, IEEE IUS.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.03, max_iter=15)
+                         sigma=0.03, max_iter=15, psf=psf)
 
 
 def run_us_cnn(y, physics=None, cfg=None):
@@ -629,7 +654,8 @@ def run_us_cnn(y, physics=None, cfg=None):
     Reference: Zhang et al. 2017, IEEE TIP.
     """
     from algorithm_base.shared.dl_engine import dl_dncnn_denoise
-    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA)
+    psf = _get_psf_from_cfg(cfg)
+    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA, psf=psf)
 
 
 def run_able(y, physics=None, cfg=None):
@@ -638,8 +664,9 @@ def run_able(y, physics=None, cfg=None):
     Reference: Luijten et al. 2020, Nature MI.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="HQS",
-                         sigma=0.05, max_iter=10)
+                         sigma=0.05, max_iter=10, psf=psf)
 
 
 def run_us_diffusion(y, physics=None, cfg=None):
@@ -648,8 +675,9 @@ def run_us_diffusion(y, physics=None, cfg=None):
     Reference: Stevens et al. 2023.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.10, max_iter=10)
+                         sigma=0.10, max_iter=10, psf=psf)
 
 
 def run_us_vit(y, physics=None, cfg=None):
@@ -658,8 +686,9 @@ def run_us_vit(y, physics=None, cfg=None):
     Reference: Song et al. 2023, IEEE TMI.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="DRS",
-                         sigma=0.03, max_iter=15)
+                         sigma=0.03, max_iter=15, psf=psf)
 
 
 def run_us_mamba(y, physics=None, cfg=None):
@@ -668,7 +697,9 @@ def run_us_mamba(y, physics=None, cfg=None):
     Reference: Chen et al. 2024.
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
-    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10)
+    psf = _get_psf_from_cfg(cfg)
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10,
+                         psf=psf)
 
 
 def run_pnp_hqs_drunet(y, physics=None, cfg=None):
@@ -677,8 +708,9 @@ def run_pnp_hqs_drunet(y, physics=None, cfg=None):
     Reference: Zhang et al. 2017, IEEE TIP (HQS variant).
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="HQS",
-                         sigma=0.02, max_iter=18)
+                         sigma=0.02, max_iter=18, psf=psf)
 
 
 def run_us_gan(y, physics=None, cfg=None):
@@ -687,8 +719,9 @@ def run_us_gan(y, physics=None, cfg=None):
     Reference: Goodfellow et al. 2014; US-GAN 2020.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.08, max_iter=8)
+                         sigma=0.08, max_iter=8, psf=psf)
 
 
 def run_us_transformer(y, physics=None, cfg=None):
@@ -697,8 +730,9 @@ def run_us_transformer(y, physics=None, cfg=None):
     Reference: Dosovitskiy et al. 2021; US-Transformer 2023.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.008, max_iter=25)
+                         sigma=0.008, max_iter=25, psf=psf)
 
 
 def run_us_foundation(y, physics=None, cfg=None):
@@ -707,7 +741,9 @@ def run_us_foundation(y, physics=None, cfg=None):
     Reference: Bommasani et al. 2021; US-Foundation 2025.
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
-    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30)
+    psf = _get_psf_from_cfg(cfg)
+    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30,
+                         psf=psf)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

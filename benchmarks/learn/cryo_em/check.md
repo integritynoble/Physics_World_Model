@@ -223,3 +223,6853 @@ The benchmark's very low SNR (0.01-0.1) faithfully represents real cryo-EM condi
 | Runtime | 0.01 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.70 dB |
+| SSIM (mean, 12 samples) | -0.0040 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.05 dB |
+| SSIM (mean, 12 samples) | 0.0552 |
+| Runtime | 0.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.08 dB |
+| SSIM (mean, 12 samples) | 0.1387 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.71 dB |
+| SSIM (mean, 12 samples) | 0.0996 |
+| Runtime | 3.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.25 dB |
+| SSIM (mean, 12 samples) | 0.1398 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.99 dB |
+| SSIM (mean, 12 samples) | -0.0005 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0877 |
+| Runtime | 5.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.70 dB |
+| SSIM (mean, 12 samples) | -0.0040 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.05 dB |
+| SSIM (mean, 12 samples) | 0.0552 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.08 dB |
+| SSIM (mean, 12 samples) | 0.1387 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.71 dB |
+| SSIM (mean, 12 samples) | 0.0996 |
+| Runtime | 3.58 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.25 dB |
+| SSIM (mean, 12 samples) | 0.1398 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.99 dB |
+| SSIM (mean, 12 samples) | -0.0005 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0877 |
+| Runtime | 5.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.58 dB |
+| SSIM (mean, 12 samples) | 0.1547 |
+| Runtime | 7.80 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.10 dB |
+| SSIM (mean, 12 samples) | 0.3602 |
+| Runtime | 2.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4859 |
+| Runtime | 1.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.48 dB |
+| SSIM (mean, 12 samples) | 0.2808 |
+| Runtime | 2.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.0523 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.05 dB |
+| SSIM (mean, 12 samples) | 0.0104 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.90 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.11 dB |
+| SSIM (mean, 12 samples) | 0.3561 |
+| Runtime | 3.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.72 dB |
+| SSIM (mean, 12 samples) | 0.0864 |
+| Runtime | 21.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.53 dB |
+| SSIM (mean, 12 samples) | 0.2055 |
+| Runtime | 3.55 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.02 dB |
+| SSIM (mean, 12 samples) | 0.6660 |
+| Runtime | 1.57 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.27 dB |
+| SSIM (mean, 12 samples) | 0.5090 |
+| Runtime | 2.94 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.49 dB |
+| SSIM (mean, 12 samples) | 0.1273 |
+| Runtime | 4.92 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.19 dB |
+| SSIM (mean, 12 samples) | 0.0396 |
+| Runtime | 26.87 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 14.01 dB |
+| SSIM (mean, 3 samples) | -0.0017 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 14.55 dB |
+| SSIM (mean, 3 samples) | -0.0041 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.15 dB |
+| SSIM (mean, 3 samples) | 0.0603 |
+| Runtime | 0.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.85 dB |
+| SSIM (mean, 3 samples) | 0.1354 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.86 dB |
+| SSIM (mean, 3 samples) | 0.0869 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 14.01 dB |
+| SSIM (mean, 3 samples) | -0.0017 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.28 dB |
+| SSIM (mean, 3 samples) | 0.1453 |
+| Runtime | 0.64 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.10 dB |
+| SSIM (mean, 3 samples) | 0.0191 |
+| Runtime | 5.06 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.54 dB |
+| SSIM (mean, 3 samples) | 0.1537 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 5.72 dB |
+| SSIM (mean, 3 samples) | -0.0004 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.13 dB |
+| SSIM (mean, 3 samples) | 0.0246 |
+| Runtime | 4.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.39 dB |
+| SSIM (mean, 3 samples) | 0.2275 |
+| Runtime | 21.72 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.87 dB |
+| SSIM (mean, 3 samples) | 0.4398 |
+| Runtime | 1.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.67 dB |
+| SSIM (mean, 3 samples) | 0.6570 |
+| Runtime | 1.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.87 dB |
+| SSIM (mean, 3 samples) | 0.3873 |
+| Runtime | 2.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.38 dB |
+| SSIM (mean, 3 samples) | 0.0648 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.90 dB |
+| SSIM (mean, 3 samples) | 0.0331 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.89 dB |
+| SSIM (mean, 3 samples) | 0.7009 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.86 dB |
+| SSIM (mean, 3 samples) | 0.4312 |
+| Runtime | 2.04 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.02 dB |
+| SSIM (mean, 3 samples) | 0.0726 |
+| Runtime | 16.59 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.17 dB |
+| SSIM (mean, 3 samples) | 0.2598 |
+| Runtime | 1.53 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.42 dB |
+| SSIM (mean, 3 samples) | 0.8141 |
+| Runtime | 0.71 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.78 dB |
+| SSIM (mean, 3 samples) | 0.6658 |
+| Runtime | 1.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 18.40 dB |
+| SSIM (mean, 3 samples) | 0.1987 |
+| Runtime | 2.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.38 dB |
+| SSIM (mean, 3 samples) | 0.0602 |
+| Runtime | 23.89 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.70 dB |
+| SSIM (mean, 12 samples) | -0.0040 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.05 dB |
+| SSIM (mean, 12 samples) | 0.0552 |
+| Runtime | 0.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.08 dB |
+| SSIM (mean, 12 samples) | 0.1387 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.71 dB |
+| SSIM (mean, 12 samples) | 0.0996 |
+| Runtime | 1.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.25 dB |
+| SSIM (mean, 12 samples) | 0.1398 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.99 dB |
+| SSIM (mean, 12 samples) | -0.0005 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0877 |
+| Runtime | 1.69 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.58 dB |
+| SSIM (mean, 12 samples) | 0.1547 |
+| Runtime | 1.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.10 dB |
+| SSIM (mean, 12 samples) | 0.3602 |
+| Runtime | 0.73 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4859 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.58 dB |
+| SSIM (mean, 12 samples) | 0.1547 |
+| Runtime | 1.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.10 dB |
+| SSIM (mean, 12 samples) | 0.3602 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4859 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.48 dB |
+| SSIM (mean, 12 samples) | 0.2808 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.0523 |
+| Runtime | 0.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.05 dB |
+| SSIM (mean, 12 samples) | 0.0104 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.90 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.11 dB |
+| SSIM (mean, 12 samples) | 0.3561 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.72 dB |
+| SSIM (mean, 12 samples) | 0.0864 |
+| Runtime | 5.90 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.53 dB |
+| SSIM (mean, 12 samples) | 0.2055 |
+| Runtime | 0.91 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.02 dB |
+| SSIM (mean, 12 samples) | 0.6660 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.27 dB |
+| SSIM (mean, 12 samples) | 0.5090 |
+| Runtime | 0.75 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.49 dB |
+| SSIM (mean, 12 samples) | 0.1273 |
+| Runtime | 1.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.19 dB |
+| SSIM (mean, 12 samples) | 0.0396 |
+| Runtime | 14.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.58 dB |
+| SSIM (mean, 12 samples) | 0.1547 |
+| Runtime | 1.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.10 dB |
+| SSIM (mean, 12 samples) | 0.3602 |
+| Runtime | 0.75 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4859 |
+| Runtime | 0.50 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.48 dB |
+| SSIM (mean, 12 samples) | 0.2808 |
+| Runtime | 0.76 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.0523 |
+| Runtime | 0.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.05 dB |
+| SSIM (mean, 12 samples) | 0.0104 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.90 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.11 dB |
+| SSIM (mean, 12 samples) | 0.3561 |
+| Runtime | 0.75 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.72 dB |
+| SSIM (mean, 12 samples) | 0.0864 |
+| Runtime | 5.94 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.53 dB |
+| SSIM (mean, 12 samples) | 0.2055 |
+| Runtime | 0.92 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.02 dB |
+| SSIM (mean, 12 samples) | 0.6660 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.27 dB |
+| SSIM (mean, 12 samples) | 0.5090 |
+| Runtime | 0.78 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.49 dB |
+| SSIM (mean, 12 samples) | 0.1273 |
+| Runtime | 1.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.19 dB |
+| SSIM (mean, 12 samples) | 0.0396 |
+| Runtime | 14.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.80 dB |
+| SSIM (mean, 12 samples) | -0.0011 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.70 dB |
+| SSIM (mean, 12 samples) | -0.0040 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.05 dB |
+| SSIM (mean, 12 samples) | 0.0552 |
+| Runtime | 0.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.80 dB |
+| SSIM (mean, 12 samples) | -0.0011 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.08 dB |
+| SSIM (mean, 12 samples) | 0.1387 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.71 dB |
+| SSIM (mean, 12 samples) | 0.0996 |
+| Runtime | 1.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.25 dB |
+| SSIM (mean, 12 samples) | 0.1398 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.99 dB |
+| SSIM (mean, 12 samples) | -0.0005 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0877 |
+| Runtime | 1.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.70 dB |
+| SSIM (mean, 12 samples) | -0.0040 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.05 dB |
+| SSIM (mean, 12 samples) | 0.0552 |
+| Runtime | 0.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.91 dB |
+| SSIM (mean, 12 samples) | -0.0024 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.08 dB |
+| SSIM (mean, 12 samples) | 0.1387 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.71 dB |
+| SSIM (mean, 12 samples) | 0.0996 |
+| Runtime | 1.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.25 dB |
+| SSIM (mean, 12 samples) | 0.1398 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.99 dB |
+| SSIM (mean, 12 samples) | -0.0005 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0877 |
+| Runtime | 2.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.76 dB |
+| SSIM (mean, 12 samples) | 0.0144 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.15 dB |
+| SSIM (mean, 12 samples) | 0.0010 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.12 dB |
+| SSIM (mean, 12 samples) | 0.0177 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.76 dB |
+| SSIM (mean, 12 samples) | 0.0144 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.93 dB |
+| SSIM (mean, 12 samples) | 0.0218 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.93 dB |
+| SSIM (mean, 12 samples) | 0.0483 |
+| Runtime | 1.00 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.51 dB |
+| SSIM (mean, 12 samples) | 0.0671 |
+| Runtime | 1.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.46 dB |
+| SSIM (mean, 12 samples) | 0.0196 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.46 dB |
+| SSIM (mean, 12 samples) | 0.0196 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.19 dB |
+| SSIM (mean, 12 samples) | 0.0225 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.59 dB |
+| SSIM (mean, 12 samples) | 0.0648 |
+| Runtime | 0.95 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.75 dB |
+| SSIM (mean, 12 samples) | 0.0573 |
+| Runtime | 1.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.46 dB |
+| SSIM (mean, 12 samples) | 0.0196 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.46 dB |
+| SSIM (mean, 12 samples) | 0.0196 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.19 dB |
+| SSIM (mean, 12 samples) | 0.0225 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.59 dB |
+| SSIM (mean, 12 samples) | 0.0648 |
+| Runtime | 0.94 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.75 dB |
+| SSIM (mean, 12 samples) | 0.0573 |
+| Runtime | 1.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.63 dB |
+| SSIM (mean, 12 samples) | 0.0248 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.47 dB |
+| SSIM (mean, 12 samples) | 0.0625 |
+| Runtime | 1.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.69 dB |
+| SSIM (mean, 12 samples) | 0.0740 |
+| Runtime | 1.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.92 dB |
+| SSIM (mean, 12 samples) | 0.0252 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.47 dB |
+| SSIM (mean, 12 samples) | 0.0625 |
+| Runtime | 1.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.92 dB |
+| SSIM (mean, 12 samples) | 0.0252 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.47 dB |
+| SSIM (mean, 12 samples) | 0.0625 |
+| Runtime | 1.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.69 dB |
+| SSIM (mean, 12 samples) | 0.0740 |
+| Runtime | 1.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.92 dB |
+| SSIM (mean, 12 samples) | 0.0252 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.47 dB |
+| SSIM (mean, 12 samples) | 0.0625 |
+| Runtime | 0.97 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.69 dB |
+| SSIM (mean, 12 samples) | 0.0740 |
+| Runtime | 1.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.99 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 1.85 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.73 dB |
+| SSIM (mean, 12 samples) | 0.0200 |
+| Runtime | 0.73 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.22 dB |
+| SSIM (mean, 12 samples) | 0.0813 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.04 dB |
+| SSIM (mean, 12 samples) | 0.0273 |
+| Runtime | 0.73 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.12 dB |
+| SSIM (mean, 12 samples) | 0.0151 |
+| Runtime | 0.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.05 dB |
+| SSIM (mean, 12 samples) | 0.0104 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.90 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.76 dB |
+| SSIM (mean, 12 samples) | 0.0200 |
+| Runtime | 0.73 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.50 dB |
+| SSIM (mean, 12 samples) | 0.0372 |
+| Runtime | 5.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.98 dB |
+| SSIM (mean, 12 samples) | 0.0200 |
+| Runtime | 0.88 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.84 dB |
+| SSIM (mean, 12 samples) | 0.4397 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.75 dB |
+| SSIM (mean, 12 samples) | 0.0685 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.63 dB |
+| SSIM (mean, 12 samples) | 0.0181 |
+| Runtime | 1.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.20 dB |
+| SSIM (mean, 12 samples) | 0.0194 |
+| Runtime | 9.43 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.48 dB |
+| SSIM (mean, 12 samples) | 0.0191 |
+| Runtime | 1.55 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.54 dB |
+| SSIM (mean, 12 samples) | 0.0328 |
+| Runtime | 0.89 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.40 dB |
+| SSIM (mean, 12 samples) | 0.0485 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.0366 |
+| Runtime | 0.76 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.31 dB |
+| SSIM (mean, 12 samples) | 0.0603 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.06 dB |
+| SSIM (mean, 12 samples) | 0.0626 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.48 dB |
+| SSIM (mean, 12 samples) | 0.0191 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.82 dB |
+| SSIM (mean, 12 samples) | 0.0225 |
+| Runtime | 8.69 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.16 dB |
+| SSIM (mean, 12 samples) | 0.0275 |
+| Runtime | 0.94 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.92 dB |
+| SSIM (mean, 12 samples) | 0.0252 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.47 dB |
+| SSIM (mean, 12 samples) | 0.0625 |
+| Runtime | 1.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.69 dB |
+| SSIM (mean, 12 samples) | 0.0740 |
+| Runtime | 1.58 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.48 dB |
+| SSIM (mean, 12 samples) | 0.0191 |
+| Runtime | 2.88 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.54 dB |
+| SSIM (mean, 12 samples) | 0.0328 |
+| Runtime | 1.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.40 dB |
+| SSIM (mean, 12 samples) | 0.0485 |
+| Runtime | 0.52 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.0366 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.31 dB |
+| SSIM (mean, 12 samples) | 0.0603 |
+| Runtime | 0.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.05 dB |
+| SSIM (mean, 12 samples) | 0.0104 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.90 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0314 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.95 dB |
+| SSIM (mean, 12 samples) | 0.0510 |
+| Runtime | 4.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.16 dB |
+| SSIM (mean, 12 samples) | 0.0275 |
+| Runtime | 0.93 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.06 dB |
+| SSIM (mean, 12 samples) | 0.0626 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.27 dB |
+| SSIM (mean, 12 samples) | 0.0457 |
+| Runtime | 0.78 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (PnP-PGD DRUNet)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.48 dB |
+| SSIM (mean, 12 samples) | 0.0191 |
+| Runtime | 0.06 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (RED DRUNet)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.82 dB |
+| SSIM (mean, 12 samples) | 0.0225 |
+| Runtime | 8.63 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener-CTF Correction
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Penczek et al. 2010, Methods Enzymol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Phase-Flip CTF Correction
+**Solver Key:** phase_flip
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rosenthal & Henderson 2003, JMB
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.66 dB |
+| SSIM (mean, 12 samples) | 0.0186 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Back-Projection
+**Solver Key:** back_projection
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988, J. Electron Microsc. Tech.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.20 dB |
+| SSIM (mean, 12 samples) | 0.0158 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SIRT (Simultaneous Iterative)
+**Solver Key:** sirt_3d
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert 1972, J. Theor. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.91 dB |
+| SSIM (mean, 12 samples) | 0.1128 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber 1951, Amer. J. Math.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.58 dB |
+| SSIM (mean, 12 samples) | 0.0858 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularisation
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov 1963, Soviet Math. Doklady
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.47 dB |
+| SSIM (mean, 12 samples) | 0.0190 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Total Variation ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Boyd et al. 2011, ADMM; Rudin-Osher-Fatemi 1992 TV
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.92 dB |
+| SSIM (mean, 12 samples) | 0.0252 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM denoiser)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al. 2013, GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.47 dB |
+| SSIM (mean, 12 samples) | 0.0625 |
+| Runtime | 2.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Weighted Back-Projection
+**Solver Key:** weighted_bp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Radermacher 1988; Harauz & van Heel 1986
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.87 dB |
+| SSIM (mean, 12 samples) | 0.0139 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CGLS (Conjugate Gradient Least Squares)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes & Stiefel 1952, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 7.91 dB |
+| SSIM (mean, 12 samples) | 0.0055 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM denoiser)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.69 dB |
+| SSIM (mean, 12 samples) | 0.0740 |
+| Runtime | 2.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** RELION (PnP-PGD DRUNet)
+**Solver Key:** best_quality
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Scheres 2012, JMB; Zivanov et al. 2018, eLife
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.48 dB |
+| SSIM (mean, 12 samples) | 0.0191 |
+| Runtime | 1.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSPARC (PnP-PGD DRUNet)
+**Solver Key:** cryosparc
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Punjani et al. 2017, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.54 dB |
+| SSIM (mean, 12 samples) | 0.0328 |
+| Runtime | 0.93 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN (PnP-PGD DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.40 dB |
+| SSIM (mean, 12 samples) | 0.0485 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoDRGN2 (PnP-HQS DRUNet)
+**Solver Key:** cryodrgn2
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2021, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.0366 |
+| Runtime | 0.75 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoAI (DnCNN denoise)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Levy et al. 2022, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.31 dB |
+| SSIM (mean, 12 samples) | 0.0603 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepEMenhancer (DRUNet denoise)
+**Solver Key:** deep_em_enhancer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sanchez-Garcia et al. 2021, Comms. Biol.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.05 dB |
+| SSIM (mean, 12 samples) | 0.0104 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Topaz-Denoise (DRUNet denoise)
+**Solver Key:** topaz_denoise
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Bepler et al. 2020, Nature Comms.
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.90 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.05 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoSTAR (PnP-DRS DRUNet)
+**Solver Key:** cryostar
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Guo et al. 2024, Nature Methods
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.40 dB |
+| SSIM (mean, 12 samples) | 0.0314 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoMamba (RED DRUNet)
+**Solver Key:** cryo_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li et al. 2024, arXiv
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.95 dB |
+| SSIM (mean, 12 samples) | 0.0510 |
+| Runtime | 4.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhang et al. 2017, CVPR (DnCNN/DRUNet)
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.16 dB |
+| SSIM (mean, 12 samples) | 0.0275 |
+| Runtime | 0.90 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoGAN (PnP-PGD DRUNet)
+**Solver Key:** cryo_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gupta et al. 2020, NeurIPS
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.06 dB |
+| SSIM (mean, 12 samples) | 0.0626 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFIRE (PnP-DRS DRUNet)
+**Solver Key:** cryo_fire
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zhong et al. 2023, ICLR
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.27 dB |
+| SSIM (mean, 12 samples) | 0.0457 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFormer (SwinIR)
+**Solver Key:** cryo_former
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFormer 2024
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.83 dB |
+| SSIM (mean, 12 samples) | 0.0703 |
+| Runtime | 1.96 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CryoFoundation (Restormer)
+**Solver Key:** cryo_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** CryoFoundation 2025
+**Operator Family:** radon
+**Forward Model:** y = CTF · P_θ(x) + noise, P_θ = projection at angle θ, CTF = contrast transfer function
+**Canonical Reference:** Frank, "Three-Dimensional Electron Microscopy of Macromolecular Assemblies," Oxford 2006
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.15 dB |
+| SSIM (mean, 12 samples) | 0.0593 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**

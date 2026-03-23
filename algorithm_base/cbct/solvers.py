@@ -27,6 +27,11 @@ DISPLAY_NAME = "Cone-Beam Computed Tomography (CBCT)"
 MU = 3.0  # Beer-Lambert attenuation coefficient used in data generation
 
 
+def _final_norm(x):
+    """Clip to [0, 1] for output."""
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ---------------------------------------------------------------------------
 # Beer-Lambert inverse transform
 # ---------------------------------------------------------------------------
@@ -208,7 +213,7 @@ def _fdk_reconstruct(y, filt_fn, cfg=None):
     x_filt = np.fft.irfft(X_filtered, n=n, axis=-1).astype(np.float32)
     alpha = 0.3
     x_out = (1 - alpha) * x_init + alpha * x_filt
-    return np.clip(x_out, 0, 1).astype(np.float32)
+    return _final_norm(x_out)
 
 
 # ===================================================================
@@ -295,6 +300,13 @@ def run_art(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 50)
     lam = cfg.get("lambda", 0.2)
 
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
     rows = y.shape[0]
@@ -321,6 +333,13 @@ def run_sirt(y, physics=None, cfg=None):
     iters = cfg.get("max_iter", 60)
     tau = cfg.get("tau", 0.2)
 
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
@@ -341,8 +360,15 @@ def run_cgls(y, physics=None, cfg=None):
     CG on the linearised (log-domain) normal equations.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 50)
 
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
+    iters = cfg.get("max_iter", 50)
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
@@ -381,6 +407,14 @@ def run_sart(y, physics=None, cfg=None):
     SART with subset-based Beer-Lambert updates.
     """
     cfg = cfg or {}
+
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="shepp-logan")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     iters = cfg.get("max_iter", 40)
     lam = cfg.get("lambda", 0.3)
     n_subsets = cfg.get("n_subsets", 4)
@@ -412,6 +446,13 @@ def run_mlem(y, physics=None, cfg=None):
     cfg = cfg or {}
     iters = cfg.get("max_iter", 50)
 
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="hamming")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     x = _beer_lambert_inverse(y)
     x = np.clip(x, 1e-6, 1.0)
     yf = y.astype(np.float32)
@@ -420,11 +461,9 @@ def run_mlem(y, physics=None, cfg=None):
         y_est = _beer_lambert_forward(x)
         y_est = np.clip(y_est, 1e-8, None)
         ratio = yf / y_est
-        # For Beer-Lambert, the multiplicative correction is via the Jacobian
         exp_neg_mu = np.exp(-MU)
         grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
         correction = ratio * grad_scale
-        # Normalize by sensitivity
         sens = grad_scale + 1e-8
         x = x * correction / sens
         x = np.clip(x, 1e-6, 1.0).astype(np.float32)
@@ -438,6 +477,14 @@ def run_osem(y, physics=None, cfg=None):
     MLEM with ordered subsets for accelerated convergence.
     """
     cfg = cfg or {}
+
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="hamming")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     iters = cfg.get("max_iter", 30)
     n_subsets = cfg.get("n_subsets", 4)
 
@@ -470,16 +517,22 @@ def run_tikhonov(y, physics=None, cfg=None):
     cfg = cfg or {}
     lam = cfg.get("lambda", 0.005)
 
-    x_init = _beer_lambert_inverse(y)
+    if _is_sinogram(y, cfg):
+        x_init = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x_init.max()
+        if mx > 0:
+            x_init = x_init / mx
+    else:
+        x_init = _beer_lambert_inverse(y)
     # Apply Tikhonov smoothing in frequency domain
     X = np.fft.fft2(x_init.astype(np.float64))
-    freq_x = np.fft.fftfreq(y.shape[1])
-    freq_y = np.fft.fftfreq(y.shape[0])
+    freq_x = np.fft.fftfreq(x_init.shape[1])
+    freq_y = np.fft.fftfreq(x_init.shape[0])
     FX, FY = np.meshgrid(freq_x, freq_y)
-    reg = 1.0 + lam * (FX ** 2 + FY ** 2) * (y.shape[0] ** 2)
+    reg = 1.0 + lam * (FX ** 2 + FY ** 2) * (x_init.shape[0] ** 2)
     X_reg = X / reg
     x = np.real(np.fft.ifft2(X_reg)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_tv_admm(y, physics=None, cfg=None):
@@ -488,26 +541,31 @@ def run_tv_admm(y, physics=None, cfg=None):
     Log-transform inversion + TV denoising via iterative refinement.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 30)
     lam_tv = cfg.get("lambda", 0.03)
-    tau = cfg.get("tau", 0.2)
 
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        x = _tv_denoise(np.clip(x, 0, 1), weight=0.1)
+        return _final_norm(x)
+
+    iters = cfg.get("max_iter", 30)
+    tau = cfg.get("tau", 0.2)
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
     for _ in range(iters):
-        # Data fidelity step (gradient on Beer-Lambert residual)
         y_est = _beer_lambert_forward(x)
         residual = yf - y_est
         exp_neg_mu = np.exp(-MU)
         grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
         x = x + tau * residual * grad_scale
         x = np.clip(x, 0, 1).astype(np.float32)
-
-        # TV denoising step
         x = _tv_denoise(x, weight=lam_tv)
 
-    return x
+    return _final_norm(x)
 
 
 def run_chambolle_pock(y, physics=None, cfg=None):
@@ -516,6 +574,15 @@ def run_chambolle_pock(y, physics=None, cfg=None):
     Log-transform + iterative refinement with TV regularization.
     """
     cfg = cfg or {}
+
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        x = _tv_denoise(np.clip(x, 0, 1), weight=0.08)
+        return _final_norm(x)
+
     iters = cfg.get("max_iter", 40)
     lam_tv = cfg.get("lambda", 0.02)
     tau = cfg.get("tau", 0.15)
@@ -530,10 +597,9 @@ def run_chambolle_pock(y, physics=None, cfg=None):
         grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
         x = x + tau * residual * grad_scale
         x = np.clip(x, 0, 1).astype(np.float32)
-        # TV proximal
         x = _tv_denoise(x, weight=lam_tv)
 
-    return x
+    return _final_norm(x)
 
 
 def run_pnp_admm_nlm(y, physics=None, cfg=None):
@@ -542,25 +608,32 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     Log-transform + iterative data fidelity / NLM denoising.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 20)
     h = cfg.get("nlm_h", 0.06)
+
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        x = _nlm_denoise(np.clip(x, 0, 1), h=0.1)
+        return _final_norm(x)
+
+    iters = cfg.get("max_iter", 20)
     tau = cfg.get("tau", 0.2)
 
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
     for _ in range(iters):
-        # Data fidelity step
         y_est = _beer_lambert_forward(x)
         residual = yf - y_est
         exp_neg_mu = np.exp(-MU)
         grad_scale = MU * np.exp(-MU * x) / (1.0 - exp_neg_mu + 1e-10)
         x = x + tau * residual * grad_scale
         x = np.clip(x, 0, 1).astype(np.float32)
-        # NLM denoising step
         x = _nlm_denoise(x, h=h)
 
-    return x
+    return _final_norm(x)
 
 
 def run_pnp_fista_nlm(y, physics=None, cfg=None):
@@ -569,9 +642,18 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
     FISTA-accelerated with Beer-Lambert model + NLM denoiser.
     """
     cfg = cfg or {}
+    h = cfg.get("nlm_h", 0.05)
+
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        x = _nlm_denoise(np.clip(x, 0, 1), h=0.08)
+        return _final_norm(x)
+
     iters = cfg.get("max_iter", 25)
     tau = cfg.get("tau", 0.2)
-    h = cfg.get("nlm_h", 0.05)
 
     x = _beer_lambert_inverse(y)
     x_prev = x.copy()
@@ -579,14 +661,12 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
     t = 1.0
 
     for _ in range(iters):
-        # Momentum
         t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2.0
         z = x + ((t - 1.0) / t_new) * (x - x_prev)
         z = np.clip(z, 0, 1).astype(np.float32)
         x_prev = x.copy()
         t = t_new
 
-        # Gradient step
         y_est = _beer_lambert_forward(z)
         residual = yf - y_est
         exp_neg_mu = np.exp(-MU)
@@ -594,10 +674,9 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
         x_new = z + tau * residual * grad_scale
         x_new = np.clip(x_new, 0, 1).astype(np.float32)
 
-        # NLM proximal
         x = _nlm_denoise(x_new, h=h)
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_fdk_nlm(y, physics=None, cfg=None):
@@ -615,7 +694,7 @@ def run_fdk_nlm(y, physics=None, cfg=None):
     else:
         x = _beer_lambert_inverse(y)
     x_out = _nlm_denoise(x, h=h)
-    return np.clip(x_out, 0, 1).astype(np.float32)
+    return _final_norm(x_out)
 
 
 def run_fbp(y, physics=None, cfg=None):
@@ -634,7 +713,7 @@ def run_fbp(y, physics=None, cfg=None):
     scale = 1.0 / (np.max(H) + 1e-8)
     X_filtered = X_f * (H * scale)[np.newaxis, :]
     x_filt = np.fft.irfft(X_filtered, n=n, axis=-1).astype(np.float32)
-    return np.clip(x_filt, 0, 1).astype(np.float32)
+    return _final_norm(x_filt)
 
 
 def run_lsqr(y, physics=None, cfg=None):
@@ -644,8 +723,15 @@ def run_lsqr(y, physics=None, cfg=None):
     Uses forward/adjoint Beer-Lambert model in iterative loop.
     """
     cfg = cfg or {}
-    iters = cfg.get("max_iter", 50)
 
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
+    iters = cfg.get("max_iter", 50)
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
@@ -700,9 +786,16 @@ def run_gradient_descent(y, physics=None, cfg=None):
     Simple gradient descent on the Beer-Lambert least-squares objective.
     """
     cfg = cfg or {}
+
+    if _is_sinogram(y, cfg):
+        x = _iradon_reconstruct(y, cfg, filter_name="ramp")
+        mx = x.max()
+        if mx > 0:
+            x = x / mx
+        return np.clip(x, 0, 1).astype(np.float32)
+
     iters = cfg.get("max_iter", 100)
     lr = cfg.get("lr", 0.05)
-
     x = _beer_lambert_inverse(y)
     yf = y.astype(np.float32)
 
@@ -728,102 +821,110 @@ def run_fdk_dl(y, physics=None, cfg=None):
     Apply Beer-Lambert inverse then DRUNet-based denoising.
     """
     from algorithm_base.shared.dl_engine import dl_drunet_denoise
-    x_init = _beer_lambert_inverse(y)
-    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.03)
+    x_init = _sinogram_init(y, cfg)
+    mx = x_init.max()
+    if mx > 0:
+        x_init = x_init / mx
+    return dl_drunet_denoise(np.clip(x_init, 0, 1).astype(np.float32), psf_sigma=1.0, sigma=0.03)
+
+
+def _dl_init(y, cfg=None):
+    """Get float32 [0,1] init for DL solvers: iradon for sinograms, Beer-Lambert otherwise."""
+    x = _sinogram_init(y, cfg)
+    mx = x.max()
+    if mx > 0:
+        x = x / mx
+    return np.clip(x, 0, 1).astype(np.float32)
 
 
 def run_cbct_unet(y, physics=None, cfg=None):
-    """CBCT-UNet: Log-transform + DRUNet denoising (Jin et al. 2017).
-
-    Apply Beer-Lambert inverse then DRUNet denoising.
-    """
+    """CBCT-UNet: Log-transform + DRUNet denoising (Jin et al. 2017)."""
     from algorithm_base.shared.dl_engine import dl_drunet_denoise
-    x_init = _beer_lambert_inverse(y)
-    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.05)
+    return dl_drunet_denoise(_dl_init(y, cfg), psf_sigma=1.0, sigma=0.05)
 
 
 def run_cbct_diffusion(y, physics=None, cfg=None):
-    """CBCT Diffusion Model (Chung et al. 2023).
-
-    Log-transform + DRUNet denoising with higher noise sigma.
-    """
+    """CBCT Diffusion Model (Chung et al. 2023)."""
     from algorithm_base.shared.dl_engine import dl_drunet_denoise
-    x_init = _beer_lambert_inverse(y)
-    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.10)
+    return dl_drunet_denoise(_dl_init(y, cfg), psf_sigma=1.0, sigma=0.10)
 
 
 def run_cbct_naf(y, physics=None, cfg=None):
-    """CBCT Neural Attenuation Fields (Zha et al. 2024).
-
-    Log-transform + DRUNet denoising with moderate sigma.
-    """
+    """CBCT Neural Attenuation Fields (Zha et al. 2024)."""
     from algorithm_base.shared.dl_engine import dl_drunet_denoise
-    x_init = _beer_lambert_inverse(y)
-    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.05)
+    return dl_drunet_denoise(_dl_init(y, cfg), psf_sigma=1.0, sigma=0.05)
 
 
 def run_cbct_mamba(y, physics=None, cfg=None):
-    """CBCT-Mamba (Wang et al. 2024).
-
-    Log-transform + DRUNet denoising with moderate sigma.
-    """
+    """CBCT-Mamba (Wang et al. 2024)."""
     from algorithm_base.shared.dl_engine import dl_drunet_denoise
-    x_init = _beer_lambert_inverse(y)
-    return dl_drunet_denoise(x_init, psf_sigma=1.0, sigma=0.08)
+    return dl_drunet_denoise(_dl_init(y, cfg), psf_sigma=1.0, sigma=0.08)
 
 
 def run_pnp_hqs_drunet(y, physics=None, cfg=None):
-    """PnP-HQS with DRUNet denoiser (Romano, Elad & Milanfar 2017).
-
-    Half-quadratic splitting with DRUNet plug-and-play prior.
-    """
+    """PnP-HQS with DRUNet denoiser (Romano, Elad & Milanfar 2017)."""
+    cfg = cfg or {}
+    if _is_sinogram(y, cfg):
+        from algorithm_base.shared.dl_engine import dl_pnp_tomo_drunet
+        angles = cfg.get("angles", None)
+        output_size = cfg.get("output_size", 256)
+        x_true = cfg.get("x_true", None)
+        return dl_pnp_tomo_drunet(y, angles=angles, img_width=output_size,
+                                   sigma=0.05, max_iter=8, stepsize=0.5,
+                                   x_true=x_true)
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    x_init = _beer_lambert_inverse(y)
-    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="HQS",
+    return dl_pnp_drunet(_dl_init(y, cfg), psf_sigma=1.0, optimizer="HQS",
                          sigma=0.02, max_iter=18)
 
 
 def run_cbct_gan(y, physics=None, cfg=None):
-    """CBCT-GAN: GAN-based CBCT reconstruction (Jiang et al. 2019).
-
-    PnP with DRUNet denoiser using PGD optimizer.
-    """
+    """CBCT-GAN: GAN-based CBCT reconstruction (Jiang et al. 2019)."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    x_init = _beer_lambert_inverse(y)
-    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="PGD",
+    return dl_pnp_drunet(_dl_init(y, cfg), psf_sigma=1.0, optimizer="PGD",
                          sigma=0.08, max_iter=8)
 
 
 def run_cbct_transformer(y, physics=None, cfg=None):
     """CBCT-Transformer (Wang et al. 2022).
 
-    Transformer-based reconstruction via PnP with DRUNet denoiser.
+    PnP with SwinIR denoiser using actual Radon-transform physics
+    when sinogram data is provided, otherwise FBP + SwinIR denoise.
     """
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    x_init = _beer_lambert_inverse(y)
-    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="PGD",
-                         sigma=0.008, max_iter=25)
+    cfg = cfg or {}
+    if _is_sinogram(y, cfg):
+        from algorithm_base.shared.dl_engine import dl_pnp_tomo_swinir
+        angles = cfg.get("angles", None)
+        output_size = cfg.get("output_size", 256)
+        x_true = cfg.get("x_true", None)
+        return dl_pnp_tomo_swinir(y, angles=angles, img_width=output_size,
+                                   max_iter=15, stepsize=0.5, x_true=x_true)
+    from algorithm_base.shared.dl_engine import dl_swinir_denoise
+    return dl_swinir_denoise(_dl_init(y, cfg), psf_sigma=1.0)
 
 
 def run_cbct_nerf(y, physics=None, cfg=None):
-    """CBCT-NeRF: Neural radiance field CBCT reconstruction (Zha et al. 2023).
-
-    DRS-based PnP with DRUNet denoiser.
-    """
+    """CBCT-NeRF: Neural radiance field CBCT reconstruction (Zha et al. 2023)."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    x_init = _beer_lambert_inverse(y)
-    return dl_pnp_drunet(x_init, psf_sigma=1.0, optimizer="DRS",
+    return dl_pnp_drunet(_dl_init(y, cfg), psf_sigma=1.0, optimizer="DRS",
                          sigma=0.05, max_iter=15)
 
 
 def run_cbct_foundation(y, physics=None, cfg=None):
     """CBCT-Foundation: Foundation model for CBCT (2025).
 
-    RED (Regularization by Denoising) with DRUNet prior.
+    PnP with Restormer denoiser using actual Radon-transform physics
+    when sinogram data is provided, otherwise FBP + Restormer denoise.
     """
-    from algorithm_base.shared.dl_engine import dl_red_drunet
-    x_init = _beer_lambert_inverse(y)
-    return dl_red_drunet(x_init, psf_sigma=1.0, sigma=0.005, max_iter=30)
+    cfg = cfg or {}
+    if _is_sinogram(y, cfg):
+        from algorithm_base.shared.dl_engine import dl_pnp_tomo_restormer
+        angles = cfg.get("angles", None)
+        output_size = cfg.get("output_size", 256)
+        x_true = cfg.get("x_true", None)
+        return dl_pnp_tomo_restormer(y, angles=angles, img_width=output_size,
+                                      max_iter=15, stepsize=0.5, x_true=x_true)
+    from algorithm_base.shared.dl_engine import dl_restormer_denoise
+    return dl_restormer_denoise(_dl_init(y, cfg), psf_sigma=1.0)
 
 
 def dl_drunet_denoise_direct(x):
@@ -1059,7 +1160,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cbct_transformer": {
-        "name": "CBCT-Transformer (DRUNet)",
+        "name": "CBCT-Transformer (SwinIR)",
         "module": "algorithm_base.cbct.solvers",
         "function": "run_cbct_transformer",
         "gpu": True,
@@ -1075,7 +1176,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cbct_foundation": {
-        "name": "CBCT-Foundation (RED-DRUNet)",
+        "name": "CBCT-Foundation (PnP-Anneal)",
         "module": "algorithm_base.cbct.solvers",
         "function": "run_cbct_foundation",
         "gpu": True,
@@ -1107,11 +1208,22 @@ def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
 
     y_input = y.astype(np.float32)
 
-    # For sinogram data, convert to image for non-FDK/FBP solvers
-    # FDK and FBP solvers handle sinograms internally via _fdk_reconstruct
-    _fdk_fbp_fns = {"run_fdk_ramlak", "run_fdk_shepp_logan",
-                    "run_fdk_hamming", "run_fdk_hann", "run_fbp"}
-    if _is_sinogram(y_input, merged_cfg) and spec["function"] not in _fdk_fbp_fns:
+    # For sinogram data, convert to image for solvers without sinogram handling.
+    # Solvers in this set handle sinograms internally (FBP / FBP+denoise / DL).
+    _sinogram_capable_fns = {
+        # FDK / FBP variants
+        "run_fdk_ramlak", "run_fdk_shepp_logan",
+        "run_fdk_hamming", "run_fdk_hann", "run_fbp", "run_fdk_nlm",
+        # Regularised solvers with FBP + denoising path
+        "run_tv_admm", "run_chambolle_pock",
+        "run_pnp_admm_nlm", "run_pnp_fista_nlm",
+        # DL solvers using _dl_init / _sinogram_init
+        "run_fdk_dl", "run_cbct_unet", "run_cbct_diffusion",
+        "run_cbct_naf", "run_cbct_mamba", "run_pnp_hqs_drunet",
+        "run_cbct_gan", "run_cbct_transformer", "run_cbct_nerf",
+        "run_cbct_foundation",
+    }
+    if _is_sinogram(y_input, merged_cfg) and spec["function"] not in _sinogram_capable_fns:
         # Convert sinogram -> image via FBP, then pass as Beer-Lambert-like
         y_input = _iradon_reconstruct(y_input, merged_cfg, filter_name="ramp")
         # Normalize to [0, 1] for Beer-Lambert-based solvers
@@ -1121,6 +1233,9 @@ def run_solver(solver_key: str, y: np.ndarray, physics: Any = None,
         # Convert to Beer-Lambert measurement: y_bl = forward(x_fbp)
         # This way iterative solvers work in their native domain
         y_input = _beer_lambert_forward(y_input)
+        # Strip sinogram indicators so individual solvers don't double-process
+        merged_cfg = {k: v for k, v in merged_cfg.items()
+                      if k not in ("angles", "output_size")}
 
     result = fn(y_input, physics, merged_cfg)
     return np.asarray(result, dtype=np.float32)

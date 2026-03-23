@@ -26,21 +26,36 @@ IMG_SIZE = 64
 class CompHoloOperator:
     """Simplified compressive holography operator (PSF model)."""
 
-    def __init__(self, y_shape, psf_sigma=PSF_SIGMA):
-        k = max(3, int(3 * psf_sigma))
-        ax = np.arange(-k, k + 1)
-        gx, gy = np.meshgrid(ax, ax)
-        self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
-        self.psf /= self.psf.sum()
+    def __init__(self, y_shape, psf_sigma=PSF_SIGMA, psf=None):
+        if psf is not None:
+            self.psf = psf.astype(np.float32)
+            s = self.psf.sum()
+            if s > 0:
+                self.psf /= s
+        else:
+            k = max(3, int(3 * psf_sigma))
+            ax = np.arange(-k, k + 1)
+            gx, gy = np.meshgrid(ax, ax)
+            self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
+            self.psf /= self.psf.sum()
         self.psf_flip = self.psf[::-1, ::-1].copy()
         self.y_shape = y_shape
-        self.psf_sigma = psf_sigma
+        self.psf_sigma = psf_sigma if psf is None else 0.0
 
     def forward(self, x):
         return fftconvolve(x, self.psf, mode='same').astype(np.float32)
 
     def adjoint(self, y):
         return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
+
+
+def _op(y, cfg=None):
+    """Create operator, using dataset PSF (H_ideal) if available."""
+    cfg = cfg or {}
+    h = cfg.get("H_ideal", None)
+    if h is not None and h.ndim == 2 and h.shape[0] < y.shape[0]:
+        return CompHoloOperator(y.shape, psf=h)
+    return CompHoloOperator(y.shape)
 
 
 def _psf_fft(psf, shape):
@@ -87,6 +102,15 @@ def _tv_prox(x, lam, n_iter=15):
     return (x + lam * _divergence(px, py)).astype(np.float32)
 
 
+def _final_norm(x):
+    """Non-negative normalisation to [0, 1] for output."""
+    x = np.maximum(x, 0).astype(np.float32)
+    mx = x.max()
+    if mx > 0:
+        x = x / mx
+    return x
+
+
 # ===================================================================
 # Classical solvers
 # ===================================================================
@@ -99,7 +123,7 @@ def run_fista_tv(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     n_iter = cfg.get("iterations", 80)
     lam_tv = cfg.get("lambda_tv", 0.005)
 
@@ -127,7 +151,7 @@ def run_wiener(y, physics=None, cfg=None):
     """Wiener deconvolution for holographic reconstruction."""
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     lam = cfg.get("lambda", 1e-3)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
@@ -139,7 +163,7 @@ def run_angular_spectrum(y, physics=None, cfg=None):
     """Angular Spectrum Method for multi-depth holographic propagation."""
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     lam_reg = cfg.get("lambda", 1e-3)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
@@ -151,7 +175,7 @@ def run_fresnel_backprop(y, physics=None, cfg=None):
     """Fresnel back-propagation for holographic depth recovery."""
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     lam = cfg.get("lambda", 5e-3)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
@@ -167,7 +191,7 @@ def run_tikhonov(y, physics=None, cfg=None):
     """Tikhonov-regularised holographic reconstruction."""
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     lam = cfg.get("lambda", 5e-3)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
@@ -179,7 +203,7 @@ def run_admm_tv(y, physics=None, cfg=None):
     """ADMM with TV regularisation for compressive holography."""
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     n_iter = cfg.get("iterations", 50)
     lam_tv = cfg.get("lambda_tv", 0.01)
     rho = cfg.get("rho", 1.0)
@@ -203,7 +227,7 @@ def run_ista_l1(y, physics=None, cfg=None):
     """ISTA with L1 sparsity prior for compressive holographic recovery."""
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     n_iter = cfg.get("iterations", 100)
     lam = cfg.get("lambda", 0.01)
 
@@ -227,7 +251,7 @@ def run_residual_minimisation(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     y = _ensure_2d(y)
-    op = physics if physics is not None else CompHoloOperator(y.shape)
+    op = physics if physics is not None else _op(y, cfg)
     lam = cfg.get("lambda", 1e-3)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
@@ -239,52 +263,76 @@ def run_residual_minimisation(y, physics=None, cfg=None):
 # Deep-learning solvers
 # ===================================================================
 
+def _get_psf_from_cfg(cfg):
+    """Extract PSF from cfg (H_ideal for compressive holography)."""
+    cfg = cfg or {}
+    h = cfg.get("H_ideal", None)
+    if h is not None and hasattr(h, 'ndim') and h.ndim == 2:
+        return np.asarray(h, dtype=np.float32)
+    return None
+
+
 def run_dl_hologan(y, physics=None, cfg=None):
     """HoloGAN-CS — GAN-based compressive holographic reconstruction (2020)."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
     y = _ensure_2d(y)
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
-                         optimizer="PGD", sigma=0.05, max_iter=10, stepsize=1.0)
+                         optimizer="PGD", sigma=0.05, max_iter=10, stepsize=1.0,
+                         psf=psf)
 
 
 def run_dl_deepfresnel(y, physics=None, cfg=None):
     """DeepFresnel — learned Fresnel propagation (2021)."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
     y = _ensure_2d(y)
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
-                         optimizer="PGD", sigma=0.03, max_iter=15, stepsize=1.0)
+                         optimizer="PGD", sigma=0.03, max_iter=15, stepsize=1.0,
+                         psf=psf)
 
 
 def run_dl_holonet_cs(y, physics=None, cfg=None):
     """HoloNet-CS — compressive holographic neural network (2022)."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
     y = _ensure_2d(y)
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
-                         optimizer="HQS", sigma=0.04, max_iter=12, stepsize=1.0)
+                         optimizer="HQS", sigma=0.04, max_iter=12, stepsize=1.0,
+                         psf=psf)
 
 
 def run_dl_compholo_transformer(y, physics=None, cfg=None):
-    """CompHolo-Transformer — Transformer for compressive holography (2023)."""
+    """CompHolo-Transformer — transformer for compressive holography (2023).
+
+    PnP-PGD with pretrained DRUNet, sigma=0.008, 25 iterations.
+    """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
     y = _ensure_2d(y)
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
-                         optimizer="PGD", sigma=0.008, max_iter=25, stepsize=1.0)
+                         optimizer="PGD", sigma=0.008, max_iter=25, stepsize=1.0,
+                         psf=psf)
 
 
 def run_dl_diffusion_holo(y, physics=None, cfg=None):
     """Diffusion-Holo — diffusion model for holographic reconstruction (2024)."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
     y = _ensure_2d(y)
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
-                         optimizer="PGD", sigma=0.01, max_iter=20, stepsize=1.0)
+                         optimizer="PGD", sigma=0.01, max_iter=20, stepsize=1.0,
+                         psf=psf)
 
 
 def run_dl_pnp_pgd(y, physics=None, cfg=None):
     """PnP-PGD with DRUNet for compressive holography."""
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
     y = _ensure_2d(y)
+    psf = _get_psf_from_cfg(cfg)
     return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA,
-                         optimizer="PGD", sigma=0.02, max_iter=18, stepsize=0.8)
+                         optimizer="PGD", sigma=0.02, max_iter=18, stepsize=0.8,
+                         psf=psf)
 
 
 # ===================================================================
@@ -359,7 +407,7 @@ SOLVERS = {
         "gpu": True,
     },
     "dl_transformer": {
-        "name": "CompHolo-Transformer",
+        "name": "CompHolo-Transformer (PnP-PGD DRUNet)",
         "module": "algorithm_base.compressive_holography.solvers",
         "function": "run_dl_compholo_transformer",
         "gpu": True,

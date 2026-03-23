@@ -23,6 +23,11 @@ DISPLAY_NAME = "Single-Pixel Camera (SPC)"
 PSF_SIGMA = 2.8
 
 
+def _final_norm(x):
+    """Clip to [0, 1] for output."""
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ---------------------------------------------------------------------------
 # Solver registry -- 37 solvers from 1949 to 2025
 # ---------------------------------------------------------------------------
@@ -270,7 +275,7 @@ SOLVERS = {
         "reference": "Zhang et al., IEEE TIP 2021",
     },
     "csformer": {
-        "name": "CSFormer",
+        "name": "CSFormer (PnP-PGD DRUNet)",
         "module": "__self__",
         "function": "_run_csformer",
         "gpu": True,
@@ -291,7 +296,7 @@ SOLVERS = {
         "reference": "Chen et al., CVPR 2023",
     },
     "spc_foundation": {
-        "name": "SPC-Foundation",
+        "name": "SPC-Foundation (RED DRUNet)",
         "module": "__self__",
         "function": "_run_spc_foundation",
         "gpu": True,
@@ -490,7 +495,7 @@ def _run_tval3(y, operator, cfg):
         if np.linalg.norm(x - x_old) / (np.linalg.norm(x) + 1e-10) < tol:
             break
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ---------------------------------------------------------------------------
@@ -536,7 +541,7 @@ def _run_admm_l1(y, operator, cfg):
         # u-update
         u = u + alpha - z
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ---------------------------------------------------------------------------
@@ -784,7 +789,7 @@ def _run_gap_tv(y, operator, cfg):
         residual = y_flat - op.forward(x_den)
         x = x_den + gamma * op.adjoint(residual)
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ---------------------------------------------------------------------------
@@ -937,7 +942,7 @@ def _run_wiener(y, operator, cfg):
     Hconj = np.conj(H)
     x = np.real(np.fft.ifft2(Hconj * Y / (np.abs(H) ** 2 + lam)))
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 # ---------------------------------------------------------------------------
@@ -1000,7 +1005,7 @@ def _run_tikhonov(y, operator, cfg):
     Hconj = np.conj(H)
     x = np.real(np.fft.ifft2(Hconj * Y / (np.abs(H) ** 2 + lam)))
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 # ---------------------------------------------------------------------------
@@ -1049,7 +1054,7 @@ def _run_bm3d_amp(y, operator, cfg):
         x = x_den
 
     # Round to float32 precision to eliminate accumulated jitter
-    out = np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    out = _final_norm(x.reshape(op.img_shape))
     return np.round(out, decimals=6).astype(np.float32)
 
 
@@ -1101,7 +1106,7 @@ def _run_damp(y, operator, cfg):
 
         x = x_den
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ---------------------------------------------------------------------------
@@ -1140,7 +1145,7 @@ def _run_basis_pursuit(y, operator, cfg):
         z = _soft_threshold(alpha + u, 1.0 / rho)
         u = u + alpha - z
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ---------------------------------------------------------------------------
@@ -1283,7 +1288,7 @@ def _run_amp(y, operator, cfg):
 
         x = x_new
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ---------------------------------------------------------------------------
@@ -1410,7 +1415,7 @@ def _run_admm_tv(y, operator, cfg):
         x = x - 0.5 * grad_data
         x = (x + rho * tv_denoised.flatten()) / (1.0 + rho)
 
-    return np.clip(x.reshape(op.img_shape), 0, 1).astype(np.float32)
+    return _final_norm(x.reshape(op.img_shape))
 
 
 # ===================================================================
@@ -1633,12 +1638,12 @@ def _run_fsoinet(y, operator, cfg):
 
 def _run_spc_foundation(y, operator, cfg):
     """SPC-Foundation -- Foundation model for compressive sensing (2025).
-    RED-DRUNet, sigma=0.005, 30 iterations."""
+    RED with pretrained DRUNet, sigma=0.005, 30 iterations."""
     from algorithm_base.shared.dl_engine import dl_red_drunet
     op = _extract_operator(operator, y, cfg or {})
     img = _backproject(op, y)
     return dl_red_drunet(img, psf_sigma=PSF_SIGMA,
-                         sigma=0.005, max_iter=30, stepsize=0.5, lam=1.0)
+                         sigma=0.005, max_iter=30, stepsize=0.5)
 
 
 # ===================================================================

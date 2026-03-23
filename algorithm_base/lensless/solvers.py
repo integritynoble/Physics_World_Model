@@ -58,6 +58,15 @@ def _psf_fft(psf, shape):
 # Utility helpers
 # ---------------------------------------------------------------------------
 
+def _final_norm(x):
+    """Non-negative normalisation to [0, 1] for output."""
+    x = np.maximum(x, 0).astype(np.float32)
+    mx = x.max()
+    if mx > 0:
+        x = x / mx
+    return x
+
+
 def _ensure_2d(y: np.ndarray) -> np.ndarray:
     """Squeeze to 2-D if needed."""
     y = np.asarray(y, dtype=np.float32)
@@ -126,13 +135,13 @@ def run_wiener(y, physics=None, cfg=None):
     cfg = cfg or {}
     y = _ensure_2d(y)
     op = physics if physics is not None else LenslessOperator(y.shape)
-    lam = cfg.get("lambda", 1e-3)
+    lam = cfg.get("lambda", 5e-3)
 
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x_hat = np.real(np.fft.ifft2(X))
-    return np.clip(x_hat, 0, 1).astype(np.float32)
+    return _final_norm(x_hat)
 
 
 def run_tikhonov(y, physics=None, cfg=None):
@@ -149,7 +158,7 @@ def run_tikhonov(y, physics=None, cfg=None):
     Y = np.fft.fft2(y)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x_hat = np.real(np.fft.ifft2(X))
-    return np.clip(x_hat, 0, 1).astype(np.float32)
+    return _final_norm(x_hat)
 
 
 def run_richardson_lucy(y, physics=None, cfg=None):
@@ -163,7 +172,7 @@ def run_richardson_lucy(y, physics=None, cfg=None):
     n_iter = cfg.get("iterations", 50)
 
     x = op.adjoint(y)
-    x = np.clip(x, 1e-8, None)
+    x = np.maximum(x, 1e-8)
 
     for _ in range(n_iter):
         Hx = op.forward(x)
@@ -171,12 +180,9 @@ def run_richardson_lucy(y, physics=None, cfg=None):
         ratio = y / Hx
         correction = op.adjoint(ratio)
         x = x * correction
-        x = np.clip(x, 0, None)
+        x = np.maximum(x, 1e-8)
 
-    mx = x.max()
-    if mx > 0:
-        x = x / mx
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_landweber(y, physics=None, cfg=None):
@@ -240,8 +246,8 @@ def run_tv_admm(y, physics=None, cfg=None):
     y = _ensure_2d(y)
     op = physics if physics is not None else LenslessOperator(y.shape)
     n_iter = cfg.get("iterations", 60)
-    lam = cfg.get("lambda", 0.01)
-    rho = cfg.get("rho", 1.0)
+    lam = cfg.get("lambda", 0.005)
+    rho = cfg.get("rho", 0.5)
 
     H = _psf_fft(op.psf, y.shape)
     HtY = np.conj(H) * np.fft.fft2(y)
@@ -251,15 +257,12 @@ def run_tv_admm(y, physics=None, cfg=None):
     u = np.zeros_like(x)
 
     for _ in range(n_iter):
-        # x-update: solve (H^TH + rho I) x = H^Ty + rho(z - u)
         rhs = HtY + rho * np.fft.fft2(z - u)
         x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
-        # z-update: TV proximal
         z = _tv_prox(x + u, lam / rho, n_iter=10)
-        # dual update
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_admm_tv(y, physics=None, cfg=None):
@@ -272,8 +275,8 @@ def run_admm_tv(y, physics=None, cfg=None):
     y = _ensure_2d(y)
     op = physics if physics is not None else LenslessOperator(y.shape)
     n_iter = cfg.get("iterations", 80)
-    lam = cfg.get("lambda", 0.05)
-    rho = cfg.get("rho", 2.0)
+    lam = cfg.get("lambda", 0.02)
+    rho = cfg.get("rho", 1.0)
 
     H = _psf_fft(op.psf, y.shape)
     HtY = np.conj(H) * np.fft.fft2(y)
@@ -288,7 +291,7 @@ def run_admm_tv(y, physics=None, cfg=None):
         z = _tv_prox(x + u, lam / rho, n_iter=12)
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_pnp_admm_nlm(y, physics=None, cfg=None):
@@ -311,15 +314,12 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     u = np.zeros_like(x)
 
     for _ in range(n_iter):
-        # x-update
         rhs = HtY + rho * np.fft.fft2(z - u)
         x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
-        # z-update: NLM denoiser
         z = _nlm_denoise(x + u, sigma_est=sigma_nlm)
-        # dual
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_pnp_hqs_nlm(y, physics=None, cfg=None):
@@ -345,9 +345,9 @@ def run_pnp_hqs_nlm(y, physics=None, cfg=None):
         x_tilde = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + mu))).astype(np.float32)
         # denoising step
         x = _nlm_denoise(x_tilde, sigma_est=sigma_nlm)
-        mu *= 1.05  # slowly increase penalty
+        mu *= 1.05
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_inverse_filter(y, physics=None, cfg=None):
@@ -358,12 +358,12 @@ def run_inverse_filter(y, physics=None, cfg=None):
     cfg = cfg or {}
     y = _ensure_2d(y)
     op = physics if physics is not None else LenslessOperator(y.shape)
-    eps = cfg.get("epsilon", 1e-3)
+    eps = cfg.get("epsilon", 0.5)
     H = _psf_fft(op.psf, y.shape)
     Y = np.fft.fft2(y)
     H_safe = np.where(np.abs(H) > eps, H, eps * np.exp(1j * np.angle(H)))
     x_hat = np.real(np.fft.ifft2(Y / H_safe))
-    return np.clip(x_hat, 0, 1).astype(np.float32)
+    return _final_norm(x_hat)
 
 
 def run_constrained_ls(y, physics=None, cfg=None):
@@ -385,7 +385,7 @@ def run_constrained_ls(y, physics=None, cfg=None):
     L = _psf_fft(lap, y.shape)
     X = np.conj(H) * Y / (np.abs(H) ** 2 + gamma * np.abs(L) ** 2)
     x_hat = np.real(np.fft.ifft2(X))
-    return np.clip(x_hat, 0, 1).astype(np.float32)
+    return _final_norm(x_hat)
 
 
 def run_gradient_descent(y, physics=None, cfg=None):
@@ -432,10 +432,10 @@ def run_admm_l1_wavelet(y, physics=None, cfg=None):
         rhs = HtY + rho * np.fft.fft2(z - u)
         x = np.real(np.fft.ifft2(rhs / (np.abs(H) ** 2 + rho))).astype(np.float32)
         z = _soft_threshold(x + u, lam / rho)
-        z = np.clip(z, 0, 1)
+        z = np.maximum(z, 0)
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 # ===================================================================
@@ -576,7 +576,7 @@ def run_lensless_diffusion(y, physics=None, cfg=None):
 def run_lensless_foundation(y, physics=None, cfg=None):
     """Lensless-Foundation — foundation model for lensless imaging (2025).
 
-    RED with DRUNet, sigma=0.005, 30 iterations.
+    RED with pretrained DRUNet, sigma=0.005, 30 iterations.
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
     y = _ensure_2d(y)
@@ -736,7 +736,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "lensless_former": {
-        "name": "LenslessFormer",
+        "name": "LenslessFormer (PnP-DRS DRUNet)",
         "module": "algorithm_base.lensless.solvers",
         "function": "run_lensless_former",
         "gpu": True,
@@ -792,7 +792,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "lensless_foundation": {
-        "name": "Lensless-Foundation",
+        "name": "Lensless-Foundation (RED DRUNet)",
         "module": "algorithm_base.lensless.solvers",
         "function": "run_lensless_foundation",
         "gpu": True,

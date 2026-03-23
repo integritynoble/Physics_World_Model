@@ -536,14 +536,14 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | AMP-Net | 2021 | Zhang et al., TIP 2021 | 34.6 | 0.9550 | 27.2 | 0.9766 | partial | yes |
-| 2 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.3 | 0.9350 | 27.2 | 0.9766 | partial | yes |
-| 3 | TransCS | 2022 | Shen et al., TIP 2022 | 31.1 | — | 27.2 | 0.9766 | partial | yes |
-| 4 | CSNet+ | 2019 | Shi et al., TIP 2019 | 29.8 | 0.8820 | 27.2 | 0.9766 | done | yes |
-| 5 | TVAL3 | 2009 | Li et al., TVAL3, Rice 2009 | 24.6 | 0.7500 | 27.2 | 0.9766 | done | yes |
+| 1 | AMP-Net | 2021 | Zhang et al., TIP 2021 | 34.6 | 0.9550 | 19.6 | 0.4709 | gap | yes |
+| 2 | ISTA-Net+ | 2018 | Zhang & Ghanem, CVPR 2018 | 32.3 | 0.9350 | 19.4 | 0.4589 | gap | yes |
+| 3 | TransCS | 2022 | Shen et al., TIP 2022 | 31.1 | — | 19.5 | 0.4697 | gap | yes |
+| 4 | CSNet+ | 2019 | Shi et al., TIP 2019 | 29.8 | 0.8820 | 19.6 | 0.4802 | gap | yes |
+| 5 | TVAL3 | 2009 | Li et al., TVAL3, Rice 2009 | 24.6 | 0.7500 | 20.8 | 0.5026 | partial | yes |
 | 6 | Random sampling baseline | 2009 | Baraniuk, IEEE SPM 2007 | 15.0 | 0.4000 | 27.2 | 0.9766 | done | yes |
 | 7 | Pseudoinverse (no regularization) | 2009 | CS pseudoinverse baseline | 8.0 | 0.2000 | 27.2 | 0.9766 | done | yes |
-| 8 | ADMM-L1 (PWM) | — | Boyd et al. 2010 | 6.8 | — | 27.2 | 0.9766 | done | yes |
+| 8 | ADMM-L1 (PWM) | — | Boyd et al. 2010 | 6.8 | — | 20.4 | 0.4908 | done | yes |
 
 ## Computational Optics
 
@@ -619,11 +619,11 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
 | 1 | LensNet | 2025 | LensNet, IJCAI 2025 | 27.5 | 0.8630 | 25.2 | 0.0256 | done | yes |
 | 2 | MWDN | 2023 | MWDN, 2023 | 25.7 | 0.8160 | 25.2 | 0.0256 | done | yes |
-| 3 | FlatNet | 2022 | Khan et al., TPAMI 2022 | 21.2 | 0.7200 | 25.2 | 0.0256 | done | yes |
+| 3 | FlatNet | 2022 | Khan et al., TPAMI 2022 | 21.2 | 0.7200 | 11.2 | 0.4101 | gap | yes |
 | 4 | ADMM | 2000 | Boyd et al., ADMM, 2010 | 12.8 | 0.4420 | 25.2 | 0.0256 | done | yes |
-| 5 | FlatNet-Lite (PWM) | — | — | 11.9 | — | 25.2 | 0.0256 | done | yes |
+| 5 | FlatNet-Lite (PWM) | — | — | 11.9 | — | 10.6 | 0.4462 | done | yes |
 | 6 | wiener_deconv (test) | — | — | 11.9 | — | 25.2 | 0.0256 | done | yes |
-| 7 | Wiener deconvolution | 2025 | LensNet, IJCAI 2025 (DiffuserCam Wiener=7.33) | 7.3 | 0.0830 | 25.2 | 0.0256 | done | yes |
+| 7 | Wiener deconvolution | 2025 | LensNet, IJCAI 2025 (DiffuserCam Wiener=7.33) | 7.3 | 0.0830 | 11.7 | 0.1438 | done | yes |
 
 ### 31. Panorama Multi-Focus Fusion (`panorama`)
 
@@ -1514,13 +1514,13 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
 | 1 | KD-optimized beamformer | 2025 | Scientific Reports 2025 | 39.0 | 0.9530 | 33.7 | 0.9944 | partial | yes |
-| 2 | DAS (Delay-and-Sum) | 1990 | DAS baseline | 30.4 | — | 33.7 | 0.9944 | done | yes |
+| 2 | DAS (Delay-and-Sum) | 1990 | DAS baseline | 30.4 | — | 6.5 | 0.3365 | gap | yes |
 | 3 | Deep beamforming (Goudarzi) | 2020 | Goudarzi et al., IEEE TUFFC 2022 | 29.1 | — | 33.7 | 0.9944 | done | yes |
 | 4 | DAS single plane wave | 2020 | Li et al., IUS 2020 / CUBDL | 18.6 | — | 33.7 | 0.9944 | done | yes |
 | 5 | DAS single PW (deep target, 8cm) | 2017 | Perdios et al., IEEE TUFFC 2017 | 17.0 | 0.4500 | 33.7 | 0.9944 | done | yes |
 | 6 | ADMIRE | 2018 | Byram et al., IEEE TUFFC 2015 | 15.8 | 0.3564 | 33.7 | 0.9944 | done | yes |
 | 7 | US-CNN [proxy] (PWM) | — | Richardson 1972, JOSA | 15.8 | 0.3564 | 33.7 | 0.9944 | done | yes |
-| 8 | Richardson-Lucy (ultrasound) (PWM) | — | Richardson 1972, JOSA | 14.8 | — | 33.7 | 0.9944 | done | yes |
+| 8 | Richardson-Lucy (ultrasound) (PWM) | — | Richardson 1972, JOSA | 14.8 | — | 7.7 | 0.1006 | partial | yes |
 | 9 | rl_20iter (test) | — | — | 14.8 | — | 33.7 | 0.9944 | done | yes |
 | 10 | rl_50iter (test) | — | — | 14.8 | — | 33.7 | 0.9944 | done | yes |
 | 11 | DAS single PW (in vivo) | 2020 | Li et al., IUS 2020 / CUBDL, PMC verified | 13.5 | — | 33.7 | 0.9944 | done | yes |

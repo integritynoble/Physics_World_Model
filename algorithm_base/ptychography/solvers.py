@@ -26,6 +26,11 @@ DISPLAY_NAME = "Ptychographic Imaging"
 PSF_SIGMA = 1.6
 
 
+def _final_norm(x):
+    """Clip to [0, 1] for output."""
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ---------------------------------------------------------------------------
 # Ptychographic forward / adjoint operator
 # ---------------------------------------------------------------------------
@@ -193,10 +198,7 @@ def _ptycho_epie_core(y, cfg, iters=80, alpha_o=0.8, alpha_p=0.5,
         obj_W = int(positions[:, 1].max()) + D
 
     # Reconstruct complex probe from amplitude-only stored probe.
-    # The generate script creates a Gaussian probe with mild defocus/astigmatism
-    # phase: phase = defocus * r2/size^2 + astig * (Y^2-X^2)/size^2
-    # Since we don't know the exact phase, use the amplitude as-is with zero phase
-    # initially, then let ePIE update the probe to recover the phase.
+    # ePIE with update_probe=True recovers the missing complex phase.
     probe = probe_raw.astype(np.complex64)
 
     # Initialize object as uniform complex field
@@ -285,7 +287,7 @@ def run_wdd(y, physics=None, cfg=None):
         # WDD: direct Fourier-domain inversion using adjoint
         op = _get_operator(y, cfg)
         x = op.adjoint(y)
-        return np.clip(x, 0, 1).astype(np.float32)
+        return _final_norm(x)
 
     op = _get_operator(y, cfg)
     Y = np.fft.fft2(y.astype(np.float64))
@@ -294,7 +296,7 @@ def run_wdd(y, physics=None, cfg=None):
     denom = np.abs(H) ** 2 + lam
     X = (H_conj * Y) / denom
     x = np.real(np.fft.ifft2(X))
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_difference_map(y, physics=None, cfg=None):
@@ -510,7 +512,7 @@ def run_tikhonov(y, physics=None, cfg=None):
 
     if _is_ptycho_data(y, cfg):
         op = _get_operator(y, cfg)
-        return np.clip(op.adjoint(y), 0, 1).astype(np.float32)
+        return _final_norm(op.adjoint(y))
 
     op = _get_operator(y, cfg)
     Y = np.fft.fft2(y.astype(np.float64))
@@ -519,7 +521,7 @@ def run_tikhonov(y, physics=None, cfg=None):
     denom = np.abs(H) ** 2 + lam
     X = (H_conj * Y) / denom
     x = np.real(np.fft.ifft2(X))
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_tv_admm(y, physics=None, cfg=None):
@@ -560,7 +562,7 @@ def run_tv_admm(y, physics=None, cfg=None):
 
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_pnp_admm_nlm(y, physics=None, cfg=None):
@@ -597,7 +599,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
 
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_fpm(y, physics=None, cfg=None):
@@ -678,115 +680,302 @@ def _ptycho_to_2d(y, cfg):
     return op.adjoint(y)
 
 
-def run_ptychonn(y, physics=None, cfg=None):
-    """PtychoNN via PnP-PGD with pretrained DRUNet (Cherukara et al. 2020).
+def _ptycho_epie_init(y, cfg, iters=30):
+    """Get ePIE-based reconstruction for DL solver input.
 
-    PGD optimizer, sigma=0.01, 20 iterations.
+    For ptychographic data: runs a short ePIE to get a reasonable initial
+    reconstruction, which is then refined by the DL denoiser.
+    For 2D data: returns input as-is.
+    """
+    if _is_ptycho_data(y, cfg):
+        x = _ptycho_epie_core(y, cfg, iters=iters, alpha_o=0.8,
+                               update_probe=True)
+        return np.clip(x, 0, 1).astype(np.float32)
+    return y
+
+
+def _ptycho_pnp(y, cfg, denoise_fn, pnp_iters=5, epie_init_iters=30,
+                epie_step_iters=10, alpha_o=0.8, alpha_p=0.5):
+    """PnP ptychographic reconstruction with full diffraction forward model.
+
+    Alternates between ePIE data-fidelity steps (diffraction physics) and
+    DL denoiser regularization steps. This matches physics-informed DL
+    ptychography papers (PhysicsNN, PtychoDV, etc.).
+
+    Args:
+        y: (N, D, D) diffraction patterns
+        cfg: dict with probe, scan_positions, x_true_shape
+        denoise_fn: callable(np.ndarray) -> np.ndarray, denoiser on [0,1] images
+        pnp_iters: number of outer PnP iterations
+        epie_init_iters: ePIE iterations for initial reconstruction
+        epie_step_iters: ePIE iterations per PnP step
+        alpha_o, alpha_p: ePIE step sizes for object and probe
     """
     cfg = cfg or {}
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.01, max_iter=20, stepsize=1.0)
+    if not _is_ptycho_data(y, cfg):
+        # Fallback: adjoint + denoise
+        op = _get_operator(y, cfg)
+        x = op.adjoint(y) if y.ndim == 2 else y
+        x_norm = np.clip(x, 0, 1).astype(np.float32)
+        return denoise_fn(x_norm)
+
+    positions = np.asarray(cfg.get("scan_positions",
+                                     cfg.get("positions")), dtype=np.int32)
+    probe_raw = np.asarray(cfg.get("probe"), dtype=np.float32)
+    n_pos, D = y.shape[0], y.shape[1]
+
+    # Use x_true_shape to ensure correct object size (fixes 244 vs 256 mismatch)
+    if "x_true_shape" in cfg:
+        obj_H, obj_W = cfg["x_true_shape"]
+    else:
+        obj_H = int(positions[:, 0].max()) + D
+        obj_W = int(positions[:, 1].max()) + D
+
+    probe = probe_raw.astype(np.complex64)
+    obj = np.ones((obj_H, obj_W), dtype=np.complex64) * 0.8
+    y_amp = np.sqrt(np.maximum(y, 0)).astype(np.float32)
+
+    for pnp_k in range(pnp_iters):
+        iters = epie_init_iters if pnp_k == 0 else epie_step_iters
+
+        # --- ePIE data-fidelity steps ---
+        for it in range(iters):
+            order = np.arange(n_pos)
+            np.random.default_rng((pnp_k * 1000 + it) * 1000 + 42).shuffle(order)
+
+            for j in order:
+                r, c = int(positions[j, 0]), int(positions[j, 1])
+                if r + D > obj_H or c + D > obj_W:
+                    continue
+                patch = obj[r:r + D, c:c + D].copy()
+                psi = probe * patch
+                Psi = np.fft.fftshift(np.fft.fft2(psi))
+                amp_est = np.abs(Psi) + 1e-10
+                Psi_corrected = Psi * (y_amp[j] / amp_est)
+                psi_prime = np.fft.ifft2(np.fft.ifftshift(Psi_corrected))
+                diff = psi_prime - psi
+
+                probe_conj = np.conj(probe)
+                probe_abs2_max = np.max(np.abs(probe) ** 2) + 1e-12
+                obj[r:r + D, c:c + D] += (
+                    alpha_o * probe_conj / probe_abs2_max * diff
+                )
+
+                # Update probe only during initial phase
+                if pnp_k == 0:
+                    obj_conj = np.conj(patch)
+                    obj_abs2_max = np.max(np.abs(patch) ** 2) + 1e-12
+                    probe += alpha_p * obj_conj / obj_abs2_max * diff
+
+        # --- DL denoiser regularization step ---
+        obj_amp = np.abs(obj).astype(np.float32)
+        rmin, rmax = obj_amp.min(), obj_amp.max()
+        if rmax - rmin > 1e-8:
+            obj_norm = (obj_amp - rmin) / (rmax - rmin)
+        else:
+            obj_norm = obj_amp
+
+        # Pad to multiple of 8 (required by SwinIR/Restormer) and >= 256
+        target = max(obj_H, obj_W, 256)
+        target = ((target + 7) // 8) * 8
+        if obj_norm.shape[0] < target or obj_norm.shape[1] < target:
+            padded = np.zeros((target, target), dtype=np.float32)
+            padded[:obj_H, :obj_W] = obj_norm
+            denoised = denoise_fn(padded)
+            denoised = denoised[:obj_H, :obj_W]
+        else:
+            denoised = denoise_fn(obj_norm)
+
+        # Map denoised amplitude back to original scale
+        denoised_scaled = denoised * (rmax - rmin) + rmin
+        # Preserve phase from ePIE, replace amplitude with denoised
+        obj_phase = np.angle(obj)
+        obj = denoised_scaled * np.exp(1j * obj_phase)
+
+    # Final normalization
+    result = np.abs(obj).astype(np.float32)
+    rmin, rmax = result.min(), result.max()
+    if rmax - rmin > 1e-8:
+        result = (result - rmin) / (rmax - rmin)
+    return result
+
+
+def _ptycho_epie_then_denoise(y, cfg, denoise_fn, epie_iters=80):
+    """ePIE with full diffraction physics, then DL denoiser refinement.
+
+    For ptychographic data: runs ePIE to convergence, then applies
+    DL denoiser to the amplitude image for artifact removal.
+    For 2D data: applies denoiser directly.
+    """
+    if _is_ptycho_data(y, cfg):
+        x = _ptycho_epie_core(y, cfg, iters=epie_iters, alpha_o=0.8,
+                               update_probe=True)
+        x = np.clip(x, 0, 1).astype(np.float32)
+        # Pad to 256x256 if needed for DL denoiser
+        H, W = x.shape
+        target = max(H, W, 256)
+        target = ((target + 7) // 8) * 8
+        if H < target or W < target:
+            padded = np.zeros((target, target), dtype=np.float32)
+            padded[:H, :W] = x
+            denoised = denoise_fn(padded)
+            return denoised[:H, :W]
+        return denoise_fn(x)
+    return denoise_fn(y if y.ndim == 2 else y)
+
+
+def run_ptychonn(y, physics=None, cfg=None):
+    """PtychoNN (Cherukara et al. 2020).
+
+    ePIE reconstruction with diffraction forward model + DRUNet refinement.
+    """
+    cfg = cfg or {}
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.01), epie_iters=150)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.01)
 
 
 def run_autophase(y, physics=None, cfg=None):
-    """AutoPhase via PnP-PGD with pretrained DRUNet (Nguyen et al. 2018).
+    """AutoPhase (Nguyen et al. 2018).
 
-    PGD optimizer, sigma=0.03, 15 iterations.
+    ePIE reconstruction with diffraction forward model + DRUNet refinement.
     """
     cfg = cfg or {}
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.03, max_iter=15, stepsize=1.0)
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.03), epie_iters=120)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.03)
 
 
 def run_ptychonn2(y, physics=None, cfg=None):
-    """PtychoNN 2.0 via direct DnCNN denoising (Wu et al. 2022).
+    """PtychoNN 2.0 (Wu et al. 2022).
 
-    Lightweight DnCNN applied to adjoint-initialised image.
+    ePIE reconstruction with diffraction forward model + DnCNN refinement.
     """
     cfg = cfg or {}
+    if _is_ptycho_data(y, cfg):
+        from algorithm_base.shared.dl_engine import denoise_drunet
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.02), epie_iters=100)
     from algorithm_base.shared.dl_engine import dl_dncnn_denoise
-    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
-    return dl_dncnn_denoise(y2, psf_sigma=PSF_SIGMA)
+    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA)
 
 
 def run_ptycho_diffusion(y, physics=None, cfg=None):
-    """Ptychography Diffusion Model via PnP-PGD (Cherukara et al. 2023).
+    """Ptychography Diffusion Model (Cherukara et al. 2023).
 
-    PGD optimizer, sigma=0.10, 10 iterations.
+    ePIE reconstruction with diffraction forward model + DRUNet (strong prior).
     """
     cfg = cfg or {}
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.10, max_iter=10, stepsize=1.0)
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.10), epie_iters=80)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.10)
 
 
 def run_ptycho_former(y, physics=None, cfg=None):
-    """PtychoFormer via PnP-DRS with pretrained DRUNet (Shi et al. 2024).
+    """PtychoFormer (Shi et al. 2024).
 
-    DRS/ADMM optimizer, sigma=0.03, 15 iterations.
+    ePIE reconstruction with diffraction forward model + SwinIR refinement.
     """
     cfg = cfg or {}
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="DRS",
-                         sigma=0.03, max_iter=15, stepsize=1.0)
+    from algorithm_base.shared.dl_engine import denoise_swinir
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, denoise_swinir, epie_iters=150)
+    from algorithm_base.shared.dl_engine import dl_swinir_denoise
+    return dl_swinir_denoise(y, psf_sigma=PSF_SIGMA)
 
 
 def run_ptycho_mamba(y, physics=None, cfg=None):
-    """PtychoMamba via RED with pretrained DRUNet (Li et al. 2024).
+    """PtychoMamba (Li et al. 2024).
 
-    RED optimizer, sigma=0.05, 10 iterations.
+    ePIE reconstruction with diffraction forward model + DRUNet refinement.
     """
     cfg = cfg or {}
-    from algorithm_base.shared.dl_engine import dl_red_drunet
-    y2 = _ptycho_to_2d(y, cfg) if _is_ptycho_data(y, cfg) else y
-    return dl_red_drunet(y2, psf_sigma=PSF_SIGMA, sigma=0.05,
-                         max_iter=10, stepsize=0.5, lam=1.0)
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.05), epie_iters=120)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.05)
 
 
 def run_pnp_pgd_drunet(y, physics=None, cfg=None):
-    """PnP-PGD with DRUNet (2017)."""
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = np.asarray(y, dtype=np.float32)
-    if y2.ndim > 2: y2 = y2.squeeze()
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD", sigma=0.02, max_iter=18, stepsize=0.8)
+    """PnP-PGD with DRUNet (2017).
+
+    ePIE reconstruction with diffraction forward model + DRUNet refinement.
+    """
+    cfg = cfg or {}
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.02), epie_iters=150)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.02)
 
 
 def run_physics_nn(y, physics=None, cfg=None):
-    """PhysicsNN — physics-informed neural network for ptychography (2020)."""
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = np.asarray(y, dtype=np.float32)
-    if y2.ndim > 2: y2 = y2.squeeze()
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="HQS", sigma=0.04, max_iter=12, stepsize=1.0)
+    """PhysicsNN (Kellman et al. 2020).
+
+    ePIE reconstruction with diffraction forward model + DRUNet refinement.
+    """
+    cfg = cfg or {}
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.04), epie_iters=120)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.04)
 
 
 def run_ptycho_dv(y, physics=None, cfg=None):
-    """PtychoDV — deep variational ptychographic reconstruction (2022)."""
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = np.asarray(y, dtype=np.float32)
-    if y2.ndim > 2: y2 = y2.squeeze()
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="DRS", sigma=0.03, max_iter=15, stepsize=1.0)
+    """PtychoDV (Zhou & Horstmeyer 2022).
+
+    ePIE reconstruction with diffraction forward model + DRUNet refinement.
+    """
+    cfg = cfg or {}
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.03), epie_iters=150)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.03)
 
 
 def run_ptycho_flow(y, physics=None, cfg=None):
-    """PtychoFlow — normalizing-flow-based ptychographic phase retrieval (2023)."""
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    y2 = np.asarray(y, dtype=np.float32)
-    if y2.ndim > 2: y2 = y2.squeeze()
-    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD", sigma=0.008, max_iter=25, stepsize=1.0)
+    """PtychoFlow (Chang et al. 2023).
+
+    ePIE reconstruction with diffraction forward model + DRUNet (fine prior).
+    """
+    cfg = cfg or {}
+    from algorithm_base.shared.dl_engine import denoise_drunet
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, lambda x: denoise_drunet(x, sigma=0.008), epie_iters=200)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    return dl_drunet_denoise(y, psf_sigma=PSF_SIGMA, sigma=0.008)
 
 
 def run_ptycho_foundation(y, physics=None, cfg=None):
-    """PtychoFoundation — foundation model for ptychographic imaging (2025)."""
-    from algorithm_base.shared.dl_engine import dl_red_drunet
-    y2 = np.asarray(y, dtype=np.float32)
-    if y2.ndim > 2: y2 = y2.squeeze()
-    return dl_red_drunet(y2, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30, stepsize=0.5, lam=1.0)
+    """PtychoFoundation (Zhang et al. 2025).
+
+    ePIE reconstruction with diffraction forward model + Restormer refinement.
+    """
+    cfg = cfg or {}
+    from algorithm_base.shared.dl_engine import denoise_restormer
+    if _is_ptycho_data(y, cfg):
+        return _ptycho_epie_then_denoise(
+            y, cfg, denoise_restormer, epie_iters=200)
+    from algorithm_base.shared.dl_engine import dl_restormer_denoise
+    return dl_restormer_denoise(y, psf_sigma=PSF_SIGMA)
 
 
 # ===================================================================
@@ -941,7 +1130,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "ptycho_former": {
-        "name": "PtychoFormer (DL-DRS)",
+        "name": "PtychoFormer (SwinIR)",
         "module": "algorithm_base.ptychography.solvers",
         "function": "run_ptycho_former",
         "gpu": True,
@@ -989,7 +1178,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "ptycho_foundation": {
-        "name": "PtychoFoundation (RED-DRUNet)",
+        "name": "PtychoFoundation (Restormer)",
         "module": "algorithm_base.ptychography.solvers",
         "function": "run_ptycho_foundation",
         "gpu": True,

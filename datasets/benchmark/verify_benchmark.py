@@ -390,9 +390,64 @@ def get_measurement_and_ground_truth(
 
     Falls back to 'y' in all cases when the preferred key is absent.
 
+    Special multimodal handling:
+      pet_ct   → y from 'y_pet' (PET sinogram), x_true from 'x_ct' or 'x_true'
+      pet_mr   → y from 'y_pet' (PET sinogram), x_true from 'x_pet' or 'x_mr'
+      spectral_ct → y from 'y_low' (low-energy sinogram), x_true from 'x_true'
+      nerf     → standard keys (from universal generator)
+
     Returns:
         (y, x_true).  y keeps its native dtype (complex for fourier family).
     """
+    # --- Special multimodal formats ---
+    if modality == "pet_ct":
+        # PET/CT fusion: use PET sinogram as measurement, CT image as ground truth
+        x_true = sample.get("x_true", sample.get("x_ct"))
+        if x_true is None:
+            # Fall back: average PET and CT ground truths
+            x_ct = sample.get("x_ct")
+            x_pet = sample.get("x_pet")
+            if x_ct is not None:
+                x_true = x_ct
+            elif x_pet is not None:
+                x_true = x_pet
+        y = sample.get("y_pet", sample.get("sinogram_measured",
+                sample.get("y")))
+        return y, x_true
+
+    if modality == "pet_mr":
+        # PET/MR fusion: use PET sinogram as measurement, PET activity as ground truth
+        x_true = sample.get("x_true", sample.get("x_pet"))
+        if x_true is None:
+            x_mr = sample.get("x_mr")
+            x_pet = sample.get("x_pet")
+            if x_pet is not None:
+                x_true = x_pet
+            elif x_mr is not None:
+                x_true = x_mr
+        y = sample.get("y_pet", sample.get("sinogram_measured",
+                sample.get("y")))
+        return y, x_true
+
+    if modality == "spectral_ct":
+        # Spectral CT: use low-energy sinogram as measurement
+        x_true = sample.get("x_true")
+        if x_true is None:
+            # Construct composite from material maps
+            x_water = sample.get("x_water")
+            x_bone = sample.get("x_bone")
+            x_iodine = sample.get("x_iodine")
+            if x_water is not None:
+                x_true = x_water
+                if x_bone is not None:
+                    x_true = x_true + x_bone
+                if x_iodine is not None:
+                    x_true = x_true + x_iodine * 1e-3
+        y = sample.get("y_low", sample.get("sinogram_measured",
+                sample.get("y")))
+        return y, x_true
+
+    # --- Standard single-modality formats ---
     x_true = sample.get("x_true")
     if x_true is None:
         return None, None
@@ -404,7 +459,8 @@ def get_measurement_and_ground_truth(
     elif family == "radon":
         y = sample.get("sinogram_measured", sample.get("y"))
     else:
-        y = sample.get("y", sample.get("y_ideal", sample.get("measurement")))
+        y = sample.get("y", sample.get("y_ideal", sample.get("measurement",
+                sample.get("bmode_measured"))))
 
     return y, x_true
 
@@ -427,11 +483,52 @@ def build_solver_cfg(sample: Dict, modality: str, base_cfg: Dict) -> Dict:
         cfg.setdefault("mask", h)
         cfg.setdefault("H_ideal", h)
 
+    # Pass PSF when stored separately (e.g. ultrasound datasets)
+    if "psf" in sample:
+        cfg.setdefault("psf", sample["psf"][()].astype(np.float32))
+
+
     # ── Radon family: output image size + angle array ─────────────────────────
     if family == "radon" and "x_true" in sample:
         cfg.setdefault("output_size", int(sample["x_true"].shape[0]))
         if "angles_nominal" in sample:
             cfg.setdefault("angles", sample["angles_nominal"])
+        elif "H_ideal" in sample:
+            h = sample["H_ideal"]
+            # H_ideal may contain angles (1-D array) in degrees
+            if h.ndim == 1:
+                cfg.setdefault("angles", h)
+
+    # ── Multimodal: PET/CT ──────────────────────────────────────────────────
+    if modality == "pet_ct":
+        if "x_ct" in sample:
+            cfg.setdefault("output_size", int(sample["x_ct"].shape[0]))
+        elif "x_pet" in sample:
+            cfg.setdefault("output_size", int(sample["x_pet"].shape[0]))
+        if "angles_deg" in sample:
+            cfg.setdefault("angles", sample["angles_deg"])
+        if "pet_angles_deg" in sample:
+            cfg.setdefault("angles", sample["pet_angles_deg"])
+
+    # ── Multimodal: PET/MR ──────────────────────────────────────────────────
+    if modality == "pet_mr":
+        if "x_pet" in sample:
+            cfg.setdefault("output_size", int(sample["x_pet"].shape[0]))
+        elif "x_mr" in sample:
+            cfg.setdefault("output_size", int(sample["x_mr"].shape[0]))
+        if "pet_angles_deg" in sample:
+            cfg.setdefault("angles", sample["pet_angles_deg"])
+
+    # ── Multimodal: Spectral CT ─────────────────────────────────────────────
+    if modality == "spectral_ct":
+        if "x_true" in sample:
+            cfg.setdefault("output_size", int(sample["x_true"].shape[0]))
+        elif "x_water" in sample:
+            cfg.setdefault("output_size", int(sample["x_water"].shape[0]))
+        if "angles_deg" in sample:
+            cfg.setdefault("angles", sample["angles_deg"])
+        if "y_high" in sample:
+            cfg.setdefault("y_high", sample["y_high"])
 
     # ── Fourier family: undersampling mask + coil sensitivity maps ───────────
     if family == "fourier":
@@ -439,6 +536,13 @@ def build_solver_cfg(sample: Dict, modality: str, base_cfg: Dict) -> Dict:
             cfg.setdefault("mask", sample["mask"])
         if "coil_maps" in sample:
             cfg.setdefault("coil_maps", sample["coil_maps"])
+        # Ptychographic data: probe function and scan positions
+        if "probe" in sample:
+            cfg.setdefault("probe", sample["probe"])
+        if "scan_positions" in sample:
+            cfg.setdefault("scan_positions", sample["scan_positions"])
+        if "x_true" in sample:
+            cfg.setdefault("x_true_shape", sample["x_true"].shape)
 
     # ── CASSI: spectral dispersion parameters ─────────────────────────────────
     # Handled explicitly because the n_bands / step calculation depends on the

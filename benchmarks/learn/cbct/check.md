@@ -248,3 +248,7053 @@ The forward model (Radon projection, Poisson noise, sparse views) is physically 
 | Runtime | 0.57 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.49 dB |
+| SSIM (mean, 12 samples) | 0.1320 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.68 dB |
+| SSIM (mean, 12 samples) | 0.1320 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.69 dB |
+| SSIM (mean, 12 samples) | 0.1317 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.79 dB |
+| SSIM (mean, 12 samples) | 0.1319 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.12 dB |
+| SSIM (mean, 12 samples) | 0.1204 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.04 dB |
+| SSIM (mean, 12 samples) | 0.1216 |
+| Runtime | 1.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.05 dB |
+| SSIM (mean, 12 samples) | 0.1216 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 2.99 dB |
+| SSIM (mean, 12 samples) | 0.1161 |
+| Runtime | 0.83 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.05 dB |
+| SSIM (mean, 12 samples) | 0.1216 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.07 dB |
+| SSIM (mean, 12 samples) | 0.1160 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.07 dB |
+| SSIM (mean, 12 samples) | 0.1159 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1154 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.55 dB |
+| SSIM (mean, 12 samples) | 0.1414 |
+| Runtime | 1.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.53 dB |
+| SSIM (mean, 12 samples) | 0.1435 |
+| Runtime | 2.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.1305 |
+| Runtime | 7.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.01 dB |
+| SSIM (mean, 12 samples) | 0.1286 |
+| Runtime | 7.79 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1351 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.11 dB |
+| SSIM (mean, 12 samples) | 0.1461 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.01 dB |
+| SSIM (mean, 12 samples) | 0.1210 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.02 dB |
+| SSIM (mean, 12 samples) | 0.1213 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.49 dB |
+| SSIM (mean, 12 samples) | 0.1320 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.68 dB |
+| SSIM (mean, 12 samples) | 0.1320 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.69 dB |
+| SSIM (mean, 12 samples) | 0.1317 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 4.79 dB |
+| SSIM (mean, 12 samples) | 0.1319 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.12 dB |
+| SSIM (mean, 12 samples) | 0.1204 |
+| Runtime | 0.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.04 dB |
+| SSIM (mean, 12 samples) | 0.1216 |
+| Runtime | 1.03 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.05 dB |
+| SSIM (mean, 12 samples) | 0.1216 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 2.99 dB |
+| SSIM (mean, 12 samples) | 0.1161 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.05 dB |
+| SSIM (mean, 12 samples) | 0.1216 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.07 dB |
+| SSIM (mean, 12 samples) | 0.1160 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.07 dB |
+| SSIM (mean, 12 samples) | 0.1159 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1154 |
+| Runtime | 0.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.55 dB |
+| SSIM (mean, 12 samples) | 0.1414 |
+| Runtime | 1.72 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.53 dB |
+| SSIM (mean, 12 samples) | 0.1435 |
+| Runtime | 2.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.1305 |
+| Runtime | 5.98 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.01 dB |
+| SSIM (mean, 12 samples) | 0.1286 |
+| Runtime | 6.96 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1351 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.11 dB |
+| SSIM (mean, 12 samples) | 0.1461 |
+| Runtime | 0.01 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.01 dB |
+| SSIM (mean, 12 samples) | 0.1210 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.02 dB |
+| SSIM (mean, 12 samples) | 0.1213 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK-DL (DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chen, H. et al. (2017) Low-dose CT with a residual encoder-decoder CNN, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.62 dB |
+| SSIM (mean, 12 samples) | 0.1342 |
+| Runtime | 6.04 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-UNet (DnCNN)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jin, K.H. et al. (2017) Deep convolutional neural network for inverse problems in imaging, IEEE TIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1351 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Diffusion (DRUNet)
+**Solver Key:** cbct_diffusion
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chung, H. et al. (2023) Solving 3D inverse problems using pre-trained 2D diffusion models, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1351 |
+| Runtime | 0.76 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Neural Attenuation Fields (DRUNet)
+**Solver Key:** cbct_naf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2024) NAF: Neural Attenuation Fields for sparse-view CBCT reconstruction, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1351 |
+| Runtime | 0.76 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Mamba (DRUNet)
+**Solver Key:** cbct_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 3.64 dB |
+| SSIM (mean, 12 samples) | 0.1351 |
+| Runtime | 0.78 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Romano, Y., Elad, M. & Milanfar, P. (2017) The little engine that could: regularization by denoising, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** Error: RuntimeError: The size of tensor a (182) must match the size of tensor b (129) at non-singleton dimension 3
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-GAN (DRUNet)
+**Solver Key:** cbct_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Jiang, Z. et al. (2019) Augmentation of CBCT reconstructed from under-sampled projections using deep learning, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** Error: RuntimeError: The size of tensor a (182) must match the size of tensor b (129) at non-singleton dimension 3
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Transformer (DRUNet)
+**Solver Key:** cbct_transformer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Wang, C. et al. (2022) CTformer: Convolution-free token2token dilated vision transformer for CT reconstruction, Medical Physics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** Error: RuntimeError: The size of tensor a (182) must match the size of tensor b (129) at non-singleton dimension 3
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-NeRF (DRUNet)
+**Solver Key:** cbct_nerf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Zha, R. et al. (2023) Neural radiance fields for sparse-view CBCT reconstruction, MICCAI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** Error: RuntimeError: The size of tensor a (182) must match the size of tensor b (129) at non-singleton dimension 3
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Foundation (RED-DRUNet)
+**Solver Key:** cbct_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Li, H. et al. (2025) Foundation models for medical image reconstruction, Nature Machine Intelligence
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** Error: RuntimeError: The size of tensor a (182) must match the size of tensor b (129) at non-singleton dimension 3
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.47 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.97 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 1.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.64 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.93 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.71 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.64 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.53 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.19 dB |
+| SSIM (mean, 12 samples) | -0.0114 |
+| Runtime | 1.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.32 dB |
+| SSIM (mean, 12 samples) | -0.0200 |
+| Runtime | 1.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.0819 |
+| Runtime | 4.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.21 dB |
+| SSIM (mean, 12 samples) | 0.0077 |
+| Runtime | 5.80 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.08 dB |
+| SSIM (mean, 12 samples) | 0.1198 |
+| Runtime | 1.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.80 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.68 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK-DL (DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chen, H. et al. (2017) Low-dose CT with a residual encoder-decoder CNN, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.59 dB |
+| SSIM (mean, 12 samples) | 0.2392 |
+| Runtime | 1.95 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-UNet (DnCNN)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jin, K.H. et al. (2017) Deep convolutional neural network for inverse problems in imaging, IEEE TIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.3501 |
+| Runtime | 0.61 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Diffusion (DRUNet)
+**Solver Key:** cbct_diffusion
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chung, H. et al. (2023) Solving 3D inverse problems using pre-trained 2D diffusion models, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.09 dB |
+| SSIM (mean, 12 samples) | 0.4657 |
+| Runtime | 0.63 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Neural Attenuation Fields (DRUNet)
+**Solver Key:** cbct_naf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2024) NAF: Neural Attenuation Fields for sparse-view CBCT reconstruction, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.3501 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Mamba (DRUNet)
+**Solver Key:** cbct_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4621 |
+| Runtime | 0.65 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Romano, Y., Elad, M. & Milanfar, P. (2017) The little engine that could: regularization by denoising, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.24 dB |
+| SSIM (mean, 12 samples) | 0.2542 |
+| Runtime | 1.64 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-GAN (DRUNet)
+**Solver Key:** cbct_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jiang, Z. et al. (2019) Augmentation of CBCT reconstructed from under-sampled projections using deep learning, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.57 dB |
+| SSIM (mean, 12 samples) | 0.3900 |
+| Runtime | 0.92 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Transformer (DRUNet)
+**Solver Key:** cbct_transformer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, C. et al. (2022) CTformer: Convolution-free token2token dilated vision transformer for CT reconstruction, Medical Physics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.57 dB |
+| SSIM (mean, 12 samples) | 0.1297 |
+| Runtime | 1.71 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-NeRF (DRUNet)
+**Solver Key:** cbct_nerf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2023) Neural radiance fields for sparse-view CBCT reconstruction, MICCAI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.43 dB |
+| SSIM (mean, 12 samples) | 0.3882 |
+| Runtime | 1.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Foundation (RED-DRUNet)
+**Solver Key:** cbct_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li, H. et al. (2025) Foundation models for medical image reconstruction, Nature Machine Intelligence
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.80 dB |
+| SSIM (mean, 12 samples) | 0.1330 |
+| Runtime | 10.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.26 dB |
+| SSIM (mean, 3 samples) | 0.1493 |
+| Runtime | 0.70 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.57 dB |
+| SSIM (mean, 3 samples) | 0.1836 |
+| Runtime | 0.67 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.39 dB |
+| SSIM (mean, 3 samples) | 0.3342 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.46 dB |
+| SSIM (mean, 3 samples) | 0.3531 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 10.64 dB |
+| SSIM (mean, 3 samples) | 0.0226 |
+| Runtime | 1.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 9.39 dB |
+| SSIM (mean, 3 samples) | 0.0369 |
+| Runtime | 1.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 9.35 dB |
+| SSIM (mean, 3 samples) | 0.0360 |
+| Runtime | 0.67 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.26 dB |
+| SSIM (mean, 3 samples) | 0.1493 |
+| Runtime | 1.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 9.36 dB |
+| SSIM (mean, 3 samples) | 0.0362 |
+| Runtime | 0.68 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 13.79 dB |
+| SSIM (mean, 3 samples) | 0.0851 |
+| Runtime | 0.74 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 15.13 dB |
+| SSIM (mean, 3 samples) | 0.1203 |
+| Runtime | 0.58 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 15.27 dB |
+| SSIM (mean, 3 samples) | 0.3034 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 1.22 dB |
+| SSIM (mean, 3 samples) | -0.0145 |
+| Runtime | 1.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 1.36 dB |
+| SSIM (mean, 3 samples) | -0.0228 |
+| Runtime | 1.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 0.98 dB |
+| SSIM (mean, 3 samples) | 0.0806 |
+| Runtime | 4.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 1.24 dB |
+| SSIM (mean, 3 samples) | 0.0001 |
+| Runtime | 6.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 11.05 dB |
+| SSIM (mean, 3 samples) | 0.1133 |
+| Runtime | 1.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.26 dB |
+| SSIM (mean, 3 samples) | 0.1493 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.26 dB |
+| SSIM (mean, 3 samples) | 0.1493 |
+| Runtime | 0.72 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 10.38 dB |
+| SSIM (mean, 3 samples) | 0.0453 |
+| Runtime | 0.73 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK-DL (DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Chen, H. et al. (2017) Low-dose CT with a residual encoder-decoder CNN, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.59 dB |
+| SSIM (mean, 3 samples) | 0.2283 |
+| Runtime | 21.95 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-UNet (DnCNN)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Jin, K.H. et al. (2017) Deep convolutional neural network for inverse problems in imaging, IEEE TIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.95 dB |
+| SSIM (mean, 3 samples) | 0.3382 |
+| Runtime | 0.93 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Diffusion (DRUNet)
+**Solver Key:** cbct_diffusion
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Chung, H. et al. (2023) Solving 3D inverse problems using pre-trained 2D diffusion models, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.17 dB |
+| SSIM (mean, 3 samples) | 0.4684 |
+| Runtime | 0.78 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Neural Attenuation Fields (DRUNet)
+**Solver Key:** cbct_naf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2024) NAF: Neural Attenuation Fields for sparse-view CBCT reconstruction, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.95 dB |
+| SSIM (mean, 3 samples) | 0.3382 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Mamba (DRUNet)
+**Solver Key:** cbct_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 17.14 dB |
+| SSIM (mean, 3 samples) | 0.4659 |
+| Runtime | 0.80 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Romano, Y., Elad, M. & Milanfar, P. (2017) The little engine that could: regularization by denoising, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.29 dB |
+| SSIM (mean, 3 samples) | 0.2406 |
+| Runtime | 3.65 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-GAN (DRUNet)
+**Solver Key:** cbct_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Jiang, Z. et al. (2019) Augmentation of CBCT reconstructed from under-sampled projections using deep learning, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.63 dB |
+| SSIM (mean, 3 samples) | 0.3865 |
+| Runtime | 1.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Transformer (DRUNet)
+**Solver Key:** cbct_transformer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Wang, C. et al. (2022) CTformer: Convolution-free token2token dilated vision transformer for CT reconstruction, Medical Physics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 15.56 dB |
+| SSIM (mean, 3 samples) | 0.1233 |
+| Runtime | 2.68 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-NeRF (DRUNet)
+**Solver Key:** cbct_nerf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2023) Neural radiance fields for sparse-view CBCT reconstruction, MICCAI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 16.49 dB |
+| SSIM (mean, 3 samples) | 0.3846 |
+| Runtime | 1.75 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Foundation (RED-DRUNet)
+**Solver Key:** cbct_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 3 sample(s)
+**Status:** PASS
+**Reference:** Li, H. et al. (2025) Foundation models for medical image reconstruction, Nature Machine Intelligence
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 3 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 3 samples) | 15.82 dB |
+| SSIM (mean, 3 samples) | 0.1276 |
+| Runtime | 15.70 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.19 dB |
+| SSIM (mean, 12 samples) | -0.0114 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.32 dB |
+| SSIM (mean, 12 samples) | -0.0200 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.0819 |
+| Runtime | 1.90 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.21 dB |
+| SSIM (mean, 12 samples) | 0.0077 |
+| Runtime | 2.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.08 dB |
+| SSIM (mean, 12 samples) | 0.1198 |
+| Runtime | 0.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK-DL (DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chen, H. et al. (2017) Low-dose CT with a residual encoder-decoder CNN, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.59 dB |
+| SSIM (mean, 12 samples) | 0.2392 |
+| Runtime | 0.71 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-UNet (DnCNN)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jin, K.H. et al. (2017) Deep convolutional neural network for inverse problems in imaging, IEEE TIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.3501 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Diffusion (DRUNet)
+**Solver Key:** cbct_diffusion
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chung, H. et al. (2023) Solving 3D inverse problems using pre-trained 2D diffusion models, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.09 dB |
+| SSIM (mean, 12 samples) | 0.4657 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Neural Attenuation Fields (DRUNet)
+**Solver Key:** cbct_naf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2024) NAF: Neural Attenuation Fields for sparse-view CBCT reconstruction, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.3501 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Mamba (DRUNet)
+**Solver Key:** cbct_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4621 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Romano, Y., Elad, M. & Milanfar, P. (2017) The little engine that could: regularization by denoising, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.24 dB |
+| SSIM (mean, 12 samples) | 0.2542 |
+| Runtime | 1.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-GAN (DRUNet)
+**Solver Key:** cbct_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jiang, Z. et al. (2019) Augmentation of CBCT reconstructed from under-sampled projections using deep learning, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.57 dB |
+| SSIM (mean, 12 samples) | 0.3900 |
+| Runtime | 0.58 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Transformer (DRUNet)
+**Solver Key:** cbct_transformer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, C. et al. (2022) CTformer: Convolution-free token2token dilated vision transformer for CT reconstruction, Medical Physics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.57 dB |
+| SSIM (mean, 12 samples) | 0.1297 |
+| Runtime | 1.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-NeRF (DRUNet)
+**Solver Key:** cbct_nerf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2023) Neural radiance fields for sparse-view CBCT reconstruction, MICCAI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.43 dB |
+| SSIM (mean, 12 samples) | 0.3882 |
+| Runtime | 0.92 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Foundation (RED-DRUNet)
+**Solver Key:** cbct_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-21
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li, H. et al. (2025) Foundation models for medical image reconstruction, Nature Machine Intelligence
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.80 dB |
+| SSIM (mean, 12 samples) | 0.1330 |
+| Runtime | 7.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 0.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.19 dB |
+| SSIM (mean, 12 samples) | -0.0114 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.32 dB |
+| SSIM (mean, 12 samples) | -0.0200 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.0819 |
+| Runtime | 1.60 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.21 dB |
+| SSIM (mean, 12 samples) | 0.0077 |
+| Runtime | 1.80 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.08 dB |
+| SSIM (mean, 12 samples) | 0.1198 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 0.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.19 dB |
+| SSIM (mean, 12 samples) | -0.0114 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.32 dB |
+| SSIM (mean, 12 samples) | -0.0200 |
+| Runtime | 0.52 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.0819 |
+| Runtime | 1.77 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.21 dB |
+| SSIM (mean, 12 samples) | 0.0077 |
+| Runtime | 2.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.08 dB |
+| SSIM (mean, 12 samples) | 0.1198 |
+| Runtime | 0.53 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.58 dB |
+| SSIM (mean, 12 samples) | 0.0276 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.11 dB |
+| SSIM (mean, 12 samples) | 0.0441 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.58 dB |
+| SSIM (mean, 12 samples) | 0.0276 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.11 dB |
+| SSIM (mean, 12 samples) | 0.0441 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.11 dB |
+| SSIM (mean, 12 samples) | 0.0441 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 8.59 dB |
+| SSIM (mean, 12 samples) | 0.2085 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.30 dB |
+| SSIM (mean, 12 samples) | 0.1651 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.42 dB |
+| SSIM (mean, 12 samples) | 0.1687 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.35 dB |
+| SSIM (mean, 12 samples) | 0.1938 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.67 dB |
+| SSIM (mean, 12 samples) | 0.1727 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.08 dB |
+| SSIM (mean, 12 samples) | 0.1198 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.73 dB |
+| SSIM (mean, 12 samples) | 0.0245 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.34 dB |
+| SSIM (mean, 12 samples) | 0.0356 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.19 dB |
+| SSIM (mean, 12 samples) | -0.0114 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.32 dB |
+| SSIM (mean, 12 samples) | -0.0200 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 0.99 dB |
+| SSIM (mean, 12 samples) | 0.0819 |
+| Runtime | 1.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 1.21 dB |
+| SSIM (mean, 12 samples) | 0.0077 |
+| Runtime | 1.69 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.74 dB |
+| SSIM (mean, 12 samples) | 0.3739 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.34 dB |
+| SSIM (mean, 12 samples) | 0.0356 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.39 dB |
+| SSIM (mean, 12 samples) | 0.4206 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.26 dB |
+| SSIM (mean, 12 samples) | 0.4186 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.83 dB |
+| SSIM (mean, 12 samples) | 0.3962 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.3896 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.74 dB |
+| SSIM (mean, 12 samples) | 0.3739 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-22
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Ram-Lak
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Shepp-Logan
+**Solver Key:** fdk_shepp_logan
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Logan, B.F. (1974) The Fourier reconstruction of a head section, IEEE Trans. Nuclear Science
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.1928 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hamming
+**Solver Key:** fdk_hamming
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.35 dB |
+| SSIM (mean, 12 samples) | 0.3450 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK Hann
+**Solver Key:** fdk_hann
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Feldkamp, L.A., Davis, L.C. & Kress, J.W. (1984) Practical cone-beam algorithm, JOSA A
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.42 dB |
+| SSIM (mean, 12 samples) | 0.3636 |
+| Runtime | 0.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, L. (1951) An iteration formula for Fredholm integral equations, American Journal of Mathematics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.34 dB |
+| SSIM (mean, 12 samples) | 0.0356 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Algebraic Reconstruction Technique (ART)
+**Solver Key:** art
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gordon, R., Bender, R. & Herman, G.T. (1970) Algebraic reconstruction techniques (ART), Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.40 dB |
+| SSIM (mean, 12 samples) | 0.0370 |
+| Runtime | 0.80 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous Iterative Reconstruction (SIRT)
+**Solver Key:** sirt
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Gilbert, P. (1972) Iterative methods for the three-dimensional reconstruction of an object, Journal of Theoretical Biology
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.35 dB |
+| SSIM (mean, 12 samples) | 0.0361 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Conjugate Gradient Least Squares (CGLS)
+**Solver Key:** cgls
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hestenes, M.R. & Stiefel, E. (1952) Methods of conjugate gradients for solving linear systems, J. Res. NBS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Simultaneous ART (SART)
+**Solver Key:** sart
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Andersen, A.H. & Kak, A.C. (1984) Simultaneous algebraic reconstruction technique (SART), Ultrasonic Imaging
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.36 dB |
+| SSIM (mean, 12 samples) | 0.0363 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ML-EM
+**Solver Key:** mlem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Shepp, L.A. & Vardi, Y. (1982) Maximum likelihood reconstruction for emission tomography, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.82 dB |
+| SSIM (mean, 12 samples) | 0.0895 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Ordered Subsets EM (OS-EM)
+**Solver Key:** osem
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Hudson, H.M. & Larkin, R.S. (1994) Accelerated image reconstruction using ordered subsets of projection data, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.15 dB |
+| SSIM (mean, 12 samples) | 0.1275 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, A.N. (1963) Solution of incorrectly formulated problems and the regularization method, Soviet Mathematics Doklady
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.21 dB |
+| SSIM (mean, 12 samples) | 0.3049 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Sidky, E.Y., Kao, C.-M. & Pan, X. (2008) Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT, JXST
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.39 dB |
+| SSIM (mean, 12 samples) | 0.4206 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock Primal-Dual
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle, A. & Pock, T. (2011) A first-order primal-dual algorithm for convex problems, J. Math. Imaging Vis.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.26 dB |
+| SSIM (mean, 12 samples) | 0.4186 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM with NLM
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan, S. et al. (2013) Plug-and-Play priors for model-based reconstruction, IEEE GlobalSIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.83 dB |
+| SSIM (mean, 12 samples) | 0.3962 |
+| Runtime | 0.47 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA with NLM
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck, A. & Teboulle, M. (2009) A fast iterative shrinkage-thresholding algorithm, SIAM J. Imaging Sci. + PnP framework
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.3896 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK + NLM Post-Processing
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Buades, A., Coll, B. & Morel, J.-M. (2005) A non-local algorithm for image denoising, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.74 dB |
+| SSIM (mean, 12 samples) | 0.3739 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Filtered Back-Projection (FBP)
+**Solver Key:** fbp
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Ramachandran, G.N. & Lakshminarayanan, A.V. (1971) Three-dimensional reconstruction from radiographs and electron micrographs, PNAS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** LSQR Iterative Solver
+**Solver Key:** lsqr
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Paige, C.C. & Saunders, M.A. (1982) LSQR: An algorithm for sparse linear equations and sparse least squares, ACM TOMS
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.26 dB |
+| SSIM (mean, 12 samples) | 0.1567 |
+| Runtime | 0.51 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Gradient Descent
+**Solver Key:** gradient_descent
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Natterer, F. (1986) The Mathematics of Computerized Tomography, Wiley
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.37 dB |
+| SSIM (mean, 12 samples) | 0.0459 |
+| Runtime | 0.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FDK-DL (DRUNet)
+**Solver Key:** famous_dl
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chen, H. et al. (2017) Low-dose CT with a residual encoder-decoder CNN, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.59 dB |
+| SSIM (mean, 12 samples) | 0.2392 |
+| Runtime | 3.52 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-UNet (DnCNN)
+**Solver Key:** small_gpu
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jin, K.H. et al. (2017) Deep convolutional neural network for inverse problems in imaging, IEEE TIP
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.3501 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Diffusion (DRUNet)
+**Solver Key:** cbct_diffusion
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chung, H. et al. (2023) Solving 3D inverse problems using pre-trained 2D diffusion models, CVPR
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.09 dB |
+| SSIM (mean, 12 samples) | 0.4657 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT Neural Attenuation Fields (DRUNet)
+**Solver Key:** cbct_naf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2024) NAF: Neural Attenuation Fields for sparse-view CBCT reconstruction, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.91 dB |
+| SSIM (mean, 12 samples) | 0.3501 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Mamba (DRUNet)
+**Solver Key:** cbct_mamba
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, Z. et al. (2024) State-space models for efficient CT reconstruction, Medical Image Analysis
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.07 dB |
+| SSIM (mean, 12 samples) | 0.4621 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-HQS DRUNet
+**Solver Key:** pnp_hqs_drunet
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Romano, Y., Elad, M. & Milanfar, P. (2017) The little engine that could: regularization by denoising, SIAM J. Imaging Sci.
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.24 dB |
+| SSIM (mean, 12 samples) | 0.2542 |
+| Runtime | 1.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-GAN (DRUNet)
+**Solver Key:** cbct_gan
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Jiang, Z. et al. (2019) Augmentation of CBCT reconstructed from under-sampled projections using deep learning, IEEE TMI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.57 dB |
+| SSIM (mean, 12 samples) | 0.3900 |
+| Runtime | 0.73 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Transformer (SwinIR)
+**Solver Key:** cbct_transformer
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wang, C. et al. (2022) CTformer: Convolution-free token2token dilated vision transformer for CT reconstruction, Medical Physics
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.72 dB |
+| SSIM (mean, 12 samples) | 0.4490 |
+| Runtime | 3.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-NeRF (DRUNet)
+**Solver Key:** cbct_nerf
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Zha, R. et al. (2023) Neural radiance fields for sparse-view CBCT reconstruction, MICCAI
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.43 dB |
+| SSIM (mean, 12 samples) | 0.3882 |
+| Runtime | 1.04 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CBCT-Foundation (Restormer)
+**Solver Key:** cbct_foundation
+**Type:** GPU
+**GPU Required:** Yes
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Li, H. et al. (2025) Foundation models for medical image reconstruction, Nature Machine Intelligence
+**Operator Family:** radon
+**Forward Model:** y(u,v,θ) = integral μ(x,y,z) dl, cone-beam projection
+**Canonical Reference:** Feldkamp et al., "Practical Cone-Beam Algorithm," JOSA A 1 (1984)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.53 dB |
+| SSIM (mean, 12 samples) | 0.2877 |
+| Runtime | 0.77 s/sample |
+
+**Result: PASS**

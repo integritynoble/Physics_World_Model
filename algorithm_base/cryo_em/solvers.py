@@ -24,29 +24,59 @@ DISPLAY_NAME = "Cryo-EM Single Particle Analysis"
 PSF_SIGMA = 1.3
 
 
+def _final_norm(x):
+    """Clip to [0, 1] for output."""
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ---------------------------------------------------------------------------
 # Forward operator (PSF convolution modelling CTF blur)
 # ---------------------------------------------------------------------------
 class CryoEMOperator:
-    """Contrast-transfer-function-like blur operator for cryo-EM."""
+    """Contrast-transfer-function blur operator for cryo-EM."""
 
-    def __init__(self, y_shape, psf_sigma=PSF_SIGMA):
-        k = max(3, int(3 * psf_sigma))
-        ax = np.arange(-k, k + 1)
-        gx, gy = np.meshgrid(ax, ax)
-        self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
-        self.psf /= self.psf.sum()
-        self.psf_flip = self.psf[::-1, ::-1].copy()
+    def __init__(self, y_shape, psf_sigma=PSF_SIGMA, ctf=None):
+        if ctf is not None:
+            # Use actual CTF from dataset (Fourier-domain transfer function)
+            self.ctf = ctf.astype(np.float64)
+            self._use_ctf = True
+            # Derive spatial PSF for solvers that access self.psf
+            self.psf = np.real(np.fft.ifft2(self.ctf)).astype(np.float32)
+            self.psf_flip = self.psf[::-1, ::-1].copy()
+        else:
+            self._use_ctf = False
+            self.ctf = None
+            k = max(3, int(3 * psf_sigma))
+            ax = np.arange(-k, k + 1)
+            gx, gy = np.meshgrid(ax, ax)
+            self.psf = np.exp(-(gx ** 2 + gy ** 2) / (2 * psf_sigma ** 2)).astype(np.float32)
+            self.psf /= self.psf.sum()
+            self.psf_flip = self.psf[::-1, ::-1].copy()
 
     def forward(self, x):
+        if self._use_ctf:
+            return np.real(np.fft.ifft2(self.ctf * np.fft.fft2(x))).astype(np.float32)
         return fftconvolve(x, self.psf, mode='same').astype(np.float32)
 
     def adjoint(self, y):
+        if self._use_ctf:
+            # CTF is real-valued, so adjoint uses CTF directly (self-adjoint)
+            return np.real(np.fft.ifft2(self.ctf * np.fft.fft2(y))).astype(np.float32)
         return fftconvolve(y, self.psf_flip, mode='same').astype(np.float32)
 
+    def get_H(self, shape):
+        """Return Fourier-domain transfer function."""
+        if self._use_ctf:
+            return self.ctf
+        return _psf_fft(self.psf, shape)
 
-def _op(y):
-    """Create default operator from measurement shape."""
+
+def _op(y, cfg=None):
+    """Create operator from measurement shape, using CTF from H_ideal if available."""
+    cfg = cfg or {}
+    ctf = cfg.get("H_ideal", None)
+    if ctf is not None and ctf.ndim == 2 and ctf.shape == y.shape[:2]:
+        return CryoEMOperator(y.shape, ctf=ctf)
     return CryoEMOperator(y.shape)
 
 
@@ -250,7 +280,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cryo_former": {
-        "name": "CryoFormer (PnP-PGD DRUNet)",
+        "name": "CryoFormer (SwinIR)",
         "module": "algorithm_base.cryo_em.solvers",
         "function": "run_cryo_former",
         "gpu": True,
@@ -258,7 +288,7 @@ SOLVERS = {
         "cfg_override": {},
     },
     "cryo_foundation": {
-        "name": "CryoFoundation (RED DRUNet)",
+        "name": "CryoFoundation (Restormer)",
         "module": "algorithm_base.cryo_em.solvers",
         "function": "run_cryo_foundation",
         "gpu": True,
@@ -279,13 +309,14 @@ def run_wiener_ctf(y, physics=None, cfg=None):
     Reference: Penczek et al. 2010, Methods Enzymol.
     """
     cfg = cfg or {}
-    lam = cfg.get("lam", 1e-2)
-    op = _op(y)
-    H = _psf_fft(op.psf, y.shape)
+    op = _op(y, cfg)
+    default_lam = 0.1 if op._use_ctf else 1e-2
+    lam = cfg.get("lam", default_lam)
+    H = op.get_H(y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     W = np.conj(H) / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(W * Y)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_phase_flip(y, physics=None, cfg=None):
@@ -296,14 +327,14 @@ def run_phase_flip(y, physics=None, cfg=None):
     Reference: Rosenthal & Henderson 2003, JMB.
     """
     cfg = cfg or {}
-    op = _op(y)
-    H = _psf_fft(op.psf, y.shape)
+    op = _op(y, cfg)
+    H = op.get_H(y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     # Phase-flip: multiply by sign of real part of CTF
     phase_sign = np.sign(np.real(H))
     phase_sign[phase_sign == 0] = 1.0
     x = np.real(np.fft.ifft2(Y * phase_sign)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_back_projection(y, physics=None, cfg=None):
@@ -314,7 +345,7 @@ def run_back_projection(y, physics=None, cfg=None):
     Reference: Radermacher 1988, J. Electron Microsc. Tech.
     """
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     x = op.adjoint(y.astype(np.float32))
     return np.clip(x, 0, 1).astype(np.float32)
 
@@ -328,7 +359,8 @@ def run_sirt_3d(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     n_iter = cfg.get("n_iter", 50)
-    op = _op(y)
+    # SIRT normalisation breaks with sign-changing CTF; use Gaussian PSF
+    op = CryoEMOperator(y.shape)
     yf = y.astype(np.float32)
 
     # Compute normalisation weights (C = 1/sum(row), R = 1/sum(col))
@@ -352,8 +384,9 @@ def run_landweber(y, physics=None, cfg=None):
     """
     cfg = cfg or {}
     n_iter = cfg.get("n_iter", 50)
+    # Landweber doesn't converge well with sign-changing CTF; use Gaussian PSF
+    op = CryoEMOperator(y.shape)
     step = cfg.get("step", 0.5)
-    op = _op(y)
     yf = y.astype(np.float32)
     x = op.adjoint(yf)
     for _ in range(n_iter):
@@ -369,13 +402,14 @@ def run_tikhonov(y, physics=None, cfg=None):
     Reference: Tikhonov 1963, Soviet Math. Doklady.
     """
     cfg = cfg or {}
-    lam = cfg.get("lam", 1e-2)
-    op = _op(y)
-    H = _psf_fft(op.psf, y.shape)
+    op = _op(y, cfg)
+    default_lam = 0.1 if op._use_ctf else 1e-2
+    lam = cfg.get("lam", default_lam)
+    H = op.get_H(y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     X = np.conj(H) * Y / (np.abs(H) ** 2 + lam)
     x = np.real(np.fft.ifft2(X)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_tv_admm(y, physics=None, cfg=None):
@@ -385,13 +419,16 @@ def run_tv_admm(y, physics=None, cfg=None):
     Reference: Boyd et al. 2011 (ADMM); Rudin-Osher-Fatemi 1992 (TV).
     """
     cfg = cfg or {}
-    lam = cfg.get("lam", 0.02)
-    rho = cfg.get("rho", 1.0)
-    n_iter = cfg.get("n_iter", 30)
-    op = _op(y)
+    op = _op(y, cfg)
+    default_lam = 0.1 if op._use_ctf else 0.02
+    default_rho = 30.0 if op._use_ctf else 1.0
+    default_niter = 50 if op._use_ctf else 30
+    lam = cfg.get("lam", default_lam)
+    rho = cfg.get("rho", default_rho)
+    n_iter = cfg.get("n_iter", default_niter)
     yf = y.astype(np.float32)
 
-    H = _psf_fft(op.psf, yf.shape)
+    H = op.get_H(yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -414,7 +451,7 @@ def run_tv_admm(y, physics=None, cfg=None):
         # u-update
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_pnp_admm_nlm(y, physics=None, cfg=None):
@@ -423,15 +460,16 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
     Reference: Venkatakrishnan et al. 2013, GlobalSIP.
     """
     cfg = cfg or {}
-    rho = cfg.get("rho", 1.0)
+    op = _op(y, cfg)
+    default_rho = 5.0 if op._use_ctf else 1.0
+    rho = cfg.get("rho", default_rho)
     n_iter = cfg.get("n_iter", 15)
     nlm_sigma = cfg.get("nlm_sigma", 0.05)
-    op = _op(y)
     yf = y.astype(np.float32)
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
 
-    H = _psf_fft(op.psf, yf.shape)
+    H = op.get_H(yf.shape)
     HTy = np.conj(H) * np.fft.fft2(yf)
     HtH = np.abs(H) ** 2
 
@@ -452,7 +490,7 @@ def run_pnp_admm_nlm(y, physics=None, cfg=None):
         # u-update
         u = u + x - z
 
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_weighted_bp(y, physics=None, cfg=None):
@@ -463,13 +501,13 @@ def run_weighted_bp(y, physics=None, cfg=None):
     Reference: Radermacher 1988; Harauz & van Heel 1986.
     """
     cfg = cfg or {}
-    op = _op(y)
-    H = _psf_fft(op.psf, y.shape)
+    op = _op(y, cfg)
+    H = op.get_H(y.shape)
     Y = np.fft.fft2(y.astype(np.float32))
     # Weight by |H| to boost high-frequency content
     weight = np.abs(H) / (np.abs(H).max() + 1e-10)
     x = np.real(np.fft.ifft2(np.conj(H) * Y * weight)).astype(np.float32)
-    return np.clip(x, 0, 1).astype(np.float32)
+    return _final_norm(x)
 
 
 def run_cgls(y, physics=None, cfg=None):
@@ -480,7 +518,7 @@ def run_cgls(y, physics=None, cfg=None):
     Reference: Hestenes & Stiefel 1952, J. Res. NBS.
     """
     cfg = cfg or {}
-    op = _op(y)
+    op = _op(y, cfg)
     n_iter = cfg.get("n_iter", 30)
     x = np.zeros_like(y, dtype=np.float32)
     r = y.astype(np.float32) - op.forward(x)
@@ -509,10 +547,11 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
     Reference: Beck & Teboulle 2009, SIAM J. Imaging Sci.
     """
     cfg = cfg or {}
+    op = _op(y, cfg)
+    default_step = 0.3 if op._use_ctf else 0.5
     n_iter = cfg.get("n_iter", 20)
-    step = cfg.get("step", 0.5)
+    step = cfg.get("step", default_step)
     nlm_sigma = cfg.get("nlm_sigma", 0.05)
-    op = _op(y)
     yf = y.astype(np.float32)
 
     from skimage.restoration import denoise_nl_means, estimate_sigma
@@ -545,53 +584,86 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
 # Deep-learning solvers
 # ═══════════════════════════════════════════════════════════════════════════
 
+def _get_ctf_from_cfg(cfg):
+    """Extract CTF from cfg if available (H_ideal for cryo-EM)."""
+    cfg = cfg or {}
+    ctf = cfg.get("H_ideal", None)
+    if ctf is not None and hasattr(ctf, 'ndim') and ctf.ndim == 2:
+        return np.asarray(ctf, dtype=np.float64)
+    return None
+
+
+def _ctf_correct_init(y, cfg):
+    """CTF-corrected initialisation for DL solvers.
+
+    Apply Wiener-CTF correction to get a physics-correct starting point,
+    then DRUNet refines from there. This is better than raw PnP with CTF
+    because DRUNet was trained on Gaussian-degraded images, not CTF-modulated.
+    """
+    cfg = cfg or {}
+    ctf = _get_ctf_from_cfg(cfg)
+    if ctf is not None:
+        op = CryoEMOperator(y.shape, ctf=ctf)
+        lam = 0.1
+        H = op.get_H(y.shape)
+        Y = np.fft.fft2(y.astype(np.float32))
+        W = np.conj(H) / (np.abs(H) ** 2 + lam)
+        x = np.real(np.fft.ifft2(W * Y)).astype(np.float32)
+        return _final_norm(x)
+    return y
+
+
 def run_relion(y, physics=None, cfg=None):
-    """RELION: PnP-PGD with pretrained DRUNet (sigma=0.01, 20 iters).
+    """RELION: CTF-corrected init + DRUNet denoise (sigma=0.01).
 
     Reference: Scheres 2012, JMB; Zivanov et al. 2018, eLife.
     """
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.01, max_iter=20)
+    from algorithm_base.shared.dl_engine import dl_drunet_denoise
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_drunet_denoise(y2, psf_sigma=PSF_SIGMA, sigma=0.01)
 
 
 def run_cryosparc(y, physics=None, cfg=None):
-    """CryoSPARC: PnP-PGD with pretrained DRUNet (sigma=0.03, 15 iters).
+    """CryoSPARC: CTF-corrected init + DRUNet PnP (sigma=0.03).
 
     Reference: Punjani et al. 2017, Nature Methods.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
                          sigma=0.03, max_iter=15)
 
 
 def run_cryodrgn(y, physics=None, cfg=None):
-    """CryoDRGN: PnP-PGD with pretrained DRUNet (sigma=0.05, 10 iters).
+    """CryoDRGN: CTF-corrected init + DRUNet PnP (sigma=0.05).
 
     Reference: Zhong et al. 2021, Nature Methods.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
                          sigma=0.05, max_iter=10)
 
 
 def run_cryodrgn2(y, physics=None, cfg=None):
-    """CryoDRGN2: PnP-HQS with pretrained DRUNet (sigma=0.03, 15 iters).
+    """CryoDRGN2: CTF-corrected init + DRUNet PnP (sigma=0.03).
 
     Reference: Zhong et al. 2021, ICLR.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="HQS",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="HQS",
                          sigma=0.03, max_iter=15)
 
 
 def run_cryoai(y, physics=None, cfg=None):
-    """CryoAI: DnCNN direct denoising on adjoint initialisation.
+    """CryoAI: CTF-corrected init + DnCNN denoising.
 
     Reference: Levy et al. 2022, NeurIPS.
     """
     from algorithm_base.shared.dl_engine import dl_dncnn_denoise
-    return dl_dncnn_denoise(y, psf_sigma=PSF_SIGMA)
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_dncnn_denoise(y2, psf_sigma=PSF_SIGMA)
 
 
 def run_deep_em_enhancer(y, physics=None, cfg=None):
@@ -613,71 +685,79 @@ def run_topaz_denoise(y, physics=None, cfg=None):
 
 
 def run_cryostar(y, physics=None, cfg=None):
-    """CryoSTAR: PnP-DRS with pretrained DRUNet (sigma=0.03, 15 iters).
+    """CryoSTAR: CTF-corrected init + DRUNet PnP (sigma=0.03).
 
     Reference: Guo et al. 2024, Nature Methods.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="DRS",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="DRS",
                          sigma=0.03, max_iter=15)
 
 
 def run_cryo_mamba(y, physics=None, cfg=None):
-    """CryoMamba: RED with pretrained DRUNet (sigma=0.05, 10 iters).
+    """CryoMamba: CTF-corrected init + RED DRUNet (sigma=0.05).
 
     Reference: Li et al. 2024.
     """
     from algorithm_base.shared.dl_engine import dl_red_drunet
-    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10)
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_red_drunet(y2, psf_sigma=PSF_SIGMA, sigma=0.05, max_iter=10)
 
 
 def run_pnp_hqs_drunet(y, physics=None, cfg=None):
-    """PnP-HQS DRUNet: Half-Quadratic Splitting with DRUNet (sigma=0.02, 18 iters).
+    """PnP-HQS DRUNet: CTF-corrected init + HQS DRUNet (sigma=0.02).
 
     Reference: Zhang et al. 2017, CVPR (DnCNN/DRUNet).
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="HQS",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="HQS",
                          sigma=0.02, max_iter=18)
 
 
 def run_cryo_gan(y, physics=None, cfg=None):
-    """CryoGAN: PnP-PGD with pretrained DRUNet (sigma=0.08, 8 iters).
+    """CryoGAN: CTF-corrected init + DRUNet PnP (sigma=0.08).
 
     Reference: Gupta et al. 2020, NeurIPS.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="PGD",
                          sigma=0.08, max_iter=8)
 
 
 def run_cryo_fire(y, physics=None, cfg=None):
-    """CryoFIRE: PnP-DRS with pretrained DRUNet (sigma=0.05, 15 iters).
+    """CryoFIRE: CTF-corrected init + DRUNet PnP (sigma=0.05).
 
     Reference: Zhong et al. 2023, ICLR.
     """
     from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="DRS",
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_pnp_drunet(y2, psf_sigma=PSF_SIGMA, optimizer="DRS",
                          sigma=0.05, max_iter=15)
 
 
 def run_cryo_former(y, physics=None, cfg=None):
-    """CryoFormer: PnP-PGD with pretrained DRUNet (sigma=0.008, 25 iters).
+    """CryoFormer: CTF-corrected init + SwinIR transformer denoise.
 
+    Uses pretrained SwinIR (Liang et al. 2021) instead of generic DRUNet.
     Reference: CryoFormer 2024.
     """
-    from algorithm_base.shared.dl_engine import dl_pnp_drunet
-    return dl_pnp_drunet(y, psf_sigma=PSF_SIGMA, optimizer="PGD",
-                         sigma=0.008, max_iter=25)
+    from algorithm_base.shared.dl_engine import dl_swinir_denoise
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_swinir_denoise(y2, psf_sigma=PSF_SIGMA)
 
 
 def run_cryo_foundation(y, physics=None, cfg=None):
-    """CryoFoundation: RED with pretrained DRUNet (sigma=0.005, 30 iters).
+    """CryoFoundation: CTF-corrected init + Restormer denoise.
 
+    Uses pretrained Restormer (Zamir et al. 2022) instead of generic DRUNet.
     Reference: CryoFoundation 2025.
     """
-    from algorithm_base.shared.dl_engine import dl_red_drunet
-    return dl_red_drunet(y, psf_sigma=PSF_SIGMA, sigma=0.005, max_iter=30)
+    from algorithm_base.shared.dl_engine import dl_restormer_denoise
+    y2 = _ctf_correct_init(y, cfg)
+    return dl_restormer_denoise(y2, psf_sigma=PSF_SIGMA)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
