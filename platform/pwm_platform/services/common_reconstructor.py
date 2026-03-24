@@ -1338,6 +1338,119 @@ def _compressive_reconstruct(
         return _to_2d_display(y)
 
 
+def _algorithm_base_reconstruct(data: dict, variant_key: str, algo_name: str = "") -> np.ndarray:
+    """Universal dispatch to algorithm_base/{modality}/solvers.py.
+
+    Resolves algorithm name → solver function, builds operator from data,
+    and runs the solver. Works for all 170+ modalities.
+    """
+    import sys
+    import importlib
+
+    y = data["y"].astype(np.float32)
+
+    algo_base_paths = [
+        "/app/algorithm_base",
+        "/home/spiritai/pwm/Physics_World_Model/pwm/public/algorithm_base",
+    ]
+    for p in algo_base_paths:
+        if p not in sys.path:
+            sys.path.insert(0, p)
+
+    # Map variant_key to module name (handle aliases)
+    mod_name = variant_key.replace("-", "_")
+
+    try:
+        solver_mod = importlib.import_module(f"{mod_name}.solvers")
+    except ImportError:
+        logger.warning("No algorithm_base/%s/solvers.py found", mod_name)
+        return None  # Signal caller to use default reconstruction
+
+    solvers = getattr(solver_mod, "SOLVERS", {})
+    if not solvers:
+        return None
+
+    # Build name → solver_key mapping
+    name_to_key = {info["name"].lower(): key for key, info in solvers.items()}
+    algo_lower = algo_name.lower().strip()
+    solver_key = name_to_key.get(algo_lower)
+
+    # Partial match
+    if solver_key is None:
+        for name, key in name_to_key.items():
+            if algo_lower in name or name in algo_lower:
+                solver_key = key
+                break
+
+    # Fall back to traditional_cpu
+    if solver_key is None:
+        solver_key = "traditional_cpu" if "traditional_cpu" in solvers else next(iter(solvers))
+        logger.info("Algorithm '%s' not found for %s, using '%s'", algo_name, mod_name, solver_key)
+
+    # Build config with all available data fields
+    cfg = {"n_iter": 200, "max_iter": 200}
+    angles = data.get("angles")
+    if angles is None:
+        angles = data.get("angles_deg")
+    if angles is not None:
+        cfg["angles"] = angles
+    x_true = data.get("x_true")
+    if x_true is not None:
+        cfg["output_size"] = x_true.shape[0]
+    elif y.ndim == 2:
+        # Estimate output size from sinogram detector count
+        cfg["output_size"] = min(y.shape)
+
+    # Prefer run_solver() dispatch if available (handles internal mapping)
+    run_solver_fn = getattr(solver_mod, "run_solver", None)
+    if run_solver_fn is not None:
+        try:
+            x_recon = run_solver_fn(solver_key, y, None, cfg)
+            if x_recon is not None:
+                return np.clip(x_recon, 0, None).astype(np.float32)
+        except Exception as exc:
+            logger.warning("run_solver %s/%s failed: %s", mod_name, solver_key, exc)
+
+    # Fall back to direct function call
+    solver_info = solvers[solver_key]
+    fn_name = solver_info["function"]
+    solver_fn = getattr(solver_mod, fn_name, None)
+    if solver_fn is None:
+        logger.warning("Function %s not found in %s.solvers", fn_name, mod_name)
+        return None
+
+    # Build operator from data
+    H = data.get("H_ideal")
+    op = None
+    if hasattr(solver_mod, "MaskOperator") and H is not None and H.ndim == 2 and len(np.unique(H)) <= 3:
+        op = solver_mod.MaskOperator(H)
+    elif hasattr(solver_mod, "_extract_operator"):
+        try:
+            op = solver_mod._extract_operator(None, y, {})
+        except Exception:
+            pass
+    if op is None:
+        for op_cls_name in ["SPCOperator", "Operator", "ForwardOperator"]:
+            op_cls = getattr(solver_mod, op_cls_name, None)
+            if op_cls is not None:
+                try:
+                    op = op_cls(y.shape[:2])
+                except Exception:
+                    pass
+                break
+
+    cfg = {"n_iter": 200, "max_iter": 200}
+    try:
+        x_recon = solver_fn(y, op, cfg)
+    except Exception as exc:
+        logger.warning("Solver %s/%s failed: %s", mod_name, algo_name, exc)
+        return None
+
+    if x_recon is not None:
+        return np.clip(x_recon, 0, None).astype(np.float32)
+    return None
+
+
 # ── Reconstruction dispatch ──────────────────────────────────────────────
 
 # Physics-informed algorithms we can actually run
@@ -1867,6 +1980,14 @@ def _dispatch_reconstruction(
         recon_type = "deconvolution"
 
     def _compute_reconstruction() -> np.ndarray:
+        # Try algorithm_base dispatch first for per-algorithm reconstruction
+        try:
+            ab_result = _algorithm_base_reconstruct(data, variant_key, algo_name)
+            if ab_result is not None:
+                return ab_result
+        except Exception as exc:
+            logger.debug("algorithm_base dispatch failed for %s/%s: %s", variant_key, algo_name, exc)
+
         try:
             if recon_type == "sinogram":
                 # Sinogram → FBP / PINER-CT
@@ -2070,6 +2191,7 @@ async def run_common_reconstruction(
     user_measurement: Optional[np.ndarray] = None,
     user_matrix: Optional[np.ndarray] = None,
     sample_index: int = 0,
+    user_ground_truth: Optional[np.ndarray] = None,
 ) -> dict:
     """Run a single algorithm on standard benchmark or user data.
 
@@ -2084,6 +2206,7 @@ async def run_common_reconstruction(
         user_measurement,
         user_matrix,
         sample_index,
+        user_ground_truth,
     )
 
 
@@ -2093,6 +2216,7 @@ async def _run_common_async(
     user_measurement: Optional[np.ndarray],
     user_matrix: Optional[np.ndarray],
     sample_index: int = 0,
+    user_ground_truth: Optional[np.ndarray] = None,
 ) -> dict:
     """Async common-mode reconstruction (awaits Modal GPU calls non-blocking)."""
     t0 = time.perf_counter()
@@ -2106,10 +2230,16 @@ async def _run_common_async(
     # Variant aliases: resolve short names to catalog entries
     _VARIANT_ALIASES: dict[str, str] = {
         "cassi": "sd_cassi",  # short alias → canonical variant key
+        "sd-cassi": "sd_cassi",
         "spc": "spc_block",
     }
     catalog_key = _VARIANT_ALIASES.get(variant_key, variant_key)
     variant = get_variant(catalog_key)
+    # Fallback: if alias target not found, try variant_key directly
+    if variant is None and catalog_key != variant_key:
+        variant = get_variant(variant_key)
+        if variant is not None:
+            catalog_key = variant_key
     if variant is None:
         raise ValueError(f"Unknown variant: {variant_key}")
 
@@ -2174,7 +2304,7 @@ async def _run_common_async(
         is_dl = False
 
     # CASSI DL models with GCS checkpoints run on CPU via _cassi_model_reconstruct
-    if catalog_key == "sd_cassi" and algorithm_name in _CASSI_CPU_RUNNABLE:
+    if catalog_key in ("sd_cassi", "cassi") and algorithm_name in _CASSI_CPU_RUNNABLE:
         is_dl = False
 
     # Run reconstruction via central dispatch
@@ -2187,7 +2317,7 @@ async def _run_common_async(
     # ── CASSI Modal GPU path (DAUHST-9stg, MiJUN-5stg) ───────────────────────
     # Try Modal T4 GPU first; fall back to GAP-TV baseline only if GPU fails.
     # One Modal invocation per request — checkpoint bytes sent in the payload.
-    if catalog_key == "sd_cassi" and algorithm_name in _CASSI_MODAL_GPU:
+    if catalog_key in ("sd_cassi", "cassi") and algorithm_name in _CASSI_MODAL_GPU:
         cassi_gpu_key, cassi_ckpt_gcs = _CASSI_MODAL_GPU[algorithm_name]
         ckpt_cache = CACHE_DIR / f"cassi_{cassi_gpu_key}.pth"
         if not ckpt_cache.exists():
