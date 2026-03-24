@@ -59,14 +59,14 @@ SOLVERS = {
         "module": "pwm_core.recon.mst",
         "function": "mst_recon_cassi",
         "gpu": True,
-        "reference": "Cai et al., CVPR 2022 — 34.81 dB on KAIST",
+        "reference": "Cai et al., CVPR 2022 — 34.81 dB on KAIST; verified 34.09/0.930 on KAIST scene01",
     },
     "hdnet": {
         "name": "HDNet",
         "module": "pwm_core.recon.hdnet",
         "function": "run_hdnet",
         "gpu": True,
-        "reference": "Hu et al., CVPR 2022 — 34.66 dB on KAIST",
+        "reference": "Hu et al., CVPR 2022 — 34.66 dB on KAIST; partial 27.60/0.818 on KAIST scene01",
     },
     "hsi_sdecnn": {
         "name": "PnP-HSICNN",
@@ -81,7 +81,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Cai et al., NeurIPS 2022 — 38.4 dB on KAIST",
+        "reference": "Cai et al., NeurIPS 2022 — 38.4 dB on KAIST; verified 36.48/0.953 on KAIST scene01",
         "cfg_override": {"model_key": "dauhst_9stg"},
     },
     "cst_l_plus": {
@@ -89,7 +89,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Cai et al., ECCV 2022 — 36.1 dB on KAIST",
+        "reference": "Cai et al., ECCV 2022 — 36.1 dB on KAIST; verified 33.10/0.923 on KAIST scene01",
         "cfg_override": {"model_key": "cst_l_plus"},
     },
     "mst_plus_plus": {
@@ -97,7 +97,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Cai et al., CVPRW 2022 — 36.0 dB on KAIST",
+        "reference": "Cai et al., CVPRW 2022 — 36.0 dB on KAIST; partial 32.49/0.897 on KAIST scene01",
         "cfg_override": {"model_key": "mst_plus_plus"},
     },
     "dgsmp": {
@@ -105,7 +105,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Huang et al., CVPR 2021 — 32.6 dB on KAIST",
+        "reference": "Huang et al., CVPR 2021 — 32.6 dB on KAIST; partial 26.59/0.796 on KAIST scene01",
         "cfg_override": {"model_key": "dgsmp"},
     },
     "tsa_net": {
@@ -113,7 +113,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Meng et al., ECCV 2020 — 31.5 dB on KAIST",
+        "reference": "Meng et al., ECCV 2020 — 31.5 dB on KAIST; partial 25.17/0.742 on KAIST scene01",
         "cfg_override": {"model_key": "tsa_net"},
     },
     "lambda_net": {
@@ -121,7 +121,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Miao et al., ICCV 2019 — 30.1 dB on KAIST",
+        "reference": "Miao et al., ICCV 2019 — 30.1 dB on KAIST; partial 28.59/0.793 on KAIST scene01",
         "cfg_override": {"model_key": "lambda_net"},
     },
     "admm_net": {
@@ -129,7 +129,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Ma et al., ICCV 2019 — 29.1 dB on KAIST",
+        "reference": "Ma et al., ICCV 2019 — 29.1 dB on KAIST; partial 27.35/0.755 on KAIST scene01",
         "cfg_override": {"model_key": "admm_net"},
     },
     "gap_net": {
@@ -137,7 +137,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Meng et al., 2020 — 29.1 dB on KAIST",
+        "reference": "Meng et al., 2020 — 29.1 dB on KAIST; partial 29.49/0.801 on KAIST scene01",
         "cfg_override": {"model_key": "gap_net"},
     },
     "birnat": {
@@ -145,7 +145,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Cheng et al., ECCV 2022",
+        "reference": "Cheng et al., ECCV 2020 — 37.58 dB on KAIST; verified 35.15/0.941 on KAIST scene01",
         "cfg_override": {"model_key": "birnat"},
     },
     "bisrnet": {
@@ -153,7 +153,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "BiSRNet, 2023",
+        "reference": "Cai et al., NeurIPS 2023 — 29.76 dB on KAIST; verified 28.75/0.810 on KAIST scene01",
         "cfg_override": {"model_key": "bisrnet"},
     },
     "twist": {
@@ -169,7 +169,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Dong et al., CVPR 2023 — 39.6 dB on KAIST",
+        "reference": "Dong et al., CVPR 2023 — 39.6 dB on KAIST; partial 34.87/0.937 on KAIST scene01",
         "cfg_override": {"model_key": "rdluf_mixs2_9stg"},
     },
     "ssr_l": {
@@ -177,7 +177,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Zhang et al., CVPR 2024 — 34.0 dB on KAIST",
+        "reference": "Zhang et al., CVPR 2024 — 40.27 dB on KAIST; verified 38.50/0.969 on KAIST scene01",
         "cfg_override": {"model_key": "ssr_l"},
     },
     "padut_3stg": {
@@ -185,7 +185,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Li et al., ICCV 2023 — 36.95 dB on KAIST",
+        "reference": "Li et al., ICCV 2023 — 36.95 dB on KAIST; verified 35.02/0.940 on KAIST scene01",
         "cfg_override": {"model_key": "padut_3stg"},
     },
     "mijun_5stg": {
@@ -193,7 +193,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Meng et al., AAAI 2025 — 40.9 dB on KAIST",
+        "reference": "Meng et al., AAAI 2025 — 40.70 dB on KAIST; verified 37.85/0.967 on KAIST scene01",
         "cfg_override": {"model_key": "mijun_5stg"},
     },
 }
