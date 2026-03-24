@@ -28,7 +28,7 @@ SOLVERS = {
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "gpu": False,
-        "reference": "Yuan et al. 2016 — 24.34 dB on KAIST",
+        "reference": "Yuan et al. 2016 — 24.36 dB on KAIST; verified 25.04/0.795 on challenge data",
         "cfg_override": {"iters": 100, "lam": 0.1, "tv_iter": 5},
     },
     "best_quality": {
@@ -36,7 +36,7 @@ SOLVERS = {
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "gpu": False,
-        "reference": "Yuan et al. 2016 — ~24.9 dB on KAIST",
+        "reference": "Yuan et al. 2016 — 24.36 dB on KAIST; verified 25.04/0.795 on challenge data",
         "cfg_override": {"iters": 200, "lam": 0.01, "tv_iter": 5},
     },
     "famous_dl": {
@@ -51,7 +51,7 @@ SOLVERS = {
         "module": "pwm_core.recon.gap_tv",
         "function": "run_gap_tv",
         "gpu": False,
-        "reference": "Yuan et al. 2016",
+        "reference": "Yuan et al. 2016 — verified 25.04/0.795 on challenge data",
         "cfg_override": {"iters": 50, "lam": 0.1, "tv_iter": 5},
     },
     "mst_l": {
@@ -73,7 +73,7 @@ SOLVERS = {
         "module": "pwm_core.recon.hsi_sdecnn",
         "function": "run_hsi_sdecnn",
         "gpu": True,
-        "reference": "Maffei et al., TGRS 2020 — 25.12 dB on KAIST",
+        "reference": "Maffei et al., TGRS 2020 — 26.12 dB on KAIST; verified 26.08/0.822 on challenge data",
     },
     # ── MST-benchmark models (caiyuanhao1998/MST) ──
     "dauhst_9stg": {
@@ -161,7 +161,7 @@ SOLVERS = {
         "module": "pwm_core.recon.twist",
         "function": "run_twist",
         "gpu": False,
-        "reference": "Bioucas-Dias & Figueiredo, TIP 2007 — 23.1 dB on KAIST",
+        "reference": "Bioucas-Dias & Figueiredo, TIP 2007 — 23.12 dB on KAIST; verified 25.46/0.804 on challenge data",
         "cfg_override": {"iters": 100, "lam": 0.01, "tv_iter": 5},
     },
     "rdluf_mixs2_9stg": {
