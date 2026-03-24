@@ -81,3 +81,33 @@
 {"modality": "atom_probe", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 10.82, "ssim": 0.3463, "timestamp": "2026-03-23T17:15:45.130171"}
 {"modality": "atom_probe", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 10.82, "ssim": 0.3463, "timestamp": "2026-03-23T17:16:22.958068"}
 {"modality": "atom_probe", "solver_key": "apt_dl", "solver_name": "APT-Net [proxy]", "psnr": 10.82, "ssim": 0.3463, "timestamp": "2026-03-23T17:17:05.177768"}
+{"modality": "atom_probe", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 12.12, "ssim": 0.4265, "timestamp": "2026-03-23T17:17:18.341328"}
+{"modality": "atom_probe", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 12.52, "ssim": 0.4657, "timestamp": "2026-03-23T17:17:58.616839"}
+{"modality": "atom_probe", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 9.05, "ssim": 0.1764, "timestamp": "2026-03-23T17:18:40.429284"}
+{"modality": "atom_probe", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 12.25, "ssim": 0.4466, "timestamp": "2026-03-23T17:19:17.970652"}
+{"modality": "atom_probe", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 12.35, "ssim": 0.4668, "timestamp": "2026-03-23T17:19:49.250919"}
+{"modality": "atom_probe", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 11.88, "ssim": 0.42, "timestamp": "2026-03-23T17:20:28.392295"}
+{"modality": "atom_probe", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 12.14, "ssim": 0.4388, "timestamp": "2026-03-23T17:21:32.986083"}
+{"modality": "atom_probe", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 12.13, "ssim": 0.4453, "timestamp": "2026-03-23T17:22:40.750597"}
+{"modality": "bioluminescence_tomo", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 13.4, "ssim": 0.3723, "timestamp": "2026-03-23T17:22:53.582461"}
+{"modality": "bioluminescence_tomo", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 13.4, "ssim": 0.3723, "timestamp": "2026-03-23T17:23:04.322205"}
+{"modality": "bioluminescence_tomo", "solver_key": "blt_dl", "solver_name": "BLT-Net [proxy]", "psnr": 13.4, "ssim": 0.3723, "timestamp": "2026-03-23T17:23:09.195564"}
+{"modality": "bioluminescence_tomo", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 10.84, "ssim": 0.2112, "timestamp": "2026-03-23T17:23:11.073987"}
+{"modality": "bioluminescence_tomo", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 11.38, "ssim": 0.329, "timestamp": "2026-03-23T17:23:13.061910"}
+{"modality": "bioluminescence_tomo", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 13.41, "ssim": 0.3727, "timestamp": "2026-03-23T17:23:15.697522"}
+{"modality": "bioluminescence_tomo", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 11.25, "ssim": 0.329, "timestamp": "2026-03-23T17:23:17.784631"}
+{"modality": "bioluminescence_tomo", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 10.99, "ssim": 0.2996, "timestamp": "2026-03-23T17:23:19.659506"}
+{"modality": "bioluminescence_tomo", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 10.88, "ssim": 0.3104, "timestamp": "2026-03-23T17:23:21.719453"}
+{"modality": "bioluminescence_tomo", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 10.83, "ssim": 0.2074, "timestamp": "2026-03-23T17:23:24.810616"}
+{"modality": "bioluminescence_tomo", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 10.83, "ssim": 0.2115, "timestamp": "2026-03-23T17:23:28.687697"}
+{"modality": "brachytherapy_img", "solver_key": "traditional_cpu", "solver_name": "FBP [proxy]", "psnr": 22.73, "ssim": 0.1804, "timestamp": "2026-03-23T17:23:47.638400"}
+{"modality": "brachytherapy_img", "solver_key": "best_quality", "solver_name": "DL-Recon [proxy]", "psnr": 22.73, "ssim": 0.1804, "timestamp": "2026-03-23T17:23:57.260676"}
+{"modality": "brachytherapy_img", "solver_key": "brachy_dl", "solver_name": "BrachyNet [proxy]", "psnr": 22.73, "ssim": 0.1804, "timestamp": "2026-03-23T17:24:07.435220"}
+{"modality": "brachytherapy_img", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 20.38, "ssim": 0.1055, "timestamp": "2026-03-23T17:24:10.546093"}
+{"modality": "brachytherapy_img", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 20.91, "ssim": 0.1436, "timestamp": "2026-03-23T17:24:15.424813"}
+{"modality": "brachytherapy_img", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 22.45, "ssim": 0.1616, "timestamp": "2026-03-23T17:24:20.231676"}
+{"modality": "brachytherapy_img", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 21.23, "ssim": 0.1307, "timestamp": "2026-03-23T17:24:25.186147"}
+{"modality": "brachytherapy_img", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 22.4, "ssim": 0.2185, "timestamp": "2026-03-23T17:24:29.424849"}
+{"modality": "brachytherapy_img", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 22.39, "ssim": 0.2006, "timestamp": "2026-03-23T17:24:34.187366"}
+{"modality": "brachytherapy_img", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 20.41, "ssim": 0.1077, "timestamp": "2026-03-23T17:24:44.560694"}
+{"modality": "brachytherapy_img", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 20.52, "ssim": 0.1177, "timestamp": "2026-03-23T17:24:54.497921"}

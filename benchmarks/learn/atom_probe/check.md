@@ -310,3 +310,203 @@ All 3 GCS tiers regenerated with dedicated phantom on 2026-03-09.
 | Runtime | 3.35 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.12 dB |
+| SSIM (mean, 12 samples) | 0.4265 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.52 dB |
+| SSIM (mean, 12 samples) | 0.4657 |
+| Runtime | 3.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.05 dB |
+| SSIM (mean, 12 samples) | 0.1764 |
+| Runtime | 2.89 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.25 dB |
+| SSIM (mean, 12 samples) | 0.4466 |
+| Runtime | 3.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.35 dB |
+| SSIM (mean, 12 samples) | 0.4668 |
+| Runtime | 2.52 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.88 dB |
+| SSIM (mean, 12 samples) | 0.4200 |
+| Runtime | 3.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.14 dB |
+| SSIM (mean, 12 samples) | 0.4388 |
+| Runtime | 5.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.13 dB |
+| SSIM (mean, 12 samples) | 0.4453 |
+| Runtime | 5.58 s/sample |
+
+**Result: PASS**

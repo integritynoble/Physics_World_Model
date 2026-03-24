@@ -222,3 +222,278 @@ Bioluminescence tomography is correctly modeled as a severely ill-posed diffusio
 | Runtime | 0.59 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.40 dB |
+| SSIM (mean, 12 samples) | 0.3723 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.40 dB |
+| SSIM (mean, 12 samples) | 0.3723 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BLT-Net [proxy]
+**Solver Key:** blt_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.40 dB |
+| SSIM (mean, 12 samples) | 0.3723 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.84 dB |
+| SSIM (mean, 12 samples) | 0.2112 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.38 dB |
+| SSIM (mean, 12 samples) | 0.3290 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.41 dB |
+| SSIM (mean, 12 samples) | 0.3727 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.25 dB |
+| SSIM (mean, 12 samples) | 0.3290 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.99 dB |
+| SSIM (mean, 12 samples) | 0.2996 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.88 dB |
+| SSIM (mean, 12 samples) | 0.3104 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2074 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** diffusion
+**Forward Model:** y(r_d) = integral G(r_d, r_s) · S(r_s) dr_s, diffusion transport
+**Canonical Reference:** Wang et al., "Uniqueness Theorems in BLT," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2115 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**

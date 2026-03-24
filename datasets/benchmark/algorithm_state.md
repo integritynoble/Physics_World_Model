@@ -294,9 +294,9 @@ Adding a new algorithm:
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
 | 1 | L1-regularized BLT | 2010 | TV-BLT | 22.0 | 0.7500 | 37.4 | 0.0390 | done | yes |
 | 2 | Diffusion-model inversion | 2005 | Wang et al., Opt Lett 2004 | 18.0 | 0.6000 | 37.4 | 0.0390 | done | yes |
-| 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 14.3 | 0.3531 | 37.4 | 0.0390 | done | yes |
-| 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 14.3 | 0.3531 | 37.4 | 0.0390 | done | yes |
-| 5 | BLT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 14.3 | 0.3531 | 37.4 | 0.0390 | done | yes |
+| 3 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 14.3 | 0.3531 | 13.4 | 0.3723 | done | yes |
+| 4 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 14.3 | 0.3531 | 13.4 | 0.3723 | done | yes |
+| 5 | BLT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 14.3 | 0.3531 | 13.4 | 0.3723 | done | yes |
 | 6 | precomputed_baseline (test) | — | — | 13.3 | — | 37.4 | 0.0390 | done | yes |
 | 7 | Direct mapping | 2000 | Direct BLT mapping baseline | 12.0 | 0.4000 | 37.4 | 0.0390 | done | yes |
 
@@ -993,8 +993,8 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
 | 1 | RL-ARCNN (metal artifact reduction) | 2018 | Huang et al., BioMedical Eng OnLine 2018 | 38.1 | — | 30.2 | 0.1022 | partial | yes |
-| 2 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 33.1 | 0.8307 | 30.2 | 0.1022 | done | yes |
-| 3 | BrachyNet [proxy] (PWM) | — | Richardson 1972, JOSA | 33.1 | 0.8307 | 30.2 | 0.1022 | done | yes |
+| 2 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 33.1 | 0.8307 | 22.7 | 0.1804 | gap | yes |
+| 3 | BrachyNet [proxy] (PWM) | — | Richardson 1972, JOSA | 33.1 | 0.8307 | 22.7 | 0.1804 | gap | yes |
 | 4 | Monte Carlo dose | 2005 | MC dose calculation | 28.0 | 0.8500 | 30.2 | 0.1022 | done | yes |
 | 5 | precomputed_baseline (test) | — | — | 25.2 | — | 30.2 | 0.1022 | done | yes |
 | 6 | FBP | 1971 | FBP baseline | 25.0 | — | 30.2 | 0.1022 | done | yes |

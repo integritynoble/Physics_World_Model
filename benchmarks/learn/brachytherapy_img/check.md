@@ -207,3 +207,553 @@ Dedicated `_VARIANT_OVERRIDES["brachytherapy_img"]` added with 9 domain-specific
 | Runtime | 12.63 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.73 dB |
+| SSIM (mean, 12 samples) | 0.1804 |
+| Runtime | 0.90 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.73 dB |
+| SSIM (mean, 12 samples) | 0.1804 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.73 dB |
+| SSIM (mean, 12 samples) | 0.1804 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.73 dB |
+| SSIM (mean, 12 samples) | 0.1804 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BrachyNet [proxy]
+**Solver Key:** brachy_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.73 dB |
+| SSIM (mean, 12 samples) | 0.1804 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** BrachyNet [proxy]
+**Solver Key:** brachy_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.73 dB |
+| SSIM (mean, 12 samples) | 0.1804 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.38 dB |
+| SSIM (mean, 12 samples) | 0.1055 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.38 dB |
+| SSIM (mean, 12 samples) | 0.1055 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.91 dB |
+| SSIM (mean, 12 samples) | 0.1436 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.91 dB |
+| SSIM (mean, 12 samples) | 0.1436 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.45 dB |
+| SSIM (mean, 12 samples) | 0.1616 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.45 dB |
+| SSIM (mean, 12 samples) | 0.1616 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.23 dB |
+| SSIM (mean, 12 samples) | 0.1307 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.23 dB |
+| SSIM (mean, 12 samples) | 0.1307 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.40 dB |
+| SSIM (mean, 12 samples) | 0.2185 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.40 dB |
+| SSIM (mean, 12 samples) | 0.2185 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.39 dB |
+| SSIM (mean, 12 samples) | 0.2006 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.39 dB |
+| SSIM (mean, 12 samples) | 0.2006 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.41 dB |
+| SSIM (mean, 12 samples) | 0.1077 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.41 dB |
+| SSIM (mean, 12 samples) | 0.1077 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.52 dB |
+| SSIM (mean, 12 samples) | 0.1177 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** other
+**Forward Model:** D(r,θ) = S_K · Λ · (G(r,θ)/G(r₀,θ₀)) · g(r) · F(r,θ)
+**Canonical Reference:** Rivard et al., "Update of AAPM TG-43 Report," Med. Phys. 31 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.52 dB |
+| SSIM (mean, 12 samples) | 0.1177 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**

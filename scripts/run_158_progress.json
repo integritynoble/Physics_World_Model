@@ -9,9 +9,12 @@
     "adaptive_optics",
     "afm",
     "angiography",
-    "asl_mri"
+    "asl_mri",
+    "atom_probe",
+    "bioluminescence_tomo",
+    "brachytherapy_img"
   ],
-  "current": "atom_probe",
+  "current": "brachytherapy_img",
   "results": {
     "pet": {
       "solvers_run": 9,
@@ -42,6 +45,18 @@
       "solvers_passed": 11
     },
     "asl_mri": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "atom_probe": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "bioluminescence_tomo": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "brachytherapy_img": {
       "solvers_run": 11,
       "solvers_passed": 11
     }
