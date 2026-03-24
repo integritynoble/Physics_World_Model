@@ -213,3 +213,228 @@ Algorithm pool updated to 7 methods with dedicated `_VARIANT_OVERRIDES["afm"]` e
 | Runtime | 0.49 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.01 dB |
+| SSIM (mean, 12 samples) | 0.7329 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 31.26 dB |
+| SSIM (mean, 12 samples) | 0.7640 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 28.20 dB |
+| SSIM (mean, 12 samples) | 0.8308 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.78 dB |
+| SSIM (mean, 12 samples) | 0.6772 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.75 dB |
+| SSIM (mean, 12 samples) | 0.7231 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 29.37 dB |
+| SSIM (mean, 12 samples) | 0.9226 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.79 dB |
+| SSIM (mean, 12 samples) | 0.6941 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 31.79 dB |
+| SSIM (mean, 12 samples) | 0.8022 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = z_tip(x,y) convolved with tip shape, F = -dV/dz
+**Canonical Reference:** Giessibl, "Advances in Atomic Force Microscopy," Rev. Mod. Phys. 75 (2003)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 32.86 dB |
+| SSIM (mean, 12 samples) | 0.8935 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**

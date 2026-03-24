@@ -983,9 +983,9 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 | 2 | HUST (Transformer) 2D | 2025 | Springer, Vis Comput 2025 | 33.7 | 0.9600 | 22.3 | 0.2631 | gap | yes |
 | 3 | ASLRDB (Dilated+RDB) | 2025 | Springer, SIVP 2025 | 25.0 | 0.8240 | 22.3 | 0.2631 | done | yes |
 | 4 | Control-label subtraction | 1998 | Detre et al., MRM 1992 | 22.0 | 0.6500 | 22.3 | 0.2631 | done | yes |
-| 5 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | 12.9 | 0.1371 | 22.3 | 0.2631 | done | yes |
-| 6 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 12.9 | 0.1371 | 22.3 | 0.2631 | done | yes |
-| 7 | ASL-Net [proxy] (PWM) | — | — | 12.9 | 0.1371 | 22.3 | 0.2631 | done | yes |
+| 5 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | 12.9 | 0.1371 | 10.5 | 0.1855 | done | yes |
+| 6 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 12.9 | 0.1371 | 10.5 | 0.1855 | done | yes |
+| 7 | ASL-Net [proxy] (PWM) | — | — | 12.9 | 0.1371 | 10.2 | 0.0221 | done | yes |
 | 8 | precomputed_baseline (test) | — | — | 10.9 | — | 22.3 | 0.2631 | done | yes |
 
 ### 60. Brachytherapy Imaging (`brachytherapy_img`)
@@ -2169,9 +2169,9 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 42.1 | 0.9999 | 26.0 | 0.9771 | gap | yes |
-| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 42.1 | 0.9999 | 26.0 | 0.9771 | gap | yes |
-| 3 | APT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 42.1 | 0.9999 | 26.0 | 0.9771 | gap | yes |
+| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 42.1 | 0.9999 | 10.8 | 0.3463 | gap | yes |
+| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 42.1 | 0.9999 | 10.8 | 0.3463 | gap | yes |
+| 3 | APT-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 42.1 | 0.9999 | 10.8 | 0.3463 | gap | yes |
 | 4 | precomputed_baseline (test) | — | — | 41.1 | — | 26.0 | 0.9771 | gap | yes |
 | 5 | ML trajectory correction | 2022 | DL for APT | 24.0 | — | 26.0 | 0.9771 | done | yes |
 | 6 | Voltage reconstruction | 2000 | APT reconstruction | 20.0 | — | 26.0 | 0.9771 | done | yes |

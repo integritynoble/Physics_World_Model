@@ -216,3 +216,553 @@ Calibrated to Alsop et al. (MRM 2015) pCASL normative values and Mutsaerts et al
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.52 dB |
+| SSIM (mean, 12 samples) | 0.1855 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.52 dB |
+| SSIM (mean, 12 samples) | 0.1855 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.52 dB |
+| SSIM (mean, 12 samples) | 0.1855 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.52 dB |
+| SSIM (mean, 12 samples) | 0.1855 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ASL-Net [proxy]
+**Solver Key:** asl_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.20 dB |
+| SSIM (mean, 12 samples) | 0.0221 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** ASL-Net [proxy]
+**Solver Key:** asl_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.20 dB |
+| SSIM (mean, 12 samples) | 0.0221 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 0 sample(s)
+**Status:** FAIL
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** fourier
+**Forward Model:** y(k) = F{M(x,y) · (1 - 2α·f(CBF,T1))}, k-space encoding
+**Canonical Reference:** Alsop et al., "Recommended Implementation of ASL Perfusion MRI," Magn. Reson. Med. 73 (2015)
+**Note:** Error: ValueError: cannot reshape array of size 131072 into shape (256,256)
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 0 samples) | 0.00 dB |
+| SSIM (mean, 0 samples) | 0.0000 |
+| Runtime | 0.00 s/sample |
+
+**Result: FAIL**

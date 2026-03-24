@@ -243,3 +243,553 @@ Calibrated to DSA/3DRA physics: Shen et al. (2024) and Wang et al. (2024).
 | Runtime | 12.38 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP (DSA baseline)
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.59 dB |
+| SSIM (mean, 12 samples) | 0.0866 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP (DSA baseline)
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.59 dB |
+| SSIM (mean, 12 samples) | 0.0866 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DSA-Net [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.87 dB |
+| SSIM (mean, 12 samples) | 0.4068 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DSA-Net [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.87 dB |
+| SSIM (mean, 12 samples) | 0.4068 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** VesselSegNet [proxy]
+**Solver Key:** famous_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.87 dB |
+| SSIM (mean, 12 samples) | 0.4068 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** VesselSegNet [proxy]
+**Solver Key:** famous_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.87 dB |
+| SSIM (mean, 12 samples) | 0.4068 |
+| Runtime | 0.42 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.55 dB |
+| SSIM (mean, 12 samples) | 0.3385 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.55 dB |
+| SSIM (mean, 12 samples) | 0.3385 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.44 dB |
+| SSIM (mean, 12 samples) | 0.3698 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.44 dB |
+| SSIM (mean, 12 samples) | 0.3698 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.91 dB |
+| SSIM (mean, 12 samples) | 0.4105 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.91 dB |
+| SSIM (mean, 12 samples) | 0.4105 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.58 dB |
+| SSIM (mean, 12 samples) | 0.3778 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.58 dB |
+| SSIM (mean, 12 samples) | 0.3778 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.57 dB |
+| SSIM (mean, 12 samples) | 0.3707 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.57 dB |
+| SSIM (mean, 12 samples) | 0.3707 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.54 dB |
+| SSIM (mean, 12 samples) | 0.3627 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.54 dB |
+| SSIM (mean, 12 samples) | 0.3627 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.56 dB |
+| SSIM (mean, 12 samples) | 0.3361 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.56 dB |
+| SSIM (mean, 12 samples) | 0.3361 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.56 dB |
+| SSIM (mean, 12 samples) | 0.3392 |
+| Runtime | 0.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** radon
+**Forward Model:** y = I₀ exp(-integral μ(x,y,z) dz), DSA: y = y_contrast - y_mask
+**Canonical Reference:** Defined by Beer-Lambert + DSA subtraction. Defined in: Bushberg et al., "The Essential Physics of Medical Imaging," Lippincott 2012 (3rd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.56 dB |
+| SSIM (mean, 12 samples) | 0.3392 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**

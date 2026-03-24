@@ -3,15 +3,45 @@
     "pet",
     "acoustic_emission",
     "acoustic_emission",
-    "acoustic_emission"
+    "acoustic_emission",
+    "acoustic_microscopy",
+    "active_thermography",
+    "adaptive_optics",
+    "afm",
+    "angiography",
+    "asl_mri"
   ],
-  "current": "acoustic_microscopy",
+  "current": "atom_probe",
   "results": {
     "pet": {
       "solvers_run": 9,
       "solvers_passed": 9
     },
     "acoustic_emission": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "acoustic_microscopy": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "active_thermography": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "adaptive_optics": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "afm": {
+      "solvers_run": 9,
+      "solvers_passed": 9
+    },
+    "angiography": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "asl_mri": {
       "solvers_run": 11,
       "solvers_passed": 11
     }

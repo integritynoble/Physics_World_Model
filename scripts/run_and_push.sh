@@ -56,16 +56,15 @@ for mod in "${MODALITIES[@]}"; do
 
   python scripts/run_158_modalities.py --modality "$mod" 2>&1 || true
 
-  # Commit and push every 5 modalities
-  if [ $BATCH -ge 5 ]; then
-    echo ""
-    echo "--- Committing batch (modalities $((COUNT-4)) to $COUNT) ---"
-    git add datasets/templates/index_group*.md datasets/benchmark/algorithm_state.md benchmarks/learn/ scripts/run_158_results.jsonl scripts/run_158_progress.json 2>/dev/null || true
-    git commit -m "bench: verify modalities $((COUNT-4))-$COUNT/158 (local server)" 2>/dev/null || true
-    git pull --rebase origin master 2>/dev/null || true
-    git push origin master 2>/dev/null || true
-    BATCH=0
-  fi
+  # Commit and push after every modality
+  echo ""
+  echo "--- Committing $mod ($COUNT/$TOTAL) ---"
+  git add datasets/templates/index_group*.md datasets/benchmark/algorithm_state.md benchmarks/learn/ scripts/run_158_results.jsonl scripts/run_158_progress.json 2>/dev/null || true
+  git commit -m "bench: verify $mod ($COUNT/158, local server)" 2>/dev/null || true
+  git stash 2>/dev/null || true
+  git pull --rebase origin master 2>/dev/null || true
+  git stash pop 2>/dev/null || true
+  git push origin master 2>/dev/null || true
 done
 
 # Final commit for remaining

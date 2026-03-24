@@ -67,3 +67,17 @@
 {"modality": "acoustic_microscopy", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 20.28, "ssim": 0.5883, "timestamp": "2026-03-23T17:09:17.778031"}
 {"modality": "acoustic_microscopy", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 21.22, "ssim": 0.65, "timestamp": "2026-03-23T17:09:23.585238"}
 {"modality": "acoustic_microscopy", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 18.75, "ssim": 0.5298, "timestamp": "2026-03-23T17:09:29.514884"}
+{"modality": "asl_mri", "solver_key": "traditional_cpu", "solver_name": "FBP [proxy]", "psnr": 10.52, "ssim": 0.1855, "timestamp": "2026-03-23T17:14:18.260517"}
+{"modality": "asl_mri", "solver_key": "best_quality", "solver_name": "DL-Recon [proxy]", "psnr": 10.52, "ssim": 0.1855, "timestamp": "2026-03-23T17:14:26.529975"}
+{"modality": "asl_mri", "solver_key": "asl_dl", "solver_name": "ASL-Net [proxy]", "psnr": 10.2, "ssim": 0.0221, "timestamp": "2026-03-23T17:14:34.734690"}
+{"modality": "asl_mri", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:37.709063"}
+{"modality": "asl_mri", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:40.612496"}
+{"modality": "asl_mri", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:43.520819"}
+{"modality": "asl_mri", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:46.540570"}
+{"modality": "asl_mri", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:49.967814"}
+{"modality": "asl_mri", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:53.121631"}
+{"modality": "asl_mri", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:56.176055"}
+{"modality": "asl_mri", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 0.0, "ssim": 0.0, "timestamp": "2026-03-23T17:14:59.225755"}
+{"modality": "atom_probe", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 10.82, "ssim": 0.3463, "timestamp": "2026-03-23T17:15:45.130171"}
+{"modality": "atom_probe", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 10.82, "ssim": 0.3463, "timestamp": "2026-03-23T17:16:22.958068"}
+{"modality": "atom_probe", "solver_key": "apt_dl", "solver_name": "APT-Net [proxy]", "psnr": 10.82, "ssim": 0.3463, "timestamp": "2026-03-23T17:17:05.177768"}

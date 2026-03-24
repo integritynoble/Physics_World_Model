@@ -235,3 +235,78 @@ All 3 GCS tiers regenerated with dedicated phantom on 2026-03-09.
 | Runtime | 0.77 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.82 dB |
+| SSIM (mean, 12 samples) | 0.3463 |
+| Runtime | 3.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.82 dB |
+| SSIM (mean, 12 samples) | 0.3463 |
+| Runtime | 3.02 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** APT-Net [proxy]
+**Solver Key:** apt_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** other
+**Forward Model:** y_i = (x_i, y_i, z_i, m/q_i), field evaporation + flight
+**Canonical Reference:** Miller & Forbes, "Atom-Probe Tomography," Springer 2014
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.82 dB |
+| SSIM (mean, 12 samples) | 0.3463 |
+| Runtime | 3.35 s/sample |
+
+**Result: PASS**

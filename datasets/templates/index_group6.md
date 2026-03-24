@@ -24,7 +24,7 @@
 | 9 | U-Net Vessel Segmentation | 2015 | 33.8 | -- | -- | -- | -- | 32.8 | 0.9200 | no_ckpt | Ronneberger et al., MICCAI 2015 |
 | 10 | Attention U-Net (Angiography) | 2018 | 35.2 | -- | -- | -- | -- | 34.2 | 0.9350 | no_ckpt | Oktay et al., MIDL 2018 |
 | 11 | CE-Net (Context Encoder Network) | 2019 | 35.8 | -- | -- | -- | -- | 34.8 | 0.9400 | no_ckpt | Gu et al., IEEE TMI 2019 |
-| 12 | DL-DSA (Deep Learning DSA Enhancement) | 2019 | 36.5 | -- | -- | -- | -- | 35.5 | 0.9450 | no_ckpt | Gao et al., IEEE TMI 2019 |
+| 12 | DL-DSA (Deep Learning DSA Enhancement) | 2019 | 36.5 | 13.9 | -- | -- | -- | 35.5 | 0.9450 | no_ckpt | Gao et al., IEEE TMI 2019 |
 | 13 | CS-Net (Curvilinear Structure Network) | 2020 | 36.2 | -- | -- | -- | -- | 35.2 | 0.9420 | no_ckpt | Mou et al., IEEE TMI 2020 |
 | 14 | TransUNet (Angiography) | 2021 | 37.0 | -- | -- | -- | -- | 36.0 | 0.9500 | no_ckpt | Chen et al., arXiv 2021 |
 | 15 | Angio-Net (DSA Vessel Enhancement) | 2022 | 37.8 | -- | -- | -- | -- | 36.8 | 0.9550 | no_ckpt | Mei et al., Medical Physics 2022 |
