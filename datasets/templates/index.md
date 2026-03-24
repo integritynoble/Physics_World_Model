@@ -614,33 +614,33 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 
 **Reference (SOTA):** PtychoFoundation -- PSNR 35.50 dB, SSIM 0.9500 (Foundation model for ptychography, 2025)
 
-| # | Algorithm | Year | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 | Ref PSNR | Ref SSIM | Status | Reference |
-|---|-----------|------|-------|-------|-------|-------|-------|-------|----------|----------|--------|-----------|
-| 1 | Error Reduction (Fienup) | 1982 | 26.8 | 5.02/0.25 | 5.02/0.25 | -- | 5.02/0.25 | -- | 25.80 | 0.7800 | gap | -- | Fienup, Appl. Opt., 1982; https://doi.org/10.1364/AO.21.002758 |
-| 2 | WDD | 1992 | 23.5 | 6.70/0.24 | 6.70/0.24 | -- | 6.70/0.24 | -- | 22.50 | 0.6500 | gap | -- | Rodenburg & Bates, Phil. Trans. R. Soc. A, 1992; https://doi.org/10.1098/rsta.1992.0050 |
-| 3 | Difference Map | 2008 | 28.3 | 5.24/0.26 | 5.24/0.26 | -- | 5.24/0.26 | -- | 27.30 | 0.8100 | gap | -- | Thibault et al., Science, 2008; https://doi.org/10.1126/science.1158573 |
-| 4 | PIE | 2004 | 20.1 | 5.18/0.26 | 5.18/0.26 | -- | 5.18/0.26 | -- | 18.60 | 0.5800 | gap | -- | Rodenburg & Faulkner, Appl. Phys. Lett., 2004; https://doi.org/10.1063/1.1823034 |
-| 5 | RAAR | 2005 | 27.5 | 5.21/0.26 | 5.21/0.26 | -- | 5.21/0.26 | -- | 26.50 | 0.7900 | gap | -- | Luke, Inverse Problems, 2005; https://doi.org/10.1088/0266-5611/21/1/004 |
-| 6 | ePIE | 2009 | 31.2 | 7.73/0.40 | 7.73/0.40 | -- | 7.73/0.40 | -- | 30.20 | 0.8700 | gap | -- | Maiden & Rodenburg, Ultramicroscopy, 2009; https://doi.org/10.1016/j.ultramic.2009.05.012 |
-| 7 | mPIE | 2017 | 32.5 | 7.73/0.40 | 7.73/0.40 | -- | 7.73/0.40 | -- | 31.50 | 0.8900 | gap | -- | Maiden et al., Optica, 2017; https://doi.org/10.1364/OPTICA.4.000736 |
-| 8 | Landweber Iteration | 1951 | 21.6 | 5.02/0.25 | 5.02/0.25 | -- | 5.02/0.25 | -- | 20.50 | 0.6200 | gap | -- | Landweber, Am. J. Math., 1951; https://doi.org/10.2307/2372313 |
-| 9 | Tikhonov Regularization | 1963 | 22.8 | 6.70/0.24 | 6.70/0.24 | -- | 6.70/0.24 | -- | 21.80 | 0.6400 | gap | -- | Tikhonov, Soviet Math. Dokl., 1963 |
-| 10 | TV-ADMM | 2011 | 25.5 | 7.52/0.40 | 7.52/0.40 | -- | 7.52/0.40 | -- | 24.50 | 0.7300 | gap | -- | Boyd et al., Found. Trends ML, 2011; https://doi.org/10.1561/2200000016 |
-| 11 | PnP-ADMM with NLM | 2013 | 29.8 | 7.22/0.41 | 7.22/0.41 | -- | 7.22/0.41 | -- | 28.80 | 0.8400 | gap | -- | Venkatakrishnan et al., GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
-| 12 | FPM | 2013 | 33.0 | 5.26/0.26 | 5.26/0.26 | -- | 5.26/0.26 | -- | 32.00 | 0.9000 | gap | -- | Zheng et al., Nature Photonics, 2013; https://doi.org/10.1038/nphoton.2013.187 |
-| 13 | SHARP | 2016 | 30.5 | 7.73/0.39 | 7.73/0.39 | -- | 7.73/0.39 | -- | 29.50 | 0.8500 | gap | -- | Marchesini et al., J. Appl. Cryst., 2016; https://doi.org/10.1107/S1600576716008074 |
-| 14 | Amplitude Flow | 2018 | 24.8 | 4.75/0.24 | 4.75/0.24 | -- | 4.75/0.24 | -- | 23.80 | 0.7100 | gap | -- | Wang et al., IEEE TIT, 2018; https://doi.org/10.1109/TIT.2017.2756858 |
-| 15 | PtychoNN | 2020 | 31.1 | 7.11/0.15 | -- | -- | 7.23/0.41 | -- | 27.10 | 0.9000 | gap | -- | Cherukara et al., Appl. Phys. Lett., 2020; https://doi.org/10.1063/5.0013065 |
-| 16 | AutoPhase | 2018 | 34.5 | 6.94/0.13 | -- | -- | 7.04/0.42 | -- | 33.50 | 0.9200 | gap | -- | Nguyen et al., Optics Express, 2018 |
-| 17 | PtychoNN 2.0 | 2022 | 31.8 | 7.55/0.33 | -- | -- | 7.17/0.42 | -- | 29.80 | 0.9100 | gap | -- | Wu et al., J. Appl. Cryst., 2022 |
-| 18 | Ptychography Diffusion | 2023 | 35.2 | 7.31/0.18 | -- | -- | 6.58/0.44 | -- | 34.20 | 0.9300 | gap | -- | Diffusion-based ptychographic recon., 2023 |
-| 19 | PtychoFormer | 2024 | 36.0 | 7.10/0.15 | -- | -- | 7.09/0.42 | 15.80/0.86 | 35.00 | 0.9400 | gap | -- | Nakahata et al., arXiv, 2024; https://arxiv.org/abs/2410.17377 |
-| 20 | PtychoMamba | 2024 | 35.8 | 7.30/0.18 | -- | -- | 6.99/0.43 | -- | 34.80 | 0.9350 | gap | -- | Li et al., 2024 |
-| 21 | PnP-PGD DRUNet | 2021 | 33.5 | -- | -- | -- | -- | -- | -- | -- | 7.12/0.42 | -- | -- | 32.50 | Zhang et al., IEEE TPAMI, 2021; https://doi.org/10.1109/TPAMI.2021.3088914 |
-| 22 | PhysicsNN | 2019 | 34.9 | -- | -- | -- | -- | -- | -- | -- | 7.00/0.42 | -- | -- | 33.80 | Kellman et al., IEEE TCI, 2019; https://doi.org/10.1109/TCI.2019.2905434 |
-| 23 | PtychoDV | 2024 | 35.5 | -- | -- | -- | -- | -- | -- | -- | 7.09/0.42 | -- | -- | 34.50 | Gan et al., IEEE OJSP, 2024; https://doi.org/10.1109/OJSP.2024.3375276 |
-| 24 | PtychoFlow | 2019 | 34.0 | -- | -- | -- | -- | -- | -- | -- | 7.36/0.41 | -- | -- | 33.00 | Kandel et al., Optics Express, 2019; https://doi.org/10.1364/OE.27.018653 |
-| 25 | PtychoFoundation | 2025 | 36.5 | -- | -- | -- | -- | -- | -- | -- | 7.48/0.40 | -- | 15.90/0.86 | 35.50 | Foundation model for ptychography, 2025 |
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | Error Reduction (Fienup) | 1982 | 26.8 | -- | 5.02/0.25 | -- | 5.02/0.25 | -- | -- | -- | -- | -- | 25.80 | 0.7800 | Fienup, Appl. Opt., 1982; https://doi.org/10.1364/AO.21.002758 |
+| 2 | WDD | 1992 | 23.5 | -- | 6.70/0.24 | -- | 6.70/0.24 | -- | -- | -- | -- | -- | 22.50 | 0.6500 | Rodenburg & Bates, Phil. Trans. R. Soc. A, 1992; https://doi.org/10.1098/rsta.1992.0050 |
+| 3 | Difference Map | 2008 | 28.3 | -- | 5.24/0.26 | -- | 5.24/0.26 | -- | -- | -- | -- | -- | 27.30 | 0.8100 | Thibault et al., Science, 2008; https://doi.org/10.1126/science.1158573 |
+| 4 | PIE | 2004 | 20.1 | -- | 5.18/0.26 | -- | 5.18/0.26 | -- | -- | -- | -- | -- | 18.60 | 0.5800 | Rodenburg & Faulkner, Appl. Phys. Lett., 2004; https://doi.org/10.1063/1.1823034 |
+| 5 | RAAR | 2005 | 27.5 | -- | 5.21/0.26 | -- | 5.21/0.26 | -- | -- | -- | -- | -- | 26.50 | 0.7900 | Luke, Inverse Problems, 2005; https://doi.org/10.1088/0266-5611/21/1/004 |
+| 6 | ePIE | 2009 | 31.2 | -- | 7.73/0.40 | -- | 7.73/0.40 | -- | -- | -- | -- | -- | 30.20 | 0.8700 | Maiden & Rodenburg, Ultramicroscopy, 2009; https://doi.org/10.1016/j.ultramic.2009.05.012 |
+| 7 | mPIE | 2017 | 32.5 | -- | 7.73/0.40 | -- | 7.73/0.40 | -- | -- | -- | -- | -- | 31.50 | 0.8900 | Maiden et al., Optica, 2017; https://doi.org/10.1364/OPTICA.4.000736 |
+| 8 | Landweber Iteration | 1951 | 21.6 | -- | 5.02/0.25 | -- | 5.02/0.25 | -- | -- | -- | -- | -- | 20.50 | 0.6200 | Landweber, Am. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 9 | Tikhonov Regularization | 1963 | 22.8 | -- | 6.70/0.24 | -- | 6.70/0.24 | -- | -- | -- | -- | -- | 21.80 | 0.6400 | Tikhonov, Soviet Math. Dokl., 1963 |
+| 10 | TV-ADMM | 2011 | 25.5 | -- | 7.52/0.40 | -- | 7.52/0.40 | -- | -- | -- | -- | -- | 24.50 | 0.7300 | Boyd et al., Found. Trends ML, 2011; https://doi.org/10.1561/2200000016 |
+| 11 | PnP-ADMM with NLM | 2013 | 29.8 | -- | 7.22/0.41 | -- | 7.22/0.41 | -- | -- | -- | -- | -- | 28.80 | 0.8400 | Venkatakrishnan et al., GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
+| 12 | FPM | 2013 | 33.0 | -- | 5.26/0.26 | -- | 5.26/0.26 | -- | -- | -- | -- | -- | 32.00 | 0.9000 | Zheng et al., Nature Photonics, 2013; https://doi.org/10.1038/nphoton.2013.187 |
+| 13 | SHARP | 2016 | 30.5 | -- | 7.73/0.39 | -- | 7.73/0.39 | -- | -- | -- | -- | -- | 29.50 | 0.8500 | Marchesini et al., J. Appl. Cryst., 2016; https://doi.org/10.1107/S1600576716008074 |
+| 14 | Amplitude Flow | 2018 | 24.8 | -- | 4.75/0.24 | -- | 4.75/0.24 | -- | -- | -- | -- | -- | 23.80 | 0.7100 | Wang et al., IEEE TIT, 2018; https://doi.org/10.1109/TIT.2017.2756858 |
+| 15 | PtychoNN | 2020 | 31.1 | -- | 7.11/0.15 | -- | 7.23/0.41 | -- | -- | -- | -- | -- | 27.10 | 0.9000 | Cherukara et al., Appl. Phys. Lett., 2020; https://doi.org/10.1063/5.0013065 |
+| 16 | AutoPhase | 2018 | 34.5 | -- | 6.94/0.13 | -- | 7.04/0.42 | -- | -- | -- | -- | -- | 33.50 | 0.9200 | Nguyen et al., Optics Express, 2018 |
+| 17 | PtychoNN 2.0 | 2022 | 31.8 | -- | 7.55/0.33 | -- | 7.17/0.42 | -- | -- | -- | -- | -- | 29.80 | 0.9100 | Wu et al., J. Appl. Cryst., 2022 |
+| 18 | Ptychography Diffusion | 2023 | 35.2 | -- | 7.31/0.18 | -- | 6.58/0.44 | -- | -- | -- | -- | -- | 34.20 | 0.9300 | Diffusion-based ptychographic recon., 2023 |
+| 19 | PtychoFormer | 2024 | 36.0 | -- | 7.10/0.15 | -- | 7.09/0.42 | -- | 15.80/0.86 | -- | -- | -- | 35.00 | 0.9400 | Nakahata et al., arXiv, 2024; https://arxiv.org/abs/2410.17377 |
+| 20 | PtychoMamba | 2024 | 35.8 | -- | 7.30/0.18 | -- | 6.99/0.43 | -- | -- | -- | -- | -- | 34.80 | 0.9350 | Li et al., 2024 |
+| 21 | PnP-PGD DRUNet | 2021 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| 22 | PhysicsNN | 2019 | 34.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| 23 | PtychoDV | 2024 | 35.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| 24 | PtychoFlow | 2019 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| 25 | PtychoFoundation | 2025 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.90/0.86 |
 
 ---
 
@@ -650,38 +650,38 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 
 **Reference (SOTA):** CBCT-Foundation -- PSNR 33.00 dB, SSIM 0.8500 (Li et al., Nat. Mach. Intell., 2025)
 
-| # | Algorithm | Year | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 | Ref PSNR | Ref SSIM | Status | Reference |
-|---|-----------|------|-------|-------|-------|-------|-------|-------|----------|----------|--------|-----------|
-| 1 | FDK Ram-Lak | 1984 | 26.1 | 16.26/0.16 | 16.26/0.16 | 16.26/0.16 | -- | -- | 24.97 | 0.2947 | partial | -- | Feldkamp et al., JOSA A, 1984; https://doi.org/10.1364/JOSAA.1.000612 |
-| 2 | FDK Shepp-Logan | 1974 | 25.5 | 16.56/0.19 | 16.56/0.19 | 16.56/0.19 | -- | -- | 24.50 | 0.2800 | partial | -- | Shepp & Logan, IEEE TNS, 1974; https://doi.org/10.1109/TNS.1974.6499235 |
-| 3 | FDK Hamming | 1984 | 26.2 | 17.35/0.35 | 17.35/0.35 | 17.35/0.35 | -- | -- | 25.10 | 0.3000 | partial | -- | Feldkamp et al., JOSA A, 1984; https://doi.org/10.1364/JOSAA.1.000612 |
-| 4 | FDK Hann | 1984 | 26.3 | 17.42/0.36 | 17.42/0.36 | 17.42/0.36 | -- | -- | 25.20 | 0.3050 | partial | -- | Feldkamp et al., JOSA A, 1984; https://doi.org/10.1364/JOSAA.1.000612 |
-| 5 | Landweber Iteration | 1951 | 28.3 | 10.73/0.02 | 10.73/0.02 | 9.34/0.04 | -- | -- | 27.28 | 0.4333 | gap | -- | Landweber, Amer. J. Math., 1951; https://doi.org/10.2307/2372313 |
-| 6 | ART | 1970 | 28.6 | 9.40/0.04 | 9.40/0.04 | 9.40/0.04 | -- | -- | 27.50 | 0.4500 | gap | -- | Gordon et al., J. Theor. Biol., 1970; https://doi.org/10.1016/0022-5193(70)90109-8 |
-| 7 | SIRT | 1972 | 28.3 | 9.35/0.04 | 9.35/0.04 | 9.35/0.04 | -- | -- | 27.30 | 0.4400 | gap | -- | Gilbert, J. Theor. Biol., 1972; https://doi.org/10.1016/0022-5193(72)90180-4 |
-| 8 | CGLS | 1952 | 30.9 | 16.26/0.16 | 16.26/0.16 | 16.26/0.16 | -- | -- | 29.80 | 0.5952 | gap | -- | Hestenes & Stiefel, J. Res. NBS, 1952; https://doi.org/10.6028/jres.049.044 |
-| 9 | SART | 1984 | 28.9 | 9.36/0.04 | 9.36/0.04 | 9.36/0.04 | -- | -- | 27.80 | 0.4600 | gap | -- | Andersen & Kak, Ultrasonic Imaging, 1984; https://doi.org/10.1016/0161-7346(84)90008-7 |
-| 10 | ML-EM | 1982 | 27.6 | 13.82/0.09 | 13.82/0.09 | 13.82/0.09 | -- | -- | 26.50 | 0.4000 | gap | -- | Shepp & Vardi, IEEE TMI, 1982; https://doi.org/10.1109/TMI.1982.4307558 |
-| 11 | OS-EM | 1994 | 28.0 | 15.15/0.13 | 15.15/0.13 | 15.15/0.13 | -- | -- | 27.00 | 0.4200 | gap | -- | Hudson & Larkin, IEEE TMI, 1994; https://doi.org/10.1109/42.363108 |
-| 12 | Tikhonov Regularization | 1963 | 30.6 | 15.21/0.30 | 15.21/0.30 | 15.21/0.30 | -- | -- | 29.50 | 0.5800 | gap | -- | Tikhonov, Soviet Math. Doklady, 1963 |
-| 13 | TV-ADMM | 2008 | 30.9 | 1.19/-0.01 | 1.19/-0.01 | 17.39/0.42 | -- | -- | 29.80 | 0.5952 | gap | -- | Sidky et al., Phys. Med. Biol., 2008; https://doi.org/10.1088/0031-9155/53/17/021 |
-| 14 | Chambolle-Pock | 2011 | 30.8 | 1.32/-0.02 | 1.32/-0.02 | 17.26/0.42 | -- | -- | 29.80 | 0.5952 | gap | -- | Chambolle & Pock, J. Math. Imaging Vis., 2011; https://doi.org/10.1007/s10851-010-0251-1 |
-| 15 | PnP-ADMM with NLM | 2013 | 31.0 | 0.99/0.08 | 0.99/0.08 | 16.83/0.40 | -- | -- | 29.94 | 0.7637 | gap | -- | Venkatakrishnan et al., IEEE GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
-| 16 | PnP-FISTA with NLM | 2009 | 30.6 | 1.21/0.01 | 1.21/0.01 | 16.84/0.39 | -- | -- | 29.58 | 0.6937 | gap | -- | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
-| 17 | FDK + NLM Post | 2005 | 31.5 | 11.08/0.12 | 11.08/0.12 | 16.74/0.37 | -- | -- | 30.50 | 0.7800 | gap | -- | Buades et al., CVPR, 2005; https://doi.org/10.1109/CVPR.2005.38 |
-| 18 | FBP | 1971 | 17.7 | 16.26/0.16 | 16.26/0.16 | 16.26/0.16 | -- | -- | 16.65 | 0.0611 | done | done | Ramachandran & Lakshminarayanan, PNAS, 1971; https://doi.org/10.1073/pnas.68.9.2236 |
-| 19 | LSQR | 1982 | 30.8 | 16.26/0.16 | 16.26/0.16 | 16.26/0.16 | -- | -- | 29.80 | 0.5952 | gap | -- | Paige & Saunders, ACM TOMS, 1982; https://doi.org/10.1145/355984.355989 |
-| 20 | Gradient Descent | 1986 | 29.5 | 10.37/0.05 | 10.37/0.05 | 10.37/0.05 | -- | -- | 28.50 | 0.5200 | gap | -- | Natterer, The Math. of CT, Wiley, 1986 |
-| 21 | FDK-DL (DRUNet) | 2017 | 32.0 | 16.59/0.24 | -- | -- | -- | -- | 30.99 | 0.7626 | gap | -- | Chen et al., IEEE TMI, 2017; https://doi.org/10.1109/TMI.2017.2715284 |
-| 22 | CBCT-UNet (DnCNN) | 2017 | 32.0 | 16.91/0.35 | -- | -- | -- | -- | 30.99 | 0.7626 | gap | -- | Jin et al., IEEE TIP, 2017; https://doi.org/10.1109/TIP.2017.2713099 |
-| 23 | CBCT Diffusion | 2023 | 33.1 | 17.09/0.47 | -- | -- | -- | -- | 32.06 | 0.8206 | gap | -- | Chung et al., CVPR, 2023; https://doi.org/10.1109/CVPR52729.2023.01205 |
-| 24 | CBCT NAF | 2024 | 32.5 | 16.91/0.35 | -- | -- | -- | -- | 31.50 | 0.7900 | gap | -- | Zha et al., IEEE TMI, 2024; https://doi.org/10.1109/TMI.2022.3215040 |
-| 25 | CBCT-Mamba | 2024 | 33.5 | 17.07/0.46 | -- | -- | -- | -- | 32.50 | 0.8300 | gap | -- | Wang et al., Medical Image Analysis, 2024 |
-| 26 | PnP-HQS DRUNet | 2017 | 32.2 | 16.24/0.25 | -- | -- | -- | -- | 31.20 | 0.7700 | gap | -- | Romano et al., SIAM J. Imaging Sci., 2017; https://doi.org/10.1137/16M1102884 |
-| 27 | CBCT-GAN | 2019 | 32.8 | 16.57/0.39 | -- | -- | -- | -- | 31.80 | 0.8100 | gap | -- | Jiang et al., IEEE TMI, 2019; https://doi.org/10.1109/TMI.2019.2934777 |
-| 28 | CBCT-Transformer | 2022 | 32.0 | 15.57/0.13 | -- | -- | -- | 19.57/0.96 | 31.00 | 0.7650 | gap | -- | Wang et al., Medical Physics, 2022; https://doi.org/10.1002/mp.16359 |
-| 29 | CBCT-NeRF | 2023 | 33.1 | 16.43/0.39 | -- | -- | -- | -- | 32.10 | 0.8250 | gap | -- | Zha et al., MICCAI, 2023; https://doi.org/10.1007/978-3-031-43999-5_6 |
-| 30 | CBCT-Foundation | 2025 | 34.0 | 15.80/0.13 | -- | -- | -- | 19.59/0.96 | 33.00 | 0.8500 | gap | -- | Li et al., Nat. Mach. Intell., 2025 |
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | FDK Ram-Lak | 1984 | 26.1 | -- | 16.26/0.16 | -- | -- | -- | -- | -- | -- | -- | 24.97 | 0.2947 | Feldkamp et al., JOSA A, 1984; https://doi.org/10.1364/JOSAA.1.000612 |
+| 2 | FDK Shepp-Logan | 1974 | 25.5 | -- | 16.56/0.19 | -- | -- | -- | -- | -- | -- | -- | 24.50 | 0.2800 | Shepp & Logan, IEEE TNS, 1974; https://doi.org/10.1109/TNS.1974.6499235 |
+| 3 | FDK Hamming | 1984 | 26.2 | -- | 17.35/0.35 | -- | -- | -- | -- | -- | -- | -- | 25.10 | 0.3000 | Feldkamp et al., JOSA A, 1984; https://doi.org/10.1364/JOSAA.1.000612 |
+| 4 | FDK Hann | 1984 | 26.3 | -- | 17.42/0.36 | -- | -- | -- | -- | -- | -- | -- | 25.20 | 0.3050 | Feldkamp et al., JOSA A, 1984; https://doi.org/10.1364/JOSAA.1.000612 |
+| 5 | Landweber Iteration | 1951 | 28.3 | -- | 10.73/0.02 | -- | -- | -- | -- | -- | -- | -- | 27.28 | 0.4333 | Landweber, Amer. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 6 | ART | 1970 | 28.6 | -- | 9.40/0.04 | -- | -- | -- | -- | -- | -- | -- | 27.50 | 0.4500 | Gordon et al., J. Theor. Biol., 1970; https://doi.org/10.1016/0022-5193(70)90109-8 |
+| 7 | SIRT | 1972 | 28.3 | -- | 9.35/0.04 | -- | -- | -- | -- | -- | -- | -- | 27.30 | 0.4400 | Gilbert, J. Theor. Biol., 1972; https://doi.org/10.1016/0022-5193(72)90180-4 |
+| 8 | CGLS | 1952 | 30.9 | -- | 16.26/0.16 | -- | -- | -- | -- | -- | -- | -- | 29.80 | 0.5952 | Hestenes & Stiefel, J. Res. NBS, 1952; https://doi.org/10.6028/jres.049.044 |
+| 9 | SART | 1984 | 28.9 | -- | 9.36/0.04 | -- | -- | -- | -- | -- | -- | -- | 27.80 | 0.4600 | Andersen & Kak, Ultrasonic Imaging, 1984; https://doi.org/10.1016/0161-7346(84)90008-7 |
+| 10 | ML-EM | 1982 | 27.6 | -- | 13.82/0.09 | -- | -- | -- | -- | -- | -- | -- | 26.50 | 0.4000 | Shepp & Vardi, IEEE TMI, 1982; https://doi.org/10.1109/TMI.1982.4307558 |
+| 11 | OS-EM | 1994 | 28.0 | -- | 15.15/0.13 | -- | -- | -- | -- | -- | -- | -- | 27.00 | 0.4200 | Hudson & Larkin, IEEE TMI, 1994; https://doi.org/10.1109/42.363108 |
+| 12 | Tikhonov Regularization | 1963 | 30.6 | -- | 15.21/0.30 | -- | -- | -- | -- | -- | -- | -- | 29.50 | 0.5800 | Tikhonov, Soviet Math. Doklady, 1963 |
+| 13 | TV-ADMM | 2008 | 30.9 | -- | 1.19/-0.01 | -- | -- | -- | -- | -- | -- | -- | 29.80 | 0.5952 | Sidky et al., Phys. Med. Biol., 2008; https://doi.org/10.1088/0031-9155/53/17/021 |
+| 14 | Chambolle-Pock | 2011 | 30.8 | -- | 1.32/-0.02 | -- | -- | -- | -- | -- | -- | -- | 29.80 | 0.5952 | Chambolle & Pock, J. Math. Imaging Vis., 2011; https://doi.org/10.1007/s10851-010-0251-1 |
+| 15 | PnP-ADMM with NLM | 2013 | 31.0 | -- | 0.99/0.08 | -- | -- | -- | -- | -- | -- | -- | 29.94 | 0.7637 | Venkatakrishnan et al., IEEE GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
+| 16 | PnP-FISTA with NLM | 2009 | 30.6 | -- | 1.21/0.01 | -- | -- | -- | -- | -- | -- | -- | 29.58 | 0.6937 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
+| 17 | FDK + NLM Post | 2005 | 31.5 | -- | 11.08/0.12 | -- | -- | -- | -- | -- | -- | -- | 30.50 | 0.7800 | Buades et al., CVPR, 2005; https://doi.org/10.1109/CVPR.2005.38 |
+| 18 | FBP | 1971 | 17.7 | -- | 16.26/0.16 | -- | -- | -- | -- | -- | -- | -- | 16.65 | 0.0611 | Ramachandran & Lakshminarayanan, PNAS, 1971; https://doi.org/10.1073/pnas.68.9.2236 |
+| 19 | LSQR | 1982 | 30.8 | -- | 16.26/0.16 | -- | -- | -- | -- | -- | -- | -- | 29.80 | 0.5952 | Paige & Saunders, ACM TOMS, 1982; https://doi.org/10.1145/355984.355989 |
+| 20 | Gradient Descent | 1986 | 29.5 | -- | 10.37/0.05 | -- | -- | -- | -- | -- | -- | -- | 28.50 | 0.5200 | Natterer, The Math. of CT, Wiley, 1986 |
+| 21 | FDK-DL (DRUNet) | 2017 | 32.0 | -- | 16.59/0.24 | -- | -- | -- | -- | -- | -- | -- | 30.99 | 0.7626 | Chen et al., IEEE TMI, 2017; https://doi.org/10.1109/TMI.2017.2715284 |
+| 22 | CBCT-UNet (DnCNN) | 2017 | 32.0 | -- | 16.91/0.35 | -- | -- | -- | -- | -- | -- | -- | 30.99 | 0.7626 | Jin et al., IEEE TIP, 2017; https://doi.org/10.1109/TIP.2017.2713099 |
+| 23 | CBCT Diffusion | 2023 | 33.1 | -- | 17.09/0.47 | -- | -- | -- | -- | -- | -- | -- | 32.06 | 0.8206 | Chung et al., CVPR, 2023; https://doi.org/10.1109/CVPR52729.2023.01205 |
+| 24 | CBCT NAF | 2024 | 32.5 | -- | 16.91/0.35 | -- | -- | -- | -- | -- | -- | -- | 31.50 | 0.7900 | Zha et al., IEEE TMI, 2024; https://doi.org/10.1109/TMI.2022.3215040 |
+| 25 | CBCT-Mamba | 2024 | 33.5 | -- | 17.07/0.46 | -- | -- | -- | -- | -- | -- | -- | 32.50 | 0.8300 | Wang et al., Medical Image Analysis, 2024 |
+| 26 | PnP-HQS DRUNet | 2017 | 32.2 | -- | 16.24/0.25 | -- | -- | -- | -- | -- | -- | -- | 31.20 | 0.7700 | Romano et al., SIAM J. Imaging Sci., 2017; https://doi.org/10.1137/16M1102884 |
+| 27 | CBCT-GAN | 2019 | 32.8 | -- | 16.57/0.39 | -- | -- | -- | -- | -- | -- | -- | 31.80 | 0.8100 | Jiang et al., IEEE TMI, 2019; https://doi.org/10.1109/TMI.2019.2934777 |
+| 28 | CBCT-Transformer | 2022 | 32.0 | -- | 15.57/0.13 | -- | -- | -- | 19.57/0.96 | -- | -- | -- | 31.00 | 0.7650 | Wang et al., Medical Physics, 2022; https://doi.org/10.1002/mp.16359 |
+| 29 | CBCT-NeRF | 2023 | 33.1 | -- | 16.43/0.39 | -- | -- | -- | -- | -- | -- | -- | 32.10 | 0.8250 | Zha et al., MICCAI, 2023; https://doi.org/10.1007/978-3-031-43999-5_6 |
+| 30 | CBCT-Foundation | 2025 | 34.0 | -- | 15.80/0.13 | -- | -- | -- | 19.59/0.96 | -- | -- | -- | 33.00 | 0.8500 | Li et al., Nat. Mach. Intell., 2025 |
 ---
 
 ### 6. Ultrasound B-mode (`ultrasound`)
@@ -725,33 +725,33 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 
 **Reference (SOTA):** CryoFoundation -- PSNR 37.50 dB, SSIM 0.9650 (Foundation model for cryo-EM, 2025)
 
-| # | Algorithm | Year | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 | Ref PSNR | Ref SSIM | Status | Reference |
-|---|-----------|------|-------|-------|-------|-------|-------|-------|----------|----------|--------|-----------|
-| 1 | Wiener-CTF | 2010 | 29.5 | 11.91/-0.00 | 11.91/-0.00 | 15.47/0.02 | 15.47/0.02 | -- | 28.50 | 0.8200 | gap | -- | Penczek et al., Methods Enzymol., 2010; https://doi.org/10.1016/S0076-6879(10)82001-4 |
-| 2 | Phase-Flip CTF | 2003 | 27.8 | 13.70/-0.00 | 13.70/-0.00 | 15.66/0.02 | 15.66/0.02 | -- | 26.80 | 0.7800 | gap | -- | Rosenthal & Henderson, JMB, 2003; https://doi.org/10.1016/j.jmb.2003.07.013 |
-| 3 | Back-Projection | 1988 | 25.5 | 15.05/0.06 | 15.05/0.06 | 15.20/0.02 | 15.20/0.02 | -- | 24.50 | 0.7100 | partial | -- | Radermacher, 1988; https://doi.org/10.1016/0022-2364(88)90014-2 |
-| 4 | SIRT | 1972 | 30.2 | 15.91/0.11 | 15.91/0.11 | 15.91/0.11 | 15.91/0.11 | -- | 29.20 | 0.8400 | gap | -- | Gilbert, J. Theor. Biol., 1972; https://doi.org/10.1016/0022-5193(72)90180-4 |
-| 5 | Landweber Iteration | 1951 | 28.8 | 15.58/0.09 | 15.58/0.09 | 15.58/0.09 | 15.58/0.09 | -- | 27.80 | 0.8000 | gap | -- | Landweber, Amer. J. Math., 1951; https://doi.org/10.2307/2372313 |
-| 6 | Tikhonov Regularisation | 1963 | 29.5 | 11.91/-0.00 | 11.91/-0.00 | 15.47/0.02 | 15.47/0.02 | -- | 28.50 | 0.8200 | gap | -- | Tikhonov, Soviet Math. Doklady, 1963 |
-| 7 | TV ADMM | 2011 | 31.5 | 16.08/0.14 | 16.08/0.14 | 15.92/0.03 | 15.92/0.03 | -- | 30.50 | 0.8600 | gap | -- | Boyd et al., 2011; https://doi.org/10.1561/2200000016 |
-| 8 | PnP-ADMM (NLM) | 2013 | 32.2 | 16.71/0.10 | 16.71/0.10 | 18.47/0.06 | 18.47/0.06 | -- | 31.20 | 0.8800 | gap | -- | Venkatakrishnan et al., IEEE GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
-| 9 | Weighted Back-Projection | 1988 | 26.5 | 15.25/0.14 | 15.25/0.14 | 14.87/0.01 | 14.87/0.01 | -- | 25.50 | 0.7400 | partial | -- | Radermacher, 1988; https://doi.org/10.1016/0022-2364(88)90014-2 |
-| 10 | CGLS | 1952 | 27.2 | 4.99/-0.00 | 4.99/-0.00 | 7.91/0.01 | 7.91/0.01 | -- | 26.20 | 0.7600 | gap | -- | Hestenes & Stiefel, J. Res. NBS, 1952; https://doi.org/10.6028/jres.049.044 |
-| 11 | PnP-FISTA (NLM) | 2009 | 31.8 | 16.40/0.09 | 16.40/0.09 | 20.69/0.07 | 20.69/0.07 | -- | 30.80 | 0.8700 | gap | -- | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
-| 12 | RELION | 2012 | 36.2 | 16.58/0.15 | -- | -- | 15.48/0.02 | -- | 35.20 | 0.9400 | gap | -- | Scheres, JMB, 2012; https://doi.org/10.1016/j.jmb.2011.11.010 |
-| 13 | CryoSPARC | 2017 | 37.6 | 17.10/0.36 | -- | -- | 16.54/0.03 | -- | 36.50 | 0.9550 | gap | -- | Punjani et al., Nature Methods, 2017; https://doi.org/10.1038/nmeth.4169 |
-| 14 | CryoDRGN | 2021 | 35.8 | 17.07/0.49 | -- | -- | 17.40/0.05 | -- | 34.80 | 0.9350 | gap | -- | Zhong et al., Nature Methods, 2021; https://doi.org/10.1038/s41592-020-01049-4 |
-| 15 | CryoDRGN2 | 2021 | 36.5 | 16.48/0.28 | -- | -- | 16.91/0.04 | -- | 35.50 | 0.9420 | gap | -- | Zhong et al., ICLR, 2021; https://arxiv.org/abs/2104.14272 |
-| 16 | CryoAI | 2022 | 34.5 | 15.21/0.05 | -- | -- | 16.31/0.06 | -- | 33.50 | 0.9200 | gap | -- | Levy et al., NeurIPS, 2022; https://arxiv.org/abs/2203.08138 |
-| 17 | DeepEMenhancer | 2021 | 35.2 | 16.05/0.01 | -- | -- | 16.05/0.01 | -- | 34.20 | 0.9300 | gap | -- | Sanchez-Garcia et al., Comms. Biol., 2021; https://doi.org/10.1038/s42003-021-02399-1 |
-| 18 | Topaz-Denoise | 2020 | 34.8 | 16.90/0.33 | -- | -- | 16.90/0.33 | -- | 33.80 | 0.9250 | gap | -- | Bepler et al., Nature Comms., 2020; https://doi.org/10.1038/s41467-020-18952-1 |
-| 19 | CryoSTAR | 2024 | 37.9 | 17.11/0.36 | -- | -- | 16.40/0.03 | -- | 36.80 | 0.9580 | gap | -- | Guo et al., Nature Methods, 2024; https://doi.org/10.1038/s41592-024-02486-1 |
-| 20 | CryoMamba | 2024 | 37.2 | 15.72/0.09 | -- | -- | 16.95/0.05 | -- | 36.20 | 0.9520 | gap | -- | Li et al., arXiv, 2024; https://arxiv.org/abs/2412.02037 |
-| 21 | PnP-HQS DRUNet | 2017 | 33.8 | 16.53/0.21 | -- | -- | 16.16/0.03 | -- | 32.80 | 0.9100 | gap | -- | Zhang et al., CVPR, 2017; https://doi.org/10.1109/CVPR.2017.613 |
-| 22 | CryoGAN | 2020 | 34.2 | 17.02/0.67 | -- | -- | 18.06/0.06 | -- | 33.20 | 0.9150 | gap | -- | Gupta et al., NeurIPS, 2020; https://arxiv.org/abs/2008.02266 |
-| 23 | CryoFIRE | 2023 | 36.8 | 17.27/0.51 | -- | -- | 17.27/0.05 | -- | 35.80 | 0.9480 | gap | -- | Zhong et al., ICLR, 2023; https://arxiv.org/abs/2211.14854 |
-| 24 | CryoFormer | 2024 | 38.1 | 16.49/0.13 | -- | -- | 15.48/0.02 | 16.57/0.88 | 37.00 | 0.9600 | gap | -- | CryoFormer, 2024 |
-| 25 | CryoFoundation | 2025 | 38.6 | 15.19/0.04 | -- | -- | 15.82/0.02 | 16.88/0.89 | 37.50 | 0.9650 | gap | -- | Foundation model for cryo-EM, 2025 |
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | Wiener-CTF | 2010 | 29.5 | -- | 11.91/-0.00 | -- | 15.47/0.02 | -- | -- | -- | -- | -- | 28.50 | 0.8200 | Penczek et al., Methods Enzymol., 2010; https://doi.org/10.1016/S0076-6879(10)82001-4 |
+| 2 | Phase-Flip CTF | 2003 | 27.8 | -- | 13.70/-0.00 | -- | 15.66/0.02 | -- | -- | -- | -- | -- | 26.80 | 0.7800 | Rosenthal & Henderson, JMB, 2003; https://doi.org/10.1016/j.jmb.2003.07.013 |
+| 3 | Back-Projection | 1988 | 25.5 | -- | 15.05/0.06 | -- | 15.20/0.02 | -- | -- | -- | -- | -- | 24.50 | 0.7100 | Radermacher, 1988; https://doi.org/10.1016/0022-2364(88)90014-2 |
+| 4 | SIRT | 1972 | 30.2 | -- | 15.91/0.11 | -- | 15.91/0.11 | -- | -- | -- | -- | -- | 29.20 | 0.8400 | Gilbert, J. Theor. Biol., 1972; https://doi.org/10.1016/0022-5193(72)90180-4 |
+| 5 | Landweber Iteration | 1951 | 28.8 | -- | 15.58/0.09 | -- | 15.58/0.09 | -- | -- | -- | -- | -- | 27.80 | 0.8000 | Landweber, Amer. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 6 | Tikhonov Regularisation | 1963 | 29.5 | -- | 11.91/-0.00 | -- | 15.47/0.02 | -- | -- | -- | -- | -- | 28.50 | 0.8200 | Tikhonov, Soviet Math. Doklady, 1963 |
+| 7 | TV ADMM | 2011 | 31.5 | -- | 16.08/0.14 | -- | 15.92/0.03 | -- | -- | -- | -- | -- | 30.50 | 0.8600 | Boyd et al., 2011; https://doi.org/10.1561/2200000016 |
+| 8 | PnP-ADMM (NLM) | 2013 | 32.2 | -- | 16.71/0.10 | -- | 18.47/0.06 | -- | -- | -- | -- | -- | 31.20 | 0.8800 | Venkatakrishnan et al., IEEE GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
+| 9 | Weighted Back-Projection | 1988 | 26.5 | -- | 15.25/0.14 | -- | 14.87/0.01 | -- | -- | -- | -- | -- | 25.50 | 0.7400 | Radermacher, 1988; https://doi.org/10.1016/0022-2364(88)90014-2 |
+| 10 | CGLS | 1952 | 27.2 | -- | 4.99/-0.00 | -- | 7.91/0.01 | -- | -- | -- | -- | -- | 26.20 | 0.7600 | Hestenes & Stiefel, J. Res. NBS, 1952; https://doi.org/10.6028/jres.049.044 |
+| 11 | PnP-FISTA (NLM) | 2009 | 31.8 | -- | 16.40/0.09 | -- | 20.69/0.07 | -- | -- | -- | -- | -- | 30.80 | 0.8700 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
+| 12 | RELION | 2012 | 36.2 | -- | 16.58/0.15 | -- | 15.48/0.02 | -- | -- | -- | -- | -- | 35.20 | 0.9400 | Scheres, JMB, 2012; https://doi.org/10.1016/j.jmb.2011.11.010 |
+| 13 | CryoSPARC | 2017 | 37.6 | -- | 17.10/0.36 | -- | 16.54/0.03 | -- | -- | -- | -- | -- | 36.50 | 0.9550 | Punjani et al., Nature Methods, 2017; https://doi.org/10.1038/nmeth.4169 |
+| 14 | CryoDRGN | 2021 | 35.8 | -- | 17.07/0.49 | -- | 17.40/0.05 | -- | -- | -- | -- | -- | 34.80 | 0.9350 | Zhong et al., Nature Methods, 2021; https://doi.org/10.1038/s41592-020-01049-4 |
+| 15 | CryoDRGN2 | 2021 | 36.5 | -- | 16.48/0.28 | -- | 16.91/0.04 | -- | -- | -- | -- | -- | 35.50 | 0.9420 | Zhong et al., ICLR, 2021; https://arxiv.org/abs/2104.14272 |
+| 16 | CryoAI | 2022 | 34.5 | -- | 15.21/0.05 | -- | 16.31/0.06 | -- | -- | -- | -- | -- | 33.50 | 0.9200 | Levy et al., NeurIPS, 2022; https://arxiv.org/abs/2203.08138 |
+| 17 | DeepEMenhancer | 2021 | 35.2 | -- | 16.05/0.01 | -- | 16.05/0.01 | -- | -- | -- | -- | -- | 34.20 | 0.9300 | Sanchez-Garcia et al., Comms. Biol., 2021; https://doi.org/10.1038/s42003-021-02399-1 |
+| 18 | Topaz-Denoise | 2020 | 34.8 | -- | 16.90/0.33 | -- | 16.90/0.33 | -- | -- | -- | -- | -- | 33.80 | 0.9250 | Bepler et al., Nature Comms., 2020; https://doi.org/10.1038/s41467-020-18952-1 |
+| 19 | CryoSTAR | 2024 | 37.9 | -- | 17.11/0.36 | -- | 16.40/0.03 | -- | -- | -- | -- | -- | 36.80 | 0.9580 | Guo et al., Nature Methods, 2024; https://doi.org/10.1038/s41592-024-02486-1 |
+| 20 | CryoMamba | 2024 | 37.2 | -- | 15.72/0.09 | -- | 16.95/0.05 | -- | -- | -- | -- | -- | 36.20 | 0.9520 | Li et al., arXiv, 2024; https://arxiv.org/abs/2412.02037 |
+| 21 | PnP-HQS DRUNet | 2017 | 33.8 | -- | 16.53/0.21 | -- | 16.16/0.03 | -- | -- | -- | -- | -- | 32.80 | 0.9100 | Zhang et al., CVPR, 2017; https://doi.org/10.1109/CVPR.2017.613 |
+| 22 | CryoGAN | 2020 | 34.2 | -- | 17.02/0.67 | -- | 18.06/0.06 | -- | -- | -- | -- | -- | 33.20 | 0.9150 | Gupta et al., NeurIPS, 2020; https://arxiv.org/abs/2008.02266 |
+| 23 | CryoFIRE | 2023 | 36.8 | -- | 17.27/0.51 | -- | 17.27/0.05 | -- | -- | -- | -- | -- | 35.80 | 0.9480 | Zhong et al., ICLR, 2023; https://arxiv.org/abs/2211.14854 |
+| 24 | CryoFormer | 2024 | 38.1 | -- | 16.49/0.13 | -- | 15.48/0.02 | -- | 16.57/0.88 | -- | -- | -- | 37.00 | 0.9600 | CryoFormer, 2024 |
+| 25 | CryoFoundation | 2025 | 38.6 | -- | 15.19/0.04 | -- | 15.82/0.02 | -- | 16.88/0.89 | -- | -- | -- | 37.50 | 0.9650 | Foundation model for cryo-EM, 2025 |
 ---
 
 ### 8. Widefield Fluorescence Microscopy (`widefield`)
