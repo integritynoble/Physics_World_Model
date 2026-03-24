@@ -3247,7 +3247,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Matched Filter Vessel Detection | 2004 | 29.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.0 | 0.7500 | Chaudhuri et al., IEEE TMI 1989; https://doi.org/10.1109/42.34715; Hoover et al., IEEE TMI 2004 |
 | 2 | CLAHE Enhancement | 1994 | 27.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.7100 | Zuiderveld, Graphics Gems IV, 1994 |
-| 3 | Retinex Enhancement | 1977 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.6800 | Land & McCann, JOSA 1977; https://doi.org/10.1364/JOSA.61.000001 |
+| 3 | Retinex Enhancement | 1977 | 26.0 | 25.93/0.74 | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.6800 | Land & McCann, JOSA 1977; https://doi.org/10.1364/JOSA.61.000001 |
 | 4 | Green Channel + Morphology | 2002 | 28.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.0 | 0.7300 | Zana & Klein, IEEE TMI 2001; https://doi.org/10.1109/42.959297 |
 | 5 | Gabor Filter Vessel Segmentation | 2006 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.7600 | Soares et al., IEEE TMI 2006; https://doi.org/10.1109/TMI.2006.879967 |
 | 6 | Frangi Vesselness Filter | 1998 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.7400 | Frangi et al., MICCAI 1998; https://doi.org/10.1007/BFb0056195 |
