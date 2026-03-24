@@ -14,7 +14,7 @@
     "bioluminescence_tomo",
     "brachytherapy_img"
   ],
-  "current": "brachytherapy_img",
+  "current": "brillouin",
   "results": {
     "pet": {
       "solvers_run": 9,
