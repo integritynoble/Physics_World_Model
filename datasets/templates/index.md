@@ -507,15 +507,15 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 | 1 | TVAL3 | 2009 | 28.9 | -- | 20.80/0.50 | -- | 20.80/0.50 | -- | -- | -- | -- | -- | 27.92 | 0.8540 | Li et al., Rice CAAM TR09-27, 2009 |
 | 2 | ADMM-L1 | 2010 | 29.1 | -- | 20.36/0.49 | -- | 20.36/0.49 | -- | -- | -- | -- | -- | 28.10 | 0.8580 | Boyd et al., Found. Trends ML, 2011; https://doi.org/10.1561/2200000016 |
 | 3 | FISTA-L1 | 2009 | 28.5 | -- | 20.13/0.48 | -- | 20.13/0.48 | -- | -- | -- | -- | -- | 27.50 | 0.8420 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
-| 4 | OMP | 1993 | 23.1 | 23.1 | 20.13/0.48 | 20.13/0.48 | 20.13/0.48 | 20.13/0.48 | -- | -- | -- | -- | 22.10 | 0.7200 | Pati et al., Asilomar, 1993; https://doi.org/10.1109/ACSSC.1993.342465 |
+| 4 | OMP | 1993 | 23.1 | -- | 20.13/0.48 | -- | 20.13/0.48 | -- | -- | -- | -- | -- | 22.10 | 0.7200 | Pati et al., Asilomar, 1993; https://doi.org/10.1109/ACSSC.1993.342465 |
 | 5 | CoSaMP | 2009 | 24.7 | -- | 20.13/0.48 | -- | 20.13/0.48 | -- | -- | -- | -- | -- | 23.50 | 0.7500 | Needell & Tropp, ACHA, 2009; https://doi.org/10.1016/j.acha.2008.09.001 |
 | 6 | IHT | 2009 | 23.9 | -- | 19.56/0.41 | -- | 19.56/0.41 | -- | -- | -- | -- | -- | 22.80 | 0.7100 | Blumensath & Davies, J. Fourier Anal. Appl., 2009; https://doi.org/10.1007/s00041-008-9035-z |
 | 7 | GAP-TV | 2016 | 30.5 | -- | 20.82/0.53 | -- | 20.82/0.53 | -- | -- | -- | -- | -- | 29.50 | 0.8800 | Yuan, ICIP, 2016; https://doi.org/10.1109/ICIP.2016.7532817 |
 | 8 | TwIST | 2007 | 27.8 | -- | 17.82/0.39 | -- | 17.82/0.39 | -- | -- | -- | -- | -- | 26.80 | 0.8200 | Bioucas-Dias & Figueiredo, IEEE TIP, 2007; https://doi.org/10.1109/TIP.2007.909319 |
 | 9 | IST | 2004 | 27.0 | -- | 20.92/0.51 | -- | 20.92/0.51 | -- | -- | -- | -- | -- | 26.0 | 0.81 | Daubechies et al., Comm. Pure Appl. Math., 2004; https://doi.org/10.1002/cpa.20042 |
 | 10 | GPSR | 2007 | 27.3 | -- | 20.29/0.49 | -- | 20.29/0.49 | -- | -- | -- | -- | -- | 26.20 | 0.8100 | Figueiredo et al., IEEE JSTSP, 2007; https://doi.org/10.1109/JSTSP.2007.910281 |
-| 11 | Wiener Filter | 1949 | 21.4 | 21.4 | 18.48/0.30 | 18.48/0.30 | 18.48/0.30 | 18.48/0.30 | -- | -- | -- | -- | 20.30 | 0.6500 | Wiener N., MIT Press, 1949 |
-| 12 | Richardson-Lucy | 1972 | 23.0 | 23.0 | 19.20/0.41 | 19.20/0.41 | 19.20/0.41 | 19.20/0.41 | -- | -- | -- | -- | 21.50 | 0.6800 | Richardson, JOSA, 1972; https://doi.org/10.1364/JOSA.62.000055 |
+| 11 | Wiener Filter | 1949 | 21.4 | -- | 18.48/0.30 | -- | 18.48/0.30 | -- | -- | -- | -- | -- | 20.30 | 0.6500 | Wiener N., MIT Press, 1949 |
+| 12 | Richardson-Lucy | 1972 | 23.0 | -- | 19.20/0.41 | -- | 19.20/0.41 | -- | -- | -- | -- | -- | 21.50 | 0.6800 | Richardson, JOSA, 1972; https://doi.org/10.1364/JOSA.62.000055 |
 | 13 | Tikhonov Regularization | 1963 | 25.3 | -- | 18.48/0.30 | -- | 18.48/0.30 | -- | -- | -- | -- | -- | 24.20 | 0.7600 | Tikhonov, Soviet Math. Dokl., 1963 |
 | 14 | BM3D-AMP | 2016 | 32.2 | -- | 15.21/0.34 | -- | 15.21/0.34 | -- | -- | -- | -- | -- | 31.20 | 0.9050 | Metzler et al., IEEE TIT, 2016; https://doi.org/10.1109/TIT.2016.2556683 |
 | 15 | D-AMP | 2016 | 30.0 | -- | 20.22/0.45 | -- | 20.22/0.45 | -- | -- | -- | -- | -- | 28.9 | 0.8803 | Metzler et al., IEEE TIT, 2016; https://doi.org/10.1109/TIT.2016.2556683 |
@@ -553,17 +553,17 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Wiener Deconvolution | 1949 | 12.4 | -- | 11.67/0.08 | -- | 11.70/0.14 | -- | -- | -- | -- | -- | 10.20 | 0.2100 | Wiener N., MIT Press, 1949 |
-| 2 | Tikhonov Regularisation | 1963 | 14.4 | 14.4 | 11.73/0.14 | 11.73/0.14 | 11.70/0.14 | 11.70/0.14 | -- | -- | -- | -- | 12.67 | 0.2500 | Tikhonov, Soviet Math. Dokl., 1963 |
+| 2 | Tikhonov Regularisation | 1963 | 14.4 | -- | 11.73/0.14 | -- | 11.70/0.14 | -- | -- | -- | -- | -- | 12.67 | 0.2500 | Tikhonov, Soviet Math. Dokl., 1963 |
 | 3 | Richardson-Lucy Deconvolution | 1972 | 13.2 | -- | 7.13/0.31 | -- | 7.13/0.31 | -- | -- | -- | -- | -- | 11.50 | 0.2200 | Richardson, JOSA, 1972; https://doi.org/10.1364/JOSA.62.000055 |
-| 4 | Landweber Iteration | 1951 | 15.5 | 15.5 | 11.62/0.35 | 11.62/0.35 | 11.62/0.35 | 11.62/0.35 | -- | -- | -- | -- | 13.80 | 0.3200 | Landweber, Am. J. Math., 1951; https://doi.org/10.2307/2372313 |
-| 5 | FISTA Deconvolution | 2009 | 15.8 | 15.8 | 12.09/0.21 | 12.09/0.21 | 12.09/0.21 | 12.09/0.21 | -- | -- | -- | -- | 14.50 | 0.3500 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
+| 4 | Landweber Iteration | 1951 | 15.5 | -- | 11.62/0.35 | -- | 11.62/0.35 | -- | -- | -- | -- | -- | 13.80 | 0.3200 | Landweber, Am. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 5 | FISTA Deconvolution | 2009 | 15.8 | -- | 12.09/0.21 | -- | 12.09/0.21 | -- | -- | -- | -- | -- | 14.50 | 0.3500 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
 | 6 | TV-ADMM Deconvolution | 2011 | 14.7 | -- | 11.59/0.27 | -- | 11.62/0.24 | -- | -- | -- | -- | -- | 13.51 | 0.2600 | Boyd et al., Found. Trends ML, 2011; https://doi.org/10.1561/2200000016 |
 | 7 | ADMM-TV (Lensless) | 2018 | 20.0 | -- | 11.45/0.34 | -- | 11.50/0.31 | -- | -- | -- | -- | -- | 18.9 | 0.52 | Antipa et al., Optica, 2018; https://doi.org/10.1364/OPTICA.5.000001 |
 | 8 | PnP-ADMM (NLM) | 2013 | 18.5 | -- | 11.21/0.41 | -- | 11.21/0.41 | -- | -- | -- | -- | -- | 17.50 | 0.4800 | Venkatakrishnan et al., GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
 | 9 | PnP-HQS (NLM) | 2017 | 18.3 | -- | 11.14/0.42 | -- | 11.14/0.42 | -- | -- | -- | -- | -- | 17.3 | 0.4698 | Venkatakrishnan et al., 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
 | 10 | Inverse Filter | 1960 | 11.3 | -- | 4.64/0.00 | -- | 11.81/0.17 | -- | -- | -- | -- | -- | 8.50 | 0.0500 | Classical Fourier optics, 1960s |
-| 11 | Constrained Least Squares | 1973 | 14.8 | 14.8 | 11.66/0.25 | 11.66/0.25 | 11.66/0.25 | 11.66/0.25 | -- | -- | -- | -- | 13.20 | 0.2800 | Hunt, IEEE TAC, 1972; https://doi.org/10.1109/TAC.1972.1100144 |
-| 12 | Gradient Descent Deconvolution | 1980 | 15.5 | 15.5 | 11.55/0.35 | 11.55/0.35 | 11.55/0.35 | 11.55/0.35 | -- | -- | -- | -- | 14.10 | 0.3300 | Standard iterative gradient descent, 1980s |
+| 11 | Constrained Least Squares | 1973 | 14.8 | -- | 11.66/0.25 | -- | 11.66/0.25 | -- | -- | -- | -- | -- | 13.20 | 0.2800 | Hunt, IEEE TAC, 1972; https://doi.org/10.1109/TAC.1972.1100144 |
+| 12 | Gradient Descent Deconvolution | 1980 | 15.5 | -- | 11.55/0.35 | -- | 11.55/0.35 | -- | -- | -- | -- | -- | 14.10 | 0.3300 | Standard iterative gradient descent, 1980s |
 | 13 | ADMM-L1 (Wavelet) | 2011 | 16.5 | -- | 11.73/0.20 | -- | 11.73/0.20 | -- | -- | -- | -- | -- | 15.50 | 0.3800 | Boyd et al., Found. Trends ML, 2011; https://doi.org/10.1561/2200000016 |
 | 14 | PnP-PGD (DRUNet) | 2021 | 20.5 | -- | 11.13/0.41 | -- | -- | -- | -- | -- | -- | -- | 19.50 | 0.5500 | Zhang et al., IEEE TPAMI, 2021; https://doi.org/10.1109/TPAMI.2021.3088914 |
 | 15 | FlatNet | 2020 | 22.0 | -- | 11.15/0.41 | -- | -- | -- | -- | -- | -- | -- | 20.94 | 0.5500 | Khan et al., IEEE TPAMI, 2020; https://doi.org/10.1109/TPAMI.2020.2998799 |
@@ -589,9 +589,9 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Fresnel Back-Propagation | 1967 | 23.1 | 23.1 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.00 | 0.6200 | Goodman, Introduction to Fourier Optics, McGraw-Hill 1968 |
+| 1 | Fresnel Back-Propagation | 1967 | 23.1 | -- | 22.33/0.55 | -- | 22.33/0.55 | -- | 22.33/0.55 | -- | 22.33/0.55 | -- | 22.00 | 0.6200 | Goodman, Introduction to Fourier Optics, McGraw-Hill 1968 |
 | 2 | Angular Spectrum Method | 1968 | 24.6 | -- | 16.79/0.38 | -- | 16.79/0.38 | -- | 16.79/0.38 | -- | 16.79/0.38 | -- | 23.50 | 0.6800 | Goodman, Introduction to Fourier Optics, McGraw-Hill 1968 |
-| 3 | Tikhonov Regularisation | 1963 | 25.0 | 25.0 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 22.33/0.55 | 24.00 | 0.7000 | Tikhonov, Soviet Mathematics Doklady 1963 |
+| 3 | Tikhonov Regularisation | 1963 | 25.0 | -- | 22.33/0.55 | -- | 22.33/0.55 | -- | 22.33/0.55 | -- | 22.33/0.55 | -- | 24.00 | 0.7000 | Tikhonov, Soviet Mathematics Doklady 1963 |
 | 4 | Off-Axis Holography (Leith-Upatnieks) | 1962 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.00 | 0.7400 | Leith & Upatnieks, JOSA 1962; https://doi.org/10.1364/JOSA.52.001123 |
 | 5 | Phase-Shifting Digital Holography | 1997 | 27.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.50 | 0.7800 | Yamaguchi & Zhang, Optics Letters 1997; https://doi.org/10.1364/OL.22.001268 |
 | 6 | ISTA-L1 (Compressive Holography) | 2009 | 29.5 | -- | 18.06/0.58 | -- | 18.06/0.58 | -- | 18.06/0.58 | -- | 18.06/0.58 | -- | 28.50 | 0.8400 | Brady et al., Optics Express 2009; https://doi.org/10.1364/OE.17.013040 |
@@ -762,19 +762,19 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Richardson-Lucy | 1972 | 29.4 | 29.4 | 22.85/0.33 | 22.85/0.33 | 27.96/0.56 | 27.96/0.56 | -- | -- | -- | -- | 28.50 | 0.7800 | Richardson, JOSA, 1972; Lucy, AJ, 1974; https://doi.org/10.1364/JOSA.62.000055; https://doi.org/10.1086/111605 |
-| 2 | Wiener Filter | 1949 | 27.2 | 27.2 | 23.12/0.32 | 23.12/0.32 | 27.75/0.46 | 27.75/0.46 | -- | -- | -- | -- | 26.20 | 0.7200 | Wiener, MIT Press, 1949 |
-| 3 | Gold Deconvolution | 1964 | 23.8 | 23.8 | 13.91/0.05 | 13.91/0.05 | 22.67/0.28 | 22.67/0.28 | -- | -- | -- | -- | 22.80 | 0.6100 | Gold, ANL Report 6984, 1964; https://doi.org/10.2172/4634295 |
-| 4 | Jansson-van Cittert | 1931 | 24.6 | 24.6 | 18.27/0.19 | 18.27/0.19 | 22.04/0.26 | 22.04/0.26 | -- | -- | -- | -- | 23.50 | 0.6400 | van Cittert, Zeitschrift f. Physik, 1931; https://doi.org/10.1007/BF01391351 |
-| 5 | Landweber Iteration | 1951 | 28.8 | 28.8 | 22.88/0.32 | 22.88/0.32 | 28.01/0.50 | 28.01/0.50 | -- | -- | -- | -- | 27.80 | 0.7600 | Landweber, Amer. J. Math., 1951; https://doi.org/10.2307/2372313 |
-| 6 | Tikhonov Regularisation | 1963 | 27.3 | 27.3 | 23.12/0.32 | 23.12/0.32 | 27.75/0.46 | 27.75/0.46 | -- | -- | -- | -- | 26.20 | 0.7200 | Tikhonov, Soviet Math. Doklady, 1963 |
+| 1 | Richardson-Lucy | 1972 | 29.4 | -- | 22.85/0.33 | -- | 27.96/0.56 | -- | -- | -- | -- | -- | 28.50 | 0.7800 | Richardson, JOSA, 1972; Lucy, AJ, 1974; https://doi.org/10.1364/JOSA.62.000055; https://doi.org/10.1086/111605 |
+| 2 | Wiener Filter | 1949 | 27.2 | -- | 23.12/0.32 | -- | 27.75/0.46 | -- | -- | -- | -- | -- | 26.20 | 0.7200 | Wiener, MIT Press, 1949 |
+| 3 | Gold Deconvolution | 1964 | 23.8 | -- | 13.91/0.05 | -- | 22.67/0.28 | -- | -- | -- | -- | -- | 22.80 | 0.6100 | Gold, ANL Report 6984, 1964; https://doi.org/10.2172/4634295 |
+| 4 | Jansson-van Cittert | 1931 | 24.6 | -- | 18.27/0.19 | -- | 22.04/0.26 | -- | -- | -- | -- | -- | 23.50 | 0.6400 | van Cittert, Zeitschrift f. Physik, 1931; https://doi.org/10.1007/BF01391351 |
+| 5 | Landweber Iteration | 1951 | 28.8 | -- | 22.88/0.32 | -- | 28.01/0.50 | -- | -- | -- | -- | -- | 27.80 | 0.7600 | Landweber, Amer. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 6 | Tikhonov Regularisation | 1963 | 27.3 | -- | 23.12/0.32 | -- | 27.75/0.46 | -- | -- | -- | -- | -- | 26.20 | 0.7200 | Tikhonov, Soviet Math. Doklady, 1963 |
 | 7 | TV Deconvolution | 1992 | 31.5 | -- | 23.05/0.37 | -- | 26.77/0.45 | -- | -- | -- | -- | -- | 30.50 | 0.8400 | Rudin et al., Physica D, 1992; https://doi.org/10.1016/0167-2789(92)90242-F |
 | 8 | RL with TV | 2006 | 32.2 | -- | 23.01/0.33 | -- | 27.92/0.53 | -- | -- | -- | -- | -- | 31.20 | 0.8600 | Dey et al., Microscopy Res. Tech., 2006; https://doi.org/10.1002/jemt.20294 |
 | 9 | PnP-ADMM (NLM) | 2013 | 33.8 | -- | 23.42/0.45 | -- | 22.85/0.38 | -- | -- | -- | -- | -- | 32.80 | 0.9000 | Venkatakrishnan et al., IEEE GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
 | 10 | PnP-FISTA (NLM) | 2009 | 33.0 | -- | 22.97/0.38 | -- | 22.30/0.31 | -- | -- | -- | -- | -- | 32.0 | 0.8901 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
-| 11 | Inverse Filter | 1960 | 16.7 | 16.7 | 3.52/0.00 | 3.52/0.00 | 25.55/0.31 | 25.55/0.31 | -- | -- | -- | -- | 15.50 | 0.3200 | Classical Fourier division, 1960s |
-| 12 | Agard Constrained Iterative | 1984 | 26.8 | 26.8 | 25.79/0.39 | 25.79/0.39 | 26.08/0.43 | 26.08/0.43 | -- | -- | -- | -- | 25.80 | 0.7000 | Agard, Ann. Rev. Biophys. Bioeng., 1984; https://doi.org/10.1146/annurev.biophys.13.1.191 |
-| 13 | Regularized RL | 1998 | 31.8 | 31.8 | 23.10/0.38 | 23.10/0.38 | 28.06/0.54 | 28.06/0.54 | -- | -- | -- | -- | 30.80 | 0.8500 | Conchello, JOSA A, 1998; https://doi.org/10.1364/JOSAA.15.002609 |
+| 11 | Inverse Filter | 1960 | 16.7 | -- | 3.52/0.00 | -- | 25.55/0.31 | -- | -- | -- | -- | -- | 15.50 | 0.3200 | Classical Fourier division, 1960s |
+| 12 | Agard Constrained Iterative | 1984 | 26.8 | -- | 25.79/0.39 | -- | 26.08/0.43 | -- | -- | -- | -- | -- | 25.80 | 0.7000 | Agard, Ann. Rev. Biophys. Bioeng., 1984; https://doi.org/10.1146/annurev.biophys.13.1.191 |
+| 13 | Regularized RL | 1998 | 31.8 | -- | 23.10/0.38 | -- | 28.06/0.54 | -- | -- | -- | -- | -- | 30.80 | 0.8500 | Conchello, JOSA A, 1998; https://doi.org/10.1364/JOSAA.15.002609 |
 | 14 | CARE | 2018 | 36.2 | -- | 23.21/0.42 | -- | -- | -- | -- | -- | -- | -- | 35.20 | 0.9400 | Weigert et al., Nature Methods, 2018; https://doi.org/10.1038/s41592-018-0216-7 |
 | 15 | Noise2Void | 2019 | 34.6 | -- | 23.72/0.61 | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.9200 | Krull et al., CVPR, 2019; https://doi.org/10.1109/CVPR.2019.00223 |
 | 16 | CSBDeep | 2018 | 35.8 | -- | 20.55/0.34 | -- | -- | -- | -- | -- | -- | -- | 34.80 | 0.9350 | Weigert et al., Nature Methods, 2018; https://doi.org/10.1038/s41592-018-0216-7 |
@@ -815,11 +815,11 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Filtered Back-Projection (FBP) | 1976 | 26.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.2 | 0.7540 | Brooks & Di Chiro, Phys. Med. Biol. 1976; https://doi.org/10.1088/0031-9155/21/5/001 |
 | 2 | FBP-3DRP (3D Reprojection) | 1989 | 27.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.1 | 0.7820 | Kinahan & Rogers, IEEE TNS 1989; https://doi.org/10.1109/23.34687 |
-| 3 | MLEM (ML Expectation Maximization) | 1982 | 28.5 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.8350 | Shepp & Vardi, IEEE TMI 1982; https://doi.org/10.1109/TMI.1982.4307558 |
+| 3 | MLEM (ML Expectation Maximization) | 1982 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.8350 | Shepp & Vardi, IEEE TMI 1982; https://doi.org/10.1109/TMI.1982.4307558 |
 | 4 | OSEM (Ordered Subsets EM) | 1994 | 29.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.0 | 0.8500 | Hudson & Larkin, IEEE TMI 1994; https://doi.org/10.1109/42.363108 |
 | 5 | MAP-EM (Maximum A Posteriori EM) | 1990 | 30.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.3 | 0.8720 | Green, IEEE TMI 1990; https://doi.org/10.1109/42.52985 |
-| 6 | FORE (Fourier Rebinning) | 1997 | 27.8 | 27.8 | -- | -- | -- | -- | -- | -- | -- | -- | 26.8 | 0.8010 | Defrise et al., IEEE TMI 1997; https://doi.org/10.1109/42.563662 |
-| 7 | BSREM (Block Sequential Regularized EM) | 2001 | 32.5 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.9120 | De Pierro & Yamagishi, IEEE TIP 2001; https://doi.org/10.1109/83.918569 |
+| 6 | FORE (Fourier Rebinning) | 1997 | 27.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.8 | 0.8010 | Defrise et al., IEEE TMI 1997; https://doi.org/10.1109/42.563662 |
+| 7 | BSREM (Block Sequential Regularized EM) | 2001 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.9120 | De Pierro & Yamagishi, IEEE TIP 2001; https://doi.org/10.1109/83.918569 |
 | 8 | PSF-OSEM (Resolution Modeling OSEM) | 2006 | 31.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.8 | 0.9050 | Panin et al., IEEE TNS 2006; https://doi.org/10.1109/TNS.2006.876001 |
 | 9 | TOF-OSEM (Time-of-Flight OSEM) | 2007 | 32.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.2 | 0.9100 | Conti, Phys. Med. Biol. 2006; Surti et al., JNM 2007; https://doi.org/10.1088/0031-9155/51/24/R01 |
 | 10 | Kernel EM | 2015 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.0 | 0.9180 | Wang & Qi, IEEE TMI 2015; https://doi.org/10.1109/TMI.2014.2343916 |
@@ -844,7 +844,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Filtered Back-Projection (FBP) | 1976 | 23.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.6800 | Brooks & Di Chiro, Phys. Med. Biol. 1976; https://doi.org/10.1088/0031-9155/21/5/001 |
-| 2 | MLEM (ML Expectation Maximization) | 1982 | 27.8 | 27.8 | -- | -- | -- | -- | -- | -- | -- | -- | 26.8 | 0.8100 | Shepp & Vardi, IEEE TMI 1982; https://doi.org/10.1109/TMI.1982.4307558 |
+| 2 | MLEM (ML Expectation Maximization) | 1982 | 27.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.8 | 0.8100 | Shepp & Vardi, IEEE TMI 1982; https://doi.org/10.1109/TMI.1982.4307558 |
 | 3 | OSEM (Ordered Subsets EM) | 1994 | 29.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.2 | 0.8450 | Hudson & Larkin, IEEE TMI 1994; https://doi.org/10.1109/42.363108 |
 | 4 | MAP-OSEM | 2004 | 30.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.5 | 0.8680 | Qi & Leahy, Phys. Med. Biol. 2004; https://doi.org/10.1088/0031-9155/49/11/007 |
 | 5 | Resolution Recovery OSEM (RR-OSEM) | 2003 | 31.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.1 | 0.8820 | Hutton et al., EJNMMI 2003; https://doi.org/10.1007/s00259-003-1240-3 |
@@ -894,8 +894,8 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | FBP per Energy Bin | 1971 | 25.5 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.7200 | Hounsfield, Br. J. Radiol. 1973; https://doi.org/10.1259/0007-1285-46-552-1016 |
-| 2 | Material Decomposition (Alvarez-Macovski) | 1976 | 28.0 | 28.0 | -- | -- | -- | -- | -- | -- | -- | -- | 27.0 | 0.7800 | Alvarez & Macovski, Phys. Med. Biol. 1976; https://doi.org/10.1088/0031-9155/21/5/002 |
+| 1 | FBP per Energy Bin | 1971 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.7200 | Hounsfield, Br. J. Radiol. 1973; https://doi.org/10.1259/0007-1285-46-552-1016 |
+| 2 | Material Decomposition (Alvarez-Macovski) | 1976 | 28.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.0 | 0.7800 | Alvarez & Macovski, Phys. Med. Biol. 1976; https://doi.org/10.1088/0031-9155/21/5/002 |
 | 3 | Maximum Likelihood Spectral CT | 2006 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8500 | Schlomka et al., Phys. Med. Biol. 2008; https://doi.org/10.1088/0031-9155/53/15/002 |
 | 4 | SART (Simultaneous Algebraic Recon) | 1984 | 29.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.0 | 0.8100 | Andersen & Kak, Ultrason. Imaging 1984; https://doi.org/10.1177/016173468400600107 |
 | 5 | TV-regularized Spectral CT | 2010 | 34.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.2 | 0.8950 | Rigie & La Riviere, Phys. Med. Biol. 2015; https://doi.org/10.1088/0031-9155/60/8/3077 |
@@ -919,7 +919,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Zero-filled IFFT | 1965 | 26.0 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.7100 | Cooley & Tukey, Math. Comput. 1965; https://doi.org/10.1090/S0025-5718-1965-0178586-1 |
+| 1 | Zero-filled IFFT | 1965 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.7100 | Cooley & Tukey, Math. Comput. 1965; https://doi.org/10.1090/S0025-5718-1965-0178586-1 |
 | 2 | SPM GLM (Statistical Parametric Mapping) | 1995 | 27.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.7500 | Friston et al., Hum. Brain Mapp. 1995; https://doi.org/10.1002/hbm.460020402 |
 | 3 | ICA (Independent Component Analysis) | 1998 | 28.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.2 | 0.7700 | McKeown et al., Hum. Brain Mapp. 1998; https://doi.org/10.1002/(SICI)1097-0193(1998)6:3<160::AID-HBM5>3.0.CO;2-1 |
 | 4 | GRAPPA (fMRI) | 2002 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8500 | Griswold et al., MRM 2002; https://doi.org/10.1002/mrm.10171 |
@@ -945,7 +945,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | DTI (Diffusion Tensor Imaging) | 1994 | 25.5 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.7200 | Basser et al., Biophys. J. 1994; https://doi.org/10.1016/S0006-3495(94)80775-1 |
+| 1 | DTI (Diffusion Tensor Imaging) | 1994 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.7200 | Basser et al., Biophys. J. 1994; https://doi.org/10.1016/S0006-3495(94)80775-1 |
 | 2 | CSD (Constrained Spherical Deconvolution) | 2007 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.0 | 0.7600 | Tournier et al., NeuroImage 2007; https://doi.org/10.1016/j.neuroimage.2007.02.016 |
 | 3 | SHORE (Simple Harmonic Oscillator) | 2010 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.7900 | Ozarslan et al., MRM 2009; https://doi.org/10.1002/mrm.21828 |
 | 4 | NODDI | 2012 | 29.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.0 | 0.8100 | Zhang et al., NeuroImage 2012; https://doi.org/10.1016/j.neuroimage.2012.03.072 |
@@ -970,7 +970,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Pairwise Subtraction (CASL Baseline) | 1992 | 19.7 | 19.7 | -- | -- | -- | -- | -- | -- | -- | -- | 18.5 | 0.5800 | Detre et al., MRM 1992; https://doi.org/10.1002/mrm.1910230106 |
+| 1 | Pairwise Subtraction (CASL Baseline) | 1992 | 19.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.5 | 0.5800 | Detre et al., MRM 1992; https://doi.org/10.1002/mrm.1910230106 |
 | 2 | Surround Subtraction | 2000 | 20.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.6200 | Liu & Wong, MRM 2005; https://doi.org/10.1002/mrm.20487 |
 | 3 | Multi-TI Kinetic Model Fitting | 2005 | 22.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.6800 | Buxton et al., MRM 1998; https://doi.org/10.1002/mrm.1910400308 |
 | 4 | pCASL (Pseudo-Continuous ASL) | 2008 | 23.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7200 | Dai et al., MRM 2008; https://doi.org/10.1002/mrm.21668 |
@@ -985,14 +985,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | ResNet-ASL | 2022 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.8700 | Ulas et al., MICCAI 2022; https://doi.org/10.1007/978-3-031-16446-0_66 |
 | 14 | SwinIR-ASL (Swin Transformer) | 2024 | 32.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.9200 | Zhao et al., MRM 2024; https://doi.org/10.1002/mrm.29911 |
 | 15 | ASL Foundation Model | 2025 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.9300 | Foundation model for ASL, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34/0.7476 | 19.34 | 0.7476 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77/0.7857 | 19.77 | 0.7857 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38/0.7785 | 20.38 | 0.7785 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73/0.7806 | 19.73 | 0.7806 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73/0.7913 | 19.73 | 0.7913 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68/0.7694 | 19.68 | 0.7694 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37/0.7495 | 19.37 | 0.7495 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47/0.7629 | 19.47 | 0.7629 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.34/0.7476 | -- | 19.34/0.7476 | -- | 19.34/0.7476 | -- | 19.34/0.7476 | -- | 19.34/0.7476 | -- | 19.34 | 0.7476 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 19.77/0.7857 | -- | 19.77/0.7857 | -- | 19.77/0.7857 | -- | 19.77/0.7857 | -- | 19.77/0.7857 | -- | 19.77 | 0.7857 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 20.38/0.7785 | -- | 20.38/0.7785 | -- | 20.38/0.7785 | -- | 20.38/0.7785 | -- | 20.38/0.7785 | -- | 20.38 | 0.7785 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 19.73/0.7806 | -- | 19.73/0.7806 | -- | 19.73/0.7806 | -- | 19.73/0.7806 | -- | 19.73/0.7806 | -- | 19.73 | 0.7806 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 19.73/0.7913 | -- | 19.73/0.7913 | -- | 19.73/0.7913 | -- | 19.73/0.7913 | -- | 19.73/0.7913 | -- | 19.73 | 0.7913 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 19.68/0.7694 | -- | 19.68/0.7694 | -- | 19.68/0.7694 | -- | 19.68/0.7694 | -- | 19.68/0.7694 | -- | 19.68 | 0.7694 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.37/0.7495 | -- | 19.37/0.7495 | -- | 19.37/0.7495 | -- | 19.37/0.7495 | -- | 19.37/0.7495 | -- | 19.37 | 0.7495 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 19.47/0.7629 | -- | 19.47/0.7629 | -- | 19.47/0.7629 | -- | 19.47/0.7629 | -- | 19.47/0.7629 | -- | 19.47 | 0.7629 | PWM5 inline solver, 5x verified |
 ---
 
 #### 8. Chemical Exchange Saturation Transfer MRI (`cest_mri`)
@@ -1003,7 +1003,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | MTR-asym (Magnetization Transfer Ratio) | 2006 | 21.1 | 21.1 | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.6200 | Zhou et al., MRM 2003; https://doi.org/10.1002/mrm.10651 |
+| 1 | MTR-asym (Magnetization Transfer Ratio) | 2006 | 21.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.6200 | Zhou et al., MRM 2003; https://doi.org/10.1002/mrm.10651 |
 | 2 | Lorentzian Line Fitting | 2008 | 23.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7000 | Jones et al., MRM 2006; https://doi.org/10.1002/mrm.20818 |
 | 3 | Multi-pool Lorentzian Fitting (MPLF) | 2012 | 25.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.0 | 0.7500 | Desmond et al., MRM 2014; https://doi.org/10.1002/mrm.25048 |
 | 4 | AREX (Apparent Exchange-dependent Relaxation) | 2014 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.7800 | Zaiss et al., NMR Biomed. 2014; https://doi.org/10.1002/nbm.3083 |
@@ -1018,14 +1018,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Denoising Autoencoder CEST | 2024 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.3 | 0.9550 | Heo et al., Diagnostics 2023; https://doi.org/10.3390/diagnostics13040668 |
 | 14 | DECENT (Noise-to-Noise DL CEST) | 2025 | 37.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9650 | Liu et al., NMR Biomed. 2025; https://doi.org/10.1002/nbm.5298 |
 | 15 | CEST Foundation Model | 2025 | 38.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9700 | Foundation model for CEST, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58 | 0.2621 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39/0.2586 | 12.39 | 0.2586 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94/0.2061 | 10.94 | 0.2061 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74/0.2185 | 10.74 | 0.2185 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36/0.2511 | 11.36 | 0.2511 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83/0.1393 | 8.83 | 0.1393 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58 | 0.2621 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58/0.2621 | 11.58 | 0.2621 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58 | 0.2621 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 12.39/0.2586 | -- | 12.39/0.2586 | -- | 12.39/0.2586 | -- | 12.39/0.2586 | -- | 12.39/0.2586 | -- | 12.39 | 0.2586 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 10.94/0.2061 | -- | 10.94/0.2061 | -- | 10.94/0.2061 | -- | 10.94/0.2061 | -- | 10.94/0.2061 | -- | 10.94 | 0.2061 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 10.74/0.2185 | -- | 10.74/0.2185 | -- | 10.74/0.2185 | -- | 10.74/0.2185 | -- | 10.74/0.2185 | -- | 10.74 | 0.2185 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 11.36/0.2511 | -- | 11.36/0.2511 | -- | 11.36/0.2511 | -- | 11.36/0.2511 | -- | 11.36/0.2511 | -- | 11.36 | 0.2511 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 8.83/0.1393 | -- | 8.83/0.1393 | -- | 8.83/0.1393 | -- | 8.83/0.1393 | -- | 8.83/0.1393 | -- | 8.83 | 0.1393 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58 | 0.2621 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58/0.2621 | -- | 11.58 | 0.2621 | PWM5 inline solver, 5x verified |
 ---
 
 #### 9. Ultrasound-Guided MRI / US+MRI Fusion (`us_mri`)
@@ -1125,14 +1125,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 12 | DL Opportunistic BMD from CT | 2024 | 36.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9350 | Loffler et al., Sci. Rep. 2024; https://doi.org/10.1038/s41598-024-62291-4 |
 | 13 | Multi-Vendor DL-BMD | 2024 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9400 | Kim et al., Diagnostics 2024; https://doi.org/10.3390/diagnostics14090978 |
 | 14 | DEXA Foundation Model | 2025 | 38.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.0 | 0.9550 | Foundation model for DEXA, 2025 |
-| 15 | Wiener Deconvolution (verified inline) | 2026 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57/-0.1580 | 5.57 | -0.1580 | PWM5 inline solver, 5x verified |
-| 16 | Landweber Iteration (verified inline) | 2026 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64/-0.1384 | 5.64 | -0.1384 | PWM5 inline solver, 5x verified |
-| 17 | Richardson-Lucy (verified inline) | 2026 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62/-0.1120 | 5.62 | -0.1120 | PWM5 inline solver, 5x verified |
-| 18 | Tikhonov Regularization (verified inline) | 2026 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59/-0.1329 | 5.59 | -0.1329 | PWM5 inline solver, 5x verified |
-| 19 | TV-ADMM (verified inline) | 2026 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62/-0.1402 | 5.62 | -0.1402 | PWM5 inline solver, 5x verified |
-| 20 | Chambolle-Pock (verified inline) | 2026 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51/-0.0772 | 5.51 | -0.0772 | PWM5 inline solver, 5x verified |
-| 21 | PnP-ADMM (NLM) (verified inline) | 2026 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58/-0.1561 | 5.58 | -0.1561 | PWM5 inline solver, 5x verified |
-| 22 | PnP-FISTA (NLM) (verified inline) | 2026 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60/-0.1210 | 5.60 | -0.1210 | PWM5 inline solver, 5x verified |
+| 15 | Wiener Deconvolution (verified inline) | 2026 | 5.57/-0.1580 | -- | 5.57/-0.1580 | -- | 5.57/-0.1580 | -- | 5.57/-0.1580 | -- | 5.57/-0.1580 | -- | 5.57 | -0.1580 | PWM5 inline solver, 5x verified |
+| 16 | Landweber Iteration (verified inline) | 2026 | 5.64/-0.1384 | -- | 5.64/-0.1384 | -- | 5.64/-0.1384 | -- | 5.64/-0.1384 | -- | 5.64/-0.1384 | -- | 5.64 | -0.1384 | PWM5 inline solver, 5x verified |
+| 17 | Richardson-Lucy (verified inline) | 2026 | 5.62/-0.1120 | -- | 5.62/-0.1120 | -- | 5.62/-0.1120 | -- | 5.62/-0.1120 | -- | 5.62/-0.1120 | -- | 5.62 | -0.1120 | PWM5 inline solver, 5x verified |
+| 18 | Tikhonov Regularization (verified inline) | 2026 | 5.59/-0.1329 | -- | 5.59/-0.1329 | -- | 5.59/-0.1329 | -- | 5.59/-0.1329 | -- | 5.59/-0.1329 | -- | 5.59 | -0.1329 | PWM5 inline solver, 5x verified |
+| 19 | TV-ADMM (verified inline) | 2026 | 5.62/-0.1402 | -- | 5.62/-0.1402 | -- | 5.62/-0.1402 | -- | 5.62/-0.1402 | -- | 5.62/-0.1402 | -- | 5.62 | -0.1402 | PWM5 inline solver, 5x verified |
+| 20 | Chambolle-Pock (verified inline) | 2026 | 5.51/-0.0772 | -- | 5.51/-0.0772 | -- | 5.51/-0.0772 | -- | 5.51/-0.0772 | -- | 5.51/-0.0772 | -- | 5.51 | -0.0772 | PWM5 inline solver, 5x verified |
+| 21 | PnP-ADMM (NLM) (verified inline) | 2026 | 5.58/-0.1561 | -- | 5.58/-0.1561 | -- | 5.58/-0.1561 | -- | 5.58/-0.1561 | -- | 5.58/-0.1561 | -- | 5.58 | -0.1561 | PWM5 inline solver, 5x verified |
+| 22 | PnP-FISTA (NLM) (verified inline) | 2026 | 5.60/-0.1210 | -- | 5.60/-0.1210 | -- | 5.60/-0.1210 | -- | 5.60/-0.1210 | -- | 5.60/-0.1210 | -- | 5.60 | -0.1210 | PWM5 inline solver, 5x verified |
 ---
 
 #### 13. MR Elastography (`mr_elastography`)
@@ -1182,14 +1182,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | LGViT (Local-Global Vision Transformer) | 2024 | 37.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9650 | Liu et al., MedIA 2024; https://doi.org/10.1016/j.media.2024.103143 |
 | 14 | DeepMoCor (Motion-Compensated MRF) | 2025 | 26.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.5 | 0.8400 | Miao et al., Med. Phys. 2025; https://doi.org/10.1002/mp.17497 |
 | 15 | MRF Foundation Model | 2025 | 41.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9850 | Foundation model for MRF, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89 | 0.2129 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01/0.2307 | 10.01 | 0.2307 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55/0.2722 | 9.55 | 0.2722 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57/0.2217 | 9.57 | 0.2217 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78/0.2399 | 9.78 | 0.2399 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57/0.1668 | 8.57 | 0.1668 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89/0.2122 | 9.89 | 0.2122 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89/0.2129 | 9.89 | 0.2129 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89 | 0.2129 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 10.01/0.2307 | -- | 10.01/0.2307 | -- | 10.01/0.2307 | -- | 10.01/0.2307 | -- | 10.01/0.2307 | -- | 10.01 | 0.2307 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 9.55/0.2722 | -- | 9.55/0.2722 | -- | 9.55/0.2722 | -- | 9.55/0.2722 | -- | 9.55/0.2722 | -- | 9.55 | 0.2722 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 9.57/0.2217 | -- | 9.57/0.2217 | -- | 9.57/0.2217 | -- | 9.57/0.2217 | -- | 9.57/0.2217 | -- | 9.57 | 0.2217 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 9.78/0.2399 | -- | 9.78/0.2399 | -- | 9.78/0.2399 | -- | 9.78/0.2399 | -- | 9.78/0.2399 | -- | 9.78 | 0.2399 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 8.57/0.1668 | -- | 8.57/0.1668 | -- | 8.57/0.1668 | -- | 8.57/0.1668 | -- | 8.57/0.1668 | -- | 8.57 | 0.1668 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 9.89/0.2122 | -- | 9.89/0.2122 | -- | 9.89/0.2122 | -- | 9.89/0.2122 | -- | 9.89/0.2122 | -- | 9.89 | 0.2122 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89/0.2129 | -- | 9.89 | 0.2129 | PWM5 inline solver, 5x verified |
 ---
 
 #### 15. MR Angiography (`mra`)
@@ -1513,14 +1513,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Robust Capon Beamformer CEUS | 2012 | 23.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.5800 | Asl & Mahloojifar, IEEE TUFFC, 2012; https://doi.org/10.1109/TUFFC.2012.2270 |
 | 14 | CEUS-Net | 2023 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.2 | 0.9300 | Chen et al., Ultrasonics, 2023; https://doi.org/10.1016/j.ultras.2023.106993 |
 | 15 | Diffusion-ULM | 2024 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9550 | Zhang et al., IEEE TMI, 2024; https://doi.org/10.1109/TMI.2024.3351415 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44/0.3548 | 16.44 | 0.3548 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42/0.4225 | 16.42 | 0.4225 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96/0.2391 | 14.96 | 0.2391 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82/0.2983 | 15.82 | 0.2983 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41/0.4141 | 16.41 | 0.4141 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78/0.1605 | 13.78 | 0.1605 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46/0.3622 | 16.46 | 0.3622 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56/0.3940 | 16.56 | 0.3940 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 16.44/0.3548 | -- | 16.44/0.3548 | -- | 16.44/0.3548 | -- | 16.44/0.3548 | -- | 16.44/0.3548 | -- | 16.44 | 0.3548 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 16.42/0.4225 | -- | 16.42/0.4225 | -- | 16.42/0.4225 | -- | 16.42/0.4225 | -- | 16.42/0.4225 | -- | 16.42 | 0.4225 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 14.96/0.2391 | -- | 14.96/0.2391 | -- | 14.96/0.2391 | -- | 14.96/0.2391 | -- | 14.96/0.2391 | -- | 14.96 | 0.2391 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 15.82/0.2983 | -- | 15.82/0.2983 | -- | 15.82/0.2983 | -- | 15.82/0.2983 | -- | 15.82/0.2983 | -- | 15.82 | 0.2983 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 16.41/0.4141 | -- | 16.41/0.4141 | -- | 16.41/0.4141 | -- | 16.41/0.4141 | -- | 16.41/0.4141 | -- | 16.41 | 0.4141 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 13.78/0.1605 | -- | 13.78/0.1605 | -- | 13.78/0.1605 | -- | 13.78/0.1605 | -- | 13.78/0.1605 | -- | 13.78 | 0.1605 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 16.46/0.3622 | -- | 16.46/0.3622 | -- | 16.46/0.3622 | -- | 16.46/0.3622 | -- | 16.46/0.3622 | -- | 16.46 | 0.3622 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 16.56/0.3940 | -- | 16.56/0.3940 | -- | 16.56/0.3940 | -- | 16.56/0.3940 | -- | 16.56/0.3940 | -- | 16.56 | 0.3940 | PWM5 inline solver, 5x verified |
 ---
 
 #### 28. Ultrasound Elastography (`elastography`)
@@ -1590,14 +1590,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | CycleSR-TFM | 2025 | 41.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 39.3 | 0.9850 | Li et al., Mech. Syst. Signal Process., 2025; https://doi.org/10.1016/j.ymssp.2024.112073 |
 | 14 | Physics-Informed NN for PA Imaging | 2023 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9300 | Zhang et al., Ultrasonics, 2023; https://doi.org/10.1016/j.ultras.2023.107033 |
 | 15 | Transformer-TFM | 2024 | 39.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 38.0 | 0.9600 | Wang et al., IEEE TUFFC, 2024; https://doi.org/10.1109/TUFFC.2024.3389701 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46/0.4706 | 24.46 | 0.4706 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28/0.5081 | 21.28 | 0.5081 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43/0.3457 | 16.43 | 0.3457 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59/0.4369 | 20.59 | 0.4369 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81/0.5424 | 22.81 | 0.5424 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04/0.3367 | 16.04 | 0.3367 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67/0.4835 | 24.67 | 0.4835 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20/0.5256 | 25.20 | 0.5256 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 24.46/0.4706 | -- | 24.46/0.4706 | -- | 24.46/0.4706 | -- | 24.46/0.4706 | -- | 24.46/0.4706 | -- | 24.46 | 0.4706 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 21.28/0.5081 | -- | 21.28/0.5081 | -- | 21.28/0.5081 | -- | 21.28/0.5081 | -- | 21.28/0.5081 | -- | 21.28 | 0.5081 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 16.43/0.3457 | -- | 16.43/0.3457 | -- | 16.43/0.3457 | -- | 16.43/0.3457 | -- | 16.43/0.3457 | -- | 16.43 | 0.3457 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.59/0.4369 | -- | 20.59/0.4369 | -- | 20.59/0.4369 | -- | 20.59/0.4369 | -- | 20.59/0.4369 | -- | 20.59 | 0.4369 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 22.81/0.5424 | -- | 22.81/0.5424 | -- | 22.81/0.5424 | -- | 22.81/0.5424 | -- | 22.81/0.5424 | -- | 22.81 | 0.5424 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 16.04/0.3367 | -- | 16.04/0.3367 | -- | 16.04/0.3367 | -- | 16.04/0.3367 | -- | 16.04/0.3367 | -- | 16.04 | 0.3367 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.67/0.4835 | -- | 24.67/0.4835 | -- | 24.67/0.4835 | -- | 24.67/0.4835 | -- | 24.67/0.4835 | -- | 24.67 | 0.4835 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.20/0.5256 | -- | 25.20/0.5256 | -- | 25.20/0.5256 | -- | 25.20/0.5256 | -- | 25.20/0.5256 | -- | 25.20 | 0.5256 | PWM5 inline solver, 5x verified |
 ---
 
 #### 31. Intravascular Ultrasound (`ivus`)
@@ -1655,7 +1655,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 1 | V(z) Curve Analysis | 1977 | 17.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3200 | Quate et al., Phys. Today, 1985; Atalar et al., Appl. Phys. Lett., 1977; https://doi.org/10.1063/1.89238 |
 | 2 | Pulse-Echo SAM | 1985 | 19.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.5 | 0.4000 | Briggs & Kolosov, Acoustic Microscopy, Oxford, 1985; https://doi.org/10.1093/acprof:oso/9780199232734.001.0001 |
 | 3 | Time-Resolved SAM | 1993 | 21.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.4800 | Weglein, IEEE TUFFC, 1993; https://doi.org/10.1109/58.251929 |
-| 4 | Deconvolution SAM (Wiener) | 2005 | 24.0 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.5800 | Raum et al., IEEE TUFFC, 2006; https://doi.org/10.1109/TUFFC.2006.1621546 |
+| 4 | Deconvolution SAM (Wiener) | 2005 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.5800 | Raum et al., IEEE TUFFC, 2006; https://doi.org/10.1109/TUFFC.2006.1621546 |
 | 5 | Synthetic Aperture SAM | 2008 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.6200 | Hein et al., J. Acoust. Soc. Am., 2008; https://doi.org/10.1121/1.2916707 |
 | 6 | NLM Denoising SAM | 2013 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.0 | 0.7000 | Buades et al., CVPR, 2005; adapted for SAM, 2013; https://doi.org/10.1109/CVPR.2005.38 |
 | 7 | BM3D-SAM | 2015 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.7500 | Dabov et al., IEEE TIP, 2007; adapted for SAM, 2015; https://doi.org/10.1109/TIP.2007.901238 |
@@ -1740,14 +1740,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 14 | Noise2Fast | 2021 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.8400 | Lequyer et al., IEEE TCI, 2022; https://doi.org/10.1109/TCI.2022.3144729 |
 | 15 | SN2N (Self-Inspired N2N) | 2024 | 35.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9500 | Li et al., Nature Methods, 2024; https://doi.org/10.1038/s41592-024-02400-9 |
 | 16 | Restormer Microscopy | 2022 | 36.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9600 | Zamir et al., CVPR, 2022; https://doi.org/10.1109/CVPR52688.2022.00564 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17/0.2965 | 23.17 | 0.2965 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81/0.4656 | 24.81 | 0.4656 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54/0.1917 | 19.54 | 0.1917 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75/0.2592 | 21.75 | 0.2592 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69/0.4257 | 24.69 | 0.4257 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63/0.1742 | 18.63 | 0.1742 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18/0.2978 | 23.18 | 0.2978 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21/0.3011 | 23.21 | 0.3011 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 23.17/0.2965 | -- | 23.17/0.2965 | -- | 23.17/0.2965 | -- | 23.17/0.2965 | -- | 23.17/0.2965 | -- | 23.17 | 0.2965 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 24.81/0.4656 | -- | 24.81/0.4656 | -- | 24.81/0.4656 | -- | 24.81/0.4656 | -- | 24.81/0.4656 | -- | 24.81 | 0.4656 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 19.54/0.1917 | -- | 19.54/0.1917 | -- | 19.54/0.1917 | -- | 19.54/0.1917 | -- | 19.54/0.1917 | -- | 19.54 | 0.1917 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 21.75/0.2592 | -- | 21.75/0.2592 | -- | 21.75/0.2592 | -- | 21.75/0.2592 | -- | 21.75/0.2592 | -- | 21.75 | 0.2592 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 24.69/0.4257 | -- | 24.69/0.4257 | -- | 24.69/0.4257 | -- | 24.69/0.4257 | -- | 24.69/0.4257 | -- | 24.69 | 0.4257 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 18.63/0.1742 | -- | 18.63/0.1742 | -- | 18.63/0.1742 | -- | 18.63/0.1742 | -- | 18.63/0.1742 | -- | 18.63 | 0.1742 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.18/0.2978 | -- | 23.18/0.2978 | -- | 23.18/0.2978 | -- | 23.18/0.2978 | -- | 23.18/0.2978 | -- | 23.18 | 0.2978 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.21/0.3011 | -- | 23.21/0.3011 | -- | 23.21/0.3011 | -- | 23.21/0.3011 | -- | 23.21/0.3011 | -- | 23.21 | 0.3011 | PWM5 inline solver, 5x verified |
 ---
 
 #### 37. Confocal Laser Endomicroscopy (`confocal_endomicroscopy`)
@@ -1771,14 +1771,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | CLE-Diffusion | 2024 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9500 | Li et al., Med. Image Anal., 2024; https://doi.org/10.1016/j.media.2024.103230 |
 | 14 | Self-Supervised CLE Denoising | 2022 | 31.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.0 | 0.86 | Krull et al., CVPR, 2019; adapted for CLE, 2022; https://doi.org/10.1109/CVPR.2019.00223 |
 | 15 | CLE Video Enhancement CNN | 2019 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.8000 | Shao et al., IEEE JBHI, 2019; https://doi.org/10.1109/JBHI.2018.2877597 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79/0.2871 | 11.79 | 0.2871 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02/0.3444 | 12.02 | 0.3444 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29/0.2041 | 11.29 | 0.2041 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66/0.2515 | 11.66 | 0.2515 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06/0.3350 | 12.06 | 0.3350 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95/0.1657 | 10.95 | 0.1657 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79/0.2877 | 11.79 | 0.2877 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80/0.2913 | 11.80 | 0.2913 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 11.79/0.2871 | -- | 11.79/0.2871 | -- | 11.79/0.2871 | -- | 11.79/0.2871 | -- | 11.79/0.2871 | -- | 11.79 | 0.2871 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 12.02/0.3444 | -- | 12.02/0.3444 | -- | 12.02/0.3444 | -- | 12.02/0.3444 | -- | 12.02/0.3444 | -- | 12.02 | 0.3444 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 11.29/0.2041 | -- | 11.29/0.2041 | -- | 11.29/0.2041 | -- | 11.29/0.2041 | -- | 11.29/0.2041 | -- | 11.29 | 0.2041 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 11.66/0.2515 | -- | 11.66/0.2515 | -- | 11.66/0.2515 | -- | 11.66/0.2515 | -- | 11.66/0.2515 | -- | 11.66 | 0.2515 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 12.06/0.3350 | -- | 12.06/0.3350 | -- | 12.06/0.3350 | -- | 12.06/0.3350 | -- | 12.06/0.3350 | -- | 12.06 | 0.3350 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 10.95/0.1657 | -- | 10.95/0.1657 | -- | 10.95/0.1657 | -- | 10.95/0.1657 | -- | 10.95/0.1657 | -- | 10.95 | 0.1657 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 11.79/0.2877 | -- | 11.79/0.2877 | -- | 11.79/0.2877 | -- | 11.79/0.2877 | -- | 11.79/0.2877 | -- | 11.79 | 0.2877 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 11.80/0.2913 | -- | 11.80/0.2913 | -- | 11.80/0.2913 | -- | 11.80/0.2913 | -- | 11.80/0.2913 | -- | 11.80 | 0.2913 | PWM5 inline solver, 5x verified |
 ---
 
 #### 38. Two-Photon Microscopy (`two_photon`)
@@ -1825,14 +1825,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Physics-Informed 3P CNN | 2024 | 35.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9500 | Zhang et al., Optica, 2024; https://doi.org/10.1364/OPTICA.519743 |
 | 14 | Diffusion-3P | 2024 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.9000 | Song et al., Nature Methods, 2024; https://doi.org/10.1038/s41592-024-02377-5 |
 | 15 | AO-DL Correction 3P | 2023 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.8000 | Hu et al., Nature Comms., 2024; https://doi.org/10.1038/s41467-024-45477-6 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01/0.5436 | 25.01 | 0.5436 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91/0.5919 | 22.91 | 0.5919 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63/0.3748 | 19.63 | 0.3748 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98/0.4795 | 21.98 | 0.4795 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69/0.7021 | 23.69 | 0.7021 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16/0.3918 | 19.16 | 0.3918 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29/0.5812 | 25.29 | 0.5812 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10/0.7354 | 26.10 | 0.7354 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.01/0.5436 | -- | 25.01/0.5436 | -- | 25.01/0.5436 | -- | 25.01/0.5436 | -- | 25.01/0.5436 | -- | 25.01 | 0.5436 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 22.91/0.5919 | -- | 22.91/0.5919 | -- | 22.91/0.5919 | -- | 22.91/0.5919 | -- | 22.91/0.5919 | -- | 22.91 | 0.5919 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 19.63/0.3748 | -- | 19.63/0.3748 | -- | 19.63/0.3748 | -- | 19.63/0.3748 | -- | 19.63/0.3748 | -- | 19.63 | 0.3748 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 21.98/0.4795 | -- | 21.98/0.4795 | -- | 21.98/0.4795 | -- | 21.98/0.4795 | -- | 21.98/0.4795 | -- | 21.98 | 0.4795 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 23.69/0.7021 | -- | 23.69/0.7021 | -- | 23.69/0.7021 | -- | 23.69/0.7021 | -- | 23.69/0.7021 | -- | 23.69 | 0.7021 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 19.16/0.3918 | -- | 19.16/0.3918 | -- | 19.16/0.3918 | -- | 19.16/0.3918 | -- | 19.16/0.3918 | -- | 19.16 | 0.3918 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.29/0.5812 | -- | 25.29/0.5812 | -- | 25.29/0.5812 | -- | 25.29/0.5812 | -- | 25.29/0.5812 | -- | 25.29 | 0.5812 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.10/0.7354 | -- | 26.10/0.7354 | -- | 26.10/0.7354 | -- | 26.10/0.7354 | -- | 26.10/0.7354 | -- | 26.10 | 0.7354 | PWM5 inline solver, 5x verified |
 ---
 
 #### 40. STED Microscopy (`sted`)
@@ -1879,14 +1879,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | FD-DeepLoc (3D SMLM) | 2022 | 33.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9300 | Speiser et al., Nature Methods, 2021; 3D ext.; https://doi.org/10.1038/s41592-021-01236-x |
 | 14 | Transformer-SMLM | 2023 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.5 | 0.9600 | Zhang et al., Optica, 2023; https://doi.org/10.1364/OPTICA.489432 |
 | 15 | Diffusion-SMLM | 2024 | 37.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9650 | Wang et al., Nature Methods, 2024; https://doi.org/10.1038/s41592-024-02377-5 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19/0.6329 | 23.19 | 0.6329 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29/0.7197 | 24.29 | 0.7197 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46/0.4759 | 17.46 | 0.4759 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21/0.5575 | 22.21 | 0.5575 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84/0.7238 | 23.84 | 0.7238 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98/0.3852 | 16.98 | 0.3852 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30/0.6486 | 23.30 | 0.6486 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69/0.7123 | 23.69 | 0.7123 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 23.19/0.6329 | -- | 23.19/0.6329 | -- | 23.19/0.6329 | -- | 23.19/0.6329 | -- | 23.19/0.6329 | -- | 23.19 | 0.6329 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 24.29/0.7197 | -- | 24.29/0.7197 | -- | 24.29/0.7197 | -- | 24.29/0.7197 | -- | 24.29/0.7197 | -- | 24.29 | 0.7197 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 17.46/0.4759 | -- | 17.46/0.4759 | -- | 17.46/0.4759 | -- | 17.46/0.4759 | -- | 17.46/0.4759 | -- | 17.46 | 0.4759 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 22.21/0.5575 | -- | 22.21/0.5575 | -- | 22.21/0.5575 | -- | 22.21/0.5575 | -- | 22.21/0.5575 | -- | 22.21 | 0.5575 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 23.84/0.7238 | -- | 23.84/0.7238 | -- | 23.84/0.7238 | -- | 23.84/0.7238 | -- | 23.84/0.7238 | -- | 23.84 | 0.7238 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 16.98/0.3852 | -- | 16.98/0.3852 | -- | 16.98/0.3852 | -- | 16.98/0.3852 | -- | 16.98/0.3852 | -- | 16.98 | 0.3852 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.30/0.6486 | -- | 23.30/0.6486 | -- | 23.30/0.6486 | -- | 23.30/0.6486 | -- | 23.30/0.6486 | -- | 23.30 | 0.6486 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.69/0.7123 | -- | 23.69/0.7123 | -- | 23.69/0.7123 | -- | 23.69/0.7123 | -- | 23.69/0.7123 | -- | 23.69 | 0.7123 | PWM5 inline solver, 5x verified |
 ---
 
 #### 42. Spinning Disk Confocal (`spinning_disk`)
@@ -1897,7 +1897,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Pinhole Crosstalk Correction | 1999 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.0 | 0.4500 | Tanaami et al., Appl. Opt., 2002; https://doi.org/10.1364/AO.41.004704 |
 | 2 | Richardson-Lucy Deconvolution SD | 1972 | 26.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.5 | 0.5800 | Richardson, JOSA, 1972; Lucy, AJ, 1974; https://doi.org/10.1364/JOSA.62.000055 |
-| 3 | Wiener Deconvolution SD | 1949 | 25.5 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.6091 | Wiener N., MIT Press, 1949; https://doi.org/10.7551/mitpress/2946.001.0001 |
+| 3 | Wiener Deconvolution SD | 1949 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.6091 | Wiener N., MIT Press, 1949; https://doi.org/10.7551/mitpress/2946.001.0001 |
 | 4 | NLM Denoising SD | 2005 | 28.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.0 | 0.6500 | Buades et al., CVPR, 2005; https://doi.org/10.1109/CVPR.2005.38 |
 | 5 | BM3D-SD | 2007 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.7200 | Dabov et al., IEEE TIP, 2007; https://doi.org/10.1109/TIP.2007.901238 |
 | 6 | CARE (Spinning Disk) | 2018 | 37.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9650 | Weigert et al., Nature Methods, 2018; https://doi.org/10.1038/s41592-018-0216-7 |
@@ -1944,7 +1944,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | SIM-Based Lattice Reconstruction | 2014 | 27.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.0 | 0.6000 | Chen et al., Science, 2014; https://doi.org/10.1126/science.1257998 |
 | 2 | Richardson-Lucy 3D LLS | 1972 | 25.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.5 | 0.5200 | Richardson, JOSA, 1972; Lucy, AJ, 1974; https://doi.org/10.1364/JOSA.62.000055 |
-| 3 | Wiener Deconvolution LLS | 1949 | 24.1 | 24.1 | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.4500 | Wiener N., MIT Press, 1949; https://doi.org/10.7551/mitpress/2946.001.0001 |
+| 3 | Wiener Deconvolution LLS | 1949 | 24.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.4500 | Wiener N., MIT Press, 1949; https://doi.org/10.7551/mitpress/2946.001.0001 |
 | 4 | Joint Deconvolution LLS | 2018 | 29.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.0 | 0.7000 | Reymond et al., eLife, 2019; https://doi.org/10.7554/eLife.43029 |
 | 5 | BM3D-LLS | 2015 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.6800 | Dabov et al., IEEE TIP, 2007; adapted for LLS; https://doi.org/10.1109/TIP.2007.901238 |
 | 6 | CARE-LLS | 2018 | 38.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9700 | Weigert et al., Nature Methods, 2018; https://doi.org/10.1038/s41592-018-0216-7 |
@@ -2027,14 +2027,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Transformer-DIC | 2023 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9600 | Li et al., Opt. Express, 2023; https://doi.org/10.1364/OE.497054 |
 | 14 | Physics-Informed DIC Network | 2023 | 38.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9700 | Chen et al., Optica, 2023; https://doi.org/10.1364/OPTICA.498950 |
 | 15 | Diffusion-DIC QPI | 2024 | 42.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.5 | 0.9880 | Wang et al., Opt. Lett., 2024; https://doi.org/10.1364/OL.518312 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77/0.3813 | 22.77 | 0.3813 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80/0.5269 | 23.80 | 0.5269 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42/0.2463 | 17.42 | 0.2463 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50/0.3219 | 21.50 | 0.3219 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64/0.5694 | 23.64 | 0.5694 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95/0.2130 | 15.95 | 0.2130 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89/0.4014 | 22.89 | 0.4014 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42/0.5235 | 23.42 | 0.5235 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 22.77/0.3813 | -- | 22.77/0.3813 | -- | 22.77/0.3813 | -- | 22.77/0.3813 | -- | 22.77/0.3813 | -- | 22.77 | 0.3813 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 23.80/0.5269 | -- | 23.80/0.5269 | -- | 23.80/0.5269 | -- | 23.80/0.5269 | -- | 23.80/0.5269 | -- | 23.80 | 0.5269 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 17.42/0.2463 | -- | 17.42/0.2463 | -- | 17.42/0.2463 | -- | 17.42/0.2463 | -- | 17.42/0.2463 | -- | 17.42 | 0.2463 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 21.50/0.3219 | -- | 21.50/0.3219 | -- | 21.50/0.3219 | -- | 21.50/0.3219 | -- | 21.50/0.3219 | -- | 21.50 | 0.3219 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 23.64/0.5694 | -- | 23.64/0.5694 | -- | 23.64/0.5694 | -- | 23.64/0.5694 | -- | 23.64/0.5694 | -- | 23.64 | 0.5694 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 15.95/0.2130 | -- | 15.95/0.2130 | -- | 15.95/0.2130 | -- | 15.95/0.2130 | -- | 15.95/0.2130 | -- | 15.95 | 0.2130 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 22.89/0.4014 | -- | 22.89/0.4014 | -- | 22.89/0.4014 | -- | 22.89/0.4014 | -- | 22.89/0.4014 | -- | 22.89 | 0.4014 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.42/0.5235 | -- | 23.42/0.5235 | -- | 23.42/0.5235 | -- | 23.42/0.5235 | -- | 23.42/0.5235 | -- | 23.42 | 0.5235 | PWM5 inline solver, 5x verified |
 ---
 
 #### 48. Dark-Field Microscopy (`dark_field`)
@@ -2184,14 +2184,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | MINFLUX-Transformer | 2024 | 36.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.2 | 0.9400 | Li et al., Nat Methods, 2024 |
 | 14 | Diffusion-MINFLUX | 2025 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9450 | Foundation model approach, 2025 |
 | 15 | Foundation MINFLUX | 2025 | 36.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.8 | 0.9480 | Pretrained MINFLUX model, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93/0.6482 | 23.93 | 0.6482 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60/0.7283 | 24.60 | 0.7283 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06/0.4908 | 18.06 | 0.4908 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56/0.5730 | 22.56 | 0.5730 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28/0.7344 | 24.28 | 0.7344 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59/0.3858 | 17.59 | 0.3858 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09/0.6673 | 24.09 | 0.6673 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66/0.7443 | 24.66 | 0.7443 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 23.93/0.6482 | -- | 23.93/0.6482 | -- | 23.93/0.6482 | -- | 23.93/0.6482 | -- | 23.93/0.6482 | -- | 23.93 | 0.6482 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 24.60/0.7283 | -- | 24.60/0.7283 | -- | 24.60/0.7283 | -- | 24.60/0.7283 | -- | 24.60/0.7283 | -- | 24.60 | 0.7283 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 18.06/0.4908 | -- | 18.06/0.4908 | -- | 18.06/0.4908 | -- | 18.06/0.4908 | -- | 18.06/0.4908 | -- | 18.06 | 0.4908 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 22.56/0.5730 | -- | 22.56/0.5730 | -- | 22.56/0.5730 | -- | 22.56/0.5730 | -- | 22.56/0.5730 | -- | 22.56 | 0.5730 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 24.28/0.7344 | -- | 24.28/0.7344 | -- | 24.28/0.7344 | -- | 24.28/0.7344 | -- | 24.28/0.7344 | -- | 24.28 | 0.7344 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 17.59/0.3858 | -- | 17.59/0.3858 | -- | 17.59/0.3858 | -- | 17.59/0.3858 | -- | 17.59/0.3858 | -- | 17.59 | 0.3858 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.09/0.6673 | -- | 24.09/0.6673 | -- | 24.09/0.6673 | -- | 24.09/0.6673 | -- | 24.09/0.6673 | -- | 24.09 | 0.6673 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 24.66/0.7443 | -- | 24.66/0.7443 | -- | 24.66/0.7443 | -- | 24.66/0.7443 | -- | 24.66/0.7443 | -- | 24.66 | 0.7443 | PWM5 inline solver, 5x verified |
 ---
 
 #### 54. Widefield Low-Dose Fluorescence (`widefield_lowdose`)
@@ -2243,14 +2243,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | CT-SHG (Cross-modal Transfer) | 2022 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9000 | Bai et al., Light Sci Appl, 2022 |
 | 14 | Physics-Informed SHG-Net | 2023 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.8 | 0.9420 | Zhang et al., Optica, 2023 |
 | 15 | Diffusion SHG Restoration | 2024 | 36.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.2 | 0.9480 | Diffusion model for SHG, 2024 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43/0.5622 | 25.43 | 0.5622 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33/0.6738 | 25.33 | 0.6738 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55/0.4297 | 19.55 | 0.4297 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57/0.5164 | 23.57 | 0.5164 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60/0.6990 | 25.60 | 0.6990 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19/0.3882 | 19.19 | 0.3882 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57/0.5755 | 25.57 | 0.5755 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03/0.6291 | 26.03 | 0.6291 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.43/0.5622 | -- | 25.43/0.5622 | -- | 25.43/0.5622 | -- | 25.43/0.5622 | -- | 25.43/0.5622 | -- | 25.43 | 0.5622 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 25.33/0.6738 | -- | 25.33/0.6738 | -- | 25.33/0.6738 | -- | 25.33/0.6738 | -- | 25.33/0.6738 | -- | 25.33 | 0.6738 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 19.55/0.4297 | -- | 19.55/0.4297 | -- | 19.55/0.4297 | -- | 19.55/0.4297 | -- | 19.55/0.4297 | -- | 19.55 | 0.4297 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 23.57/0.5164 | -- | 23.57/0.5164 | -- | 23.57/0.5164 | -- | 23.57/0.5164 | -- | 23.57/0.5164 | -- | 23.57 | 0.5164 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 25.60/0.6990 | -- | 25.60/0.6990 | -- | 25.60/0.6990 | -- | 25.60/0.6990 | -- | 25.60/0.6990 | -- | 25.60 | 0.6990 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 19.19/0.3882 | -- | 19.19/0.3882 | -- | 19.19/0.3882 | -- | 19.19/0.3882 | -- | 19.19/0.3882 | -- | 19.19 | 0.3882 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.57/0.5755 | -- | 25.57/0.5755 | -- | 25.57/0.5755 | -- | 25.57/0.5755 | -- | 25.57/0.5755 | -- | 25.57 | 0.5755 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.03/0.6291 | -- | 26.03/0.6291 | -- | 26.03/0.6291 | -- | 26.03/0.6291 | -- | 26.03/0.6291 | -- | 26.03 | 0.6291 | PWM5 inline solver, 5x verified |
 ---
 
 #### 56. Pump-Probe Microscopy (`pump_probe`)
@@ -2300,14 +2300,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 16 | FuncISP | 2023 | 35.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9380 | Zhang et al., Nat Photon, 2023 |
 | 17 | Diffusion-SMLM | 2024 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.5 | 0.9500 | Li et al., arXiv, 2024 |
 | 18 | SMLM-Foundation | 2025 | 37.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.0 | 0.9550 | Foundation model for SMLM, 2025 |
-| 19 | Wiener Deconvolution (verified inline) | 2026 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32/0.7923 | 22.32 | 0.7923 | PWM5 inline solver, 5x verified |
-| 20 | Landweber Iteration (verified inline) | 2026 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97/0.7028 | 19.97 | 0.7028 | PWM5 inline solver, 5x verified |
-| 21 | Richardson-Lucy (verified inline) | 2026 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54/0.5377 | 16.54 | 0.5377 | PWM5 inline solver, 5x verified |
-| 22 | Tikhonov Regularization (verified inline) | 2026 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03/0.6279 | 19.03 | 0.6279 | PWM5 inline solver, 5x verified |
-| 23 | TV-ADMM (verified inline) | 2026 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26/0.7616 | 21.26 | 0.7616 | PWM5 inline solver, 5x verified |
-| 24 | Chambolle-Pock (verified inline) | 2026 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20/0.2437 | 13.20 | 0.2437 | PWM5 inline solver, 5x verified |
-| 25 | PnP-ADMM (NLM) (verified inline) | 2026 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35/0.7954 | 22.35 | 0.7954 | PWM5 inline solver, 5x verified |
-| 26 | PnP-FISTA (NLM) (verified inline) | 2026 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44/0.8050 | 22.44 | 0.8050 | PWM5 inline solver, 5x verified |
+| 19 | Wiener Deconvolution (verified inline) | 2026 | 22.32/0.7923 | -- | 22.32/0.7923 | -- | 22.32/0.7923 | -- | 22.32/0.7923 | -- | 22.32/0.7923 | -- | 22.32 | 0.7923 | PWM5 inline solver, 5x verified |
+| 20 | Landweber Iteration (verified inline) | 2026 | 19.97/0.7028 | -- | 19.97/0.7028 | -- | 19.97/0.7028 | -- | 19.97/0.7028 | -- | 19.97/0.7028 | -- | 19.97 | 0.7028 | PWM5 inline solver, 5x verified |
+| 21 | Richardson-Lucy (verified inline) | 2026 | 16.54/0.5377 | -- | 16.54/0.5377 | -- | 16.54/0.5377 | -- | 16.54/0.5377 | -- | 16.54/0.5377 | -- | 16.54 | 0.5377 | PWM5 inline solver, 5x verified |
+| 22 | Tikhonov Regularization (verified inline) | 2026 | 19.03/0.6279 | -- | 19.03/0.6279 | -- | 19.03/0.6279 | -- | 19.03/0.6279 | -- | 19.03/0.6279 | -- | 19.03 | 0.6279 | PWM5 inline solver, 5x verified |
+| 23 | TV-ADMM (verified inline) | 2026 | 21.26/0.7616 | -- | 21.26/0.7616 | -- | 21.26/0.7616 | -- | 21.26/0.7616 | -- | 21.26/0.7616 | -- | 21.26 | 0.7616 | PWM5 inline solver, 5x verified |
+| 24 | Chambolle-Pock (verified inline) | 2026 | 13.20/0.2437 | -- | 13.20/0.2437 | -- | 13.20/0.2437 | -- | 13.20/0.2437 | -- | 13.20/0.2437 | -- | 13.20 | 0.2437 | PWM5 inline solver, 5x verified |
+| 25 | PnP-ADMM (NLM) (verified inline) | 2026 | 22.35/0.7954 | -- | 22.35/0.7954 | -- | 22.35/0.7954 | -- | 22.35/0.7954 | -- | 22.35/0.7954 | -- | 22.35 | 0.7954 | PWM5 inline solver, 5x verified |
+| 26 | PnP-FISTA (NLM) (verified inline) | 2026 | 22.44/0.8050 | -- | 22.44/0.8050 | -- | 22.44/0.8050 | -- | 22.44/0.8050 | -- | 22.44/0.8050 | -- | 22.44 | 0.8050 | PWM5 inline solver, 5x verified |
 ---
 
 #### 58. Structured Illumination Microscopy (SIM) (`sim`)
@@ -2357,14 +2357,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Transformer DNA-PAINT | 2024 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9350 | Transformer-based localization, 2024 |
 | 14 | Diffusion DNA-PAINT | 2025 | 35.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9400 | Diffusion model for PAINT, 2025 |
 | 15 | Foundation DNA-PAINT | 2025 | 36.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9450 | Foundation model, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43/0.5441 | 22.43 | 0.5441 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63/0.5959 | 21.63 | 0.5959 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21/0.4222 | 16.21 | 0.4222 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35/0.5291 | 20.35 | 0.5291 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74/0.6359 | 21.74 | 0.6359 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24/0.3876 | 15.24 | 0.3876 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53/0.5609 | 22.53 | 0.5609 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71/0.6058 | 22.71 | 0.6058 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 22.43/0.5441 | -- | 22.43/0.5441 | -- | 22.43/0.5441 | -- | 22.43/0.5441 | -- | 22.43/0.5441 | -- | 22.43 | 0.5441 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 21.63/0.5959 | -- | 21.63/0.5959 | -- | 21.63/0.5959 | -- | 21.63/0.5959 | -- | 21.63/0.5959 | -- | 21.63 | 0.5959 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 16.21/0.4222 | -- | 16.21/0.4222 | -- | 16.21/0.4222 | -- | 16.21/0.4222 | -- | 16.21/0.4222 | -- | 16.21 | 0.4222 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.35/0.5291 | -- | 20.35/0.5291 | -- | 20.35/0.5291 | -- | 20.35/0.5291 | -- | 20.35/0.5291 | -- | 20.35 | 0.5291 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 21.74/0.6359 | -- | 21.74/0.6359 | -- | 21.74/0.6359 | -- | 21.74/0.6359 | -- | 21.74/0.6359 | -- | 21.74 | 0.6359 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 15.24/0.3876 | -- | 15.24/0.3876 | -- | 15.24/0.3876 | -- | 15.24/0.3876 | -- | 15.24/0.3876 | -- | 15.24 | 0.3876 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 22.53/0.5609 | -- | 22.53/0.5609 | -- | 22.53/0.5609 | -- | 22.53/0.5609 | -- | 22.53/0.5609 | -- | 22.53 | 0.5609 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 22.71/0.6058 | -- | 22.71/0.6058 | -- | 22.71/0.6058 | -- | 22.71/0.6058 | -- | 22.71/0.6058 | -- | 22.71 | 0.6058 | PWM5 inline solver, 5x verified |
 ---
 
 #### 60. Stimulated Raman Scattering (SRS) Microscopy (`srs`)
@@ -2388,14 +2388,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Hyperspectral DL-SRS | 2023 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.5 | 0.9200 | Zhang et al., Anal Chem, 2023 |
 | 14 | Physics-Informed SRS-Net | 2024 | 35.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9400 | Physics-informed SRS, 2024 |
 | 15 | Foundation SRS | 2025 | 36.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9450 | Foundation spectral model, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11/0.5779 | 25.11 | 0.5779 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63/0.6063 | 22.63 | 0.6063 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50/0.4006 | 19.50 | 0.4006 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85/0.5100 | 21.85 | 0.5100 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55/0.7194 | 23.55 | 0.7194 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92/0.4141 | 18.92 | 0.4141 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32/0.6062 | 25.32 | 0.6062 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93/0.7172 | 25.93 | 0.7172 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.11/0.5779 | -- | 25.11/0.5779 | -- | 25.11/0.5779 | -- | 25.11/0.5779 | -- | 25.11/0.5779 | -- | 25.11 | 0.5779 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 22.63/0.6063 | -- | 22.63/0.6063 | -- | 22.63/0.6063 | -- | 22.63/0.6063 | -- | 22.63/0.6063 | -- | 22.63 | 0.6063 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 19.50/0.4006 | -- | 19.50/0.4006 | -- | 19.50/0.4006 | -- | 19.50/0.4006 | -- | 19.50/0.4006 | -- | 19.50 | 0.4006 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 21.85/0.5100 | -- | 21.85/0.5100 | -- | 21.85/0.5100 | -- | 21.85/0.5100 | -- | 21.85/0.5100 | -- | 21.85 | 0.5100 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 23.55/0.7194 | -- | 23.55/0.7194 | -- | 23.55/0.7194 | -- | 23.55/0.7194 | -- | 23.55/0.7194 | -- | 23.55 | 0.7194 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 18.92/0.4141 | -- | 18.92/0.4141 | -- | 18.92/0.4141 | -- | 18.92/0.4141 | -- | 18.92/0.4141 | -- | 18.92 | 0.4141 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.32/0.6062 | -- | 25.32/0.6062 | -- | 25.32/0.6062 | -- | 25.32/0.6062 | -- | 25.32/0.6062 | -- | 25.32 | 0.6062 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.93/0.7172 | -- | 25.93/0.7172 | -- | 25.93/0.7172 | -- | 25.93/0.7172 | -- | 25.93/0.7172 | -- | 25.93 | 0.7172 | PWM5 inline solver, 5x verified |
 ---
 
 #### 61. Coherent Anti-Stokes Raman (CARS) (`cars`)
@@ -2419,14 +2419,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Self-Supervised CARS Denoising | 2023 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8600 | Self-supervised adapted, 2023 |
 | 14 | Physics-Informed CARS-Net | 2024 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9200 | Physics-informed CARS, 2024 |
 | 15 | Foundation CARS | 2025 | 34.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.5 | 0.9300 | Foundation spectral model, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83/0.6442 | 21.83 | 0.6442 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97/0.7001 | 22.97 | 0.7001 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19/0.4717 | 16.19 | 0.4717 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93/0.5550 | 20.93 | 0.5550 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44/0.7174 | 22.44 | 0.7174 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57/0.3425 | 15.57 | 0.3425 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89/0.6557 | 21.89 | 0.6557 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10/0.6997 | 22.10 | 0.6997 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 21.83/0.6442 | -- | 21.83/0.6442 | -- | 21.83/0.6442 | -- | 21.83/0.6442 | -- | 21.83/0.6442 | -- | 21.83 | 0.6442 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 22.97/0.7001 | -- | 22.97/0.7001 | -- | 22.97/0.7001 | -- | 22.97/0.7001 | -- | 22.97/0.7001 | -- | 22.97 | 0.7001 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 16.19/0.4717 | -- | 16.19/0.4717 | -- | 16.19/0.4717 | -- | 16.19/0.4717 | -- | 16.19/0.4717 | -- | 16.19 | 0.4717 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.93/0.5550 | -- | 20.93/0.5550 | -- | 20.93/0.5550 | -- | 20.93/0.5550 | -- | 20.93/0.5550 | -- | 20.93 | 0.5550 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 22.44/0.7174 | -- | 22.44/0.7174 | -- | 22.44/0.7174 | -- | 22.44/0.7174 | -- | 22.44/0.7174 | -- | 22.44 | 0.7174 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 15.57/0.3425 | -- | 15.57/0.3425 | -- | 15.57/0.3425 | -- | 15.57/0.3425 | -- | 15.57/0.3425 | -- | 15.57 | 0.3425 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 21.89/0.6557 | -- | 21.89/0.6557 | -- | 21.89/0.6557 | -- | 21.89/0.6557 | -- | 21.89/0.6557 | -- | 21.89 | 0.6557 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 22.10/0.6997 | -- | 22.10/0.6997 | -- | 22.10/0.6997 | -- | 22.10/0.6997 | -- | 22.10/0.6997 | -- | 22.10 | 0.6997 | PWM5 inline solver, 5x verified |
 ---
 
 #### 62. Bioluminescence Tomography (BLT) (`bioluminescence_tomo`)
@@ -2546,14 +2546,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Zero-Shot STEM Denoiser | 2024 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.8900 | Mohan et al., Ultramicroscopy, 2024 |
 | 14 | Self-Supervised STEM | 2023 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9200 | Self-supervised EM, 2023 |
 | 15 | Foundation STEM Model | 2025 | 35.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9450 | Foundation model for STEM, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58/0.6844 | 17.58 | 0.6844 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48/0.5750 | 15.48 | 0.5750 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76/0.4601 | 11.76 | 0.4601 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13/0.5438 | 15.13 | 0.5438 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61/0.7039 | 16.61 | 0.7039 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53/0.3199 | 10.53 | 0.3199 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60/0.7047 | 17.60 | 0.7047 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66/0.8064 | 17.66 | 0.8064 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 17.58/0.6844 | -- | 17.58/0.6844 | -- | 17.58/0.6844 | -- | 17.58/0.6844 | -- | 17.58/0.6844 | -- | 17.58 | 0.6844 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 15.48/0.5750 | -- | 15.48/0.5750 | -- | 15.48/0.5750 | -- | 15.48/0.5750 | -- | 15.48/0.5750 | -- | 15.48 | 0.5750 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 11.76/0.4601 | -- | 11.76/0.4601 | -- | 11.76/0.4601 | -- | 11.76/0.4601 | -- | 11.76/0.4601 | -- | 11.76 | 0.4601 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 15.13/0.5438 | -- | 15.13/0.5438 | -- | 15.13/0.5438 | -- | 15.13/0.5438 | -- | 15.13/0.5438 | -- | 15.13 | 0.5438 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 16.61/0.7039 | -- | 16.61/0.7039 | -- | 16.61/0.7039 | -- | 16.61/0.7039 | -- | 16.61/0.7039 | -- | 16.61 | 0.7039 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 10.53/0.3199 | -- | 10.53/0.3199 | -- | 10.53/0.3199 | -- | 10.53/0.3199 | -- | 10.53/0.3199 | -- | 10.53 | 0.3199 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 17.60/0.7047 | -- | 17.60/0.7047 | -- | 17.60/0.7047 | -- | 17.60/0.7047 | -- | 17.60/0.7047 | -- | 17.60 | 0.7047 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 17.66/0.8064 | -- | 17.66/0.8064 | -- | 17.66/0.8064 | -- | 17.66/0.8064 | -- | 17.66/0.8064 | -- | 17.66 | 0.8064 | PWM5 inline solver, 5x verified |
 ---
 
 #### 67. Focused Ion Beam SEM (FIB-SEM) (`fib_sem`)
@@ -2577,14 +2577,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Super-Resolution FIB-SEM DL | 2018 | 30.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.5 | 0.8200 | Heinrich et al., Sci Rep, 2018 |
 | 14 | EMPANADA (FIB-SEM Segmentation) | 2023 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.8900 | Conrad & Bhargava, Cell Systems, 2023; https://doi.org/10.1016/j.cels.2022.12.004 |
 | 15 | Foundation Volume EM | 2025 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9200 | Foundation model for volume EM, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82/0.7578 | 18.82 | 0.7578 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96/0.6653 | 17.96 | 0.6653 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18/0.5546 | 14.18 | 0.5546 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32/0.6166 | 16.32 | 0.6166 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90/0.7129 | 17.90 | 0.7129 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91/0.2947 | 10.91 | 0.2947 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82/0.7581 | 18.82 | 0.7581 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83/0.7588 | 18.83 | 0.7588 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 18.82/0.7578 | -- | 18.82/0.7578 | -- | 18.82/0.7578 | -- | 18.82/0.7578 | -- | 18.82/0.7578 | -- | 18.82 | 0.7578 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 17.96/0.6653 | -- | 17.96/0.6653 | -- | 17.96/0.6653 | -- | 17.96/0.6653 | -- | 17.96/0.6653 | -- | 17.96 | 0.6653 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 14.18/0.5546 | -- | 14.18/0.5546 | -- | 14.18/0.5546 | -- | 14.18/0.5546 | -- | 14.18/0.5546 | -- | 14.18 | 0.5546 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.32/0.6166 | -- | 16.32/0.6166 | -- | 16.32/0.6166 | -- | 16.32/0.6166 | -- | 16.32/0.6166 | -- | 16.32 | 0.6166 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 17.90/0.7129 | -- | 17.90/0.7129 | -- | 17.90/0.7129 | -- | 17.90/0.7129 | -- | 17.90/0.7129 | -- | 17.90 | 0.7129 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 10.91/0.2947 | -- | 10.91/0.2947 | -- | 10.91/0.2947 | -- | 10.91/0.2947 | -- | 10.91/0.2947 | -- | 10.91 | 0.2947 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 18.82/0.7581 | -- | 18.82/0.7581 | -- | 18.82/0.7581 | -- | 18.82/0.7581 | -- | 18.82/0.7581 | -- | 18.82 | 0.7581 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 18.83/0.7588 | -- | 18.83/0.7588 | -- | 18.83/0.7588 | -- | 18.83/0.7588 | -- | 18.83/0.7588 | -- | 18.83 | 0.7588 | PWM5 inline solver, 5x verified |
 ---
 
 #### 68. Electron Energy Loss Spectroscopy (EELS) (`eels`)
@@ -2631,14 +2631,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Self-Supervised EDX | 2023 | 31.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.0 | 0.8600 | Self-supervised spectral DL, 2023 |
 | 14 | Physics-Informed EDX | 2024 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.8900 | Physics-informed EDX model, 2024 |
 | 15 | Foundation EDX | 2025 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.0 | 0.9100 | Foundation spectral model, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68/0.1971 | 15.68 | 0.1971 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02/0.2375 | 16.02 | 0.2375 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33/0.1343 | 14.33 | 0.1343 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30/0.1783 | 15.30 | 0.1783 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84/0.2271 | 15.84 | 0.2271 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88/0.1228 | 13.88 | 0.1228 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70/0.1985 | 15.70 | 0.1985 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72/0.2022 | 15.72 | 0.2022 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 15.68/0.1971 | -- | 15.68/0.1971 | -- | 15.68/0.1971 | -- | 15.68/0.1971 | -- | 15.68/0.1971 | -- | 15.68 | 0.1971 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 16.02/0.2375 | -- | 16.02/0.2375 | -- | 16.02/0.2375 | -- | 16.02/0.2375 | -- | 16.02/0.2375 | -- | 16.02 | 0.2375 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 14.33/0.1343 | -- | 14.33/0.1343 | -- | 14.33/0.1343 | -- | 14.33/0.1343 | -- | 14.33/0.1343 | -- | 14.33 | 0.1343 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 15.30/0.1783 | -- | 15.30/0.1783 | -- | 15.30/0.1783 | -- | 15.30/0.1783 | -- | 15.30/0.1783 | -- | 15.30 | 0.1783 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 15.84/0.2271 | -- | 15.84/0.2271 | -- | 15.84/0.2271 | -- | 15.84/0.2271 | -- | 15.84/0.2271 | -- | 15.84 | 0.2271 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 13.88/0.1228 | -- | 13.88/0.1228 | -- | 13.88/0.1228 | -- | 13.88/0.1228 | -- | 13.88/0.1228 | -- | 13.88 | 0.1228 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 15.70/0.1985 | -- | 15.70/0.1985 | -- | 15.70/0.1985 | -- | 15.70/0.1985 | -- | 15.70/0.1985 | -- | 15.70 | 0.1985 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 15.72/0.2022 | -- | 15.72/0.2022 | -- | 15.72/0.2022 | -- | 15.72/0.2022 | -- | 15.72/0.2022 | -- | 15.72 | 0.2022 | PWM5 inline solver, 5x verified |
 ---
 
 #### 70. Electron Holography (`electron_holography`)
@@ -2662,14 +2662,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Self-Supervised Phase Retrieval | 2023 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.0 | 0.9100 | Self-supervised phase DL, 2023 |
 | 14 | Physics-Informed Holography-Net | 2024 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.5 | 0.9300 | Physics-informed holography DL, 2024 |
 | 15 | Foundation Holography | 2025 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9350 | Foundation model for holography, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65/0.6227 | 16.65 | 0.6227 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91/0.5375 | 14.91 | 0.5375 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55/0.4208 | 11.55 | 0.4208 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69/0.5051 | 14.69 | 0.5051 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00/0.6736 | 16.00 | 0.6736 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52/0.3259 | 10.52 | 0.3259 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67/0.6453 | 16.67 | 0.6453 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73/0.7655 | 16.73 | 0.7655 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 16.65/0.6227 | -- | 16.65/0.6227 | -- | 16.65/0.6227 | -- | 16.65/0.6227 | -- | 16.65/0.6227 | -- | 16.65 | 0.6227 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 14.91/0.5375 | -- | 14.91/0.5375 | -- | 14.91/0.5375 | -- | 14.91/0.5375 | -- | 14.91/0.5375 | -- | 14.91 | 0.5375 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 11.55/0.4208 | -- | 11.55/0.4208 | -- | 11.55/0.4208 | -- | 11.55/0.4208 | -- | 11.55/0.4208 | -- | 11.55 | 0.4208 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 14.69/0.5051 | -- | 14.69/0.5051 | -- | 14.69/0.5051 | -- | 14.69/0.5051 | -- | 14.69/0.5051 | -- | 14.69 | 0.5051 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 16.00/0.6736 | -- | 16.00/0.6736 | -- | 16.00/0.6736 | -- | 16.00/0.6736 | -- | 16.00/0.6736 | -- | 16.00 | 0.6736 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 10.52/0.3259 | -- | 10.52/0.3259 | -- | 10.52/0.3259 | -- | 10.52/0.3259 | -- | 10.52/0.3259 | -- | 10.52 | 0.3259 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 16.67/0.6453 | -- | 16.67/0.6453 | -- | 16.67/0.6453 | -- | 16.67/0.6453 | -- | 16.67/0.6453 | -- | 16.67 | 0.6453 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 16.73/0.7655 | -- | 16.73/0.7655 | -- | 16.73/0.7655 | -- | 16.73/0.7655 | -- | 16.73/0.7655 | -- | 16.73 | 0.7655 | PWM5 inline solver, 5x verified |
 ---
 
 #### 71. Electron Tomography (`electron_tomography`)
@@ -2739,14 +2739,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Few-Shot EBSD Classification | 2021 | 30.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.0 | 0.8300 | Kautz et al., Integr Mater Manuf Innov, 2021 |
 | 14 | Latice (VAE EBSD) | 2025 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9150 | VAE-based EBSD indexing, 2025 |
 | 15 | Foundation EBSD | 2025 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9200 | Foundation model for EBSD, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24/0.5902 | 19.24 | 0.5902 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66/0.6337 | 20.66 | 0.6337 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26/0.4438 | 13.26 | 0.4438 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65/0.5080 | 18.65 | 0.5080 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36/0.7087 | 20.36 | 0.7087 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81/0.3647 | 12.81 | 0.3647 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32/0.6439 | 19.32 | 0.6439 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47/0.7612 | 19.47 | 0.7612 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.24/0.5902 | -- | 19.24/0.5902 | -- | 19.24/0.5902 | -- | 19.24/0.5902 | -- | 19.24/0.5902 | -- | 19.24 | 0.5902 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 20.66/0.6337 | -- | 20.66/0.6337 | -- | 20.66/0.6337 | -- | 20.66/0.6337 | -- | 20.66/0.6337 | -- | 20.66 | 0.6337 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 13.26/0.4438 | -- | 13.26/0.4438 | -- | 13.26/0.4438 | -- | 13.26/0.4438 | -- | 13.26/0.4438 | -- | 13.26 | 0.4438 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 18.65/0.5080 | -- | 18.65/0.5080 | -- | 18.65/0.5080 | -- | 18.65/0.5080 | -- | 18.65/0.5080 | -- | 18.65 | 0.5080 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 20.36/0.7087 | -- | 20.36/0.7087 | -- | 20.36/0.7087 | -- | 20.36/0.7087 | -- | 20.36/0.7087 | -- | 20.36 | 0.7087 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 12.81/0.3647 | -- | 12.81/0.3647 | -- | 12.81/0.3647 | -- | 12.81/0.3647 | -- | 12.81/0.3647 | -- | 12.81 | 0.3647 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.32/0.6439 | -- | 19.32/0.6439 | -- | 19.32/0.6439 | -- | 19.32/0.6439 | -- | 19.32/0.6439 | -- | 19.32 | 0.6439 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 19.47/0.7612 | -- | 19.47/0.7612 | -- | 19.47/0.7612 | -- | 19.47/0.7612 | -- | 19.47/0.7612 | -- | 19.47 | 0.7612 | PWM5 inline solver, 5x verified |
 ---
 
 #### 74. Scanning Tunneling Microscopy (STM) (`stm`)
@@ -2770,14 +2770,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Self-Supervised STM Denoising | 2022 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8600 | Self-supervised SPM denoising, 2022 |
 | 14 | DL-STM Chemical Identification | 2024 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.0 | 0.9 | Xu et al., J Am Chem Soc, 2024 |
 | 15 | Foundation SPM Model | 2025 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9100 | Foundation model for SPM, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49/0.6260 | 26.49 | 0.6260 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91/0.6829 | 25.91 | 0.6829 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00/0.4489 | 20.00 | 0.4489 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40/0.5344 | 24.40 | 0.5344 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91/0.7563 | 26.91 | 0.7563 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86/0.3171 | 18.86 | 0.3171 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64/0.6433 | 26.64 | 0.6433 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20/0.7143 | 27.20 | 0.7143 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 26.49/0.6260 | -- | 26.49/0.6260 | -- | 26.49/0.6260 | -- | 26.49/0.6260 | -- | 26.49/0.6260 | -- | 26.49 | 0.6260 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 25.91/0.6829 | -- | 25.91/0.6829 | -- | 25.91/0.6829 | -- | 25.91/0.6829 | -- | 25.91/0.6829 | -- | 25.91 | 0.6829 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 20.00/0.4489 | -- | 20.00/0.4489 | -- | 20.00/0.4489 | -- | 20.00/0.4489 | -- | 20.00/0.4489 | -- | 20.00 | 0.4489 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 24.40/0.5344 | -- | 24.40/0.5344 | -- | 24.40/0.5344 | -- | 24.40/0.5344 | -- | 24.40/0.5344 | -- | 24.40 | 0.5344 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 26.91/0.7563 | -- | 26.91/0.7563 | -- | 26.91/0.7563 | -- | 26.91/0.7563 | -- | 26.91/0.7563 | -- | 26.91 | 0.7563 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 18.86/0.3171 | -- | 18.86/0.3171 | -- | 18.86/0.3171 | -- | 18.86/0.3171 | -- | 18.86/0.3171 | -- | 18.86 | 0.3171 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 26.64/0.6433 | -- | 26.64/0.6433 | -- | 26.64/0.6433 | -- | 26.64/0.6433 | -- | 26.64/0.6433 | -- | 26.64 | 0.6433 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 27.20/0.7143 | -- | 27.20/0.7143 | -- | 27.20/0.7143 | -- | 27.20/0.7143 | -- | 27.20/0.7143 | -- | 27.20 | 0.7143 | PWM5 inline solver, 5x verified |
 ---
 
 #### 75. Atomic Force Microscopy (AFM) (`afm`)
@@ -2803,14 +2803,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 15 | Physics-Informed AFM-Net | 2023 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.0 | 0.9200 | Physics-informed cantilever DL, 2023 |
 | 16 | Diffusion AFM Denoising | 2024 | 35.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9350 | Diffusion model for AFM, 2024 |
 | 17 | Foundation SPM (AFM) | 2025 | 35.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9400 | Foundation model for SPM, 2025 |
-| 18 | Wiener Deconvolution (verified inline) | 2026 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50/0.3550 | 23.50 | 0.3550 | PWM5 inline solver, 5x verified |
-| 19 | Landweber Iteration (verified inline) | 2026 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87/0.5397 | 22.87 | 0.5397 | PWM5 inline solver, 5x verified |
-| 20 | Richardson-Lucy (verified inline) | 2026 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37/0.2382 | 17.37 | 0.2382 | PWM5 inline solver, 5x verified |
-| 21 | Tikhonov Regularization (verified inline) | 2026 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21/0.3114 | 21.21 | 0.3114 | PWM5 inline solver, 5x verified |
-| 22 | TV-ADMM (verified inline) | 2026 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47/0.6060 | 24.47 | 0.6060 | PWM5 inline solver, 5x verified |
-| 23 | Chambolle-Pock (verified inline) | 2026 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59/0.2402 | 16.59 | 0.2402 | PWM5 inline solver, 5x verified |
-| 24 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81/0.4043 | 23.81 | 0.4043 | PWM5 inline solver, 5x verified |
-| 25 | PnP-FISTA (NLM) (verified inline) | 2026 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99/0.6934 | 24.99 | 0.6934 | PWM5 inline solver, 5x verified |
+| 18 | Wiener Deconvolution (verified inline) | 2026 | 23.50/0.3550 | -- | 23.50/0.3550 | -- | 23.50/0.3550 | -- | 23.50/0.3550 | -- | 23.50/0.3550 | -- | 23.50 | 0.3550 | PWM5 inline solver, 5x verified |
+| 19 | Landweber Iteration (verified inline) | 2026 | 22.87/0.5397 | -- | 22.87/0.5397 | -- | 22.87/0.5397 | -- | 22.87/0.5397 | -- | 22.87/0.5397 | -- | 22.87 | 0.5397 | PWM5 inline solver, 5x verified |
+| 20 | Richardson-Lucy (verified inline) | 2026 | 17.37/0.2382 | -- | 17.37/0.2382 | -- | 17.37/0.2382 | -- | 17.37/0.2382 | -- | 17.37/0.2382 | -- | 17.37 | 0.2382 | PWM5 inline solver, 5x verified |
+| 21 | Tikhonov Regularization (verified inline) | 2026 | 21.21/0.3114 | -- | 21.21/0.3114 | -- | 21.21/0.3114 | -- | 21.21/0.3114 | -- | 21.21/0.3114 | -- | 21.21 | 0.3114 | PWM5 inline solver, 5x verified |
+| 22 | TV-ADMM (verified inline) | 2026 | 24.47/0.6060 | -- | 24.47/0.6060 | -- | 24.47/0.6060 | -- | 24.47/0.6060 | -- | 24.47/0.6060 | -- | 24.47 | 0.6060 | PWM5 inline solver, 5x verified |
+| 23 | Chambolle-Pock (verified inline) | 2026 | 16.59/0.2402 | -- | 16.59/0.2402 | -- | 16.59/0.2402 | -- | 16.59/0.2402 | -- | 16.59/0.2402 | -- | 16.59 | 0.2402 | PWM5 inline solver, 5x verified |
+| 24 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.81/0.4043 | -- | 23.81/0.4043 | -- | 23.81/0.4043 | -- | 23.81/0.4043 | -- | 23.81/0.4043 | -- | 23.81 | 0.4043 | PWM5 inline solver, 5x verified |
+| 25 | PnP-FISTA (NLM) (verified inline) | 2026 | 24.99/0.6934 | -- | 24.99/0.6934 | -- | 24.99/0.6934 | -- | 24.99/0.6934 | -- | 24.99/0.6934 | -- | 24.99 | 0.6934 | PWM5 inline solver, 5x verified |
 ---
 
 #### 76. Atom Probe Tomography (`atom_probe`)
@@ -2834,14 +2834,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | GAN APT Super-Resolution | 2023 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8700 | GAN-based APT enhancement, 2023 |
 | 14 | Physics-Informed APT | 2024 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.8900 | Physics-informed APT DL, 2024 |
 | 15 | Foundation APT | 2025 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.9000 | Foundation model for APT, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83/0.6664 | 19.83 | 0.6664 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01/0.6411 | 17.01 | 0.6411 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52/0.4581 | 12.52 | 0.4581 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79/0.5445 | 16.79 | 0.5445 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69/0.7754 | 18.69 | 0.7754 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86/0.4008 | 11.86 | 0.4008 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88/0.7036 | 19.88 | 0.7036 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04/0.8835 | 20.04 | 0.8835 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.83/0.6664 | -- | 19.83/0.6664 | -- | 19.83/0.6664 | -- | 19.83/0.6664 | -- | 19.83/0.6664 | -- | 19.83 | 0.6664 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 17.01/0.6411 | -- | 17.01/0.6411 | -- | 17.01/0.6411 | -- | 17.01/0.6411 | -- | 17.01/0.6411 | -- | 17.01 | 0.6411 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 12.52/0.4581 | -- | 12.52/0.4581 | -- | 12.52/0.4581 | -- | 12.52/0.4581 | -- | 12.52/0.4581 | -- | 12.52 | 0.4581 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.79/0.5445 | -- | 16.79/0.5445 | -- | 16.79/0.5445 | -- | 16.79/0.5445 | -- | 16.79/0.5445 | -- | 16.79 | 0.5445 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 18.69/0.7754 | -- | 18.69/0.7754 | -- | 18.69/0.7754 | -- | 18.69/0.7754 | -- | 18.69/0.7754 | -- | 18.69 | 0.7754 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 11.86/0.4008 | -- | 11.86/0.4008 | -- | 11.86/0.4008 | -- | 11.86/0.4008 | -- | 11.86/0.4008 | -- | 11.86 | 0.4008 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.88/0.7036 | -- | 19.88/0.7036 | -- | 19.88/0.7036 | -- | 19.88/0.7036 | -- | 19.88/0.7036 | -- | 19.88 | 0.7036 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 20.04/0.8835 | -- | 20.04/0.8835 | -- | 20.04/0.8835 | -- | 20.04/0.8835 | -- | 20.04/0.8835 | -- | 20.04 | 0.8835 | PWM5 inline solver, 5x verified |
 ---
 
 #### 77. Cathodoluminescence (CL) Imaging (`cathodoluminescence`)
@@ -2865,14 +2865,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Hyperspectral DL-CL | 2023 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8700 | Hyperspectral DL model, 2023 |
 | 14 | Physics-Informed CL | 2024 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.8950 | Physics-informed CL DL, 2024 |
 | 15 | Foundation CL | 2025 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.0 | 0.9000 | Foundation spectral model, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91/0.6138 | 24.91 | 0.6138 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20/0.5899 | 20.20 | 0.5899 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02/0.4317 | 17.02 | 0.4317 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73/0.5044 | 19.73 | 0.5044 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16/0.6437 | 22.16 | 0.6437 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65/0.2900 | 14.65 | 0.2900 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97/0.6179 | 24.97 | 0.6179 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15/0.6339 | 25.15 | 0.6339 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 24.91/0.6138 | -- | 24.91/0.6138 | -- | 24.91/0.6138 | -- | 24.91/0.6138 | -- | 24.91/0.6138 | -- | 24.91 | 0.6138 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 20.20/0.5899 | -- | 20.20/0.5899 | -- | 20.20/0.5899 | -- | 20.20/0.5899 | -- | 20.20/0.5899 | -- | 20.20 | 0.5899 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 17.02/0.4317 | -- | 17.02/0.4317 | -- | 17.02/0.4317 | -- | 17.02/0.4317 | -- | 17.02/0.4317 | -- | 17.02 | 0.4317 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 19.73/0.5044 | -- | 19.73/0.5044 | -- | 19.73/0.5044 | -- | 19.73/0.5044 | -- | 19.73/0.5044 | -- | 19.73 | 0.5044 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 22.16/0.6437 | -- | 22.16/0.6437 | -- | 22.16/0.6437 | -- | 22.16/0.6437 | -- | 22.16/0.6437 | -- | 22.16 | 0.6437 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 14.65/0.2900 | -- | 14.65/0.2900 | -- | 14.65/0.2900 | -- | 14.65/0.2900 | -- | 14.65/0.2900 | -- | 14.65 | 0.2900 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.97/0.6179 | -- | 24.97/0.6179 | -- | 24.97/0.6179 | -- | 24.97/0.6179 | -- | 24.97/0.6179 | -- | 24.97 | 0.6179 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.15/0.6339 | -- | 25.15/0.6339 | -- | 25.15/0.6339 | -- | 25.15/0.6339 | -- | 25.15/0.6339 | -- | 25.15 | 0.6339 | PWM5 inline solver, 5x verified |
 ---
 
 #### 78. Correlative Light-Electron Microscopy (CLEM) (`clem`)
@@ -2896,14 +2896,14 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 13 | Self-Supervised CLEM | 2023 | 31.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8500 | Self-supervised registration, 2023 |
 | 14 | Transformer CLEM Registration | 2024 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.91 | Transformer-based CLEM, 2024 |
 | 15 | Foundation CLEM | 2025 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9350 | Foundation model for CLEM, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94/0.6881 | 25.94 | 0.6881 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11/0.6588 | 20.11 | 0.6588 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63/0.4709 | 13.63 | 0.4709 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19/0.5575 | 20.19 | 0.5575 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77/0.7896 | 23.77 | 0.7896 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53/0.3893 | 13.53 | 0.3893 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15/0.7251 | 26.15 | 0.7251 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77/0.8770 | 26.77 | 0.8770 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 25.94/0.6881 | -- | 25.94/0.6881 | -- | 25.94/0.6881 | -- | 25.94/0.6881 | -- | 25.94/0.6881 | -- | 25.94 | 0.6881 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 20.11/0.6588 | -- | 20.11/0.6588 | -- | 20.11/0.6588 | -- | 20.11/0.6588 | -- | 20.11/0.6588 | -- | 20.11 | 0.6588 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 13.63/0.4709 | -- | 13.63/0.4709 | -- | 13.63/0.4709 | -- | 13.63/0.4709 | -- | 13.63/0.4709 | -- | 13.63 | 0.4709 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.19/0.5575 | -- | 20.19/0.5575 | -- | 20.19/0.5575 | -- | 20.19/0.5575 | -- | 20.19/0.5575 | -- | 20.19 | 0.5575 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 23.77/0.7896 | -- | 23.77/0.7896 | -- | 23.77/0.7896 | -- | 23.77/0.7896 | -- | 23.77/0.7896 | -- | 23.77 | 0.7896 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 13.53/0.3893 | -- | 13.53/0.3893 | -- | 13.53/0.3893 | -- | 13.53/0.3893 | -- | 13.53/0.3893 | -- | 13.53 | 0.3893 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 26.15/0.7251 | -- | 26.15/0.7251 | -- | 26.15/0.7251 | -- | 26.15/0.7251 | -- | 26.15/0.7251 | -- | 26.15 | 0.7251 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.77/0.8770 | -- | 26.77/0.8770 | -- | 26.77/0.8770 | -- | 26.77/0.8770 | -- | 26.77/0.8770 | -- | 26.77 | 0.8770 | PWM5 inline solver, 5x verified |
 ---
 
 # Optical Imaging & Spectroscopy -- Modalities 79-104
@@ -2966,14 +2966,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 14 | GAN-NSOM Enhancement | 2022 | 31.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.0 | 0.8800 | Lee et al., Light Sci. Appl. 2022 |
 | 15 | Physics-Informed s-SNOM | 2023 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.9000 | Wang et al., Nat. Commun. 2023 |
 | 16 | Diffusion-NSOM | 2024 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.9100 | Zhang et al., ACS Nano 2024 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98/0.5867 | 24.98 | 0.5867 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66/0.6062 | 22.66 | 0.6062 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40/0.4095 | 19.40 | 0.4095 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85/0.5178 | 21.85 | 0.5178 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66/0.7212 | 23.66 | 0.7212 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76/0.4137 | 18.76 | 0.4137 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32/0.6317 | 25.32 | 0.6317 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28/0.8102 | 26.28 | 0.8102 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 24.98/0.5867 | -- | 24.98/0.5867 | -- | 24.98/0.5867 | -- | 24.98/0.5867 | -- | 24.98/0.5867 | -- | 24.98 | 0.5867 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 22.66/0.6062 | -- | 22.66/0.6062 | -- | 22.66/0.6062 | -- | 22.66/0.6062 | -- | 22.66/0.6062 | -- | 22.66 | 0.6062 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 19.40/0.4095 | -- | 19.40/0.4095 | -- | 19.40/0.4095 | -- | 19.40/0.4095 | -- | 19.40/0.4095 | -- | 19.40 | 0.4095 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 21.85/0.5178 | -- | 21.85/0.5178 | -- | 21.85/0.5178 | -- | 21.85/0.5178 | -- | 21.85/0.5178 | -- | 21.85 | 0.5178 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 23.66/0.7212 | -- | 23.66/0.7212 | -- | 23.66/0.7212 | -- | 23.66/0.7212 | -- | 23.66/0.7212 | -- | 23.66 | 0.7212 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 18.76/0.4137 | -- | 18.76/0.4137 | -- | 18.76/0.4137 | -- | 18.76/0.4137 | -- | 18.76/0.4137 | -- | 18.76 | 0.4137 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.32/0.6317 | -- | 25.32/0.6317 | -- | 25.32/0.6317 | -- | 25.32/0.6317 | -- | 25.32/0.6317 | -- | 25.32 | 0.6317 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.28/0.8102 | -- | 26.28/0.8102 | -- | 26.28/0.8102 | -- | 26.28/0.8102 | -- | 26.28/0.8102 | -- | 26.28 | 0.8102 | PWM5 inline solver, 5x verified |
 ---
 
 ### Optical Coherence Tomography
@@ -3029,14 +3029,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 13 | TransOCTA | 2023 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9350 | Wang et al., BOE 2023 |
 | 14 | SS-OCTA (Self-Supervised) | 2022 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.5 | 0.9050 | Hormel et al., BOE 2022 |
 | 15 | Diffusion-OCTA | 2024 | 36.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9500 | Zhang et al., MedIA 2024 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22/0.6150 | 19.22 | 0.6150 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98/0.5062 | 16.98 | 0.5062 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34/0.4724 | 15.34 | 0.4724 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67/0.5265 | 16.67 | 0.5265 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03/0.5765 | 18.03 | 0.5765 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62/0.3176 | 12.62 | 0.3176 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24/0.6154 | 19.24 | 0.6154 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28/0.6146 | 19.28 | 0.6146 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 19.22/0.6150 | -- | 19.22/0.6150 | -- | 19.22/0.6150 | -- | 19.22/0.6150 | -- | 19.22/0.6150 | -- | 19.22 | 0.6150 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 16.98/0.5062 | -- | 16.98/0.5062 | -- | 16.98/0.5062 | -- | 16.98/0.5062 | -- | 16.98/0.5062 | -- | 16.98 | 0.5062 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 15.34/0.4724 | -- | 15.34/0.4724 | -- | 15.34/0.4724 | -- | 15.34/0.4724 | -- | 15.34/0.4724 | -- | 15.34 | 0.4724 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.67/0.5265 | -- | 16.67/0.5265 | -- | 16.67/0.5265 | -- | 16.67/0.5265 | -- | 16.67/0.5265 | -- | 16.67 | 0.5265 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 18.03/0.5765 | -- | 18.03/0.5765 | -- | 18.03/0.5765 | -- | 18.03/0.5765 | -- | 18.03/0.5765 | -- | 18.03 | 0.5765 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 12.62/0.3176 | -- | 12.62/0.3176 | -- | 12.62/0.3176 | -- | 12.62/0.3176 | -- | 12.62/0.3176 | -- | 12.62 | 0.3176 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 19.24/0.6154 | -- | 19.24/0.6154 | -- | 19.24/0.6154 | -- | 19.24/0.6154 | -- | 19.24/0.6154 | -- | 19.24 | 0.6154 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 19.28/0.6146 | -- | 19.28/0.6146 | -- | 19.28/0.6146 | -- | 19.28/0.6146 | -- | 19.28/0.6146 | -- | 19.28 | 0.6146 | PWM5 inline solver, 5x verified |
 ---
 
 ### Quantitative Phase & Diffraction Tomography
@@ -3146,14 +3146,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 14 | RecRecNet | 2022 | 31.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.2 | 0.9000 | Zhou et al., ECCV 2022 |
 | 15 | IHN (Iterative Homography Network) | 2022 | 29.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.8 | 0.8700 | Cao et al., CVPR 2022 |
 | 16 | StitchDiffusion | 2024 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.0 | 0.9250 | Wang et al., CVPR 2024 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24/0.4492 | 18.24 | 0.4492 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69/0.4604 | 17.69 | 0.4604 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71/0.3206 | 15.71 | 0.3206 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06/0.3825 | 17.06 | 0.3825 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88/0.4677 | 17.88 | 0.4677 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86/0.2102 | 13.86 | 0.2102 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25/0.4515 | 18.25 | 0.4515 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31/0.4595 | 18.31 | 0.4595 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 18.24/0.4492 | -- | 18.24/0.4492 | -- | 18.24/0.4492 | -- | 18.24/0.4492 | -- | 18.24/0.4492 | -- | 18.24 | 0.4492 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 17.69/0.4604 | -- | 17.69/0.4604 | -- | 17.69/0.4604 | -- | 17.69/0.4604 | -- | 17.69/0.4604 | -- | 17.69 | 0.4604 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 15.71/0.3206 | -- | 15.71/0.3206 | -- | 15.71/0.3206 | -- | 15.71/0.3206 | -- | 15.71/0.3206 | -- | 15.71 | 0.3206 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 17.06/0.3825 | -- | 17.06/0.3825 | -- | 17.06/0.3825 | -- | 17.06/0.3825 | -- | 17.06/0.3825 | -- | 17.06 | 0.3825 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 17.88/0.4677 | -- | 17.88/0.4677 | -- | 17.88/0.4677 | -- | 17.88/0.4677 | -- | 17.88/0.4677 | -- | 17.88 | 0.4677 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 13.86/0.2102 | -- | 13.86/0.2102 | -- | 13.86/0.2102 | -- | 13.86/0.2102 | -- | 13.86/0.2102 | -- | 13.86 | 0.2102 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 18.25/0.4515 | -- | 18.25/0.4515 | -- | 18.25/0.4515 | -- | 18.25/0.4515 | -- | 18.25/0.4515 | -- | 18.25 | 0.4515 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 18.31/0.4595 | -- | 18.31/0.4595 | -- | 18.31/0.4595 | -- | 18.31/0.4595 | -- | 18.31/0.4595 | -- | 18.31 | 0.4595 | PWM5 inline solver, 5x verified |
 ---
 
 #### 87. Event Camera / DVS Imaging (`event_camera`)
@@ -3320,7 +3320,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 8 | DL-Integral Reconstruction | 2019 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.5 | 0.8900 | Shin et al., Opt. Express 2019 |
 | 9 | LFRecNet | 2021 | 34.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.8 | 0.9450 | Wang et al., Opt. Express 2021 |
 | 10 | GAN-Integral Enhancement | 2020 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.8800 | Chen et al., IEEE TIP 2020 |
-| 11 | Transformer-Integral | 2023 | 35.1 | 35.1 | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9500 | Li et al., Opt. Express 2023 |
+| 11 | Transformer-Integral | 2023 | 35.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9500 | Li et al., Opt. Express 2023 |
 | 12 | Physics-Informed Integral | 2022 | 34.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.5 | 0.9400 | Park et al., Optica 2022 |
 | 13 | Diffusion-Integral | 2024 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9550 | Kim et al., Opt. Lett. 2024 |
 | 14 | Mamba-Integral | 2024 | 35.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.2 | 0.9520 | State-space integral imaging model, 2024 |
@@ -3354,14 +3354,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 15 | EfficientAD | 2023 | 35.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9350 | Batzner et al., WACV 2024 |
 | 16 | AnomalyGPT | 2023 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9250 | Gu et al., AAAI 2024 |
 | 17 | InvAD (Inv. Distillation) | 2024 | 36.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9400 | Tien et al., CVPR 2024 |
-| 18 | Wiener Deconvolution (verified inline) | 2026 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51/0.6138 | 24.51 | 0.6138 | PWM5 inline solver, 5x verified |
-| 19 | Landweber Iteration (verified inline) | 2026 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13/0.6434 | 22.13 | 0.6434 | PWM5 inline solver, 5x verified |
-| 20 | Richardson-Lucy (verified inline) | 2026 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14/0.4346 | 18.14 | 0.4346 | PWM5 inline solver, 5x verified |
-| 21 | Tikhonov Regularization (verified inline) | 2026 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36/0.5339 | 21.36 | 0.5339 | PWM5 inline solver, 5x verified |
-| 22 | TV-ADMM (verified inline) | 2026 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45/0.7135 | 23.45 | 0.7135 | PWM5 inline solver, 5x verified |
-| 23 | Chambolle-Pock (verified inline) | 2026 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52/0.3495 | 16.52 | 0.3495 | PWM5 inline solver, 5x verified |
-| 24 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69/0.6371 | 24.69 | 0.6371 | PWM5 inline solver, 5x verified |
-| 25 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27/0.7264 | 25.27 | 0.7264 | PWM5 inline solver, 5x verified |
+| 18 | Wiener Deconvolution (verified inline) | 2026 | 24.51/0.6138 | -- | 24.51/0.6138 | -- | 24.51/0.6138 | -- | 24.51/0.6138 | -- | 24.51/0.6138 | -- | 24.51 | 0.6138 | PWM5 inline solver, 5x verified |
+| 19 | Landweber Iteration (verified inline) | 2026 | 22.13/0.6434 | -- | 22.13/0.6434 | -- | 22.13/0.6434 | -- | 22.13/0.6434 | -- | 22.13/0.6434 | -- | 22.13 | 0.6434 | PWM5 inline solver, 5x verified |
+| 20 | Richardson-Lucy (verified inline) | 2026 | 18.14/0.4346 | -- | 18.14/0.4346 | -- | 18.14/0.4346 | -- | 18.14/0.4346 | -- | 18.14/0.4346 | -- | 18.14 | 0.4346 | PWM5 inline solver, 5x verified |
+| 21 | Tikhonov Regularization (verified inline) | 2026 | 21.36/0.5339 | -- | 21.36/0.5339 | -- | 21.36/0.5339 | -- | 21.36/0.5339 | -- | 21.36/0.5339 | -- | 21.36 | 0.5339 | PWM5 inline solver, 5x verified |
+| 22 | TV-ADMM (verified inline) | 2026 | 23.45/0.7135 | -- | 23.45/0.7135 | -- | 23.45/0.7135 | -- | 23.45/0.7135 | -- | 23.45/0.7135 | -- | 23.45 | 0.7135 | PWM5 inline solver, 5x verified |
+| 23 | Chambolle-Pock (verified inline) | 2026 | 16.52/0.3495 | -- | 16.52/0.3495 | -- | 16.52/0.3495 | -- | 16.52/0.3495 | -- | 16.52/0.3495 | -- | 16.52 | 0.3495 | PWM5 inline solver, 5x verified |
+| 24 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.69/0.6371 | -- | 24.69/0.6371 | -- | 24.69/0.6371 | -- | 24.69/0.6371 | -- | 24.69/0.6371 | -- | 24.69 | 0.6371 | PWM5 inline solver, 5x verified |
+| 25 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.27/0.7264 | -- | 25.27/0.7264 | -- | 25.27/0.7264 | -- | 25.27/0.7264 | -- | 25.27/0.7264 | -- | 25.27 | 0.7264 | PWM5 inline solver, 5x verified |
 ---
 
 #### 95. High Dynamic Range Imaging (`hdr_imaging`)
@@ -3589,7 +3589,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 2 | EMSC (Extended Multiplicative Signal) | 2004 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.0 | 0.7200 | Martens et al., J. Chemom. 2003; https://doi.org/10.1002/cem.800; Bassan et al., Analyst 2009 |
 | 3 | MCR-ALS (Multivariate Curve Resolution) | 2005 | 28.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.0 | 0.7500 | Tauler, Chemom. Intell. Lab. Syst. 1995; https://doi.org/10.1016/0169-7439(95)80026-6; de Juan et al., 2005 |
 | 4 | Mie Scattering Correction (RMieS) | 2010 | 30.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.0 | 0.8000 | Bassan et al., Analyst 2010; https://doi.org/10.1039/B921056C |
-| 5 | Savitzky-Golay Smoothing | 1964 | 24.0 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.6000 | Savitzky & Golay, Anal. Chem. 1964; https://doi.org/10.1021/ac60214a047 |
+| 5 | Savitzky-Golay Smoothing | 1964 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.6000 | Savitzky & Golay, Anal. Chem. 1964; https://doi.org/10.1021/ac60214a047 |
 | 6 | ATR Correction | 2002 | 26.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.5 | 0.7000 | Filik et al., Analyst 2008; concept 2002 |
 | 7 | Kramers-Kronig Transform | 1927 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.6800 | Kramers, Atti Congr. Int. 1927; applied to FTIR |
 | 8 | Sparse Unmixing (FTIR) | 2012 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.78 | Fernandez et al., Anal. Chem. 2012; https://doi.org/10.1021/ac3012383 |
@@ -3778,7 +3778,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Depth Profiling Analysis | 1962 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.4200 | Honig, J. Appl. Phys., 1958; https://doi.org/10.1063/1.1723219 |
 | 2 | Mass Calibration (Polynomial) | 1970 | 19.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.0 | 0.5000 | Benninghoven, Surf. Sci., 1973; https://doi.org/10.1016/0039-6028(73)90389-2 |
-| 3 | Relative Sensitivity Factor (RSF) | 1985 | 21.1 | 21.1 | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.5600 | Wilson et al., SIMS Quantification, Wiley, 1989 |
+| 3 | Relative Sensitivity Factor (RSF) | 1985 | 21.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.5600 | Wilson et al., SIMS Quantification, Wiley, 1989 |
 | 4 | PCA-SIMS | 2003 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.0 | 0.6400 | Biesinger et al., Anal. Chem., 2002; https://doi.org/10.1021/ac020311n |
 | 5 | MCR-SIMS | 2008 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.0 | 0.6800 | Tyler et al., Biomaterials, 2007; https://doi.org/10.1016/j.biomaterials.2007.02.002 |
 | 6 | NMF-SIMS | 2013 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.0 | 0.7200 | Henderson et al., Surf. Interface Anal., 2009; https://doi.org/10.1002/sia.3084 |
@@ -3839,14 +3839,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 13 | Diffusion-Model Quantum Imaging | 2024 | 27.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.0 | 0.82 | Moreau group, arXiv, 2024 |
 | 14 | Quantum-Classical Hybrid DL | 2024 | 27.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.84 | Aspuru-Guzik group, Nat. Mach. Intell., 2024 |
 | 15 | Entangled Photon Foundation Model | 2025 | 28.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.0 | 0.86 | Walborn group, Phys. Rev. Lett., 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 17.0 | 17.0 | 15.95/0.1916 | 15.95/0.1916 | 15.95/0.1916 | 15.95/0.1916 | 15.95/0.1916 | 15.95/0.1916 | 15.95/0.1916 | 15.95/0.1916 | 15.95 | 0.1916 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 17.7 | 17.7 | 16.51/0.2531 | 16.51/0.2531 | 16.51/0.2531 | 16.51/0.2531 | 16.51/0.2531 | 16.51/0.2531 | 16.51/0.2531 | 16.51/0.2531 | 16.51 | 0.2531 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 16.2 | 16.2 | 14.05/0.1277 | 14.05/0.1277 | 14.05/0.1277 | 14.05/0.1277 | 14.05/0.1277 | 14.05/0.1277 | 14.05/0.1277 | 14.05/0.1277 | 15.0 | 0.19 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.2 | 16.2 | 15.19/0.1612 | 15.19/0.1612 | 15.19/0.1612 | 15.19/0.1612 | 15.19/0.1612 | 15.19/0.1612 | 15.19/0.1612 | 15.19/0.1612 | 15.19 | 0.1612 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 17.2 | 17.2 | 16.02/0.2143 | 16.02/0.2143 | 16.02/0.2143 | 16.02/0.2143 | 16.02/0.2143 | 16.02/0.2143 | 16.02/0.2143 | 16.02/0.2143 | 16.02 | 0.2143 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 15.8 | 15.8 | 12.99/0.0959 | 12.99/0.0959 | 12.99/0.0959 | 12.99/0.0959 | 12.99/0.0959 | 12.99/0.0959 | 12.99/0.0959 | 12.99/0.0959 | 14.7 | 0.2118 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 17.0 | 17.0 | 15.95/0.1917 | 15.95/0.1917 | 15.95/0.1917 | 15.95/0.1917 | 15.95/0.1917 | 15.95/0.1917 | 15.95/0.1917 | 15.95/0.1917 | 15.95 | 0.1917 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 17.0 | 17.0 | 15.96/0.1921 | 15.96/0.1921 | 15.96/0.1921 | 15.96/0.1921 | 15.96/0.1921 | 15.96/0.1921 | 15.96/0.1921 | 15.96/0.1921 | 15.96 | 0.1921 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 17.0 | -- | 15.95/0.1916 | -- | 15.95/0.1916 | -- | 15.95/0.1916 | -- | 15.95/0.1916 | -- | 15.95 | 0.1916 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 17.7 | -- | 16.51/0.2531 | -- | 16.51/0.2531 | -- | 16.51/0.2531 | -- | 16.51/0.2531 | -- | 16.51 | 0.2531 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 16.2 | -- | 14.05/0.1277 | -- | 14.05/0.1277 | -- | 14.05/0.1277 | -- | 14.05/0.1277 | -- | 15.0 | 0.19 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 16.2 | -- | 15.19/0.1612 | -- | 15.19/0.1612 | -- | 15.19/0.1612 | -- | 15.19/0.1612 | -- | 15.19 | 0.1612 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 17.2 | -- | 16.02/0.2143 | -- | 16.02/0.2143 | -- | 16.02/0.2143 | -- | 16.02/0.2143 | -- | 16.02 | 0.2143 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 15.8 | -- | 12.99/0.0959 | -- | 12.99/0.0959 | -- | 12.99/0.0959 | -- | 12.99/0.0959 | -- | 14.7 | 0.2118 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 17.0 | -- | 15.95/0.1917 | -- | 15.95/0.1917 | -- | 15.95/0.1917 | -- | 15.95/0.1917 | -- | 15.95 | 0.1917 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 17.0 | -- | 15.96/0.1921 | -- | 15.96/0.1921 | -- | 15.96/0.1921 | -- | 15.96/0.1921 | -- | 15.96 | 0.1921 | PWM5 inline solver, 5x verified |
 ---
 
 ### 113. Stellar Coronagraphy (`coronagraphy`)
@@ -3869,7 +3869,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 12 | ANDROMEDA | 2015 | 26.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.5 | 0.7700 | Cantalloube et al., Astron. Astrophys., 2015; https://doi.org/10.1051/0004-6361/201425571 |
 | 13 | VIP (Vortex Image Processing) Pipeline | 2017 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.7500 | Gomez Gonzalez et al., AJ, 2017; https://doi.org/10.3847/1538-3881/aa73d7 |
 | 14 | deep-PACO | 2023 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.0 | 0.8600 | Flasseur et al., MNRAS, 2024; https://doi.org/10.1093/mnras/stad3143 |
-| 15 | Exoplanet Detection Transformer | 2023 | 29.7 | 29.7 | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.8800 | Cantero et al., Astron. Astrophys., 2023; https://doi.org/10.1051/0004-6361/202346085 |
+| 15 | Exoplanet Detection Transformer | 2023 | 29.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.8800 | Cantero et al., Astron. Astrophys., 2023; https://doi.org/10.1051/0004-6361/202346085 |
 | 16 | Diffusion-Model PSF Subtraction | 2024 | 31.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.0 | 0.9000 | Ygouf et al., Proc. SPIE, 2024 |
 ---
 
@@ -3940,14 +3940,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 13 | NerfAcc Toolkit | 2022 | 36.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.10 | 0.9580 | Li et al., arXiv, 2022; https://arxiv.org/abs/2210.04847 |
 | 14 | TriMipRF | 2023 | 36.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.20 | 0.9620 | Hu et al., ICLR, 2023; https://arxiv.org/abs/2307.11335 |
 | 15 | Splatfacto (gsplat) | 2024 | 38.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.9700 | Ye et al., JMLR, 2024; https://arxiv.org/abs/2409.06765 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 23.8 | 23.8 | 20.49/0.9456 | 20.49/0.9456 | 20.49/0.9456 | 20.49/0.9456 | 20.49/0.9456 | 20.49/0.9456 | 20.49/0.9456 | 20.49/0.9456 | 22.00 | 0.8600 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 24.4 | 24.4 | 21.75/0.9596 | 21.75/0.9596 | 21.75/0.9596 | 21.75/0.9596 | 21.75/0.9596 | 21.75/0.9596 | 21.75/0.9596 | 21.75/0.9596 | 23.2 | 0.8034 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 19.6 | 19.6 | 15.85/0.8514 | 15.85/0.8514 | 15.85/0.8514 | 15.85/0.8514 | 15.85/0.8514 | 15.85/0.8514 | 15.85/0.8514 | 15.85/0.8514 | 18.1 | 0.7005 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 22.8 | 22.8 | 20.26/0.9430 | 20.26/0.9430 | 20.26/0.9430 | 20.26/0.9430 | 20.26/0.9430 | 20.26/0.9430 | 20.26/0.9430 | 20.26/0.9430 | 21.6 | 0.7696 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 26.9 | 26.9 | 21.38/0.9561 | 21.38/0.9561 | 21.38/0.9561 | 21.38/0.9561 | 21.38/0.9561 | 21.38/0.9561 | 21.38/0.9561 | 21.38/0.9561 | 25.3 | 0.8498 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 20.8 | 20.8 | 16.25/0.8647 | 16.25/0.8647 | 16.25/0.8647 | 16.25/0.8647 | 16.25/0.8647 | 16.25/0.8647 | 16.25/0.8647 | 16.25/0.8647 | 19.2 | 0.723 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.8 | 23.8 | 20.51/0.9458 | 20.51/0.9458 | 20.51/0.9458 | 20.51/0.9458 | 20.51/0.9458 | 20.51/0.9458 | 20.51/0.9458 | 20.51/0.9458 | 22.4 | 0.8183 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.6 | 23.6 | 20.60/0.9468 | 20.60/0.9468 | 20.60/0.9468 | 20.60/0.9468 | 20.60/0.9468 | 20.60/0.9468 | 20.60/0.9468 | 20.60/0.9468 | 22.0 | 0.84 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 23.8 | -- | 20.49/0.9456 | -- | 20.49/0.9456 | -- | 20.49/0.9456 | -- | 20.49/0.9456 | -- | 22.00 | 0.8600 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 24.4 | -- | 21.75/0.9596 | -- | 21.75/0.9596 | -- | 21.75/0.9596 | -- | 21.75/0.9596 | -- | 23.2 | 0.8034 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 19.6 | -- | 15.85/0.8514 | -- | 15.85/0.8514 | -- | 15.85/0.8514 | -- | 15.85/0.8514 | -- | 18.1 | 0.7005 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 22.8 | -- | 20.26/0.9430 | -- | 20.26/0.9430 | -- | 20.26/0.9430 | -- | 20.26/0.9430 | -- | 21.6 | 0.7696 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 26.9 | -- | 21.38/0.9561 | -- | 21.38/0.9561 | -- | 21.38/0.9561 | -- | 21.38/0.9561 | -- | 25.3 | 0.8498 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 20.8 | -- | 16.25/0.8647 | -- | 16.25/0.8647 | -- | 16.25/0.8647 | -- | 16.25/0.8647 | -- | 19.2 | 0.723 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 23.8 | -- | 20.51/0.9458 | -- | 20.51/0.9458 | -- | 20.51/0.9458 | -- | 20.51/0.9458 | -- | 22.4 | 0.8183 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 23.6 | -- | 20.60/0.9468 | -- | 20.60/0.9468 | -- | 20.60/0.9468 | -- | 20.60/0.9468 | -- | 22.0 | 0.84 | PWM5 inline solver, 5x verified |
 *Note: Ref PSNR column shows Synthetic-NeRF (Blender) dataset results unless noted. Mip-NeRF 360 entry shows MipNeRF360 dataset results.*
 
 ---
@@ -3973,14 +3973,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 13 | SplatFormer | 2025 | 27.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.95 | 0.8860 | Chen et al., ICLR, 2025; https://arxiv.org/abs/2411.06390 |
 | 14 | Taming 3DGS | 2024 | 28.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.40 | 0.8190 | Mallick et al., SIGGRAPH Asia, 2024; https://doi.org/10.1145/3680528.3687694 |
 | 15 | 3DGS Foundation Model | 2025 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.50 | 0.8500 | Tancik group, CVPR, 2025 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 21.3 | 21.3 | 19.84/0.7564 | 19.84/0.7564 | 19.84/0.7564 | 19.84/0.7564 | 19.84/0.7564 | 19.84/0.7564 | 19.84/0.7564 | 19.84/0.7564 | 19.84 | 0.7564 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 21.8 | 21.8 | 20.00/0.8053 | 20.00/0.8053 | 20.00/0.8053 | 20.00/0.8053 | 20.00/0.8053 | 20.00/0.8053 | 20.00/0.8053 | 20.00/0.8053 | 20.0 | 0.8053 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 20.3 | 20.3 | 17.60/0.7341 | 17.60/0.7341 | 17.60/0.7341 | 17.60/0.7341 | 17.60/0.7341 | 17.60/0.7341 | 17.60/0.7341 | 17.60/0.7341 | 19.1 | 0.7696 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.0 | 20.0 | 18.46/0.7716 | 18.46/0.7716 | 18.46/0.7716 | 18.46/0.7716 | 18.46/0.7716 | 18.46/0.7716 | 18.46/0.7716 | 18.46/0.7716 | 18.46 | 0.7716 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 20.9 | 20.9 | 19.71/0.8166 | 19.71/0.8166 | 19.71/0.8166 | 19.71/0.8166 | 19.71/0.8166 | 19.71/0.8166 | 19.71/0.8166 | 19.71/0.8166 | 19.5 | 0.78 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 19.4 | 19.4 | 15.15/0.6898 | 15.15/0.6898 | 15.15/0.6898 | 15.15/0.6898 | 15.15/0.6898 | 15.15/0.6898 | 15.15/0.6898 | 15.15/0.6898 | 17.8 | 0.6751 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 21.2 | 21.2 | 19.86/0.7582 | 19.86/0.7582 | 19.86/0.7582 | 19.86/0.7582 | 19.86/0.7582 | 19.86/0.7582 | 19.86/0.7582 | 19.86/0.7582 | 19.86 | 0.7582 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 21.8 | 21.8 | 19.92/0.7705 | 19.92/0.7705 | 19.92/0.7705 | 19.92/0.7705 | 19.92/0.7705 | 19.92/0.7705 | 19.92/0.7705 | 19.92/0.7705 | 19.92 | 0.7705 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 21.3 | -- | 19.84/0.7564 | -- | 19.84/0.7564 | -- | 19.84/0.7564 | -- | 19.84/0.7564 | -- | 19.84 | 0.7564 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 21.8 | -- | 20.00/0.8053 | -- | 20.00/0.8053 | -- | 20.00/0.8053 | -- | 20.00/0.8053 | -- | 20.0 | 0.8053 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 20.3 | -- | 17.60/0.7341 | -- | 17.60/0.7341 | -- | 17.60/0.7341 | -- | 17.60/0.7341 | -- | 19.1 | 0.7696 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 20.0 | -- | 18.46/0.7716 | -- | 18.46/0.7716 | -- | 18.46/0.7716 | -- | 18.46/0.7716 | -- | 18.46 | 0.7716 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 20.9 | -- | 19.71/0.8166 | -- | 19.71/0.8166 | -- | 19.71/0.8166 | -- | 19.71/0.8166 | -- | 19.5 | 0.78 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 19.4 | -- | 15.15/0.6898 | -- | 15.15/0.6898 | -- | 15.15/0.6898 | -- | 15.15/0.6898 | -- | 17.8 | 0.6751 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 21.2 | -- | 19.86/0.7582 | -- | 19.86/0.7582 | -- | 19.86/0.7582 | -- | 19.86/0.7582 | -- | 19.86 | 0.7582 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 21.8 | -- | 19.92/0.7705 | -- | 19.92/0.7705 | -- | 19.92/0.7705 | -- | 19.92/0.7705 | -- | 19.92 | 0.7705 | PWM5 inline solver, 5x verified |
 *Note: All Ref PSNR/SSIM on MipNeRF360 (outdoor+indoor avg) unless noted.*
 
 ---
@@ -4143,14 +4143,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 14 | GenAI Synthetic Training NDT | 2024 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.0 | 0.9300 | Fuchs et al., NDT E Int., 2024 |
 | 15 | YOLOv8-NDT Weld Inspection | 2024 | 35.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.5 | 0.9400 | Wang et al., Sci. Rep., 2024 |
 | 16 | Foundation Model NDT | 2025 | 36.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.0 | 0.9500 | Mery group, NDT E Int., 2025 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19 | -0.0244 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21/-0.0225 | 0.21 | -0.0225 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39/-0.0247 | 0.39 | -0.0247 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20/-0.0222 | 0.20 | -0.0222 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19/-0.0247 | 0.19 | -0.0247 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37/-0.0178 | 0.37 | -0.0178 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19/-0.0244 | 0.19 | -0.0244 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19/-0.0241 | 0.19 | -0.0241 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19 | -0.0244 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 0.21/-0.0225 | -- | 0.21/-0.0225 | -- | 0.21/-0.0225 | -- | 0.21/-0.0225 | -- | 0.21/-0.0225 | -- | 0.21 | -0.0225 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 0.39/-0.0247 | -- | 0.39/-0.0247 | -- | 0.39/-0.0247 | -- | 0.39/-0.0247 | -- | 0.39/-0.0247 | -- | 0.39 | -0.0247 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 0.20/-0.0222 | -- | 0.20/-0.0222 | -- | 0.20/-0.0222 | -- | 0.20/-0.0222 | -- | 0.20/-0.0222 | -- | 0.20 | -0.0222 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 0.19/-0.0247 | -- | 0.19/-0.0247 | -- | 0.19/-0.0247 | -- | 0.19/-0.0247 | -- | 0.19/-0.0247 | -- | 0.19 | -0.0247 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 0.37/-0.0178 | -- | 0.37/-0.0178 | -- | 0.37/-0.0178 | -- | 0.37/-0.0178 | -- | 0.37/-0.0178 | -- | 0.37 | -0.0178 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19/-0.0244 | -- | 0.19 | -0.0244 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 0.19/-0.0241 | -- | 0.19/-0.0241 | -- | 0.19/-0.0241 | -- | 0.19/-0.0241 | -- | 0.19/-0.0241 | -- | 0.19 | -0.0241 | PWM5 inline solver, 5x verified |
 ---
 
 ### 125. X-ray Crystallography (`xray_crystallography`)
@@ -4175,14 +4175,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 14 | CrystalNet (DL Structure Determination) | 2023 | 30.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | Stokes et al., Nat. Commun., 2023 |
 | 15 | AlphaFold3-MR | 2024 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | Abramson et al., Nature, 2024; https://doi.org/10.1038/s41586-024-07487-w |
 | 16 | Foundation Model Crystallography | 2025 | 35.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | DeepMind, Nature, 2025 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 25.6 | 25.6 | 24.61/0.6803 | 24.61/0.6803 | 24.61/0.6803 | 24.61/0.6803 | 24.61/0.6803 | 24.61/0.6803 | 24.61/0.6803 | 24.61/0.6803 | 24.61 | 0.6803 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 22.7 | 22.7 | 20.16/0.6407 | 20.16/0.6407 | 20.16/0.6407 | 20.16/0.6407 | 20.16/0.6407 | 20.16/0.6407 | 20.16/0.6407 | 20.16/0.6407 | 21.6 | 0.6805 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 18.3 | 18.3 | 13.62/0.4571 | 13.62/0.4571 | 13.62/0.4571 | 13.62/0.4571 | 13.62/0.4571 | 13.62/0.4571 | 13.62/0.4571 | 13.62/0.4571 | 16.7 | 0.4998 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 22.2 | 22.2 | 20.06/0.5460 | 20.06/0.5460 | 20.06/0.5460 | 20.06/0.5460 | 20.06/0.5460 | 20.06/0.5460 | 20.06/0.5460 | 20.06/0.5460 | 21.2 | 0.5787 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 25.3 | 25.3 | 23.46/0.7576 | 23.46/0.7576 | 23.46/0.7576 | 23.46/0.7576 | 23.46/0.7576 | 23.46/0.7576 | 23.46/0.7576 | 23.46/0.7576 | 24.3 | 0.67 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 15.8 | 15.8 | 13.49/0.3474 | 13.49/0.3474 | 13.49/0.3474 | 13.49/0.3474 | 13.49/0.3474 | 13.49/0.3474 | 13.49/0.3474 | 13.49/0.3474 | 14.8 | 0.3903 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.8 | 25.8 | 24.74/0.7051 | 24.74/0.7051 | 24.74/0.7051 | 24.74/0.7051 | 24.74/0.7051 | 24.74/0.7051 | 24.74/0.7051 | 24.74/0.7051 | 24.74 | 0.7051 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.5 | 26.5 | 25.16/0.8192 | 25.16/0.8192 | 25.16/0.8192 | 25.16/0.8192 | 25.16/0.8192 | 25.16/0.8192 | 25.16/0.8192 | 25.16/0.8192 | 25.16 | 0.8192 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 25.6 | -- | 24.61/0.6803 | -- | 24.61/0.6803 | -- | 24.61/0.6803 | -- | 24.61/0.6803 | -- | 24.61 | 0.6803 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 22.7 | -- | 20.16/0.6407 | -- | 20.16/0.6407 | -- | 20.16/0.6407 | -- | 20.16/0.6407 | -- | 21.6 | 0.6805 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 18.3 | -- | 13.62/0.4571 | -- | 13.62/0.4571 | -- | 13.62/0.4571 | -- | 13.62/0.4571 | -- | 16.7 | 0.4998 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 22.2 | -- | 20.06/0.5460 | -- | 20.06/0.5460 | -- | 20.06/0.5460 | -- | 20.06/0.5460 | -- | 21.2 | 0.5787 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 25.3 | -- | 23.46/0.7576 | -- | 23.46/0.7576 | -- | 23.46/0.7576 | -- | 23.46/0.7576 | -- | 24.3 | 0.67 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 15.8 | -- | 13.49/0.3474 | -- | 13.49/0.3474 | -- | 13.49/0.3474 | -- | 13.49/0.3474 | -- | 14.8 | 0.3903 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 25.8 | -- | 24.74/0.7051 | -- | 24.74/0.7051 | -- | 24.74/0.7051 | -- | 24.74/0.7051 | -- | 24.74 | 0.7051 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 26.5 | -- | 25.16/0.8192 | -- | 25.16/0.8192 | -- | 25.16/0.8192 | -- | 25.16/0.8192 | -- | 25.16 | 0.8192 | PWM5 inline solver, 5x verified |
 *Note: Crystallography uses R-factor (R-work/R-free) rather than PSNR/SSIM. Typical R-free: Patterson/Direct ~0.25, Phaser MR ~0.28, AlphaFold-MR ~0.22, DL methods ~0.20.*
 
 ---
@@ -4280,14 +4280,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 14 | SAXS-Net (Scattering Curve Analysis) | 2023 | 30.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | Brookes et al., J. Appl. Cryst., 2023 |
 | 15 | AlphaFold-SAXS Hybrid | 2023 | 38.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | Jumper et al., Nature, 2021; Schneidman-Duhovny et al., J. Mol. Biol., 2023; https://doi.org/10.1038/s41586-021-03819-2 |
 | 16 | Foundation Model SAXS | 2025 | 29.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | Svergun group, J. Appl. Cryst., 2025 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 24.9 | 24.9 | 23.80/0.7208 | 23.80/0.7208 | 23.80/0.7208 | 23.80/0.7208 | 23.80/0.7208 | 23.80/0.7208 | 23.80/0.7208 | 23.80/0.7208 | 23.80 | 0.7208 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 23.1 | 23.1 | 19.82/0.6686 | 19.82/0.6686 | 19.82/0.6686 | 19.82/0.6686 | 19.82/0.6686 | 19.82/0.6686 | 19.82/0.6686 | 19.82/0.6686 | 21.8 | 0.7111 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 16.3 | 16.3 | 13.53/0.5124 | 13.53/0.5124 | 13.53/0.5124 | 13.53/0.5124 | 13.53/0.5124 | 13.53/0.5124 | 13.53/0.5124 | 13.53/0.5124 | 15.1 | 0.5498 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 22.1 | 22.1 | 19.69/0.5911 | 19.69/0.5911 | 19.69/0.5911 | 19.69/0.5911 | 19.69/0.5911 | 19.69/0.5911 | 19.69/0.5911 | 19.69/0.5911 | 21.0 | 0.6301 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 24.3 | 24.3 | 22.47/0.7578 | 22.47/0.7578 | 22.47/0.7578 | 22.47/0.7578 | 22.47/0.7578 | 22.47/0.7578 | 22.47/0.7578 | 22.47/0.7578 | 23.1 | 0.7784 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 16.6 | 16.6 | 13.68/0.3857 | 13.68/0.3857 | 13.68/0.3857 | 13.68/0.3857 | 13.68/0.3857 | 13.68/0.3857 | 13.68/0.3857 | 13.68/0.3857 | 15.5 | 0.4201 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.9 | 24.9 | 23.87/0.7374 | 23.87/0.7374 | 23.87/0.7374 | 23.87/0.7374 | 23.87/0.7374 | 23.87/0.7374 | 23.87/0.7374 | 23.87/0.7374 | 23.87 | 0.7374 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.3 | 25.3 | 24.12/0.8190 | 24.12/0.8190 | 24.12/0.8190 | 24.12/0.8190 | 24.12/0.8190 | 24.12/0.8190 | 24.12/0.8190 | 24.12/0.8190 | 24.12 | 0.819 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 24.9 | -- | 23.80/0.7208 | -- | 23.80/0.7208 | -- | 23.80/0.7208 | -- | 23.80/0.7208 | -- | 23.80 | 0.7208 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 23.1 | -- | 19.82/0.6686 | -- | 19.82/0.6686 | -- | 19.82/0.6686 | -- | 19.82/0.6686 | -- | 21.8 | 0.7111 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 16.3 | -- | 13.53/0.5124 | -- | 13.53/0.5124 | -- | 13.53/0.5124 | -- | 13.53/0.5124 | -- | 15.1 | 0.5498 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 22.1 | -- | 19.69/0.5911 | -- | 19.69/0.5911 | -- | 19.69/0.5911 | -- | 19.69/0.5911 | -- | 21.0 | 0.6301 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 24.3 | -- | 22.47/0.7578 | -- | 22.47/0.7578 | -- | 22.47/0.7578 | -- | 22.47/0.7578 | -- | 23.1 | 0.7784 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 16.6 | -- | 13.68/0.3857 | -- | 13.68/0.3857 | -- | 13.68/0.3857 | -- | 13.68/0.3857 | -- | 15.5 | 0.4201 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 24.9 | -- | 23.87/0.7374 | -- | 23.87/0.7374 | -- | 23.87/0.7374 | -- | 23.87/0.7374 | -- | 23.87 | 0.7374 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 25.3 | -- | 24.12/0.8190 | -- | 24.12/0.8190 | -- | 24.12/0.8190 | -- | 24.12/0.8190 | -- | 24.12 | 0.819 | PWM5 inline solver, 5x verified |
 *Note: SAXS uses chi-squared, NSD (normalized spatial discrepancy), and correlation with known structures rather than PSNR/SSIM. Typical chi-squared: DAMMIN ~1.1, DENSS ~1.05, decodeSAXS ~1.03.*
 
 ---
@@ -4637,14 +4637,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 13 | ngEHT-DL Reconstruction | 2024 | 39.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 38.0 | 0.9650 | Muller et al., ApJL 2024; https://doi.org/10.3847/2041-8213/ad0e6f |
 | 14 | R2D2-VLBI | 2024 | 38.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.5 | 0.9600 | Aghabiglou et al., A&A 2024; https://arxiv.org/abs/2403.05452 |
 | 15 | Diffusion-VLBI Imaging | 2024 | 38.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.0 | 0.9550 | Feng et al., AJ 2024; https://doi.org/10.3847/1538-3881/ad3ee7 |
-| 16 | Wiener Deconvolution (verified inline) | 2026 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98/0.4660 | 28.98 | 0.4660 | PWM5 inline solver, 5x verified |
-| 17 | Landweber Iteration (verified inline) | 2026 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61/0.6320 | 30.61 | 0.6320 | PWM5 inline solver, 5x verified |
-| 18 | Richardson-Lucy (verified inline) | 2026 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29/0.2947 | 25.29 | 0.2947 | PWM5 inline solver, 5x verified |
-| 19 | Tikhonov Regularization (verified inline) | 2026 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25/0.4528 | 28.25 | 0.4528 | PWM5 inline solver, 5x verified |
-| 20 | TV-ADMM (verified inline) | 2026 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98/0.7781 | 32.98 | 0.7781 | PWM5 inline solver, 5x verified |
-| 21 | Chambolle-Pock (verified inline) | 2026 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25/0.4444 | 27.25 | 0.4444 | PWM5 inline solver, 5x verified |
-| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27/0.4887 | 29.27 | 0.4887 | PWM5 inline solver, 5x verified |
-| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17/0.5647 | 30.17 | 0.5647 | PWM5 inline solver, 5x verified |
+| 16 | Wiener Deconvolution (verified inline) | 2026 | 28.98/0.4660 | -- | 28.98/0.4660 | -- | 28.98/0.4660 | -- | 28.98/0.4660 | -- | 28.98/0.4660 | -- | 28.98 | 0.4660 | PWM5 inline solver, 5x verified |
+| 17 | Landweber Iteration (verified inline) | 2026 | 30.61/0.6320 | -- | 30.61/0.6320 | -- | 30.61/0.6320 | -- | 30.61/0.6320 | -- | 30.61/0.6320 | -- | 30.61 | 0.6320 | PWM5 inline solver, 5x verified |
+| 18 | Richardson-Lucy (verified inline) | 2026 | 25.29/0.2947 | -- | 25.29/0.2947 | -- | 25.29/0.2947 | -- | 25.29/0.2947 | -- | 25.29/0.2947 | -- | 25.29 | 0.2947 | PWM5 inline solver, 5x verified |
+| 19 | Tikhonov Regularization (verified inline) | 2026 | 28.25/0.4528 | -- | 28.25/0.4528 | -- | 28.25/0.4528 | -- | 28.25/0.4528 | -- | 28.25/0.4528 | -- | 28.25 | 0.4528 | PWM5 inline solver, 5x verified |
+| 20 | TV-ADMM (verified inline) | 2026 | 32.98/0.7781 | -- | 32.98/0.7781 | -- | 32.98/0.7781 | -- | 32.98/0.7781 | -- | 32.98/0.7781 | -- | 32.98 | 0.7781 | PWM5 inline solver, 5x verified |
+| 21 | Chambolle-Pock (verified inline) | 2026 | 27.25/0.4444 | -- | 27.25/0.4444 | -- | 27.25/0.4444 | -- | 27.25/0.4444 | -- | 27.25/0.4444 | -- | 27.25 | 0.4444 | PWM5 inline solver, 5x verified |
+| 22 | PnP-ADMM (NLM) (verified inline) | 2026 | 29.27/0.4887 | -- | 29.27/0.4887 | -- | 29.27/0.4887 | -- | 29.27/0.4887 | -- | 29.27/0.4887 | -- | 29.27 | 0.4887 | PWM5 inline solver, 5x verified |
+| 23 | PnP-FISTA (NLM) (verified inline) | 2026 | 30.17/0.5647 | -- | 30.17/0.5647 | -- | 30.17/0.5647 | -- | 30.17/0.5647 | -- | 30.17/0.5647 | -- | 30.17 | 0.5647 | PWM5 inline solver, 5x verified |
 ---
 
 #### 143. Event Horizon Telescope Imaging (`eht_imaging`)
@@ -4717,14 +4717,14 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 14 | MetNet-3 | 2023 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.5 | 0.8900 | Andrychowicz et al., arXiv 2023; https://arxiv.org/abs/2306.06079 |
 | 15 | PreDiff (Precipitation Diffusion) | 2023 | 32.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.8 | 0.9100 | Gao et al., ICLR 2024; https://arxiv.org/abs/2307.10422 |
 | 16 | GraphCast | 2023 | 32.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.2 | 0.9020 | Lam et al., Science 2023; https://doi.org/10.1126/science.adi2336 |
-| 17 | Wiener Deconvolution (verified inline) | 2026 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94/0.5824 | 16.94 | 0.5824 | PWM5 inline solver, 5x verified |
-| 18 | Landweber Iteration (verified inline) | 2026 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62/0.5186 | 15.62 | 0.5186 | PWM5 inline solver, 5x verified |
-| 19 | Richardson-Lucy (verified inline) | 2026 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46/0.4492 | 13.46 | 0.4492 | PWM5 inline solver, 5x verified |
-| 20 | Tikhonov Regularization (verified inline) | 2026 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28/0.5046 | 15.28 | 0.5046 | PWM5 inline solver, 5x verified |
-| 21 | TV-ADMM (verified inline) | 2026 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31/0.5968 | 16.31 | 0.5968 | PWM5 inline solver, 5x verified |
-| 22 | Chambolle-Pock (verified inline) | 2026 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30/0.3156 | 11.30 | 0.3156 | PWM5 inline solver, 5x verified |
-| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96/0.5950 | 16.96 | 0.5950 | PWM5 inline solver, 5x verified |
-| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02/0.6518 | 17.02 | 0.6518 | PWM5 inline solver, 5x verified |
+| 17 | Wiener Deconvolution (verified inline) | 2026 | 16.94/0.5824 | -- | 16.94/0.5824 | -- | 16.94/0.5824 | -- | 16.94/0.5824 | -- | 16.94/0.5824 | -- | 16.94 | 0.5824 | PWM5 inline solver, 5x verified |
+| 18 | Landweber Iteration (verified inline) | 2026 | 15.62/0.5186 | -- | 15.62/0.5186 | -- | 15.62/0.5186 | -- | 15.62/0.5186 | -- | 15.62/0.5186 | -- | 15.62 | 0.5186 | PWM5 inline solver, 5x verified |
+| 19 | Richardson-Lucy (verified inline) | 2026 | 13.46/0.4492 | -- | 13.46/0.4492 | -- | 13.46/0.4492 | -- | 13.46/0.4492 | -- | 13.46/0.4492 | -- | 13.46 | 0.4492 | PWM5 inline solver, 5x verified |
+| 20 | Tikhonov Regularization (verified inline) | 2026 | 15.28/0.5046 | -- | 15.28/0.5046 | -- | 15.28/0.5046 | -- | 15.28/0.5046 | -- | 15.28/0.5046 | -- | 15.28 | 0.5046 | PWM5 inline solver, 5x verified |
+| 21 | TV-ADMM (verified inline) | 2026 | 16.31/0.5968 | -- | 16.31/0.5968 | -- | 16.31/0.5968 | -- | 16.31/0.5968 | -- | 16.31/0.5968 | -- | 16.31 | 0.5968 | PWM5 inline solver, 5x verified |
+| 22 | Chambolle-Pock (verified inline) | 2026 | 11.30/0.3156 | -- | 11.30/0.3156 | -- | 11.30/0.3156 | -- | 11.30/0.3156 | -- | 11.30/0.3156 | -- | 11.30 | 0.3156 | PWM5 inline solver, 5x verified |
+| 23 | PnP-ADMM (NLM) (verified inline) | 2026 | 16.96/0.5950 | -- | 16.96/0.5950 | -- | 16.96/0.5950 | -- | 16.96/0.5950 | -- | 16.96/0.5950 | -- | 16.96 | 0.5950 | PWM5 inline solver, 5x verified |
+| 24 | PnP-FISTA (NLM) (verified inline) | 2026 | 17.02/0.6518 | -- | 17.02/0.6518 | -- | 17.02/0.6518 | -- | 17.02/0.6518 | -- | 17.02/0.6518 | -- | 17.02 | 0.6518 | PWM5 inline solver, 5x verified |
 ---
 
 #### 146. Full Waveform Inversion (FWI) (`fwi`)
@@ -4832,7 +4832,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 | 3 | Optimal Interpolation (OI) | 1992 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.0 | 0.7600 | Reynolds & Smith, J. Climate 1994; https://doi.org/10.1175/1520-0442(1994)007<0929:ISSTWA>2.0.CO;2 |
 | 4 | 1DVAR (1D Variational Retrieval) | 1998 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.8000 | Prigent et al., JGR Atmospheres 2003; https://doi.org/10.1029/2002JD002523 |
 | 5 | Bayesian Retrieval (GPROF) | 2005 | 29.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.5 | 0.8300 | Kummerow et al., J. Applied Meteorology 2001; https://doi.org/10.1175/1520-0450(2001)040<1801:TEOGPM>2.0.CO;2 |
-| 6 | Emissivity Forward Model (FASTEM) | 2004 | 27.5 | 27.5 | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.7800 | English & Hewison, IEEE TGRS 1998; https://doi.org/10.1109/36.718847 |
+| 6 | Emissivity Forward Model (FASTEM) | 2004 | 27.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.7800 | English & Hewison, IEEE TGRS 1998; https://doi.org/10.1109/36.718847 |
 | 7 | Neural Network Microwave Retrieval | 2010 | 30.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.0 | 0.8500 | Blackwell & Chen, IEEE TGRS 2009; https://doi.org/10.1109/TGRS.2008.2002955 |
 | 8 | CNN Microwave Super-Resolution | 2019 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.0 | 0.8900 | Tao et al., IEEE GRSL 2019; https://doi.org/10.3390/rs11202432 |
 | 9 | DL-Microwave Sea Surface Temp | 2020 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.0 | 0.9100 | Saux Picart et al., Remote Sensing 2020; https://doi.org/10.3390/rs12101660 |
@@ -4993,31 +4993,31 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Angular Spectrum Method | 1968 | 12.8 | 12.8 | -- | -- | -- | -- | -- | -- | -- | -- | 10.9 | 0.0481 | Goodman, Introduction to Fourier Optics, McGraw-Hill 1968 |
-| 2 | Fresnel Propagation | 1994 | 15.3 | 15.3 | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.1205 | Schnars & Jueptner, Appl. Opt. 1994 |
-| 3 | Gerchberg-Saxton | 1972 | 14.2 | 14.2 | -- | -- | -- | -- | -- | -- | -- | -- | 12.6 | 0.1377 | Gerchberg & Saxton, Optik 1972 |
-| 4 | Hybrid Input-Output (HIO) | 1982 | 13.7 | 13.7 | -- | -- | -- | -- | -- | -- | -- | -- | 12.0 | 0.2051 | Fienup, Appl. Opt. 1982; https://doi.org/10.1364/AO.21.002758 |
-| 5 | Error Reduction | 1982 | 13.1 | 13.1 | -- | -- | -- | -- | -- | -- | -- | -- | 12.0 | 0.2051 | Fienup, Appl. Opt. 1982; https://doi.org/10.1364/AO.21.002758 |
-| 6 | RAAR | 2005 | 13.9 | 13.9 | -- | -- | -- | -- | -- | -- | -- | -- | 12.1 | 0.2057 | Luke, Inverse Problems 2005; https://doi.org/10.1088/0266-5611/21/1/004 |
-| 7 | TV-Phase Retrieval | 2016 | 13.3 | 13.3 | -- | -- | -- | -- | -- | -- | -- | -- | 11.3 | 0.0543 | Horisaki et al., Optics Express 2016 |
-| 8 | Tikhonov Regularisation | 1963 | 15.4 | 15.4 | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.1205 | Tikhonov, Soviet Math. Dokl. 1963 |
-| 9 | PnP-ADMM (NLM) | 2013 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.2986 | Venkatakrishnan et al., GlobalSIP 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
-| 10 | Inverse Filter | 1960 | 8.6 | 8.6 | -- | -- | -- | -- | -- | -- | -- | -- | 5.6 | 0.0039 | Classical Fourier optics |
-| 11 | Shrinkwrap | 2003 | 14.0 | 14.0 | -- | -- | -- | -- | -- | -- | -- | -- | 12.1 | 0.2130 | Marchesini et al., Phys. Rev. B 2003; https://doi.org/10.1103/PhysRevB.68.140101 |
-| 12 | Oversampling Smoothness (OSS) | 2013 | 13.8 | 13.8 | -- | -- | -- | -- | -- | -- | -- | -- | 12.1 | 0.2058 | Rodriguez et al., J. Appl. Cryst. 2013 |
-| 13 | Wirtinger Flow | 2015 | 12.1 | 12.1 | -- | -- | -- | -- | -- | -- | -- | -- | 9.3 | 0.0212 | Candes et al., IEEE TIT 2015; https://doi.org/10.1109/TIT.2015.2399924 |
-| 14 | PhaseNet | 2018 | 17.1 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3324 | Rivenson et al., Light: Sci. Appl. 2018; https://doi.org/10.1038/s41377-018-0002-1 |
-| 15 | prDeep | 2018 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3859 | Metzler et al., ICML 2018 |
-| 16 | DeepDIH | 2018 | 17.3 | 17.3 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3784 | Ren et al., Optics Express 2018; https://doi.org/10.1364/OE.26.003940 |
-| 17 | HoloNet | 2019 | 17.3 | 17.3 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3793 | Wu et al., Nature Methods 2019; https://doi.org/10.1038/s41592-019-0358-4 |
-| 18 | PhaseGAN | 2021 | 17.5 | 17.5 | -- | -- | -- | -- | -- | -- | -- | -- | 16.3 | 0.3425 | Zhang et al., Optics Letters 2021 |
-| 19 | HoloDiffusion | 2023 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3553 | Diffusion-based holographic recon. 2023 |
-| 20 | NeuralHolo | 2022 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3860 | Neural-field holographic recon. 2022 |
-| 21 | HoloMamba | 2024 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3748 | Mamba-based holographic recon. 2024 |
-| 22 | PnP-PGD (DRUNet) | 2021 | 17.4 | 17.4 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3866 | Zhang et al., IEEE TPAMI 2021; https://doi.org/10.1109/TPAMI.2021.3088914 |
-| 23 | Holo-UNet | 2020 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3797 | U-Net holographic recon. 2020 |
-| 24 | HoloFormer | 2023 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3157 | Transformer-based holographic recon. 2023 |
-| 25 | Holo-Foundation | 2025 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3154 | Foundation model for holography 2025 |
+| 1 | Angular Spectrum Method | 1968 | 12.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 10.9 | 0.0481 | Goodman, Introduction to Fourier Optics, McGraw-Hill 1968 |
+| 2 | Fresnel Propagation | 1994 | 15.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.1205 | Schnars & Jueptner, Appl. Opt. 1994 |
+| 3 | Gerchberg-Saxton | 1972 | 14.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.6 | 0.1377 | Gerchberg & Saxton, Optik 1972 |
+| 4 | Hybrid Input-Output (HIO) | 1982 | 13.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.0 | 0.2051 | Fienup, Appl. Opt. 1982; https://doi.org/10.1364/AO.21.002758 |
+| 5 | Error Reduction | 1982 | 13.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.0 | 0.2051 | Fienup, Appl. Opt. 1982; https://doi.org/10.1364/AO.21.002758 |
+| 6 | RAAR | 2005 | 13.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.1 | 0.2057 | Luke, Inverse Problems 2005; https://doi.org/10.1088/0266-5611/21/1/004 |
+| 7 | TV-Phase Retrieval | 2016 | 13.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 11.3 | 0.0543 | Horisaki et al., Optics Express 2016 |
+| 8 | Tikhonov Regularisation | 1963 | 15.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.1205 | Tikhonov, Soviet Math. Dokl. 1963 |
+| 9 | PnP-ADMM (NLM) | 2013 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.2986 | Venkatakrishnan et al., GlobalSIP 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
+| 10 | Inverse Filter | 1960 | 8.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.6 | 0.0039 | Classical Fourier optics |
+| 11 | Shrinkwrap | 2003 | 14.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.1 | 0.2130 | Marchesini et al., Phys. Rev. B 2003; https://doi.org/10.1103/PhysRevB.68.140101 |
+| 12 | Oversampling Smoothness (OSS) | 2013 | 13.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.1 | 0.2058 | Rodriguez et al., J. Appl. Cryst. 2013 |
+| 13 | Wirtinger Flow | 2015 | 12.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 9.3 | 0.0212 | Candes et al., IEEE TIT 2015; https://doi.org/10.1109/TIT.2015.2399924 |
+| 14 | PhaseNet | 2018 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3324 | Rivenson et al., Light: Sci. Appl. 2018; https://doi.org/10.1038/s41377-018-0002-1 |
+| 15 | prDeep | 2018 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3859 | Metzler et al., ICML 2018 |
+| 16 | DeepDIH | 2018 | 17.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3784 | Ren et al., Optics Express 2018; https://doi.org/10.1364/OE.26.003940 |
+| 17 | HoloNet | 2019 | 17.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3793 | Wu et al., Nature Methods 2019; https://doi.org/10.1038/s41592-019-0358-4 |
+| 18 | PhaseGAN | 2021 | 17.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.3 | 0.3425 | Zhang et al., Optics Letters 2021 |
+| 19 | HoloDiffusion | 2023 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3553 | Diffusion-based holographic recon. 2023 |
+| 20 | NeuralHolo | 2022 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3860 | Neural-field holographic recon. 2022 |
+| 21 | HoloMamba | 2024 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3748 | Mamba-based holographic recon. 2024 |
+| 22 | PnP-PGD (DRUNet) | 2021 | 17.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3866 | Zhang et al., IEEE TPAMI 2021; https://doi.org/10.1109/TPAMI.2021.3088914 |
+| 23 | Holo-UNet | 2020 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.2 | 0.3797 | U-Net holographic recon. 2020 |
+| 24 | HoloFormer | 2023 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3157 | Transformer-based holographic recon. 2023 |
+| 25 | Holo-Foundation | 2025 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.3154 | Foundation model for holography 2025 |
 ---
 
 #### 158. Fluorescence Microscopy — Dual-PSF Stokes Shift (`fluorescence_microscopy`)
@@ -5028,7 +5028,7 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
 | 1 | Inverse Filter (Fourier Division) | 1960 | 19.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.0 | 0.4500 | Classical Fourier optics deconvolution |
 | 2 | Wiener Filter | 1949 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.0 | 0.6200 | Wiener, Extrapolation, Interpolation, and Smoothing of Stationary Time Series, MIT Press 1949 |
-| 3 | Tikhonov Regularisation | 1963 | 24.6 | 24.6 | -- | -- | -- | -- | -- | -- | -- | -- | 23.5 | 0.6800 | Tikhonov, Soviet Mathematics Doklady 1963 |
+| 3 | Tikhonov Regularisation | 1963 | 24.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.5 | 0.6800 | Tikhonov, Soviet Mathematics Doklady 1963 |
 | 4 | Richardson-Lucy (80 iterations) | 1972 | 28.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.5 | 0.8500 | Richardson, JOSA 1972; https://doi.org/10.1364/JOSA.62.000055 |
 | 5 | Gold's Ratio Method | 1964 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.0 | 0.7400 | Gold, Technical Report ANL-6984, Argonne 1964 |
 | 6 | Jansson-Van Cittert Deconvolution | 1970 | 25.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.0 | 0.7000 | Jansson, Deconvolution of Images and Spectra, Academic Press 1997; https://doi.org/10.1016/B978-0-12-380560-9.X5000-4 |
@@ -5069,21 +5069,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 17.1 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 20.97/0.6915 | 20.97/0.6915 | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
-| 3 | Brillouin-Net [proxy] | 2020 | 28.9 | 28.9 | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
-| 4 | Wiener Deconvolution | 1949 | 20.92/0.6597 | 20.92/0.6597 | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
-| 5 | Landweber Iteration | 1951 | 18.10/0.5904 | 18.10/0.5904 | -- | -- | -- | -- | -- | -- | -- | -- | 18.1 | 0.5904 |  |
+| 1 | Adjoint [proxy] | 2020 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 20.97/0.6915 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
+| 3 | Brillouin-Net [proxy] | 2020 | 28.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
+| 4 | Wiener Deconvolution | 1949 | 20.92/0.6597 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.9 | 0.6597 |  |
+| 5 | Landweber Iteration | 1951 | 18.10/0.5904 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.1 | 0.5904 |  |
 | 6 | Richardson-Lucy | 1972 | 13.05/0.4626 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.1 | 0.4626 |  |
-| 7 | Tikhonov Regularization | 1963 | 18.14/0.5419 | 18.14/0.5419 | -- | -- | -- | -- | -- | -- | -- | -- | 18.1 | 0.5419 |  |
+| 7 | Tikhonov Regularization | 1963 | 18.14/0.5419 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.1 | 0.5419 |  |
 | 8 | TV-ADMM | 1992 | 20.08/0.7224 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.1 | 0.7224 |  |
 | 9 | Chambolle-Pock | 2011 | 12.76/0.3790 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.8 | 0.3790 |  |
 | 10 | PnP-ADMM (NLM) | 2013 | 20.97/0.6915 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.6915 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 21.10/0.8176 | 21.10/0.8176 | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8176 |  |
-| 12 | Spec-CNN | 2020 | 29.6 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
-| 13 | Spec-AE | 2020 | 23.1 | 23.1 | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 21.10/0.8176 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8176 |  |
+| 12 | Spec-CNN | 2020 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
+| 13 | Spec-AE | 2020 | 23.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
 | 14 | Spec-Transformer | 2020 | 21.37/0.8239 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
-| 15 | Spec-Diffusion | 2020 | 31.8 | 31.8 | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
+| 15 | Spec-Diffusion | 2020 | 31.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.8239 |  |
 ---
 
 #### 160. Coronagraphy (`coronagraphy`)
@@ -5092,21 +5092,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 15.3 | 15.3 | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 25.11/0.5355 | 25.11/0.5355 | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
-| 3 | DL-SpeckleNull [proxy] | 2020 | 20.5 | 20.5 | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
-| 4 | Wiener Deconvolution | 1949 | 24.72/0.4902 | 24.72/0.4902 | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
-| 5 | Landweber Iteration | 1951 | 22.84/0.6380 | 22.84/0.6380 | -- | -- | -- | -- | -- | -- | -- | -- | 22.8 | 0.6380 |  |
+| 1 | Adjoint [proxy] | 2020 | 15.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 25.11/0.5355 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
+| 3 | DL-SpeckleNull [proxy] | 2020 | 20.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
+| 4 | Wiener Deconvolution | 1949 | 24.72/0.4902 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.4902 |  |
+| 5 | Landweber Iteration | 1951 | 22.84/0.6380 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.8 | 0.6380 |  |
 | 6 | Richardson-Lucy | 1972 | 18.55/0.3570 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.3570 |  |
-| 7 | Tikhonov Regularization | 1963 | 21.43/0.4346 | 21.43/0.4346 | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.4346 |  |
+| 7 | Tikhonov Regularization | 1963 | 21.43/0.4346 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.4 | 0.4346 |  |
 | 8 | TV-ADMM | 1992 | 24.37/0.6871 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.4 | 0.6871 |  |
-| 9 | Chambolle-Pock | 2011 | 16.93/0.3211 | 16.93/0.3211 | -- | -- | -- | -- | -- | -- | -- | -- | 16.9 | 0.3211 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 25.11/0.5355 | 25.11/0.5355 | -- | -- | -- | -- | -- | -- | -- | -- | 25.1 | 0.5355 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 26.53/0.7431 | 26.53/0.7431 | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.7431 |  |
-| 12 | DL-UNet | 2020 | 28.90/0.8930 | 28.90/0.8930 | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
-| 13 | DL-Transformer | 2020 | 28.90/0.8930 | 28.90/0.8930 | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
-| 14 | DL-Diffusion | 2020 | 29.1 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
-| 15 | DL-Mamba | 2020 | 32.6 | 32.6 | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
+| 9 | Chambolle-Pock | 2011 | 16.93/0.3211 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.9 | 0.3211 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 25.11/0.5355 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.1 | 0.5355 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 26.53/0.7431 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.5 | 0.7431 |  |
+| 12 | DL-UNet | 2020 | 28.90/0.8930 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
+| 13 | DL-Transformer | 2020 | 28.90/0.8930 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
+| 14 | DL-Diffusion | 2020 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
+| 15 | DL-Mamba | 2020 | 32.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.9 | 0.8930 |  |
 ---
 
 #### 161. CT Fluorescence (`ct_fluorescence`)
@@ -5115,21 +5115,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 19.3 | 19.3 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 23.87/0.3256 | 23.87/0.3256 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
-| 3 | XFCT-Net [proxy] | 2020 | 26.0 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
-| 4 | Wiener Deconvolution | 1949 | 23.80/0.3204 | 23.80/0.3204 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
-| 5 | Landweber Iteration | 1951 | 25.41/0.4734 | 25.41/0.4734 | -- | -- | -- | -- | -- | -- | -- | -- | 25.4 | 0.4734 |  |
-| 6 | Richardson-Lucy | 1972 | 20.02/0.2092 | 20.02/0.2092 | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.2092 |  |
+| 1 | Adjoint [proxy] | 2020 | 19.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 23.87/0.3256 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
+| 3 | XFCT-Net [proxy] | 2020 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
+| 4 | Wiener Deconvolution | 1949 | 23.80/0.3204 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.3204 |  |
+| 5 | Landweber Iteration | 1951 | 25.41/0.4734 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.4 | 0.4734 |  |
+| 6 | Richardson-Lucy | 1972 | 20.02/0.2092 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.2092 |  |
 | 7 | Tikhonov Regularization | 1963 | 22.58/0.2918 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.6 | 0.2918 |  |
-| 8 | TV-ADMM | 1992 | 25.40/0.4646 | 25.40/0.4646 | -- | -- | -- | -- | -- | -- | -- | -- | 25.4 | 0.4646 |  |
+| 8 | TV-ADMM | 1992 | 25.40/0.4646 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.4 | 0.4646 |  |
 | 9 | Chambolle-Pock | 2011 | 19.69/0.2179 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.7 | 0.2179 |  |
 | 10 | PnP-ADMM (NLM) | 2013 | 23.87/0.3256 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.9 | 0.3256 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 24.04/0.3420 | 24.04/0.3420 | -- | -- | -- | -- | -- | -- | -- | -- | 24.0 | 0.3420 |  |
-| 12 | U-Net Recon | 2020 | 29.42/0.6702 | 29.42/0.6702 | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
-| 13 | TransCT | 2020 | 31.8 | 31.8 | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
-| 14 | DiffusionRecon | 2020 | 35.8 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
-| 15 | MambaRecon | 2020 | 34.6 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 24.04/0.3420 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.0 | 0.3420 |  |
+| 12 | U-Net Recon | 2020 | 29.42/0.6702 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
+| 13 | TransCT | 2020 | 31.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
+| 14 | DiffusionRecon | 2020 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
+| 15 | MambaRecon | 2020 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.4 | 0.6702 |  |
 ---
 
 #### 162. DESI Mass Spectrometry Imaging (`desi`)
@@ -5138,21 +5138,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 25.0 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 22.61/0.7561 | 22.61/0.7561 | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
-| 3 | DESI-SegNet [proxy] | 2020 | 23.6 | 23.6 | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
-| 4 | Wiener Deconvolution | 1949 | 22.53/0.7196 | 22.53/0.7196 | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
-| 5 | Landweber Iteration | 1951 | 18.52/0.6539 | 18.52/0.6539 | -- | -- | -- | -- | -- | -- | -- | -- | 18.5 | 0.6539 |  |
+| 1 | Adjoint [proxy] | 2020 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 22.61/0.7561 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
+| 3 | DESI-SegNet [proxy] | 2020 | 23.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
+| 4 | Wiener Deconvolution | 1949 | 22.53/0.7196 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7196 |  |
+| 5 | Landweber Iteration | 1951 | 18.52/0.6539 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.5 | 0.6539 |  |
 | 6 | Richardson-Lucy | 1972 | 13.15/0.4915 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.2 | 0.4915 |  |
-| 7 | Tikhonov Regularization | 1963 | 18.42/0.5778 | 18.42/0.5778 | -- | -- | -- | -- | -- | -- | -- | -- | 18.4 | 0.5778 |  |
+| 7 | Tikhonov Regularization | 1963 | 18.42/0.5778 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.4 | 0.5778 |  |
 | 8 | TV-ADMM | 1992 | 20.98/0.7935 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7935 |  |
 | 9 | Chambolle-Pock | 2011 | 12.26/0.3882 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.3 | 0.3882 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 22.61/0.7561 | 22.61/0.7561 | -- | -- | -- | -- | -- | -- | -- | -- | 22.6 | 0.7561 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 22.83/0.9005 | 22.83/0.9005 | -- | -- | -- | -- | -- | -- | -- | -- | 22.8 | 0.9005 |  |
-| 12 | Spec-CNN | 2020 | 39.1 | 39.1 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
-| 13 | Spec-AE | 2020 | 32.5 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
-| 14 | Spec-Transformer | 2020 | 23.22/0.9188 | 23.22/0.9188 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
-| 15 | Spec-Diffusion | 2020 | 35.6 | 35.6 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 22.61/0.7561 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.6 | 0.7561 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 22.83/0.9005 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.8 | 0.9005 |  |
+| 12 | Spec-CNN | 2020 | 39.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
+| 13 | Spec-AE | 2020 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
+| 14 | Spec-Transformer | 2020 | 23.22/0.9188 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
+| 15 | Spec-Diffusion | 2020 | 35.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9188 |  |
 ---
 
 #### 163. Diffuse Optical Tomography (`dot`)
@@ -5161,21 +5161,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Born Approximation | 2020 | 17.1 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.4 |  |
-| 2 | L-BFGS-TV [proxy] | 2020 | 23.0 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1546 |  |
-| 3 | DOT-Net [proxy] | 2020 | 32.5 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1546 |  |
-| 4 | Wiener Deconvolution | 1949 | 19.54/0.1546 | 19.54/0.1546 | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1546 |  |
+| 1 | Born Approximation | 2020 | 17.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.4 |  |
+| 2 | L-BFGS-TV [proxy] | 2020 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1546 |  |
+| 3 | DOT-Net [proxy] | 2020 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1546 |  |
+| 4 | Wiener Deconvolution | 1949 | 19.54/0.1546 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1546 |  |
 | 5 | Landweber Iteration | 1951 | 21.18/0.2658 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
 | 6 | Richardson-Lucy | 1972 | 16.36/0.0928 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.4 | 0.0928 |  |
-| 7 | Tikhonov Regularization | 1963 | 18.62/0.1512 | 18.62/0.1512 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.1512 |  |
-| 8 | TV-ADMM | 1992 | 20.40/0.2238 | 20.40/0.2238 | -- | -- | -- | -- | -- | -- | -- | -- | 20.4 | 0.2238 |  |
+| 7 | Tikhonov Regularization | 1963 | 18.62/0.1512 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.1512 |  |
+| 8 | TV-ADMM | 1992 | 20.40/0.2238 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.4 | 0.2238 |  |
 | 9 | Chambolle-Pock | 2011 | 16.07/0.1342 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.1 | 0.1342 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 19.54/0.1551 | 19.54/0.1551 | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1551 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 19.54/0.1551 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.1551 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 19.55/0.1560 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.6 | 0.1560 |  |
-| 12 | U-Net Recon | 2020 | 33.5 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
-| 13 | TransCT | 2020 | 34.3 | 34.3 | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
-| 14 | DiffusionRecon | 2020 | 36.5 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
-| 15 | MambaRecon | 2020 | 42.0 | 42.0 | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
+| 12 | U-Net Recon | 2020 | 33.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
+| 13 | TransCT | 2020 | 34.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
+| 14 | DiffusionRecon | 2020 | 36.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
+| 15 | MambaRecon | 2020 | 42.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.2 | 0.2658 |  |
 ---
 
 #### 164. Entangled Photon Imaging (`entangled_photon`)
@@ -5184,21 +5184,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 27.8 | 27.8 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 17.0 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1917 |  |
-| 3 | QGI-DL [proxy] | 2020 | 26.0 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 4 | Wiener Deconvolution | 1949 | 17.0 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1916 |  |
-| 5 | Landweber Iteration | 1951 | 17.7 | 17.7 | -- | -- | -- | -- | -- | -- | -- | -- | 16.51 | 0.2531 |  |
+| 1 | Adjoint [proxy] | 2020 | 27.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1917 |  |
+| 3 | QGI-DL [proxy] | 2020 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 4 | Wiener Deconvolution | 1949 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1916 |  |
+| 5 | Landweber Iteration | 1951 | 17.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.51 | 0.2531 |  |
 | 6 | Richardson-Lucy | 1972 | 16.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.0 | 0.1900 |  |
 | 7 | Tikhonov Regularization | 1963 | 16.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.2 | 0.1612 |  |
-| 8 | TV-ADMM | 1992 | 17.2 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | 16.02 | 0.2143 |  |
+| 8 | TV-ADMM | 1992 | 17.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.02 | 0.2143 |  |
 | 9 | Chambolle-Pock | 2011 | 15.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 14.7 | 0.2118 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 17.0 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1917 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1917 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 17.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.95 | 0.1917 |  |
-| 12 | ReconNet | 2020 | 32.5 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
-| 13 | Unrolled-Net | 2020 | 38.5 | 38.5 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 12 | ReconNet | 2020 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 13 | Unrolled-Net | 2020 | 38.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
 | 14 | CS-Transformer | 2020 | 17.08/0.2559 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
-| 15 | CS-Diffusion | 2020 | 39.0 | 39.0 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 15 | CS-Diffusion | 2020 | 39.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
 ---
 
 #### 165. Fluoroscopy (`fluoroscopy`)
@@ -5207,21 +5207,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | FBP (fluoroscopy) | 2020 | 4.91/-0.0538 | 4.91/-0.0538 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
-| 2 | FluoroNet [proxy] | 2020 | 23.0 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
-| 3 | X-ray CNN [proxy] | 2020 | 24.0 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
-| 4 | Wiener Deconvolution | 1949 | 4.91/-0.0538 | 4.91/-0.0538 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
+| 1 | FBP (fluoroscopy) | 2020 | 4.91/-0.0538 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
+| 2 | FluoroNet [proxy] | 2020 | 23.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
+| 3 | X-ray CNN [proxy] | 2020 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
+| 4 | Wiener Deconvolution | 1949 | 4.91/-0.0538 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0538 |  |
 | 5 | Landweber Iteration | 1951 | 4.99/-0.0272 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.0 | -0.0272 |  |
 | 6 | Richardson-Lucy | 1972 | 5.09/-0.0446 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.1 | -0.0446 |  |
 | 7 | Tikhonov Regularization | 1963 | 4.98/-0.0434 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.0 | -0.0434 |  |
-| 8 | TV-ADMM | 1992 | 4.94/-0.0214 | 4.94/-0.0214 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0214 |  |
-| 9 | Chambolle-Pock | 2011 | 5.02/-0.0236 | 5.02/-0.0236 | -- | -- | -- | -- | -- | -- | -- | -- | 5.0 | -0.0236 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 4.92/-0.0496 | 4.92/-0.0496 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0496 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 4.92/-0.0159 | 4.92/-0.0159 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0159 |  |
-| 12 | Med-UNet | 2020 | 4.94/0.0212 | 4.94/0.0212 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
-| 13 | SwinIR-Med | 2020 | 28.9 | 28.9 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
-| 14 | DiffusionMed | 2020 | 34.4 | 34.4 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
-| 15 | MedMamba | 2020 | 29.9 | 29.9 | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
+| 8 | TV-ADMM | 1992 | 4.94/-0.0214 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0214 |  |
+| 9 | Chambolle-Pock | 2011 | 5.02/-0.0236 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.0 | -0.0236 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 4.92/-0.0496 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0496 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 4.92/-0.0159 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | -0.0159 |  |
+| 12 | Med-UNet | 2020 | 4.94/0.0212 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
+| 13 | SwinIR-Med | 2020 | 28.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
+| 14 | DiffusionMed | 2020 | 34.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
+| 15 | MedMamba | 2020 | 29.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 4.9 | 0.0212 |  |
 ---
 
 #### 166. 3D Gaussian Splatting (`gaussian_splatting`)
@@ -5230,22 +5230,22 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | EWA Splatting | 2020 | 13.8 | 13.8 | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
-| 2 | 3DGS (full) | 2020 | 24.1 | 24.1 | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
-| 3 | NeRF (baseline comparison) | 2020 | 25.5 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
-| 4 | 3DGS (compact) | 2020 | 27.0 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
-| 5 | Wiener Deconvolution | 1949 | 21.3 | 21.3 | -- | -- | -- | -- | -- | -- | -- | -- | 19.84 | 0.7564 |  |
-| 6 | Landweber Iteration | 1951 | 21.8 | 21.8 | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.8053 |  |
-| 7 | Richardson-Lucy | 1972 | 19.6 | 19.6 | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7696 |  |
+| 1 | EWA Splatting | 2020 | 13.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
+| 2 | 3DGS (full) | 2020 | 24.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
+| 3 | NeRF (baseline comparison) | 2020 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
+| 4 | 3DGS (compact) | 2020 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.7564 |  |
+| 5 | Wiener Deconvolution | 1949 | 21.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.84 | 0.7564 |  |
+| 6 | Landweber Iteration | 1951 | 21.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.0 | 0.8053 |  |
+| 7 | Richardson-Lucy | 1972 | 19.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7696 |  |
 | 8 | Tikhonov Regularization | 1963 | 20.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.46 | 0.7716 |  |
-| 9 | TV-ADMM | 1992 | 21.1 | 21.1 | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.78 |  |
+| 9 | TV-ADMM | 1992 | 21.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.5 | 0.78 |  |
 | 10 | Chambolle-Pock | 2011 | 18.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.8 | 0.6751 |  |
 | 11 | PnP-ADMM (NLM) | 2013 | 21.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.86 | 0.7582 |  |
-| 12 | PnP-FISTA (NLM) | 2013 | 21.2 | 21.2 | -- | -- | -- | -- | -- | -- | -- | -- | 19.86 | 0.7582 |  |
-| 13 | 3D-CNN | 2020 | 34.8 | 34.8 | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
-| 14 | NeRF-DL | 2020 | 32.5 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
-| 15 | 3D-Transformer | 2020 | 21.02/0.7984 | 21.02/0.7984 | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
-| 16 | 3D-Diffusion | 2020 | 37.0 | 37.0 | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
+| 12 | PnP-FISTA (NLM) | 2013 | 21.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.86 | 0.7582 |  |
+| 13 | 3D-CNN | 2020 | 34.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
+| 14 | NeRF-DL | 2020 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
+| 15 | 3D-Transformer | 2020 | 21.02/0.7984 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
+| 16 | 3D-Diffusion | 2020 | 37.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.7984 |  |
 ---
 
 #### 167. Ghost Imaging (`ghost_imaging`)
@@ -5254,21 +5254,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 16.2 | 16.2 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 15.95/0.1917 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 3 | GI-Net [proxy] | 2020 | 27.0 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 4 | Wiener Deconvolution | 1949 | 15.95/0.1916 | 15.95/0.1916 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 5 | Landweber Iteration | 1951 | 16.51/0.2531 | 16.51/0.2531 | -- | -- | -- | -- | -- | -- | -- | -- | 16.5 | 0.2531 |  |
+| 1 | Adjoint [proxy] | 2020 | 16.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 3 | GI-Net [proxy] | 2020 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 4 | Wiener Deconvolution | 1949 | 15.95/0.1916 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 5 | Landweber Iteration | 1951 | 16.51/0.2531 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.5 | 0.2531 |  |
 | 6 | Richardson-Lucy | 1972 | 14.05/0.1277 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 14.1 | 0.1277 |  |
 | 7 | Tikhonov Regularization | 1963 | 15.19/0.1612 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.2 | 0.1612 |  |
-| 8 | TV-ADMM | 1992 | 16.02/0.2143 | 16.02/0.2143 | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.2143 |  |
+| 8 | TV-ADMM | 1992 | 16.02/0.2143 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.2143 |  |
 | 9 | Chambolle-Pock | 2011 | 12.99/0.0959 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.0 | 0.0959 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 15.95/0.1917 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1917 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1917 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 15.96/0.1921 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.1921 |  |
-| 12 | ReconNet | 2020 | 30.6 | 30.6 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
-| 13 | Unrolled-Net | 2020 | 29.6 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 12 | ReconNet | 2020 | 30.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 13 | Unrolled-Net | 2020 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
 | 14 | CS-Transformer | 2020 | 17.08/0.2559 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
-| 15 | CS-Diffusion | 2020 | 39.5 | 39.5 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 15 | CS-Diffusion | 2020 | 39.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
 ---
 
 #### 168. Laser-Induced Breakdown Spectroscopy (LIBS) (`libs`)
@@ -5277,21 +5277,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 17.8 | 17.8 | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 20.52/0.7185 | 20.52/0.7185 | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
-| 3 | LIBS-CNN [proxy] | 2020 | 27.0 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
+| 1 | Adjoint [proxy] | 2020 | 17.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 20.52/0.7185 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
+| 3 | LIBS-CNN [proxy] | 2020 | 27.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
 | 4 | Wiener Deconvolution | 1949 | 20.46/0.6839 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.6839 |  |
 | 5 | Landweber Iteration | 1951 | 17.46/0.6140 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.5 | 0.6140 |  |
-| 6 | Richardson-Lucy | 1972 | 12.71/0.4663 | 12.71/0.4663 | -- | -- | -- | -- | -- | -- | -- | -- | 12.7 | 0.4663 |  |
-| 7 | Tikhonov Regularization | 1963 | 17.30/0.5523 | 17.30/0.5523 | -- | -- | -- | -- | -- | -- | -- | -- | 17.3 | 0.5523 |  |
-| 8 | TV-ADMM | 1992 | 19.31/0.7432 | 19.31/0.7432 | -- | -- | -- | -- | -- | -- | -- | -- | 19.3 | 0.7432 |  |
+| 6 | Richardson-Lucy | 1972 | 12.71/0.4663 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.7 | 0.4663 |  |
+| 7 | Tikhonov Regularization | 1963 | 17.30/0.5523 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.3 | 0.5523 |  |
+| 8 | TV-ADMM | 1992 | 19.31/0.7432 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.3 | 0.7432 |  |
 | 9 | Chambolle-Pock | 2011 | 12.18/0.3613 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.2 | 0.3613 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 20.52/0.7185 | 20.52/0.7185 | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.7185 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 20.65/0.8467 | 20.65/0.8467 | -- | -- | -- | -- | -- | -- | -- | -- | 20.6 | 0.8467 |  |
-| 12 | Spec-CNN | 2020 | 32.5 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
-| 13 | Spec-AE | 2020 | 30.9 | 30.9 | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
-| 14 | Spec-Transformer | 2020 | 21.12/0.8661 | 21.12/0.8661 | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
-| 15 | Spec-Diffusion | 2020 | 34.3 | 34.3 | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 20.52/0.7185 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.5 | 0.7185 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 20.65/0.8467 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.6 | 0.8467 |  |
+| 12 | Spec-CNN | 2020 | 32.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
+| 13 | Spec-AE | 2020 | 30.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
+| 14 | Spec-Transformer | 2020 | 21.12/0.8661 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
+| 15 | Spec-Diffusion | 2020 | 34.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.1 | 0.8661 |  |
 ---
 
 #### 169. MALDI Mass Spectrometry Imaging (`maldi_msi`)
@@ -5300,21 +5300,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 18.5 | 18.5 | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 22.50/0.7689 | 22.50/0.7689 | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
-| 3 | MSI-UNet [proxy] | 2020 | 37.9 | 37.9 | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
-| 4 | Wiener Deconvolution | 1949 | 22.44/0.7419 | 22.44/0.7419 | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
+| 1 | Adjoint [proxy] | 2020 | 18.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 22.50/0.7689 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
+| 3 | MSI-UNet [proxy] | 2020 | 37.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
+| 4 | Wiener Deconvolution | 1949 | 22.44/0.7419 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.4 | 0.7419 |  |
 | 5 | Landweber Iteration | 1951 | 18.36/0.6455 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.4 | 0.6455 |  |
-| 6 | Richardson-Lucy | 1972 | 13.03/0.5095 | 13.03/0.5095 | -- | -- | -- | -- | -- | -- | -- | -- | 13.0 | 0.5095 |  |
+| 6 | Richardson-Lucy | 1972 | 13.03/0.5095 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.0 | 0.5095 |  |
 | 7 | Tikhonov Regularization | 1963 | 18.28/0.5925 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.3 | 0.5925 |  |
-| 8 | TV-ADMM | 1992 | 20.65/0.7715 | 20.65/0.7715 | -- | -- | -- | -- | -- | -- | -- | -- | 20.6 | 0.7715 |  |
+| 8 | TV-ADMM | 1992 | 20.65/0.7715 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 20.6 | 0.7715 |  |
 | 9 | Chambolle-Pock | 2011 | 12.39/0.3802 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.4 | 0.3802 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 22.50/0.7689 | 22.50/0.7689 | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7689 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 22.50/0.7689 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.5 | 0.7689 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 22.67/0.8746 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.7 | 0.8746 |  |
-| 12 | Spec-CNN | 2020 | 26.5 | 26.5 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
-| 13 | Spec-AE | 2020 | 26.0 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
-| 14 | Spec-Transformer | 2020 | 23.25/0.9015 | 23.25/0.9015 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
-| 15 | Spec-Diffusion | 2020 | 31.0 | 31.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
+| 12 | Spec-CNN | 2020 | 26.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
+| 13 | Spec-AE | 2020 | 26.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
+| 14 | Spec-Transformer | 2020 | 23.25/0.9015 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
+| 15 | Spec-Diffusion | 2020 | 31.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.2 | 0.9015 |  |
 ---
 
 #### 170. Matrix Imaging (`matrix`)
@@ -5323,22 +5323,22 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | FISTA-L1 | 2020 | 28.5 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
-| 2 | FISTA-L1 (high quality) | 2020 | 25.0 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
-| 3 | LISTA | 2020 | 36.2 | 36.2 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
-| 4 | LISTA | 2020 | 31.1 | 31.1 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
-| 5 | Wiener Deconvolution | 1949 | 18.63/0.7078 | 18.63/0.7078 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
-| 6 | Landweber Iteration | 1951 | 16.63/0.6149 | 16.63/0.6149 | -- | -- | -- | -- | -- | -- | -- | -- | 16.6 | 0.6149 |  |
+| 1 | FISTA-L1 | 2020 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
+| 2 | FISTA-L1 (high quality) | 2020 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
+| 3 | LISTA | 2020 | 36.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
+| 4 | LISTA | 2020 | 31.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
+| 5 | Wiener Deconvolution | 1949 | 18.63/0.7078 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7078 |  |
+| 6 | Landweber Iteration | 1951 | 16.63/0.6149 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.6 | 0.6149 |  |
 | 7 | Richardson-Lucy | 1972 | 13.77/0.5449 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.8 | 0.5449 |  |
 | 8 | Tikhonov Regularization | 1963 | 15.98/0.6104 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.6104 |  |
 | 9 | TV-ADMM | 1992 | 17.55/0.7205 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.6 | 0.7205 |  |
 | 10 | Chambolle-Pock | 2011 | 11.18/0.3734 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 11.2 | 0.3734 |  |
-| 11 | PnP-ADMM (NLM) | 2013 | 18.65/0.7247 | 18.65/0.7247 | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7247 |  |
-| 12 | PnP-FISTA (NLM) | 2013 | 18.70/0.7743 | 18.70/0.7743 | -- | -- | -- | -- | -- | -- | -- | -- | 18.7 | 0.7743 |  |
-| 13 | ReconNet | 2020 | 37.6 | 37.6 | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
-| 14 | Unrolled-Net | 2020 | 35.0 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
-| 15 | CS-Transformer | 2020 | 19.11/0.7780 | 19.11/0.7780 | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
-| 16 | CS-Diffusion | 2020 | 36.1 | 36.1 | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
+| 11 | PnP-ADMM (NLM) | 2013 | 18.65/0.7247 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.6 | 0.7247 |  |
+| 12 | PnP-FISTA (NLM) | 2013 | 18.70/0.7743 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 18.7 | 0.7743 |  |
+| 13 | ReconNet | 2020 | 37.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
+| 14 | Unrolled-Net | 2020 | 35.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
+| 15 | CS-Transformer | 2020 | 19.11/0.7780 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
+| 16 | CS-Diffusion | 2020 | 36.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.1 | 0.7780 |  |
 ---
 
 #### 171. Neural Radiance Fields — NeRF (`nerf`)
@@ -5362,21 +5362,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 12.4 | 12.4 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 15.95/0.1917 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 3 | QI-DL [proxy] | 2020 | 24.0 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 4 | Wiener Deconvolution | 1949 | 15.95/0.1916 | 15.95/0.1916 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
-| 5 | Landweber Iteration | 1951 | 16.51/0.2531 | 16.51/0.2531 | -- | -- | -- | -- | -- | -- | -- | -- | 16.5 | 0.2531 |  |
+| 1 | Adjoint [proxy] | 2020 | 12.4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 3 | QI-DL [proxy] | 2020 | 24.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 4 | Wiener Deconvolution | 1949 | 15.95/0.1916 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1916 |  |
+| 5 | Landweber Iteration | 1951 | 16.51/0.2531 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.5 | 0.2531 |  |
 | 6 | Richardson-Lucy | 1972 | 14.05/0.1277 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 14.1 | 0.1277 |  |
 | 7 | Tikhonov Regularization | 1963 | 15.19/0.1612 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.2 | 0.1612 |  |
-| 8 | TV-ADMM | 1992 | 16.02/0.2143 | 16.02/0.2143 | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.2143 |  |
+| 8 | TV-ADMM | 1992 | 16.02/0.2143 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.2143 |  |
 | 9 | Chambolle-Pock | 2011 | 12.99/0.0959 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.0 | 0.0959 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 15.95/0.1917 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1917 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 15.95/0.1917 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.9 | 0.1917 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 15.96/0.1921 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.0 | 0.1921 |  |
-| 12 | ReconNet | 2020 | 36.2 | 36.2 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
-| 13 | Unrolled-Net | 2020 | 31.5 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 12 | ReconNet | 2020 | 36.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 13 | Unrolled-Net | 2020 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
 | 14 | CS-Transformer | 2020 | 17.08/0.2559 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
-| 15 | CS-Diffusion | 2020 | 30.6 | 30.6 | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
+| 15 | CS-Diffusion | 2020 | 30.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.1 | 0.2559 |  |
 ---
 
 #### 173. Small-Angle X-ray Scattering — SAXS (`saxs`)
@@ -5385,21 +5385,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 16.1 | 16.1 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.7208 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 24.9 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | 23.87 | 0.7374 |  |
-| 3 | SAXS-VAE [proxy] | 2020 | 25.0 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.7208 |  |
-| 4 | Wiener Deconvolution | 1949 | 24.9 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.7208 |  |
-| 5 | Landweber Iteration | 1951 | 22.3 | 22.3 | -- | -- | -- | -- | -- | -- | -- | -- | 21.8 | 0.7111 |  |
-| 6 | Richardson-Lucy | 1972 | 15.7 | 15.7 | -- | -- | -- | -- | -- | -- | -- | -- | 15.1 | 0.5498 |  |
+| 1 | Adjoint [proxy] | 2020 | 16.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.7208 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.87 | 0.7374 |  |
+| 3 | SAXS-VAE [proxy] | 2020 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.7208 |  |
+| 4 | Wiener Deconvolution | 1949 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.8 | 0.7208 |  |
+| 5 | Landweber Iteration | 1951 | 22.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.8 | 0.7111 |  |
+| 6 | Richardson-Lucy | 1972 | 15.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.1 | 0.5498 |  |
 | 7 | Tikhonov Regularization | 1963 | 21.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.6301 |  |
 | 8 | TV-ADMM | 1992 | 23.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.1 | 0.7784 |  |
 | 9 | Chambolle-Pock | 2011 | 16.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 15.5 | 0.4201 |  |
 | 10 | PnP-ADMM (NLM) | 2013 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.87 | 0.7374 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 24.9 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | 23.87 | 0.7374 |  |
-| 12 | PhaseNet | 2020 | 32.6 | 32.6 | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
-| 13 | prDeep | 2020 | 29.6 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
-| 14 | Phase-Transformer | 2020 | 25.30/0.8921 | 25.30/0.8921 | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
-| 15 | Phase-Diffusion | 2020 | 35.1 | 35.1 | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 24.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.87 | 0.7374 |  |
+| 12 | PhaseNet | 2020 | 32.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
+| 13 | prDeep | 2020 | 29.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
+| 14 | Phase-Transformer | 2020 | 25.30/0.8921 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
+| 15 | Phase-Diffusion | 2020 | 35.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.3 | 0.8921 |  |
 ---
 
 #### 174. Shearography (`shearography`)
@@ -5408,21 +5408,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 19.0 | 19.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 23.73/0.5302 | 23.73/0.5302 | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
-| 3 | ShearNet [proxy] | 2020 | 19.0 | 19.0 | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
-| 4 | Wiener Deconvolution | 1949 | 23.62/0.5205 | 23.62/0.5205 | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
-| 5 | Landweber Iteration | 1951 | 22.73/0.6431 | 22.73/0.6431 | -- | -- | -- | -- | -- | -- | -- | -- | 22.7 | 0.6431 |  |
-| 6 | Richardson-Lucy | 1972 | 17.81/0.3855 | 17.81/0.3855 | -- | -- | -- | -- | -- | -- | -- | -- | 17.8 | 0.3855 |  |
-| 7 | Tikhonov Regularization | 1963 | 21.04/0.4599 | 21.04/0.4599 | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.4599 |  |
-| 8 | TV-ADMM | 1992 | 23.50/0.6310 | 23.50/0.6310 | -- | -- | -- | -- | -- | -- | -- | -- | 23.5 | 0.6310 |  |
-| 9 | Chambolle-Pock | 2011 | 16.94/0.3232 | 16.94/0.3232 | -- | -- | -- | -- | -- | -- | -- | -- | 16.9 | 0.3232 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 23.73/0.5302 | 23.73/0.5302 | -- | -- | -- | -- | -- | -- | -- | -- | 23.7 | 0.5302 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 24.12/0.5730 | 24.12/0.5730 | -- | -- | -- | -- | -- | -- | -- | -- | 24.1 | 0.5730 |  |
-| 12 | Probe-CNN | 2020 | 29.1 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
-| 13 | Probe-GAN | 2020 | 31.9 | 31.9 | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
-| 14 | Probe-Transformer | 2020 | 27.44/0.8030 | 27.44/0.8030 | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
-| 15 | Probe-Diffusion | 2020 | 29.7 | 29.7 | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
+| 1 | Adjoint [proxy] | 2020 | 19.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 23.73/0.5302 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
+| 3 | ShearNet [proxy] | 2020 | 19.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
+| 4 | Wiener Deconvolution | 1949 | 23.62/0.5205 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.6 | 0.5205 |  |
+| 5 | Landweber Iteration | 1951 | 22.73/0.6431 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.7 | 0.6431 |  |
+| 6 | Richardson-Lucy | 1972 | 17.81/0.3855 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 17.8 | 0.3855 |  |
+| 7 | Tikhonov Regularization | 1963 | 21.04/0.4599 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 21.0 | 0.4599 |  |
+| 8 | TV-ADMM | 1992 | 23.50/0.6310 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.5 | 0.6310 |  |
+| 9 | Chambolle-Pock | 2011 | 16.94/0.3232 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 16.9 | 0.3232 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 23.73/0.5302 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.7 | 0.5302 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 24.12/0.5730 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.1 | 0.5730 |  |
+| 12 | Probe-CNN | 2020 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
+| 13 | Probe-GAN | 2020 | 31.9 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
+| 14 | Probe-Transformer | 2020 | 27.44/0.8030 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
+| 15 | Probe-Diffusion | 2020 | 29.7 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.4 | 0.8030 |  |
 ---
 
 #### 175. Secondary Ion Mass Spectrometry — SIMS (`sims`)
@@ -5431,21 +5431,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 19.2 | 19.2 | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
-| 2 | PnP-ADMM [proxy] | 2020 | 24.34/0.7301 | 24.34/0.7301 | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
-| 3 | SIMS-Net [proxy] | 2020 | 25.5 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
-| 4 | Wiener Deconvolution | 1949 | 24.23/0.7023 | 24.23/0.7023 | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
-| 5 | Landweber Iteration | 1951 | 19.91/0.6668 | 19.91/0.6668 | -- | -- | -- | -- | -- | -- | -- | -- | 19.9 | 0.6668 |  |
+| 1 | Adjoint [proxy] | 2020 | 19.2 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
+| 2 | PnP-ADMM [proxy] | 2020 | 24.34/0.7301 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
+| 3 | SIMS-Net [proxy] | 2020 | 25.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
+| 4 | Wiener Deconvolution | 1949 | 24.23/0.7023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.2 | 0.7023 |  |
+| 5 | Landweber Iteration | 1951 | 19.91/0.6668 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.9 | 0.6668 |  |
 | 6 | Richardson-Lucy | 1972 | 13.57/0.4918 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.4918 |  |
-| 7 | Tikhonov Regularization | 1963 | 19.81/0.5701 | 19.81/0.5701 | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.5701 |  |
+| 7 | Tikhonov Regularization | 1963 | 19.81/0.5701 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 19.8 | 0.5701 |  |
 | 8 | TV-ADMM | 1992 | 22.85/0.7817 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 22.9 | 0.7817 |  |
-| 9 | Chambolle-Pock | 2011 | 13.40/0.3948 | 13.40/0.3948 | -- | -- | -- | -- | -- | -- | -- | -- | 13.4 | 0.3948 |  |
-| 10 | PnP-ADMM (NLM) | 2013 | 24.34/0.7301 | 24.34/0.7301 | -- | -- | -- | -- | -- | -- | -- | -- | 24.3 | 0.7301 |  |
-| 11 | PnP-FISTA (NLM) | 2013 | 24.74/0.8673 | 24.74/0.8673 | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.8673 |  |
-| 12 | Spec-CNN | 2020 | 26.6 | 26.6 | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
-| 13 | Spec-AE | 2020 | 32.0 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
-| 14 | Spec-Transformer | 2020 | 25.71/0.9298 | 25.71/0.9298 | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
-| 15 | Spec-Diffusion | 2020 | 34.0 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
+| 9 | Chambolle-Pock | 2011 | 13.40/0.3948 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.4 | 0.3948 |  |
+| 10 | PnP-ADMM (NLM) | 2013 | 24.34/0.7301 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.3 | 0.7301 |  |
+| 11 | PnP-FISTA (NLM) | 2013 | 24.74/0.8673 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.7 | 0.8673 |  |
+| 12 | Spec-CNN | 2020 | 26.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
+| 13 | Spec-AE | 2020 | 32.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
+| 14 | Spec-Transformer | 2020 | 25.71/0.9298 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
+| 15 | Spec-Diffusion | 2020 | 34.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 25.7 | 0.9298 |  |
 ---
 
 #### 176. Streak Camera Imaging (`streak_camera`)
@@ -5454,21 +5454,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 28.5 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2267 |  |
+| 1 | Adjoint [proxy] | 2020 | 28.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2267 |  |
 | 2 | PnP-ADMM [proxy] | 2020 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2267 |  |
-| 3 | StreakNet [proxy] | 2020 | 26.5 | 26.5 | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2267 |  |
+| 3 | StreakNet [proxy] | 2020 | 26.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2267 |  |
 | 4 | Wiener Deconvolution | 1949 | 13.57/0.2267 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2267 |  |
-| 5 | Landweber Iteration | 1951 | 13.45/0.2348 | 13.45/0.2348 | -- | -- | -- | -- | -- | -- | -- | -- | 13.4 | 0.2348 |  |
-| 6 | Richardson-Lucy | 1972 | 12.50/0.1729 | 12.50/0.1729 | -- | -- | -- | -- | -- | -- | -- | -- | 12.5 | 0.1729 |  |
-| 7 | Tikhonov Regularization | 1963 | 13.11/0.1982 | 13.11/0.1982 | -- | -- | -- | -- | -- | -- | -- | -- | 13.1 | 0.1982 |  |
+| 5 | Landweber Iteration | 1951 | 13.45/0.2348 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.4 | 0.2348 |  |
+| 6 | Richardson-Lucy | 1972 | 12.50/0.1729 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 12.5 | 0.1729 |  |
+| 7 | Tikhonov Regularization | 1963 | 13.11/0.1982 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.1 | 0.1982 |  |
 | 8 | TV-ADMM | 1992 | 13.37/0.2371 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.4 | 0.2371 |  |
 | 9 | Chambolle-Pock | 2011 | 11.37/0.1233 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 11.4 | 0.1233 |  |
 | 10 | PnP-ADMM (NLM) | 2013 | 25.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2271 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 13.58/0.2282 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.6 | 0.2282 |  |
-| 12 | ReconNet | 2020 | 34.6 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
-| 13 | Unrolled-Net | 2020 | 31.5 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
-| 14 | CS-Transformer | 2020 | 13.94/0.2829 | 13.94/0.2829 | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
-| 15 | CS-Diffusion | 2020 | 33.0 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
+| 12 | ReconNet | 2020 | 34.6 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
+| 13 | Unrolled-Net | 2020 | 31.5 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
+| 14 | CS-Transformer | 2020 | 13.94/0.2829 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
+| 15 | CS-Diffusion | 2020 | 33.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 13.9 | 0.2829 |  |
 ---
 
 #### 177. Talbot-Lau Interferometry (`talbot_lau`)
@@ -5477,21 +5477,21 @@ Status legend: `no_ckpt` = algorithm documented, pretrained weights not yet avai
 
 | # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
-| 1 | Adjoint [proxy] | 2020 | 29.1 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
+| 1 | Adjoint [proxy] | 2020 | 29.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
 | 2 | PnP-ADMM [proxy] | 2020 | 5.77/-0.2404 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
-| 3 | Talbot-Net [proxy] | 2020 | 30.1 | 30.1 | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
+| 3 | Talbot-Net [proxy] | 2020 | 30.1 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
 | 4 | Wiener Deconvolution | 1949 | 5.76/-0.2404 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
-| 5 | Landweber Iteration | 1951 | 5.82/-0.2201 | 5.82/-0.2201 | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2201 |  |
+| 5 | Landweber Iteration | 1951 | 5.82/-0.2201 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2201 |  |
 | 6 | Richardson-Lucy | 1972 | 5.79/-0.1740 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.1740 |  |
-| 7 | Tikhonov Regularization | 1963 | 5.70/-0.2019 | 5.70/-0.2019 | -- | -- | -- | -- | -- | -- | -- | -- | 5.7 | -0.2019 |  |
-| 8 | TV-ADMM | 1992 | 5.73/-0.2247 | 5.73/-0.2247 | -- | -- | -- | -- | -- | -- | -- | -- | 5.7 | -0.2247 |  |
-| 9 | Chambolle-Pock | 2011 | 5.53/-0.1297 | 5.53/-0.1297 | -- | -- | -- | -- | -- | -- | -- | -- | 5.5 | -0.1297 |  |
+| 7 | Tikhonov Regularization | 1963 | 5.70/-0.2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.7 | -0.2019 |  |
+| 8 | TV-ADMM | 1992 | 5.73/-0.2247 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.7 | -0.2247 |  |
+| 9 | Chambolle-Pock | 2011 | 5.53/-0.1297 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.5 | -0.1297 |  |
 | 10 | PnP-ADMM (NLM) | 2013 | 5.77/-0.2404 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2404 |  |
 | 11 | PnP-FISTA (NLM) | 2013 | 5.78/-0.2326 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.8 | -0.2326 |  |
-| 12 | PhaseNet | 2020 | 38.0 | 38.0 | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
-| 13 | prDeep | 2020 | 37.0 | 37.0 | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
+| 12 | PhaseNet | 2020 | 38.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
+| 13 | prDeep | 2020 | 37.0 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
 | 14 | Phase-Transformer | 2020 | 37.3 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
-| 15 | Phase-Diffusion | 2020 | 35.8 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
+| 15 | Phase-Diffusion | 2020 | 35.8 | -- | -- | -- | -- | -- | -- | -- | -- | -- | 5.9 | -0.1759 |  |
 ---
 
 #### 178. Wide-Angle X-ray Scattering — WAXS (`waxs`)
