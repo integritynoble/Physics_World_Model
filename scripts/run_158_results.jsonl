@@ -1,0 +1,69 @@
+{"modality": "pet", "solver_key": "traditional_cpu", "solver_name": "FBP (emission tomography)", "psnr": 15.97, "ssim": 0.0359, "timestamp": "2026-03-23T16:56:28.738641"}
+{"modality": "pet", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 14.66, "ssim": 0.0296, "timestamp": "2026-03-23T16:56:38.722218"}
+{"modality": "pet", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 16.78, "ssim": 0.0493, "timestamp": "2026-03-23T16:56:58.512907"}
+{"modality": "pet", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 21.85, "ssim": 0.15, "timestamp": "2026-03-23T16:57:18.219577"}
+{"modality": "pet", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 16.87, "ssim": 0.042, "timestamp": "2026-03-23T16:57:39.450926"}
+{"modality": "pet", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 15.5, "ssim": 0.0336, "timestamp": "2026-03-23T16:58:02.754769"}
+{"modality": "pet", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 14.67, "ssim": 0.0294, "timestamp": "2026-03-23T16:58:20.536995"}
+{"modality": "pet", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 14.67, "ssim": 0.0311, "timestamp": "2026-03-23T16:59:06.136333"}
+{"modality": "pet", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 14.69, "ssim": 0.0356, "timestamp": "2026-03-23T16:59:47.774967"}
+{"modality": "acoustic_emission", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:02:30.258333"}
+{"modality": "acoustic_emission", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:02:38.166517"}
+{"modality": "acoustic_emission", "solver_key": "dl_localizer", "solver_name": "DeepAE-Net [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:02:45.853266"}
+{"modality": "acoustic_emission", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 16.84, "ssim": 0.2767, "timestamp": "2026-03-23T17:02:48.494451"}
+{"modality": "acoustic_emission", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 17.7, "ssim": 0.5411, "timestamp": "2026-03-23T17:02:52.031896"}
+{"modality": "acoustic_emission", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 27.58, "ssim": 0.9546, "timestamp": "2026-03-23T17:02:55.618359"}
+{"modality": "acoustic_emission", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 18.84, "ssim": 0.5616, "timestamp": "2026-03-23T17:02:59.190616"}
+{"modality": "acoustic_emission", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 18.56, "ssim": 0.5386, "timestamp": "2026-03-23T17:03:02.493914"}
+{"modality": "acoustic_emission", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 19.32, "ssim": 0.6175, "timestamp": "2026-03-23T17:03:05.984676"}
+{"modality": "acoustic_emission", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 16.84, "ssim": 0.2762, "timestamp": "2026-03-23T17:03:12.177538"}
+{"modality": "acoustic_emission", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 16.85, "ssim": 0.2925, "timestamp": "2026-03-23T17:03:18.315791"}
+{"modality": "acoustic_microscopy", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:03:27.620789"}
+{"modality": "acoustic_microscopy", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:03:37.525465"}
+{"modality": "acoustic_microscopy", "solver_key": "saft_dl", "solver_name": "SAFT-DL [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:03:49.014671"}
+{"modality": "acoustic_microscopy", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 20.28, "ssim": 0.5883, "timestamp": "2026-03-23T17:03:52.133893"}
+{"modality": "acoustic_emission", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:03:53.453198"}
+{"modality": "acoustic_microscopy", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 21.22, "ssim": 0.65, "timestamp": "2026-03-23T17:03:57.593201"}
+{"modality": "acoustic_microscopy", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 18.75, "ssim": 0.5298, "timestamp": "2026-03-23T17:04:03.797321"}
+{"modality": "acoustic_emission", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:04:04.353726"}
+{"modality": "acoustic_microscopy", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 20.35, "ssim": 0.5996, "timestamp": "2026-03-23T17:04:09.609271"}
+{"modality": "acoustic_microscopy", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 20.48, "ssim": 0.7258, "timestamp": "2026-03-23T17:04:15.954975"}
+{"modality": "acoustic_emission", "solver_key": "dl_localizer", "solver_name": "DeepAE-Net [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:04:16.297016"}
+{"modality": "acoustic_emission", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 16.84, "ssim": 0.2767, "timestamp": "2026-03-23T17:04:20.253070"}
+{"modality": "acoustic_microscopy", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 19.9, "ssim": 0.6147, "timestamp": "2026-03-23T17:04:22.340906"}
+{"modality": "acoustic_emission", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 17.7, "ssim": 0.5411, "timestamp": "2026-03-23T17:04:24.999894"}
+{"modality": "acoustic_emission", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 27.58, "ssim": 0.9546, "timestamp": "2026-03-23T17:04:29.511043"}
+{"modality": "acoustic_emission", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 18.84, "ssim": 0.5616, "timestamp": "2026-03-23T17:04:34.107064"}
+{"modality": "acoustic_microscopy", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 20.34, "ssim": 0.6286, "timestamp": "2026-03-23T17:04:34.859197"}
+{"modality": "acoustic_emission", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 18.56, "ssim": 0.5386, "timestamp": "2026-03-23T17:04:38.241939"}
+{"modality": "acoustic_emission", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 19.32, "ssim": 0.6175, "timestamp": "2026-03-23T17:04:42.666443"}
+{"modality": "acoustic_microscopy", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 20.49, "ssim": 0.697, "timestamp": "2026-03-23T17:04:46.966365"}
+{"modality": "acoustic_emission", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 16.84, "ssim": 0.2762, "timestamp": "2026-03-23T17:04:49.790001"}
+{"modality": "acoustic_emission", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 16.85, "ssim": 0.2925, "timestamp": "2026-03-23T17:04:56.417883"}
+{"modality": "acoustic_microscopy", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:05:12.802180"}
+{"modality": "acoustic_microscopy", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:05:22.890249"}
+{"modality": "acoustic_microscopy", "solver_key": "saft_dl", "solver_name": "SAFT-DL [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:05:32.630152"}
+{"modality": "acoustic_microscopy", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 20.28, "ssim": 0.5883, "timestamp": "2026-03-23T17:05:35.668665"}
+{"modality": "acoustic_microscopy", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 21.22, "ssim": 0.65, "timestamp": "2026-03-23T17:05:40.609070"}
+{"modality": "acoustic_microscopy", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 18.75, "ssim": 0.5298, "timestamp": "2026-03-23T17:05:45.432129"}
+{"modality": "acoustic_microscopy", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 20.35, "ssim": 0.5996, "timestamp": "2026-03-23T17:05:50.554744"}
+{"modality": "acoustic_microscopy", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 20.48, "ssim": 0.7258, "timestamp": "2026-03-23T17:05:55.134338"}
+{"modality": "acoustic_microscopy", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 19.9, "ssim": 0.6147, "timestamp": "2026-03-23T17:06:00.531868"}
+{"modality": "acoustic_microscopy", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 20.34, "ssim": 0.6286, "timestamp": "2026-03-23T17:06:13.677685"}
+{"modality": "acoustic_emission", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:07:23.198293"}
+{"modality": "acoustic_emission", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:07:35.224504"}
+{"modality": "acoustic_emission", "solver_key": "dl_localizer", "solver_name": "DeepAE-Net [proxy]", "psnr": 23.56, "ssim": 0.6438, "timestamp": "2026-03-23T17:07:45.447474"}
+{"modality": "acoustic_emission", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 16.84, "ssim": 0.2767, "timestamp": "2026-03-23T17:07:49.309731"}
+{"modality": "acoustic_emission", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 17.7, "ssim": 0.5411, "timestamp": "2026-03-23T17:07:53.423234"}
+{"modality": "acoustic_emission", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 27.58, "ssim": 0.9546, "timestamp": "2026-03-23T17:07:58.188539"}
+{"modality": "acoustic_emission", "solver_key": "tikhonov", "solver_name": "Tikhonov Regularization", "psnr": 18.84, "ssim": 0.5616, "timestamp": "2026-03-23T17:08:02.466352"}
+{"modality": "acoustic_emission", "solver_key": "tv_admm", "solver_name": "TV-ADMM", "psnr": 18.56, "ssim": 0.5386, "timestamp": "2026-03-23T17:08:07.306459"}
+{"modality": "acoustic_emission", "solver_key": "chambolle_pock", "solver_name": "Chambolle-Pock", "psnr": 19.32, "ssim": 0.6175, "timestamp": "2026-03-23T17:08:11.890916"}
+{"modality": "acoustic_emission", "solver_key": "pnp_admm_nlm", "solver_name": "PnP-ADMM (NLM)", "psnr": 16.84, "ssim": 0.2762, "timestamp": "2026-03-23T17:08:20.391355"}
+{"modality": "acoustic_emission", "solver_key": "pnp_fista_nlm", "solver_name": "PnP-FISTA (NLM)", "psnr": 16.85, "ssim": 0.2925, "timestamp": "2026-03-23T17:08:31.300215"}
+{"modality": "acoustic_microscopy", "solver_key": "traditional_cpu", "solver_name": "Adjoint [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:08:52.129242"}
+{"modality": "acoustic_microscopy", "solver_key": "best_quality", "solver_name": "PnP-ADMM [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:09:02.631465"}
+{"modality": "acoustic_microscopy", "solver_key": "saft_dl", "solver_name": "SAFT-DL [proxy]", "psnr": 19.07, "ssim": 0.5974, "timestamp": "2026-03-23T17:09:14.168727"}
+{"modality": "acoustic_microscopy", "solver_key": "wiener", "solver_name": "Wiener Deconvolution", "psnr": 20.28, "ssim": 0.5883, "timestamp": "2026-03-23T17:09:17.778031"}
+{"modality": "acoustic_microscopy", "solver_key": "landweber", "solver_name": "Landweber Iteration", "psnr": 21.22, "ssim": 0.65, "timestamp": "2026-03-23T17:09:23.585238"}
+{"modality": "acoustic_microscopy", "solver_key": "richardson_lucy", "solver_name": "Richardson-Lucy", "psnr": 18.75, "ssim": 0.5298, "timestamp": "2026-03-23T17:09:29.514884"}

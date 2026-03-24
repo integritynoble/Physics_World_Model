@@ -139,7 +139,7 @@
 | 6 | Cross-Correlation AE | 2008 | 20.0 | -- | -- | -- | -- | 19.0 | 0.5100 | no_ckpt | McLaskey et al., J. Sound Vib., 2010; https://doi.org/10.1016/j.jsv.2010.01.034 |
 | 7 | Beamforming-Based AE Imaging | 2010 | 21.6 | -- | -- | -- | -- | 20.5 | 0.5800 | no_ckpt | He et al., J. Acoust. Soc. Am., 2012; https://doi.org/10.1121/1.3688489 |
 | 8 | Modal AE Analysis | 2012 | 20.8 | -- | -- | -- | -- | 19.8 | 0.5500 | no_ckpt | Gorman & Prosser, J. Acoust. Emission, 1991; https://doi.org/10.1177/1475921719846051 |
-| 9 | DL-AE Source Classification | 2019 | 25.0 | -- | -- | -- | -- | 24.0 | 0.7200 | no_ckpt | Ebrahimkhanlou & Salamone, Mech. Syst. Signal Process., 2019; https://doi.org/10.1016/j.ymssp.2018.04.031 |
+| 9 | DL-AE Source Classification | 2019 | 25.0 | 23.6 | -- | -- | -- | 24.0 | 0.7200 | no_ckpt | Ebrahimkhanlou & Salamone, Mech. Syst. Signal Process., 2019; https://doi.org/10.1016/j.ymssp.2018.04.031 |
 | 10 | AE-CNN (1D-CNN AE Analysis) | 2021 | 27.0 | -- | -- | -- | -- | 26.0 | 0.8200 | no_ckpt | Ai et al., Compos. Struct., 2021; https://doi.org/10.1016/j.compstruct.2021.113862 |
 | 11 | AE-ResNet Source Location | 2021 | 32.6 | -- | -- | -- | -- | 28.5 | 0.9200 | no_ckpt | Ebrahimkhanlou & Salamone, Struct. Health Monit., 2021; https://doi.org/10.1177/1475921720964720 |
 | 12 | GAN-AE Signal Enhancement | 2022 | 28.1 | -- | -- | -- | -- | 27.0 | 0.8700 | no_ckpt | Zhang et al., Mech. Syst. Signal Process., 2022; https://doi.org/10.1016/j.ymssp.2022.109389 |
@@ -158,7 +158,7 @@
 | 1 | V(z) Curve Analysis | 1977 | 17.3 | -- | -- | -- | -- | 16.0 | 0.3200 | no_ckpt | Quate et al., Phys. Today, 1985; Atalar et al., Appl. Phys. Lett., 1977; https://doi.org/10.1063/1.89238 |
 | 2 | Pulse-Echo SAM | 1985 | 19.6 | -- | -- | -- | -- | 18.5 | 0.4000 | no_ckpt | Briggs & Kolosov, Acoustic Microscopy, Oxford, 1985; https://doi.org/10.1093/acprof:oso/9780199232734.001.0001 |
 | 3 | Time-Resolved SAM | 1993 | 21.0 | -- | -- | -- | -- | 20.0 | 0.4800 | no_ckpt | Weglein, IEEE TUFFC, 1993; https://doi.org/10.1109/58.251929 |
-| 4 | Deconvolution SAM (Wiener) | 2005 | 24.0 | -- | -- | -- | -- | 23.0 | 0.5800 | no_ckpt | Raum et al., IEEE TUFFC, 2006; https://doi.org/10.1109/TUFFC.2006.1621546 |
+| 4 | Deconvolution SAM (Wiener) | 2005 | 24.0 | 20.3 | -- | -- | -- | 23.0 | 0.5800 | no_ckpt | Raum et al., IEEE TUFFC, 2006; https://doi.org/10.1109/TUFFC.2006.1621546 |
 | 5 | Synthetic Aperture SAM | 2008 | 25.5 | -- | -- | -- | -- | 24.5 | 0.6200 | no_ckpt | Hein et al., J. Acoust. Soc. Am., 2008; https://doi.org/10.1121/1.2916707 |
 | 6 | NLM Denoising SAM | 2013 | 27.0 | -- | -- | -- | -- | 26.0 | 0.7000 | no_ckpt | Buades et al., CVPR, 2005; adapted for SAM, 2013; https://doi.org/10.1109/CVPR.2005.38 |
 | 7 | BM3D-SAM | 2015 | 28.5 | -- | -- | -- | -- | 27.5 | 0.7500 | no_ckpt | Dabov et al., IEEE TIP, 2007; adapted for SAM, 2015; https://doi.org/10.1109/TIP.2007.901238 |

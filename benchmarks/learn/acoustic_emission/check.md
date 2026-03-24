@@ -373,3 +373,2478 @@ Speclab: algorithm available as "TV-Denoising" in the acoustic_emission reconstr
 | Runtime | 0.65 s/sample |
 
 **Result: PASS** (ref=35.5 dB, achieved +1.0 dB above reference)
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.57 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.52 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.99 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.28 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.26 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.23 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.62 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.44 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DeepAE-Net [proxy]
+**Solver Key:** dl_localizer
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.56 dB |
+| SSIM (mean, 12 samples) | 0.6438 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2767 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 17.70 dB |
+| SSIM (mean, 12 samples) | 0.5411 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 27.58 dB |
+| SSIM (mean, 12 samples) | 0.9546 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.84 dB |
+| SSIM (mean, 12 samples) | 0.5616 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.13 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.56 dB |
+| SSIM (mean, 12 samples) | 0.5386 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.32 dB |
+| SSIM (mean, 12 samples) | 0.6175 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.84 dB |
+| SSIM (mean, 12 samples) | 0.2762 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i g(t - tau_i) * s_i(t), wave propagation + sensor response
+**Canonical Reference:** Grosse & Ohtsu, "Acoustic Emission Testing," Springer 2008
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.85 dB |
+| SSIM (mean, 12 samples) | 0.2925 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**

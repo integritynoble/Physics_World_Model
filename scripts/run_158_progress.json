@@ -1,0 +1,19 @@
+{
+  "completed": [
+    "pet",
+    "acoustic_emission",
+    "acoustic_emission",
+    "acoustic_emission"
+  ],
+  "current": "acoustic_microscopy",
+  "results": {
+    "pet": {
+      "solvers_run": 9,
+      "solvers_passed": 9
+    },
+    "acoustic_emission": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    }
+  }
+}

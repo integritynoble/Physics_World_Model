@@ -270,9 +270,9 @@ Adding a new algorithm:
 | 1 | CNN Beamformer (1 source) | 2023 | Sensors 2023, PMC10650508 | 39.4 | 0.9780 | 31.1 | 0.9894 | partial | yes |
 | 2 | CNN Beamformer (3 sources) | 2023 | Sensors 2023, PMC10650508 | 32.3 | 0.8120 | 31.1 | 0.9894 | done | yes |
 | 3 | MUSIC localization | 1986 | Schmidt, IEEE TAP 1986 | 22.0 | — | 31.1 | 0.9894 | done | yes |
-| 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 21.6 | 0.0778 | 31.1 | 0.9894 | done | yes |
-| 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 21.6 | 0.0778 | 31.1 | 0.9894 | done | yes |
-| 6 | DeepAE-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 21.6 | 0.0778 | 31.1 | 0.9894 | done | yes |
+| 4 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 21.6 | 0.0778 | 23.6 | 0.6438 | done | yes |
+| 5 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 21.6 | 0.0778 | 23.6 | 0.6438 | done | yes |
+| 6 | DeepAE-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 21.6 | 0.0778 | 23.6 | 0.6438 | done | yes |
 | 7 | precomputed_baseline (test) | — | — | 20.2 | — | 31.1 | 0.9894 | done | yes |
 | 8 | AIC picker | 2000 | Akaike, Ann Inst Stat Math 1974 | 20.0 | — | 31.1 | 0.9894 | done | yes |
 
@@ -845,8 +845,8 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 | 2 | HDL-SAM (SwinIR+Hypergraph) | 2024 | Somani & Banerjee, OpenReview 2024 | 31.6 | 0.9200 | 38.5 | 0.0408 | done | yes |
 | 3 | Hypergraph Inpainting | 2023 | Somani et al., CVPR Workshop 2023 | 28.0 | 0.8200 | 38.5 | 0.0408 | done | yes |
 | 4 | SAFT (Synth Aperture Focus) | 1980 | Doctor et al., 1986 | 25.0 | — | 38.5 | 0.0408 | done | yes |
-| 5 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 24.8 | 0.9483 | 38.5 | 0.0408 | done | yes |
-| 6 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 24.8 | 0.9483 | 38.5 | 0.0408 | done | yes |
+| 5 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 24.8 | 0.9483 | 19.1 | 0.5974 | partial | yes |
+| 6 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 24.8 | 0.9483 | 19.1 | 0.5974 | partial | yes |
 | 7 | precomputed_baseline (test) | — | — | 22.6 | — | 38.5 | 0.0408 | done | yes |
 | 8 | DAS beamforming | 1990 | Beamforming baseline | 22.0 | — | 38.5 | 0.0408 | done | yes |
 
@@ -1420,7 +1420,7 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
 | 1 | SwinIR-PET | 2023 | SwinIR for PET denoising | 39.9 | 0.9600 | 40.3 | 0.0030 | done | gpu |
 | 2 | DeepPET | 2019 | Haggstrom et al., PMB 2019 | 34.7 | 0.9200 | 40.3 | 0.0030 | done | gpu |
-| 3 | FBP (emission tomography) (PWM) | — | — | 33.1 | — | 40.3 | 0.0030 | done | yes |
+| 3 | FBP (emission tomography) (PWM) | — | — | 33.1 | — | 16.0 | 0.0359 | gap | yes |
 | 4 | NeuroLF-PET (PWM) | — | Häggström, I. et al. (2019) DeepPET: DL for PET reconstruction, Med. Image Anal. 58 | 33.1 | — | 40.3 | 0.0030 | done | gpu |
 | 5 | PET-DL (U-Net) (PWM) | — | Gong, K. et al. (2019) PET image reconstruction with DL, IEEE TMI 38(9) | 33.1 | — | 40.3 | 0.0030 | done | gpu |
 | 6 | fbp_ramlak (test) | — | — | 33.1 | — | 40.3 | 0.0030 | done | yes |

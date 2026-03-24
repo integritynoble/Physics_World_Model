@@ -349,3 +349,1353 @@ Reflectivity at an interface:
 | Runtime | 9.91 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT-DL [proxy]
+**Solver Key:** saft_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT-DL [proxy]
+**Solver Key:** saft_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.43 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.28 dB |
+| SSIM (mean, 12 samples) | 0.5883 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.28 dB |
+| SSIM (mean, 12 samples) | 0.5883 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.22 dB |
+| SSIM (mean, 12 samples) | 0.6500 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.22 dB |
+| SSIM (mean, 12 samples) | 0.6500 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.75 dB |
+| SSIM (mean, 12 samples) | 0.5298 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.75 dB |
+| SSIM (mean, 12 samples) | 0.5298 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.35 dB |
+| SSIM (mean, 12 samples) | 0.5996 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.35 dB |
+| SSIM (mean, 12 samples) | 0.5996 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.48 dB |
+| SSIM (mean, 12 samples) | 0.7258 |
+| Runtime | 0.22 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.48 dB |
+| SSIM (mean, 12 samples) | 0.7258 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.90 dB |
+| SSIM (mean, 12 samples) | 0.6147 |
+| Runtime | 0.24 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.90 dB |
+| SSIM (mean, 12 samples) | 0.6147 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.34 dB |
+| SSIM (mean, 12 samples) | 0.6286 |
+| Runtime | 0.49 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.34 dB |
+| SSIM (mean, 12 samples) | 0.6286 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.49 dB |
+| SSIM (mean, 12 samples) | 0.6970 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.49 dB |
+| SSIM (mean, 12 samples) | 0.6970 |
+| Runtime | 0.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.82 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT-DL [proxy]
+**Solver Key:** saft_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT-DL [proxy]
+**Solver Key:** saft_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.28 dB |
+| SSIM (mean, 12 samples) | 0.5883 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.28 dB |
+| SSIM (mean, 12 samples) | 0.5883 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.22 dB |
+| SSIM (mean, 12 samples) | 0.6500 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.22 dB |
+| SSIM (mean, 12 samples) | 0.6500 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.75 dB |
+| SSIM (mean, 12 samples) | 0.5298 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.75 dB |
+| SSIM (mean, 12 samples) | 0.5298 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.35 dB |
+| SSIM (mean, 12 samples) | 0.5996 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.35 dB |
+| SSIM (mean, 12 samples) | 0.5996 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.48 dB |
+| SSIM (mean, 12 samples) | 0.7258 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.48 dB |
+| SSIM (mean, 12 samples) | 0.7258 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.90 dB |
+| SSIM (mean, 12 samples) | 0.6147 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.90 dB |
+| SSIM (mean, 12 samples) | 0.6147 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.34 dB |
+| SSIM (mean, 12 samples) | 0.6286 |
+| Runtime | 0.56 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.34 dB |
+| SSIM (mean, 12 samples) | 0.6286 |
+| Runtime | 0.46 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 1.07 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT-DL [proxy]
+**Solver Key:** saft_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.41 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** SAFT-DL [proxy]
+**Solver Key:** saft_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.07 dB |
+| SSIM (mean, 12 samples) | 0.5974 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.28 dB |
+| SSIM (mean, 12 samples) | 0.5883 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.28 dB |
+| SSIM (mean, 12 samples) | 0.5883 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.22 dB |
+| SSIM (mean, 12 samples) | 0.6500 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.22 dB |
+| SSIM (mean, 12 samples) | 0.6500 |
+| Runtime | 0.20 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.75 dB |
+| SSIM (mean, 12 samples) | 0.5298 |
+| Runtime | 0.19 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y) = integral PSF(x-x',y-y') * R(x',y') dx'dy', R = acoustic reflectance
+**Canonical Reference:** Briggs & Kolosov, "Acoustic Microscopy," Oxford 2010 (2nd ed.)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.75 dB |
+| SSIM (mean, 12 samples) | 0.5298 |
+| Runtime | 0.21 s/sample |
+
+**Result: PASS**

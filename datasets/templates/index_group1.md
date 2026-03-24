@@ -16,8 +16,8 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 
 | # | Algorithm | Year | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Ref PSNR | Ref SSIM | Status | Reference |
 |---|-----------|------|-------|-------|-------|-------|-------|----------|----------|--------|-----------|
-| 1 | Filtered Back-Projection (FBP) | 1976 | 26.2 | -- | -- | -- | -- | 25.2 | 0.7540 | no_ckpt | Brooks & Di Chiro, Phys. Med. Biol. 1976; https://doi.org/10.1088/0031-9155/21/5/001 |
-| 2 | FBP-3DRP (3D Reprojection) | 1989 | 27.1 | -- | -- | -- | -- | 26.1 | 0.7820 | no_ckpt | Kinahan & Rogers, IEEE TNS 1989; https://doi.org/10.1109/23.34687 |
+| 1 | Filtered Back-Projection (FBP) | 1976 | 26.2 | 16.0 | -- | -- | -- | 25.2 | 0.7540 | no_ckpt | Brooks & Di Chiro, Phys. Med. Biol. 1976; https://doi.org/10.1088/0031-9155/21/5/001 |
+| 2 | FBP-3DRP (3D Reprojection) | 1989 | 27.1 | 16.0 | -- | -- | -- | 26.1 | 0.7820 | no_ckpt | Kinahan & Rogers, IEEE TNS 1989; https://doi.org/10.1109/23.34687 |
 | 3 | MLEM (ML Expectation Maximization) | 1982 | 28.5 | -- | -- | -- | -- | 27.5 | 0.8350 | no_ckpt | Shepp & Vardi, IEEE TMI 1982; https://doi.org/10.1109/TMI.1982.4307558 |
 | 4 | OSEM (Ordered Subsets EM) | 1994 | 29.0 | -- | -- | -- | -- | 28.0 | 0.8500 | no_ckpt | Hudson & Larkin, IEEE TMI 1994; https://doi.org/10.1109/42.363108 |
 | 5 | MAP-EM (Maximum A Posteriori EM) | 1990 | 30.3 | -- | -- | -- | -- | 29.3 | 0.8720 | no_ckpt | Green, IEEE TMI 1990; https://doi.org/10.1109/42.52985 |
@@ -26,7 +26,7 @@ When all 5 runs are complete, the algorithm status is marked **done**.
 | 8 | PSF-OSEM (Resolution Modeling OSEM) | 2006 | 31.8 | -- | -- | -- | -- | 30.8 | 0.9050 | no_ckpt | Panin et al., IEEE TNS 2006; https://doi.org/10.1109/TNS.2006.876001 |
 | 9 | TOF-OSEM (Time-of-Flight OSEM) | 2007 | 32.2 | -- | -- | -- | -- | 31.2 | 0.9100 | no_ckpt | Conti, Phys. Med. Biol. 2006; Surti et al., JNM 2007; https://doi.org/10.1088/0031-9155/51/24/R01 |
 | 10 | Kernel EM | 2015 | 33.0 | -- | -- | -- | -- | 32.0 | 0.9180 | no_ckpt | Wang & Qi, IEEE TMI 2015; https://doi.org/10.1109/TMI.2014.2343916 |
-| 11 | TV-regularized PET | 2008 | 31.5 | -- | -- | -- | -- | 30.5 | 0.8980 | no_ckpt | Sawatzky et al., EJNMMI Phys. 2008; https://doi.org/10.1007/s13244-013-0250-5 |
+| 11 | TV-regularized PET | 2008 | 31.5 | 15.5 | -- | -- | -- | 30.5 | 0.8980 | no_ckpt | Sawatzky et al., EJNMMI Phys. 2008; https://doi.org/10.1007/s13244-013-0250-5 |
 | 12 | DeepPET | 2019 | 40.4 | -- | -- | -- | -- | 34.7 | 0.9796 | no_ckpt | Haggstrom et al., Phys. Med. Biol. 2019; https://doi.org/10.1016/j.media.2019.03.013 |
 | 13 | DIP-PET (Deep Image Prior PET) | 2019 | 35.3 | -- | -- | -- | -- | 33.2 | 0.9510 | no_ckpt | Gong et al., IEEE TMI 2019; https://doi.org/10.1109/TMI.2018.2888491 |
 | 14 | FBSEM-Net | 2020 | 36.8 | -- | -- | -- | -- | 35.4 | 0.9620 | no_ckpt | Mehranian & Reader, IEEE TRPMS 2020; https://doi.org/10.1109/TRPMS.2020.2994644 |
