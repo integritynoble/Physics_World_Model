@@ -486,7 +486,7 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 
 ---
 
-## 5-Round Verification Test — 8 Flagship Modalities
+## 5-Round Verification Test — 12 Flagship Modalities
 
 **Rule:** Each algorithm must be verified across 5 independent runs on the standard dataset. If the run result does not meet the Ref PSNR and Ref SSIM, do NOT proceed to the next run. Fix the solver/forward-model first.
 
@@ -787,6 +787,174 @@ Standard: BioSR dataset. Source: CARE (Nature Methods 2018), Noise2Void (CVPR 20
 | 23 | WF-GAN | 2020 | 36.8 | -- | 23.64/0.69 | -- | -- | -- | -- | -- | -- | -- | 35.80 | 0.9450 | Qiao et al., Nature Methods, 2021; https://doi.org/10.1038/s41592-020-01048-5 |
 | 24 | SRResNet | 2017 | 35.0 | -- | 20.55/0.34 | -- | -- | -- | -- | -- | -- | -- | 34.00 | 0.9250 | Ledig et al., CVPR, 2017; https://doi.org/10.1109/CVPR.2017.19 |
 | 25 | WF-Foundation | 2025 | 39.2 | -- | 23.03/0.36 | -- | -- | -- | -- | -- | -- | -- | 38.20 | 0.9700 | Ma et al., Nature Methods, 2024; https://doi.org/10.1038/s41592-024-02244-3 |
+---
+
+### 9. CASSI — Coded Aperture Snapshot Spectral Imaging (`cassi`)
+
+**Benchmark:** KAIST dataset (10 scenes, 256×256, 28 channels)
+
+**Reference (SOTA):** MiJUN-5stg -- PSNR 40.70 dB, SSIM 0.9780 (Meng et al., AAAI, 2025)
+
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | GAP-TV | 2016 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.36 | 0.6690 | Yuan, ICIP, 2016; https://doi.org/10.1109/ICIP.2016.7532817 |
+| 2 | GAP-TV (200 iter) | 2016 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.36 | 0.6690 | Yuan, ICIP, 2016; https://doi.org/10.1109/ICIP.2016.7532817 |
+| 3 | MST-L | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.18 | 0.9480 | Cai et al., CVPR, 2022; https://doi.org/10.1109/CVPR52688.2022.01698 |
+| 4 | GAP-TV (fast) | 2016 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 24.36 | 0.6690 | Yuan, ICIP, 2016; https://doi.org/10.1109/ICIP.2016.7532817 |
+| 5 | MST-L (v2) | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.18 | 0.9480 | Cai et al., CVPR, 2022; https://doi.org/10.1109/CVPR52688.2022.01698 |
+| 6 | HDNet | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.97 | 0.9430 | Hu et al., CVPR, 2022; https://doi.org/10.1109/CVPR52688.2022.01702 |
+| 7 | PnP-HSICNN | 2021 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.12 | 0.7530 | Zheng et al., Photonics Res., 2021; https://doi.org/10.1364/PRJ.411745 |
+| 8 | DAUHST-9stg | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 38.36 | 0.9670 | Cai et al., NeurIPS, 2022 |
+| 9 | CST-L-Plus | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.12 | 0.9570 | Cai et al., ECCV, 2022; https://doi.org/10.1007/978-3-031-19790-1_41 |
+| 10 | MST++ | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.99 | 0.9510 | Cai et al., CVPRW, 2022; https://doi.org/10.1109/CVPRW56347.2022.00090 |
+| 11 | DGSMP | 2021 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.63 | 0.9170 | Huang et al., CVPR, 2021; https://doi.org/10.1109/CVPR46437.2021.01595 |
+| 12 | TSA-Net | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.46 | 0.8940 | Meng et al., ECCV, 2020; https://doi.org/10.1007/978-3-030-58592-1_12 |
+| 13 | λ-Net | 2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.53 | 0.8410 | Miao et al., ICCV, 2019; https://doi.org/10.1109/ICCV.2019.00416 |
+| 14 | ADMM-Net | 2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.58 | 0.9180 | Ma et al., ICCV, 2019; https://doi.org/10.1109/ICCV.2019.01032 |
+| 15 | GAP-Net | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.26 | 0.9170 | Meng et al., 2020; https://arxiv.org/abs/2012.08364 |
+| 16 | BIRNAT | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.58 | 0.9600 | Cheng et al., ECCV, 2020; https://doi.org/10.1007/978-3-030-58586-0_16 |
+| 17 | BiSRNet | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.76 | 0.8370 | Cai et al., NeurIPS, 2023 |
+| 18 | TwIST | 2007 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.12 | 0.6690 | Bioucas-Dias & Figueiredo, IEEE TIP, 2007; https://doi.org/10.1109/TIP.2007.909319 |
+| 19 | RDLUF-MixS2-9stg | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 39.57 | 0.9740 | Dong et al., CVPR, 2023; https://doi.org/10.1109/CVPR52729.2023.02132 |
+| 20 | SSR-L | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 40.27 | 0.9760 | Zhang et al., CVPR, 2024; https://doi.org/10.1109/CVPR52733.2024.02439 |
+| 21 | PADUT-3stg | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.95 | 0.9620 | Li et al., ICCV, 2023; https://doi.org/10.1109/ICCV51070.2023.01191 |
+| 22 | MiJUN-5stg | 2025 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 40.70 | 0.9780 | Meng et al., AAAI, 2025; https://doi.org/10.1609/aaai.v39i6.32707 |
+
+---
+
+### 10. CACTI — Coded Aperture Compressive Temporal Imaging (`cacti`)
+
+**Benchmark:** 6 grayscale scenes (Kobe, Traffic, Runner, Drop, Crash, Aerial), 256×256, B=8
+
+**Reference (SOTA):** MambaSCI -- PSNR 37.50 dB, SSIM 0.9790 (Pan et al., NeurIPS, 2024)
+
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | GAP-TV | 2016 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.73 | 0.8580 | Yuan, ICIP, 2016; https://doi.org/10.1109/ICIP.2016.7532817 |
+| 2 | EfficientSCI | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.48 | 0.9750 | Wang et al., CVPR, 2023; https://doi.org/10.1109/CVPR52729.2023.01772 |
+| 3 | ELP-Unfolding | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.41 | 0.9690 | Yang et al., ECCV, 2022; https://doi.org/10.1007/978-3-031-20050-2_35 |
+| 4 | EfficientSCI-T | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.22 | 0.9610 | Wang et al., CVPR, 2023; https://doi.org/10.1109/CVPR52729.2023.01772 |
+| 5 | PnP-FFDNet | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.70 | 0.8920 | Yuan et al., CVPR, 2020; https://doi.org/10.1109/CVPR42600.2020.00152 |
+| 6 | HiSViT-9 | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.00 | 0.9780 | Wang et al., ECCV, 2024; https://doi.org/10.1007/978-3-031-73004-7_7 |
+| 7 | HiSViT-13 | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.29 | 0.9800 | Wang et al., ECCV, 2024; https://doi.org/10.1007/978-3-031-73004-7_7 |
+| 8 | DeSCI | 2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.65 | 0.9350 | Liu et al., TPAMI, 2019; https://doi.org/10.1109/TPAMI.2018.2873587 |
+| 9 | BIRNAT | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.31 | 0.9510 | Cheng et al., ECCV, 2020; https://doi.org/10.1007/978-3-030-58586-0_16 |
+| 10 | RevSCI | 2021 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.92 | 0.9560 | Cheng et al., CVPR, 2021; https://doi.org/10.1109/CVPR46437.2021.01598 |
+| 11 | MetaSCI | 2021 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.72 | 0.9260 | Wang et al., CVPR, 2021; https://doi.org/10.1109/CVPR46437.2021.00212 |
+| 12 | STFormer | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.34 | 0.9740 | Wang et al., TPAMI, 2023; https://doi.org/10.1109/TPAMI.2022.3225382 |
+| 13 | GAP-Net | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.86 | 0.9470 | Meng et al., IJCV, 2023; https://doi.org/10.1007/s11263-023-01844-4 |
+| 14 | DUN-3DUnet | 2021 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.26 | 0.9680 | Wu et al., ICCV, 2021; https://arxiv.org/abs/2109.06548 |
+| 15 | CTM-SCI | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.52 | 0.9760 | Zheng et al., ICCV, 2023; https://arxiv.org/abs/2306.11316 |
+| 16 | E2E-CNN | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.45 | 0.8820 | Qiao et al., APL Photonics, 2020; https://doi.org/10.1063/1.5140721 |
+| 17 | PnP-FastDVDnet | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.35 | 0.9420 | Yuan et al., TPAMI, 2022; https://arxiv.org/abs/2101.04822 |
+| 18 | EfficientSCI-L | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.92 | 0.9770 | Wang et al., CVPR, 2023; https://doi.org/10.1109/CVPR52729.2023.01772 |
+| 19 | MambaSCI | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.50 | 0.9790 | Pan et al., NeurIPS, 2024; https://arxiv.org/abs/2410.14214 |
+| 20 | Q-SCI | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.57 | 0.9690 | Cao et al., ECCV, 2024; https://arxiv.org/abs/2407.21517 |
+
+---
+
+### 11. CT — X-ray Computed Tomography (`ct`)
+
+**Benchmark:** LoDoPaB-CT (Leuschner et al., 2021)
+
+**Reference (SOTA):** FBP (Ram-Lak) -- PSNR 30.19 dB, SSIM 0.7270 (baseline); RED-CNN -- PSNR 44.42 dB, SSIM 0.9705 (Chen et al., TMI, 2017)
+
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | FBP (Ram-Lak) | 1971 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.19 | 0.7270 | Ramachandran & Lakshminarayanan, 1971; Leuschner et al., 2021 |
+| 2 | FBP (Shepp-Logan) | 1974 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.50 | 0.7100 | Shepp & Logan, IEEE TNS, 1974; https://doi.org/10.1109/TNS.1974.6499235 |
+| 3 | FBP (Cosine) | 1974 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.00 | 0.7000 | Standard cosine-windowed FBP |
+| 4 | FBP (Hamming) | 1974 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.80 | 0.6900 | Standard Hamming-windowed FBP |
+| 5 | FBP (Hann) | 1974 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.50 | 0.6800 | Standard Hann-windowed FBP |
+| 6 | Landweber | 1951 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.00 | 0.6800 | Landweber, Am. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 7 | ART | 1970 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.50 | 0.7200 | Gordon et al., J. Theor. Biol., 1970; https://doi.org/10.1016/0022-5193(70)90109-8 |
+| 8 | SIRT | 1972 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.40 | 0.8000 | Gilbert, J. Theor. Biol., 1972; https://doi.org/10.1016/0022-5193(72)90180-4 |
+| 9 | CGLS | 1952 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.05 | 0.7800 | Hestenes & Stiefel, 1952; https://doi.org/10.6028/jres.049.044 |
+| 10 | MLEM | 1982 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.00 | 0.7800 | Shepp & Vardi, IEEE TMI, 1982; https://doi.org/10.1109/TMI.1982.4307558 |
+| 11 | SART | 1984 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.50 | 0.8000 | Andersen & Kak, Ultrason. Imaging, 1984; https://doi.org/10.1177/016173468400600107 |
+| 12 | OSEM | 1994 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.50 | 0.7900 | Hudson & Larkin, IEEE TMI, 1994; https://doi.org/10.1109/42.363108 |
+| 13 | Tikhonov | 1963 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.50 | 0.7600 | Tikhonov, Soviet Math. Dokl., 1963 |
+| 14 | TV-ADMM | 2008 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.36 | 0.8300 | Sidky & Pan, Phys. Med. Biol., 2008; https://doi.org/10.1088/0031-9155/53/17/021 |
+| 15 | Chambolle-Pock | 2011 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.92 | 0.7000 | Chambolle & Pock, JMIV, 2011; https://doi.org/10.1007/s10851-010-0251-1 |
+| 16 | PnP-ADMM (NLM) | 2013 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.00 | 0.8200 | Venkatakrishnan et al., GlobalSIP, 2013; https://doi.org/10.1109/GlobalSIP.2013.6737048 |
+| 17 | PnP-HQS (NLM) | 2017 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.50 | 0.8100 | Zhang et al., TIP, 2017; https://doi.org/10.1109/TIP.2017.2662206 |
+| 18 | PnP-FISTA (NLM) | 2009 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.50 | 0.8100 | Beck & Teboulle, SIIMS, 2009; https://doi.org/10.1137/080716542 |
+| 19 | PnP-ADMM (BM3D) | 2013 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.85 | 0.8590 | Venkatakrishnan et al., 2013; Dabov et al., TIP, 2007 |
+| 20 | FBP + NLM | 2005 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.00 | 0.8200 | Buades et al., CVPR, 2005; https://doi.org/10.1109/CVPR.2005.38 |
+| 21 | FBP + BM3D | 2007 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 42.77 | 0.9560 | Dabov et al., TIP, 2007; Chen et al., TMI, 2017 |
+| 22 | FBP + Bilateral | 1998 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.50 | 0.8100 | Tomasi & Manduchi, ICCV, 1998; https://doi.org/10.1109/ICCV.1998.710815 |
+| 23 | FBP + Wavelet | 1995 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.00 | 0.8000 | Donoho, IEEE TIT, 1995; https://doi.org/10.1109/18.382009 |
+| 24 | FBP + TV | 1992 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.50 | 0.8300 | Rudin et al., Physica D, 1992; https://doi.org/10.1016/0167-2789(92)90242-F |
+| 25 | RED-CNN | 2017 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 44.42 | 0.9705 | Chen et al., IEEE TMI, 2017; https://doi.org/10.1109/TMI.2017.2715284 |
+| 26 | RED-CNN (small) | 2017 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 43.50 | 0.9650 | Chen et al., IEEE TMI, 2017; https://doi.org/10.1109/TMI.2017.2715284 |
+| 27 | FBPConvNet | 2017 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 37.83 | 0.9120 | Jin et al., TIP, 2017; https://doi.org/10.1109/TIP.2016.2644872 |
+| 28 | WGAN-VGG | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 23.39 | 0.7920 | Yang et al., IEEE TMI, 2018; https://doi.org/10.1109/TMI.2018.2827462 |
+| 29 | LEARN | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 40.73 | 0.9660 | Chen et al., IEEE TMI, 2018; https://doi.org/10.1109/TMI.2018.2804895 |
+| 30 | Learned Primal-Dual | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.25 | 0.8660 | Adler & Oktem, IEEE TMI, 2018; https://doi.org/10.1109/TMI.2018.2799231 |
+| 31 | iRadonMAP | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.00 | 0.9000 | He et al., IEEE TMI, 2020; https://doi.org/10.1109/TMI.2020.2988266 |
+| 32 | FBP + U-Net | 2015 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.00 | 0.8620 | Ronneberger et al., 2015; Leuschner et al., 2021 |
+| 33 | DuDoNet | 2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 39.00 | 0.9500 | Lin et al., CVPR, 2019; https://doi.org/10.1109/CVPR.2019.01076 |
+| 34 | InDuDoNet | 2021 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 42.10 | 0.9730 | Song et al., MICCAI, 2021; https://doi.org/10.1007/978-3-030-87231-1_33 |
+| 35 | DuDoTrans | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 40.62 | 0.9640 | Wang et al., MICCAI, 2022; https://doi.org/10.1007/978-3-031-16446-0_1 |
+| 36 | CTformer | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.00 | 0.9120 | Wang et al., Phys. Med. Biol., 2023; https://doi.org/10.1088/1361-6560/acc000 |
+| 37 | Score-CT | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.24 | 0.9050 | Song et al., ICLR, 2022; https://arxiv.org/abs/2011.13456 |
+| 38 | DPS | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.75 | 0.7900 | Chung et al., ICLR, 2023; https://arxiv.org/abs/2209.14687 |
+| 39 | DiffusionMBIR | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.23 | 0.9680 | Chung & Ye, CVPR, 2023; https://arxiv.org/abs/2302.14243 |
+| 40 | DOLCE | 2023 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.00 | 0.9200 | Liu et al., ICCV, 2023; https://arxiv.org/abs/2211.12340 |
+| 41 | CT-FM | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.50 | 0.8800 | Denker et al., 2024; https://arxiv.org/abs/2403.04362 |
+
+---
+
+### 12. MRI — Magnetic Resonance Imaging (`mri`)
+
+**Benchmark:** fastMRI knee 4x acceleration
+
+**Reference (SOTA):** MambaRecon -- PSNR 43.93 dB, SSIM 0.9760 (Korkmaz & Patel, WACV, 2025)
+
+| # | Algorithm | Year | R1(L) | R1(M) | R2(L) | R2(M) | R3(L) | R3(M) | R4(L) | R4(M) | R5(L) | R5(M) | Ref PSNR | Ref SSIM | Reference |
+|---|-----------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|----------|-----------|
+| 1 | Zero-Filled IFFT | 1973 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.00 | 0.7040 | Lauterbur, Nature, 1973; Zbontar et al., 2018; https://arxiv.org/abs/1811.08839 |
+| 2 | CS-MRI (Wavelet) | 2007 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.70 | 0.6030 | Lustig et al., MRM, 2007; https://doi.org/10.1002/mrm.21391 |
+| 3 | SENSE | 1999 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.79 | 0.8160 | Pruessmann et al., MRM, 1999 |
+| 4 | ESPIRiT | 2014 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.18 | 0.8850 | Uecker et al., MRM, 2014; https://doi.org/10.1002/mrm.24751 |
+| 5 | CS-MRI (TV) | 2007 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.88 | 0.6280 | Block et al., MRM, 2007; https://doi.org/10.1002/mrm.21236 |
+| 6 | POCS | 1991 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 28.50 | 0.6750 | Haacke et al., J. Magn. Reson., 1991; https://doi.org/10.1016/0022-2364(91)90253-P |
+| 7 | ADMM | 2010 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.50 | 0.7250 | Yang et al., IEEE J. Sel. Top. Signal Process., 2010 |
+| 8 | Conjugate Gradient | 2001 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.00 | 0.7750 | Pruessmann et al., MRM, 2001; https://doi.org/10.1002/mrm.1241 |
+| 9 | Truncated IFFT | 1973 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 26.00 | 0.5750 | Classic Fourier MRI, 1973 |
+| 10 | Gradient Descent | 2010 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.50 | 0.6750 | Fessler, IEEE SPM, 2010; https://doi.org/10.1109/MSP.2010.936726 |
+| 11 | Split Bregman | 2009 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.50 | 0.7000 | Goldstein & Osher, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080725891 |
+| 12 | PnP-ADMM | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.8600 | Ahmad et al., IEEE SPM, 2020; https://doi.org/10.1109/MSP.2019.2949470 |
+| 13 | Low-Rank (LORAKS) | 2014 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.00 | 0.8600 | Haldar, IEEE TMI, 2014; https://doi.org/10.1109/TMI.2013.2294615 |
+| 14 | ISTA | 2004 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.50 | 0.7250 | Daubechies et al., Comm. Pure Appl. Math., 2004; https://doi.org/10.1002/cpa.20042 |
+| 15 | GRAPPA-like | 2002 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.39 | 0.7700 | Griswold et al., MRM, 2002; https://doi.org/10.1002/mrm.10171 |
+| 16 | MoDL | 2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 36.14 | 0.9170 | Aggarwal et al., IEEE TMI, 2019; https://doi.org/10.1109/TMI.2018.2865356 |
+| 17 | MoDL (5 unrolls) | 2019 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.25 | 0.9050 | Aggarwal et al., IEEE TMI, 2019; https://doi.org/10.1109/TMI.2018.2865356 |
+| 18 | E2E-VarNet | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 39.37 | 0.9240 | Sriram et al., MICCAI, 2020; https://doi.org/10.1007/978-3-030-59713-9_7 |
+| 19 | FISTA | 2009 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.75 | 0.7300 | Beck & Teboulle, SIAM J. Imaging Sci., 2009; https://doi.org/10.1137/080716542 |
+| 20 | Landweber Iteration | 1951 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.50 | 0.6250 | Landweber, Am. J. Math., 1951; https://doi.org/10.2307/2372313 |
+| 21 | Tikhonov Regularization | 1963 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.50 | 0.6750 | Tikhonov, Soviet Math. Dokl., 1963 |
+| 22 | Homodyne Detection | 1991 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 27.00 | 0.6250 | Noll et al., IEEE TMI, 1991; https://doi.org/10.1109/42.79473 |
+| 23 | Nuclear Norm (SVT/SAKE) | 2010 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.00 | 0.8250 | Cai et al., SIAM J. Optim., 2010; Shin et al., MRM, 2014 |
+| 24 | Proximal Gradient Descent | 2005 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.50 | 0.7250 | Combettes & Wajs, Multiscale Model. Simul., 2005 |
+| 25 | BM3D-MRI | 2016 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.8650 | Eksioglu, J. Math. Imaging Vis., 2016; https://doi.org/10.1007/s10851-016-0647-7 |
+| 26 | SPIRiT-like | 2010 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.8550 | Lustig & Pauly, MRM, 2010; https://doi.org/10.1002/mrm.22428 |
+| 27 | RED (Regularization by Denoising) | 2017 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.50 | 0.8350 | Romano et al., SIAM J. Imaging Sci., 2017; https://doi.org/10.1137/16M1102884 |
+| 28 | Dictionary Learning MRI | 2011 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.00 | 0.8250 | Ravishankar & Bresler, IEEE TMI, 2011; https://doi.org/10.1109/TMI.2010.2090538 |
+| 29 | ALOHA (Hankel Low-Rank) | 2015 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.00 | 0.8500 | Jin & Ye, IEEE TIP, 2015; https://doi.org/10.1109/TIP.2015.2446943 |
+| 30 | U-Net (fastMRI) | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 35.91 | 0.9040 | Zbontar et al., 2018; Ronneberger et al., MICCAI, 2015 |
+| 31 | DC-CNN | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.25 | 0.7260 | Schlemper et al., IEEE TMI, 2018; https://doi.org/10.1109/TMI.2017.2760978 |
+| 32 | Deep ADMM-Net | 2016 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.52 | 0.8950 | Sun et al., NeurIPS, 2016; https://arxiv.org/abs/1607.03963 |
+| 33 | ISTA-Net+ | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 34.00 | 0.8900 | Zhang & Ghanem, CVPR, 2018; https://doi.org/10.1109/CVPR.2018.00196 |
+| 34 | PnP-DnCNN | 2020 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.8600 | Ahmad et al., IEEE SPM, 2020; Zhang et al., TIP, 2017 |
+| 35 | Score-MRI (diffusion) | 2022 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 33.50 | 0.8900 | Chung & Ye, Med. Image Anal., 2022; https://doi.org/10.1016/j.media.2022.102479 |
+| 36 | CascadeNet | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.25 | 0.7260 | Schlemper et al., IEEE TMI, 2018; https://doi.org/10.1109/TMI.2017.2760978 |
+| 37 | k-t SPARSE-SENSE | 2006 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 30.00 | 0.7500 | Lustig et al., ISMRM, 2006 |
+| 38 | SMASH | 1997 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 29.00 | 0.7250 | Sodickson & Manning, MRM, 1997; https://doi.org/10.1002/mrm.1910380414 |
+| 39 | KIKI-Net | 2018 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 31.87 | 0.7170 | Eo et al., MRM, 2018; https://doi.org/10.1002/mrm.27201 |
+| 40 | ReconFormer | 2024 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 32.73 | 0.7380 | Guo et al., IEEE TMI, 2024; https://doi.org/10.1109/TMI.2023.3314747 |
+| 41 | MambaRecon | 2025 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | 43.93 | 0.9760 | Korkmaz & Patel, WACV, 2025; https://arxiv.org/abs/2409.12401 |
+
 ---
 
 ## Implementation Tracking -- 158 Non-Flagship Modalities
