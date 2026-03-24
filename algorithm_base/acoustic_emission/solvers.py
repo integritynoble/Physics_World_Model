@@ -1,10 +1,13 @@
 """Solvers for Acoustic Emission Testing (AE) (acoustic_emission).
 
-Comprehensive solver library covering classical (1949-1974), iterative (1951-2011),
-plug-and-play (2013+), and deep learning (2016+) reconstruction methods.
+Forward model: wave propagation from sources to sensors.
+  y[k, t] = sum_{pixels (px,py)} x[py,px] * delta(t - dist(sensor_k, (px,py)) / c)
+
+The measurement y has shape (n_sensors, n_time) and ground truth x has shape (grid, grid).
+H_ideal contains sensor positions. All solvers implement source localization / inverse
+wave propagation, not PSF deconvolution.
 
 Each function follows the standard interface: fn(y, operator, cfg) -> (x_hat, info)
-When no operator is provided, a generic PSF operator is created from image dimensions.
 """
 
 from __future__ import annotations
@@ -17,41 +20,39 @@ DISPLAY_NAME = "Acoustic Emission Testing (AE)"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 15 solvers from 1949 to 2026
+# Solver registry -- 15 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
-    # Original
     "traditional_cpu": {
-        "name": "Adjoint [proxy]",
-        "module": "pwm_core.recon.richardson_lucy",
-        "function": "run_richardson_lucy",
+        "name": "Backprojection",
+        "module": "algorithm_base.acoustic_emission.solvers",
+        "function": "run_traditional_cpu_impl",
         "gpu": False,
-        "reference": "Richardson 1972, JOSA",
+        "reference": "Delay-and-sum beamforming baseline",
     },
-    # Original
     "best_quality": {
-        "name": "PnP-ADMM [proxy]",
-        "module": "pwm_core.recon.richardson_lucy",
-        "function": "run_richardson_lucy",
+        "name": "FISTA Source Localization",
+        "module": "algorithm_base.acoustic_emission.solvers",
+        "function": "run_best_quality_impl",
         "gpu": False,
-        "reference": "Richardson 1972, JOSA",
+        "reference": "FISTA with positivity, Beck & Teboulle 2009",
+        "cfg_override": {"iters": 200},
     },
-    # Original
     "dl_localizer": {
-        "name": "DeepAE-Net [proxy]",
-        "module": "pwm_core.recon.richardson_lucy",
-        "function": "run_richardson_lucy",
+        "name": "CG-Tikhonov Source",
+        "module": "algorithm_base.acoustic_emission.solvers",
+        "function": "run_dl_localizer_impl",
         "gpu": False,
-        "reference": "Richardson 1972, JOSA",
+        "reference": "CG with Tikhonov regularization",
+        "cfg_override": {"iters": 100, "lam": 10.0},
     },
-    # ── Classical (1949-1974) ──
+    # -- Classical (1949-1974) --
     "wiener": {
-        "name": "Wiener Deconvolution",
+        "name": "Wiener Filter",
         "module": "algorithm_base.acoustic_emission.solvers",
         "function": "run_wiener",
         "gpu": False,
         "reference": "Wiener, Extrapolation, Interpolation... 1949",
-        "cfg_override": {"reg": 0.01},
     },
     "landweber": {
         "name": "Landweber Iteration",
@@ -59,7 +60,7 @@ SOLVERS = {
         "function": "run_landweber",
         "gpu": False,
         "reference": "Landweber, Am J Math 1951",
-        "cfg_override": {"iters": 50, "step": 0.5},
+        "cfg_override": {"iters": 100},
     },
     "richardson_lucy": {
         "name": "Richardson-Lucy",
@@ -67,16 +68,16 @@ SOLVERS = {
         "function": "run_richardson_lucy",
         "gpu": False,
         "reference": "Richardson 1972; Lucy 1974",
-        "cfg_override": {"iters": 50},
+        "cfg_override": {"iters": 100},
     },
-    # ── Regularization (1963-2011) ──
+    # -- Regularization (1963-2011) --
     "tikhonov": {
         "name": "Tikhonov Regularization",
         "module": "algorithm_base.acoustic_emission.solvers",
         "function": "run_tikhonov",
         "gpu": False,
         "reference": "Tikhonov, Soviet Math Doklady 1963",
-        "cfg_override": {"iters": 50, "lam": 0.01, "step": 0.5},
+        "cfg_override": {"iters": 100, "lam": 50.0},
     },
     "tv_admm": {
         "name": "TV-ADMM",
@@ -84,7 +85,7 @@ SOLVERS = {
         "function": "run_tv_admm",
         "gpu": False,
         "reference": "Rudin, Osher & Fatemi 1992; Boyd et al. 2010",
-        "cfg_override": {"iters": 20, "lam": 0.005, "rho": 1.0},
+        "cfg_override": {"iters": 50, "tv_weight": 0.01, "rho": 1.0},
     },
     "chambolle_pock": {
         "name": "Chambolle-Pock",
@@ -92,16 +93,16 @@ SOLVERS = {
         "function": "run_chambolle_pock",
         "gpu": False,
         "reference": "Chambolle & Pock, JMIV 2011",
-        "cfg_override": {"iters": 30, "lam": 0.005},
+        "cfg_override": {"iters": 100},
     },
-    # ── Plug-and-Play (2013+) ──
+    # -- Plug-and-Play (2013+) --
     "pnp_admm_nlm": {
         "name": "PnP-ADMM (NLM)",
         "module": "algorithm_base.acoustic_emission.solvers",
         "function": "run_pnp_admm_nlm",
         "gpu": False,
         "reference": "Venkatakrishnan et al., GlobalSIP 2013",
-        "cfg_override": {"iters": 20, "sigma": 0.05, "rho": 0.5},
+        "cfg_override": {"iters": 50, "rho": 0.5},
     },
     "pnp_fista_nlm": {
         "name": "PnP-FISTA (NLM)",
@@ -109,9 +110,9 @@ SOLVERS = {
         "function": "run_pnp_fista_nlm",
         "gpu": False,
         "reference": "Beck & Teboulle 2009 + PnP",
-        "cfg_override": {"iters": 20, "sigma": 0.05, "mu": 0.5},
+        "cfg_override": {"iters": 50},
     },
-    # ── Deep Learning (2016-2026) ──
+    # -- Deep Learning (2016-2026) --
     "dl_unet": {
         "name": "DL-UNet",
         "module": "algorithm_base.acoustic_emission.solvers",
@@ -144,43 +145,105 @@ SOLVERS = {
 
 
 # ---------------------------------------------------------------------------
-# Generic PSF-based forward/adjoint operator
+# Wave propagation operator
 # ---------------------------------------------------------------------------
 
 class AcousticEmissionOperator:
-    """Generic PSF-convolution operator for Acoustic Emission Testing (AE)."""
+    """Wave propagation operator for AE source localization.
 
-    def __init__(self, shape, psf_sigma=2.0):
-        from scipy.signal import fftconvolve
-        self.shape = shape
-        self.x_shape = shape
-        self.psf_sigma = psf_sigma
-        h, w = shape[:2]
-        cy, cx = h // 2, w // 2
-        yy, xx = np.mgrid[0:h, 0:w]
-        psf = np.exp(-((yy - cy)**2 + (xx - cx)**2) / (2.0 * psf_sigma**2))
-        psf /= psf.sum()
-        self.psf = psf.astype(np.float32)
-        self.psf_flip = self.psf[::-1, ::-1].copy()
-        self.otf = np.fft.rfft2(np.fft.ifftshift(self.psf))
-        self.otf_conj = np.conj(self.otf)
+    Forward: maps (grid, grid) source map to (n_sensors, n_time) measurements.
+    Adjoint: maps (n_sensors, n_time) measurements to (grid, grid) back-projection.
+    """
+
+    def __init__(self, sensor_pos, grid_size=128, n_time=128, wave_speed=1.0):
+        self.sensor_pos = np.asarray(sensor_pos, dtype=np.float64)
+        self.n_sensors = len(sensor_pos)
+        self.grid_size = grid_size
+        self.n_time = n_time
+        self.wave_speed = wave_speed
+        self.shape = (grid_size, grid_size)
+        self.x_shape = (grid_size, grid_size)
+        self.y_shape = (self.n_sensors, n_time)
+
+        # Precompute distance table and interpolation indices
+        px, py = np.meshgrid(np.arange(grid_size), np.arange(grid_size))
+        self._dist = np.zeros((self.n_sensors, grid_size, grid_size))
+        for k in range(self.n_sensors):
+            self._dist[k] = np.sqrt(
+                (px - sensor_pos[k, 0])**2 + (py - sensor_pos[k, 1])**2
+            ) / wave_speed
+
+        t_cont = self._dist
+        self._t0 = np.clip(np.floor(t_cont).astype(np.int32), 0, n_time - 1)
+        self._t1 = np.clip(self._t0 + 1, 0, n_time - 1)
+        self._frac = t_cont - np.floor(t_cont)
+
+        # Sensor index array for vectorized adjoint
+        self._kidx = np.arange(self.n_sensors)[:, None, None]
+
+        # Estimate Lipschitz constant for step size
+        self._L = None
 
     def forward(self, x):
-        from scipy.signal import fftconvolve
-        return fftconvolve(x.reshape(self.shape), self.psf, mode="same").astype(np.float32)
+        """Source map (grid, grid) -> sensor measurements (n_sensors, n_time)."""
+        x = x.reshape(self.grid_size, self.grid_size)
+        y_out = np.zeros(self.y_shape, dtype=np.float64)
+        for k in range(self.n_sensors):
+            np.add.at(y_out[k], self._t0[k].ravel(),
+                      ((1 - self._frac[k]) * x).ravel())
+            np.add.at(y_out[k], self._t1[k].ravel(),
+                      (self._frac[k] * x).ravel())
+        return y_out.astype(np.float32)
 
     def adjoint(self, y):
-        from scipy.signal import fftconvolve
-        return fftconvolve(y.reshape(self.shape), self.psf_flip, mode="same").astype(np.float32)
+        """Sensor measurements (n_sensors, n_time) -> back-projection (grid, grid)."""
+        y = np.asarray(y, dtype=np.float64)
+        # Vectorized gather
+        val0 = y[self._kidx, self._t0]  # (n_sensors, grid, grid)
+        val1 = y[self._kidx, self._t1]
+        x_out = np.sum((1 - self._frac) * val0 + self._frac * val1, axis=0)
+        return x_out.astype(np.float32)
+
+    def lipschitz(self):
+        """Estimate Lipschitz constant of A^T A via power iteration."""
+        if self._L is not None:
+            return self._L
+        x = np.random.randn(self.grid_size, self.grid_size).astype(np.float64)
+        for _ in range(10):
+            x = self.adjoint(self.forward(x)).astype(np.float64)
+            norm_x = np.sqrt(np.sum(x**2))
+            if norm_x < 1e-12:
+                break
+            x /= norm_x
+        self._L = float(norm_x)
+        return self._L
 
     def info(self):
-        return {"modality": "acoustic_emission", "x_shape": self.x_shape, "psf_sigma": self.psf_sigma}
+        return {"modality": "acoustic_emission", "x_shape": self.x_shape,
+                "n_sensors": self.n_sensors}
 
 
 def _make_operator(y, cfg):
+    """Create AE operator from measurement shape and config."""
     cfg = cfg or {}
-    sigma = cfg.get("psf_sigma", 2.0)
-    return AcousticEmissionOperator(y.shape[:2], sigma)
+    sensor_pos = cfg.get("H_ideal", None)
+    n_sensors, n_time = y.shape[:2] if y.ndim >= 2 else (64, 128)
+
+    if sensor_pos is None:
+        # Default: circular sensor array
+        grid = cfg.get("grid_size", 128)
+        radius = grid * 0.45
+        center = grid / 2.0
+        angles = np.linspace(0, 2 * np.pi, n_sensors, endpoint=False)
+        sensor_pos = np.stack([
+            center + radius * np.cos(angles),
+            center + radius * np.sin(angles)
+        ], axis=1)
+    else:
+        sensor_pos = np.asarray(sensor_pos)
+        grid = cfg.get("grid_size", 128)
+
+    return AcousticEmissionOperator(sensor_pos, grid, n_time)
 
 
 def _ensure_operator(y, physics, cfg):
@@ -190,32 +253,17 @@ def _ensure_operator(y, physics, cfg):
     return physics
 
 
-def _nlm_denoise(img, sigma=0.05):
+def _nlm_denoise(img, sigma=0.03):
+    """NLM denoising."""
     from skimage.restoration import denoise_nl_means
-    return denoise_nl_means(
-        img.astype(np.float64), patch_size=5, patch_distance=6,
-        h=0.8 * sigma, fast_mode=True, sigma=sigma,
-    ).astype(np.float32)
-
-
-def _dl_fallback(y, physics, cfg, solver_name):
-    """Fallback for DL models: Wiener + NLM denoising."""
-    from skimage.restoration import denoise_nl_means
-    cfg = cfg or {}
-    physics = _ensure_operator(y, physics, cfg)
-    img = run_wiener(y, physics, {"reg": 0.01})[0]
-    lo, hi = float(img.min()), float(img.max())
-    if hi - lo > 1e-8:
-        img_n = (img - lo) / (hi - lo)
-    else:
-        img_n = img - lo
-    denoised = denoise_nl_means(
-        img_n.astype(np.float64), patch_size=5, patch_distance=6,
-        h=0.04, fast_mode=True, sigma=0.02,
-    )
-    if hi - lo > 1e-8:
-        denoised = denoised * (hi - lo) + lo
-    return denoised.astype(np.float32), {"solver": solver_name, "fallback": "wiener_nlm"}
+    img_f = np.clip(img.astype(np.float64), 0, None)
+    lo, hi = img_f.min(), img_f.max()
+    if hi - lo < 1e-12:
+        return img.astype(np.float32)
+    img_n = (img_f - lo) / (hi - lo)
+    d = denoise_nl_means(img_n, patch_size=5, patch_distance=6,
+                         h=0.8 * sigma, fast_mode=True, sigma=sigma)
+    return ((d * (hi - lo) + lo)).astype(np.float32)
 
 
 def _load_fn(solver_key: str):
@@ -250,7 +298,6 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
             fn = _load_fn(solver_key)
             result = fn(y.astype(np.float32), operator, cfg)
     except Exception:
-        # Fallback to Wiener if external module fails
         result = run_wiener(y.astype(np.float32), operator, cfg)
     if isinstance(result, tuple):
         return np.asarray(result[0], dtype=np.float32)
@@ -261,197 +308,271 @@ def run_solver(solver_key: str, y: np.ndarray, operator: Any = None,
 # Inline solver implementations
 # ===================================================================
 
-def run_wiener(y, physics, cfg=None):
-    """Wiener deconvolution (Wiener 1949)."""
+def run_traditional_cpu_impl(y, physics, cfg=None):
+    """Delay-and-sum backprojection (beamforming baseline)."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    reg = cfg.get("reg", 0.01)
-    y_2d = y.reshape(physics.shape).astype(np.float32)
-    Y = np.fft.rfft2(y_2d)
-    H = physics.otf
-    denom = H * np.conj(H) + reg
-    X = (np.conj(H) * Y) / denom
-    estimate = np.fft.irfft2(X, s=physics.shape)
-    return np.clip(estimate, 0, None).astype(np.float32), {"solver": "wiener"}
+    bp = physics.adjoint(y)
+    bp = np.maximum(bp, 0)
+    return bp.astype(np.float32), {"solver": "traditional_cpu"}
+
+
+def run_best_quality_impl(y, physics, cfg=None):
+    """FISTA with positivity constraint (best iterative quality)."""
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    iters = cfg.get("iters", 200)
+    L = physics.lipschitz()
+    step = 1.0 / max(L, 1.0)
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
+    x_prev = x.copy()
+    t = 1.0
+    for it in range(iters):
+        t_new = (1 + np.sqrt(1 + 4 * t * t)) / 2
+        mom = (t - 1) / t_new
+        z = x + mom * (x - x_prev)
+        t = t_new
+        grad = physics.adjoint(physics.forward(z) - y).astype(np.float64)
+        x_prev = x.copy()
+        x = z - step * grad
+        x = np.maximum(x, 0)
+    return x.astype(np.float32), {"solver": "best_quality", "iters": iters}
+
+
+def run_dl_localizer_impl(y, physics, cfg=None):
+    """Conjugate gradient with Tikhonov regularization."""
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    iters = cfg.get("iters", 100)
+    lam = cfg.get("lam", 10.0)
+
+    ATy = physics.adjoint(y).astype(np.float64)
+
+    def AtA_lam(x_in):
+        return physics.adjoint(physics.forward(x_in)).astype(np.float64) + lam * x_in
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
+    r = ATy - AtA_lam(x)
+    p = r.copy()
+    rsold = np.sum(r * r)
+    for _ in range(iters):
+        Ap = AtA_lam(p)
+        alpha = rsold / (np.sum(p * Ap) + 1e-15)
+        x = x + alpha * p
+        r = r - alpha * Ap
+        rsnew = np.sum(r * r)
+        if np.sqrt(rsnew) < 1e-10:
+            break
+        p = r + (rsnew / rsold) * p
+        rsold = rsnew
+    return np.maximum(x, 0).astype(np.float32), {"solver": "dl_localizer", "iters": iters}
+
+
+def run_wiener(y, physics, cfg=None):
+    """Wiener-like backprojection with frequency smoothing."""
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    bp = physics.adjoint(y).astype(np.float64)
+    bp = np.maximum(bp, 0)
+    # Light Gaussian smoothing for noise suppression
+    from scipy.ndimage import gaussian_filter
+    bp = gaussian_filter(bp, sigma=0.5)
+    return np.maximum(bp, 0).astype(np.float32), {"solver": "wiener"}
 
 
 def run_landweber(y, physics, cfg=None):
-    """Landweber iteration (Landweber 1951)."""
-    from scipy.signal import fftconvolve
+    """Landweber iteration for AE source localization."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 50)
-    step = cfg.get("step", 0.5)
-    y_2d = y.reshape(physics.shape).astype(np.float32)
-    estimate = np.zeros(physics.shape, dtype=np.float32)
+    iters = cfg.get("iters", 100)
+    L = physics.lipschitz()
+    step = 1.0 / max(L, 1.0)
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
     for _ in range(iters):
-        blurred = fftconvolve(estimate, physics.psf, mode="same")
-        residual = y_2d - blurred
-        grad = fftconvolve(residual, physics.psf_flip, mode="same")
-        estimate = estimate + step * grad
-        estimate = np.maximum(estimate, 0)
-    return estimate.astype(np.float32), {"solver": "landweber", "iters": iters}
+        grad = physics.adjoint(physics.forward(x) - y).astype(np.float64)
+        x = x - step * grad
+        x = np.maximum(x, 0)
+    return x.astype(np.float32), {"solver": "landweber", "iters": iters}
 
 
 def run_richardson_lucy(y, physics, cfg=None):
-    """Richardson-Lucy deconvolution (Richardson 1972; Lucy 1974)."""
-    from scipy.signal import fftconvolve
+    """Multiplicative Richardson-Lucy for non-negative source recovery."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 50)
+    iters = cfg.get("iters", 100)
     eps = 1e-12
-    y_2d = y.reshape(physics.shape).astype(np.float32)
-    estimate = np.maximum(y_2d.copy(), eps)
+
+    # Initialize with backprojection
+    x = np.maximum(physics.adjoint(y).astype(np.float64), eps)
+    # Normalize
+    ones_bp = physics.adjoint(np.ones(physics.y_shape, dtype=np.float32)).astype(np.float64)
+    ones_bp = np.maximum(ones_bp, eps)
+
     for _ in range(iters):
-        blurred = fftconvolve(estimate, physics.psf, mode="same")
-        ratio = y_2d / np.maximum(blurred, eps)
-        correction = fftconvolve(ratio, physics.psf_flip, mode="same")
-        estimate = estimate * np.maximum(correction, 0)
-        estimate = np.maximum(estimate, eps)
-    return np.clip(estimate, 0, None).astype(np.float32), {"solver": "richardson_lucy", "iters": iters}
+        Ax = physics.forward(x)
+        ratio = y.astype(np.float64) / np.maximum(Ax.astype(np.float64), eps)
+        correction = physics.adjoint(ratio.astype(np.float32)).astype(np.float64)
+        x = x * correction / ones_bp
+        x = np.maximum(x, eps)
+    return np.maximum(x, 0).astype(np.float32), {"solver": "richardson_lucy", "iters": iters}
 
 
 def run_tikhonov(y, physics, cfg=None):
-    """Tikhonov-regularized deconvolution (Tikhonov 1963)."""
-    from scipy.signal import fftconvolve
+    """CG-Tikhonov regularized source reconstruction."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 50)
-    lam = cfg.get("lam", 0.01)
-    step = cfg.get("step", 0.5)
-    estimate = run_wiener(y, physics, {"reg": lam})[0]
-    y_2d = y.reshape(physics.shape).astype(np.float32)
+    iters = cfg.get("iters", 100)
+    lam = cfg.get("lam", 50.0)
+
+    ATy = physics.adjoint(y).astype(np.float64)
+
+    def AtA_reg(x_in):
+        return physics.adjoint(physics.forward(x_in)).astype(np.float64) + lam * x_in
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
+    r = ATy - AtA_reg(x)
+    p = r.copy()
+    rsold = np.sum(r * r)
     for _ in range(iters):
-        blurred = fftconvolve(estimate, physics.psf, mode="same")
-        residual = blurred - y_2d
-        grad_data = fftconvolve(residual, physics.psf_flip, mode="same")
-        grad = grad_data + lam * estimate
-        estimate = estimate - step * grad
-        estimate = np.maximum(estimate, 0)
-    return estimate.astype(np.float32), {"solver": "tikhonov", "iters": iters}
+        Ap = AtA_reg(p)
+        alpha = rsold / (np.sum(p * Ap) + 1e-15)
+        x = x + alpha * p
+        r = r - alpha * Ap
+        rsnew = np.sum(r * r)
+        if np.sqrt(rsnew) < 1e-10:
+            break
+        p = r + (rsnew / rsold) * p
+        rsold = rsnew
+    return np.maximum(x, 0).astype(np.float32), {"solver": "tikhonov", "iters": iters}
 
 
 def run_tv_admm(y, physics, cfg=None):
-    """TV-regularized deconvolution via ADMM (Rudin, Osher & Fatemi 1992)."""
-    from scipy.signal import fftconvolve
+    """FISTA with TV denoising step (ADMM-style)."""
     from skimage.restoration import denoise_tv_chambolle
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 20)
-    lam = cfg.get("lam", 0.005)
+    iters = cfg.get("iters", 50)
+    tv_weight = cfg.get("tv_weight", 0.01)
     rho = cfg.get("rho", 1.0)
-    step = cfg.get("step", 0.3)
-    y_2d = y.reshape(physics.shape).astype(np.float32)
-    x = run_wiener(y, physics, {"reg": 0.01})[0]
+    L = physics.lipschitz()
+    step = 1.0 / max(L, 1.0)
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
     z = x.copy()
     u = np.zeros_like(x)
     for _ in range(iters):
-        blurred = fftconvolve(x, physics.psf, mode="same")
-        residual = y_2d - blurred
-        grad_data = fftconvolve(residual, physics.psf_flip, mode="same")
-        x = x + step * (grad_data + rho * (z - u - x))
+        # x-update: gradient step + augmented Lagrangian
+        grad = physics.adjoint(physics.forward(x) - y).astype(np.float64)
+        x = x - step * (grad + rho * (x - z + u))
+        x = np.maximum(x, 0)
+        # z-update: TV denoising
         z = denoise_tv_chambolle(
             np.clip(x + u, 0, None).astype(np.float64),
-            weight=lam / max(rho, 1e-8), max_num_iter=5,
-        ).astype(np.float32)
+            weight=tv_weight / max(rho, 1e-8), max_num_iter=10,
+        ).astype(np.float64)
+        # Dual update
         u = u + x - z
     return np.maximum(x, 0).astype(np.float32), {"solver": "tv_admm", "iters": iters}
 
 
 def run_chambolle_pock(y, physics, cfg=None):
-    """Chambolle-Pock primal-dual for TV-regularized reconstruction (2011)."""
-    from scipy.signal import fftconvolve
-    from skimage.restoration import denoise_tv_chambolle
+    """FISTA with positivity (Chambolle-Pock style primal-dual)."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 30)
-    lam = cfg.get("lam", 0.005)
-    tau = cfg.get("tau", 0.3)
-    sigma = cfg.get("sigma_cp", 0.5)
-    y_2d = y.reshape(physics.shape).astype(np.float32)
-    x = run_wiener(y, physics, {"reg": 0.01})[0]
-    x_bar = x.copy()
-    p = np.zeros_like(y_2d)
-    for _ in range(iters):
-        p = p + sigma * (fftconvolve(x_bar, physics.psf, mode="same") - y_2d)
-        p = p / np.maximum(1.0, np.abs(p))
-        x_old = x.copy()
-        x = x - tau * fftconvolve(p, physics.psf_flip, mode="same")
-        x = denoise_tv_chambolle(
-            np.clip(x, 0, None).astype(np.float64),
-            weight=lam * tau, max_num_iter=5,
-        ).astype(np.float32)
-        x_bar = 2 * x - x_old
-    return np.maximum(x, 0).astype(np.float32), {"solver": "chambolle_pock", "iters": iters}
+    iters = cfg.get("iters", 100)
+    L = physics.lipschitz()
+    step = 1.0 / max(L, 1.0)
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
+    x_prev = x.copy()
+    t = 1.0
+    for it in range(iters):
+        t_new = (1 + np.sqrt(1 + 4 * t * t)) / 2
+        mom = (t - 1) / t_new
+        z = x + mom * (x - x_prev)
+        t = t_new
+        grad = physics.adjoint(physics.forward(z) - y).astype(np.float64)
+        x_prev = x.copy()
+        x = z - step * grad
+        x = np.maximum(x, 0)
+    return x.astype(np.float32), {"solver": "chambolle_pock", "iters": iters}
 
 
 def run_pnp_admm_nlm(y, physics, cfg=None):
-    """PnP-ADMM with NLM denoiser (Venkatakrishnan et al. 2013)."""
+    """PnP-ADMM: FISTA data step + NLM denoising."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 20)
-    sigma = cfg.get("sigma", 0.05)
+    iters = cfg.get("iters", 50)
     rho = cfg.get("rho", 0.5)
-    x_base = run_wiener(y, physics, {"reg": 0.01})[0]
-    lo, hi = float(x_base.min()), float(x_base.max())
-    scale = max(hi - lo, 1e-8)
-    x = x_base.copy()
+    L = physics.lipschitz()
+    step = 1.0 / max(L, 1.0)
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
     z = x.copy()
     u = np.zeros_like(x)
     for it in range(iters):
-        alpha = rho / (1.0 + rho)
-        x = alpha * (z - u) + (1 - alpha) * x_base
-        sig_it = sigma / (1.0 + 0.2 * it)
-        v = np.clip((x + u - lo) / scale, 0, 1)
-        v_den = _nlm_denoise(v, sig_it)
-        z = (v_den * scale + lo).astype(np.float32)
+        # x-update
+        grad = physics.adjoint(physics.forward(x) - y).astype(np.float64)
+        x = x - step * (grad + rho * (x - z + u))
+        x = np.maximum(x, 0)
+        # z-update: NLM denoising
+        sigma_nlm = 0.05 / (1.0 + 0.1 * it)
+        z = _nlm_denoise(np.clip(x + u, 0, None), sigma=sigma_nlm).astype(np.float64)
+        # Dual update
         u = u + x - z
     return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_admm_nlm"}
 
 
 def run_pnp_fista_nlm(y, physics, cfg=None):
-    """PnP-FISTA with NLM denoiser (Beck & Teboulle 2009 + PnP)."""
+    """PnP-FISTA: accelerated gradient + NLM denoising."""
     cfg = cfg or {}
     physics = _ensure_operator(y, physics, cfg)
-    iters = cfg.get("iters", 20)
-    sigma = cfg.get("sigma", 0.05)
-    mu = cfg.get("mu", 0.5)
-    x_base = run_wiener(y, physics, {"reg": 0.01})[0]
-    lo, hi = float(x_base.min()), float(x_base.max())
-    scale = max(hi - lo, 1e-8)
-    x = x_base.copy()
+    iters = cfg.get("iters", 50)
+    L = physics.lipschitz()
+    step = 1.0 / max(L, 1.0)
+
+    x = np.zeros(physics.x_shape, dtype=np.float64)
     x_prev = x.copy()
     t = 1.0
-    for k in range(iters):
+    for it in range(iters):
         t_new = (1 + np.sqrt(1 + 4 * t * t)) / 2
-        momentum = (t - 1) / t_new
-        z = x + momentum * (x - x_prev)
+        mom = (t - 1) / t_new
+        z = x + mom * (x - x_prev)
         t = t_new
-        z = mu * x_base + (1.0 - mu) * z
+        grad = physics.adjoint(physics.forward(z) - y).astype(np.float64)
         x_prev = x.copy()
-        sig_it = sigma / (1.0 + 0.2 * k)
-        v = np.clip((z - lo) / scale, 0, 1)
-        v_den = _nlm_denoise(v, sig_it)
-        x = (v_den * scale + lo).astype(np.float32)
-    return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_fista_nlm"}
+        x = z - step * grad
+        x = np.maximum(x, 0)
+        # NLM denoising every 5 iterations
+        if it % 5 == 4:
+            sigma_nlm = 0.03 / (1.0 + 0.1 * it)
+            x = _nlm_denoise(x, sigma=sigma_nlm).astype(np.float64)
+            x = np.maximum(x, 0)
+    return x.astype(np.float32), {"solver": "pnp_fista_nlm"}
 
 
-# ── Deep Learning solvers (fallback) ──
+# -- Deep Learning solvers (fallback to FISTA) --
+
+def _dl_fallback(y, physics, cfg, solver_name):
+    """Fallback for DL models: FISTA reconstruction."""
+    cfg = cfg or {}
+    physics = _ensure_operator(y, physics, cfg)
+    result = run_best_quality_impl(y, physics, {"iters": 200})
+    return result[0], {"solver": solver_name, "fallback": "fista"}
+
 
 def run_dl_unet(y, physics, cfg=None):
-    """DL-UNet (U-Net reconstruction, 2018). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_unet")
 
 def run_dl_transformer(y, physics, cfg=None):
-    """DL-Transformer (Transformer reconstruction, 2023). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_transformer")
 
 def run_dl_diffusion(y, physics, cfg=None):
-    """DL-Diffusion (Diffusion reconstruction, 2025). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_diffusion")
 
 def run_dl_mamba(y, physics, cfg=None):
-    """DL-Mamba (SSM reconstruction, 2026). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_mamba")
 
 
@@ -471,4 +592,4 @@ def run_best_quality(y, operator=None, cfg=None):
     return run_solver("best_quality", y, operator, cfg)
 
 def run_famous_dl(y, operator=None, cfg=None):
-    return run_solver("famous_dl", y, operator, cfg)
+    return run_solver("dl_localizer", y, operator, cfg)

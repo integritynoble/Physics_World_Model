@@ -330,20 +330,20 @@ def pnp_ffdnet_cacti(
     verbose: bool = False,
     **_kw,
 ) -> np.ndarray:
-    """PnP deep denoiser: GAP + DnCNN/FFDNet.
+    """PnP deep denoiser: GAP + FFDNet (variable sigma schedule).
 
-    Tries DnCNN first (best results), then FFDNet, then GAP-TV fallback.
-    Expected PSNR: ~30+ dB with DnCNN, ~29 dB with FFDNet, ~27 dB fallback.
+    Tries FFDNet first (supports decreasing sigma schedule for coarse-to-fine
+    reconstruction, ~29 dB), then DnCNN fallback (~27 dB fixed sigma), then GAP-TV.
     """
     dev_str = _resolve_device(device)
-    # Try DnCNN first (better results, no pixel shuffle issues)
-    dncnn = _load_dncnn(dev_str)
-    if dncnn is not None:
-        return _gap_dncnn_core(y, mask, dncnn, device_str=dev_str)
-    # Try FFDNet
+    # FFDNet first: supports variable sigma schedule (coarse-to-fine)
     ffdnet = _load_ffdnet(dev_str)
     if ffdnet is not None:
         return _gap_ffdnet_core(y, mask, ffdnet, device_str=dev_str)
+    # DnCNN fallback (fixed sigma=25, less effective for PnP schedule)
+    dncnn = _load_dncnn(dev_str)
+    if dncnn is not None:
+        return _gap_dncnn_core(y, mask, dncnn, device_str=dev_str)
     # Fallback: stronger GAP-TV
     return _gap_denoise_core(
         y, mask, max_iter=iterations, lam=1.0, accelerate=True,
