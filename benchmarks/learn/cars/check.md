@@ -179,3 +179,278 @@ Algorithm routing uses the dedicated `_VARIANT_OVERRIDES["cars"]` pool (9 CARS-s
 | Runtime | 0.5 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.81 dB |
+| SSIM (mean, 12 samples) | 0.3237 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.81 dB |
+| SSIM (mean, 12 samples) | 0.3237 |
+| Runtime | 0.29 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CARS-DeepSpec [proxy]
+**Solver Key:** cars_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.81 dB |
+| SSIM (mean, 12 samples) | 0.3237 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.72 dB |
+| SSIM (mean, 12 samples) | 0.3192 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.95 dB |
+| SSIM (mean, 12 samples) | 0.5102 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.11 dB |
+| SSIM (mean, 12 samples) | 0.1635 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.68 dB |
+| SSIM (mean, 12 samples) | 0.3762 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.09 dB |
+| SSIM (mean, 12 samples) | 0.7096 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.73 dB |
+| SSIM (mean, 12 samples) | 0.3817 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.73 dB |
+| SSIM (mean, 12 samples) | 0.3207 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) =
+**Canonical Reference:** Cheng & Xie, "Coherent Anti-Stokes Raman Scattering Microscopy," J. Phys. Chem. B 108 (2004)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.75 dB |
+| SSIM (mean, 12 samples) | 0.3269 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**

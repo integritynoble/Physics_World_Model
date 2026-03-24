@@ -218,3 +218,278 @@ Algorithm routing uses the dedicated `_VARIANT_OVERRIDES["cathodoluminescence"]`
 | Runtime | 5.51 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.11 dB |
+| SSIM (mean, 12 samples) | 0.4589 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.11 dB |
+| SSIM (mean, 12 samples) | 0.4589 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CL-Net [proxy]
+**Solver Key:** cl_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.11 dB |
+| SSIM (mean, 12 samples) | 0.4589 |
+| Runtime | 0.31 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.62 dB |
+| SSIM (mean, 12 samples) | 0.5344 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 21.28 dB |
+| SSIM (mean, 12 samples) | 0.6682 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.52 dB |
+| SSIM (mean, 12 samples) | 0.4027 |
+| Runtime | 0.15 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.65 dB |
+| SSIM (mean, 12 samples) | 0.5187 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 20.17 dB |
+| SSIM (mean, 12 samples) | 0.6443 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.25 dB |
+| SSIM (mean, 12 samples) | 0.4338 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.64 dB |
+| SSIM (mean, 12 samples) | 0.5469 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(x,y,λ) = η(λ) · integral PSF_e(x-x') · CL_spectrum(x',λ) dx'
+**Canonical Reference:** Kociak & Zagonel, "Cathodoluminescence in TEM," Ultramicroscopy 176 (2017)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 19.67 dB |
+| SSIM (mean, 12 samples) | 0.5731 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**

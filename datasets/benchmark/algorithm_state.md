@@ -1018,9 +1018,9 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | 44.3 | 0.9999 | 30.1 | 0.0127 | gap | yes |
-| 2 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 44.3 | 0.9999 | 30.1 | 0.0127 | gap | yes |
-| 3 | CEST-Net [proxy] (PWM) | — | — | 44.3 | 0.9999 | 30.1 | 0.0127 | gap | yes |
+| 1 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | 44.3 | 0.9999 | 14.9 | 0.5097 | gap | yes |
+| 2 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 44.3 | 0.9999 | 14.9 | 0.5097 | gap | yes |
+| 3 | CEST-Net [proxy] (PWM) | — | — | 44.3 | 0.9999 | 9.7 | 0.1410 | gap | yes |
 | 4 | ResUNet-NE | 2023 | Muller et al., Diagnostics 13(21):3326, 2023 | 35.0 | — | 30.1 | 0.0127 | partial | yes |
 | 5 | precomputed_baseline (test) | — | — | 32.1 | — | 30.1 | 0.0127 | done | yes |
 | 6 | Z-spectrum fitting | 2003 | Zhou et al., NMR Biomed 2003 | 25.0 | 0.7500 | 30.1 | 0.0127 | done | yes |
@@ -1031,9 +1031,9 @@ All 21 solvers verified on 2026-03-17 via `scripts/verify_all_cassi_solvers.py`.
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
 | 1 | Real-time CNN | 2022 | Choi et al., MBEC 2022 | 36.1 | 0.9640 | 24.9 | 0.9376 | gap | yes |
 | 2 | GAN-RW (Residual Dense) | 2022 | Lan et al., PeerJ Computer Science 2022 | 33.9 | 0.8720 | 24.9 | 0.9376 | partial | yes |
-| 3 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | 26.4 | 0.9801 | 24.9 | 0.9376 | done | yes |
-| 4 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 26.4 | 0.9801 | 24.9 | 0.9376 | done | yes |
-| 5 | US-DeepSight [proxy] (PWM) | — | Richardson 1972, JOSA | 26.4 | 0.9801 | 24.9 | 0.9376 | done | yes |
+| 3 | FBP [proxy] (PWM) | — | Richardson 1972, JOSA | 26.4 | 0.9801 | 10.8 | 0.2420 | gap | yes |
+| 4 | DL-Recon [proxy] (PWM) | — | Richardson 1972, JOSA | 26.4 | 0.9801 | 10.8 | 0.2420 | gap | yes |
+| 5 | US-DeepSight [proxy] (PWM) | — | Richardson 1972, JOSA | 26.4 | 0.9801 | 10.8 | 0.2420 | gap | yes |
 | 6 | Singular value decomposition | 2015 | Demene et al., TMI 2015 | 25.0 | 0.7500 | 24.9 | 0.9376 | done | yes |
 | 7 | precomputed_baseline (test) | — | — | 24.5 | — | 24.9 | 0.9376 | done | yes |
 | 8 | Temporal averaging | 2000 | CEUS temporal baseline | 22.0 | 0.7000 | 24.9 | 0.9376 | done | yes |
@@ -2180,9 +2180,9 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 38.7 | 0.9999 | 33.7 | 0.9920 | partial | yes |
-| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 38.7 | 0.9999 | 33.7 | 0.9920 | partial | yes |
-| 3 | CL-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 38.7 | 0.9999 | 33.7 | 0.9920 | partial | yes |
+| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 38.7 | 0.9999 | 14.1 | 0.4589 | gap | yes |
+| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 38.7 | 0.9999 | 14.1 | 0.4589 | gap | yes |
+| 3 | CL-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 38.7 | 0.9999 | 14.1 | 0.4589 | gap | yes |
 | 4 | precomputed_baseline (test) | — | — | 28.9 | — | 33.7 | 0.9920 | done | yes |
 | 5 | PCA denoising | 2010 | PCA for CL | 25.0 | — | 33.7 | 0.9920 | done | yes |
 | 6 | Spectral unmixing | 2000 | NMF/VCA for CL | 22.0 | — | 33.7 | 0.9920 | done | yes |
@@ -2312,9 +2312,9 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 40.4 | 0.9999 | 25.6 | 0.9840 | gap | yes |
-| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 40.4 | 0.9999 | 25.6 | 0.9840 | gap | yes |
-| 3 | Brillouin-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 40.4 | 0.9999 | 25.6 | 0.9840 | gap | yes |
+| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 40.4 | 0.9999 | 11.5 | 0.2894 | gap | yes |
+| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 40.4 | 0.9999 | 11.5 | 0.2894 | gap | yes |
+| 3 | Brillouin-Net [proxy] (PWM) | — | Richardson 1972, JOSA | 40.4 | 0.9999 | 11.5 | 0.2894 | gap | yes |
 | 4 | precomputed_baseline (test) | — | — | 35.8 | — | 25.6 | 0.9840 | gap | yes |
 | 5 | VIPA analysis | 2010 | Scarcelli & Yun, Opt Express 2011 | 28.0 | — | 25.6 | 0.9840 | done | yes |
 | 6 | Lorentzian fitting | 2000 | Brillouin spectral fit | 25.0 | — | 25.6 | 0.9840 | done | yes |
@@ -2323,9 +2323,9 @@ Dataset: LoDoPaB-CT (real clinical chest CT, LIDC/IDRI, 362x362, 1000 angles, 51
 
 | Rank | Algorithm | Year | Reference | Ref PSNR | Ref SSIM | PWM PSNR | PWM SSIM | Status | Organized |
 |------|-----------|------|-----------|----------|----------|----------|----------|--------|-----------|
-| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 27.9 | 0.9820 | 32.4 | 0.0141 | done | yes |
-| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 27.9 | 0.9820 | 32.4 | 0.0141 | done | yes |
-| 3 | CARS-DeepSpec [proxy] (PWM) | — | Richardson 1972, JOSA | 27.9 | 0.9820 | 32.4 | 0.0141 | done | yes |
+| 1 | Adjoint [proxy] (PWM) | — | Richardson 1972, JOSA | 27.9 | 0.9820 | 13.8 | 0.3237 | gap | yes |
+| 2 | PnP-ADMM [proxy] (PWM) | — | Richardson 1972, JOSA | 27.9 | 0.9820 | 13.8 | 0.3237 | gap | yes |
+| 3 | CARS-DeepSpec [proxy] (PWM) | — | Richardson 1972, JOSA | 27.9 | 0.9820 | 13.8 | 0.3237 | gap | yes |
 | 4 | MEM (Maximum Entropy Method) | 2006 | Vartiainen et al., Opt Express 2006 | 25.0 | — | 32.4 | 0.0141 | done | yes |
 | 5 | DnCNN | 2023 | Krafft et al., Biomed Opt Express, PMC10368050 | 23.0 | 0.5900 | 32.4 | 0.0141 | done | yes |
 | 6 | N2N (Noise2Noise) | 2023 | Krafft et al., Biomed Opt Express, PMC10368050 | 20.6 | 0.5600 | 32.4 | 0.0141 | done | yes |

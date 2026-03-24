@@ -180,3 +180,553 @@ Algorithm routing uses carrier routing `(medical, Acoustic)` → `medical_ultras
 | Runtime | 0.6 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2420 |
+| Runtime | 1.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2420 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2420 |
+| Runtime | 0.48 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2420 |
+| Runtime | 1.79 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** US-DeepSight [proxy]
+**Solver Key:** us_dl_enhance
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2420 |
+| Runtime | 2.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** US-DeepSight [proxy]
+**Solver Key:** us_dl_enhance
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.83 dB |
+| SSIM (mean, 12 samples) | 0.2420 |
+| Runtime | 0.99 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.81 dB |
+| SSIM (mean, 12 samples) | 0.2631 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.81 dB |
+| SSIM (mean, 12 samples) | 0.2631 |
+| Runtime | 0.11 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.75 dB |
+| SSIM (mean, 12 samples) | 0.2893 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 12.75 dB |
+| SSIM (mean, 12 samples) | 0.2893 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.23 dB |
+| SSIM (mean, 12 samples) | 0.2000 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.23 dB |
+| SSIM (mean, 12 samples) | 0.2000 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.53 dB |
+| SSIM (mean, 12 samples) | 0.2502 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.53 dB |
+| SSIM (mean, 12 samples) | 0.2502 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.58 dB |
+| SSIM (mean, 12 samples) | 0.2703 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.58 dB |
+| SSIM (mean, 12 samples) | 0.2703 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.39 dB |
+| SSIM (mean, 12 samples) | 0.2124 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.39 dB |
+| SSIM (mean, 12 samples) | 0.2124 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.81 dB |
+| SSIM (mean, 12 samples) | 0.2764 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.81 dB |
+| SSIM (mean, 12 samples) | 0.2764 |
+| Runtime | 0.36 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.82 dB |
+| SSIM (mean, 12 samples) | 0.2913 |
+| Runtime | 0.37 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(t) = sum_i a_i(t) * h(t-τ_i), bubble harmonic scattering
+**Canonical Reference:** Eckersley et al., "Optimising Phase and Amplitude Modulation for CEUS," IEEE UFFC 52 (2005)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.82 dB |
+| SSIM (mean, 12 samples) | 0.2913 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**

@@ -243,3 +243,278 @@ The brillouin modality is fully implemented with:
 | Runtime | 0.05 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Adjoint [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.51 dB |
+| SSIM (mean, 12 samples) | 0.2894 |
+| Runtime | 2.84 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.51 dB |
+| SSIM (mean, 12 samples) | 0.2894 |
+| Runtime | 0.45 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Brillouin-Net [proxy]
+**Solver Key:** brillouin_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 11.51 dB |
+| SSIM (mean, 12 samples) | 0.2894 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.42 dB |
+| SSIM (mean, 12 samples) | 0.2895 |
+| Runtime | 0.08 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.29 dB |
+| SSIM (mean, 12 samples) | 0.4295 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.90 dB |
+| SSIM (mean, 12 samples) | 0.2291 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 15.53 dB |
+| SSIM (mean, 12 samples) | 0.2763 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.56 dB |
+| SSIM (mean, 12 samples) | 0.3754 |
+| Runtime | 0.12 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 13.66 dB |
+| SSIM (mean, 12 samples) | 0.2187 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.43 dB |
+| SSIM (mean, 12 samples) | 0.2966 |
+| Runtime | 0.32 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** psf_conv
+**Forward Model:** y(ν) = S(ν) * L(ν, Ω_B, Γ_B), Lorentzian lineshape
+**Canonical Reference:** Scarcelli & Yun, "Confocal Brillouin Microscopy," Nature Photon. 2 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 16.45 dB |
+| SSIM (mean, 12 samples) | 0.3181 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**

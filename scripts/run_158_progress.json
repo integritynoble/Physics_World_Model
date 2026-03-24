@@ -12,9 +12,14 @@
     "asl_mri",
     "atom_probe",
     "bioluminescence_tomo",
-    "brachytherapy_img"
+    "brachytherapy_img",
+    "brillouin",
+    "cars",
+    "cathodoluminescence",
+    "cest_mri",
+    "ceus"
   ],
-  "current": "brillouin",
+  "current": "ceus",
   "results": {
     "pet": {
       "solvers_run": 9,
@@ -57,6 +62,26 @@
       "solvers_passed": 11
     },
     "brachytherapy_img": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "brillouin": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "cars": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "cathodoluminescence": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "cest_mri": {
+      "solvers_run": 11,
+      "solvers_passed": 11
+    },
+    "ceus": {
       "solvers_run": 11,
       "solvers_passed": 11
     }

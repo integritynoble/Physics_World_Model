@@ -207,3 +207,553 @@ The CEST-MRI benchmark correctly models the Bloch-McConnell exchange-saturation 
 | Runtime | 0.0 s/sample |
 
 **Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.91 dB |
+| SSIM (mean, 12 samples) | 0.5097 |
+| Runtime | 0.30 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** FBP [proxy]
+**Solver Key:** traditional_cpu
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.91 dB |
+| SSIM (mean, 12 samples) | 0.5097 |
+| Runtime | 0.33 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.91 dB |
+| SSIM (mean, 12 samples) | 0.5097 |
+| Runtime | 0.35 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** DL-Recon [proxy]
+**Solver Key:** best_quality
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972, JOSA
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 14.91 dB |
+| SSIM (mean, 12 samples) | 0.5097 |
+| Runtime | 0.34 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CEST-Net [proxy]
+**Solver Key:** cest_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.71 dB |
+| SSIM (mean, 12 samples) | 0.1410 |
+| Runtime | 0.27 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** CEST-Net [proxy]
+**Solver Key:** cest_dl
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** —
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 9.71 dB |
+| SSIM (mean, 12 samples) | 0.1410 |
+| Runtime | 0.25 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.76 dB |
+| SSIM (mean, 12 samples) | 0.6231 |
+| Runtime | 0.09 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Wiener Deconvolution
+**Solver Key:** wiener
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Wiener, Extrapolation, Interpolation... 1949
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.76 dB |
+| SSIM (mean, 12 samples) | 0.6231 |
+| Runtime | 0.10 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.53 dB |
+| SSIM (mean, 12 samples) | 0.7612 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Landweber Iteration
+**Solver Key:** landweber
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Landweber, Am J Math 1951
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.53 dB |
+| SSIM (mean, 12 samples) | 0.7612 |
+| Runtime | 0.16 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.87 dB |
+| SSIM (mean, 12 samples) | 0.2536 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Richardson-Lucy
+**Solver Key:** richardson_lucy
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Richardson 1972; Lucy 1974
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 10.87 dB |
+| SSIM (mean, 12 samples) | 0.2536 |
+| Runtime | 0.18 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.02 dB |
+| SSIM (mean, 12 samples) | 0.6481 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Tikhonov Regularization
+**Solver Key:** tikhonov
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Tikhonov, Soviet Math Doklady 1963
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 22.02 dB |
+| SSIM (mean, 12 samples) | 0.6481 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.25 dB |
+| SSIM (mean, 12 samples) | 0.7939 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** TV-ADMM
+**Solver Key:** tv_admm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Rudin, Osher & Fatemi 1992; Boyd et al. 2010
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.25 dB |
+| SSIM (mean, 12 samples) | 0.7939 |
+| Runtime | 0.14 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.99 dB |
+| SSIM (mean, 12 samples) | 0.5537 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** Chambolle-Pock
+**Solver Key:** chambolle_pock
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Chambolle & Pock, JMIV 2011
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 18.99 dB |
+| SSIM (mean, 12 samples) | 0.5537 |
+| Runtime | 0.17 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.85 dB |
+| SSIM (mean, 12 samples) | 0.6388 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-ADMM (NLM)
+**Solver Key:** pnp_admm_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Venkatakrishnan et al., GlobalSIP 2013
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 23.85 dB |
+| SSIM (mean, 12 samples) | 0.6388 |
+| Runtime | 0.38 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.07 dB |
+| SSIM (mean, 12 samples) | 0.6879 |
+| Runtime | 0.40 s/sample |
+
+**Result: PASS**
+
+---
+
+## CPU Algorithm Test Results
+
+**Algorithm:** PnP-FISTA (NLM)
+**Solver Key:** pnp_fista_nlm
+**Type:** Classical CPU
+**GPU Required:** No
+**Test Date:** 2026-03-23
+**Dataset:** public tier, 12 sample(s)
+**Status:** PASS
+**Reference:** Beck & Teboulle 2009 + PnP
+**Operator Family:** fourier
+**Forward Model:** y(Δω) = M_sat(Δω)/M₀, Bloch-McConnell exchange model + k-space
+**Canonical Reference:** Zhou et al., "APT-Weighted MRI," Magn. Reson. Med. 60 (2008)
+**Note:** 12 sample(s) measured.
+
+| Metric | Value |
+|--------|-------|
+| PSNR (mean, 12 samples) | 24.07 dB |
+| SSIM (mean, 12 samples) | 0.6879 |
+| Runtime | 0.39 s/sample |
+
+**Result: PASS**
