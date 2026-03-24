@@ -89,7 +89,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Cai et al., ECCV 2022 — 36.1 dB on KAIST; verified 33.10/0.923 on KAIST scene01",
+        "reference": "Cai et al., ECCV 2022 — 36.1 dB on KAIST; verified 33.13/0.923 on KAIST scene01",
         "cfg_override": {"model_key": "cst_l_plus"},
     },
     "mst_plus_plus": {
@@ -121,7 +121,7 @@ SOLVERS = {
         "module": "pwm_core.recon.cassi_models",
         "function": "run_cassi_model",
         "gpu": True,
-        "reference": "Miao et al., ICCV 2019 — 30.1 dB on KAIST; partial 28.59/0.793 on KAIST scene01",
+        "reference": "Miao et al., ICCV 2019 — 28.53 dB on KAIST; verified 28.59/0.793 on KAIST scene01",
         "cfg_override": {"model_key": "lambda_net"},
     },
     "admm_net": {
