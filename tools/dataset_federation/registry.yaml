@@ -1,0 +1,107 @@
+# PWM Federated Dataset Registry v1
+# PWM is the catalog, not the host. All data stays at the original source.
+schema_version: "1.0"
+updated: "2026-03-25"
+
+datasets:
+  - id: aapm_low_dose_ct_grand_challenge
+    display_name: AAPM Low-Dose CT Grand Challenge
+    modality: ct
+    primitives: [Project, Attenuate, Detect]
+    n_samples: 2378
+    image_size: [512, 512]
+    license: research_only
+    access: registration_required
+    source_url: https://www.aapm.org/GrandChallenge/LowDoseCT/
+    pwm_datasetcard_id: dataset_aapm_low_dose_ct_v1
+    noise_model: poisson_gaussian
+    split_structure: {train: 1800, test: 578}
+    tags: [ct, denoising, low_dose, clinical]
+    notes: "2016 challenge dataset. Paired full/quarter dose slices."
+
+  - id: fastmri_knee
+    display_name: fastMRI Knee Dataset
+    modality: mri
+    primitives: [Encode, Sample]
+    n_samples: 1594
+    image_size: [320, 320]
+    license: CC-BY-NC-4.0
+    access: open_download
+    source_url: https://fastmri.med.nyu.edu/
+    pwm_datasetcard_id: dataset_fastmri_knee_v1
+    noise_model: gaussian_kspace
+    split_structure: {train: 973, val: 199, test: 422}
+    tags: [mri, k-space, undersampled, knee]
+    notes: "Multi-coil k-space data. 4x/8x acceleration factors."
+
+  - id: fastmri_brain
+    display_name: fastMRI Brain Dataset
+    modality: mri
+    primitives: [Encode, Sample]
+    n_samples: 6970
+    image_size: [320, 320]
+    license: CC-BY-NC-4.0
+    access: open_download
+    source_url: https://fastmri.med.nyu.edu/
+    pwm_datasetcard_id: dataset_fastmri_brain_v1
+    noise_model: gaussian_kspace
+    split_structure: {train: 4469, val: 1130, test: 1371}
+    tags: [mri, k-space, undersampled, brain]
+
+  - id: bioimage_archive_example
+    display_name: BioImage Archive — Fluorescence Microscopy Collection
+    modality: fluorescence_microscopy
+    primitives: [Propagate, Convolve, Detect]
+    n_samples: 800
+    image_size: [512, 512]
+    license: CC-BY-4.0
+    access: open_download
+    source_url: https://www.ebi.ac.uk/biostudies/bioimages
+    pwm_datasetcard_id: dataset_bioimage_fluorescence_v1
+    noise_model: poisson_gaussian
+    split_structure: {train: 640, test: 160}
+    tags: [microscopy, fluorescence, deconvolution]
+
+  - id: lodopab_ct
+    display_name: LoDoPaB-CT (Low-Dose Parallel Beam CT)
+    modality: ct
+    primitives: [Project, Attenuate, Detect]
+    n_samples: 42895
+    image_size: [362, 362]
+    license: CC-BY-4.0
+    access: open_download
+    source_url: https://zenodo.org/record/3874937
+    pwm_datasetcard_id: dataset_lodopab_ct_v1
+    noise_model: poisson
+    split_structure: {train: 35820, val: 3522, test: 3553}
+    tags: [ct, denoising, parallel_beam, real_data]
+    notes: "Parallel beam geometry. Used in PWM CT benchmark."
+
+  - id: m4raw_mri
+    display_name: M4Raw Multi-contrast MRI Dataset
+    modality: mri
+    primitives: [Encode, Sample]
+    n_samples: 7020
+    image_size: [256, 256]
+    license: CC-BY-4.0
+    access: open_download
+    source_url: https://github.com/rederc/M4Raw
+    pwm_datasetcard_id: dataset_m4raw_mri_v1
+    noise_model: gaussian_kspace
+    split_structure: {train: 5616, test: 1404}
+    tags: [mri, multi-contrast, brain, real_data]
+    notes: "Used in PWM MRI benchmark."
+
+  - id: kaist_tsa_hyperspectral
+    display_name: KAIST TSA Spectral Dataset (SD-CASSI)
+    modality: cassi
+    primitives: [Modulate, Disperse, Accumulate, Detect]
+    n_samples: 30
+    image_size: [660, 660, 28]
+    license: research_only
+    access: registration_required
+    source_url: https://github.com/mengziyi64/TSA-Net
+    pwm_datasetcard_id: dataset_kaist_tsa_v1
+    noise_model: gaussian
+    split_structure: {train: 20, test: 10}
+    tags: [hyperspectral, cassi, coded_aperture, real_data]

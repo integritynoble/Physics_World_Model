@@ -1,0 +1,58 @@
+# PWM Remote Sensing Primitives v1
+# Dialect for satellite, aerial, and ground-based remote sensing.
+schema_version: "1.0"
+domain: remote_sensing
+version: v1
+description: >
+  Physics primitives for remote sensing forward models. Covers passive
+  optical, SAR/InSAR, LiDAR, and multispectral/hyperspectral imaging.
+
+primitives:
+  - id: Solar_Irradiance
+    symbol: "Si"
+    display_name: Solar Irradiance
+    description: Top-of-atmosphere solar spectrum and angle
+    physics: solar_spectral_irradiance
+    maps_to_general: [Propagate, Modulate]
+
+  - id: Atmospheric_Transfer
+    symbol: "At"
+    display_name: Atmospheric Transfer
+    description: Rayleigh and Mie scattering, gaseous absorption (MODTRAN model)
+    physics: radiative_transfer_atmosphere
+    maps_to_general: [Attenuate, Scatter, Propagate]
+
+  - id: Surface_Reflect
+    symbol: "Sr"
+    display_name: Surface Reflectance
+    description: Lambertian or BRDF surface reflectance model
+    physics: bidirectional_reflectance
+    maps_to_general: [Modulate, Scatter]
+
+  - id: SAR_Backscatter
+    symbol: "Sb"
+    display_name: SAR Backscatter
+    description: Synthetic aperture radar backscattering coefficient
+    physics: electromagnetic_scattering_sar
+    maps_to_general: [Scatter, Modulate]
+
+  - id: InSAR_Phase
+    symbol: "Ip"
+    display_name: InSAR Phase
+    description: Interferometric phase from two SAR acquisitions
+    physics: interferometric_coherence
+    maps_to_general: [Differentiate, Compose]
+
+  - id: Sensor_Response
+    symbol: "Rsp"
+    display_name: Sensor Spectral Response
+    description: Detector quantum efficiency, spectral band integration
+    physics: sensor_spectral_response
+    maps_to_general: [Detect, Reduce]
+
+  - id: Georeference
+    symbol: "Gr"
+    display_name: Georeferencing
+    description: Map projection and coordinate transformation
+    physics: geometric_projection
+    maps_to_general: [Transform, Compose]

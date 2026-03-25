@@ -1,0 +1,47 @@
+# Acoustics → General primitive cross-walk
+# Maps acoustics/v1 primitives to their general/v1 analogues
+registry: acoustics/v1
+maps_to: general/v1
+version: "1.0"
+created: "2026-03-25"
+
+mappings:
+  - acoustics_id: pressure_wave_propagation
+    general_id: forward_operator
+    confidence: 0.95
+    notes: "Acoustic wave equation is a linear forward operator A: x→y"
+
+  - acoustics_id: matched_filter_reconstruction
+    general_id: adjoint_operator
+    confidence: 0.90
+    notes: "Matched filter is the adjoint A^T of the forward model"
+
+  - acoustics_id: delay_and_sum_beamforming
+    general_id: iterative_solver
+    confidence: 0.75
+    notes: "DAS is a simple back-projection; maps loosely to iterative_solver"
+
+  - acoustics_id: sparse_channel_model
+    general_id: sparsity_prior
+    confidence: 0.92
+    notes: "Sparse multipath channel → sparsity prior in reconstruction"
+
+  - acoustics_id: frequency_domain_transfer
+    general_id: spectral_prior
+    confidence: 0.88
+    notes: "Acoustic transfer function analogous to spectral prior"
+
+  - acoustics_id: room_impulse_response
+    general_id: calibration_operator
+    confidence: 0.85
+    notes: "RIR encodes the physical channel — equivalent to calibration"
+
+  - acoustics_id: compressive_sensing_ultrasound
+    general_id: compressed_sensing
+    confidence: 0.97
+    notes: "Direct analogue: random sub-sampling in ultrasound"
+
+  - acoustics_id: snr_weighted_averaging
+    general_id: noise_model
+    confidence: 0.82
+    notes: "SNR-based weights encode the noise model assumption"

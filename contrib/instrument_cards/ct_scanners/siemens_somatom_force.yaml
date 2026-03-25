@@ -1,0 +1,26 @@
+instrument_id: ct_siemens_somatom_force_v1
+card_version: "1.0.0"
+instrument_type: ct_scanner
+display_name: Siemens SOMATOM Force
+manufacturer: Siemens Healthineers
+model: SOMATOM Force
+detector_rows: 192
+detector_channels: 736
+max_kVp: 150
+min_kVp: 70
+rotation_time_range_s: [0.25, 1.0]
+max_mAs: 800
+reconstruction_kernels:
+  - Br40f (soft tissue)
+  - Br49f (lung)
+  - Br60f (bone/calcification)
+  - Qr40 (iterative soft tissue)
+iterative_reconstruction: ADMIRE
+raw_data_size_GB_per_scan: 2.4
+pwm_primitive_chain: [Project, Attenuate, Detect]
+noise_model: poisson_gaussian
+known_artifacts:
+  - cone_beam_artifact_at_large_pitch
+  - windmill_artifact_high_pitch
+acr_accreditation: true
+aapm_tg18_compliant: true

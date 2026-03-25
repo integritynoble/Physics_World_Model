@@ -1,0 +1,29 @@
+schema_version: "1.0"
+source_registry: particle_physics/v1
+target_registry: general/v1
+version: v1
+
+mappings:
+  - source: Ionize
+    decomposes_into: [Attenuate, Stochastize]
+    notes: Bethe-Bloch = deterministic Attenuate + stochastic delta-ray Stochastize
+
+  - source: Shower
+    decomposes_into: [Propagate, Stochastize, Compose]
+    notes: Cascade = Propagate + stochastic branching Stochastize + Compose steps
+
+  - source: Track
+    decomposes_into: [Propagate, Transform]
+    notes: Magnetic deflection = Transform (Lorentz) + Propagate (step)
+
+  - source: Cherenkov
+    decomposes_into: [Propagate, Detect]
+    notes: Photon cone = Propagate + photon Detect at photomultiplier
+
+  - source: Digitize
+    decomposes_into: [Detect, Stochastize]
+    notes: ADC = Detect + noise Stochastize (electronics response)
+
+  - source: Reconstruct_Track
+    decomposes_into: [Invert, Compose]
+    notes: Kalman filter = iterative Invert (covariance update) + Compose (prediction)

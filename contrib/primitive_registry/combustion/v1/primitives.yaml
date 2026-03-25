@@ -1,0 +1,52 @@
+# PWM Combustion / CFD Physics Primitives v1
+# Dialect for combustion simulation, reactive flow, and heat transfer.
+schema_version: "1.0"
+domain: combustion
+version: v1
+description: >
+  Physics primitives for combustion and reactive flow forward models.
+  Used for CFD-based parameter estimation, flame diagnostics, and
+  emissions monitoring.
+
+primitives:
+  - id: Advect
+    symbol: "Av"
+    display_name: Advection
+    description: Transport of scalar fields by a velocity field (upwind/TVD schemes)
+    physics: hyperbolic_pde_advection
+    maps_to_general: [Transform, Compose]
+
+  - id: Diffuse
+    symbol: "Di"
+    display_name: Molecular Diffusion
+    description: Fick's law species diffusion and heat conduction
+    physics: parabolic_pde_diffusion
+    maps_to_general: [Convolve, Differentiate]
+
+  - id: React
+    symbol: "Rx"
+    display_name: Chemical Reaction
+    description: Source/sink terms from Arrhenius kinetics network
+    physics: chemical_kinetics_arrhenius
+    maps_to_general: [Stochastize, Differentiate]
+
+  - id: Radiate
+    symbol: "Ra"
+    display_name: Thermal Radiation
+    description: Radiative heat transfer (DOM/P1/optically thin approximation)
+    physics: radiative_transfer_equation
+    maps_to_general: [Propagate, Attenuate]
+
+  - id: Pressure_Solve
+    symbol: "Ps"
+    display_name: Pressure Solve
+    description: Elliptic pressure equation solve (incompressible Navier-Stokes)
+    physics: elliptic_pde_pressure
+    maps_to_general: [Invert, Differentiate]
+
+  - id: Turbulent_Mix
+    symbol: "Tm"
+    display_name: Turbulent Mixing
+    description: Subgrid turbulence model (k-ε, LES, PDF methods)
+    physics: turbulence_closure
+    maps_to_general: [Stochastize, Compose]

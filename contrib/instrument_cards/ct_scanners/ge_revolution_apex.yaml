@@ -1,0 +1,26 @@
+instrument_id: ct_ge_revolution_apex_v1
+card_version: "1.0.0"
+instrument_type: ct_scanner
+display_name: GE Revolution Apex
+manufacturer: GE HealthCare
+model: Revolution Apex
+detector_rows: 256
+detector_channels: 888
+max_kVp: 140
+min_kVp: 80
+rotation_time_range_s: [0.28, 1.0]
+max_mAs: 1250
+reconstruction_kernels:
+  - Standard (soft tissue)
+  - Bone Plus
+  - Lung Plus
+  - Detail
+iterative_reconstruction: ASiR-V
+raw_data_size_GB_per_scan: 3.1
+pwm_primitive_chain: [Project, Attenuate, Detect]
+noise_model: poisson_gaussian
+known_artifacts:
+  - motion_artifact_at_high_heart_rate
+  - metallic_streak_without_MAR
+acr_accreditation: true
+aapm_tg18_compliant: true

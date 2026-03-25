@@ -1,0 +1,52 @@
+# PWM Particle Physics Primitives v1
+# Dialect for particle detector simulation and reconstruction.
+schema_version: "1.0"
+domain: particle_physics
+version: v1
+description: >
+  Physics primitives for particle detector forward models. Covers
+  electromagnetic calorimeters, tracking detectors, Cherenkov counters,
+  and time-of-flight systems.
+
+primitives:
+  - id: Ionize
+    symbol: "Iz"
+    display_name: Ionization / Energy Loss
+    description: Bethe-Bloch energy deposition, delta-ray production
+    physics: bethe_bloch_ionization
+    maps_to_general: [Attenuate, Stochastize]
+
+  - id: Shower
+    symbol: "Sh"
+    display_name: Particle Shower
+    description: Electromagnetic or hadronic cascade development
+    physics: electromagnetic_hadronic_cascade
+    maps_to_general: [Propagate, Stochastize, Compose]
+
+  - id: Track
+    symbol: "Tk"
+    display_name: Track Propagation
+    description: Charged particle trajectory in magnetic field (Runge-Kutta)
+    physics: lorentz_force_propagation
+    maps_to_general: [Propagate, Transform]
+
+  - id: Cherenkov
+    symbol: "Ch"
+    display_name: Cherenkov Radiation
+    description: Photon emission from superluminal charged particles
+    physics: cherenkov_effect
+    maps_to_general: [Propagate, Detect]
+
+  - id: Digitize
+    symbol: "Dg"
+    display_name: Detector Digitization
+    description: Analog-to-digital conversion, shaping, thresholding
+    physics: electronics_response
+    maps_to_general: [Detect, Stochastize]
+
+  - id: Reconstruct_Track
+    symbol: "Rt"
+    display_name: Track Reconstruction
+    description: Kalman-filter or ML-based track finding and fitting
+    physics: kalman_filter_tracking
+    maps_to_general: [Invert, Compose]

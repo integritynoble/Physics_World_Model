@@ -1,0 +1,95 @@
+# CT QC Copilot — DomainProfile v1
+# Domain Judge extension for CT quality control workflows.
+# Extends the universal CoreSpec + S1-S4 gates with CT-specific QC gates.
+schema_version: "1.0"
+domain_id: ct_qc
+domain_version: "v1"
+display_name: CT Quality Control Copilot
+extends: imaging/v1
+description: >
+  Domain profile for CT scanner quality control. Adds threshold-based QC gates
+  (noise, uniformity, CNR, MTF), artifact classification (ring, cupping, streak),
+  and drift detection against scanner baseline. Designed for AAPM TG-18 and
+  ACR CT accreditation workflows.
+
+primitive_chain:
+  - Project      # Radon line integral
+  - Attenuate    # Beer-Lambert decay
+  - Detect       # Scintillator + photodiode response
+
+qc_gates:
+  - id: qc_noise
+    display_name: Noise Level
+    metric: HU_noise_sd
+    threshold_warn: 8.0     # Hounsfield unit standard deviation
+    threshold_fail: 12.0
+    phantom: ACR_water_phantom
+    region: center_50mm
+
+  - id: qc_uniformity
+    display_name: CT Number Uniformity
+    metric: HU_uniformity_max_deviation
+    threshold_warn: 4.0     # HU deviation from center
+    threshold_fail: 8.0
+    phantom: ACR_water_phantom
+    regions: [top, bottom, left, right, center]
+
+  - id: qc_cnr
+    display_name: Contrast-to-Noise Ratio
+    metric: CNR
+    threshold_warn: 3.0     # minimum acceptable CNR
+    threshold_fail: 1.5
+    phantom: ACR_CT_accreditation_phantom
+
+  - id: qc_mtf
+    display_name: Modulation Transfer Function (10% MTF)
+    metric: MTF10_lpmm
+    threshold_warn: 4.5     # line pairs per mm
+    threshold_fail: 3.5
+    phantom: ACR_CT_accreditation_phantom
+
+  - id: qc_hu_accuracy
+    display_name: HU Accuracy
+    metric: HU_accuracy_max_error
+    threshold_warn: 7.0     # HU
+    threshold_fail: 15.0
+    phantom: ACR_CT_accreditation_phantom
+    materials: [air, water, acrylic, bone]
+
+artifact_taxonomy:
+  - id: ring_artifact
+    display_name: Ring Artifact
+    cause: detector_channel_miscalibration
+    severity: warn_if_present
+    detection: radial_frequency_analysis
+
+  - id: cupping_artifact
+    display_name: Beam Hardening / Cupping
+    cause: polychromatic_x_ray_beam_hardening
+    severity: warn_if_exceeds_threshold
+    threshold_HU: 15.0
+
+  - id: streak_artifact
+    display_name: Streak Artifact (Metal / Motion)
+    cause: metal_or_motion
+    severity: warn_if_present
+    detection: directional_streak_filter
+
+  - id: noise_texture_anomaly
+    display_name: Noise Texture Anomaly
+    cause: reconstruction_kernel_drift_or_detector_failure
+    severity: fail_if_present
+
+drift_detection:
+  baseline_window_days: 30
+  drift_threshold_sigma: 2.5     # alert if metric deviates > 2.5 sigma from baseline
+  metrics_tracked:
+    - HU_noise_sd
+    - HU_uniformity_max_deviation
+    - CNR
+    - MTF10_lpmm
+
+compliance_standards:
+  - ACR CT Accreditation Program
+  - AAPM TG-18 QC Protocol
+  - IEC 61223-3-5 (CT performance testing)

@@ -1,0 +1,33 @@
+schema_version: "1.0"
+source_registry: remote_sensing/v1
+target_registry: general/v1
+version: v1
+
+mappings:
+  - source: Solar_Irradiance
+    decomposes_into: [Propagate, Modulate]
+    notes: Solar source = Propagate + spectral Modulate (solar spectrum)
+
+  - source: Atmospheric_Transfer
+    decomposes_into: [Attenuate, Scatter, Propagate]
+    notes: Atmosphere = Beer-Lambert Attenuate + Mie/Rayleigh Scatter + Propagate
+
+  - source: Surface_Reflect
+    decomposes_into: [Modulate, Scatter]
+    notes: BRDF = directional Scatter + amplitude Modulate
+
+  - source: SAR_Backscatter
+    decomposes_into: [Scatter, Modulate]
+    notes: SAR backscatter = directional Scatter + complex-valued Modulate
+
+  - source: InSAR_Phase
+    decomposes_into: [Differentiate, Compose]
+    notes: Interferometric phase = Differentiate (path difference) + Compose (two passes)
+
+  - source: Sensor_Response
+    decomposes_into: [Detect, Reduce]
+    notes: Detector = spectrally-weighted Detect + band-integral Reduce
+
+  - source: Georeference
+    decomposes_into: [Transform, Compose]
+    notes: Map projection = coordinate Transform + Compose with DEM

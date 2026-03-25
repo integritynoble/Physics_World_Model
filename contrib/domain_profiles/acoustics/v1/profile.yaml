@@ -1,0 +1,19 @@
+schema_version: "1.0"
+domain_id: acoustics
+domain_version: v1
+display_name: Acoustic Imaging
+extends: null
+description: >
+  Domain profile for acoustic imaging: ultrasound, sonar, photoacoustics, NDE.
+  Primitive chain covers piezoelectric transduction through beamformed image
+  formation.
+primitive_chain: [Propagate_A, Reflect, Absorb, Beamform, Transduce]
+noise_model: gaussian_electronic
+physics_tier: wave
+domain_gates:
+  - id: acoustic_snr
+    display_name: Acoustic SNR
+    metric: SNR_dB
+    threshold_warn: 15.0
+    threshold_fail: 10.0
+    direction: low

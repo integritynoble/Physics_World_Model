@@ -1,0 +1,24 @@
+instrument_id: ct_canon_aquilion_one_v1
+card_version: "1.0.0"
+instrument_type: ct_scanner
+display_name: Canon Aquilion ONE GENESIS Edition
+manufacturer: Canon Medical Systems
+model: Aquilion ONE GENESIS Edition
+detector_rows: 320
+detector_channels: 896
+max_kVp: 135
+min_kVp: 80
+rotation_time_range_s: [0.275, 1.5]
+max_mAs: 600
+reconstruction_kernels:
+  - FC03 (soft tissue)
+  - FC51 (lung)
+  - FC07 (bone)
+iterative_reconstruction: AIDR 3D
+raw_data_size_GB_per_scan: 4.2
+pwm_primitive_chain: [Project, Attenuate, Detect]
+noise_model: poisson_gaussian
+known_artifacts:
+  - wide_cone_angle_artifact
+acr_accreditation: true
+aapm_tg18_compliant: true

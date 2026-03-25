@@ -1,0 +1,42 @@
+# PWM Plugin Registry v1
+# Versioned, append-only. Each entry is a community-contributed plugin.
+schema_version: "1.0"
+plugins:
+  - id: gap_tv_enhanced
+    version: "1.2.0"
+    display_name: GAP-TV Enhanced
+    description: Enhanced GAP-TV solver with adaptive step size for CASSI reconstruction
+    author: pwm-core
+    license: MIT
+    modalities: [cassi, cacti]
+    entry_point: pwm_gap_tv_enhanced:register
+    source_url: https://github.com/integritynoble/pwm-plugins/tree/main/gap_tv_enhanced
+    sha256: "placeholder_sha256_gap_tv_enhanced"
+    trust_score: 4.2
+    certified_runs: 12
+
+  - id: admm_imaging
+    version: "0.9.1"
+    display_name: ADMM for Imaging
+    description: Generic ADMM solver adaptable to multiple imaging forward models
+    author: community
+    license: Apache-2.0
+    modalities: [ct, mri, cassi]
+    entry_point: pwm_admm_imaging:register
+    source_url: https://github.com/integritynoble/pwm-plugins/tree/main/admm_imaging
+    sha256: "placeholder_sha256_admm"
+    trust_score: 3.8
+    certified_runs: 5
+
+  - id: deepunfolding_mri
+    version: "0.5.0"
+    display_name: Deep Unfolding MRI
+    description: Unrolled ISTA/ADMM network for accelerated MRI reconstruction
+    author: community
+    license: MIT
+    modalities: [mri]
+    entry_point: pwm_deepunfolding_mri:register
+    source_url: https://github.com/integritynoble/pwm-plugins/tree/main/deepunfolding_mri
+    sha256: "placeholder_sha256_deepunfolding"
+    trust_score: 3.1
+    certified_runs: 2

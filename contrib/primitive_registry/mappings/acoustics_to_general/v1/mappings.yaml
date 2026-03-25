@@ -1,0 +1,34 @@
+# Acoustics → General Primitive Mappings v1
+schema_version: "1.0"
+source_registry: acoustics/v1
+target_registry: general/v1
+version: v1
+
+mappings:
+  - source: Propagate_A
+    decomposes_into: [Propagate, Transform]
+    notes: Green's function propagation = coordinate Transform + free-space Propagate
+
+  - source: Reflect
+    decomposes_into: [Scatter, Modulate]
+    notes: Impedance boundary reflection = directional Scatter + amplitude Modulate
+
+  - source: Transmit
+    decomposes_into: [Modulate, Attenuate]
+    notes: Partial transmission = amplitude Modulate (T coefficient) + Attenuate
+
+  - source: Absorb
+    decomposes_into: [Attenuate]
+    notes: Frequency-dependent attenuation = Beer-Lambert Attenuate (generalized)
+
+  - source: Beamform
+    decomposes_into: [Reduce, Compose]
+    notes: Delay-and-sum = time-aligned Compose + channel Reduce (sum)
+
+  - source: Transduce
+    decomposes_into: [Detect, Modulate]
+    notes: Piezo transduction = electromechanical Modulate + signal Detect
+
+  - source: Doppler
+    decomposes_into: [Transform, Differentiate]
+    notes: Doppler shift = frequency Transform + Differentiate (velocity estimation)

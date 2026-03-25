@@ -1,0 +1,18 @@
+schema_version: "1.0"
+domain_id: remote_sensing
+domain_version: v1
+display_name: Remote Sensing
+extends: null
+description: >
+  Domain profile for satellite, aerial, and ground-based remote sensing.
+  Covers passive optical, SAR/InSAR, LiDAR, and hyperspectral systems.
+primitive_chain: [Solar_Irradiance, Atmospheric_Transfer, Surface_Reflect, Sensor_Response]
+noise_model: poisson_gaussian
+physics_tier: geometric
+domain_gates:
+  - id: radiometric_accuracy
+    display_name: Radiometric Accuracy
+    metric: RMSE_reflectance
+    threshold_warn: 0.02
+    threshold_fail: 0.05
+    direction: high

@@ -1,0 +1,46 @@
+# Particle Physics → General primitive cross-walk
+registry: particle_physics/v1
+maps_to: general/v1
+version: "1.0"
+created: "2026-03-25"
+
+mappings:
+  - pp_id: detector_response_matrix
+    general_id: forward_operator
+    confidence: 0.96
+    notes: "Smearing matrix R: truth → reco is the canonical forward operator"
+
+  - pp_id: matrix_inversion_unfolding
+    general_id: adjoint_operator
+    confidence: 0.82
+    notes: "Naive inversion is approximate adjoint; use with caution"
+
+  - pp_id: iterative_bayesian_unfolding
+    general_id: iterative_solver
+    confidence: 0.95
+    notes: "IBU/D'Agostini unfolding is an EM iterative solver"
+
+  - pp_id: tikhonov_regularization_unfolding
+    general_id: regularization_operator
+    confidence: 0.97
+    notes: "Tikhonov in particle physics unfolding = standard regularization"
+
+  - pp_id: poisson_likelihood_model
+    general_id: noise_model
+    confidence: 0.98
+    notes: "Poisson counting statistics is the fundamental noise model"
+
+  - pp_id: kinematic_constraints
+    general_id: physics_prior
+    confidence: 0.93
+    notes: "4-momentum conservation constraints are physics priors"
+
+  - pp_id: sparse_event_selection
+    general_id: sparsity_prior
+    confidence: 0.76
+    notes: "Event sparsity (signal vs background) maps to sparsity prior"
+
+  - pp_id: graph_neural_network_tracking
+    general_id: deep_prior
+    confidence: 0.85
+    notes: "GNN track finding is a learned deep prior over hit patterns"
