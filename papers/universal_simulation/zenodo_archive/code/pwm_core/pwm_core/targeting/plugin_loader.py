@@ -23,8 +23,11 @@ Usage::
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import importlib.util
 import inspect
+import json
 import logging
 import shutil
 import subprocess
@@ -57,6 +60,107 @@ FORBIDDEN_IMPORTS = [
     "pwm_core.graph.primitives",
     "pwm_core.targeting",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Cryptographic plugin signing (HMAC-SHA256)
+# ---------------------------------------------------------------------------
+
+
+class PluginSignature:
+    """HMAC-SHA256 signature for plugin authenticity verification."""
+
+    ALGORITHM = "hmac-sha256"
+
+    @staticmethod
+    def compute_hash(plugin_dir: Path) -> str:
+        """Compute a deterministic hash of plugin contents.
+
+        Hashes all ``*.py`` files in sorted order plus ``plugin.yaml``
+        (if present) to produce a single SHA-256 digest.
+        """
+        h = hashlib.sha256()
+        # Hash all .py files in sorted order for determinism
+        py_files = sorted(plugin_dir.rglob("*.py"))
+        for f in py_files:
+            h.update(f.read_bytes())
+        # Hash config if present
+        config = plugin_dir / "plugin.yaml"
+        if config.exists():
+            h.update(config.read_bytes())
+        return h.hexdigest()
+
+    @staticmethod
+    def sign(plugin_dir: Path, secret_key: str) -> dict:
+        """Sign a plugin directory.
+
+        Returns signature dict and writes ``plugin.sig.json`` into
+        *plugin_dir*.
+        """
+        content_hash = PluginSignature.compute_hash(plugin_dir)
+        signature = hmac.new(
+            secret_key.encode(), content_hash.encode(), hashlib.sha256
+        ).hexdigest()
+
+        import datetime
+
+        sig_data = {
+            "algorithm": PluginSignature.ALGORITHM,
+            "content_hash": content_hash,
+            "signature": signature,
+            "signed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "signer": "pwm-plugin-authority",
+        }
+
+        sig_path = plugin_dir / "plugin.sig.json"
+        sig_path.write_text(json.dumps(sig_data, indent=2))
+        return sig_data
+
+    @staticmethod
+    def verify(plugin_dir: Path, secret_key: str) -> tuple[bool, str]:
+        """Verify a plugin's cryptographic signature.
+
+        Returns
+        -------
+        tuple of (bool, str)
+            ``(valid, message)`` where *valid* is True when the HMAC
+            matches and the content hash is unchanged.
+        """
+        sig_path = plugin_dir / "plugin.sig.json"
+        if not sig_path.exists():
+            return False, "No plugin.sig.json found — plugin is unsigned"
+
+        try:
+            sig_data = json.loads(sig_path.read_text())
+        except (json.JSONDecodeError, OSError) as e:
+            return False, f"Cannot read plugin.sig.json: {e}"
+
+        if sig_data.get("algorithm") != PluginSignature.ALGORITHM:
+            return False, (
+                f"Unknown signature algorithm: {sig_data.get('algorithm')}"
+            )
+
+        # Recompute content hash
+        current_hash = PluginSignature.compute_hash(plugin_dir)
+        if current_hash != sig_data.get("content_hash"):
+            return False, (
+                "Content hash mismatch — plugin files were modified after signing"
+            )
+
+        # Verify HMAC
+        expected_sig = hmac.new(
+            secret_key.encode(), current_hash.encode(), hashlib.sha256
+        ).hexdigest()
+
+        if not hmac.compare_digest(expected_sig, sig_data.get("signature", "")):
+            return False, (
+                "HMAC signature verification failed — "
+                "invalid key or tampered signature"
+            )
+
+        return True, (
+            f"Plugin signature valid (signed {sig_data.get('signed_at', 'unknown')})"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -450,7 +554,35 @@ def is_baseline(name: str) -> bool:
 
 
 def cmd_install(args) -> int:
-    """CLI handler for ``pwm install``."""
+    """CLI handler for ``pwm install``.
+
+    Supports ``--verify-signature`` flag to require a valid HMAC-SHA256
+    signature before installation proceeds.  The signing key is read
+    from the ``PWM_PLUGIN_SIGNING_KEY`` environment variable.
+    """
+    import os
+
+    # --- optional signature verification before install ----------------
+    verify_sig = getattr(args, "verify_signature", False)
+    if verify_sig:
+        signing_key = os.environ.get("PWM_PLUGIN_SIGNING_KEY", "")
+        if not signing_key:
+            print("ERROR: --verify-signature requires "
+                  "PWM_PLUGIN_SIGNING_KEY env var to be set")
+            return 1
+
+        source_path = Path(args.source)
+        if source_path.is_dir():
+            valid, msg = PluginSignature.verify(source_path, signing_key)
+            print(f"Signature check: {msg}")
+            if not valid:
+                print("Aborting install — signature verification failed.")
+                return 1
+        else:
+            print("WARNING: --verify-signature only works with local "
+                  "directories; skipping for remote sources")
+
+    # --- normal install flow -------------------------------------------
     result = install_plugin(
         source=args.source,
         plugin_type=getattr(args, "type", "solver"),
@@ -543,6 +675,25 @@ if __name__ == "__main__":
         # Test tier detection
         assert get_plugin_tier("nonexistent") is None
 
-        print("Self-test PASSED")
+        # Test cryptographic signing
+        print("\nPlugin signing self-test:")
+        sig = PluginSignature.sign(solver_dir, "self-test-key")
+        print(f"  Signed: {sig['content_hash'][:16]}...")
+
+        valid, msg = PluginSignature.verify(solver_dir, "self-test-key")
+        print(f"  Verify (correct key): {valid} — {msg}")
+        assert valid, f"Signature should be valid: {msg}"
+
+        valid2, msg2 = PluginSignature.verify(solver_dir, "wrong-key")
+        print(f"  Verify (wrong key):   {valid2} — {msg2}")
+        assert not valid2, "Signature should fail with wrong key"
+
+        # Tamper detection
+        (solver_dir / "solver.py").write_text("# tampered\n", encoding="utf-8")
+        valid3, msg3 = PluginSignature.verify(solver_dir, "self-test-key")
+        print(f"  Verify (tampered):    {valid3} — {msg3}")
+        assert not valid3, "Signature should fail after tampering"
+
+        print("\nSelf-test PASSED")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
