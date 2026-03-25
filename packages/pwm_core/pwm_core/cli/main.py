@@ -223,6 +223,10 @@ def build_parser():
     from pwm_core.cli.install import add_install_subparser
     add_install_subparser(sub)
 
+    # --- scaffold-claim (arXiv → Draft ClaimCard) ---
+    from pwm_core.cli.scaffold_claim import add_scaffold_claim_subparser
+    add_scaffold_claim_subparser(sub)
+
     return p
 
 

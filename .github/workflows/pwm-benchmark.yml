@@ -1,0 +1,182 @@
+# pwm-benchmark GitHub Action
+#
+# Runs `pwm evaluate` on pull requests that touch solver code,
+# emits a RunBundle, calls issue_certificate(), and posts the
+# trust tier + gate verdicts as a PR comment.
+#
+# Usage in any repo:
+#   uses: integritynoble/Physics_World_Model/.github/workflows/pwm-benchmark.yml@master
+#   with:
+#     modality: ct
+#     solver: gap_tv
+#     track: correct
+
+name: pwm-benchmark
+
+on:
+  workflow_call:
+    inputs:
+      modality:
+        description: "Physics modality to evaluate (e.g. ct, cassi, mri)"
+        required: true
+        type: string
+      solver:
+        description: "Solver name to evaluate (e.g. gap_tv, admm)"
+        required: true
+        type: string
+      track:
+        description: "Evaluation track: correct | diagnose | no_gt | design"
+        required: false
+        default: correct
+        type: string
+      n_scenes:
+        description: "Number of test scenes"
+        required: false
+        default: "5"
+        type: string
+      python_version:
+        description: "Python version"
+        required: false
+        default: "3.11"
+        type: string
+    secrets:
+      GCS_KEY_JSON:
+        description: "GCS service account key JSON (optional, for dataset download)"
+        required: false
+    outputs:
+      trust_tier:
+        description: "Certificate trust tier (draft / rejected)"
+        value: ${{ jobs.benchmark.outputs.trust_tier }}
+      certificate_path:
+        description: "Path to certificate.json inside the RunBundle"
+        value: ${{ jobs.benchmark.outputs.certificate_path }}
+
+  # Also allow direct trigger on PRs touching solver/algorithm code
+  pull_request:
+    paths:
+      - "packages/pwm_core/pwm_core/recon/**"
+      - "algorithm_base/**"
+      - "packages/pwm_core/pwm_core/targeting/**"
+
+jobs:
+  benchmark:
+    name: "pwm evaluate (${{ inputs.modality || 'cassi' }} / ${{ inputs.solver || 'gap_tv' }})"
+    runs-on: ubuntu-latest
+    outputs:
+      trust_tier: ${{ steps.cert.outputs.trust_tier }}
+      certificate_path: ${{ steps.cert.outputs.certificate_path }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version || '3.11' }}
+          cache: pip
+
+      - name: Install pwm-core
+        run: |
+          pip install -e "packages/pwm_core[dev]" --quiet
+
+      - name: Write GCS credentials (optional)
+        if: secrets.GCS_KEY_JSON != ''
+        run: |
+          echo '${{ secrets.GCS_KEY_JSON }}' > /tmp/gcs_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcs_key.json" >> $GITHUB_ENV
+
+      - name: Run pwm evaluate
+        id: evaluate
+        run: |
+          MODALITY="${{ inputs.modality || 'cassi' }}"
+          SOLVER="${{ inputs.solver || 'gap_tv' }}"
+          TRACK="${{ inputs.track || 'correct' }}"
+          N_SCENES="${{ inputs.n_scenes || '5' }}"
+
+          echo "Running: pwm evaluate --modality $MODALITY --solver $SOLVER --track $TRACK --n-scenes $N_SCENES"
+
+          pwm evaluate \
+            --modality "$MODALITY" \
+            --solver   "$SOLVER" \
+            --track    "$TRACK" \
+            --n-scenes "$N_SCENES" \
+            --out-dir  runs/ \
+            --emit-certificate
+
+          # Find the created bundle
+          BUNDLE=$(ls -td runs/run_* 2>/dev/null | head -1)
+          echo "bundle_dir=$BUNDLE" >> $GITHUB_OUTPUT
+          echo "Bundle: $BUNDLE"
+
+      - name: Read certificate
+        id: cert
+        run: |
+          BUNDLE="${{ steps.evaluate.outputs.bundle_dir }}"
+          CERT="$BUNDLE/certificate.json"
+
+          if [ -f "$CERT" ]; then
+            TIER=$(python -c "import json; d=json.load(open('$CERT')); print(d['trust_tier'])")
+            echo "trust_tier=$TIER" >> $GITHUB_OUTPUT
+            echo "certificate_path=$CERT" >> $GITHUB_OUTPUT
+            echo "Trust tier: $TIER"
+            cat "$CERT"
+          else
+            echo "trust_tier=missing" >> $GITHUB_OUTPUT
+            echo "certificate_path=" >> $GITHUB_OUTPUT
+            echo "WARNING: certificate.json not found at $CERT"
+          fi
+
+      - name: Upload RunBundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: runbundle-${{ inputs.modality || 'cassi' }}-${{ inputs.solver || 'gap_tv' }}
+          path: runs/run_*/
+          retention-days: 14
+
+      - name: Post PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tier = '${{ steps.cert.outputs.trust_tier }}';
+            const bundle = '${{ steps.evaluate.outputs.bundle_dir }}';
+            const modality = '${{ inputs.modality || 'cassi' }}';
+            const solver = '${{ inputs.solver || 'gap_tv' }}';
+
+            const tierEmoji = {
+              'certified': '✅',
+              'reproduced': '🔵',
+              'author_confirmed': '🟦',
+              'draft': '⬜',
+              'rejected': '❌',
+              'missing': '⚠️',
+            }[tier] || '❓';
+
+            const body = [
+              `## pwm-benchmark results`,
+              ``,
+              `| Field | Value |`,
+              `|-------|-------|`,
+              `| Modality | \`${modality}\` |`,
+              `| Solver | \`${solver}\` |`,
+              `| Trust tier | ${tierEmoji} \`${tier}\` |`,
+              `| RunBundle | \`${bundle}\` |`,
+              ``,
+              tier === 'rejected'
+                ? '> ⚠️ **One or more S1-S4 gates failed.** See the uploaded RunBundle artifact for `certificate.json` details.'
+                : '> Certificate issued. Download the RunBundle artifact to inspect gate verdicts and TriadFlags.',
+            ].join('\n');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+      - name: Fail if rejected
+        if: steps.cert.outputs.trust_tier == 'rejected'
+        run: |
+          echo "Certificate trust_tier=rejected — hard gate failure. See certificate.json."
+          exit 1
