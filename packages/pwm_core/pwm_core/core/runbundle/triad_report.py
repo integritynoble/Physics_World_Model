@@ -1,22 +1,32 @@
 """pwm_core.core.runbundle.triad_report
 
-TriadReport — detailed G1/G2/G3 gate attribution artifact inside a RunBundle.
+Domain-diagnostic report hierarchy for RunBundle artifacts.
 
-Relationship to TriadFlags in certificate.json
------------------------------------------------
-* **TriadFlags** (in ``certificate.json``) is the *summary*: three verdict
-  fields (pass/warn/fail) included directly in the Certificate object for fast
-  inspection at the bundle root.
-* **TriadReport** (stored at ``logs/triad_report.json``) is the *detailed*
-  artifact: full evidence dicts, per-scenario PSNR breakdowns, confidence
-  scores, dominant-gate identification, and the methodology identifier.
+DomainDiagnosticReport (base)
+-----------------------------
+Abstract base model for domain-specific diagnostic reports.  Each domain
+subclasses this with its own diagnostic fields.  Reports are stored at
+``<bundle_dir>/logs/<domain>_diagnostic_report.json``.
 
-Use TriadFlags for CI badge rendering and quick trust-tier decisions.
-Use TriadReport for post-hoc root-cause analysis and scientific audits.
-
-Stored location within a RunBundle
+ImagingTriadReport (imaging domain)
 ------------------------------------
-    <bundle_dir>/logs/triad_report.json
+Detailed G1/G2/G3 gate attribution artifact for inverse-imaging modalities.
+Elaborates the brief :class:`ImagingTriadFlags` summary stored in
+``certificate.json`` with full evidence dicts, per-scenario PSNR breakdowns,
+confidence scores, dominant-gate identification, and methodology identifiers.
+
+Relationship to ImagingTriadFlags in certificate.json
+------------------------------------------------------
+* **ImagingTriadFlags** (in ``certificate.json``) is the *summary*: three
+  verdict fields (pass/warn/fail) included directly in the Certificate object
+  for fast inspection at the bundle root.
+* **ImagingTriadReport** (stored at ``logs/imaging_diagnostic_report.json``)
+  is the *detailed* artifact: full evidence dicts, per-scenario PSNR
+  breakdowns, confidence scores, dominant-gate identification, and the
+  methodology identifier.
+
+Use ImagingTriadFlags for CI badge rendering and quick trust-tier decisions.
+Use ImagingTriadReport for post-hoc root-cause analysis and scientific audits.
 """
 
 from __future__ import annotations
@@ -40,9 +50,9 @@ class GateAttribution(BaseModel):
 
     ``confidence`` is a float in [0, 1] indicating how strongly the evidence
     points to this gate as a bottleneck.  ``verdict`` summarises the finding
-    using the same pass/warn/fail vocabulary as the S-gate results in
+    using the same pass/warn/fail vocabulary as the R-gate results in
     ``certificate.json``.  ``evidence`` is a gate-specific dict whose schema
-    varies by gate type — common keys include ``oracle_gap_db``,
+    varies by gate type -- common keys include ``oracle_gap_db``,
     ``noise_snr_db``, and ``operator_mismatch_ratio``.
     """
 
@@ -67,39 +77,74 @@ class GateAttribution(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# TriadReport
+# DomainDiagnosticReport (base)
 # ---------------------------------------------------------------------------
 
-class TriadReport(BaseModel):
-    """Detailed G1/G2/G3 gate attribution artifact inside a RunBundle.
+class DomainDiagnosticReport(BaseModel):
+    """Base class for domain-specific diagnostic reports.
 
-    TriadReport elaborates the triad attribution far beyond the brief
-    :class:`TriadFlags` summary stored in ``certificate.json``.  It is written
-    to ``logs/triad_report.json`` inside the RunBundle directory.
+    Each domain subclasses this with its own diagnostic fields.
+    Stored at ``<bundle_dir>/logs/<domain>_diagnostic_report.json``.
+    """
+
+    run_id: str = Field(..., description="Run identifier matching the RunBundle")
+    spec_id: str = Field(..., description="CoreSpec ID that governed this run")
+    domain: str = Field(..., description="Domain identifier, e.g. 'imaging', 'ct_qc', 'combustion'")
+    issued_at: str = Field(
+        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        description="ISO-8601 UTC timestamp when this report was issued",
+    )
+    methodology: str = Field(
+        default="unspecified",
+        description="Identifier of the diagnostic methodology used to produce this report",
+    )
+
+    @property
+    def is_complete(self) -> bool:
+        """Whether all required diagnostics have been evaluated.
+
+        Subclasses must override this property with domain-specific logic.
+        """
+        raise NotImplementedError
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return a JSON-serialisable dictionary representation."""
+        try:
+            return self.model_dump()
+        except AttributeError:
+            return self.__dict__
+
+
+# ---------------------------------------------------------------------------
+# ImagingTriadReport
+# ---------------------------------------------------------------------------
+
+class ImagingTriadReport(DomainDiagnosticReport):
+    """Detailed G1/G2/G3 gate attribution artifact for imaging modalities.
+
+    ImagingTriadReport elaborates the triad attribution far beyond the brief
+    :class:`ImagingTriadFlags` summary stored in ``certificate.json``.  It is
+    written to ``logs/imaging_diagnostic_report.json`` inside the RunBundle
+    directory.
 
     Gate definitions
     ----------------
-    * **G1 (sampling/forward model)** — mismatch between the assumed and actual
+    * **G1 (sampling/forward model)** -- mismatch between the assumed and actual
       measurement operator; dominated by oracle-gap metrics across DR-IS
       scenarios I-IV.
-    * **G2 (noise model)** — mismatch between the assumed noise distribution
+    * **G2 (noise model)** -- mismatch between the assumed noise distribution
       and actual noise; dominated by scenario II vs. scenario I residuals.
-    * **G3 (operator mismatch)** — structural operator error (e.g. wrong PSF,
+    * **G3 (operator mismatch)** -- structural operator error (e.g. wrong PSF,
       wrong discretisation); dominated by scenario III vs. scenario I
       residuals.
 
     See Also
     --------
-    TriadFlags : summary triad verdict stored in certificate.json
+    ImagingTriadFlags : summary triad verdict stored in certificate.json
     """
 
-    # Identity
-    run_id: str = Field(..., description="Run identifier matching the RunBundle")
-    spec_id: str = Field(..., description="CoreSpec ID that governed this run")
-    issued_at: str = Field(
-        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        description="ISO-8601 UTC timestamp when this report was issued",
-    )
+    # Domain default
+    domain: str = Field(default="imaging", description="Domain identifier")
 
     # Gate attributions
     g1_sampling: GateAttribution = Field(
@@ -158,13 +203,6 @@ class TriadReport(BaseModel):
             and self.g3_operator.confidence > 0.0
         )
 
-    # ------------------------------------------------------------------
-    # Methods
-    # ------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
-        """Return a JSON-serialisable dictionary representation."""
-        try:
-            return self.model_dump()
-        except AttributeError:
-            return self.__dict__
+# Backward compatibility alias -- existing code imports TriadReport
+TriadReport = ImagingTriadReport
