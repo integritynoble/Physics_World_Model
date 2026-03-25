@@ -325,6 +325,8 @@ class HarnessResult:
     # SolveEverything Industrial Intelligence Stack additions
     maturity_level: Optional[MaturityLevel] = None
     decision_record: Optional[DecisionRecord] = None
+    # Canonical CoreSpec six-tuple (added by full type enforcement)
+    canonical_spec: Optional[Any] = None
 
     def summary_table(self) -> str:
         """Return a formatted summary table."""
@@ -523,6 +525,13 @@ class Harness:
 
         # Compile operators
         self.compiler = GraphCompiler()
+
+        # Build canonical CoreSpec six-tuple for RunBundle emission
+        from pwm_core.spec.core import to_canonical
+        self.canonical_spec = to_canonical(
+            modality=modality, solver=solver, track=track,
+            budget_s=budget_s, sandbox=sandbox,
+        )
 
         logger.info(
             f"Harness initialized: modality={modality}, solver={solver}, "
@@ -795,6 +804,19 @@ class Harness:
             n_scenes=n_scenes,
         )
 
+        # Update canonical spec with runtime parameters (seed, n_scenes, severity)
+        from pwm_core.spec.core import to_canonical
+        canonical = to_canonical(
+            modality=self.modality,
+            solver=self.solver_name,
+            track=self.track,
+            seed=seed,
+            n_scenes=n_scenes,
+            severity=severity,
+            sandbox=self.sandbox,
+            budget_s=self.budget_s,
+        )
+
         result = HarnessResult(
             modality=self.modality,
             solver=self.solver_name,
@@ -810,6 +832,7 @@ class Harness:
             budget_report=budget_report,
             maturity_level=agg_maturity,
             decision_record=decision_record,
+            canonical_spec=canonical,
         )
 
         logger.info(

@@ -52,6 +52,38 @@ def _get_git_hash() -> str:
     return "unknown"
 
 
+def _build_corespec_block(result: Any) -> Dict[str, Any]:
+    """Build the corespec manifest block from a HarnessResult.
+
+    Uses the canonical CanonicalCoreSpec six-tuple if available on the result
+    (populated by the Harness full type enforcement path). Falls back to a
+    manually constructed dict for backward compatibility with older results
+    that lack ``canonical_spec``.
+    """
+    if hasattr(result, "canonical_spec") and result.canonical_spec is not None:
+        spec = result.canonical_spec
+        # Pydantic v2: model_dump(); Pydantic v1: dict(); fallback: __dict__
+        try:
+            return spec.model_dump()
+        except AttributeError:
+            pass
+        try:
+            return spec.dict()
+        except AttributeError:
+            pass
+        return dict(spec.__dict__)
+
+    # Fallback for results without canonical_spec
+    return {
+        "omega": {"type": "image_domain", "modality": result.modality},
+        "equations": {"forward_model": result.solver, "track": result.track},
+        "boundary_conditions": {},
+        "initial_conditions": {"seed": result.seed},
+        "observables": {"n_scenes": result.n_scenes},
+        "tolerance": 0.01,
+    }
+
+
 def emit_runbundle(
     result: Any,
     output_dir: Optional[Path] = None,
@@ -143,14 +175,7 @@ def emit_runbundle(
         "artifacts": artifacts,
         "hashes": hashes,
         # Canonical CoreSpec six-tuple (Omega, E, B, I, O, epsilon) — audit K2
-        "corespec": {
-            "omega": {"type": "image_domain", "modality": result.modality},
-            "equations": {"forward_model": result.solver, "track": result.track},
-            "boundary_conditions": {},
-            "initial_conditions": {"seed": result.seed},
-            "observables": {"n_scenes": result.n_scenes},
-            "tolerance": 0.01,  # default reconstruction tolerance
-        },
+        "corespec": _build_corespec_block(result),
     }
 
     # Write manifest
