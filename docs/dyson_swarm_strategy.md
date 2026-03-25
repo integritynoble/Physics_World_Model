@@ -261,7 +261,7 @@ feeds it back through the sun.
 **Primary beachhead: LIP-Arena for computational imaging.**
 
 This is the first wedge. Not CT QC, not combustion, not a broad multi-domain
-play. LIP-Arena already exists with 170 modalities and 2,755 algorithms. The
+play. LIP-Arena already exists with 172 modalities and 2,732 algorithms. The
 strategy is to harden it into the most trusted imaging benchmark in the field,
 then use that credibility to expand.
 
@@ -435,52 +435,70 @@ Instrument onboarding → QC runs → Drift detection → Reports
 
 ## 11. Implementation Phases
 
-### P0 — Harden the sun
+> **Reading guide for contributors:** Each phase is listed with the actual codebase
+> state in brackets — `[built]`, `[needs formalization]`, or `[new build]` — so
+> it is immediately clear what is a refactor, what is a schema definition, and
+> what is genuinely new engineering.
 
-Nothing should orbit an unstable sun. P0 is entirely about kernel integrity.
+### P-1 — Align terminology (prerequisite to everything)
 
-| Deliverable | Description |
-|------------|-------------|
-| **Schema hardening** | Finalize CoreSpec, DomainProfile, ProblemInstance as JSON Schema / Pydantic models. Semver-lock `spec.core`. |
-| **Sun object model** | Implement typed objects: CoreSpec, OperatorGraph, ComputePlan, RunBundle, Certificate, TriadReport. Markdown rendering is derived, not authoritative. |
-| **Judge kernel** | Implement S1-S4 universal gates. Wire them into every code path. No run completes without Judge sign-off. |
-| **Canonical IR** | Harden OperatorGraph as domain-neutral DAG with `(registry, version, name)` primitive references. |
-| **RunBundle / Certificate** | Immutable, SHA-256 hashed, self-contained. Every run emits both. |
-| **Benchmark trust tiers** | Implement Draft / Author-confirmed / Reproduced / Certified / Boundary-risk tiers. All existing 2,755 algorithm entries are re-classified. |
-| **Golden reference bundles** | For each Priority-1 modality (12), produce one fully Certified RunBundle as the trust anchor. |
+The codebase is more advanced than it appears. Before P0 work begins, rename and
+restructure existing code to match the canonical vocabulary in this document.
+No new functionality — only alignment.
+
+| Deliverable | Current state | Action |
+|------------|--------------|--------|
+| **CoreSpec rename** | `ExperimentSpec v0.2.1` (8-layer Pydantic model) | Rename to `CoreSpec`; split into three explicit layers: `CoreSpec`, `DomainProfile`, `ProblemInstance`. Semver-lock `spec.core` at `v1.0`. |
+| **Primitive registry layout** | All 23 primitives in `contrib/primitives.yaml` and `graph/primitives.py` | Reorganize into `primitive_registry/general/v1/`, `primitive_registry/imaging/v1/`, `mappings/imaging_to_general/v1/`. Content already exists; this is a directory restructure. |
+| **OperatorGraph primitive refs** | Internal names | Switch to `(registry, version, name)` triples. Content unchanged, reference format updated. |
+
+### P0 — Complete the sun (5 genuine gaps)
+
+The OperatorGraph IR, RunBundle, 4-scenario protocol, algorithm catalog (2,732 solvers,
+172 modalities), and platform are already production-ready. P0 is only the five
+things that are genuinely missing from the trust kernel.
+
+| Deliverable | State | Description |
+|------------|-------|-------------|
+| **Certificate object** | [new build] | Define `certificate.json` schema (Pydantic). Wire the Judge to emit one at run completion: trust tier, active gates, pass/fail/warn per gate, contributor attribution. Without this the trust ratchet has no output. |
+| **S1-S4 as hard gates** | [needs formalization] | S1 (spec completeness), S2 (reproducibility), S3 (metric integrity), S4 (budget compliance) each have the underlying data already captured — `validation_report.json`, `provenance.py`, SHA-256 artifact hashes, `BudgetGuard`. Convert these into explicit pass/fail/warn verdicts that block run completion when they fail. |
+| **Triad gates as safety brakes** | [needs formalization] | G1 (sampling bottleneck), G2 (noise mismatch), G3 (operator mismatch) are recognized in `targeting/scoring.py` and `analysis/bottleneck.py`. Promote from diagnostic annotations to certification gates: a run that triggers a hard G1/G2/G3 failure must receive a `Boundary-risk` flag before a Certificate is issued. |
+| **Benchmark trust tiers** | [new build] | Add `trust_tier` column to runs/submissions DB schema. Implement tier-promotion workflow (Draft → Author-confirmed → Reproduced → Certified → Boundary-risk). Render tier badges on leaderboard. Re-classify all 2,732 existing algorithm entries; most will land at Draft. |
+| **Golden reference bundles** | [new build] | For each of the 12 Priority-1 modalities, produce one fully Certified RunBundle as the trust anchor. These are the first rows to reach Certified tier and set the standard for all subsequent submissions. |
 
 ### P1 — First orbit ring
 
 With the sun stable, add the first controlled orbits.
 
-| Deliverable | Description |
-|------------|-------------|
-| **Primitive registries** | Publish `general/v1` (12 primitives), `imaging/v1` (11 primitives), `mappings/imaging_to_general/v1`. |
-| **Interactive modality pages** | Auto-generated from DomainProfiles. OperatorGraph viewer, Triad sliders, algorithm comparison. |
-| **GitHub Action** | `pwm-benchmark` action. 4-scenario protocol on PR. |
-| **Controlled claim scaffolding** | arXiv scanner produces Draft ClaimCards. Review queue, not auto-publish. |
-| **Docking artifact schemas** | Publish SpecCard, MethodCard, DatasetCard, InstrumentCard, ClaimCard, EventCard schemas. |
+| Deliverable | State | Description |
+|------------|-------|-------------|
+| **Docking artifact schemas** | [new build] | Pydantic/JSON Schema definitions for SpecCard, MethodCard, DatasetCard, InstrumentCard, ClaimCard, EventCard. These are the docking interfaces between the outer world and the sun. RunBundle and Certificate already exist. |
+| **Primitive registries published** | [needs formalization] | After P-1 restructure, publish `general/v1`, `imaging/v1`, and `mappings/imaging_to_general/v1` as versioned, append-only artifacts. Stability rules codified in CI. |
+| **Interactive modality pages** | [needs formalization] | Auto-generated from existing DomainProfiles. OperatorGraph viewer, Triad sliders, algorithm comparison table with trust-tier badges. Platform routes exist; trust-tier rendering and DAG viewer are new. |
+| **GitHub Action** | [new build] | `pwm-benchmark` action. Runs the 4-scenario protocol on PRs. 4-scenario protocol itself is already implemented and battle-tested. |
+| **Controlled claim scaffolding** | [new build] | arXiv scanner (`eess.IV`, `physics.optics`, `cs.CV` imaging subset) produces Draft ClaimCards. Review queue, not auto-publish. |
+| **CLI completion** | [new build] | Add `pwm synthesize` (data generation), `pwm ingest` (PHI stripping + QC + DatasetCard emission), `pwm install` (plugin manager). Core CLI (`pwm run`, `pwm view`, `pwm reproduce`, `pwm doctor`) already exists. |
 
 ### P2 — Growth orbits
 
 Expand the ecosystem with trust infrastructure in place.
 
-| Deliverable | Description |
-|------------|-------------|
-| **Plugin marketplace** | Formalized `contrib/` with `pwm install`, LIP-Arena-derived ratings. |
-| **Dataset federation** | Federated registry indexing AAPM, fastMRI, BioImage Archive, etc. |
-| **Community & conference** | Workshop proposals (MICCAI 2026, ISBI), monthly Grand Rounds, Weekly Digest. |
-| **CT QC Copilot** | First operations-flywheel vertical. DomainProfile `ct_qc/v1`, InstrumentCards for major CT scanners, drift detection, compliance reports. |
-| **Contributor economy** | Roles, badges, contributor pages, maintainer rosters, challenge credits. |
+| Deliverable | State | Description |
+|------------|-------|-------------|
+| **Plugin marketplace** | [new build] | Formalize `contrib/` with `pwm install`, LIP-Arena-derived ratings. Plugin signing and validation layer. |
+| **Dataset federation** | [new build] | Federated registry indexing AAPM, fastMRI, BioImage Archive, etc. with standardized DatasetCards. PWM is the catalog, not the host. |
+| **Community & conference** | [new build] | Workshop proposals (MICCAI 2026, ISBI), monthly Grand Rounds, Weekly Digest auto-generation. |
+| **CT QC Copilot** | [needs formalization] | First operations-flywheel vertical. `clinical_ct_thresholds.yaml` and `clinical_ct_mismatch.yaml` already exist in `contrib/`. Formalize as DomainProfile `ct_qc/v1`. Add InstrumentCards for major CT scanners, drift detection, compliance reports. |
+| **Contributor economy** | [new build] | Roles, badges, contributor pages, maintainer rosters, challenge credits. DB schema and UI. |
 
 ### P3 — Scale and expand
 
-| Deliverable | Description |
-|------------|-------------|
-| **Cloud IDE** | Expand `pwm.platformai.org` into hosted compute with free academic tier. Permanent RunBundle URLs. |
-| **Cross-domain expansion** | Acoustics, particle physics, remote sensing, materials, astronomy. Each adds a PrimitiveDialect + DomainProfile. |
-| **Autonomous science loops** | AI Scientist integration: hypothesis → experiment → evaluation → update. |
-| **Hypothesis & transfer engines** | Triad-based hypothesis generation, cross-modality transfer suggestions. |
+| Deliverable | State | Description |
+|------------|-------|-------------|
+| **Cloud IDE** | [new build] | Expand `pwm.platformai.org` into hosted compute with free academic tier. Permanent RunBundle URLs. |
+| **Cross-domain expansion** | [new build] | Acoustics, particle physics, remote sensing, materials, astronomy. Each adds a PrimitiveDialect + DomainProfile. Imaging domain must be Certified-tier solid first. |
+| **Autonomous science loops** | [new build] | AI Scientist integration: hypothesis → experiment → evaluation → update. |
+| **Hypothesis & transfer engines** | [new build] | Triad-based hypothesis generation, cross-modality transfer suggestions. |
 
 ---
 
