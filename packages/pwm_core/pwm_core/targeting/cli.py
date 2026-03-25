@@ -85,6 +85,19 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
     with open(results_path, "w") as f:
         json.dump(result.to_dict(), f, indent=2, default=str)
 
+    # Optionally issue certificate
+    if getattr(args, "emit_certificate", False):
+        from pwm_core.targeting.runbundle_emitter import issue_certificate
+        cert_path = issue_certificate(bundle_path)
+        if cert_path is not None:
+            import json as _json
+            cert = _json.loads(cert_path.read_text())
+            print(f"Certificate: {cert_path}")
+            print(f"  trust_tier  = {cert['trust_tier']}")
+            print(f"  risk_flags  = {cert['risk_flags']}")
+        else:
+            print("WARNING: issue_certificate() returned None — certificate not written")
+
     return 0
 
 
@@ -149,6 +162,10 @@ def build_parser() -> argparse.ArgumentParser:
     ev.add_argument("--sandbox", action="store_true", help="Sandbox mode (fast, tiny)")
     ev.add_argument("--dry-run", action="store_true", help="Validate setup only")
     ev.add_argument("--output", "-o", help="Output directory for RunBundle")
+    ev.add_argument("--emit-certificate", action="store_true",
+                     help="Run S1-S4 gates and write certificate.json into the RunBundle")
+    ev.add_argument("--n-scenes", dest="scenes", type=int, default=None,
+                     help="Alias for --scenes (number of test scenes)")
 
     # --- scaffold ---
     sc = sub.add_parser("scaffold", help="Scaffold a new contribution")
