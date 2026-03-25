@@ -16,23 +16,66 @@ plan over an already operational kernel**, not a greenfield design. Reading it
 as a clean-sheet redesign would misrepresent the codebase and mislead
 contributors about what actually needs to be built.
 
+### Three-repo workspace
+
+PWM is organized as three repositories with distinct roles:
+
+```
+~/pwm/Physics_World_Model/                     ← workspace root
+├── Physics_World_Model/  ←──────────────────────────────────────────────────────┐
+│   (subtree-pushed flat to GitHub)            OPEN SOURCE / PUBLIC KERNEL        │
+│   algorithm_base/        2,732 solvers, 172 modalities                          │
+│   packages/pwm_core/     OperatorGraph, RunBundle, targeting, CLI               │
+│   platform/              open web platform routes                                │
+│   spec/                  172 modality domain profiles                           │
+│   benchmarks/, datasets/, docs/, tools/                                         │
+│   GitHub: github.com/integritynoble/Physics_World_Model                         │
+│   Windows: D:\onedrive\startup\program\physics_world_model\PWM5\pwm\public  ───┘
+│
+├── pwm/                                        PRIVATE RESEARCH (gitignored)
+│   ├── public/            → submodule → Physics_World_Model GitHub
+│   ├── papers/            InverseNet, CT QC Copilot, Finite Primitive Theorem, ...
+│   ├── notes/             workspace setup, architecture notes
+│   └── experiments/       private experiments and reports
+│   GitHub: github.com/integritynoble/pwm
+│
+└── pwm_product/                                PRODUCT DEPLOYMENT (gitignored)
+    ├── platform/          FastAPI app + Docker → pwm.platformai.org
+    │   └── pwm_platform/  live web application (auth, billing, DB, routers)
+    ├── packages/pwm_core/ deployed copy of the core library
+    ├── datasets/Benchmark/ benchmark datasets for live runs
+    └── configs/, deployment/
+    GitHub: github.com/integritynoble/pwm_product
+    Live:   https://pwm.platformai.org/
+```
+
+**Repo roles in the open-core model:**
+- `Physics_World_Model` = the open sun: protocol, algorithms, benchmarks, core library
+- `pwm` = private research workspace: papers, notes, experiments — never deployed
+- `pwm_product` = the live product: deployment of the platform + commercial features
+
+Any change to the open kernel (`Physics_World_Model`) must be manually synced into
+`pwm_product` before it reaches the live site. The `pwm/public` submodule always
+points to the canonical public GitHub state.
+
 ### Current state summary
 
-| Component | Status | Location |
-|-----------|--------|----------|
-| OperatorGraph IR (30+ primitives, typed DAG, compiler, executor) | **~95% built** | `packages/pwm_core/pwm_core/graph/` |
-| RunBundle (SHA-256 hashes, provenance, manifest, artifact storage) | **~95% built** | `packages/pwm_core/pwm_core/core/runbundle/` |
-| Algorithm catalog (2,732 solvers, 172 modalities) | **100% built** | `algorithm_base/` |
-| 4-scenario protocol (Ideal / Assumed / Corrected / Oracle) | **100% built** | `packages/pwm_core/pwm_core/targeting/scenarios.py` |
-| Registry (primitives, modalities, datasets, solver routing) | **~100% built** | `packages/pwm_core/contrib/` |
-| CoreSpec (`ExperimentSpec v0.2.1`, 172 modality domain profiles) | **~90% built** | `spec/` |
-| Web platform (routes, DB, auth, billing, Docker) | **~90% built** | `platform/pwm_platform/` |
-| Judge S1-S4 data (validation reports, provenance, hashes, BudgetGuard) | **data captured, gates not wired** | `targeting/harness.py`, `budget.py` |
-| Triad gates G1-G3 (bottleneck classification) | **scoring only, not safety brakes** | `targeting/scoring.py`, `analysis/bottleneck.py` |
-| Certificate object | **not yet built** | — |
-| Benchmark trust tiers | **documented, not in DB or UI** | — |
-| Docking artifact schemas (Cards) | **not yet built** | — |
-| CLI `pwm synthesize / ingest / install` | **not yet built** | `packages/pwm_core/pwm_core/cli/` |
+| Component | Status | Repo | Location |
+|-----------|--------|------|----------|
+| OperatorGraph IR (30+ primitives, typed DAG, compiler, executor) | **~95% built** | `Physics_World_Model` | `packages/pwm_core/pwm_core/graph/` |
+| RunBundle (SHA-256 hashes, provenance, manifest, artifact storage) | **~95% built** | `Physics_World_Model` | `packages/pwm_core/pwm_core/core/runbundle/` |
+| Algorithm catalog (2,732 solvers, 172 modalities) | **100% built** | `Physics_World_Model` | `algorithm_base/` |
+| 4-scenario protocol (Ideal / Assumed / Corrected / Oracle) | **100% built** | `Physics_World_Model` | `packages/pwm_core/pwm_core/targeting/scenarios.py` |
+| Registry (primitives, modalities, datasets, solver routing) | **~100% built** | `Physics_World_Model` | `packages/pwm_core/contrib/` |
+| CoreSpec (`ExperimentSpec v0.2.1`, 172 modality domain profiles) | **~90% built** | `Physics_World_Model` | `spec/` |
+| Live web platform (routes, DB, auth, billing, Docker) | **~90% built** | `pwm_product` | `platform/pwm_platform/` |
+| Judge S1-S4 data (validation reports, provenance, hashes, BudgetGuard) | **data captured, gates not wired** | `Physics_World_Model` | `targeting/harness.py`, `budget.py` |
+| Triad gates G1-G3 (bottleneck classification) | **scoring only, not safety brakes** | `Physics_World_Model` | `targeting/scoring.py`, `analysis/bottleneck.py` |
+| Research papers (InverseNet, CT QC Copilot, Finite Primitive Theorem) | **in progress** | `pwm` | `papers/` |
+| Certificate object | **not yet built** | `Physics_World_Model` | — |
+| Benchmark trust tiers | **documented, not in DB or UI** | `pwm_product` | — |
+| Docking artifact schemas (Cards) | **not yet built** | `Physics_World_Model` | — |
+| CLI `pwm synthesize / ingest / install` | **not yet built** | `Physics_World_Model` | `packages/pwm_core/pwm_core/cli/` |
 
 ### Three build categories used throughout this document
 
@@ -620,11 +663,11 @@ The codebase is more advanced than a clean read of this document suggests.
 P-1 is purely alignment: rename, restructure, and alias existing code to match
 the canonical vocabulary. No new features. No breaking changes.
 
-| Deliverable | Current state | Action | Target |
-|------------|--------------|--------|--------|
-| **CoreSpec alias** | `ExperimentSpec v0.2.1` | Introduce `CoreSpec` as compatibility-preserving alias; begin splitting into CoreSpec / DomainProfile / ProblemInstance layers | `packages/pwm_core/pwm_core/spec/core.py` |
-| **Primitive registry layout** | `contrib/primitives.yaml` + `graph/primitives.py` | Reorganize into `primitive_registry/general/v1/`, `imaging/v1/`, `mappings/imaging_to_general/v1/` | `packages/pwm_core/contrib/primitive_registry/` |
-| **OperatorGraph primitive refs** | Internal string names | Switch to `(registry, version, name)` triples | `packages/pwm_core/pwm_core/graph/ir_types.py` |
+| Deliverable | Current state | Action | Repo | Target |
+|------------|--------------|--------|------|--------|
+| **CoreSpec alias** | `ExperimentSpec v0.2.1` | Introduce `CoreSpec` as compatibility-preserving alias; begin splitting into CoreSpec / DomainProfile / ProblemInstance layers | `Physics_World_Model` | `packages/pwm_core/pwm_core/spec/core.py` |
+| **Primitive registry layout** | `contrib/primitives.yaml` + `graph/primitives.py` | Reorganize into `primitive_registry/general/v1/`, `imaging/v1/`, `mappings/imaging_to_general/v1/` | `Physics_World_Model` | `packages/pwm_core/contrib/primitive_registry/` |
+| **OperatorGraph primitive refs** | Internal string names | Switch to `(registry, version, name)` triples | `Physics_World_Model` | `packages/pwm_core/pwm_core/graph/ir_types.py` |
 
 **Exit criteria:**
 - `from pwm_core.spec import CoreSpec` works; existing `ExperimentSpec` callers unbroken
@@ -639,13 +682,13 @@ The OperatorGraph IR, RunBundle, 4-scenario protocol, algorithm catalog (2,732
 solvers, 172 modalities), and platform are already production-ready. P0 addresses
 only the five things that are genuinely missing from the trust kernel.
 
-| Deliverable | State | Target package / file | Description |
-|------------|-------|----------------------|-------------|
-| **Certificate object** | [new build] | `pwm_core/core/runbundle/certificate.py` | Pydantic model + `certificate.json` emitter. See Section 4 for required fields. Wire into `harness.py` so every completed run emits one. |
-| **S1-S4 as hard gates** | [needs formalization] | `targeting/harness.py`, `budget.py`, `provenance.py` | Convert existing data captures (validation report, provenance, SHA-256 hashes, BudgetGuard) into explicit pass/fail/warn verdicts. Failed S1/S2/S3 block Certificate issuance. S4 failure sets `high-variance` flag. |
-| **Triad gates as safety brakes** | [needs formalization] | `targeting/scoring.py`, `analysis/bottleneck.py` | Promote G1/G2/G3 from diagnostic annotations to certification gates. Hard G1/G2/G3 failure sets `safety-brake` risk flag; Certificate cannot reach Certified tier until flag is resolved or explicitly acknowledged. |
-| **Benchmark trust tiers** | [new build] | `platform/pwm_platform/db/` + leaderboard routes | Add `trust_tier` and `risk_flags` columns to runs/submissions schema. Implement tier-promotion workflow. Render tier badges and risk-flag icons on leaderboard. Re-classify all 2,732 existing entries as Draft on migration. |
-| **Golden reference bundles** | [new build] | `benchmark_results/golden/` | For each of the 12 Priority-1 modalities, produce one fully Certified RunBundle. These are the first rows to reach Certified tier and anchor all future submissions. |
+| Deliverable | State | Repo | Target package / file | Description |
+|------------|-------|------|----------------------|-------------|
+| **Certificate object** | [new build] | `Physics_World_Model` | `packages/pwm_core/pwm_core/core/runbundle/certificate.py` | Pydantic model + `certificate.json` emitter. See Section 4 for required fields. Wire into `harness.py` so every completed run emits one. Then sync to `pwm_product`. |
+| **S1-S4 as hard gates** | [needs formalization] | `Physics_World_Model` | `packages/pwm_core/pwm_core/targeting/harness.py`, `budget.py`, `provenance.py` | Convert existing data captures (validation report, provenance, SHA-256 hashes, BudgetGuard) into explicit pass/fail/warn verdicts. Failed S1/S2/S3 block Certificate issuance. S4 failure sets `high-variance` flag. |
+| **Triad gates as safety brakes** | [needs formalization] | `Physics_World_Model` | `packages/pwm_core/pwm_core/targeting/scoring.py`, `analysis/bottleneck.py` | Promote G1/G2/G3 from diagnostic annotations to certification gates. Hard G1/G2/G3 failure sets `safety-brake` risk flag; Certificate cannot reach Certified tier until flag is resolved or explicitly acknowledged. |
+| **Benchmark trust tiers** | [new build] | `pwm_product` | `platform/pwm_platform/db/` + leaderboard routes | Add `trust_tier` and `risk_flags` columns to runs/submissions schema. Implement tier-promotion workflow. Render tier badges and risk-flag icons on leaderboard. Re-classify all 2,732 existing entries as Draft on migration. |
+| **Golden reference bundles** | [new build] | `pwm_product` | `datasets/Benchmark/` + `platform/scripts/` | For each of the 12 Priority-1 modalities, produce one fully Certified RunBundle. These are the first rows to reach Certified tier and anchor all future submissions. |
 
 **Exit criteria:**
 - `certificate.json` is emitted for every completed run
@@ -659,14 +702,14 @@ only the five things that are genuinely missing from the trust kernel.
 
 With the sun stable, add the first controlled orbits.
 
-| Deliverable | State | Target package / file | Description |
-|------------|-------|----------------------|-------------|
-| **Docking artifact schemas** | [new build] | `pwm_core/cards/` | Pydantic/JSON Schema for SpecCard, MethodCard, DatasetCard, ClaimCard. P0 cards only (see Section 8). InstrumentCard and EventCard are P2. |
-| **Primitive registries published** | [needs formalization] | `contrib/primitive_registry/` | After P-1 restructure, publish `general/v1`, `imaging/v1`, and `mappings/imaging_to_general/v1` as versioned, append-only YAML artifacts. CI enforces append-only rule. |
-| **Interactive modality pages** | [needs formalization] | `platform/pwm_platform/routers/modalities.py` | Auto-generated from existing DomainProfiles. Add OperatorGraph DAG viewer, Triad sliders, algorithm table with trust-tier badges. Platform routes exist; badge rendering and DAG viewer are new. |
-| **GitHub Action** | [new build] | `.github/actions/pwm-benchmark/` | `pwm-benchmark` action runs the 4-scenario protocol on PRs. 4-scenario protocol is already battle-tested. |
-| **Controlled claim scaffolding** | [new build] | `tools/arxiv_scaffolder/` | arXiv scanner (`eess.IV`, `physics.optics`, `cs.CV`) produces Draft ClaimCards. Review queue only — no auto-publish. |
-| **CLI completion** | [new build] | `pwm_core/cli/` | Add `pwm synthesize` (data generation via existing forward models), `pwm ingest` (PHI strip + QC + DatasetCard emission), `pwm install` (plugin manager). Core CLI (`run`, `view`, `reproduce`, `doctor`) already exists. |
+| Deliverable | State | Repo | Target package / file | Description |
+|------------|-------|------|----------------------|-------------|
+| **Docking artifact schemas** | [new build] | `Physics_World_Model` | `packages/pwm_core/pwm_core/cards/` | Pydantic/JSON Schema for SpecCard, MethodCard, DatasetCard, ClaimCard. P0 cards only (see Section 8). InstrumentCard and EventCard are P2. |
+| **Primitive registries published** | [needs formalization] | `Physics_World_Model` | `packages/pwm_core/contrib/primitive_registry/` | After P-1 restructure, publish `general/v1`, `imaging/v1`, and `mappings/imaging_to_general/v1` as versioned, append-only YAML artifacts. CI enforces append-only rule. |
+| **Interactive modality pages** | [needs formalization] | `pwm_product` | `platform/pwm_platform/routers/modalities.py` | Auto-generated from existing DomainProfiles. Add OperatorGraph DAG viewer, Triad sliders, algorithm table with trust-tier badges. Platform routes exist; badge rendering and DAG viewer are new. |
+| **GitHub Action** | [new build] | `Physics_World_Model` | `.github/actions/pwm-benchmark/` | `pwm-benchmark` action in the public repo. Users can wire it against their own forks. Runs the 4-scenario protocol, already battle-tested. |
+| **Controlled claim scaffolding** | [new build] | `pwm_product` | `platform/pwm_platform/services/arxiv_scaffolder/` | arXiv scanner (`eess.IV`, `physics.optics`, `cs.CV`) produces Draft ClaimCards. Review queue in the platform only — no auto-publish. |
+| **CLI completion** | [new build] | `Physics_World_Model` | `packages/pwm_core/pwm_core/cli/` | Add `pwm synthesize` (data generation via existing forward models), `pwm ingest` (PHI strip + QC + DatasetCard emission), `pwm install` (plugin manager). Core CLI (`run`, `view`, `reproduce`, `doctor`) already exists. |
 
 **Exit criteria:**
 - One ClaimCard flows through scaffold → review queue → Draft tier on leaderboard
@@ -680,13 +723,13 @@ With the sun stable, add the first controlled orbits.
 
 Expand the ecosystem with trust infrastructure in place.
 
-| Deliverable | State | Target | Description |
-|------------|-------|--------|-------------|
-| **Plugin marketplace** | [new build] | `contrib/` + `pwm_core/cli/install.py` | `pwm install` command, plugin signing, LIP-Arena-derived ratings. |
-| **Dataset federation** | [new build] | `tools/dataset_federation/` | Federated registry indexing AAPM, fastMRI, BioImage Archive. PWM is the catalog, not the host. |
-| **CT QC Copilot** | [needs formalization] | `domain_profiles/ct_qc/v1/` | Early ingredients exist: `clinical_ct_thresholds.yaml` (7.8 KB) and `clinical_ct_mismatch.yaml` (19 KB) in `contrib/`. This is the first operations-flywheel vertical — not yet a full orbit. Formalize as DomainProfile `ct_qc/v1`, add InstrumentCards for major CT scanners, implement drift detection, generate compliance reports. Treat this as the first enterprise proof-of-concept after the sun is hardened, not a launch blocker. |
-| **Contributor economy** | [new build] | `platform/pwm_platform/` | Roles, badges, contributor pages, maintainer rosters, challenge credits. DB schema + UI. |
-| **Community & conference** | [new build] | — | Workshop proposals (MICCAI 2026, ISBI), monthly Grand Rounds, Weekly Digest auto-generation. P2+ only — see Section 7 note. |
+| Deliverable | State | Repo | Target | Description |
+|------------|-------|------|--------|-------------|
+| **Plugin marketplace** | [new build] | `Physics_World_Model` + `pwm_product` | `packages/pwm_core/pwm_core/cli/install.py` + platform plugin registry | `pwm install` command (open), plugin signing, LIP-Arena-derived ratings (platform). |
+| **Dataset federation** | [new build] | `Physics_World_Model` | `tools/dataset_federation/` | Federated registry indexing AAPM, fastMRI, BioImage Archive. PWM is the catalog, not the host. |
+| **CT QC Copilot** | [needs formalization] | `Physics_World_Model` + `pwm_product` | `packages/pwm_core/contrib/domain_profiles/ct_qc/v1/` + platform QC routes | Early ingredients exist: `clinical_ct_thresholds.yaml` (7.8 KB) and `clinical_ct_mismatch.yaml` (19 KB) in `contrib/`. CT QC Copilot paper is in progress in `pwm/papers/ct_qc_copilot/`. Formalize as DomainProfile `ct_qc/v1` (open), add InstrumentCards, implement drift detection and compliance reports (product). First enterprise proof-of-concept after sun is hardened. |
+| **Contributor economy** | [new build] | `pwm_product` | `platform/pwm_platform/db/` + UI routes | Roles, badges, contributor pages, maintainer rosters, challenge credits. DB schema + UI. |
+| **Community & conference** | [new build] | — | — | Workshop proposals (MICCAI 2026, ISBI), monthly Grand Rounds, Weekly Digest auto-generation. P2+ only — see Section 7 note. |
 
 **Exit criteria:**
 - `pwm install <plugin>` installs and benchmarks a community solver
@@ -698,12 +741,12 @@ Expand the ecosystem with trust infrastructure in place.
 
 ### P3 — Scale and expand
 
-| Deliverable | State | Description |
-|------------|-------|-------------|
-| **Cloud IDE** | [new build] | Expand `pwm.platformai.org` into hosted compute with free academic tier. Permanent RunBundle URLs. |
-| **Cross-domain expansion** | [new build] | Acoustics, particle physics, remote sensing, materials, astronomy. Each adds a PrimitiveDialect + DomainProfile. Imaging must be Certified-tier solid first. |
-| **Autonomous science loops** | [new build] | AI Scientist integration: hypothesis → experiment → evaluation → update. |
-| **Hypothesis & transfer engines** | [new build] | Triad-based hypothesis generation, cross-modality transfer suggestions. |
+| Deliverable | State | Repo | Description |
+|------------|-------|------|-------------|
+| **Cloud IDE** | [new build] | `pwm_product` | Expand `pwm.platformai.org` into hosted compute with free academic tier. Permanent RunBundle URLs. |
+| **Cross-domain expansion** | [new build] | `Physics_World_Model` | Acoustics, particle physics, remote sensing, materials, astronomy. Each adds a PrimitiveDialect + DomainProfile to the open repo. Imaging must be Certified-tier solid first. |
+| **Autonomous science loops** | [new build] | `pwm` + `Physics_World_Model` | AI Scientist integration: hypothesis → experiment → evaluation → update. Research prototyped in `pwm`, deployed via open kernel. |
+| **Hypothesis & transfer engines** | [new build] | `Physics_World_Model` | Triad-based hypothesis generation, cross-modality transfer suggestions. |
 
 ---
 
@@ -711,23 +754,27 @@ Expand the ecosystem with trust infrastructure in place.
 
 A concrete path to the first public Dyson-swarm-credible release:
 
-| Milestone | Description |
-|-----------|-------------|
-| **One Certified CASSI golden bundle** | CASSI is the most mature modality. Produce a fully Certified RunBundle with a visible Certificate on the leaderboard. This is the first public proof that the trust ratchet works. |
-| **One Draft → Reproduced ClaimCard flow** | Take one arXiv CASSI paper, scaffold a Draft ClaimCard, confirm with author, independently reproduce, promote to Reproduced. Demonstrate the full tier lifecycle. |
-| **Trust-tier badge on leaderboard** | At least one leaderboard row shows a Certified or Reproduced badge in the UI. This is the public signal that the swarm is open. |
-| **One emitted `certificate.json`** | A real, machine-readable Certificate with all v1 fields, linked from a RunBundle. Downloadable by anyone. |
-| **`pwm-benchmark` GitHub Action demo** | A public repo demonstrates the action running the 4-scenario protocol on a PR. Opens the developer orbit. |
-| **One DatasetCard from `pwm ingest`** | Demonstrate that a user can bring their own imaging data and receive a machine-readable DatasetCard in one command. Opens the data orbit. |
+| Milestone | Repo | Description |
+|-----------|------|-------------|
+| **One Certified CASSI golden bundle** | `pwm_product` | CASSI is the most mature modality. Produce a fully Certified RunBundle with a visible Certificate on the leaderboard at `pwm.platformai.org`. This is the first public proof that the trust ratchet works. |
+| **One Draft → Reproduced ClaimCard flow** | `pwm_product` | Take one arXiv CASSI paper, scaffold a Draft ClaimCard, confirm with author, independently reproduce, promote to Reproduced. Demonstrate the full tier lifecycle on the live platform. |
+| **Trust-tier badge on leaderboard** | `pwm_product` | At least one leaderboard row shows a Certified or Reproduced badge in the UI. This is the public signal that the swarm is open. |
+| **One emitted `certificate.json`** | `Physics_World_Model` | A real, machine-readable Certificate with all v1 fields, defined in the open repo. Linked from a RunBundle. Downloadable by anyone running the open kernel locally. |
+| **`pwm-benchmark` GitHub Action demo** | `Physics_World_Model` | Published in the public repo. Any user can add it to their own repo to run the 4-scenario protocol on PRs. Opens the developer orbit. |
+| **One DatasetCard from `pwm ingest`** | `Physics_World_Model` | Demonstrate that a user can bring their own imaging data and receive a machine-readable DatasetCard in one command from the open CLI. Opens the data orbit. |
 
 ---
 
 ## 12. Open-Core Model
 
 PWM scales as a swarm only if the core protocol is open and the sustainability
-model is clear.
+model is clear. The three-repo structure (see Section 0) directly encodes the
+open-core boundary.
 
-### Open (public, permissive license)
+### Open (public, permissive license) → `github.com/integritynoble/Physics_World_Model`
+
+Everything in the public repo is open. Anyone can clone it and run the full
+evaluation harness locally with the same trust guarantees as the hosted platform.
 
 - `spec.core.md` / CoreSpec schema
 - OperatorGraph schema and compiler
@@ -739,20 +786,53 @@ model is clear.
 - Benchmark definitions and golden reference bundles
 - Docking artifact schemas (all Cards)
 - Judge kernel (S1-S4)
+- Algorithm catalog (2,732 solvers, 172 modalities)
+- All domain profiles and modality specs
 
-### Private / paid (sustainability layer)
+### Private / paid (sustainability layer) → `github.com/integritynoble/pwm_product`
 
-- Managed cloud (hosted compute, GPU scheduling, persistent storage)
-- Private workspaces (team-scoped RunBundles, embargoed results)
-- Hospital / enterprise connectors (DICOM integration, PACS bridge, HL7/FHIR)
-- Premium benchmarking (priority queue, large-scale sweeps, custom scenarios)
-- Institution dashboards (multi-site QC overview, drift trending, fleet status)
-- Compliance / admin tooling (audit export, role management, access control)
-- Support SLAs
+The product repo contains the live platform deployment and commercial features.
+It consumes the public kernel but adds:
+
+- **Managed cloud** (hosted compute, GPU scheduling, persistent storage) — `platform/`
+- **Private workspaces** (team-scoped RunBundles, embargoed results) — `pwm_platform/auth/`
+- **Hospital / enterprise connectors** (DICOM integration, PACS bridge, HL7/FHIR) — future
+- **Premium benchmarking** (priority queue, large-scale sweeps, custom scenarios) — `pwm_platform/services/`
+- **Institution dashboards** (multi-site QC overview, drift trending, fleet status) — future
+- **Compliance / admin tooling** (audit export, role management, access control) — `pwm_platform/auth/`
+- **Billing and subscription management** — `pwm_platform/routers/billing.py`
+- **Support SLAs**
+
+### Research layer → `github.com/integritynoble/pwm` (private, never deployed)
+
+The private research workspace holds the scientific work that drives the protocol
+forward but is not part of the product:
+
+- Academic papers (InverseNet, CT QC Copilot, Finite Primitive Theorem)
+- Private experiments and ablations
+- Architecture notes and design documents
+
+Papers from this repo, once published, flow into the public benchmark as ClaimCards.
+New algorithms validated in private experiments flow into `Physics_World_Model` as
+open-source solvers in `algorithm_base/`.
+
+### Sync and deployment pipeline
+
+```
+Physics_World_Model  ──(manual sync)──►  pwm_product  ──(docker compose up)──►  pwm.platformai.org
+        ↑
+pwm/public  (submodule, always at same commit as Physics_World_Model master)
+```
+
+Any open kernel change (Certificate, hard gates, trust tiers) must be:
+1. Developed and tested in `Physics_World_Model`
+2. Manually synced into `pwm_product/packages/pwm_core/`
+3. Deployed via `docker compose up -d --build` in `pwm_product/platform/`
 
 **Principle**: The protocol is free. The convenience is paid. Anyone can run
-PWM locally and get the same trust guarantees. The paid layer removes friction,
-adds scale, and provides operational support.
+PWM locally from `Physics_World_Model` and get the same trust guarantees as the
+hosted platform. The paid layer (`pwm_product`) removes friction, adds scale,
+and provides operational support.
 
 ---
 
@@ -828,7 +908,7 @@ Things PWM must not do:
 
 The Dyson Swarm strategy is not a wishlist. The hardest parts are already built.
 
-**Already in production:**
+**Already in production (`Physics_World_Model` + `pwm_product`):**
 - **Physics engine and OperatorGraph IR** — 30+ primitives, typed DAG compiler,
   executor. Used in every benchmark run today.
 - **RunBundle** — immutable audit record with SHA-256 hashes, pip-freeze
@@ -837,18 +917,25 @@ The Dyson Swarm strategy is not a wishlist. The hardest parts are already built.
   CASSI, CACTI, Ptychography, CryoEM, Ultrasound, and more.
 - **Algorithm catalog** — 2,732 solvers across 172 modalities, importable and
   callable today.
-- **Web platform** — deployed at `pwm.platformai.org` with routes, DB, auth,
-  billing, and Docker Compose.
+- **Web platform** — deployed at `pwm.platformai.org` (`pwm_product`) with
+  routes, DB, auth, billing, and Docker Compose.
 - **Registry** — 240 KB modality definitions, 97 KB compression tables, 73 KB
   mismatch distributions, solver routing for all modalities.
 
+**Already in progress (`pwm/papers/`):**
+- **InverseNet** — paper on the calibration and mismatch correction framework
+- **CT QC Copilot** — paper on the operations-flywheel CT quality control system
+- **Finite Primitive Theorem** — foundational paper on the 11-primitive imaging basis
+
+These papers, once published, directly populate the leaderboard as ClaimCards
+and validate the scientific credibility of the trust kernel.
+
 **What remains is trust-ratchet engineering, not physics research:**
-- Certificate object: one new Pydantic model and one emitter wired into the
-  existing harness
-- Hard S1-S4 gates: data already captured — convert to verdicts
-- Trust tiers: one DB column, one promotion workflow, one badge renderer
+- Certificate object: one new Pydantic model and one emitter (`Physics_World_Model`)
+- Hard S1-S4 gates: data already captured — convert to verdicts (`Physics_World_Model`)
+- Trust tiers: one DB column, one promotion workflow, one badge renderer (`pwm_product`)
 - Card schemas: five Pydantic models for SpecCard, MethodCard, DatasetCard,
-  ClaimCard, Certificate
+  ClaimCard, Certificate (`Physics_World_Model`)
 
 The gap between "where we are" and "first Dyson-swarm-credible release" is
 measured in engineering weeks, not research years. The sun is mostly built. The
