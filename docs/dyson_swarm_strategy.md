@@ -16,47 +16,91 @@ plan over an already operational kernel**, not a greenfield design. Reading it
 as a clean-sheet redesign would misrepresent the codebase and mislead
 contributors about what actually needs to be built.
 
-### Three-repo workspace
+### Actual codebase topology (Windows public repo + Linux private/product repos)
 
-PWM is organized as three repositories with distinct roles:
+PWM operates through **three distinct codebases** with different roles, access
+controls, and deployment targets. They are not subfolders of one monorepo —
+they are independent repositories that collaborate through explicit promotion.
 
+#### Source-of-truth table
+
+| Layer | Role | Local path | GitHub remote | Live URL |
+|-------|------|-----------|---------------|----------|
+| **Open protocol / schemas / CLI / benchmarks** | Public open-source kernel — canonical source of truth for all sun objects | `D:\onedrive\startup\program\physics_world_model\PWM5\pwm\public` (Windows) | `github.com/integritynoble/Physics_World_Model` | — |
+| **Papers / private experiments / architecture notes** | Private research repo — prototypes ideas before promotion to open kernel | `/home/spiritai/pwm/Physics_World_Model/pwm` (Linux) | `github.com/integritynoble/pwm` | — |
+| **Live platform / auth / billing / DB / deployment** | Private product repo — deploys the hosted platform | `/home/spiritai/pwm/Physics_World_Model/pwm_product` (Linux) | `github.com/integritynoble/pwm_product` | `https://pwm.platformai.org/` |
+
+#### What each repo contains
+
+**`Physics_World_Model` — open-source kernel** (Windows primary, Linux via clone)
 ```
-~/pwm/Physics_World_Model/                     ← workspace root
-├── Physics_World_Model/  ←──────────────────────────────────────────────────────┐
-│   (subtree-pushed flat to GitHub)            OPEN SOURCE / PUBLIC KERNEL        │
-│   algorithm_base/        2,732 solvers, 172 modalities                          │
-│   packages/pwm_core/     OperatorGraph, RunBundle, targeting, CLI               │
-│   platform/              open web platform routes                                │
-│   spec/                  172 modality domain profiles                           │
-│   benchmarks/, datasets/, docs/, tools/                                         │
-│   GitHub: github.com/integritynoble/Physics_World_Model                         │
-│   Windows: D:\onedrive\startup\program\physics_world_model\PWM5\pwm\public  ───┘
-│
-├── pwm/                                        PRIVATE RESEARCH (gitignored)
-│   ├── public/            → submodule → Physics_World_Model GitHub
-│   ├── papers/            InverseNet, CT QC Copilot, Finite Primitive Theorem, ...
-│   ├── notes/             workspace setup, architecture notes
-│   └── experiments/       private experiments and reports
-│   GitHub: github.com/integritynoble/pwm
-│
-└── pwm_product/                                PRODUCT DEPLOYMENT (gitignored)
-    ├── platform/          FastAPI app + Docker → pwm.platformai.org
-    │   └── pwm_platform/  live web application (auth, billing, DB, routers)
-    ├── packages/pwm_core/ deployed copy of the core library
-    ├── datasets/Benchmark/ benchmark datasets for live runs
-    └── configs/, deployment/
-    GitHub: github.com/integritynoble/pwm_product
-    Live:   https://pwm.platformai.org/
+algorithm_base/        2,732 solvers, 172 modalities
+packages/pwm_core/     OperatorGraph, RunBundle, targeting, CLI
+platform/              open web platform routes (reference implementation)
+spec/                  172 modality domain profiles
+benchmarks/, datasets/, docs/, tools/
 ```
 
-**Repo roles in the open-core model:**
-- `Physics_World_Model` = the open sun: protocol, algorithms, benchmarks, core library
-- `pwm` = private research workspace: papers, notes, experiments — never deployed
-- `pwm_product` = the live product: deployment of the platform + commercial features
+**`pwm` — private research repo** (Linux)
+```
+papers/                InverseNet, CT QC Copilot, Finite Primitive Theorem, ...
+notes/                 architecture notes, workspace setup docs
+experiments/           private experiments and ablations
+reports/               internal reports
+```
 
-Any change to the open kernel (`Physics_World_Model`) must be manually synced into
-`pwm_product` before it reaches the live site. The `pwm/public` submodule always
-points to the canonical public GitHub state.
+**`pwm_product` — private product/deployment repo** (Linux → pwm.platformai.org)
+```
+platform/pwm_platform/ FastAPI app (auth, billing, DB, routers, templates)
+platform/docker-compose.yml + Dockerfile
+packages/pwm_core/     deployment copy of the core library (synced from public repo)
+datasets/Benchmark/    benchmark datasets for live runs
+configs/, deployment/  production configuration
+```
+
+#### Feature promotion ladder
+
+Protocol and algorithm ideas flow through a one-way promotion pipeline:
+
+```
+1. Research stage   →  developed and prototyped in pwm
+                        (papers, experiments, internal notes)
+                                   ↓
+2. Kernel stage     →  promoted into Physics_World_Model
+                        (open protocol, open algorithms, open CLI)
+                                   ↓
+3. Product stage    →  synced into pwm_product/packages/pwm_core/
+                        (deployment copy of stabilized kernel)
+                                   ↓
+4. Deployment stage →  released to https://pwm.platformai.org/
+                        (docker compose up -d --build)
+```
+
+**Rule**: private research does not directly define the open protocol. A result
+or algorithm must be promoted into `Physics_World_Model` before it becomes part
+of the canonical sun. The live platform should consume stabilized kernel code,
+not ad hoc research code.
+
+#### Sync risk: deployment copy of core
+
+`pwm_product/packages/pwm_core/` is a **deployment copy**, not the canonical
+source. This creates a structural risk: if a kernel fix is applied only in
+`pwm_product` and never promoted back to `Physics_World_Model`, the sun splits.
+
+**Mitigation rules:**
+- Core protocol changes (Certificate, gates, Card schemas, OperatorGraph) must
+  be authored in `Physics_World_Model` first.
+- `pwm_product` syncs from released/stabilized kernel state, not from ad hoc
+  patches.
+- Never hotfix protocol semantics only in `pwm_product`. If a fix is needed in
+  production, it must be back-promoted to `Physics_World_Model` in the same cycle.
+
+#### Repository governance principle
+
+> **Protocol changes must land in `Physics_World_Model` first.**
+> Private research (`pwm`) may prototype them. Product (`pwm_product`) may deploy
+> them. But the sun must have one canonical public definition. If `Physics_World_Model`
+> and `pwm_product` diverge on protocol semantics, the swarm loses its center of gravity.
 
 ### Current state summary
 
@@ -771,28 +815,43 @@ PWM scales as a swarm only if the core protocol is open and the sustainability
 model is clear. The three-repo structure (see Section 0) directly encodes the
 open-core boundary.
 
-### Open (public, permissive license) → `github.com/integritynoble/Physics_World_Model`
+### Open / public → `github.com/integritynoble/Physics_World_Model`
 
 Everything in the public repo is open. Anyone can clone it and run the full
-evaluation harness locally with the same trust guarantees as the hosted platform.
+evaluation harness locally with identical trust guarantees to the hosted platform.
 
-- `spec.core.md` / CoreSpec schema
-- OperatorGraph schema and compiler
-- RunBundle schema
-- Certificate schema
+- CoreSpec schema and compiler
+- OperatorGraph schema, compiler, and executor
+- RunBundle schema and writer
+- Certificate schema and issuer
 - Primitive registries (`general/v1`, `imaging/v1`, mappings)
 - Plugin interfaces and SDK
-- CLI (`pwm run`, `pwm view`, `pwm ingest`, `pwm synthesize`)
+- CLI (`pwm run`, `pwm view`, `pwm ingest`, `pwm synthesize`, `pwm install`)
 - Benchmark definitions and golden reference bundles
 - Docking artifact schemas (all Cards)
-- Judge kernel (S1-S4)
+- Judge kernel (S1-S4) and Triad gates
 - Algorithm catalog (2,732 solvers, 172 modalities)
 - All domain profiles and modality specs
 
-### Private / paid (sustainability layer) → `github.com/integritynoble/pwm_product`
+### Private research → `github.com/integritynoble/pwm`
 
-The product repo contains the live platform deployment and commercial features.
-It consumes the public kernel but adds:
+The private research repo holds the scientific work that drives the protocol
+forward but is not part of the open kernel or the product:
+
+- Academic papers (InverseNet, CT QC Copilot, Finite Primitive Theorem)
+- Private experiments and ablations
+- Architecture notes and internal design documents
+- Unpublished prototype ideas before promotion to open kernel
+
+**Promotion flow**: papers, once published, enter the public benchmark as
+ClaimCards. Algorithms validated in private experiments are promoted into
+`Physics_World_Model/algorithm_base/` before being cited or deployed.
+
+### Product / paid → `github.com/integritynoble/pwm_product`
+
+The product repo deploys the hosted platform at `pwm.platformai.org` and adds
+commercial features on top of the open kernel. It contains a deployment copy of
+`pwm_core` (see Section 0 sync risk note).
 
 - **Managed cloud** (hosted compute, GPU scheduling, persistent storage) — `platform/`
 - **Private workspaces** (team-scoped RunBundles, embargoed results) — `pwm_platform/auth/`
@@ -803,36 +862,10 @@ It consumes the public kernel but adds:
 - **Billing and subscription management** — `pwm_platform/routers/billing.py`
 - **Support SLAs**
 
-### Research layer → `github.com/integritynoble/pwm` (private, never deployed)
-
-The private research workspace holds the scientific work that drives the protocol
-forward but is not part of the product:
-
-- Academic papers (InverseNet, CT QC Copilot, Finite Primitive Theorem)
-- Private experiments and ablations
-- Architecture notes and design documents
-
-Papers from this repo, once published, flow into the public benchmark as ClaimCards.
-New algorithms validated in private experiments flow into `Physics_World_Model` as
-open-source solvers in `algorithm_base/`.
-
-### Sync and deployment pipeline
-
-```
-Physics_World_Model  ──(manual sync)──►  pwm_product  ──(docker compose up)──►  pwm.platformai.org
-        ↑
-pwm/public  (submodule, always at same commit as Physics_World_Model master)
-```
-
-Any open kernel change (Certificate, hard gates, trust tiers) must be:
-1. Developed and tested in `Physics_World_Model`
-2. Manually synced into `pwm_product/packages/pwm_core/`
-3. Deployed via `docker compose up -d --build` in `pwm_product/platform/`
-
 **Principle**: The protocol is free. The convenience is paid. Anyone can run
 PWM locally from `Physics_World_Model` and get the same trust guarantees as the
-hosted platform. The paid layer (`pwm_product`) removes friction, adds scale,
-and provides operational support.
+hosted platform. The paid layer removes friction, adds scale, and provides
+operational support — but must not redefine protocol semantics.
 
 ---
 
@@ -902,44 +935,58 @@ Things PWM must not do:
    a prerequisite pass, not a prolonged refactor. If the rename takes longer than
    the Certificate build, stop renaming and build the Certificate.
 
+8. **Letting protocol logic diverge between `Physics_World_Model` and `pwm_product`.**
+   `pwm_product` contains a deployment copy of `pwm_core`. If a kernel fix or
+   new protocol object (Certificate schema, gate logic, Card schema) is applied
+   only in `pwm_product` and never promoted back to `Physics_World_Model`, the
+   sun splits into two incompatible versions. Product may add convenience and
+   scale on top of the kernel. It must not silently redefine protocol semantics.
+   If the public repo and the deployed repo disagree on what a Certificate means,
+   the swarm has no canonical trust anchor.
+
 ---
 
 ## 15. Why This Is Feasible
 
 The Dyson Swarm strategy is not a wishlist. The hardest parts are already built.
 
-**Already in production (`Physics_World_Model` + `pwm_product`):**
+**The open kernel is already strong — `Physics_World_Model`:**
 - **Physics engine and OperatorGraph IR** — 30+ primitives, typed DAG compiler,
-  executor. Used in every benchmark run today.
+  executor. Lives in `packages/pwm_core/pwm_core/graph/`. Used in every run today.
 - **RunBundle** — immutable audit record with SHA-256 hashes, pip-freeze
-  provenance, seeds, and a full artifact directory. Already emitted on every run.
+  provenance, seeds, and full artifact directory. Lives in
+  `packages/pwm_core/pwm_core/core/runbundle/`. Already emitted on every run.
 - **4-scenario protocol** — fully implemented and battle-tested on CT, MRI,
-  CASSI, CACTI, Ptychography, CryoEM, Ultrasound, and more.
-- **Algorithm catalog** — 2,732 solvers across 172 modalities, importable and
-  callable today.
-- **Web platform** — deployed at `pwm.platformai.org` (`pwm_product`) with
-  routes, DB, auth, billing, and Docker Compose.
+  CASSI, CACTI, Ptychography, CryoEM, Ultrasound. Lives in `targeting/scenarios.py`.
+- **Algorithm catalog** — 2,732 solvers across 172 modalities in `algorithm_base/`.
 - **Registry** — 240 KB modality definitions, 97 KB compression tables, 73 KB
-  mismatch distributions, solver routing for all modalities.
+  mismatch distributions in `packages/pwm_core/contrib/`.
 
-**Already in progress (`pwm/papers/`):**
-- **InverseNet** — paper on the calibration and mismatch correction framework
-- **CT QC Copilot** — paper on the operations-flywheel CT quality control system
-- **Finite Primitive Theorem** — foundational paper on the 11-primitive imaging basis
+**The hosted platform is already real — `pwm_product`:**
+- FastAPI platform deployed at `pwm.platformai.org` with routes, DB, auth,
+  billing, and Docker Compose in `platform/pwm_platform/`.
+- Deployment copy of `pwm_core` in `packages/pwm_core/` (see sync-risk note in
+  Section 0 — must not diverge from the public kernel).
 
-These papers, once published, directly populate the leaderboard as ClaimCards
-and validate the scientific credibility of the trust kernel.
+**Scientific framing is in progress — `pwm` (private research):**
+- **InverseNet** — paper on calibration and mismatch correction (`papers/inversenet/`)
+- **CT QC Copilot** — paper on the operations-flywheel CT QC system (`papers/ct_qc_copilot/`)
+- **Finite Primitive Theorem** — foundational paper on the 11-primitive basis (`papers/finite_primitive_theorem/`)
+
+These papers, once published, enter the public benchmark as ClaimCards and
+anchor the scientific credibility of the trust kernel. New algorithms validated
+here are promoted into `Physics_World_Model/algorithm_base/` before deployment.
 
 **What remains is trust-ratchet engineering, not physics research:**
-- Certificate object: one new Pydantic model and one emitter (`Physics_World_Model`)
-- Hard S1-S4 gates: data already captured — convert to verdicts (`Physics_World_Model`)
-- Trust tiers: one DB column, one promotion workflow, one badge renderer (`pwm_product`)
-- Card schemas: five Pydantic models for SpecCard, MethodCard, DatasetCard,
-  ClaimCard, Certificate (`Physics_World_Model`)
+- Certificate object: one Pydantic model + emitter → `Physics_World_Model`, then synced to `pwm_product`
+- Hard S1-S4 gates: data already captured — convert to verdicts → `Physics_World_Model`
+- Trust tiers: one DB column, one promotion workflow, one badge renderer → `pwm_product`
+- Card schemas: five Pydantic models (SpecCard, MethodCard, DatasetCard, ClaimCard, Certificate) → `Physics_World_Model`
 
 The gap between "where we are" and "first Dyson-swarm-credible release" is
-measured in engineering weeks, not research years. The sun is mostly built. The
-solar collectors need fabrication.
+measured in engineering weeks, not research years. The open kernel is strong,
+the platform is live, the papers are in progress. The solar collectors —
+Certificate, trust tiers, and Card schemas — need fabrication.
 
 ---
 
@@ -960,9 +1007,12 @@ PWM should not try to own all scientific objects. It should become the
 The protocol is the sun. Everything else is orbit. Keep the sun small, stable,
 and trust-centered. Let the orbits grow without bound.
 
-PWM is feasible as a Dyson swarm because the sun is already mostly built. The
-next step is not more breadth — it is turning existing evidence, provenance, and
-evaluation machinery into explicit trust objects that outer orbits can dock to.
+PWM becomes a Dyson swarm only if the sun has one canonical home. In practice,
+that means the protocol lives in `Physics_World_Model`, research matures in
+`pwm`, and deployment scales through `pwm_product` without redefining the kernel.
+The next step is not more breadth — it is turning existing evidence, provenance,
+and evaluation machinery in `Physics_World_Model` into explicit trust objects
+that outer orbits can dock to.
 
 > *"PWM is not the answer to every scientific question.*
 > *It is the smallest shared protocol that makes every answer cheaper to*
