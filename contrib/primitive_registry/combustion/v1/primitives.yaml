@@ -1,52 +1,31 @@
-# PWM Combustion / CFD Physics Primitives v1
-# Dialect for combustion simulation, reactive flow, and heat transfer.
-schema_version: "1.0"
+# Combustion Primitive Registry v1
+# Domain-specific primitives for reactive flow simulation and diagnostics.
+description: "Combustion physics primitives for reactive flow simulation"
 domain: combustion
 version: v1
-description: >
-  Physics primitives for combustion and reactive flow forward models.
-  Used for CFD-based parameter estimation, flame diagnostics, and
-  emissions monitoring.
 
 primitives:
-  - id: Advect
-    symbol: "Av"
-    display_name: Advection
-    description: Transport of scalar fields by a velocity field (upwind/TVD schemes)
-    physics: hyperbolic_pde_advection
-    maps_to_general: [Transform, Compose]
+  - name: ReactiveTransport
+    symbol: Rt
+    scope: "Coupled species transport with chemical reactions"
+    decomposition: ["general/v1/Compose", "general/v1/Differentiate"]
 
-  - id: Diffuse
-    symbol: "Di"
-    display_name: Molecular Diffusion
-    description: Fick's law species diffusion and heat conduction
-    physics: parabolic_pde_diffusion
-    maps_to_general: [Convolve, Differentiate]
+  - name: ChemicalKinetics
+    symbol: Ck
+    scope: "Reaction rate computation (Arrhenius, detailed mechanism)"
+    decomposition: ["general/v1/Transform", "general/v1/Stochastize"]
 
-  - id: React
-    symbol: "Rx"
-    display_name: Chemical Reaction
-    description: Source/sink terms from Arrhenius kinetics network
-    physics: chemical_kinetics_arrhenius
-    maps_to_general: [Stochastize, Differentiate]
+  - name: TurbulenceModel
+    symbol: Tm
+    scope: "Sub-grid turbulence modeling (LES, RANS, DNS)"
+    decomposition: ["general/v1/Transform", "general/v1/Regularize"]
 
-  - id: Radiate
-    symbol: "Ra"
-    display_name: Thermal Radiation
-    description: Radiative heat transfer (DOM/P1/optically thin approximation)
-    physics: radiative_transfer_equation
-    maps_to_general: [Propagate, Attenuate]
+  - name: HeatTransfer
+    symbol: Ht
+    scope: "Conduction, convection, radiation heat transfer"
+    decomposition: ["general/v1/Differentiate", "general/v1/Reduce"]
 
-  - id: Pressure_Solve
-    symbol: "Ps"
-    display_name: Pressure Solve
-    description: Elliptic pressure equation solve (incompressible Navier-Stokes)
-    physics: elliptic_pde_pressure
-    maps_to_general: [Invert, Differentiate]
-
-  - id: Turbulent_Mix
-    symbol: "Tm"
-    display_name: Turbulent Mixing
-    description: Subgrid turbulence model (k-ε, LES, PDF methods)
-    physics: turbulence_closure
-    maps_to_general: [Stochastize, Compose]
+  - name: MeshAdaptation
+    symbol: Ma
+    scope: "Adaptive mesh refinement based on solution gradients"
+    decomposition: ["general/v1/Discretize", "general/v1/Validate"]

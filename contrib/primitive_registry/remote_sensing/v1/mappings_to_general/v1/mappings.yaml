@@ -1,56 +1,28 @@
-# Remote Sensing → General primitive cross-walk
-registry: remote_sensing/v1
-maps_to: general/v1
-version: "1.0"
-created: "2026-03-25"
+# Remote Sensing -> General primitive cross-domain mappings
+source_registry: "remote_sensing/v1"
+target_registry: "general/v1"
 
 mappings:
-  - rs_id: atmospheric_radiative_transfer
-    general_id: forward_operator
-    confidence: 0.94
-    notes: "MODTRAN/6S atmospheric model is the forward operator A: surface → sensor"
+  - source: "AtmosphericCorrection"
+    target: ["general/v1/Transform", "general/v1/Regularize"]
+    notes: "Atmospheric removal is a radiative-transfer Transform with smoothness Regularize"
 
-  - rs_id: matched_pursuit_pan_sharpening
-    general_id: iterative_solver
-    confidence: 0.83
-    notes: "Iterative pan-sharpening methods map to iterative solver family"
+  - source: "SpectralUnmixing"
+    target: ["general/v1/Invert", "general/v1/Regularize"]
+    notes: "Unmixing Inverts the linear mixture model with abundance Regularize (non-negativity)"
 
-  - rs_id: spectral_unmixing
-    general_id: adjoint_operator
-    confidence: 0.79
-    notes: "Unmixing reverses the mixture model — approximate adjoint"
+  - source: "PanSharpening"
+    target: ["general/v1/Compose", "general/v1/Transform"]
+    notes: "Pan-sharpening Composes high-res pan with multispectral via injection Transform"
 
-  - rs_id: total_variation_spatial_prior
-    general_id: regularization_operator
-    confidence: 0.97
-    notes: "Spatial TV is standard regularization for remote sensing images"
+  - source: "GeometricCorrection"
+    target: ["general/v1/Transform", "general/v1/Discretize"]
+    notes: "Orthorectification is a geometric Transform onto a Discretize-d output grid"
 
-  - rs_id: spectral_sparsity_prior
-    general_id: sparsity_prior
-    confidence: 0.91
-    notes: "Spectral unmixing sparsity constraint maps directly"
+  - source: "ChangeDetection"
+    target: ["general/v1/Differentiate", "general/v1/Validate"]
+    notes: "Temporal differencing Differentiates multi-date images then Validates change map"
 
-  - rs_id: endmember_library
-    general_id: physics_prior
-    confidence: 0.88
-    notes: "Spectral library constrains reconstruction to physically realizable spectra"
-
-  - rs_id: sensor_noise_model
-    general_id: noise_model
-    confidence: 0.96
-    notes: "Shot + readout + quantization noise model"
-
-  - rs_id: deep_sr_network
-    general_id: deep_prior
-    confidence: 0.90
-    notes: "Super-resolution CNN/transformer is a learned deep prior"
-
-  - rs_id: compressive_hyperspectral_sensing
-    general_id: compressed_sensing
-    confidence: 0.95
-    notes: "CASSI-style coded aperture is direct compressed sensing"
-
-  - rs_id: spectral_calibration_matrix
-    general_id: calibration_operator
-    confidence: 0.92
-    notes: "Sensor spectral response calibration matrix"
+  - source: "SARInterferometry"
+    target: ["general/v1/Transform", "general/v1/Compose", "general/v1/Reduce"]
+    notes: "InSAR phase = complex conjugate Compose of two SAR Transform-s then phase Reduce"

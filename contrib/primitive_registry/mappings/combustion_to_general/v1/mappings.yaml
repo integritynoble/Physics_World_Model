@@ -1,29 +1,26 @@
+# Combustion -> General Primitive Mappings v1
 schema_version: "1.0"
 source_registry: combustion/v1
 target_registry: general/v1
 version: v1
 
 mappings:
-  - source: Advect
-    decomposes_into: [Transform, Compose]
-    notes: Advection = spatial Transform (upwind) + time-step Compose
+  - source: ReactiveTransport
+    decomposes_into: [Compose, Differentiate]
+    notes: Coupled transport+reaction is operator Compose with PDE Differentiate
 
-  - source: Diffuse
-    decomposes_into: [Convolve, Differentiate]
-    notes: Diffusion = spatial Convolve (Gaussian kernel) + implicit Differentiate
+  - source: ChemicalKinetics
+    decomposes_into: [Transform, Stochastize]
+    notes: Arrhenius rate law is a nonlinear Transform; stochastic for Monte Carlo kinetics
 
-  - source: React
-    decomposes_into: [Stochastize, Differentiate]
-    notes: Reaction ODE = stiff Differentiate + Stochastize (Monte Carlo kinetics)
+  - source: TurbulenceModel
+    decomposes_into: [Transform, Regularize]
+    notes: Sub-grid model is a coarse-graining Transform with closure Regularize
 
-  - source: Radiate
-    decomposes_into: [Propagate, Attenuate]
-    notes: Radiative transfer = photon Propagate + medium Attenuate
+  - source: HeatTransfer
+    decomposes_into: [Differentiate, Reduce]
+    notes: Heat equation involves spatial Differentiate and boundary-integral Reduce
 
-  - source: Pressure_Solve
-    decomposes_into: [Invert, Differentiate]
-    notes: Pressure Poisson = Invert (linear system) of Differentiate (Laplacian)
-
-  - source: Turbulent_Mix
-    decomposes_into: [Stochastize, Compose]
-    notes: Turbulence closure = Stochastize (subgrid) + Compose with momentum
+  - source: MeshAdaptation
+    decomposes_into: [Discretize, Validate]
+    notes: AMR re-Discretizes the domain and Validates solution gradient criteria

@@ -1,52 +1,31 @@
-# PWM Particle Physics Primitives v1
-# Dialect for particle detector simulation and reconstruction.
-schema_version: "1.0"
+# Particle Physics Primitive Registry v1
+# Domain-specific primitives for detector simulation and event reconstruction.
+description: "Particle physics primitives for detector simulation and event reconstruction"
 domain: particle_physics
 version: v1
-description: >
-  Physics primitives for particle detector forward models. Covers
-  electromagnetic calorimeters, tracking detectors, Cherenkov counters,
-  and time-of-flight systems.
 
 primitives:
-  - id: Ionize
-    symbol: "Iz"
-    display_name: Ionization / Energy Loss
-    description: Bethe-Bloch energy deposition, delta-ray production
-    physics: bethe_bloch_ionization
-    maps_to_general: [Attenuate, Stochastize]
+  - name: ParticleTracking
+    symbol: Pt
+    scope: "Charged particle trajectory through magnetic/electric fields"
+    decomposition: ["general/v1/Transform", "general/v1/Differentiate"]
 
-  - id: Shower
-    symbol: "Sh"
-    display_name: Particle Shower
-    description: Electromagnetic or hadronic cascade development
-    physics: electromagnetic_hadronic_cascade
-    maps_to_general: [Propagate, Stochastize, Compose]
+  - name: CalorimeterResponse
+    symbol: Cr
+    scope: "Energy deposition and shower development in calorimeters"
+    decomposition: ["general/v1/Reduce", "general/v1/Stochastize"]
 
-  - id: Track
-    symbol: "Tk"
-    display_name: Track Propagation
-    description: Charged particle trajectory in magnetic field (Runge-Kutta)
-    physics: lorentz_force_propagation
-    maps_to_general: [Propagate, Transform]
+  - name: EventReconstruction
+    symbol: Er
+    scope: "Reconstruct particle kinematics from detector hits"
+    decomposition: ["general/v1/Invert", "general/v1/Compose"]
 
-  - id: Cherenkov
-    symbol: "Ch"
-    display_name: Cherenkov Radiation
-    description: Photon emission from superluminal charged particles
-    physics: cherenkov_effect
-    maps_to_general: [Propagate, Detect]
+  - name: PileupCorrection
+    symbol: Pc
+    scope: "Correct for overlapping collision events"
+    decomposition: ["general/v1/Regularize", "general/v1/Reduce"]
 
-  - id: Digitize
-    symbol: "Dg"
-    display_name: Detector Digitization
-    description: Analog-to-digital conversion, shaping, thresholding
-    physics: electronics_response
-    maps_to_general: [Detect, Stochastize]
-
-  - id: Reconstruct_Track
-    symbol: "Rt"
-    display_name: Track Reconstruction
-    description: Kalman-filter or ML-based track finding and fitting
-    physics: kalman_filter_tracking
-    maps_to_general: [Invert, Compose]
+  - name: JetClustering
+    symbol: Jc
+    scope: "Cluster detector hits into particle jets"
+    decomposition: ["general/v1/Reduce", "general/v1/Validate"]

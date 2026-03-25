@@ -1,58 +1,36 @@
-# PWM Acoustics Physics Primitives v1
-# Dialect for acoustic wave propagation, ultrasound, sonar, and NDE.
-schema_version: "1.0"
+# Acoustics Primitive Registry v1
+# Domain-specific primitives for acoustic wave simulation and reconstruction.
+description: "Acoustics physics primitives for wave propagation, scattering, and imaging"
 domain: acoustics
 version: v1
-description: >
-  Physics primitives for acoustic and ultrasound forward models.
-  Maps to general computational primitives via acoustics_to_general/v1.
 
 primitives:
-  - id: Propagate_A
-    symbol: "P_A"
-    display_name: Acoustic Propagation
-    description: Free-space acoustic wave propagation (Green's function or k-space method)
-    physics: wave_equation_acoustic
-    maps_to_general: [Propagate, Transform]
+  - name: PressureWavePropagation
+    symbol: Pw
+    scope: "Acoustic wave propagation through homogeneous/heterogeneous media"
+    decomposition: ["general/v1/Transform", "general/v1/Compose"]
 
-  - id: Reflect
-    symbol: "Rf"
-    display_name: Reflection / Scattering
-    description: Acoustic reflection at impedance boundaries (Z = ρc)
-    physics: acoustic_impedance_mismatch
-    maps_to_general: [Scatter, Modulate]
+  - name: AcousticScattering
+    symbol: As
+    scope: "Sound wave scattering from obstacles and interfaces"
+    decomposition: ["general/v1/Transform", "general/v1/Stochastize"]
 
-  - id: Transmit
-    symbol: "Tr"
-    display_name: Transmission
-    description: Partial transmission through acoustic boundary
-    physics: transmission_coefficient
-    maps_to_general: [Modulate, Attenuate]
+  - name: Beamforming
+    symbol: Bf
+    scope: "Delay-and-sum or adaptive beamforming for source localization"
+    decomposition: ["general/v1/Reduce", "general/v1/Compose"]
 
-  - id: Absorb
-    symbol: "Ab"
-    display_name: Acoustic Absorption
-    description: Frequency-dependent attenuation (α·f^n model)
-    physics: viscothermal_absorption
-    maps_to_general: [Attenuate]
+  - name: AcousticAttenuation
+    symbol: Aa
+    scope: "Frequency-dependent absorption in tissue or material"
+    decomposition: ["general/v1/Transform"]
 
-  - id: Beamform
-    symbol: "Bf"
-    display_name: Beamforming
-    description: Delay-and-sum or coherent compounding across transducer array
-    physics: phased_array_summation
-    maps_to_general: [Reduce, Compose]
+  - name: TimeReversal
+    symbol: Tr
+    scope: "Time-reversal focusing for aberration correction"
+    decomposition: ["general/v1/Adjoint"]
 
-  - id: Transduce
-    symbol: "Td"
-    display_name: Transduction
-    description: Electro-acoustic conversion at transmit/receive element
-    physics: piezoelectric_response
-    maps_to_general: [Detect, Modulate]
-
-  - id: Doppler
-    symbol: "Dp"
-    display_name: Doppler Shift
-    description: Frequency shift due to moving scatterers
-    physics: doppler_effect
-    maps_to_general: [Transform, Differentiate]
+  - name: SpectralAnalysis
+    symbol: Sa
+    scope: "Frequency-domain decomposition of acoustic signals"
+    decomposition: ["general/v1/Transform", "general/v1/Reduce"]

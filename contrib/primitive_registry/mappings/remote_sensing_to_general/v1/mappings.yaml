@@ -1,33 +1,30 @@
+# Remote Sensing -> General Primitive Mappings v1
 schema_version: "1.0"
 source_registry: remote_sensing/v1
 target_registry: general/v1
 version: v1
 
 mappings:
-  - source: Solar_Irradiance
-    decomposes_into: [Propagate, Modulate]
-    notes: Solar source = Propagate + spectral Modulate (solar spectrum)
+  - source: AtmosphericCorrection
+    decomposes_into: [Transform, Regularize]
+    notes: Atmospheric removal is a radiative-transfer Transform with smoothness Regularize
 
-  - source: Atmospheric_Transfer
-    decomposes_into: [Attenuate, Scatter, Propagate]
-    notes: Atmosphere = Beer-Lambert Attenuate + Mie/Rayleigh Scatter + Propagate
+  - source: SpectralUnmixing
+    decomposes_into: [Invert, Regularize]
+    notes: Unmixing Inverts the linear mixture model with abundance Regularize
 
-  - source: Surface_Reflect
-    decomposes_into: [Modulate, Scatter]
-    notes: BRDF = directional Scatter + amplitude Modulate
+  - source: PanSharpening
+    decomposes_into: [Compose, Transform]
+    notes: Pan-sharpening Composes high-res pan with multispectral via injection Transform
 
-  - source: SAR_Backscatter
-    decomposes_into: [Scatter, Modulate]
-    notes: SAR backscatter = directional Scatter + complex-valued Modulate
+  - source: GeometricCorrection
+    decomposes_into: [Transform, Discretize]
+    notes: Orthorectification is a geometric Transform onto a Discretize-d output grid
 
-  - source: InSAR_Phase
-    decomposes_into: [Differentiate, Compose]
-    notes: Interferometric phase = Differentiate (path difference) + Compose (two passes)
+  - source: ChangeDetection
+    decomposes_into: [Differentiate, Validate]
+    notes: Temporal differencing Differentiates multi-date images then Validates change map
 
-  - source: Sensor_Response
-    decomposes_into: [Detect, Reduce]
-    notes: Detector = spectrally-weighted Detect + band-integral Reduce
-
-  - source: Georeference
-    decomposes_into: [Transform, Compose]
-    notes: Map projection = coordinate Transform + Compose with DEM
+  - source: SARInterferometry
+    decomposes_into: [Transform, Compose, Reduce]
+    notes: InSAR phase = complex conjugate Compose of two SAR Transform-s then phase Reduce

@@ -1,46 +1,24 @@
-# Combustion → General primitive cross-walk
-registry: combustion/v1
-maps_to: general/v1
-version: "1.0"
-created: "2026-03-25"
+# Combustion -> General primitive cross-domain mappings
+source_registry: "combustion/v1"
+target_registry: "general/v1"
 
 mappings:
-  - combustion_id: radiative_transfer_equation
-    general_id: forward_operator
-    confidence: 0.93
-    notes: "RTE is the forward model mapping emission field to line-of-sight integral"
+  - source: "ReactiveTransport"
+    target: ["general/v1/Compose", "general/v1/Differentiate"]
+    notes: "Coupled transport+reaction is operator Compose with PDE Differentiate"
 
-  - combustion_id: abel_inversion
-    general_id: adjoint_operator
-    confidence: 0.88
-    notes: "Abel inversion is the quasi-adjoint of the projection integral"
+  - source: "ChemicalKinetics"
+    target: ["general/v1/Transform", "general/v1/Stochastize"]
+    notes: "Arrhenius rate law is a nonlinear Transform; stochastic for Monte Carlo kinetics"
 
-  - combustion_id: tomographic_reconstruction_flame
-    general_id: iterative_solver
-    confidence: 0.91
-    notes: "SART/ART applied to flame emission is an iterative solver"
+  - source: "TurbulenceModel"
+    target: ["general/v1/Transform", "general/v1/Regularize"]
+    notes: "Sub-grid model is a coarse-graining Transform with closure Regularize"
 
-  - combustion_id: blackbody_emission_prior
-    general_id: physics_prior
-    confidence: 0.94
-    notes: "Planck blackbody law is a strong physics prior on temperature fields"
+  - source: "HeatTransfer"
+    target: ["general/v1/Differentiate", "general/v1/Reduce"]
+    notes: "Heat equation involves spatial Differentiate and boundary-integral Reduce"
 
-  - combustion_id: sparse_flame_kernel
-    general_id: sparsity_prior
-    confidence: 0.80
-    notes: "Reaction zone sparsity maps to L1 sparsity prior"
-
-  - combustion_id: background_subtraction
-    general_id: noise_model
-    confidence: 0.78
-    notes: "Background frame subtraction is equivalent to noise model removal"
-
-  - combustion_id: planar_laser_imaging
-    general_id: compressed_sensing
-    confidence: 0.72
-    notes: "PLIF selective excitation is analogous to compressed measurement"
-
-  - combustion_id: temporal_smoothness_constraint
-    general_id: regularization_operator
-    confidence: 0.89
-    notes: "Temporal TV/Tikhonov on flame sequence = regularization"
+  - source: "MeshAdaptation"
+    target: ["general/v1/Discretize", "general/v1/Validate"]
+    notes: "AMR re-Discretizes the domain and Validates solution gradient criteria"

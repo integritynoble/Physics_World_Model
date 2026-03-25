@@ -1,34 +1,30 @@
-# Acoustics → General Primitive Mappings v1
+# Acoustics -> General Primitive Mappings v1
 schema_version: "1.0"
 source_registry: acoustics/v1
 target_registry: general/v1
 version: v1
 
 mappings:
-  - source: Propagate_A
-    decomposes_into: [Propagate, Transform]
-    notes: Green's function propagation = coordinate Transform + free-space Propagate
+  - source: PressureWavePropagation
+    decomposes_into: [Transform, Compose]
+    notes: Wave equation propagation decomposes into spatial Transform and step Compose
 
-  - source: Reflect
-    decomposes_into: [Scatter, Modulate]
-    notes: Impedance boundary reflection = directional Scatter + amplitude Modulate
+  - source: AcousticScattering
+    decomposes_into: [Transform, Stochastize]
+    notes: Scattering kernel as Transform with stochastic scatterer distribution
 
-  - source: Transmit
-    decomposes_into: [Modulate, Attenuate]
-    notes: Partial transmission = amplitude Modulate (T coefficient) + Attenuate
-
-  - source: Absorb
-    decomposes_into: [Attenuate]
-    notes: Frequency-dependent attenuation = Beer-Lambert Attenuate (generalized)
-
-  - source: Beamform
+  - source: Beamforming
     decomposes_into: [Reduce, Compose]
-    notes: Delay-and-sum = time-aligned Compose + channel Reduce (sum)
+    notes: Delay-and-sum is time-aligned Compose followed by channel Reduce (sum)
 
-  - source: Transduce
-    decomposes_into: [Detect, Modulate]
-    notes: Piezo transduction = electromechanical Modulate + signal Detect
+  - source: AcousticAttenuation
+    decomposes_into: [Transform]
+    notes: Frequency-dependent absorption modeled as a single damping Transform
 
-  - source: Doppler
-    decomposes_into: [Transform, Differentiate]
-    notes: Doppler shift = frequency Transform + Differentiate (velocity estimation)
+  - source: TimeReversal
+    decomposes_into: [Adjoint]
+    notes: Time-reversal is the physical realization of the Adjoint operator
+
+  - source: SpectralAnalysis
+    decomposes_into: [Transform, Reduce]
+    notes: FFT-based spectral decomposition is a Transform followed by band Reduce

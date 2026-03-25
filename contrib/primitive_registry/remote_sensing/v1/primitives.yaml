@@ -1,58 +1,36 @@
-# PWM Remote Sensing Primitives v1
-# Dialect for satellite, aerial, and ground-based remote sensing.
-schema_version: "1.0"
+# Remote Sensing Primitive Registry v1
+# Domain-specific primitives for satellite/aerial imaging and spectral analysis.
+description: "Remote sensing primitives for satellite/aerial imaging and spectral analysis"
 domain: remote_sensing
 version: v1
-description: >
-  Physics primitives for remote sensing forward models. Covers passive
-  optical, SAR/InSAR, LiDAR, and multispectral/hyperspectral imaging.
 
 primitives:
-  - id: Solar_Irradiance
-    symbol: "Si"
-    display_name: Solar Irradiance
-    description: Top-of-atmosphere solar spectrum and angle
-    physics: solar_spectral_irradiance
-    maps_to_general: [Propagate, Modulate]
+  - name: AtmosphericCorrection
+    symbol: Ac
+    scope: "Remove atmospheric absorption and scattering effects"
+    decomposition: ["general/v1/Transform", "general/v1/Regularize"]
 
-  - id: Atmospheric_Transfer
-    symbol: "At"
-    display_name: Atmospheric Transfer
-    description: Rayleigh and Mie scattering, gaseous absorption (MODTRAN model)
-    physics: radiative_transfer_atmosphere
-    maps_to_general: [Attenuate, Scatter, Propagate]
+  - name: SpectralUnmixing
+    symbol: Su
+    scope: "Decompose mixed pixel spectra into endmember abundances"
+    decomposition: ["general/v1/Invert", "general/v1/Regularize"]
 
-  - id: Surface_Reflect
-    symbol: "Sr"
-    display_name: Surface Reflectance
-    description: Lambertian or BRDF surface reflectance model
-    physics: bidirectional_reflectance
-    maps_to_general: [Modulate, Scatter]
+  - name: PanSharpening
+    symbol: Ps
+    scope: "Fuse high-resolution panchromatic with multispectral data"
+    decomposition: ["general/v1/Compose", "general/v1/Transform"]
 
-  - id: SAR_Backscatter
-    symbol: "Sb"
-    display_name: SAR Backscatter
-    description: Synthetic aperture radar backscattering coefficient
-    physics: electromagnetic_scattering_sar
-    maps_to_general: [Scatter, Modulate]
+  - name: GeometricCorrection
+    symbol: Gc
+    scope: "Orthorectification and terrain correction"
+    decomposition: ["general/v1/Transform", "general/v1/Discretize"]
 
-  - id: InSAR_Phase
-    symbol: "Ip"
-    display_name: InSAR Phase
-    description: Interferometric phase from two SAR acquisitions
-    physics: interferometric_coherence
-    maps_to_general: [Differentiate, Compose]
+  - name: ChangeDetection
+    symbol: Cd
+    scope: "Identify temporal changes between multi-date acquisitions"
+    decomposition: ["general/v1/Differentiate", "general/v1/Validate"]
 
-  - id: Sensor_Response
-    symbol: "Rsp"
-    display_name: Sensor Spectral Response
-    description: Detector quantum efficiency, spectral band integration
-    physics: sensor_spectral_response
-    maps_to_general: [Detect, Reduce]
-
-  - id: Georeference
-    symbol: "Gr"
-    display_name: Georeferencing
-    description: Map projection and coordinate transformation
-    physics: geometric_projection
-    maps_to_general: [Transform, Compose]
+  - name: SARInterferometry
+    symbol: Si
+    scope: "Interferometric SAR phase processing for elevation/deformation"
+    decomposition: ["general/v1/Transform", "general/v1/Compose", "general/v1/Reduce"]
