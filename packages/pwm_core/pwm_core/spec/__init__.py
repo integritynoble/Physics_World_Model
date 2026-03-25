@@ -5,7 +5,7 @@ ProblemInstance implementations for the three-layer schema described in
 docs/dyson_swarm_strategy.md §1.
 """
 
-from pwm_core.spec.core import CoreSpec
+from pwm_core.spec.core import CanonicalCoreSpec, CoreSpec, EXPERIMENT_SPEC_MAPPING
 from pwm_core.spec.domain_profile import (
     DomainProfile,
     DomainGateSpec,
@@ -18,7 +18,9 @@ from pwm_core.spec.domain_profile import (
 from pwm_core.spec.problem_instance import ProblemInstance
 
 __all__ = [
+    "CanonicalCoreSpec",
     "CoreSpec",
+    "EXPERIMENT_SPEC_MAPPING",
     "DomainProfile",
     "DomainGateSpec",
     "GateThreshold",
