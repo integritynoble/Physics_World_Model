@@ -5,9 +5,9 @@ Verifies the full pipeline:
 
 Tests:
   - certificate.json is created in the bundle root
-  - trust_tier is "draft" (all S-gates pass for a well-formed bundle)
-  - all four S-gates (s1, s2, s3, s4) are present and pass
-  - triad_flags field is present (may be None without DR-IS data)
+  - trust_tier is "draft" (all R-gates pass for a well-formed bundle)
+  - all four R-gates (r1, r2, r3, r4) are present and pass
+  - domain_flags field is present (may be None without DR-IS data)
   - a bundle with missing manifest keys produces trust_tier "rejected"
   - CLI --emit-certificate flag calls issue_certificate() and writes the file
 """
@@ -54,7 +54,7 @@ def _make_synthetic_bundle(tmp_dir: Path, *, omit_keys: list[str] | None = None)
     artifacts_dir = bundle_dir / "artifacts"
     artifacts_dir.mkdir()
 
-    # Write one synthetic artifact so S3 has something to verify
+    # Write one synthetic artifact so R3 has something to verify
     x_hat = np.random.default_rng(42).standard_normal((32, 32)).astype(np.float32)
     art_path = artifacts_dir / "x_hat_scene0_scenarioI.npy"
     np.save(str(art_path), x_hat)
@@ -144,30 +144,30 @@ class TestIssueCertificate:
 
         cert = json.loads(cert_path.read_text())
         gate_verdicts = cert.get("gate_verdicts", {})
-        for gate in ("s1", "s2", "s3", "s4"):
+        for gate in ("r1", "r2", "r3", "r4"):
             assert gate in gate_verdicts, f"Gate {gate!r} missing from certificate"
 
-    def test_s1_s3_pass_for_complete_manifest(self, tmp_path):
+    def test_r1_r3_pass_for_complete_manifest(self, tmp_path):
         bundle_dir = _make_synthetic_bundle(tmp_path)
         cert_path = issue_certificate(bundle_dir)
 
         cert = json.loads(cert_path.read_text())
         gate_verdicts = cert["gate_verdicts"]
 
-        assert gate_verdicts["s1"]["verdict"] == "pass", (
-            f"S1 should pass for a complete manifest: {gate_verdicts['s1']}"
+        assert gate_verdicts["r1"]["verdict"] == "pass", (
+            f"R1 should pass for a complete manifest: {gate_verdicts['r1']}"
         )
-        assert gate_verdicts["s3"]["verdict"] == "pass", (
-            f"S3 should pass when all artifact hashes are correct: {gate_verdicts['s3']}"
+        assert gate_verdicts["r3"]["verdict"] == "pass", (
+            f"R3 should pass when all artifact hashes are correct: {gate_verdicts['r3']}"
         )
 
-    def test_triad_flags_field_present(self, tmp_path):
+    def test_domain_flags_field_present(self, tmp_path):
         bundle_dir = _make_synthetic_bundle(tmp_path)
         cert_path = issue_certificate(bundle_dir)
 
         cert = json.loads(cert_path.read_text())
-        # triad_flags may be None when DR-IS records are absent, but the key must exist
-        assert "triad_flags" in cert, "certificate.json must contain 'triad_flags' key"
+        # domain_flags may be None when DR-IS records are absent, but the key must exist
+        assert "domain_flags" in cert, "certificate.json must contain 'domain_flags' key"
 
     def test_required_certificate_fields(self, tmp_path):
         bundle_dir = _make_synthetic_bundle(tmp_path)
@@ -195,7 +195,7 @@ class TestIssueCertificate:
         assert result is None, "issue_certificate() should return None when manifest is missing"
 
     def test_incomplete_manifest_produces_rejected_tier(self, tmp_path):
-        """Drop 'artifacts' key → S1 fails → trust_tier=rejected."""
+        """Drop 'artifacts' key → R1 fails → trust_tier=rejected."""
         bundle_dir = _make_synthetic_bundle(tmp_path, omit_keys=["artifacts"])
         cert_path = issue_certificate(bundle_dir)
 
@@ -208,7 +208,7 @@ class TestIssueCertificate:
         )
 
     def test_hash_mismatch_produces_rejected_tier(self, tmp_path):
-        """Corrupt the artifact after computing hashes → S3 fails → rejected."""
+        """Corrupt the artifact after computing hashes → R3 fails → rejected."""
         bundle_dir = _make_synthetic_bundle(tmp_path)
         # Corrupt the artifact file after the manifest was written with correct hashes
         art = bundle_dir / "artifacts" / "x_hat_scene0_scenarioI.npy"
@@ -220,7 +220,7 @@ class TestIssueCertificate:
         assert cert["trust_tier"] == "rejected", (
             f"Expected rejected tier after hash corruption, got {cert['trust_tier']!r}"
         )
-        assert cert["gate_verdicts"]["s3"]["verdict"] == "fail"
+        assert cert["gate_verdicts"]["r3"]["verdict"] == "fail"
 
 
 class TestEndToEndCLI:
@@ -254,5 +254,21 @@ class TestCertificateDeserialization:
         cert_path = issue_certificate(bundle_dir)
 
         cert_dict = json.loads(cert_path.read_text())
-        s1_verdict = GateVerdict(cert_dict["gate_verdicts"]["s1"]["verdict"])
-        assert s1_verdict == GateVerdict.pass_
+        r1_verdict = GateVerdict(cert_dict["gate_verdicts"]["r1"]["verdict"])
+        assert r1_verdict == GateVerdict.pass_
+
+
+class TestNonImagingCertificate:
+    """Verify certificate issuance works without imaging-specific fields."""
+
+    def test_certificate_without_imaging_domain_flags(self, tmp_path):
+        """Certificate issuance must succeed with empty domain_flags."""
+        bundle_dir = _make_synthetic_bundle(tmp_path)
+        cert_path = issue_certificate(bundle_dir)
+        cert = json.loads(cert_path.read_text())
+        # domain_flags may be None or contain no imaging key — both are valid
+        domain_flags = cert.get("domain_flags")
+        # The certificate itself must still be valid
+        assert cert["trust_tier"] in ("draft", "rejected")
+        assert "run_id" in cert
+        assert "gate_verdicts" in cert

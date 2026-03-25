@@ -1,13 +1,17 @@
 """pwm_core.targeting.gates
 
-S1-S4 certification gates — explicit pass/fail/warn verdicts.
+R1-R4 operational run-gates — explicit pass/fail/warn verdicts.
+
+(S1-S4 are reserved for the paper's formal scientific conditions and are
+**not** checked here; see ``pwm_core.targeting.scientific_gates`` when it
+lands.)
 
 Each gate maps to an existing data source inside a RunBundle:
 
-  S1 spec_completeness  — validation report written at run start
-  S2 reproducibility    — provenance.json (seeds, git hash, pip freeze)
-  S3 metric_integrity   — SHA-256 hashes on all stored artifacts
-  S4 budget_compliance  — BudgetGuard timing log
+  R1 spec_completeness  — validation report written at run start
+  R2 reproducibility    — provenance.json (seeds, git hash, pip freeze)
+  R3 metric_integrity   — SHA-256 hashes on all stored artifacts
+  R4 budget_compliance  — BudgetGuard timing log
 
 The functions here formalise these checks into hard verdicts that can block
 or flag certification.  Previously they produced only diagnostic data; now
@@ -15,8 +19,8 @@ each function returns a ``GateResult`` that the Certificate records.
 
 Usage
 -----
->>> from pwm_core.targeting.gates import run_s1_s4
->>> verdicts = run_s1_s4(bundle_dir, manifest, provenance, budget_log)
+>>> from pwm_core.targeting.gates import run_r1_r4
+>>> verdicts = run_r1_r4(bundle_dir, manifest, provenance, budget_log)
 """
 
 from __future__ import annotations
@@ -32,18 +36,18 @@ from pwm_core.core.runbundle.certificate import GateResult, GateVerdict
 
 logger = logging.getLogger(__name__)
 
-# Maximum allowed budget overrun ratio before S4 fails (2× = disqualified)
+# Maximum allowed budget overrun ratio before R4 fails (2× = disqualified)
 BUDGET_FAIL_RATIO = 2.0
 # Warn at 1.5× declared budget
 BUDGET_WARN_RATIO = 1.5
 
 
 # ---------------------------------------------------------------------------
-# S1 — Spec completeness
+# R1 — Spec completeness
 # ---------------------------------------------------------------------------
 
-def check_s1_spec_completeness(manifest: Dict[str, Any]) -> GateResult:
-    """S1: Verify the spec is complete and all required fields are present.
+def check_r1_spec_completeness(manifest: Dict[str, Any]) -> GateResult:
+    """R1: Verify the spec is complete and all required fields are present.
 
     Parameters
     ----------
@@ -77,11 +81,11 @@ def check_s1_spec_completeness(manifest: Dict[str, Any]) -> GateResult:
 
 
 # ---------------------------------------------------------------------------
-# S2 — Reproducibility
+# R2 — Reproducibility
 # ---------------------------------------------------------------------------
 
-def check_s2_reproducibility(provenance: Dict[str, Any]) -> GateResult:
-    """S2: Verify provenance contains enough information for reproduction.
+def check_r2_reproducibility(provenance: Dict[str, Any]) -> GateResult:
+    """R2: Verify provenance contains enough information for reproduction.
 
     Parameters
     ----------
@@ -121,11 +125,11 @@ def check_s2_reproducibility(provenance: Dict[str, Any]) -> GateResult:
 
 
 # ---------------------------------------------------------------------------
-# S3 — Metric integrity
+# R3 — Metric integrity
 # ---------------------------------------------------------------------------
 
-def check_s3_metric_integrity(bundle_dir: Path, manifest: Dict[str, Any]) -> GateResult:
-    """S3: Re-verify SHA-256 hashes for all artifacts listed in the manifest.
+def check_r3_metric_integrity(bundle_dir: Path, manifest: Dict[str, Any]) -> GateResult:
+    """R3: Re-verify SHA-256 hashes for all artifacts listed in the manifest.
 
     Parameters
     ----------
@@ -182,11 +186,11 @@ def check_s3_metric_integrity(bundle_dir: Path, manifest: Dict[str, Any]) -> Gat
 
 
 # ---------------------------------------------------------------------------
-# S4 — Budget compliance
+# R4 — Budget compliance
 # ---------------------------------------------------------------------------
 
-def check_s4_budget_compliance(manifest: Dict[str, Any]) -> GateResult:
-    """S4: Verify solver runtime stayed within declared compute budget.
+def check_r4_budget_compliance(manifest: Dict[str, Any]) -> GateResult:
+    """R4: Verify solver runtime stayed within declared compute budget.
 
     Parameters
     ----------
@@ -250,12 +254,12 @@ def check_s4_budget_compliance(manifest: Dict[str, Any]) -> GateResult:
 # Master runner
 # ---------------------------------------------------------------------------
 
-def run_s1_s4(
+def run_r1_r4(
     bundle_dir: Path,
     manifest: Dict[str, Any],
     provenance: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, GateResult]:
-    """Run all four S-gates and return a dict of gate name → GateResult.
+    """Run all four R-gates and return a dict of gate name → GateResult.
 
     Parameters
     ----------
@@ -269,16 +273,16 @@ def run_s1_s4(
     Returns
     -------
     dict[str, GateResult]
-        Keys: ``s1``, ``s2``, ``s3``, ``s4``.
+        Keys: ``r1``, ``r2``, ``r3``, ``r4``.
     """
     if provenance is None:
         provenance = manifest.get("provenance", {})
 
     return {
-        "s1": check_s1_spec_completeness(manifest),
-        "s2": check_s2_reproducibility(provenance),
-        "s3": check_s3_metric_integrity(bundle_dir, manifest),
-        "s4": check_s4_budget_compliance(manifest),
+        "r1": check_r1_spec_completeness(manifest),
+        "r2": check_r2_reproducibility(provenance),
+        "r3": check_r3_metric_integrity(bundle_dir, manifest),
+        "r4": check_r4_budget_compliance(manifest),
     }
 
 
@@ -293,3 +297,13 @@ def _sha256_file(path: Path) -> str:
         for chunk in iter(lambda: f.read(65536), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+# ---------------------------------------------------------------------------
+# Backward compatibility aliases (S->R rename per strategy S4)
+# ---------------------------------------------------------------------------
+check_s1_spec_completeness = check_r1_spec_completeness
+check_s2_reproducibility = check_r2_reproducibility
+check_s3_metric_integrity = check_r3_metric_integrity
+check_s4_budget_compliance = check_r4_budget_compliance
+run_s1_s4 = run_r1_r4

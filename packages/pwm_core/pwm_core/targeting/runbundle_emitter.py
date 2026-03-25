@@ -179,11 +179,11 @@ def emit_runbundle(
 
 
 def issue_certificate(bundle_dir: Path) -> Optional[Path]:
-    """Run S1-S4 gates and write ``certificate.json`` to *bundle_dir*.
+    """Run R1-R4 gates and write ``certificate.json`` to *bundle_dir*.
 
     Gate blocking rules (P0):
-    - S1/S2/S3 fail  → trust_tier = rejected + safety_brake risk flag
-    - S4 fail        → trust_tier = draft    + safety_brake risk flag (budget violation)
+    - R1/R2/R3 fail  → trust_tier = rejected + safety_brake risk flag
+    - R4 fail        → trust_tier = draft    + safety_brake risk flag (budget violation)
     - any warn       → trust_tier = draft    + high_variance risk flag
     - all pass       → trust_tier = draft    (ready for promotion workflow)
 
@@ -200,9 +200,10 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     """
     import json as _json
     from pwm_core.core.runbundle.certificate import (
-        Certificate, GateResult, GateVerdict, RiskFlag, TriadFlags, TrustTier,
+        Certificate, DomainFlags, GateResult, GateVerdict,
+        ImagingTriadFlags, RiskFlag, TrustTier,
     )
-    from pwm_core.targeting.gates import run_s1_s4
+    from pwm_core.targeting.gates import run_r1_r4
 
     manifest_path = bundle_dir / "runbundle_manifest.json"
     if not manifest_path.exists():
@@ -219,17 +220,17 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
         with open(provenance_path, encoding="utf-8") as f:
             provenance = _json.load(f)
 
-    # --- Run S1-S4 gates ---
-    gate_results = run_s1_s4(bundle_dir, manifest, provenance)
+    # --- Run R1-R4 gates ---
+    gate_results = run_r1_r4(bundle_dir, manifest, provenance)
 
     # --- Determine trust tier (P0 blocking logic) ---
-    hard_gate_names = {"s1", "s2", "s3"}
+    hard_gate_names = {"r1", "r2", "r3"}
     hard_fail = any(
         v.verdict == GateVerdict.fail
         for k, v in gate_results.items()
         if k in hard_gate_names
     )
-    s4_fail = gate_results.get("s4", GateResult(verdict=GateVerdict.pass_)).verdict == GateVerdict.fail
+    r4_fail = gate_results.get("r4", GateResult(verdict=GateVerdict.pass_)).verdict == GateVerdict.fail
     any_warn = any(v.verdict == GateVerdict.warn for v in gate_results.values())
 
     if hard_fail:
@@ -238,13 +239,14 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
         trust_tier = TrustTier.draft
 
     risk_flags = []
-    if hard_fail or s4_fail:
+    if hard_fail or r4_fail:
         risk_flags.append(RiskFlag.safety_brake)
     if any_warn and not hard_fail:
         risk_flags.append(RiskFlag.high_variance)
 
     # --- Wire Triad gates (G1/G2/G3) from 4-scenario PSNR ---
-    triad_flags = _build_triad_flags(bundle_dir, manifest)
+    imaging_triad = _build_imaging_triad_flags(bundle_dir, manifest)
+    domain_flags = DomainFlags(imaging=imaging_triad) if imaging_triad else None
 
     # --- Provenance hash ---
     prov_hash = None
@@ -260,6 +262,8 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     except Exception:
         judge_version = "unknown"
 
+    kernel_version = _get_git_hash()  # reuse existing helper
+
     cert = Certificate(
         run_id=run_id,
         spec_id=spec_id,
@@ -268,8 +272,9 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
         risk_flags=risk_flags,
         active_gates=list(gate_results.keys()),
         gate_verdicts=gate_results,
-        triad_flags=triad_flags,
+        domain_flags=domain_flags,
         provenance_hash=prov_hash,
+        kernel_version=kernel_version,
     )
 
     cert_path = bundle_dir / "certificate.json"
@@ -283,15 +288,15 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     return cert_path
 
 
-def _build_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[Any]:
-    """Build TriadFlags by calling infer_gate_attribution() on per-scenario PSNRs.
+def _build_imaging_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[Any]:
+    """Build ImagingTriadFlags by calling infer_gate_attribution() on per-scenario PSNRs.
 
     Reads per-scenario PSNR from ``logs/dr_is_records.json`` (preferred) or
     falls back to aggregate metrics in the manifest.  Returns None if
     insufficient data is available.
     """
     try:
-        from pwm_core.core.runbundle.certificate import GateResult, GateVerdict, TriadFlags
+        from pwm_core.core.runbundle.certificate import GateResult, GateVerdict, ImagingTriadFlags
         from pwm_core.targeting.scoring import infer_gate_attribution
         import json as _json
     except ImportError:
@@ -318,7 +323,7 @@ def _build_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[A
             for sid in sums:
                 scenario_psnr[sid] = sums[sid] / counts[sid]
         except Exception as exc:
-            logger.debug("_build_triad_flags: DR-IS read failed: %s", exc)
+            logger.debug("_build_imaging_triad_flags: DR-IS read failed: %s", exc)
 
     # --- Map scenario IDs to I/II/III/IV ---
     def _get(keys, default=None):
@@ -362,7 +367,7 @@ def _build_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[A
             psnr_iv=psnr_iv,
         )
     except Exception as exc:
-        logger.debug("_build_triad_flags: infer_gate_attribution failed: %s", exc)
+        logger.debug("_build_imaging_triad_flags: infer_gate_attribution failed: %s", exc)
         return None
 
     # Map GateAttribution fractions to GateResult verdicts:
@@ -381,7 +386,7 @@ def _build_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[A
         )
 
     dom = attr.dominant_gate
-    return TriadFlags(
+    return ImagingTriadFlags(
         g1_sampling=_gate_result(
             attr.gate_1_sampling,
             dom == "gate_1_sampling",
@@ -398,3 +403,7 @@ def _build_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[A
             attr.confidence,
         ),
     )
+
+
+# Keep old name as alias for backward compatibility
+_build_triad_flags = _build_imaging_triad_flags

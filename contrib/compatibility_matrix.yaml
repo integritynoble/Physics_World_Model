@@ -1,0 +1,49 @@
+# PWM Compatibility Matrix
+# Tracks version compatibility across the Dyson Swarm components.
+# See dyson_swarm_strategy.md §6 for governance rules.
+
+version: "1.0.0"
+
+# Which spec.core versions each DomainProfile supports
+spec_core_compatibility:
+  imaging/v1:
+    spec_core: ">=1.0.0, <2.0.0"
+    status: "trusted"
+  ct_qc/v1:
+    spec_core: ">=1.0.0, <2.0.0"
+    status: "reference"
+  combustion/v1:
+    spec_core: ">=1.0.0, <2.0.0"
+    status: "experimental"
+  spectroscopy/v1:
+    spec_core: ">=1.0.0, <2.0.0"
+    status: "experimental"
+
+# Which primitive registry versions each profile requires
+primitive_registry_requirements:
+  imaging/v1:
+    general: "v1.x"
+    imaging: "v1.x"
+  ct_qc/v1:
+    general: "v1.x"
+  combustion/v1:
+    general: "v1.x"
+    combustion: "v1.x"
+  spectroscopy/v1:
+    general: "v1.x"
+
+# Which Judge/Certificate versions can certify each profile
+judge_compatibility:
+  imaging/v1:
+    judge: ">=1.0.0"
+    certificate: "v1"
+  ct_qc/v1:
+    judge: ">=1.0.0"
+    certificate: "v1"
+
+# Product <-> kernel version compatibility
+product_kernel_compatibility:
+  - product_version: "1.0.0"
+    kernel_min: "1.0.0"
+    kernel_max: "2.0.0"
+    notes: "Initial release"
