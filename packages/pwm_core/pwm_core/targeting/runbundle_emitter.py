@@ -176,3 +176,83 @@ def emit_runbundle(
 
     logger.info(f"RunBundle emitted: {bundle_dir}")
     return bundle_dir
+
+
+def issue_certificate(bundle_dir: Path) -> Optional[Path]:
+    """Run S1-S4 gates and write ``certificate.json`` to *bundle_dir*.
+
+    Parameters
+    ----------
+    bundle_dir : Path
+        Path to an existing RunBundle directory.
+
+    Returns
+    -------
+    Path or None
+        Path to the written ``certificate.json``, or None if the manifest
+        is missing.
+    """
+    import json as _json
+    from pwm_core.core.runbundle.certificate import (
+        Certificate, GateVerdict, RiskFlag, TrustTier,
+    )
+    from pwm_core.targeting.gates import run_s1_s4
+
+    manifest_path = bundle_dir / "runbundle_manifest.json"
+    if not manifest_path.exists():
+        logger.warning("issue_certificate: manifest not found at %s", manifest_path)
+        return None
+
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = _json.load(f)
+
+    # Load extended provenance if available
+    provenance_path = bundle_dir / "provenance.json"
+    provenance = None
+    if provenance_path.exists():
+        with open(provenance_path, encoding="utf-8") as f:
+            provenance = _json.load(f)
+
+    # Run gates
+    gate_results = run_s1_s4(bundle_dir, manifest, provenance)
+
+    # Determine trust tier: only promote to draft on first issuance
+    any_fail = any(r.verdict == GateVerdict.fail for r in gate_results.values())
+    trust_tier = TrustTier.draft if not any_fail else TrustTier.draft
+
+    # Collect risk flags
+    risk_flags = []
+    if any(r.verdict == GateVerdict.warn for r in gate_results.values()):
+        risk_flags.append(RiskFlag.high_variance)
+
+    # Provenance hash
+    prov_hash = None
+    if provenance_path.exists():
+        prov_hash = "sha256:" + _sha256_file(provenance_path)
+
+    run_id = bundle_dir.name
+    spec_id = manifest.get("spec_id", "unknown")
+
+    from importlib.metadata import version as _pkg_version
+    try:
+        judge_version = _pkg_version("pwm-core")
+    except Exception:
+        judge_version = "unknown"
+
+    cert = Certificate(
+        run_id=run_id,
+        spec_id=spec_id,
+        judge_version=judge_version,
+        trust_tier=trust_tier,
+        risk_flags=risk_flags,
+        active_gates=list(gate_results.keys()),
+        gate_verdicts=gate_results,
+        provenance_hash=prov_hash,
+    )
+
+    cert_path = bundle_dir / "certificate.json"
+    with open(cert_path, "w", encoding="utf-8") as f:
+        _json.dump(cert.to_dict(), f, indent=2, default=str)
+
+    logger.info("Certificate issued: %s (tier=%s)", cert_path, trust_tier.value)
+    return cert_path

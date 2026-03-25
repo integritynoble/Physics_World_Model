@@ -1,0 +1,295 @@
+"""pwm_core.targeting.gates
+
+S1-S4 certification gates — explicit pass/fail/warn verdicts.
+
+Each gate maps to an existing data source inside a RunBundle:
+
+  S1 spec_completeness  — validation report written at run start
+  S2 reproducibility    — provenance.json (seeds, git hash, pip freeze)
+  S3 metric_integrity   — SHA-256 hashes on all stored artifacts
+  S4 budget_compliance  — BudgetGuard timing log
+
+The functions here formalise these checks into hard verdicts that can block
+or flag certification.  Previously they produced only diagnostic data; now
+each function returns a ``GateResult`` that the Certificate records.
+
+Usage
+-----
+>>> from pwm_core.targeting.gates import run_s1_s4
+>>> verdicts = run_s1_s4(bundle_dir, manifest, provenance, budget_log)
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import logging
+import os
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+from pwm_core.core.runbundle.certificate import GateResult, GateVerdict
+
+logger = logging.getLogger(__name__)
+
+# Maximum allowed budget overrun ratio before S4 fails (2× = disqualified)
+BUDGET_FAIL_RATIO = 2.0
+# Warn at 1.5× declared budget
+BUDGET_WARN_RATIO = 1.5
+
+
+# ---------------------------------------------------------------------------
+# S1 — Spec completeness
+# ---------------------------------------------------------------------------
+
+def check_s1_spec_completeness(manifest: Dict[str, Any]) -> GateResult:
+    """S1: Verify the spec is complete and all required fields are present.
+
+    Parameters
+    ----------
+    manifest : dict
+        Parsed ``runbundle_manifest.json`` dict.
+
+    Returns
+    -------
+    GateResult
+    """
+    required_keys = {"version", "spec_id", "timestamp", "provenance", "metrics", "artifacts"}
+    missing = required_keys - set(manifest.keys())
+    if missing:
+        return GateResult(
+            verdict=GateVerdict.fail,
+            message=f"Manifest missing required keys: {sorted(missing)}",
+            details={"missing_keys": sorted(missing)},
+        )
+
+    provenance = manifest.get("provenance", {})
+    prov_required = {"modality", "solver"}
+    prov_missing = prov_required - set(provenance.keys())
+    if prov_missing:
+        return GateResult(
+            verdict=GateVerdict.warn,
+            message=f"Provenance missing fields: {sorted(prov_missing)}",
+            details={"missing_provenance_keys": sorted(prov_missing)},
+        )
+
+    return GateResult(verdict=GateVerdict.pass_, message="Spec completeness check passed")
+
+
+# ---------------------------------------------------------------------------
+# S2 — Reproducibility
+# ---------------------------------------------------------------------------
+
+def check_s2_reproducibility(provenance: Dict[str, Any]) -> GateResult:
+    """S2: Verify provenance contains enough information for reproduction.
+
+    Parameters
+    ----------
+    provenance : dict
+        Parsed ``provenance.json`` dict (or manifest['provenance']).
+
+    Returns
+    -------
+    GateResult
+    """
+    issues = []
+
+    git_hash = provenance.get("git_hash")
+    if not git_hash or git_hash == "unknown":
+        issues.append("git_hash missing or unknown")
+
+    if provenance.get("git_dirty") is True:
+        issues.append("git working tree was dirty at run time")
+
+    seeds = provenance.get("seeds")
+    if not seeds:
+        issues.append("no random seeds recorded")
+
+    python_version = provenance.get("python_version")
+    if not python_version:
+        issues.append("python_version not recorded")
+
+    if issues:
+        verdict = GateVerdict.warn if len(issues) == 1 else GateVerdict.fail
+        return GateResult(
+            verdict=verdict,
+            message="Reproducibility issues: " + "; ".join(issues),
+            details={"issues": issues},
+        )
+
+    return GateResult(verdict=GateVerdict.pass_, message="Reproducibility check passed")
+
+
+# ---------------------------------------------------------------------------
+# S3 — Metric integrity
+# ---------------------------------------------------------------------------
+
+def check_s3_metric_integrity(bundle_dir: Path, manifest: Dict[str, Any]) -> GateResult:
+    """S3: Re-verify SHA-256 hashes for all artifacts listed in the manifest.
+
+    Parameters
+    ----------
+    bundle_dir : Path
+        Root directory of the RunBundle.
+    manifest : dict
+        Parsed ``runbundle_manifest.json``.
+
+    Returns
+    -------
+    GateResult
+    """
+    hashes = manifest.get("hashes", {})
+    artifacts = manifest.get("artifacts", {})
+    failures = []
+    checked = 0
+
+    for key, rel_path in artifacts.items():
+        expected_entry = hashes.get(key, "")
+        if not expected_entry.startswith("sha256:"):
+            continue  # no hash recorded for this artifact — skip
+        expected_hex = expected_entry.removeprefix("sha256:")
+
+        full_path = bundle_dir / rel_path
+        if not full_path.exists():
+            failures.append(f"{key}: file not found ({rel_path})")
+            continue
+
+        actual_hex = _sha256_file(full_path)
+        if actual_hex != expected_hex:
+            failures.append(f"{key}: hash mismatch (expected {expected_hex[:8]}… got {actual_hex[:8]}…)")
+        else:
+            checked += 1
+
+    if failures:
+        return GateResult(
+            verdict=GateVerdict.fail,
+            message=f"Hash verification failed for {len(failures)} artifact(s)",
+            details={"failures": failures, "checked_ok": checked},
+        )
+
+    if checked == 0:
+        return GateResult(
+            verdict=GateVerdict.warn,
+            message="No artifact hashes found to verify",
+            details={"checked_ok": 0},
+        )
+
+    return GateResult(
+        verdict=GateVerdict.pass_,
+        message=f"All {checked} artifact hashes verified",
+        details={"checked_ok": checked},
+    )
+
+
+# ---------------------------------------------------------------------------
+# S4 — Budget compliance
+# ---------------------------------------------------------------------------
+
+def check_s4_budget_compliance(manifest: Dict[str, Any]) -> GateResult:
+    """S4: Verify solver runtime stayed within declared compute budget.
+
+    Parameters
+    ----------
+    manifest : dict
+        Parsed ``runbundle_manifest.json``.
+
+    Returns
+    -------
+    GateResult
+    """
+    metrics = manifest.get("metrics", {})
+    runtime_s = metrics.get("runtime_s")
+
+    if runtime_s is None:
+        return GateResult(
+            verdict=GateVerdict.warn,
+            message="runtime_s not recorded in metrics — cannot verify budget compliance",
+        )
+
+    # Try to read declared budget from provenance
+    provenance = manifest.get("provenance", {})
+    declared_s = provenance.get("declared_budget_s")
+
+    if declared_s is None:
+        return GateResult(
+            verdict=GateVerdict.pass_,
+            message="No declared_budget_s in provenance; budget compliance not enforced",
+            details={"runtime_s": runtime_s},
+        )
+
+    ratio = runtime_s / declared_s if declared_s > 0 else float("inf")
+
+    if ratio >= BUDGET_FAIL_RATIO:
+        return GateResult(
+            verdict=GateVerdict.fail,
+            message=(
+                f"Budget exceeded: {runtime_s:.1f}s actual vs {declared_s:.1f}s "
+                f"declared ({ratio:.1f}x ≥ {BUDGET_FAIL_RATIO}x disqualification threshold)"
+            ),
+            details={"runtime_s": runtime_s, "declared_s": declared_s, "ratio": ratio},
+        )
+
+    if ratio >= BUDGET_WARN_RATIO:
+        return GateResult(
+            verdict=GateVerdict.warn,
+            message=(
+                f"Budget warning: {runtime_s:.1f}s actual vs {declared_s:.1f}s "
+                f"declared ({ratio:.1f}x ≥ {BUDGET_WARN_RATIO}x warning threshold)"
+            ),
+            details={"runtime_s": runtime_s, "declared_s": declared_s, "ratio": ratio},
+        )
+
+    return GateResult(
+        verdict=GateVerdict.pass_,
+        message=f"Budget compliant: {runtime_s:.1f}s / {declared_s:.1f}s ({ratio:.2f}x)",
+        details={"runtime_s": runtime_s, "declared_s": declared_s, "ratio": ratio},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Master runner
+# ---------------------------------------------------------------------------
+
+def run_s1_s4(
+    bundle_dir: Path,
+    manifest: Dict[str, Any],
+    provenance: Optional[Dict[str, Any]] = None,
+) -> Dict[str, GateResult]:
+    """Run all four S-gates and return a dict of gate name → GateResult.
+
+    Parameters
+    ----------
+    bundle_dir : Path
+        Root directory of the RunBundle.
+    manifest : dict
+        Parsed ``runbundle_manifest.json``.
+    provenance : dict, optional
+        Parsed ``provenance.json``.  If None, falls back to ``manifest['provenance']``.
+
+    Returns
+    -------
+    dict[str, GateResult]
+        Keys: ``s1``, ``s2``, ``s3``, ``s4``.
+    """
+    if provenance is None:
+        provenance = manifest.get("provenance", {})
+
+    return {
+        "s1": check_s1_spec_completeness(manifest),
+        "s2": check_s2_reproducibility(provenance),
+        "s3": check_s3_metric_integrity(bundle_dir, manifest),
+        "s4": check_s4_budget_compliance(manifest),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _sha256_file(path: Path) -> str:
+    """Return SHA-256 hex digest of a file."""
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()

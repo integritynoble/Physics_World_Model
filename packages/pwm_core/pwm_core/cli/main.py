@@ -213,6 +213,16 @@ def build_parser():
     sub.add_parser("contrib", help="Contribution tools (pwm contrib check my_solver)")
     sub.add_parser("submit", help="Submit a RunBundle for leaderboard scoring")
 
+    # --- synthesize / ingest / install ---
+    from pwm_core.cli.synthesize import add_synthesize_subparser
+    add_synthesize_subparser(sub)
+
+    from pwm_core.cli.ingest import add_ingest_subparser
+    add_ingest_subparser(sub)
+
+    from pwm_core.cli.install import add_install_subparser
+    add_install_subparser(sub)
+
     return p
 
 

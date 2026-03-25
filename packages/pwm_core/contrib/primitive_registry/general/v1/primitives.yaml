@@ -1,0 +1,122 @@
+# Primitive Registry — General Computational Primitives v1
+# Registry: primitive_registry/general/v1
+# Status: append-only after publication (add new entries; never delete or rename existing ones)
+#
+# These 12 primitives form the universal computational vocabulary.
+# Every imaging primitive decomposes into one or more of these.
+# Source: packages/pwm_core/pwm_core/graph/primitives.py
+
+registry: primitive_registry
+namespace: general
+version: "1"
+published: "2026-03-24"
+
+primitives:
+  - name: Discretize
+    id: general/v1/Discretize
+    description: >
+      Maps a continuous signal or operator to a finite-dimensional discrete
+      representation.  Used at domain boundaries to convert between analytic
+      and numeric representations.
+    inputs: [continuous_signal]
+    outputs: [discrete_array]
+    tags: [discretisation, sampling]
+
+  - name: Transform
+    id: general/v1/Transform
+    description: >
+      Applies a linear or non-linear invertible transformation to a signal
+      (e.g. Fourier, wavelet, Radon).  Covers both forward and adjoint directions.
+    inputs: [array]
+    outputs: [array]
+    tags: [linear, transform]
+
+  - name: Compose
+    id: general/v1/Compose
+    description: >
+      Functional composition of two or more operators: (A ∘ B)(x) = A(B(x)).
+      Used to build compound forward models from primitive blocks.
+    inputs: [operator_list]
+    outputs: [operator]
+    tags: [composition, pipeline]
+
+  - name: Adjoint
+    id: general/v1/Adjoint
+    description: >
+      Computes the adjoint (Hermitian transpose) of a linear operator.
+      Required for gradient computation in iterative reconstruction.
+    inputs: [operator]
+    outputs: [operator]
+    tags: [adjoint, linear_algebra]
+
+  - name: Invert
+    id: general/v1/Invert
+    description: >
+      Applies a (possibly approximate) inverse of an operator.  Covers exact
+      inverses, pseudo-inverses, and regularised inversions.
+    inputs: [operator, measurement]
+    outputs: [estimate]
+    tags: [inversion, reconstruction]
+
+  - name: Regularize
+    id: general/v1/Regularize
+    description: >
+      Adds a regularisation term or operator to stabilise an ill-posed problem.
+      Includes Tikhonov, TV, sparsity, and learned priors.
+    inputs: [operator, signal]
+    outputs: [regularised_operator]
+    tags: [regularisation, ill-posed]
+
+  - name: Sample
+    id: general/v1/Sample
+    description: >
+      Draws samples from a probability distribution or stochastic process.
+      Used for noise injection, uncertainty quantification, and MCMC.
+    inputs: [distribution]
+    outputs: [samples]
+    tags: [sampling, stochastic]
+
+  - name: Reduce
+    id: general/v1/Reduce
+    description: >
+      Reduces an array along one or more axes (sum, mean, max, norm).
+      Used in loss computation and multi-scale aggregation.
+    inputs: [array, axes]
+    outputs: [scalar_or_array]
+    tags: [reduction, aggregation]
+
+  - name: Broadcast
+    id: general/v1/Broadcast
+    description: >
+      Expands an array to match a target shape via replication or zero-padding.
+      Used to align batch dimensions and multi-channel signals.
+    inputs: [array, target_shape]
+    outputs: [array]
+    tags: [broadcasting, shape]
+
+  - name: Differentiate
+    id: general/v1/Differentiate
+    description: >
+      Computes a derivative (analytical, automatic, or finite difference).
+      Used for gradient-based optimisation and sensitivity analysis.
+    inputs: [function, point]
+    outputs: [gradient]
+    tags: [differentiation, gradient]
+
+  - name: Stochastize
+    id: general/v1/Stochastize
+    description: >
+      Converts a deterministic operator into a stochastic one by injecting
+      calibrated noise.  Used to implement noise models (Poisson, Gaussian, etc.).
+    inputs: [operator, noise_model]
+    outputs: [stochastic_operator]
+    tags: [noise, stochastic]
+
+  - name: Validate
+    id: general/v1/Validate
+    description: >
+      Checks that an array or operator satisfies a set of constraints
+      (shape, range, physics consistency).  Returns pass/fail with diagnostics.
+    inputs: [signal_or_operator, constraints]
+    outputs: [validation_report]
+    tags: [validation, quality_control]
