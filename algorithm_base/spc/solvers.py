@@ -309,6 +309,35 @@ SOLVERS = {
 # SPC forward model helpers
 # ---------------------------------------------------------------------------
 
+class MaskOperator:
+    """Binary mask forward/adjoint operator for SPC challenge datasets.
+
+    Challenge data uses element-wise binary mask: y = mask * x + noise.
+    """
+
+    def __init__(self, mask: np.ndarray):
+        self.mask = mask.astype(np.float32)
+        self.img_shape = mask.shape
+        self.N = mask.shape[0] * mask.shape[1]
+        self.M = self.N
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        img = x.reshape(self.img_shape) if x.ndim == 1 else x
+        out = (self.mask * img).astype(np.float32)
+        return out.flatten() if x.ndim == 1 else out
+
+    def adjoint(self, y: np.ndarray) -> np.ndarray:
+        img = y.reshape(self.img_shape) if y.ndim == 1 else y
+        out = (self.mask * img).astype(np.float32)
+        return out.flatten() if y.ndim == 1 else out
+
+    def forward_2d(self, x: np.ndarray) -> np.ndarray:
+        return (self.mask * x).astype(np.float32)
+
+    def adjoint_2d(self, y: np.ndarray) -> np.ndarray:
+        return (self.mask * y).astype(np.float32)
+
+
 class SPCOperator:
     """PSF convolution forward/adjoint operator for SPC standard datasets.
 
