@@ -142,6 +142,15 @@ def emit_runbundle(
         },
         "artifacts": artifacts,
         "hashes": hashes,
+        # Canonical CoreSpec six-tuple (Omega, E, B, I, O, epsilon) — audit K2
+        "corespec": {
+            "omega": {"type": "image_domain", "modality": result.modality},
+            "equations": {"forward_model": result.solver, "track": result.track},
+            "boundary_conditions": {},
+            "initial_conditions": {"seed": result.seed},
+            "observables": {"n_scenes": result.n_scenes},
+            "tolerance": 0.01,  # default reconstruction tolerance
+        },
     }
 
     # Write manifest

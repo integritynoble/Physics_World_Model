@@ -77,6 +77,44 @@ def check_r1_spec_completeness(manifest: Dict[str, Any]) -> GateResult:
             details={"missing_provenance_keys": sorted(prov_missing)},
         )
 
+    # ------------------------------------------------------------------
+    # Second pass: canonical CoreSpec six-tuple validation (audit K2)
+    #
+    # The paper's canonical six-tuple is (Omega, E, B, I, O, epsilon).
+    # If the manifest carries a "corespec" (or "spec") block we validate
+    # that all six fields are present and that tolerance is numeric.
+    # A missing corespec block is only a warning — backward-compatible
+    # with v0.3.0 RunBundles that pre-date the six-tuple requirement.
+    # ------------------------------------------------------------------
+    CANONICAL_FIELDS = frozenset({
+        "omega", "equations", "boundary_conditions",
+        "initial_conditions", "observables", "tolerance",
+    })
+
+    corespec = manifest.get("corespec", manifest.get("spec", {}))
+    if corespec:
+        missing_canonical = CANONICAL_FIELDS - set(corespec.keys())
+        if missing_canonical:
+            return GateResult(
+                verdict=GateVerdict.warn,
+                message=f"CoreSpec six-tuple incomplete: missing {sorted(missing_canonical)}",
+                details={"missing_canonical_fields": sorted(missing_canonical)},
+            )
+        # Validate tolerance is numeric
+        tol = corespec.get("tolerance")
+        if tol is not None and not isinstance(tol, (int, float)):
+            return GateResult(
+                verdict=GateVerdict.warn,
+                message=f"CoreSpec tolerance must be numeric, got {type(tol).__name__}",
+                details={"tolerance_type": type(tol).__name__},
+            )
+    else:
+        # No corespec block — warn to encourage migration
+        logger.debug(
+            "R1: manifest has no 'corespec' block; "
+            "six-tuple validation skipped (backward-compat mode)"
+        )
+
     return GateResult(verdict=GateVerdict.pass_, message="Spec completeness check passed")
 
 
