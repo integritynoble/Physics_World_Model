@@ -2,7 +2,8 @@
 ==========================
 
 CLI for ``pwm evaluate``, ``pwm scaffold``, ``pwm contrib check``,
-``pwm submit``, ``pwm install``, ``pwm uninstall``, and ``pwm plugins``.
+``pwm submit``, ``pwm install``, ``pwm uninstall``, ``pwm plugins``,
+``pwm synthesize``, and ``pwm ingest``.
 
 Usage::
 
@@ -17,6 +18,8 @@ Usage::
     pwm uninstall my_solver
     pwm plugins
     pwm plugins --tier local
+    pwm synthesize --modality ct --n 20 --tier public
+    pwm ingest --modality ct --source /path/to/raw/ --format dicom
 """
 
 from __future__ import annotations
@@ -199,6 +202,14 @@ def build_parser() -> argparse.ArgumentParser:
     pl = sub.add_parser("plugins", help="List installed plugins")
     pl.add_argument("--tier", default=None, choices=["local", "community", "official"])
 
+    # --- synthesize ---
+    from pwm_core.cli.synthesize import add_synthesize_subparser
+    add_synthesize_subparser(sub)
+
+    # --- ingest ---
+    from pwm_core.cli.ingest import add_ingest_subparser
+    add_ingest_subparser(sub)
+
     return parser
 
 
@@ -228,6 +239,12 @@ def main(argv: Optional[list] = None) -> int:
     elif args.command == "plugins":
         from pwm_core.targeting.plugin_loader import cmd_plugins
         return cmd_plugins(args)
+    elif args.command == "synthesize":
+        from pwm_core.cli.synthesize import cmd_synthesize
+        return cmd_synthesize(args)
+    elif args.command == "ingest":
+        from pwm_core.cli.ingest import cmd_ingest
+        return cmd_ingest(args)
     else:
         parser.print_help()
         return 0
