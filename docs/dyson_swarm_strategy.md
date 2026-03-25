@@ -9,6 +9,42 @@
 
 ---
 
+## 0. As-Built vs Target Architecture
+
+PWM is not starting from zero. This strategy is a **formalization and hardening
+plan over an already operational kernel**, not a greenfield design. Reading it
+as a clean-sheet redesign would misrepresent the codebase and mislead
+contributors about what actually needs to be built.
+
+### Current state summary
+
+| Component | Status | Location |
+|-----------|--------|----------|
+| OperatorGraph IR (30+ primitives, typed DAG, compiler, executor) | **~95% built** | `packages/pwm_core/pwm_core/graph/` |
+| RunBundle (SHA-256 hashes, provenance, manifest, artifact storage) | **~95% built** | `packages/pwm_core/pwm_core/core/runbundle/` |
+| Algorithm catalog (2,732 solvers, 172 modalities) | **100% built** | `algorithm_base/` |
+| 4-scenario protocol (Ideal / Assumed / Corrected / Oracle) | **100% built** | `packages/pwm_core/pwm_core/targeting/scenarios.py` |
+| Registry (primitives, modalities, datasets, solver routing) | **~100% built** | `packages/pwm_core/contrib/` |
+| CoreSpec (`ExperimentSpec v0.2.1`, 172 modality domain profiles) | **~90% built** | `spec/` |
+| Web platform (routes, DB, auth, billing, Docker) | **~90% built** | `platform/pwm_platform/` |
+| Judge S1-S4 data (validation reports, provenance, hashes, BudgetGuard) | **data captured, gates not wired** | `targeting/harness.py`, `budget.py` |
+| Triad gates G1-G3 (bottleneck classification) | **scoring only, not safety brakes** | `targeting/scoring.py`, `analysis/bottleneck.py` |
+| Certificate object | **not yet built** | — |
+| Benchmark trust tiers | **documented, not in DB or UI** | — |
+| Docking artifact schemas (Cards) | **not yet built** | — |
+| CLI `pwm synthesize / ingest / install` | **not yet built** | `packages/pwm_core/pwm_core/cli/` |
+
+### Three build categories used throughout this document
+
+- **[built]** — exists in production, may need minor cleanup or rename
+- **[needs formalization]** — data or logic exists; needs to be wired, typed, or structured
+- **[new build]** — does not exist; requires new engineering
+
+The P0 gaps are nearly all in the second and third categories. The physics engine,
+the evaluation machinery, and the platform are already there.
+
+---
+
 ## 1. What the Sun Is
 
 The sun is not a modality, not a benchmark, not a product. The sun is the
@@ -17,14 +53,14 @@ comparable, trustable, and reusable.
 
 ### Sun objects (the canonical kernel)
 
-| Object | Role |
-|--------|------|
-| **CoreSpec** | Universal six-tuple problem description: (object, forward model, measurement, noise model, prior, task). Domain-agnostic. |
-| **Judge** | Universal trust kernel. Checks structural invariants S1-S4 on every run. Domain modules extend but never bypass it. |
-| **OperatorGraph** | Intermediate representation. The compiled forward model as a typed DAG of primitives. |
-| **RunBundle** | Immutable audit record. Inputs, outputs, logs, metrics, seeds, hashes — everything needed to reproduce or dispute a result. |
-| **Certificate** | Machine-readable trust verdict. Issued by the Judge after a RunBundle passes all gates. Carries a trust tier. |
-| **Registry** | Versioned catalog of primitives, profiles, datasets, methods, instruments. The namespace authority. |
+| Object | Role | Build state |
+|--------|------|-------------|
+| **CoreSpec** | Universal six-tuple problem description: (object, forward model, measurement, noise model, prior, task). Domain-agnostic. | [needs formalization] — exists as `ExperimentSpec v0.2.1` |
+| **Judge** | Universal trust kernel. Checks structural invariants S1-S4 on every run. Domain modules extend but never bypass it. | [needs formalization] — data captured, gates not wired |
+| **OperatorGraph** | Intermediate representation. The compiled forward model as a typed DAG of primitives. | [built] |
+| **RunBundle** | Immutable audit record. Inputs, outputs, logs, metrics, seeds, hashes — everything needed to reproduce or dispute a result. | [built] |
+| **Certificate** | Machine-readable trust verdict. Issued by the Judge after a RunBundle passes all gates. Carries a trust tier. | [new build] — the central P0 artifact |
+| **Registry** | Versioned catalog of primitives, profiles, datasets, methods, instruments. The namespace authority. | [built] |
 
 ### Outer orbits (what docks to the sun)
 
@@ -38,9 +74,11 @@ comparable, trustable, and reusable.
 | Benchmarks | LIP-Arena tracks, modality leaderboards, QC drift reports |
 | Community | Modality maintainers, dataset stewards, red-team contributors |
 
-**Design rule**: Every orbit element enters the system through a docking artifact
-(see Section 8), passes through the Judge, and emits a RunBundle + Certificate.
-No shortcut path exists.
+**Design rule**: Every **executable** scientific object eventually passes through
+the Judge and can emit a RunBundle + Certificate. Non-executable cards (metadata-
+only DatasetCards, unexecuted MethodCards, EventCards, early ClaimCards) enter
+the Registry first and become Judge-eligible only once compiled into executable
+PWM objects. No shortcut path exists for executable objects.
 
 ---
 
@@ -64,6 +102,29 @@ CoreSpec + DomainProfile + ProblemInstance = executable PWM object
 **Key constraint**: DomainProfiles extend CoreSpec — they add fields, they do not
 override kernel fields. ProblemInstances bind concrete values to the combined
 schema. The Judge validates all three layers.
+
+### Migration from ExperimentSpec to CoreSpec
+
+The codebase already has `ExperimentSpec v0.2.1` — an 8-layer Pydantic model
+(`PhysicsState`, `BudgetState`, `CalibrationState`, `EnvironmentState`,
+`SampleState`, `SensorState`, `ComputeState`, `TaskState`) — and 172 modality
+`.md` files that serve as de facto DomainProfiles.
+
+**Migration rules (no destructive rewrite):**
+
+1. `ExperimentSpec` becomes the **implementation substrate** for `CoreSpec v1`.
+   Introduce `CoreSpec` as a compatibility-preserving alias at P-1. Do not break
+   existing callers.
+2. Existing modality `.md` files become **DomainProfile assets**. They do not
+   need to be rewritten — they need to be formally registered as DomainProfile
+   instances with a versioned schema.
+3. `ProblemInstance` is split out **gradually**, starting with the benchmark
+   submission pipeline where per-run bindings are already explicit.
+4. The existing `spec/spec_v0.2.1.md` is semver-locked and serves as the
+   reference until `CoreSpec v1.0` is formally published.
+
+**Anti-pattern to avoid**: do not begin a full schema rewrite before Certificate
+and trust tiers are live. Terminology alignment is P-1; schema evolution is P1+.
 
 ---
 
@@ -138,25 +199,60 @@ profiles do not bypass the core Judge — they extend it.
 
 Every run, regardless of domain, must pass these structural checks:
 
-| Gate | Check | Failure mode |
-|------|-------|-------------|
-| **S1: Spec completeness** | All six CoreSpec fields are bound and type-valid | Reject: incomplete specification |
-| **S2: Reproducibility** | RunBundle contains sufficient information to reproduce the result (seeds, versions, hashes) | Reject: non-reproducible |
-| **S3: Metric integrity** | Reported metrics match recomputed metrics from stored artifacts | Reject: metric tampering or drift |
-| **S4: Budget compliance** | Compute, memory, and wall-clock stayed within declared bounds | Warn or reject: budget overrun |
+| Gate | Check | Failure mode | Codebase asset |
+|------|-------|-------------|----------------|
+| **S1: Spec completeness** | All six CoreSpec fields are bound and type-valid | Reject: incomplete specification | `validation_report.json` at run start |
+| **S2: Reproducibility** | RunBundle contains sufficient information to reproduce the result (seeds, versions, hashes) | Reject: non-reproducible | `core/runbundle/provenance.py` |
+| **S3: Metric integrity** | Reported metrics match recomputed metrics from stored artifacts | Reject: metric tampering or drift | SHA-256 hashes in `artifacts.py` |
+| **S4: Budget compliance** | Compute, memory, and wall-clock stayed within declared bounds | Warn or reject: budget overrun | `BudgetGuard` in `budget.py` |
+
+> **Note on paper semantics vs operational gates**: The S1-S4 names above
+> describe the operational gate family that will be live at launch. The formal
+> paper semantics for these names may evolve as the scientific community aligns
+> on terminology. The important invariant for the swarm launch is that the Judge
+> emits explicit trust verdicts derived from already-captured evidence. Future
+> work may tighten the alignment between these operational gate names and any
+> published formal definitions.
 
 ### Domain Judge modules (additive, never subtractive)
 
-| Domain | Additional gates |
-|--------|-----------------|
-| **Imaging** | Triad gates (G1: recoverability, G2: carrier budget, G3: operator mismatch), physics tier validation, 4-scenario consistency |
-| **CT QC** | Threshold tables (noise, uniformity, CNR, MTF), artifact flags (ring, cupping, streak), drift detection against baseline |
-| **Combustion** | Mass/energy conservation residuals, reaction rate plausibility, mesh convergence |
-| **Spectroscopy** | Spectral resolution bounds, calibration lamp cross-check, baseline correction quality |
+| Domain | Additional gates | Build state |
+|--------|-----------------|-------------|
+| **Imaging** | Triad gates (G1: recoverability, G2: carrier budget, G3: operator mismatch), physics tier validation, 4-scenario consistency | [needs formalization] — scoring exists, hard gates not wired |
+| **CT QC** | Threshold tables (noise, uniformity, CNR, MTF), artifact flags (ring, cupping, streak), drift detection against baseline | [new build] — threshold files exist, gate logic does not |
+| **Combustion** | Mass/energy conservation residuals, reaction rate plausibility, mesh convergence | [new build] — P3 |
+| **Spectroscopy** | Spectral resolution bounds, calibration lamp cross-check, baseline correction quality | [new build] — P3 |
 
 **Rule**: A domain module can add gates. It cannot weaken or skip S1-S4.
 A Certificate is issued only when all kernel gates AND all active domain gates
 pass. The Certificate records which gates were active, so trust is interpretable.
+
+### Certificate v1 — the central P0 artifact
+
+Certificate is the most important missing object. Without it the trust ratchet
+has no output: evidence is captured but never converted into a verdict that outer
+orbits can dock to.
+
+**Minimum Certificate v1 fields:**
+
+| Field | Description |
+|-------|-------------|
+| `run_id` | Unique identifier linking to the RunBundle |
+| `trust_tier` | One of: Draft / Author-confirmed / Reproduced / Certified |
+| `risk_flags` | Set of overlay flags (see Section 7): boundary-risk, safety-brake, high-variance, reviewer-disputed |
+| `active_gates` | List of gates that were evaluated (S1-S4 + domain gates) |
+| `gate_verdicts` | Pass / fail / warn per gate, with short reason string |
+| `triad_flags` | G1 / G2 / G3 attribution from Triad analysis |
+| `provenance_hash` | SHA-256 of the RunBundle manifest |
+| `contributor_attribution` | List of contributors credited for this run |
+| `issued_at` | ISO 8601 timestamp |
+| `judge_version` | Semver of the Judge kernel that issued this Certificate |
+
+**Implementation target**: `packages/pwm_core/pwm_core/core/runbundle/certificate.py`
+
+Certificate v1 should be **intentionally small**. Do not overdesign it before it
+is emitted for real runs. The fields above are sufficient for the first golden
+reference bundles and the first leaderboard trust-tier badges.
 
 ---
 
@@ -174,7 +270,7 @@ compiled artifacts:
   computeplan.json              # Execution plan (device, budget, solver sequence)
   judge_report.json             # Full Judge output (all gates, pass/fail/warn)
   runbundle.json                # Immutable audit record
-  certificate.json              # Trust verdict + tier
+  certificate.json              # Trust verdict + tier + risk flags
 ```
 
 `spec.core.md` is semver-locked and changes only through an RFC process.
@@ -216,6 +312,10 @@ primitive_registry/
   mappings/
     imaging_to_general/v1/      # How each imaging primitive decomposes
 ```
+
+All primitive content already exists in `contrib/primitives.yaml` and
+`graph/primitives.py`. The P-1 task is a directory restructure and explicit
+mapping artifact publication — not new primitive work.
 
 ### Protocol stability rules
 
@@ -265,15 +365,57 @@ play. LIP-Arena already exists with 172 modalities and 2,732 algorithms. The
 strategy is to harden it into the most trusted imaging benchmark in the field,
 then use that credibility to expand.
 
-- **Benchmark trust tiers** (every leaderboard row carries a tier):
+#### Trust tiers and risk flags
 
-| Tier | Meaning | Requirements |
-|------|---------|-------------|
-| **Draft** | Auto-scaffolded or self-reported. Not yet verified. | SpecCard + code link |
-| **Author-confirmed** | Original authors have reviewed and accepted the PWM result. | Author sign-off on RunBundle |
-| **Reproduced** | At least one independent party has reproduced the result within tolerance. | Independent RunBundle matching within declared epsilon |
-| **Certified** | Passed full Judge (S1-S4 + domain gates). Golden-reference-quality. | Certificate issued |
-| **Boundary-risk** | Result is near a trust boundary (e.g., metric variance overlaps with a rival method, or safety brake triggered). Event-horizon warning. | Automatic flag by Judge |
+Trust tiers are linear progression states. Risk flags are orthogonal overlays
+that can coexist with any tier.
+
+**Trust tiers** (every leaderboard row carries exactly one):
+
+| Tier | Meaning | Who can promote |
+|------|---------|----------------|
+| **Draft** | Auto-scaffolded or self-reported. Not yet verified. | Automatic (system or self-submission) |
+| **Author-confirmed** | Original authors have reviewed and accepted the PWM result. | Authors sign off on the RunBundle |
+| **Reproduced** | At least one independent party has reproduced the result within declared tolerance. | Benchmark reviewer submits matching independent RunBundle |
+| **Certified** | Passed full Judge (S1-S4 + domain gates) AND required evidence package complete. | Judge emits Certificate; requires both automated pass and reviewer sign-off |
+
+**Risk flags** (overlays — do not replace tier, they annotate it):
+
+| Flag | Meaning | Set by |
+|------|---------|--------|
+| `boundary-risk` | Metric variance overlaps with a rival method, or result is near a trust boundary | Automatic — Judge |
+| `safety-brake` | A hard Triad gate (G1/G2/G3) failure was triggered | Automatic — Judge |
+| `high-variance` | Metric spread across seeds or data splits exceeds declared epsilon | Automatic — Judge |
+| `reviewer-disputed` | An independent reviewer has raised a technical objection | Manual — Benchmark reviewer |
+
+A Certified row with a `boundary-risk` flag is still Certified — the flag means
+"trust this result, but note the proximity to a decision boundary." A row cannot
+reach Certified if a `safety-brake` flag is unresolved.
+
+#### Trust-tier state machine
+
+```
+                 ┌──────────────────────────────────────────────┐
+                 │                  RISK FLAGS                  │
+                 │  (overlay any tier, set/cleared independently)│
+                 └──────────────────────────────────────────────┘
+
+[auto or self]         [author signs off]      [independent RunBundle]   [Judge pass + evidence]
+    Draft       ──►    Author-confirmed   ──►       Reproduced       ──►      Certified
+                                                                          (Certificate issued)
+
+Demotion: any tier can be set back to Draft if the RunBundle is found to be
+non-reproducible or if a gate that was previously waived is now enforced.
+```
+
+- **Draft → Author-confirmed**: Author submits acknowledgment linking their
+  identity to the PWM RunBundle. No re-execution required.
+- **Author-confirmed → Reproduced**: A benchmark reviewer (role defined in
+  Section 9) runs an independent reproduction and submits a matching RunBundle
+  within declared epsilon. System confirms match.
+- **Reproduced → Certified**: Judge runs full S1-S4 + domain gates on the
+  primary RunBundle. All gates pass. Certificate is emitted. Reviewer sign-off
+  confirms evidence package is complete.
 
 - **Conference integration**: Propose PWM as evaluation harness for MICCAI, ISBI,
   IEEE ICCP workshops. Offer blinded evaluation at zero cost. One major venue
@@ -315,7 +457,11 @@ then use that credibility to expand.
 - **IDE integration**: VS Code extension for OperatorGraph visualization, inline
   Triad diagnostics, one-click benchmark submission.
 
-### Community orbit
+### Community orbit *(P2+ — not launch blockers)*
+
+> The items below are valuable orbit accelerators. None of them are part of the
+> trust kernel, none are required for the first swarm release, and none should
+> be prioritized over Certificate, hard gates, or trust tiers.
 
 - **PWM Weekly Digest**: Auto-generated newsletter — new claims scaffolded,
   trust-tier promotions, leaderboard changes, upcoming events.
@@ -335,24 +481,50 @@ Every new paper, method, dataset, instrument, or claim enters PWM through a
 minimal card-like artifact. Cards are lightweight, structured, and machine-
 readable. They are the docking interface between the outer world and the sun.
 
-| Card | Purpose | Key fields |
-|------|---------|-----------|
-| **SpecCard** | Declares a problem to be solved | CoreSpec subset, DomainProfile ref, task type |
-| **MethodCard** | Declares a solver / algorithm | Name, version, code URI, primitive requirements, compute budget |
-| **DatasetCard** | Declares a dataset | Modality, size, license, noise model, split structure, provenance |
-| **InstrumentCard** | Declares a physical instrument | Manufacturer, model, primitive chain, calibration state |
-| **ClaimCard** | Declares a result claim (from a paper, report, or experiment) | Source (DOI/arXiv), metric values, conditions, trust tier |
-| **EventCard** | Declares a conference, workshop, challenge, or deadline | Date, venue, relevance, associated SpecCards |
-| **RunBundle** | Immutable audit record of an executed run | (Sun object — see Section 1) |
-| **Certificate** | Trust verdict from the Judge | (Sun object — see Section 1) |
+### Minimum viable cards rollout
 
-**Lifecycle**: Card → compile → run → RunBundle → Judge → Certificate.
-A card that never compiles and runs stays at Draft tier. A card that runs and
-passes the Judge earns a Certificate. This is the trust ratchet.
+Do not build all cards at once. Build only the cards needed to support the
+first trust ratchet. The rollout order is:
+
+**P0 / P1 (required for first trust ratchet):**
+
+| Card | Purpose | Key fields | Build state |
+|------|---------|-----------|-------------|
+| **Certificate** | Trust verdict from the Judge | run_id, tier, risk_flags, gate_verdicts, provenance_hash — see Section 4 | [new build] — P0 |
+| **SpecCard** | Declares a problem to be solved | CoreSpec subset, DomainProfile ref, task type | [new build] — P1 |
+| **MethodCard** | Declares a solver / algorithm | Name, version, code URI, primitive requirements, compute budget | [new build] — P1 |
+| **DatasetCard** | Declares a dataset | Modality, size, license, noise model, split structure, provenance | [new build] — P1 |
+| **ClaimCard** | Declares a result claim (from a paper, report, or experiment) | Source (DOI/arXiv), metric values, conditions, trust tier | [new build] — P1 |
+
+**P2+ (after trust ratchet is live):**
+
+| Card | Purpose | Key fields | Build state |
+|------|---------|-----------|-------------|
+| **InstrumentCard** | Declares a physical instrument | Manufacturer, model, primitive chain, calibration state | [new build] — P2 |
+| **EventCard** | Declares a conference, workshop, challenge, or deadline | Date, venue, relevance, associated SpecCards | [new build] — P2 |
+
+**Already built (sun objects, not cards):**
+
+| Object | Build state |
+|--------|-------------|
+| **RunBundle** | [built] — `packages/pwm_core/pwm_core/core/runbundle/` |
+
+**Lifecycle for executable cards**: Card → compile → run → RunBundle → Judge →
+Certificate. A card that never compiles and runs stays at Draft tier. A card that
+runs and passes the Judge earns a Certificate. This is the trust ratchet.
+
+**Lifecycle for metadata-only cards**: Card → Registry entry → Judge-eligible
+once compiled into an executable PWM object. EventCards and metadata-only
+DatasetCards do not need to run to be useful — they are discovery artifacts, not
+trust artifacts.
 
 ---
 
-## 9. Contributor Economy
+## 9. Contributor Economy *(P2+ — not launch blockers)*
+
+> Contributor roles, badges, and credit surfaces are important for the swarm
+> flywheel but are not required for the first public release. Implement after
+> trust tiers and Certificate are live.
 
 A Dyson Swarm works when every collector has identity and reward. PWM defines
 explicit contributor roles and visible credit surfaces.
@@ -435,70 +607,118 @@ Instrument onboarding → QC runs → Drift detection → Reports
 
 ## 11. Implementation Phases
 
-> **Reading guide for contributors:** Each phase is listed with the actual codebase
-> state in brackets — `[built]`, `[needs formalization]`, or `[new build]` — so
-> it is immediately clear what is a refactor, what is a schema definition, and
-> what is genuinely new engineering.
+> **Reading guide for contributors:** Each deliverable is tagged `[built]`,
+> `[needs formalization]`, or `[new build]`. Each phase ends with explicit exit
+> criteria — the definition of done. Implementation targets name the real
+> packages and files.
 
-### P-1 — Align terminology (prerequisite to everything)
+---
 
-The codebase is more advanced than it appears. Before P0 work begins, rename and
-restructure existing code to match the canonical vocabulary in this document.
-No new functionality — only alignment.
+### P-1 — Align terminology *(prerequisite, no new functionality)*
 
-| Deliverable | Current state | Action |
-|------------|--------------|--------|
-| **CoreSpec rename** | `ExperimentSpec v0.2.1` (8-layer Pydantic model) | Rename to `CoreSpec`; split into three explicit layers: `CoreSpec`, `DomainProfile`, `ProblemInstance`. Semver-lock `spec.core` at `v1.0`. |
-| **Primitive registry layout** | All 23 primitives in `contrib/primitives.yaml` and `graph/primitives.py` | Reorganize into `primitive_registry/general/v1/`, `primitive_registry/imaging/v1/`, `mappings/imaging_to_general/v1/`. Content already exists; this is a directory restructure. |
-| **OperatorGraph primitive refs** | Internal names | Switch to `(registry, version, name)` triples. Content unchanged, reference format updated. |
+The codebase is more advanced than a clean read of this document suggests.
+P-1 is purely alignment: rename, restructure, and alias existing code to match
+the canonical vocabulary. No new features. No breaking changes.
 
-### P0 — Complete the sun (5 genuine gaps)
+| Deliverable | Current state | Action | Target |
+|------------|--------------|--------|--------|
+| **CoreSpec alias** | `ExperimentSpec v0.2.1` | Introduce `CoreSpec` as compatibility-preserving alias; begin splitting into CoreSpec / DomainProfile / ProblemInstance layers | `packages/pwm_core/pwm_core/spec/core.py` |
+| **Primitive registry layout** | `contrib/primitives.yaml` + `graph/primitives.py` | Reorganize into `primitive_registry/general/v1/`, `imaging/v1/`, `mappings/imaging_to_general/v1/` | `packages/pwm_core/contrib/primitive_registry/` |
+| **OperatorGraph primitive refs** | Internal string names | Switch to `(registry, version, name)` triples | `packages/pwm_core/pwm_core/graph/ir_types.py` |
 
-The OperatorGraph IR, RunBundle, 4-scenario protocol, algorithm catalog (2,732 solvers,
-172 modalities), and platform are already production-ready. P0 is only the five
-things that are genuinely missing from the trust kernel.
+**Exit criteria:**
+- `from pwm_core.spec import CoreSpec` works; existing `ExperimentSpec` callers unbroken
+- Primitive registry files exist at target paths; old paths symlinked or aliased
+- CI passes with no regressions
 
-| Deliverable | State | Description |
-|------------|-------|-------------|
-| **Certificate object** | [new build] | Define `certificate.json` schema (Pydantic). Wire the Judge to emit one at run completion: trust tier, active gates, pass/fail/warn per gate, contributor attribution. Without this the trust ratchet has no output. |
-| **S1-S4 as hard gates** | [needs formalization] | S1 (spec completeness), S2 (reproducibility), S3 (metric integrity), S4 (budget compliance) each have the underlying data already captured — `validation_report.json`, `provenance.py`, SHA-256 artifact hashes, `BudgetGuard`. Convert these into explicit pass/fail/warn verdicts that block run completion when they fail. |
-| **Triad gates as safety brakes** | [needs formalization] | G1 (sampling bottleneck), G2 (noise mismatch), G3 (operator mismatch) are recognized in `targeting/scoring.py` and `analysis/bottleneck.py`. Promote from diagnostic annotations to certification gates: a run that triggers a hard G1/G2/G3 failure must receive a `Boundary-risk` flag before a Certificate is issued. |
-| **Benchmark trust tiers** | [new build] | Add `trust_tier` column to runs/submissions DB schema. Implement tier-promotion workflow (Draft → Author-confirmed → Reproduced → Certified → Boundary-risk). Render tier badges on leaderboard. Re-classify all 2,732 existing algorithm entries; most will land at Draft. |
-| **Golden reference bundles** | [new build] | For each of the 12 Priority-1 modalities, produce one fully Certified RunBundle as the trust anchor. These are the first rows to reach Certified tier and set the standard for all subsequent submissions. |
+---
+
+### P0 — Complete the sun *(5 genuine gaps)*
+
+The OperatorGraph IR, RunBundle, 4-scenario protocol, algorithm catalog (2,732
+solvers, 172 modalities), and platform are already production-ready. P0 addresses
+only the five things that are genuinely missing from the trust kernel.
+
+| Deliverable | State | Target package / file | Description |
+|------------|-------|----------------------|-------------|
+| **Certificate object** | [new build] | `pwm_core/core/runbundle/certificate.py` | Pydantic model + `certificate.json` emitter. See Section 4 for required fields. Wire into `harness.py` so every completed run emits one. |
+| **S1-S4 as hard gates** | [needs formalization] | `targeting/harness.py`, `budget.py`, `provenance.py` | Convert existing data captures (validation report, provenance, SHA-256 hashes, BudgetGuard) into explicit pass/fail/warn verdicts. Failed S1/S2/S3 block Certificate issuance. S4 failure sets `high-variance` flag. |
+| **Triad gates as safety brakes** | [needs formalization] | `targeting/scoring.py`, `analysis/bottleneck.py` | Promote G1/G2/G3 from diagnostic annotations to certification gates. Hard G1/G2/G3 failure sets `safety-brake` risk flag; Certificate cannot reach Certified tier until flag is resolved or explicitly acknowledged. |
+| **Benchmark trust tiers** | [new build] | `platform/pwm_platform/db/` + leaderboard routes | Add `trust_tier` and `risk_flags` columns to runs/submissions schema. Implement tier-promotion workflow. Render tier badges and risk-flag icons on leaderboard. Re-classify all 2,732 existing entries as Draft on migration. |
+| **Golden reference bundles** | [new build] | `benchmark_results/golden/` | For each of the 12 Priority-1 modalities, produce one fully Certified RunBundle. These are the first rows to reach Certified tier and anchor all future submissions. |
+
+**Exit criteria:**
+- `certificate.json` is emitted for every completed run
+- A run with incomplete spec (S1 fail) is blocked from producing a Certificate
+- `trust_tier` column exists in the DB and is visible on the leaderboard
+- 12 golden reference RunBundles exist and each has a Certificate at Certified tier
+
+---
 
 ### P1 — First orbit ring
 
 With the sun stable, add the first controlled orbits.
 
-| Deliverable | State | Description |
-|------------|-------|-------------|
-| **Docking artifact schemas** | [new build] | Pydantic/JSON Schema definitions for SpecCard, MethodCard, DatasetCard, InstrumentCard, ClaimCard, EventCard. These are the docking interfaces between the outer world and the sun. RunBundle and Certificate already exist. |
-| **Primitive registries published** | [needs formalization] | After P-1 restructure, publish `general/v1`, `imaging/v1`, and `mappings/imaging_to_general/v1` as versioned, append-only artifacts. Stability rules codified in CI. |
-| **Interactive modality pages** | [needs formalization] | Auto-generated from existing DomainProfiles. OperatorGraph viewer, Triad sliders, algorithm comparison table with trust-tier badges. Platform routes exist; trust-tier rendering and DAG viewer are new. |
-| **GitHub Action** | [new build] | `pwm-benchmark` action. Runs the 4-scenario protocol on PRs. 4-scenario protocol itself is already implemented and battle-tested. |
-| **Controlled claim scaffolding** | [new build] | arXiv scanner (`eess.IV`, `physics.optics`, `cs.CV` imaging subset) produces Draft ClaimCards. Review queue, not auto-publish. |
-| **CLI completion** | [new build] | Add `pwm synthesize` (data generation), `pwm ingest` (PHI stripping + QC + DatasetCard emission), `pwm install` (plugin manager). Core CLI (`pwm run`, `pwm view`, `pwm reproduce`, `pwm doctor`) already exists. |
+| Deliverable | State | Target package / file | Description |
+|------------|-------|----------------------|-------------|
+| **Docking artifact schemas** | [new build] | `pwm_core/cards/` | Pydantic/JSON Schema for SpecCard, MethodCard, DatasetCard, ClaimCard. P0 cards only (see Section 8). InstrumentCard and EventCard are P2. |
+| **Primitive registries published** | [needs formalization] | `contrib/primitive_registry/` | After P-1 restructure, publish `general/v1`, `imaging/v1`, and `mappings/imaging_to_general/v1` as versioned, append-only YAML artifacts. CI enforces append-only rule. |
+| **Interactive modality pages** | [needs formalization] | `platform/pwm_platform/routers/modalities.py` | Auto-generated from existing DomainProfiles. Add OperatorGraph DAG viewer, Triad sliders, algorithm table with trust-tier badges. Platform routes exist; badge rendering and DAG viewer are new. |
+| **GitHub Action** | [new build] | `.github/actions/pwm-benchmark/` | `pwm-benchmark` action runs the 4-scenario protocol on PRs. 4-scenario protocol is already battle-tested. |
+| **Controlled claim scaffolding** | [new build] | `tools/arxiv_scaffolder/` | arXiv scanner (`eess.IV`, `physics.optics`, `cs.CV`) produces Draft ClaimCards. Review queue only — no auto-publish. |
+| **CLI completion** | [new build] | `pwm_core/cli/` | Add `pwm synthesize` (data generation via existing forward models), `pwm ingest` (PHI strip + QC + DatasetCard emission), `pwm install` (plugin manager). Core CLI (`run`, `view`, `reproduce`, `doctor`) already exists. |
+
+**Exit criteria:**
+- One ClaimCard flows through scaffold → review queue → Draft tier on leaderboard
+- One MethodCard can be submitted and benchmarked via `pwm run`
+- `pwm ingest <dir>` emits a valid DatasetCard
+- One primitive mapping artifact (`mappings/imaging_to_general/v1/`) is published and referenced by a running OperatorGraph
+
+---
 
 ### P2 — Growth orbits
 
 Expand the ecosystem with trust infrastructure in place.
 
-| Deliverable | State | Description |
-|------------|-------|-------------|
-| **Plugin marketplace** | [new build] | Formalize `contrib/` with `pwm install`, LIP-Arena-derived ratings. Plugin signing and validation layer. |
-| **Dataset federation** | [new build] | Federated registry indexing AAPM, fastMRI, BioImage Archive, etc. with standardized DatasetCards. PWM is the catalog, not the host. |
-| **Community & conference** | [new build] | Workshop proposals (MICCAI 2026, ISBI), monthly Grand Rounds, Weekly Digest auto-generation. |
-| **CT QC Copilot** | [needs formalization] | First operations-flywheel vertical. `clinical_ct_thresholds.yaml` and `clinical_ct_mismatch.yaml` already exist in `contrib/`. Formalize as DomainProfile `ct_qc/v1`. Add InstrumentCards for major CT scanners, drift detection, compliance reports. |
-| **Contributor economy** | [new build] | Roles, badges, contributor pages, maintainer rosters, challenge credits. DB schema and UI. |
+| Deliverable | State | Target | Description |
+|------------|-------|--------|-------------|
+| **Plugin marketplace** | [new build] | `contrib/` + `pwm_core/cli/install.py` | `pwm install` command, plugin signing, LIP-Arena-derived ratings. |
+| **Dataset federation** | [new build] | `tools/dataset_federation/` | Federated registry indexing AAPM, fastMRI, BioImage Archive. PWM is the catalog, not the host. |
+| **CT QC Copilot** | [needs formalization] | `domain_profiles/ct_qc/v1/` | Early ingredients exist: `clinical_ct_thresholds.yaml` (7.8 KB) and `clinical_ct_mismatch.yaml` (19 KB) in `contrib/`. This is the first operations-flywheel vertical — not yet a full orbit. Formalize as DomainProfile `ct_qc/v1`, add InstrumentCards for major CT scanners, implement drift detection, generate compliance reports. Treat this as the first enterprise proof-of-concept after the sun is hardened, not a launch blocker. |
+| **Contributor economy** | [new build] | `platform/pwm_platform/` | Roles, badges, contributor pages, maintainer rosters, challenge credits. DB schema + UI. |
+| **Community & conference** | [new build] | — | Workshop proposals (MICCAI 2026, ISBI), monthly Grand Rounds, Weekly Digest auto-generation. P2+ only — see Section 7 note. |
+
+**Exit criteria:**
+- `pwm install <plugin>` installs and benchmarks a community solver
+- One institution's CT scanner has an InstrumentCard and a running QC workflow
+- Contributor pages are live with role + badge display
+- One conference workshop proposal submitted
+
+---
 
 ### P3 — Scale and expand
 
 | Deliverable | State | Description |
 |------------|-------|-------------|
 | **Cloud IDE** | [new build] | Expand `pwm.platformai.org` into hosted compute with free academic tier. Permanent RunBundle URLs. |
-| **Cross-domain expansion** | [new build] | Acoustics, particle physics, remote sensing, materials, astronomy. Each adds a PrimitiveDialect + DomainProfile. Imaging domain must be Certified-tier solid first. |
+| **Cross-domain expansion** | [new build] | Acoustics, particle physics, remote sensing, materials, astronomy. Each adds a PrimitiveDialect + DomainProfile. Imaging must be Certified-tier solid first. |
 | **Autonomous science loops** | [new build] | AI Scientist integration: hypothesis → experiment → evaluation → update. |
 | **Hypothesis & transfer engines** | [new build] | Triad-based hypothesis generation, cross-modality transfer suggestions. |
+
+---
+
+### First launch slice
+
+A concrete path to the first public Dyson-swarm-credible release:
+
+| Milestone | Description |
+|-----------|-------------|
+| **One Certified CASSI golden bundle** | CASSI is the most mature modality. Produce a fully Certified RunBundle with a visible Certificate on the leaderboard. This is the first public proof that the trust ratchet works. |
+| **One Draft → Reproduced ClaimCard flow** | Take one arXiv CASSI paper, scaffold a Draft ClaimCard, confirm with author, independently reproduce, promote to Reproduced. Demonstrate the full tier lifecycle. |
+| **Trust-tier badge on leaderboard** | At least one leaderboard row shows a Certified or Reproduced badge in the UI. This is the public signal that the swarm is open. |
+| **One emitted `certificate.json`** | A real, machine-readable Certificate with all v1 fields, linked from a RunBundle. Downloadable by anyone. |
+| **`pwm-benchmark` GitHub Action demo** | A public repo demonstrates the action running the 4-scenario protocol on a PR. Opens the developer orbit. |
+| **One DatasetCard from `pwm ingest`** | Demonstrate that a user can bring their own imaging data and receive a machine-readable DatasetCard in one command. Opens the data orbit. |
 
 ---
 
@@ -595,9 +815,48 @@ Things PWM must not do:
    reproducibility is worse than a CLI with perfect RunBundles. P0 is the sun.
    P3 is the chrome.
 
+7. **Renaming the whole repo before the first trust ratchet works.** Compatibility
+   aliases are acceptable. Massive terminology churn — renaming `ExperimentSpec`,
+   restructuring `contrib/`, renaming CLI commands — before Certificate, hard
+   gates, and trust tiers are live creates noise without value. P-1 alignment is
+   a prerequisite pass, not a prolonged refactor. If the rename takes longer than
+   the Certificate build, stop renaming and build the Certificate.
+
 ---
 
-## 15. The Dyson Swarm Principle (Revised)
+## 15. Why This Is Feasible
+
+The Dyson Swarm strategy is not a wishlist. The hardest parts are already built.
+
+**Already in production:**
+- **Physics engine and OperatorGraph IR** — 30+ primitives, typed DAG compiler,
+  executor. Used in every benchmark run today.
+- **RunBundle** — immutable audit record with SHA-256 hashes, pip-freeze
+  provenance, seeds, and a full artifact directory. Already emitted on every run.
+- **4-scenario protocol** — fully implemented and battle-tested on CT, MRI,
+  CASSI, CACTI, Ptychography, CryoEM, Ultrasound, and more.
+- **Algorithm catalog** — 2,732 solvers across 172 modalities, importable and
+  callable today.
+- **Web platform** — deployed at `pwm.platformai.org` with routes, DB, auth,
+  billing, and Docker Compose.
+- **Registry** — 240 KB modality definitions, 97 KB compression tables, 73 KB
+  mismatch distributions, solver routing for all modalities.
+
+**What remains is trust-ratchet engineering, not physics research:**
+- Certificate object: one new Pydantic model and one emitter wired into the
+  existing harness
+- Hard S1-S4 gates: data already captured — convert to verdicts
+- Trust tiers: one DB column, one promotion workflow, one badge renderer
+- Card schemas: five Pydantic models for SpecCard, MethodCard, DatasetCard,
+  ClaimCard, Certificate
+
+The gap between "where we are" and "first Dyson-swarm-credible release" is
+measured in engineering weeks, not research years. The sun is mostly built. The
+solar collectors need fabrication.
+
+---
+
+## 16. The Dyson Swarm Principle
 
 A Dyson Swarm does not try to own the star. It builds collectors that are
 useful individually and devastating collectively.
@@ -613,6 +872,10 @@ PWM should not try to own all scientific objects. It should become the
 
 The protocol is the sun. Everything else is orbit. Keep the sun small, stable,
 and trust-centered. Let the orbits grow without bound.
+
+PWM is feasible as a Dyson swarm because the sun is already mostly built. The
+next step is not more breadth — it is turning existing evidence, provenance, and
+evaluation machinery into explicit trust objects that outer orbits can dock to.
 
 > *"PWM is not the answer to every scientific question.*
 > *It is the smallest shared protocol that makes every answer cheaper to*
