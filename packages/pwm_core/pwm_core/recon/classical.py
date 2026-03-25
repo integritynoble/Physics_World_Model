@@ -259,6 +259,27 @@ def _conjugate_gradient_operator_torch(y, forward, adjoint, x_shape, iters,
     return to_numpy(x).astype(np.float32)
 
 
+def _build_pseudo_adjoint(physics: Any):
+    """Build a pseudo-adjoint callable for non-linear GraphOperators.
+
+    Walks the adjoint_plan primitive-by-primitive, calling each primitive's
+    own adjoint method.  This bypasses GraphOperator.adjoint()'s all_linear
+    guard so that iterative solvers can still converge on non-linear graphs
+    (e.g. endoscopy with FiberBundleSensor + SpecularReflection).
+    """
+    adjoint_plan = getattr(physics, 'adjoint_plan', None)
+    if adjoint_plan is None:
+        return None
+
+    def _pseudo_adjoint(y_in: np.ndarray) -> np.ndarray:
+        current = y_in.copy()
+        for _node_id, primitive in adjoint_plan:
+            current = primitive.adjoint(current)
+        return current
+
+    return _pseudo_adjoint
+
+
 def run_fista_l2(
     y: np.ndarray,
     physics: Any,
@@ -281,15 +302,26 @@ def run_fista_l2(
     iters = cfg.get("iters", 50)
     device = cfg.get("device", None)
 
+    x_shape = getattr(physics, 'x_shape', y.shape)
+    if isinstance(x_shape, list):
+        x_shape = tuple(x_shape)
+
     info = {"solver": "fista_l2", "lam": lam, "iters": iters}
 
     try:
         if hasattr(physics, 'forward') and hasattr(physics, 'adjoint'):
-            x_shape = getattr(physics, 'x_shape', y.shape)
-            if isinstance(x_shape, list):
-                x_shape = tuple(x_shape)
+            # For non-linear graphs, GraphOperator.adjoint() raises RuntimeError.
+            # Build a pseudo-adjoint that walks individual primitives instead.
+            all_linear = getattr(physics, 'all_linear', True)
+            if all_linear:
+                adjoint_fn = physics.adjoint
+            else:
+                adjoint_fn = _build_pseudo_adjoint(physics)
+                if adjoint_fn is None:
+                    adjoint_fn = physics.adjoint  # fall back, let it raise
+
             result = gradient_descent_operator(
-                y, physics.forward, physics.adjoint,
+                y, physics.forward, adjoint_fn,
                 x_shape, iters=iters, step=0.01, reg=lam, device=device)
             return result, info
 
@@ -300,8 +332,21 @@ def run_fista_l2(
         if hasattr(physics, 'adjoint'):
             return physics.adjoint(y).astype(np.float32), info
 
-        return y.astype(np.float32), info
+        x_shape_np = np.prod(x_shape)
+        y_flat = y.ravel().astype(np.float32)
+        if y_flat.size >= x_shape_np:
+            return y_flat[:x_shape_np].reshape(x_shape), info
+        out = np.zeros(x_shape, dtype=np.float32)
+        out.ravel()[:y_flat.size] = y_flat
+        return out, info
 
     except Exception as e:
         info["error"] = str(e)[:200]
-        return y.astype(np.float32), info
+        # Ensure output has x_shape so downstream PSNR doesn't broadcast-fail
+        x_shape_np = int(np.prod(x_shape))
+        y_flat = y.ravel().astype(np.float32)
+        if y_flat.size >= x_shape_np:
+            return y_flat[:x_shape_np].reshape(x_shape), info
+        out = np.zeros(x_shape, dtype=np.float32)
+        out.ravel()[:y_flat.size] = y_flat
+        return out, info

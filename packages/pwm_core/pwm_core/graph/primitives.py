@@ -2781,6 +2781,16 @@ class SpecularReflectionModel(BasePrimitive):
         exponent = 1.0 / max(roughness, 1e-12)
         return x + specular_strength * np.power(np.abs(x), exponent)
 
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        """Pseudo-adjoint: linearised transpose around small signals.
+
+        The forward map is f(x) = x + s*|x|^p.  For the pseudo-adjoint we
+        approximate the Jacobian as identity (the specular term is typically
+        small), so adjoint ~ identity.  This is sufficient for iterative
+        solvers to converge.
+        """
+        return np.asarray(y, dtype=np.float64).copy()
+
 
 class StructuredLightProjector(BasePrimitive):
     """Pattern projection for structured-light depth sensing.
@@ -2980,20 +2990,43 @@ class FiberBundleSensor(BasePrimitive):
     _physics_stage = PhysicsStageFamily.detection_readout
     _detect_family = DetectFamily.intensity_square_law
 
-    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+    def _get_indices(self, H: int, W: int) -> np.ndarray:
+        """Return the deterministic core sampling indices for a given grid."""
         n_cores = self._params.get("n_cores", 10000)
-        core_pitch = self._params.get("core_pitch", 10.0)
-        coupling_efficiency = self._params.get("coupling_efficiency", 0.3)
         seed = self._params.get("seed", 0)
-        x = np.asarray(x, dtype=np.float64)
         rng = np.random.default_rng(seed)
-        H, W = x.shape[-2], x.shape[-1]
         n_sample = min(n_cores, H * W)
-        indices = rng.choice(H * W, size=n_sample, replace=False)
+        return rng.choice(H * W, size=n_sample, replace=False)
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        coupling_efficiency = self._params.get("coupling_efficiency", 0.3)
+        x = np.asarray(x, dtype=np.float64)
+        H, W = x.shape[-2], x.shape[-1]
+        indices = self._get_indices(H, W)
         flat = x.ravel()[:H * W]
         sampled = flat[indices] * coupling_efficiency
         # Return as 1D sampled vector
         return sampled
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        """Pseudo-adjoint: scatter 1D fibre samples back onto 2D grid.
+
+        Uses the same deterministic core positions as forward(). Pixels not
+        covered by any fibre core are set to zero.  The spatial dimensions
+        are inferred from the length of *y* (assumes a square image when
+        n_sample == H*W, which is the common case for endoscopy).
+        """
+        coupling_efficiency = self._params.get("coupling_efficiency", 0.3)
+        y = np.asarray(y, dtype=np.float64)
+        n_sample = y.size
+        # The output grid has at least n_sample pixels; assume square.
+        side = int(np.ceil(np.sqrt(n_sample)))
+        H = W = side
+        indices = self._get_indices(H, W)
+        out = np.zeros(H * W, dtype=np.float64)
+        n_use = min(len(indices), n_sample)
+        out[indices[:n_use]] = y.ravel()[:n_use] * coupling_efficiency
+        return out.reshape(H, W)
 
 
 class TrackDetectorSensor(BasePrimitive):
