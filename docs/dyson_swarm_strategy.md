@@ -26,14 +26,17 @@ they are independent repositories that collaborate through explicit promotion.
 
 | Layer | Role | Local path | GitHub remote | Live URL |
 |-------|------|-----------|---------------|----------|
-| **Open protocol / schemas / CLI / benchmarks** | Public open-source kernel — canonical source of truth for all sun objects | `D:\onedrive\startup\program\physics_world_model\PWM5\pwm\public` (Windows) | `github.com/integritynoble/Physics_World_Model` | — |
+| **Open protocol / schemas / CLI / benchmarks** | Public open-source kernel — canonical source of truth for all sun objects | `D:\onedrive\startup\program\physics_world_model\PWM5\pwm\public` (Windows)<br>`/home/spiritai/pwm/Physics_World_Model/pwm/public` (Linux) | `github.com/integritynoble/Physics_World_Model` | — |
 | **Papers / private experiments / architecture notes** | Private research repo — prototypes ideas before promotion to open kernel | `/home/spiritai/pwm/Physics_World_Model/pwm` (Linux) | `github.com/integritynoble/pwm` | — |
 | **Live platform / auth / billing / DB / deployment** | Private product repo — deploys the hosted platform | `/home/spiritai/pwm/Physics_World_Model/pwm_product` (Linux) | `github.com/integritynoble/pwm_product` | `https://pwm.platformai.org/` |
 
 #### What each repo contains
 
-**`Physics_World_Model` — open-source kernel** (Windows primary, Linux via clone)
+**`Physics_World_Model` — open-source kernel**
 ```
+Windows: D:\onedrive\startup\program\physics_world_model\PWM5\pwm\public
+Linux:   /home/spiritai/pwm/Physics_World_Model/pwm/public
+
 algorithm_base/        2,732 solvers, 172 modalities
 packages/pwm_core/     OperatorGraph, RunBundle, targeting, CLI
 platform/              open web platform routes (reference implementation)
