@@ -1,0 +1,123 @@
+# Primitive Registry — Imaging Physics Primitives v1
+# Registry: primitive_registry/imaging/v1
+# Status: append-only after publication
+#
+# These 11 primitives cover the imaging physics vocabulary.
+# Each one decomposes into general computational primitives (see mappings/).
+# Source: packages/pwm_core/pwm_core/graph/primitives.py
+
+registry: primitive_registry
+namespace: imaging
+version: "1"
+published: "2026-03-24"
+
+primitives:
+  - name: P
+    id: imaging/v1/P
+    full_name: Propagation
+    description: >
+      Wave or ray propagation through a medium.  Covers free-space propagation
+      (Fresnel, angular spectrum) and ray-tracing through refractive/absorbing media.
+    inputs: [wavefield_or_ray_bundle, medium_params]
+    outputs: [propagated_field]
+    tags: [wave_optics, ray_optics, propagation]
+
+  - name: M
+    id: imaging/v1/M
+    full_name: Modulation
+    description: >
+      Modulates a wavefield or signal by a spatially varying mask, aperture, or
+      coded pattern.  Used in coded-aperture, SPC, and structured illumination.
+    inputs: [field, mask]
+    outputs: [modulated_field]
+    tags: [modulation, coded_aperture]
+
+  - name: Pi
+    id: imaging/v1/Pi
+    full_name: Projection
+    description: >
+      Projects a 3-D or N-D volume along one or more directions onto a lower-
+      dimensional detector (e.g. X-ray Radon transform, MRI k-space sampling).
+    inputs: [volume, projection_geometry]
+    outputs: [sinogram_or_kspace]
+    tags: [projection, radon, mri]
+
+  - name: F
+    id: imaging/v1/F
+    full_name: Fourier (k-space)
+    description: >
+      Applies the (possibly non-uniform) Discrete or Fast Fourier Transform.
+      The core operator for MRI, diffraction, and spectral imaging.
+    inputs: [signal, sampling_pattern]
+    outputs: [kspace_or_spectrum]
+    tags: [fourier, kspace, fft, nufft]
+
+  - name: C
+    id: imaging/v1/C
+    full_name: Convolution
+    description: >
+      Applies a convolution kernel in 2-D or 3-D (spatial or frequency domain).
+      Used for PSF modelling, blurring, and filter banks.
+    inputs: [image, kernel]
+    outputs: [convolved_image]
+    tags: [convolution, psf, blur]
+
+  - name: Sigma
+    id: imaging/v1/Sigma
+    full_name: Summation / Integration
+    description: >
+      Integrates or accumulates a signal along one or more axes (detector
+      integration, line integrals, temporal averaging).
+    inputs: [field, integration_axes]
+    outputs: [integrated_signal]
+    tags: [integration, accumulation, detector]
+
+  - name: D
+    id: imaging/v1/D
+    full_name: Detection
+    description: >
+      Models the detector response: quantum efficiency, pixel binning,
+      read noise, saturation, and dark current.
+    inputs: [incident_photons, detector_params]
+    outputs: [detector_counts]
+    tags: [detector, photon, noise]
+
+  - name: S
+    id: imaging/v1/S
+    full_name: Scattering
+    description: >
+      Models scattering of waves or particles in a medium (Compton, Rayleigh,
+      acoustic scattering, fluorescence).
+    inputs: [incident_field, scattering_params]
+    outputs: [scattered_field]
+    tags: [scattering, x-ray, acoustics]
+
+  - name: W
+    id: imaging/v1/W
+    full_name: Wavefront coding
+    description: >
+      Applies a phase or amplitude mask to encode depth or aberration information
+      in a wavefront (phase mask, pupil engineering, extended depth of field).
+    inputs: [wavefield, phase_mask]
+    outputs: [coded_wavefield]
+    tags: [wavefront, phase, aberration]
+
+  - name: R
+    id: imaging/v1/R
+    full_name: Reconstruction (solver)
+    description: >
+      Applies a reconstruction algorithm to recover an image from measurements.
+      Generic wrapper used to embed a solver as a node in an OperatorGraph.
+    inputs: [measurement, forward_operator]
+    outputs: [reconstructed_image]
+    tags: [reconstruction, solver, inversion]
+
+  - name: A
+    id: imaging/v1/A
+    full_name: Attenuation
+    description: >
+      Models Beer-Lambert attenuation of radiation through an absorbing medium.
+      Core operator for X-ray CT, PET, and optical coherence tomography.
+    inputs: [incident_intensity, attenuation_map]
+    outputs: [attenuated_intensity]
+    tags: [attenuation, beer_lambert, ct, pet]

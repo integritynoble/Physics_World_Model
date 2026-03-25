@@ -1,0 +1,82 @@
+# Primitive Registry — Imaging-to-General Mapping v1
+# Registry: primitive_registry/mappings/imaging_to_general/v1
+# Status: append-only after publication
+#
+# Each imaging primitive decomposes into one or more general computational
+# primitives.  This mapping is the machine-readable cross-walk used by the
+# OperatorGraph compiler (graph/canonical_decompositions.py) to lower
+# imaging-domain graphs to universal IR.
+
+registry: primitive_registry
+namespace: mappings/imaging_to_general
+version: "1"
+published: "2026-03-24"
+
+mappings:
+  - imaging: imaging/v1/P        # Propagation
+    decomposes_to:
+      - general/v1/Transform     # Fresnel / angular spectrum kernel
+      - general/v1/Compose       # chain propagation steps
+    notes: "Fresnel propagation = DFT ∘ phase_multiply ∘ IDFT"
+
+  - imaging: imaging/v1/M        # Modulation
+    decomposes_to:
+      - general/v1/Broadcast     # expand mask to match field shape
+      - general/v1/Compose       # element-wise multiply via compose
+    notes: "Coded mask = pointwise product (broadcast + compose)"
+
+  - imaging: imaging/v1/Pi       # Projection (Radon)
+    decomposes_to:
+      - general/v1/Transform     # Radon / line integral
+      - general/v1/Discretize    # angle and detector grid
+      - general/v1/Reduce        # sum along ray
+    notes: "Parallel-beam Radon = Discretize ∘ Reduce(along ray) ∘ Transform"
+
+  - imaging: imaging/v1/F        # Fourier (k-space)
+    decomposes_to:
+      - general/v1/Transform     # DFT / FFT / NUFFT
+      - general/v1/Sample        # k-space undersampling mask
+    notes: "MRI k-space = Sample ∘ FFT"
+
+  - imaging: imaging/v1/C        # Convolution
+    decomposes_to:
+      - general/v1/Transform     # FFT to frequency domain
+      - general/v1/Compose       # multiply by kernel spectrum
+    notes: "Conv = IFFT ∘ pointwise_multiply ∘ FFT"
+
+  - imaging: imaging/v1/Sigma    # Summation / Integration
+    decomposes_to:
+      - general/v1/Reduce        # sum along integration axis
+      - general/v1/Discretize    # temporal / spatial grid
+    notes: "Detector integration = Discretize ∘ Reduce"
+
+  - imaging: imaging/v1/D        # Detection
+    decomposes_to:
+      - general/v1/Stochastize   # Poisson / read noise model
+      - general/v1/Validate      # range / saturation checks
+    notes: "Detector = Stochastize(Poisson) ∘ Validate"
+
+  - imaging: imaging/v1/S        # Scattering
+    decomposes_to:
+      - general/v1/Transform     # scattering kernel (Born approx)
+      - general/v1/Stochastize   # random scattering events
+    notes: "Compton scatter = Stochastize ∘ Transform(scatter_kernel)"
+
+  - imaging: imaging/v1/W        # Wavefront coding
+    decomposes_to:
+      - general/v1/Broadcast     # phase map to wavefield shape
+      - general/v1/Compose       # pointwise phase multiply
+    notes: "Phase mask = exp(j*phi) pointwise multiply"
+
+  - imaging: imaging/v1/R        # Reconstruction (solver)
+    decomposes_to:
+      - general/v1/Invert        # solve the inverse problem
+      - general/v1/Regularize    # prior / regularisation
+      - general/v1/Differentiate # gradient computation
+    notes: "Iterative solver = Differentiate ∘ Regularize ∘ Invert"
+
+  - imaging: imaging/v1/A        # Attenuation
+    decomposes_to:
+      - general/v1/Transform     # Beer-Lambert line integral
+      - general/v1/Compose       # exp(-mu * L) composition
+    notes: "Beer-Lambert = exp ∘ Reduce(mu along path)"
