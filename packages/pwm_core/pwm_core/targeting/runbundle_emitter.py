@@ -181,6 +181,12 @@ def emit_runbundle(
 def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     """Run S1-S4 gates and write ``certificate.json`` to *bundle_dir*.
 
+    Gate blocking rules (P0):
+    - S1/S2/S3 fail  → trust_tier = rejected + safety_brake risk flag
+    - S4 fail        → trust_tier = draft    + safety_brake risk flag (budget violation)
+    - any warn       → trust_tier = draft    + high_variance risk flag
+    - all pass       → trust_tier = draft    (ready for promotion workflow)
+
     Parameters
     ----------
     bundle_dir : Path
@@ -194,7 +200,7 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     """
     import json as _json
     from pwm_core.core.runbundle.certificate import (
-        Certificate, GateVerdict, RiskFlag, TrustTier,
+        Certificate, GateResult, GateVerdict, RiskFlag, TriadFlags, TrustTier,
     )
     from pwm_core.targeting.gates import run_s1_s4
 
@@ -213,19 +219,34 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
         with open(provenance_path, encoding="utf-8") as f:
             provenance = _json.load(f)
 
-    # Run gates
+    # --- Run S1-S4 gates ---
     gate_results = run_s1_s4(bundle_dir, manifest, provenance)
 
-    # Determine trust tier: only promote to draft on first issuance
-    any_fail = any(r.verdict == GateVerdict.fail for r in gate_results.values())
-    trust_tier = TrustTier.draft if not any_fail else TrustTier.draft
+    # --- Determine trust tier (P0 blocking logic) ---
+    hard_gate_names = {"s1", "s2", "s3"}
+    hard_fail = any(
+        v.verdict == GateVerdict.fail
+        for k, v in gate_results.items()
+        if k in hard_gate_names
+    )
+    s4_fail = gate_results.get("s4", GateResult(verdict=GateVerdict.pass_)).verdict == GateVerdict.fail
+    any_warn = any(v.verdict == GateVerdict.warn for v in gate_results.values())
 
-    # Collect risk flags
+    if hard_fail:
+        trust_tier = TrustTier.rejected
+    else:
+        trust_tier = TrustTier.draft
+
     risk_flags = []
-    if any(r.verdict == GateVerdict.warn for r in gate_results.values()):
+    if hard_fail or s4_fail:
+        risk_flags.append(RiskFlag.safety_brake)
+    if any_warn and not hard_fail:
         risk_flags.append(RiskFlag.high_variance)
 
-    # Provenance hash
+    # --- Wire Triad gates (G1/G2/G3) from 4-scenario PSNR ---
+    triad_flags = _build_triad_flags(bundle_dir, manifest)
+
+    # --- Provenance hash ---
     prov_hash = None
     if provenance_path.exists():
         prov_hash = "sha256:" + _sha256_file(provenance_path)
@@ -247,6 +268,7 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
         risk_flags=risk_flags,
         active_gates=list(gate_results.keys()),
         gate_verdicts=gate_results,
+        triad_flags=triad_flags,
         provenance_hash=prov_hash,
     )
 
@@ -254,5 +276,125 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     with open(cert_path, "w", encoding="utf-8") as f:
         _json.dump(cert.to_dict(), f, indent=2, default=str)
 
-    logger.info("Certificate issued: %s (tier=%s)", cert_path, trust_tier.value)
+    logger.info(
+        "Certificate issued: %s (tier=%s, risk_flags=%s)",
+        cert_path, trust_tier.value, [f.value for f in risk_flags],
+    )
     return cert_path
+
+
+def _build_triad_flags(bundle_dir: Path, manifest: Dict[str, Any]) -> Optional[Any]:
+    """Build TriadFlags by calling infer_gate_attribution() on per-scenario PSNRs.
+
+    Reads per-scenario PSNR from ``logs/dr_is_records.json`` (preferred) or
+    falls back to aggregate metrics in the manifest.  Returns None if
+    insufficient data is available.
+    """
+    try:
+        from pwm_core.core.runbundle.certificate import GateResult, GateVerdict, TriadFlags
+        from pwm_core.targeting.scoring import infer_gate_attribution
+        import json as _json
+    except ImportError:
+        return None
+
+    # --- Try to read per-scenario PSNR from DR-IS records ---
+    dr_is_path = bundle_dir / "logs" / "dr_is_records.json"
+    scenario_psnr: Dict[str, float] = {}
+
+    if dr_is_path.exists():
+        try:
+            with open(dr_is_path, encoding="utf-8") as f:
+                records = _json.load(f)
+            # Aggregate by scenario_id: take mean PSNR across scenes
+            from collections import defaultdict
+            sums: Dict[str, float] = defaultdict(float)
+            counts: Dict[str, int] = defaultdict(int)
+            for rec in records:
+                sid = str(rec.get("scenario", "")).upper()
+                psnr_val = rec.get("psnr")
+                if psnr_val is not None:
+                    sums[sid] += float(psnr_val)
+                    counts[sid] += 1
+            for sid in sums:
+                scenario_psnr[sid] = sums[sid] / counts[sid]
+        except Exception as exc:
+            logger.debug("_build_triad_flags: DR-IS read failed: %s", exc)
+
+    # --- Map scenario IDs to I/II/III/IV ---
+    def _get(keys, default=None):
+        for k in keys:
+            if k in scenario_psnr:
+                return scenario_psnr[k]
+        return default
+
+    psnr_i   = _get(["I", "IDEAL", "1"])
+    psnr_ii  = _get(["II", "ASSUMED", "2"])
+    psnr_iii = _get(["III", "CORRECTED", "CALIBRATED", "3"])
+    psnr_iv  = _get(["IV", "ORACLE", "4"])
+
+    # --- Fallback: reconstruct from aggregate metrics if scenarios missing ---
+    if psnr_i is None or psnr_ii is None or psnr_iii is None:
+        metrics = manifest.get("metrics", {})
+        rho = metrics.get("rho")
+        oracle_gap = metrics.get("oracle_gap")
+        psnr_db = metrics.get("psnr_db")
+        if rho is not None and oracle_gap is not None and psnr_db is not None:
+            # psnr_iii ≈ psnr_db; psnr_i = psnr_iii + oracle_gap
+            # rho = (psnr_iii - psnr_ii) / (psnr_i - psnr_ii)
+            # → psnr_ii = psnr_i - (psnr_iii - psnr_i + oracle_gap) / rho  (approx)
+            psnr_iii = float(psnr_db)
+            psnr_i = psnr_iii + float(oracle_gap)
+            denom = float(rho) if abs(float(rho)) > 1e-6 else 1.0
+            gap_i_to_ii = (psnr_iii - psnr_ii if psnr_ii is not None
+                           else (psnr_i - psnr_iii) / denom)
+            psnr_ii = psnr_i - gap_i_to_ii
+        else:
+            return None  # no usable data
+
+    if psnr_iv is None:
+        psnr_iv = psnr_i  # IV ≈ I in current implementation
+
+    try:
+        attr = infer_gate_attribution(
+            psnr_i=psnr_i,
+            psnr_ii=psnr_ii,
+            psnr_iii=psnr_iii,
+            psnr_iv=psnr_iv,
+        )
+    except Exception as exc:
+        logger.debug("_build_triad_flags: infer_gate_attribution failed: %s", exc)
+        return None
+
+    # Map GateAttribution fractions to GateResult verdicts:
+    # dominant gate with high confidence → warn; others → pass
+    def _gate_result(fraction: float, is_dominant: bool, confidence: float) -> GateResult:
+        if is_dominant and confidence > 0.4:
+            return GateResult(
+                verdict=GateVerdict.warn,
+                message=f"{fraction:.0%} of degradation attributed to this gate (conf={confidence:.2f})",
+                details={"fraction": fraction, "confidence": confidence},
+            )
+        return GateResult(
+            verdict=GateVerdict.pass_,
+            message=f"{fraction:.0%} attribution (not dominant)",
+            details={"fraction": fraction},
+        )
+
+    dom = attr.dominant_gate
+    return TriadFlags(
+        g1_sampling=_gate_result(
+            attr.gate_1_sampling,
+            dom == "gate_1_sampling",
+            attr.confidence,
+        ),
+        g2_noise=_gate_result(
+            attr.gate_2_noise,
+            dom == "gate_2_noise",
+            attr.confidence,
+        ),
+        g3_operator=_gate_result(
+            attr.gate_3_mismatch,
+            dom == "gate_3_mismatch",
+            attr.confidence,
+        ),
+    )

@@ -27,7 +27,12 @@ except ImportError:
 # ---------------------------------------------------------------------------
 
 class TrustTier(str, Enum):
-    """Linear trust promotion ladder (no skipping allowed)."""
+    """Linear trust promotion ladder (no skipping allowed).
+
+    ``rejected`` is a terminal state: one or more hard gates (S1/S2/S3) failed.
+    Rejected runs cannot be promoted without a new RunBundle.
+    """
+    rejected = "rejected"            # hard gate failure — cannot be promoted
     draft = "draft"
     author_confirmed = "author_confirmed"
     reproduced = "reproduced"
