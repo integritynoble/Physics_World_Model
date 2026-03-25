@@ -204,5 +204,74 @@ class ImagingTriadReport(DomainDiagnosticReport):
         )
 
 
+# ---------------------------------------------------------------------------
+# CTQCDiagnosticReport
+# ---------------------------------------------------------------------------
+
+
+class CTQCDiagnosticReport(DomainDiagnosticReport):
+    """CT Quality Control diagnostic report.
+
+    Domain-specific diagnostic decomposition for CT scanner QC workflows.
+    Stored at ``<bundle_dir>/logs/ct_qc_diagnostic_report.json``.
+    """
+
+    domain: str = Field(default="ct_qc")
+    methodology: str = Field(default="ct_qc_diagnostic_v1")
+
+    # CT QC diagnostic flags
+    drift_detected: bool = Field(
+        default=False, description="Temporal drift from baseline detected"
+    )
+    drift_magnitude: Optional[float] = Field(
+        default=None, description="Drift magnitude in HU or %"
+    )
+
+    artifact_flags: Dict[str, bool] = Field(
+        default_factory=dict,
+        description="Artifact detection flags: ring, cupping, streak, beam_hardening, etc.",
+    )
+
+    threshold_breaches: Dict[str, Dict[str, Any]] = Field(
+        default_factory=dict,
+        description="QC threshold breaches: {metric_name: {value, threshold, unit}}",
+    )
+
+    # QC metrics
+    noise_std_hu: Optional[float] = Field(
+        default=None, description="Noise standard deviation in HU"
+    )
+    cnr: Optional[float] = Field(
+        default=None, description="Contrast-to-noise ratio"
+    )
+    mtf10_lpmm: Optional[float] = Field(
+        default=None, description="MTF at 10% (line pairs/mm)"
+    )
+    hu_accuracy: Optional[float] = Field(
+        default=None, description="HU accuracy (deviation from expected)"
+    )
+    uniformity_hu: Optional[float] = Field(
+        default=None, description="Uniformity in HU"
+    )
+
+    @property
+    def is_complete(self) -> bool:
+        """True if at least noise and one spatial metric are measured."""
+        return self.noise_std_hu is not None and (
+            self.cnr is not None or self.mtf10_lpmm is not None
+        )
+
+    @property
+    def dominant_concern(self) -> Optional[str]:
+        """Return the most significant QC concern, if any."""
+        if self.drift_detected:
+            return "drift"
+        if any(self.artifact_flags.values()):
+            return "artifact"
+        if self.threshold_breaches:
+            return "threshold_breach"
+        return None
+
+
 # Backward compatibility alias -- existing code imports TriadReport
 TriadReport = ImagingTriadReport
