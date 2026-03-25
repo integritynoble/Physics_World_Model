@@ -16,6 +16,13 @@ from pwm_core.spec.domain_profile import (
     CT_QC_V1,
 )
 from pwm_core.spec.problem_instance import ProblemInstance
+from pwm_core.spec.parser import (
+    parse_spec_md,
+    render_spec_md,
+    parse_spec_file,
+    render_spec_file,
+    roundtrip_spec_md,
+)
 
 __all__ = [
     "CanonicalCoreSpec",
@@ -29,4 +36,9 @@ __all__ = [
     "list_domain_profiles",
     "IMAGING_V1",
     "CT_QC_V1",
+    "parse_spec_md",
+    "render_spec_md",
+    "parse_spec_file",
+    "render_spec_file",
+    "roundtrip_spec_md",
 ]
