@@ -5,7 +5,13 @@ ProblemInstance implementations for the three-layer schema described in
 docs/dyson_swarm_strategy.md §1.
 """
 
-from pwm_core.spec.core import CanonicalCoreSpec, CoreSpec, EXPERIMENT_SPEC_MAPPING
+from pwm_core.spec.core import (
+    CanonicalCoreSpec,
+    CoreSpec,
+    EXPERIMENT_SPEC_MAPPING,
+    to_canonical,
+    validate_canonical,
+)
 from pwm_core.spec.domain_profile import (
     DomainProfile,
     DomainGateSpec,
@@ -23,11 +29,19 @@ from pwm_core.spec.parser import (
     render_spec_file,
     roundtrip_spec_md,
 )
+from pwm_core.spec.profile_registry import (
+    PROFILE_REGISTRY,
+    get_profile,
+    list_profiles,
+    get_profile_maturity,
+)
 
 __all__ = [
     "CanonicalCoreSpec",
     "CoreSpec",
     "EXPERIMENT_SPEC_MAPPING",
+    "to_canonical",
+    "validate_canonical",
     "DomainProfile",
     "DomainGateSpec",
     "GateThreshold",
@@ -41,4 +55,8 @@ __all__ = [
     "parse_spec_file",
     "render_spec_file",
     "roundtrip_spec_md",
+    "PROFILE_REGISTRY",
+    "get_profile",
+    "list_profiles",
+    "get_profile_maturity",
 ]
