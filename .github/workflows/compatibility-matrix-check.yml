@@ -1,0 +1,19 @@
+name: Compatibility Matrix Check
+
+on:
+  pull_request:
+    paths:
+      - 'contrib/compatibility_matrix.yaml'
+      - 'contrib/primitive_registry/**'
+      - 'packages/pwm_core/contrib/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyyaml pytest
+      - run: pytest packages/pwm_core/tests/test_compatibility_matrix.py -v
