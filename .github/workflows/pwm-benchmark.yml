@@ -51,8 +51,14 @@ on:
         description: "Path to certificate.json inside the RunBundle"
         value: ${{ jobs.benchmark.outputs.certificate_path }}
 
-  # Also allow direct trigger on PRs touching solver/algorithm code
+  # Also allow direct trigger on PRs/pushes touching solver/algorithm code
   pull_request:
+    paths:
+      - "packages/pwm_core/pwm_core/recon/**"
+      - "algorithm_base/**"
+      - "packages/pwm_core/pwm_core/targeting/**"
+  push:
+    branches: [master]
     paths:
       - "packages/pwm_core/pwm_core/recon/**"
       - "algorithm_base/**"
@@ -164,8 +170,8 @@ jobs:
               `| RunBundle | \`${bundle}\` |`,
               ``,
               tier === 'rejected'
-                ? '> ⚠️ **One or more S1-S4 gates failed.** See the uploaded RunBundle artifact for `certificate.json` details.'
-                : '> Certificate issued. Download the RunBundle artifact to inspect gate verdicts and TriadFlags.',
+                ? '> ⚠️ **One or more R1-R4 gates failed.** See the uploaded RunBundle artifact for `certificate.json` details.'
+                : '> Certificate issued. Download the RunBundle artifact to inspect gate verdicts and domain flags.',
             ].join('\n');
 
             github.rest.issues.createComment({
