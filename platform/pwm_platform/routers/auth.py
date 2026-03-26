@@ -143,6 +143,73 @@ async def logout(
     return {"success": True, "message": "Logged out successfully"}
 
 
+@router.post("/signup")
+async def signup(
+    request: Request,
+    response: Response,
+    email: str = Form(...),
+    username: str = Form(...),
+    password: str = Form(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """HTMX signup form handler. Returns HX-Redirect on success, HTML error on failure."""
+    if len(password) < 8:
+        return templates.TemplateResponse(request, "signup.html", {
+            "error": "Password must be at least 8 characters",
+            "email": email,
+            "username": username,
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+        }, status_code=400)
+
+    try:
+        result = await auth_service.create_local_user(email, username, password, db)
+    except HTTPException as exc:
+        error = exc.detail if isinstance(exc.detail, str) else "Registration failed"
+        return templates.TemplateResponse(request, "signup.html", {
+            "error": error,
+            "email": email,
+            "username": username,
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+        }, status_code=400)
+
+    response.set_cookie(value=result["access_token"], **_COOKIE_KWARGS)
+    response.headers["HX-Redirect"] = "/benchmark"
+    return response
+
+
+@router.post("/signup-form")
+async def signup_form(
+    request: Request,
+    email: str = Form(...),
+    username: str = Form(...),
+    password: str = Form(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle registration from HTML form. Sets cookie + redirects to /benchmark."""
+    if len(password) < 8:
+        return templates.TemplateResponse(request, "signup.html", {
+            "error": "Password must be at least 8 characters",
+            "email": email,
+            "username": username,
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+        }, status_code=400)
+
+    try:
+        result = await auth_service.create_local_user(email, username, password, db)
+    except HTTPException as exc:
+        error = exc.detail if isinstance(exc.detail, str) else "Registration failed"
+        return templates.TemplateResponse(request, "signup.html", {
+            "error": error,
+            "email": email,
+            "username": username,
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+        }, status_code=400)
+
+    redirect = RedirectResponse("/benchmark", status_code=303)
+    redirect.set_cookie(value=result["access_token"], **_COOKIE_KWARGS)
+    return redirect
+
+
 @router.post("/forgot-password-form")
 async def forgot_password_form(
     request: Request,

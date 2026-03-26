@@ -140,6 +140,14 @@ async def login_page(request: Request):
     })
 
 
+@router.get("/signup", response_class=HTMLResponse)
+async def signup_page(request: Request):
+    return templates.TemplateResponse("signup.html", {
+        "request": request,
+        "google_client_id": settings.GOOGLE_CLIENT_ID,
+    })
+
+
 @router.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password_page(request: Request):
     return templates.TemplateResponse("forgot_password.html", {"request": request})
