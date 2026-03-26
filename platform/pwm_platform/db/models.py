@@ -277,6 +277,9 @@ class ChallengeSubmission(Base):
     review_notes       = Column(Text, default="")
     reviewed_at        = Column(DateTime(timezone=True), nullable=True)
     scores             = Column(JSONB, nullable=True)
+    # Trust ratchet (Dyson Swarm P0)
+    trust_tier         = Column(String(30), default="draft", nullable=False, index=True)
+    gate_verdicts      = Column(JSONB, nullable=True)   # {s1: {verdict, message}, ...}
     created_at         = Column(DateTime(timezone=True), default=_utcnow)
     updated_at         = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
@@ -460,3 +463,67 @@ class ModalityBasics(Base):
     feature_vector = Column(JSONB, default=list)
     tags = Column(JSONB, default=list)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  Auth — Password Reset
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class PasswordResetToken(Base):
+    """One-time password reset tokens (expire in 1 hour)."""
+
+    __tablename__ = "password_reset_tokens"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    token = Column(String(64), unique=True, nullable=False, index=True)
+    used = Column(Boolean, default=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    user = relationship("User")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  Contributor Economy
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class ContributorProfile(Base):
+    """Public contributor profile — tracks contribution stats and badge tier."""
+
+    __tablename__ = "contributor_profiles"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+
+    # Contribution stats
+    modalities_contributed = Column(JSONB, default=list)   # list of modality keys
+    solver_count = Column(Integer, default=0)
+    dataset_count = Column(Integer, default=0)
+    claim_count = Column(Integer, default=0)
+    verified_claim_count = Column(Integer, default=0)
+
+    # Badge tier: none / bronze / silver / gold / platinum
+    badge_tier = Column(String(20), default="none", nullable=False)
+
+    # Role assignment and badge tracking (Dyson Swarm contributor economy)
+    roles = Column(JSONB, default=list)                    # ["modality_maintainer", "benchmark_reviewer", ...]
+    badges = Column(JSONB, default=list)                   # [{"badge": "first_certified", "earned_at": "..."}, ...]
+    maintained_modalities = Column(JSONB, default=list)    # ["ct", "mri"] — for modality maintainers
+    contribution_history = Column(JSONB, default=list)     # [{"action": "approved_claim", "timestamp": "..."}]
+    total_reproductions = Column(Integer, default=0)
+    total_certifications = Column(Integer, default=0)
+    total_claims_reviewed = Column(Integer, default=0)
+
+    # Public profile
+    bio = Column(Text, default="")
+    orcid = Column(String(50), nullable=True)
+    github_handle = Column(String(100), nullable=True)
+    website_url = Column(String(512), nullable=True)
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    user = relationship("User", backref="contributor_profile", uselist=False)

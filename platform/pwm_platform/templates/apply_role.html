@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Apply for Contributor Role -- PWM{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">Apply for a Contributor Role</h1>
+    <p class="text-sm text-gray-500 mb-6">Select a role and explain why you'd like to contribute. An admin will review your application.</p>
+
+    <form method="POST" action="/contributors/api/apply" onsubmit="event.preventDefault(); submitApplication(this);" class="space-y-4">
+        <input type="hidden" name="user_id" value="{{ user.id if user else 0 }}">
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <select name="role" id="apply-role" required onchange="toggleModalities(); toggleReviewerNote()"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">Select a role...</option>
+                <optgroup label="Requires platform reviewer access (auto-granted on approval)">
+                    <option value="benchmark_reviewer">Benchmark Reviewer -- independently reproduce results</option>
+                    <option value="claim_curator">Claim Curator -- review scaffolded ClaimCards</option>
+                </optgroup>
+                <optgroup label="Works with regular user access">
+                    <option value="modality_maintainer">Modality Maintainer -- own and curate a modality</option>
+                    <option value="dataset_steward">Dataset Steward -- maintain dataset quality</option>
+                    <option value="method_integrator">Method Integrator -- adapt algorithms into PWM plugins</option>
+                    <option value="judge_rule_author">Judge-Rule Author -- propose domain Judge gates</option>
+                    <option value="red_team_contributor">Red-Team Contributor -- probe for failure modes</option>
+                    <option value="instrument_contributor">Instrument Contributor -- provide InstrumentCards</option>
+                </optgroup>
+            </select>
+            <div id="reviewer-note" class="hidden mt-1 text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                This role requires reviewer access. Your platform role will be automatically upgraded to "reviewer" when approved.
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Why do you want this role?</label>
+            <textarea name="reason" rows="3" required placeholder="Briefly describe your background and what you'd contribute..."
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        </div>
+
+        <div id="modalities-field" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Which modalities? (comma-separated)</label>
+            <input name="modalities" placeholder="ct, mri, cassi"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <button type="submit"
+                class="w-full px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Submit Application
+        </button>
+    </form>
+
+    <div id="apply-result" class="hidden mt-4 p-4 rounded-lg text-sm"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleModalities() {
+    var field = document.getElementById('modalities-field');
+    var role = document.getElementById('apply-role').value;
+    field.classList.toggle('hidden', role !== 'modality_maintainer');
+}
+
+function toggleReviewerNote() {
+    var note = document.getElementById('reviewer-note');
+    var role = document.getElementById('apply-role').value;
+    var needsReviewer = (role === 'benchmark_reviewer' || role === 'claim_curator');
+    note.classList.toggle('hidden', !needsReviewer);
+}
+
+function submitApplication(form) {
+    var formData = new FormData(form);
+    fetch('/contributors/api/apply', { method: 'POST', body: formData, credentials: 'include' })
+        .then(function(r) {
+            if (!r.ok) return r.json().then(function(d) { throw new Error(d.detail || 'Request failed'); });
+            return r.json();
+        })
+        .then(function(data) {
+            var el = document.getElementById('apply-result');
+            el.classList.remove('hidden');
+            el.className = 'mt-4 p-4 rounded-lg text-sm bg-green-50 text-green-800 border border-green-200';
+            el.textContent = 'Application submitted! An admin will review it soon. Application ID: ' + data.app_id;
+            form.reset();
+            document.getElementById('modalities-field').classList.add('hidden');
+        })
+        .catch(function(e) {
+            var el = document.getElementById('apply-result');
+            el.classList.remove('hidden');
+            el.className = 'mt-4 p-4 rounded-lg text-sm bg-red-50 text-red-800 border border-red-200';
+            el.textContent = 'Error: ' + e.message;
+        });
+}
+</script>
+{% endblock %}

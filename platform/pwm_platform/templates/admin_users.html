@@ -1,0 +1,750 @@
+{% extends "base.html" %}
+{% block title %}User Management -- Admin -- Physics World Model{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-start gap-5">
+        <div class="w-14 h-14 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">User Management</h1>
+            <p class="mt-1 text-sm text-gray-500 max-w-2xl">
+                View, edit, deactivate, reset passwords, and delete platform users.
+                Superuser (ID 1) and self-operations are protected.
+            </p>
+        </div>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div class="bg-white shadow rounded-lg p-4">
+            <p class="text-xs font-medium text-gray-500 uppercase">Total Users</p>
+            <p class="mt-1 text-2xl font-bold text-gray-900" id="stat-total">{{ users | length }}</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-4">
+            <p class="text-xs font-medium text-gray-500 uppercase">Active</p>
+            <p class="mt-1 text-2xl font-bold text-green-600" id="stat-active">{{ users | selectattr('is_active') | list | length }}</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-4">
+            <p class="text-xs font-medium text-gray-500 uppercase">Admins</p>
+            <p class="mt-1 text-2xl font-bold text-red-600" id="stat-admins">{{ users | selectattr('role', 'equalto', 'admin') | list | length }}</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-4">
+            <p class="text-xs font-medium text-gray-500 uppercase">Reviewers</p>
+            <p class="mt-1 text-2xl font-bold text-yellow-600" id="stat-reviewers">{{ users | selectattr('role', 'equalto', 'reviewer') | list | length }}</p>
+        </div>
+    </div>
+
+    <!-- Pending Role Applications -->
+    <div id="applications-section" class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-amber-50 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <h2 class="text-base font-semibold text-gray-900">Pending Role Applications</h2>
+                <span id="pending-count" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-200 text-amber-800">0</span>
+            </div>
+            <div class="flex gap-2">
+                <select id="app-status-filter" onchange="loadApplications()" class="text-xs border border-gray-300 rounded-md px-2 py-1">
+                    <option value="pending">Pending</option>
+                    <option value="all">All</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+        </div>
+        <div id="applications-list" class="divide-y divide-gray-100">
+            <div class="px-6 py-4 text-sm text-gray-400">Loading applications...</div>
+        </div>
+    </div>
+
+    <!-- Success/error message area -->
+    <div id="admin-message" class="hidden"></div>
+
+    <!-- Bulk actions bar -->
+    <div id="bulk-bar" class="hidden bg-indigo-50 border border-indigo-200 rounded-lg p-3 flex items-center justify-between">
+        <span class="text-sm text-indigo-700 font-medium">
+            <span id="selected-count">0</span> user(s) selected
+        </span>
+        <div class="flex gap-2">
+            <button onclick="bulkDeactivate()" class="px-3 py-1.5 text-xs font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600">
+                Deactivate Selected
+            </button>
+            <button onclick="bulkDelete()" class="px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                Soft Delete Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Users table -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+            <h2 class="text-base font-semibold text-gray-900">All Users ({{ users | length }})</h2>
+            <div class="flex items-center gap-3">
+                <input type="text" id="search-input" placeholder="Search users..."
+                       oninput="filterTable()"
+                       class="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-64">
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="users-table">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left">
+                            <input type="checkbox" id="select-all" onchange="toggleSelectAll()" class="h-4 w-4 text-indigo-600 rounded border-gray-300">
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credits</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for u in users %}
+                    <tr class="hover:bg-gray-50 user-row" id="user-row-{{ u.id }}"
+                        data-email="{{ u.email or '' }}"
+                        data-username="{{ u.username or '' }}"
+                        data-role="{{ u.role or 'user' }}"
+                        data-active="{{ u.is_active }}"
+                        data-user-id="{{ u.id }}">
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            {% if u.id != user.id and u.id != 1 %}
+                            <input type="checkbox" class="user-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300"
+                                   value="{{ u.id }}" onchange="updateBulkBar()">
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ u.id }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" id="email-{{ u.id }}">{{ u.email or '-' }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="text-sm font-medium text-gray-900" id="username-{{ u.id }}">{{ u.username or '-' }}</span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap" id="role-cell-{{ u.id }}">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if u.role == 'admin' %}bg-red-100 text-red-800
+                                {% elif u.role == 'reviewer' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ u.role or 'user' }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap" id="active-cell-{{ u.id }}">
+                            {% if u.is_active %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ "%.1f" | format(u.credit_balance or 0) }}
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '-' }}
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="flex items-center gap-1">
+                                <button type="button"
+                                        data-uid="{{ u.id }}"
+                                        data-uname="{{ u.username or '' }}"
+                                        data-uemail="{{ u.email or '' }}"
+                                        data-urole="{{ u.role or 'user' }}"
+                                        onclick="openEditModal(parseInt(this.dataset.uid), this.dataset.uname, this.dataset.uemail, this.dataset.urole)"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700"
+                                        title="Edit user">
+                                    Edit
+                                </button>
+                                <button type="button"
+                                        data-uid="{{ u.id }}"
+                                        data-uname="{{ u.username or '' }}"
+                                        onclick="openPasswordModal(parseInt(this.dataset.uid), this.dataset.uname)"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700"
+                                        title="Reset password">
+                                    Password
+                                </button>
+                                {% if u.id != user.id and u.id != 1 %}
+                                {% if u.is_active %}
+                                <button onclick="toggleActive({{ u.id }}, false)"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-yellow-500 hover:bg-yellow-600"
+                                        title="Deactivate user" id="toggle-btn-{{ u.id }}">
+                                    Deactivate
+                                </button>
+                                {% else %}
+                                <button onclick="toggleActive({{ u.id }}, true)"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700"
+                                        title="Activate user" id="toggle-btn-{{ u.id }}">
+                                    Activate
+                                </button>
+                                {% endif %}
+                                <button onclick="hardDelete({{ u.id }}, '{{ u.username | e }}')"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700"
+                                        title="Permanently delete user">
+                                    Delete
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Edit User Modal -->
+<div id="edit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeEditModal()"></div>
+        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-left">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                Edit User <span id="edit-modal-title" class="text-indigo-600"></span>
+            </h3>
+            <input type="hidden" id="edit-user-id">
+
+            <div class="space-y-4">
+                <div>
+                    <label for="edit-username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" id="edit-username"
+                           class="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="edit-email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="edit-email"
+                           class="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="edit-role" class="block text-sm font-medium text-gray-700">Platform Role</label>
+                    <select id="edit-role"
+                            class="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="user">User</option>
+                        <option value="reviewer">Reviewer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <p class="text-xs text-gray-400 mt-1">Controls platform access (login, claims, admin pages)</p>
+                </div>
+
+                <hr class="my-2 border-gray-200">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Contributor Roles (PWM ecosystem)</p>
+
+                <div class="grid grid-cols-2 gap-2 mt-2" id="edit-contributor-roles">
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="modality_maintainer" class="contrib-role-cb rounded text-indigo-600">
+                        Modality maintainer
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="benchmark_reviewer" class="contrib-role-cb rounded text-indigo-600">
+                        Benchmark reviewer
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="claim_curator" class="contrib-role-cb rounded text-indigo-600">
+                        Claim curator
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="dataset_steward" class="contrib-role-cb rounded text-indigo-600">
+                        Dataset steward
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="method_integrator" class="contrib-role-cb rounded text-indigo-600">
+                        Method integrator
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="judge_rule_author" class="contrib-role-cb rounded text-indigo-600">
+                        Judge-rule author
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="red_team_contributor" class="contrib-role-cb rounded text-indigo-600">
+                        Red-team contributor
+                    </label>
+                    <label class="flex items-center gap-1.5 text-xs">
+                        <input type="checkbox" value="instrument_contributor" class="contrib-role-cb rounded text-indigo-600">
+                        Instrument contributor
+                    </label>
+                </div>
+
+                <div class="mt-2">
+                    <label for="edit-maintained-modalities" class="block text-xs font-medium text-gray-700">Maintained modalities</label>
+                    <input type="text" id="edit-maintained-modalities" placeholder="ct, mri, cassi (comma-separated)"
+                           class="mt-1 w-full px-3 py-1.5 text-xs border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="text-xs text-gray-400 mt-0.5">Only for modality maintainers</p>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="closeEditModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md">
+                    Cancel
+                </button>
+                <button type="button" onclick="saveEdit().catch(e => { alert('Save error: ' + e.message); console.error(e); })"
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Reset Modal -->
+<div id="password-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closePasswordModal()"></div>
+        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-left">
+            <h3 class="text-lg font-bold text-gray-900 mb-1">
+                Reset Password for <span id="pw-modal-username" class="text-indigo-600"></span>
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">User ID: <span id="pw-modal-user-id"></span></p>
+            <input type="hidden" id="pw-user-id">
+
+            <div class="space-y-4">
+                <div>
+                    <label for="new-password" class="block text-sm font-medium text-gray-700">New Password</label>
+                    <input type="password" id="new-password" placeholder="Min 6 characters"
+                           class="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Re-enter password"
+                           class="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="closePasswordModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md">
+                    Cancel
+                </button>
+                <button onclick="savePassword()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                    Reset Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+/* ── Role Applications ───────────────────────────────────────────────── */
+
+function loadApplications() {
+    var status = document.getElementById('app-status-filter').value;
+    fetch('/contributors/api/applications?status=' + status, {credentials: 'include'})
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var list = document.getElementById('applications-list');
+            var apps = data.applications || [];
+            var pendingCount = apps.filter(function(a) { return a.status === 'pending'; }).length;
+            document.getElementById('pending-count').textContent = status === 'pending' ? apps.length : pendingCount;
+
+            if (apps.length === 0) {
+                list.innerHTML = '<div class="px-6 py-4 text-sm text-gray-400">No ' + status + ' applications.</div>';
+                return;
+            }
+
+            var html = '';
+            apps.forEach(function(app) {
+                var statusBadge = '';
+                if (app.status === 'pending') {
+                    statusBadge = '<span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">pending</span>';
+                } else if (app.status === 'approved') {
+                    statusBadge = '<span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">approved</span>';
+                } else {
+                    statusBadge = '<span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">rejected</span>';
+                }
+
+                var roleName = app.role.replace(/_/g, ' ');
+                var appliedDate = app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '';
+
+                html += '<div class="px-6 py-3 flex items-center justify-between gap-4 hover:bg-gray-50">';
+                html += '  <div class="flex-1 min-w-0">';
+                html += '    <div class="flex items-center gap-2 mb-1">';
+                var displayName = app.username || app.email || ('User #' + app.user_id);
+                var emailInfo = app.email ? ' <span class="text-xs text-gray-400">(' + app.email + ')</span>' : '';
+                html += '      <span class="text-sm font-medium text-gray-900">' + displayName + '</span>' + emailInfo;
+                html += '      <span class="text-xs text-gray-400 ml-1">' + appliedDate + '</span>';
+                html += '      ' + statusBadge;
+                html += '    </div>';
+                html += '    <p class="text-sm text-indigo-600 font-medium">' + roleName + '</p>';
+                if (app.reason) {
+                    html += '    <p class="text-xs text-gray-500 mt-0.5 truncate" title="' + app.reason.replace(/"/g, '&quot;') + '">' + app.reason + '</p>';
+                }
+                if (app.modalities) {
+                    html += '    <p class="text-xs text-gray-400 mt-0.5">Modalities: ' + app.modalities + '</p>';
+                }
+                html += '  </div>';
+                if (app.status === 'pending') {
+                    html += '  <div class="flex gap-2 flex-shrink-0">';
+                    html += '    <button onclick="approveApplication(\'' + app.app_id + '\')" class="px-3 py-1.5 text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">Approve</button>';
+                    html += '    <button onclick="rejectApplication(\'' + app.app_id + '\')" class="px-3 py-1.5 text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700">Reject</button>';
+                    html += '  </div>';
+                }
+                html += '</div>';
+            });
+            list.innerHTML = html;
+        })
+        .catch(function(err) {
+            document.getElementById('applications-list').innerHTML =
+                '<div class="px-6 py-4 text-sm text-red-500">Error loading applications: ' + err.message + '</div>';
+        });
+}
+
+function approveApplication(appId) {
+    if (!confirm('Approve this role application? The role will be assigned to the user immediately.')) return;
+    fetch('/contributors/api/applications/' + appId + '/approve', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(function(r) {
+        if (!r.ok) return r.json().then(function(d) { throw new Error(d.detail || 'Failed'); });
+        return r.json();
+    })
+    .then(function(data) {
+        showMessage(data.message, 'success');
+        loadApplications();
+    })
+    .catch(function(err) {
+        showMessage('Error: ' + err.message, 'error');
+    });
+}
+
+function rejectApplication(appId) {
+    if (!confirm('Reject this role application?')) return;
+    fetch('/contributors/api/applications/' + appId + '/reject', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(function(r) {
+        if (!r.ok) return r.json().then(function(d) { throw new Error(d.detail || 'Failed'); });
+        return r.json();
+    })
+    .then(function(data) {
+        showMessage(data.message, 'success');
+        loadApplications();
+    })
+    .catch(function(err) {
+        showMessage('Error: ' + err.message, 'error');
+    });
+}
+
+// Load applications on page load
+document.addEventListener('DOMContentLoaded', function() { loadApplications(); });
+
+/* ── Search / Filter ─────────────────────────────────────────────────── */
+
+function filterTable() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    document.querySelectorAll('.user-row').forEach(row => {
+        const email = (row.dataset.email || '').toLowerCase();
+        const username = (row.dataset.username || '').toLowerCase();
+        const role = (row.dataset.role || '').toLowerCase();
+        row.style.display = (email.includes(q) || username.includes(q) || role.includes(q)) ? '' : 'none';
+    });
+}
+
+/* ── Bulk selection ──────────────────────────────────────────────────── */
+
+function toggleSelectAll() {
+    const checked = document.getElementById('select-all').checked;
+    document.querySelectorAll('.user-checkbox').forEach(cb => {
+        if (cb.closest('.user-row').style.display !== 'none') {
+            cb.checked = checked;
+        }
+    });
+    updateBulkBar();
+}
+
+function updateBulkBar() {
+    const selected = document.querySelectorAll('.user-checkbox:checked');
+    const bar = document.getElementById('bulk-bar');
+    document.getElementById('selected-count').textContent = selected.length;
+    if (selected.length > 0) {
+        bar.classList.remove('hidden');
+    } else {
+        bar.classList.add('hidden');
+    }
+}
+
+function getSelectedIds() {
+    return Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => parseInt(cb.value));
+}
+
+async function bulkDeactivate() {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+    if (!confirm(`Deactivate ${ids.length} user(s)?`)) return;
+
+    for (const uid of ids) {
+        await toggleActiveAPI(uid, false);
+    }
+    showMessage(`Deactivated ${ids.length} user(s). Refreshing...`, 'success');
+    setTimeout(() => location.reload(), 1000);
+}
+
+async function bulkDelete() {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+    if (!confirm(`Soft-delete ${ids.length} user(s)? They will be deactivated.`)) return;
+
+    try {
+        const resp = await fetch('/admin/users/api/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ user_ids: ids })
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+            showMessage('Error: ' + (data.detail || 'Unknown error'), 'error');
+            return;
+        }
+        showMessage(data.message + '. Refreshing...', 'success');
+        setTimeout(() => location.reload(), 1000);
+    } catch (err) {
+        showMessage('Network error: ' + err.message, 'error');
+    }
+}
+
+/* ── Edit modal ──────────────────────────────────────────────────────── */
+
+function openEditModal(userId, username, email, role) {
+    document.getElementById('edit-user-id').value = userId;
+    document.getElementById('edit-modal-title').textContent = username;
+    document.getElementById('edit-username').value = username;
+    document.getElementById('edit-email').value = email;
+    document.getElementById('edit-role').value = role;
+
+    // Reset contributor role checkboxes
+    document.querySelectorAll('.contrib-role-cb').forEach(function(cb) { cb.checked = false; });
+    document.getElementById('edit-maintained-modalities').value = '';
+
+    // Load contributor roles from API (non-blocking)
+    fetch('/contributors/api/' + userId, {credentials: 'include'})
+        .then(function(resp) { return resp.ok ? resp.json() : null; })
+        .then(function(profile) {
+            var hasExistingRoles = profile && profile.roles && profile.roles.length > 0;
+            if (hasExistingRoles) {
+                // User already has contributor roles -- show them
+                profile.roles.forEach(function(r) {
+                    var cb = document.querySelector('.contrib-role-cb[value="' + r + '"]');
+                    if (cb) cb.checked = true;
+                });
+            } else {
+                // No contributor profile yet -- pre-check defaults based on platform role
+                if (role === 'admin') {
+                    // Admins get all roles pre-checked
+                    document.querySelectorAll('.contrib-role-cb').forEach(function(cb) { cb.checked = true; });
+                } else if (role === 'reviewer') {
+                    // Reviewers get benchmark_reviewer and claim_curator pre-checked
+                    var reviewerDefaults = ['benchmark_reviewer', 'claim_curator'];
+                    reviewerDefaults.forEach(function(r) {
+                        var cb = document.querySelector('.contrib-role-cb[value="' + r + '"]');
+                        if (cb) cb.checked = true;
+                    });
+                }
+                // 'user' role: all unchecked (already reset above)
+            }
+            if (profile && profile.maintained_modalities && profile.maintained_modalities.length > 0) {
+                document.getElementById('edit-maintained-modalities').value = profile.maintained_modalities.join(', ');
+            }
+        })
+        .catch(function() { /* ignore */ });
+
+    document.getElementById('edit-modal').classList.remove('hidden');
+}
+
+function closeEditModal() {
+    document.getElementById('edit-modal').classList.add('hidden');
+}
+
+function saveEdit() {
+    var userId = document.getElementById('edit-user-id').value;
+    var payload = {
+        username: document.getElementById('edit-username').value,
+        email: document.getElementById('edit-email').value,
+        role: document.getElementById('edit-role').value,
+    };
+
+    var contribRoles = [];
+    document.querySelectorAll('.contrib-role-cb:checked').forEach(function(cb) { contribRoles.push(cb.value); });
+    var modalities = document.getElementById('edit-maintained-modalities').value
+        .split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+
+    // 1. Save platform role
+    return fetch('/admin/users/api/' + userId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+    })
+    .then(function(resp) {
+        if (!resp.ok) return resp.json().then(function(d) { throw new Error(d.detail || 'Save failed: ' + resp.status); });
+        return resp.json();
+    })
+    .then(function(data) {
+        // 2. Save contributor roles
+        return fetch('/contributors/api/' + userId + '/roles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ roles: contribRoles, maintained_modalities: modalities })
+        }).then(function() { return data; });
+    })
+    .then(function(data) {
+        showMessage(data.message + (contribRoles.length ? ' + ' + contribRoles.length + ' contributor roles saved' : ''), 'success');
+        closeEditModal();
+        setTimeout(function() { location.reload(); }, 1000);
+    })
+    .catch(function(err) {
+        alert('Save error: ' + err.message);
+        showMessage('Error: ' + err.message, 'error');
+    });
+}
+
+/* ── Password modal ──────────────────────────────────────────────────── */
+
+function openPasswordModal(userId, username) {
+    document.getElementById('pw-user-id').value = userId;
+    document.getElementById('pw-modal-username').textContent = username;
+    document.getElementById('pw-modal-user-id').textContent = userId;
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    document.getElementById('password-modal').classList.remove('hidden');
+}
+
+function closePasswordModal() {
+    document.getElementById('password-modal').classList.add('hidden');
+}
+
+async function savePassword() {
+    const userId = document.getElementById('pw-user-id').value;
+    const pw = document.getElementById('new-password').value;
+    const confirm = document.getElementById('confirm-password').value;
+
+    if (pw.length < 6) {
+        showMessage('Password must be at least 6 characters', 'error');
+        return;
+    }
+    if (pw !== confirm) {
+        showMessage('Passwords do not match', 'error');
+        return;
+    }
+
+    try {
+        const resp = await fetch(`/admin/users/api/${userId}/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ new_password: pw })
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+            showMessage('Error: ' + (data.detail || 'Unknown error'), 'error');
+            return;
+        }
+        showMessage(data.message, 'success');
+        closePasswordModal();
+    } catch (err) {
+        showMessage('Network error: ' + err.message, 'error');
+    }
+}
+
+/* ── Toggle active status ────────────────────────────────────────────── */
+
+async function toggleActiveAPI(userId, activate) {
+    const resp = await fetch(`/admin/users/api/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ is_active: activate })
+    });
+    return resp.json();
+}
+
+async function toggleActive(userId, activate) {
+    const action = activate ? 'activate' : 'deactivate';
+    if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+
+    try {
+        const data = await toggleActiveAPI(userId, activate);
+        if (data.user) {
+            // Update active cell
+            const activeCell = document.getElementById(`active-cell-${userId}`);
+            if (activeCell) {
+                if (activate) {
+                    activeCell.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>';
+                } else {
+                    activeCell.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Inactive</span>';
+                }
+            }
+            // Update the toggle button
+            const btn = document.getElementById(`toggle-btn-${userId}`);
+            if (btn) {
+                if (activate) {
+                    btn.textContent = 'Deactivate';
+                    btn.className = 'inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-yellow-500 hover:bg-yellow-600';
+                    btn.setAttribute('onclick', `toggleActive(${userId}, false)`);
+                } else {
+                    btn.textContent = 'Activate';
+                    btn.className = 'inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700';
+                    btn.setAttribute('onclick', `toggleActive(${userId}, true)`);
+                }
+            }
+            showMessage(`User ${userId} ${action}d`, 'success');
+        } else {
+            showMessage('Error: ' + (data.detail || 'Unknown error'), 'error');
+        }
+    } catch (err) {
+        showMessage('Network error: ' + err.message, 'error');
+    }
+}
+
+/* ── Hard delete ─────────────────────────────────────────────────────── */
+
+async function hardDelete(userId, username) {
+    if (!confirm(`PERMANENTLY delete user "${username}" (ID ${userId})? This cannot be undone.`)) return;
+    if (!confirm(`Final confirmation: permanently delete "${username}"?`)) return;
+
+    try {
+        const resp = await fetch(`/admin/users/api/${userId}/hard-delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+            showMessage('Error: ' + (data.detail || 'Unknown error'), 'error');
+            return;
+        }
+        // Remove the row
+        const row = document.getElementById(`user-row-${userId}`);
+        if (row) row.remove();
+        showMessage(data.message, 'success');
+    } catch (err) {
+        showMessage('Network error: ' + err.message, 'error');
+    }
+}
+
+/* ── Message helper ──────────────────────────────────────────────────── */
+
+function showMessage(msg, type) {
+    const el = document.getElementById('admin-message');
+    el.className = `p-4 rounded-lg text-sm font-medium mb-4 ${
+        type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+        'bg-green-100 text-green-800 border border-green-200'
+    }`;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 5000);
+}
+</script>
+{% endblock %}

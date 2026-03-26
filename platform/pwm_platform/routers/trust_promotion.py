@@ -238,3 +238,36 @@ def _next_tier(current: str) -> Optional[str]:
         if rule["from"] == current:
             return target
     return None
+
+
+@router.get("/contributor-economy-status")
+async def contributor_economy_status(db: AsyncSession = Depends(get_db)):
+    """Return current contributor economy activation status.
+
+    Activation trigger: 10+ RunBundles at Draft+ from 3+ distinct contributors.
+    """
+    try:
+        result = await db.execute(
+            select(ChallengeSubmission).where(
+                ChallengeSubmission.trust_tier.in_(
+                    ["draft", "author_confirmed", "reproduced", "certified"]
+                )
+            )
+        )
+        submissions = result.scalars().all()
+        bundle_count = len(submissions)
+        distinct_contributors = len(
+            set(s.submitted_by for s in submissions if s.submitted_by)
+        )
+    except Exception:
+        bundle_count = 0
+        distinct_contributors = 0
+
+    activated = bundle_count >= 10 and distinct_contributors >= 3
+    return {
+        "activated": activated,
+        "bundle_count": bundle_count,
+        "distinct_contributors": distinct_contributors,
+        "threshold_bundles": 10,
+        "threshold_contributors": 3,
+    }

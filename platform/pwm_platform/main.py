@@ -21,10 +21,12 @@ from fastapi.staticfiles import StaticFiles
 from pwm_platform.config import settings
 from pwm_platform.db.database import init_db
 from pwm_platform.routers import (
+    admin_users_router,
     auth_router,
     billing_router,
     bootstrap_router,
     claim_review_router,
+    contributors_router,
     datasets_router,
     gcs_proxy_router,
     modalities_router,
@@ -33,6 +35,7 @@ from pwm_platform.routers import (
     spec_chat_router,
     submissions_router,
     system_design_chat_router,
+    trust_promotion_router,
 )
 
 logging.basicConfig(
@@ -89,9 +92,11 @@ app.mount("/static", StaticFiles(directory="pwm_platform/static"), name="static"
 
 # ── Register routers ────────────────────────────────────────────────────
 
+app.include_router(admin_users_router)
 app.include_router(auth_router)
 app.include_router(billing_router)
 app.include_router(claim_review_router)
+app.include_router(contributors_router)
 app.include_router(runs_router)
 app.include_router(datasets_router)
 app.include_router(modalities_router)
@@ -100,6 +105,7 @@ app.include_router(spec_chat_router)
 app.include_router(system_design_chat_router)
 app.include_router(gcs_proxy_router)
 app.include_router(submissions_router)
+app.include_router(trust_promotion_router)
 app.include_router(pages_router)
 
 

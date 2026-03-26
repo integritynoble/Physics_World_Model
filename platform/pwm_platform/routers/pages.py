@@ -26,6 +26,7 @@ from pwm_platform.db.database import get_db
 from pwm_platform.db.models import (
     BootstrapProposal,
     ChallengeSubmission,
+    ContributorProfile,
     Dataset,
     ModalityBasics,
     Run,
@@ -1429,3 +1430,55 @@ async def claims_review_page(request: Request, user: Optional[User] = Depends(ge
         "user": user,
         "claims": claims,
     })
+
+
+@router.get("/admin/roles", response_class=HTMLResponse)
+async def admin_roles_page(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin role management page — assign roles and modality maintainership."""
+    if user.role not in ("admin", "reviewer"):
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    from pwm_platform.routers.contributors import BADGE_DEFINITIONS, VALID_ROLES
+
+    users_result = await db.execute(
+        select(User).order_by(User.id.asc()).limit(200)
+    )
+    all_users = users_result.scalars().all()
+
+    profiles_result = await db.execute(select(ContributorProfile))
+    profiles_list = profiles_result.scalars().all()
+    profiles_by_user = {p.user_id: p for p in profiles_list}
+
+    return templates.TemplateResponse("admin_roles.html", {
+        "request": request,
+        "user": user,
+        "all_users": all_users,
+        "profiles_by_user": profiles_by_user,
+        "valid_roles": VALID_ROLES,
+        "badge_definitions": BADGE_DEFINITIONS,
+    })
+
+
+@router.get("/admin/users", response_class=HTMLResponse)
+async def admin_users_page(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin user management page."""
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    result = await db.execute(select(User).order_by(User.id))
+    users = result.scalars().all()
+    return templates.TemplateResponse("admin_users.html", {
+        "request": request,
+        "user": user,
+        "users": users,
+    })
+
+

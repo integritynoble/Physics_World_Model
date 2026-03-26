@@ -88,6 +88,16 @@ async def init_db() -> None:
             except Exception:
                 pass  # table may not exist yet on first run
 
+        # Idempotent migration: trust ratchet columns on challenge_submissions
+        for col_def in [
+            "ALTER TABLE challenge_submissions ADD COLUMN IF NOT EXISTS trust_tier VARCHAR(30) DEFAULT 'draft'",
+            "ALTER TABLE challenge_submissions ADD COLUMN IF NOT EXISTS gate_verdicts JSONB",
+        ]:
+            try:
+                await conn.execute(text(col_def))
+            except Exception:
+                pass
+
         # Ensure platformaigpt@gmail.com is admin
         await conn.execute(text(
             "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"

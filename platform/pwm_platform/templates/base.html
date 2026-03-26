@@ -27,10 +27,15 @@
                     {% if user %}
                         <a href="/subscription" class="text-sm text-gray-700 hover:text-indigo-600">Subscription</a>
                         <span class="text-sm text-gray-600">{{ user.username }}</span>
+                        <a href="/contributors" class="text-sm text-gray-700 hover:text-indigo-600">Contributors</a>
                         {% if user.role in ['admin', 'reviewer'] %}
                         <a href="/bootstrap/review" class="text-sm text-gray-700 hover:text-indigo-600">Review</a>
                         <a href="/submissions/review" class="text-sm text-gray-700 hover:text-indigo-600">Submissions</a>
                         <a href="/claims" class="text-sm text-gray-700 hover:text-indigo-600">Claims</a>
+                        <a href="/admin/roles" class="text-sm text-gray-700 hover:text-indigo-600">Roles</a>
+                        {% endif %}
+                        {% if user.role == 'admin' %}
+                        <a href="/admin/users" class="text-sm text-gray-700 hover:text-indigo-600">Users</a>
                         {% endif %}
                         <form action="/api/v1/auth/logout" method="post" hx-boost="false" class="inline">
                             <button type="submit" class="text-sm text-gray-500 hover:text-red-600">Logout</button>
