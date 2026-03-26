@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Claim Review Queue — PWM{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-2">Claim Review Queue</h1>
+  <p class="text-sm text-gray-500 mb-6">Review scaffolded ClaimCards from arXiv and manual submissions. Approve to add to leaderboard at Draft tier.</p>
+
+  <!-- Scaffold new claim form -->
+  <details class="mb-8 bg-white border rounded-lg">
+    <summary class="px-4 py-3 cursor-pointer font-medium text-indigo-700 hover:bg-indigo-50">+ Scaffold new ClaimCard</summary>
+    <form id="scaffold-form" class="p-4 border-t space-y-3"
+          hx-post="/claims/scaffold" hx-target="#claims-list" hx-swap="innerHTML"
+          hx-on::after-request="this.reset(); htmx.ajax('GET','/claims/queue/html','#claims-list')">
+      <div class="grid grid-cols-2 gap-3">
+        <input name="arxiv_id" placeholder="arXiv ID (e.g. 2603.12345)" class="border rounded px-3 py-2 text-sm">
+        <input name="source_url" placeholder="Paper URL (optional)" class="border rounded px-3 py-2 text-sm">
+        <input name="title" placeholder="Paper title" class="border rounded px-3 py-2 text-sm col-span-2" required>
+        <input name="authors" placeholder="Authors (comma-separated)" class="border rounded px-3 py-2 text-sm col-span-2">
+        <input name="modality" placeholder="Modality (e.g. cassi, ct, mri)" class="border rounded px-3 py-2 text-sm">
+        <input name="method" placeholder="Method name (e.g. MST-L)" class="border rounded px-3 py-2 text-sm">
+        <input name="claimed_psnr" type="number" step="0.01" placeholder="Claimed PSNR (dB)" class="border rounded px-3 py-2 text-sm">
+        <input name="claimed_ssim" type="number" step="0.001" placeholder="Claimed SSIM" class="border rounded px-3 py-2 text-sm">
+      </div>
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Scaffold ClaimCard</button>
+    </form>
+  </details>
+
+  <!-- Filter tabs -->
+  <div class="flex gap-2 mb-4">
+    <button onclick="loadClaims('all')" class="px-3 py-1 text-sm border rounded hover:bg-gray-100">All</button>
+    <button onclick="loadClaims('pending_review')" class="px-3 py-1 text-sm border rounded bg-yellow-50 text-yellow-700 hover:bg-yellow-100">Pending</button>
+    <button onclick="loadClaims('approved')" class="px-3 py-1 text-sm border rounded bg-green-50 text-green-700 hover:bg-green-100">Approved</button>
+    <button onclick="loadClaims('rejected')" class="px-3 py-1 text-sm border rounded bg-red-50 text-red-700 hover:bg-red-100">Rejected</button>
+  </div>
+
+  <!-- Claims list -->
+  <div id="claims-list">
+    {% for claim in claims %}
+    <div class="bg-white border rounded-lg p-4 mb-3 shadow-sm">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-gray-900">{{ claim.title or 'Untitled' }}</h3>
+          <p class="text-xs text-gray-500 mt-1">
+            {{ claim.source_type }}:{{ claim.source_id }}
+            {% if claim.authors %} · {{ claim.authors | join(', ') }}{% endif %}
+            {% if claim.modality %} · <span class="font-medium">{{ claim.modality }}</span>{% endif %}
+            {% if claim.method %} · {{ claim.method }}{% endif %}
+          </p>
+          {% if claim.claimed_psnr or claim.claimed_ssim %}
+          <p class="text-xs text-gray-400 mt-1">
+            Claimed: {% if claim.claimed_psnr %}PSNR={{ claim.claimed_psnr }} dB{% endif %}
+            {% if claim.claimed_ssim %} SSIM={{ claim.claimed_ssim }}{% endif %}
+          </p>
+          {% endif %}
+        </div>
+        <div class="flex items-center gap-2">
+          {% if claim.status == 'pending_review' %}
+            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-yellow-100 text-yellow-800 border border-yellow-300">Pending</span>
+          {% elif claim.status == 'approved' %}
+            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-100 text-green-800 border border-green-300">Approved</span>
+          {% elif claim.status == 'rejected' %}
+            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-red-100 text-red-700 border border-red-300">Rejected</span>
+          {% endif %}
+          {% if claim.trust_tier %}
+            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-gray-100 text-gray-500 border border-gray-300">{{ claim.trust_tier }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if claim.status == 'pending_review' %}
+      <div class="mt-3 flex gap-2">
+        <button onclick="reviewClaim('{{ claim.claim_id }}', 'approve')"
+                class="px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700">Approve</button>
+        <button onclick="reviewClaim('{{ claim.claim_id }}', 'reject')"
+                class="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700">Reject</button>
+      </div>
+      {% elif claim.status == 'approved' and claim.trust_tier == 'draft' %}
+      <div class="mt-3">
+        <button onclick="reviewClaim('{{ claim.claim_id }}', 'reproduce')"
+                class="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700">Mark Reproduced</button>
+      </div>
+      {% endif %}
+
+      {% if claim.source_url %}
+      <a href="{{ claim.source_url }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-2 inline-block">View paper</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if not claims %}
+    <p class="text-sm text-gray-400 text-center py-8">No claims in queue. Scaffold one above or run the arXiv scanner.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function loadClaims(status) {
+  fetch('/claims/queue?status=' + status)
+    .then(r => r.json())
+    .then(data => { location.reload(); });
+}
+function reviewClaim(claimId, action) {
+  const reason = action === 'reject' ? prompt('Rejection reason:') : '';
+  if (action === 'reject' && reason === null) return;
+  fetch('/claims/' + claimId + '/' + action, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({reviewer: 'admin', reason: reason || ''})
+  }).then(() => location.reload());
+}
+</script>
+{% endblock %}

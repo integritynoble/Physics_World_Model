@@ -1409,3 +1409,23 @@ async def submissions_review_page(
         "competition_count": counts.get("competition", 0),
         "contribution_count": counts.get("contribution", 0),
     })
+
+
+@router.get("/claims", response_class=HTMLResponse)
+async def claims_review_page(request: Request, user: Optional[User] = Depends(get_optional_user)):
+    """Claim review queue page."""
+    import json as _json
+
+    claims_dir = Path("/tmp/pwm_claim_queue")
+    claims = []
+    if claims_dir.exists():
+        for f in sorted(claims_dir.glob("*.json"), reverse=True):
+            try:
+                claims.append(_json.loads(f.read_text()))
+            except Exception:
+                continue
+    return templates.TemplateResponse("claim_review.html", {
+        "request": request,
+        "user": user,
+        "claims": claims,
+    })

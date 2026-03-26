@@ -24,6 +24,7 @@ from pwm_platform.routers import (
     auth_router,
     billing_router,
     bootstrap_router,
+    claim_review_router,
     datasets_router,
     gcs_proxy_router,
     modalities_router,
@@ -90,6 +91,7 @@ app.mount("/static", StaticFiles(directory="pwm_platform/static"), name="static"
 
 app.include_router(auth_router)
 app.include_router(billing_router)
+app.include_router(claim_review_router)
 app.include_router(runs_router)
 app.include_router(datasets_router)
 app.include_router(modalities_router)
