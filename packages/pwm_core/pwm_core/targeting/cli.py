@@ -1,7 +1,8 @@
 """pwm_core.targeting.cli
 ==========================
 
-CLI for ``pwm evaluate``, ``pwm scaffold``, ``pwm contrib check``,
+CLI for ``pwm evaluate``, ``pwm run``, ``pwm view``, ``pwm reproduce``,
+``pwm doctor``, ``pwm scaffold``, ``pwm contrib check``,
 ``pwm submit``, ``pwm install``, ``pwm uninstall``, ``pwm plugins``,
 ``pwm synthesize``, and ``pwm ingest``.
 
@@ -9,6 +10,10 @@ Usage::
 
     pwm evaluate --modality cassi --solver traditional_cpu --track correct
     pwm evaluate --sandbox --modality widefield --solver traditional_cpu
+    pwm run --modality cassi --solver traditional_cpu --track correct
+    pwm view ./runbundle_dir
+    pwm reproduce ./runbundle_dir --output ./new_run
+    pwm doctor
     pwm scaffold solver my_solver
     pwm scaffold modality my_modality
     pwm contrib check my_solver
@@ -143,6 +148,108 @@ def cmd_submit(args: argparse.Namespace) -> int:
     return 0 if result["valid"] else 1
 
 
+def cmd_view(args: argparse.Namespace) -> int:
+    """View a RunBundle's contents."""
+    bundle = Path(args.path)
+    if not bundle.is_dir():
+        print(f"ERROR: {bundle} is not a directory")
+        return 1
+    manifest_path = bundle / "runbundle_manifest.json"
+    cert_path = bundle / "certificate.json"
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text())
+        if args.json:
+            print(json.dumps(manifest, indent=2, default=str))
+        else:
+            print(f"RunBundle: {bundle.name}")
+            print(f"  Spec: {manifest.get('spec_id', '?')}")
+            print(f"  Version: {manifest.get('version', '?')}")
+            print(f"  Timestamp: {manifest.get('timestamp', '?')}")
+            prov = manifest.get("provenance", {})
+            print(f"  Modality: {prov.get('modality', '?')}")
+            print(f"  Solver: {prov.get('solver', '?')}")
+            metrics = manifest.get("metrics", {})
+            print(f"  PSNR: {metrics.get('psnr_db', '?')} dB")
+            print(f"  SSIM: {metrics.get('ssim', '?')}")
+    if cert_path.exists():
+        cert = json.loads(cert_path.read_text())
+        print(f"\nCertificate:")
+        print(f"  Trust tier: {cert.get('trust_tier', '?')}")
+        print(f"  Risk flags: {cert.get('risk_flags', [])}")
+        for gate, v in cert.get("gate_verdicts", {}).items():
+            verdict = v.get("verdict", "?") if isinstance(v, dict) else v
+            print(f"  {gate}: {verdict}")
+    else:
+        print("\nNo certificate.json found")
+    return 0
+
+
+def cmd_reproduce(args: argparse.Namespace) -> int:
+    """Reproduce a RunBundle using its stored provenance."""
+    bundle = Path(args.path)
+    manifest_path = bundle / "runbundle_manifest.json"
+    if not manifest_path.exists():
+        print(f"ERROR: No manifest at {manifest_path}")
+        return 1
+    manifest = json.loads(manifest_path.read_text())
+    prov = manifest.get("provenance", {})
+    # Reconstruct args for evaluate
+    eval_args = argparse.Namespace(
+        modality=prov.get("modality", "cassi"),
+        solver=prov.get("solver", "traditional_cpu"),
+        track=prov.get("track", "correct"),
+        budget=prov.get("declared_budget_s", 600),
+        scenes=prov.get("n_scenes", 5),
+        seed=prov.get("seeds", [42])[0] if prov.get("seeds") else 42,
+        severity=prov.get("severity", "moderate"),
+        sandbox=prov.get("sandbox", False),
+        dry_run=False,
+        output=args.output or ".",
+        emit_certificate=True,
+    )
+    print(f"Reproducing: {prov.get('modality')}/{prov.get('solver')} seed={eval_args.seed}")
+    return cmd_evaluate(eval_args)
+
+
+def cmd_doctor(args: argparse.Namespace) -> int:
+    """Check system health."""
+    import importlib
+
+    checks = [
+        ("pwm_core.spec", "CoreSpec"),
+        ("pwm_core.targeting.gates", "run_r1_r4"),
+        ("pwm_core.targeting.runbundle_emitter", "issue_certificate"),
+        ("pwm_core.core.runbundle.certificate", "Certificate"),
+        ("numpy", None),
+        ("scipy", None),
+        ("yaml", None),
+    ]
+    all_ok = True
+    for mod_name, attr in checks:
+        try:
+            mod = importlib.import_module(mod_name)
+            if attr:
+                getattr(mod, attr)
+            print(f"  OK  {mod_name}" + (f".{attr}" if attr else ""))
+        except Exception as e:
+            print(f"  FAIL  {mod_name}: {e}")
+            all_ok = False
+    # Check contrib registries
+    contrib = Path(__file__).parent.parent.parent.parent / "contrib"
+    for reg in [
+        "primitive_registry/general/v1",
+        "primitive_registry/imaging/v1",
+        "compatibility_matrix.yaml",
+    ]:
+        p = contrib / reg
+        status = "OK" if p.exists() else "MISSING"
+        print(f"  {status}  contrib/{reg}")
+        if not p.exists():
+            all_ok = False
+    print(f"\n{'All checks passed' if all_ok else 'Some checks failed'}")
+    return 0 if all_ok else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI argument parser."""
     parser = argparse.ArgumentParser(
@@ -185,6 +292,36 @@ def build_parser() -> argparse.ArgumentParser:
     # --- submit ---
     sm = sub.add_parser("submit", help="Submit a RunBundle")
     sm.add_argument("path", help="Path to RunBundle zip or directory")
+
+    # --- run (alias for evaluate) ---
+    rn = sub.add_parser("run", help="Run the targeting harness (alias for evaluate)")
+    rn.add_argument("--modality", "-m", required=True)
+    rn.add_argument("--solver", "-s", default="traditional_cpu")
+    rn.add_argument("--track", "-t", default="correct",
+                     choices=["correct", "diagnose", "no_gt", "design"])
+    rn.add_argument("--budget", type=int, default=600)
+    rn.add_argument("--scenes", type=int, default=5)
+    rn.add_argument("--seed", type=int, default=42)
+    rn.add_argument("--severity", default="moderate",
+                     choices=["mild", "moderate", "severe", "catastrophic"])
+    rn.add_argument("--sandbox", action="store_true")
+    rn.add_argument("--dry-run", action="store_true")
+    rn.add_argument("--output", "-o")
+    rn.add_argument("--emit-certificate", action="store_true")
+
+    # --- view ---
+    vw = sub.add_parser("view", help="View a RunBundle's contents and certificate")
+    vw.add_argument("path", help="Path to RunBundle directory")
+    vw.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # --- reproduce ---
+    rp = sub.add_parser("reproduce",
+                         help="Reproduce a RunBundle by re-running with same parameters")
+    rp.add_argument("path", help="Path to existing RunBundle directory")
+    rp.add_argument("--output", "-o", help="Output directory for new RunBundle")
+
+    # --- doctor ---
+    sub.add_parser("doctor", help="Check system health and dependencies")
 
     # --- install ---
     ins = sub.add_parser("install", help="Install a solver/calibrator plugin")
@@ -230,6 +367,14 @@ def main(argv: Optional[list] = None) -> int:
             return 1
     elif args.command == "submit":
         return cmd_submit(args)
+    elif args.command == "run":
+        return cmd_evaluate(args)
+    elif args.command == "view":
+        return cmd_view(args)
+    elif args.command == "reproduce":
+        return cmd_reproduce(args)
+    elif args.command == "doctor":
+        return cmd_doctor(args)
     elif args.command == "install":
         from pwm_core.targeting.plugin_loader import cmd_install
         return cmd_install(args)
