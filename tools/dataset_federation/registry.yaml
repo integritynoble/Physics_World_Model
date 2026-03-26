@@ -92,6 +92,21 @@ datasets:
     tags: [mri, multi-contrast, brain, real_data]
     notes: "Used in PWM MRI benchmark."
 
+  - id: indian_pines_hyperspectral
+    display_name: Indian Pines Hyperspectral Dataset
+    modality: hyperspectral
+    primitives: [Propagate, Disperse, Detect]
+    n_samples: 1
+    image_size: [145, 145, 220]
+    license: public_domain
+    access: open_download
+    source_url: https://engineering.purdue.edu/~biehl/MultiSpec/
+    pwm_datasetcard_id: dataset_indian_pines_v1
+    noise_model: gaussian
+    split_structure: {full: 1}
+    tags: [hyperspectral, remote_sensing, classification, real_data]
+    notes: "AVIRIS sensor, 220 spectral bands. Classic benchmark for hyperspectral analysis."
+
   - id: kaist_tsa_hyperspectral
     display_name: KAIST TSA Spectral Dataset (SD-CASSI)
     modality: cassi

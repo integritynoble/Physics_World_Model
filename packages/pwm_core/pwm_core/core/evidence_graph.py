@@ -218,3 +218,113 @@ class EvidenceGraph:
     @classmethod
     def from_json(cls, text: str) -> "EvidenceGraph":
         return cls.from_dict(json.loads(text))
+
+    # -- certificate-based construction ---------------------------------
+
+    @classmethod
+    def build_from_certificate(cls, cert_path: str) -> "EvidenceGraph":
+        """Build an evidence graph from a certificate.json file.
+
+        Creates nodes for the Certificate, its RunBundle, and referenced
+        spec/method/dataset, then links them with typed edges.
+        """
+        from pathlib import Path
+
+        p = Path(cert_path)
+        cert = json.loads(p.read_text())
+        bundle_dir = p.parent
+
+        g = cls()
+
+        # Certificate node
+        cert_id = cert.get("run_id", "unknown_cert")
+        g.add_node(
+            cert_id + "_cert",
+            NodeType.certificate,
+            trust_tier=cert.get("trust_tier"),
+            judge_version=cert.get("judge_version"),
+        )
+
+        # RunBundle node
+        g.add_node(
+            cert_id,
+            NodeType.run_bundle,
+            version=cert.get("kernel_version"),
+        )
+        g.add_edge(cert_id, cert_id + "_cert", EdgeType.judged_by)
+
+        # Spec node (from spec_id)
+        spec_id = cert.get("spec_id", "")
+        if spec_id:
+            g.add_node(spec_id, NodeType.spec_card)
+            g.add_edge(spec_id, cert_id, EdgeType.compiles_to)
+
+        # Read manifest for more detail
+        manifest_path = bundle_dir / "runbundle_manifest.json"
+        if manifest_path.exists():
+            manifest = json.loads(manifest_path.read_text())
+            prov = manifest.get("provenance", {})
+
+            # Method node
+            solver = prov.get("solver", "")
+            if solver:
+                method_id = f"method_{prov.get('modality', '')}_{solver}"
+                g.add_node(method_id, NodeType.method_card, solver=solver)
+                g.add_edge(method_id, cert_id, EdgeType.solves)
+
+            # Dataset node
+            modality = prov.get("modality", "")
+            if modality:
+                dataset_id = f"dataset_{modality}_public"
+                g.add_node(dataset_id, NodeType.dataset_card, modality=modality)
+                g.add_edge(cert_id, dataset_id, EdgeType.uses_dataset)
+
+        return g
+
+    # -- convenience queries --------------------------------------------
+
+    def impact_analysis_from_certificate(
+        self, cert_path: str
+    ) -> Dict[str, List[str]]:
+        """Build a graph from a certificate and return its full impact map.
+
+        Combines ``build_from_certificate`` with ``impact_analysis`` so
+        callers can go straight from a certificate file to a dict of
+        affected node-type -> node-ids.
+        """
+        g = self.build_from_certificate(cert_path)
+        # Find the certificate node and trace forward from it
+        cert_nodes = g.find_by_type(NodeType.certificate)
+        if not cert_nodes:
+            return {}
+        return g.impact_analysis(cert_nodes[0].node_id)
+
+    def find_affected_by_dataset(self, dataset_id: str) -> List[str]:
+        """Find all Certificates affected by changes to a dataset.
+
+        Because RunBundles point *to* datasets via ``uses_dataset``, a
+        forward walk from the dataset node alone would not reach the
+        RunBundles.  This method first collects all predecessors of the
+        dataset (i.e. RunBundles that use it), then walks forward from
+        each to collect reachable Certificate nodes.
+        """
+        certificate_ids: List[str] = []
+        seen: Set[str] = set()
+
+        # Predecessors of the dataset are RunBundles (or other nodes)
+        # that reference it via uses_dataset edges.
+        for pred_id in self.predecessors(dataset_id):
+            affected = self.impact_analysis(pred_id)
+            for cid in affected.get("Certificate", []):
+                if cid not in seen:
+                    seen.add(cid)
+                    certificate_ids.append(cid)
+
+        # Also check direct forward impact (if dataset has outgoing edges)
+        direct = self.impact_analysis(dataset_id)
+        for cid in direct.get("Certificate", []):
+            if cid not in seen:
+                seen.add(cid)
+                certificate_ids.append(cid)
+
+        return certificate_ids

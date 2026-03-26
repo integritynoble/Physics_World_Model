@@ -19,12 +19,54 @@ from pathlib import Path
 
 import yaml
 
+from typing import List, Optional
+
 _REGISTRY_PATH = Path(__file__).parent / "registry.yaml"
 
 
 def _load_registry():
     with open(_REGISTRY_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+# -- programmatic API ---------------------------------------------------
+
+def federated_index() -> List[dict]:
+    """Return all registered datasets across federated sources."""
+    registry = _load_registry()
+    return registry.get("datasets", [])
+
+
+def search_datasets(
+    modality: Optional[str] = None,
+    keyword: Optional[str] = None,
+) -> List[dict]:
+    """Search the federated registry by modality and/or keyword.
+
+    Parameters
+    ----------
+    modality : str, optional
+        Filter datasets whose ``modality`` field matches (case-insensitive).
+    keyword : str, optional
+        Keep only datasets where *keyword* appears anywhere in the record
+        (case-insensitive substring match on the full dict repr).
+
+    Returns
+    -------
+    list[dict]
+        Matching dataset entries from the registry.
+    """
+    datasets = federated_index()
+    results = datasets
+    if modality:
+        results = [
+            d for d in results
+            if d.get("modality", "").lower() == modality.lower()
+        ]
+    if keyword:
+        kw = keyword.lower()
+        results = [d for d in results if kw in str(d).lower()]
+    return results
 
 
 def cmd_list(args):
