@@ -559,10 +559,121 @@ curl https://pwm.platformai.org/trust/contributor-economy-status
 
 ---
 
+## Admin: Role Assignment UI
+
+As admin, you can assign roles to any user on the platform.
+
+### Step 1: Go to the admin roles page
+
+Go to: **https://pwm.platformai.org/admin/roles**
+
+(You must be logged in as admin or reviewer to see this page.)
+
+### Step 2: Assign roles
+
+You'll see a table of all users. Click **"Edit Roles"** on any user to open a modal where you can:
+
+- Check/uncheck roles (modality_maintainer, benchmark_reviewer, claim_curator, etc.)
+- Set which modalities the user maintains
+- Save — changes take effect immediately
+
+### Step 3: Or use the API directly
+
+```bash
+# Assign roles to user #6 (your account)
+curl -X POST https://pwm.platformai.org/contributors/api/6/roles \
+    -H "Content-Type: application/json" \
+    -d '{
+        "roles": ["modality_maintainer", "benchmark_reviewer", "claim_curator"],
+        "maintained_modalities": ["ct", "mri", "cassi"]
+    }'
+```
+
+Available roles: `modality_maintainer`, `dataset_steward`, `method_integrator`,
+`judge_rule_author`, `red_team_contributor`, `instrument_contributor`,
+`claim_curator`, `benchmark_reviewer`
+
+---
+
+## Badge Tracking
+
+Badges are awarded automatically when you reach milestones.
+
+### How badges are earned
+
+| Badge | Icon | Milestone |
+|-------|------|-----------|
+| **First Certified** | 🏆 | Get 1 result to Certified tier |
+| **Reproducer** | 🔄 | Reproduce 1 result independently |
+| **Reproducer x10** | 🔄🔄 | Reproduce 10 results |
+| **Claim Curator** | 📋 | Review 5 claims |
+| **Senior Curator** | 📋⭐ | Review 25 claims |
+| **Modality Maintainer** | 🔧 | Maintain at least 1 modality |
+
+### How actions are recorded
+
+Every time you perform an action on the platform (approve a claim, reproduce
+a result, etc.), the system records it and checks if you've earned a new badge:
+
+```bash
+# Record a manual action (for testing)
+curl -X POST "https://pwm.platformai.org/contributors/api/6/record-action?action=reviewed_claim&details=MST-L+CASSI"
+
+# Check your badges
+curl -s https://pwm.platformai.org/contributors/api/6/badges | python3 -m json.tool
+
+# Force a scan of all users for new badges
+curl -X POST https://pwm.platformai.org/contributors/api/check-badges
+```
+
+### View your badges
+
+Go to your **contributor profile page**:
+**https://pwm.platformai.org/contributors/Chengshuai%20Yang%20Yang**
+
+Your badges are displayed with icons and the date earned.
+
+---
+
+## Contributor Profile Pages
+
+Every contributor has a public profile page showing:
+
+- **Roles** — which contributor roles they hold
+- **Badges** — earned milestone badges with icons
+- **Stats** — certifications, reproductions, claims reviewed
+- **Maintained modalities** — links to modality pages they maintain
+- **Contribution history** — timeline of recent actions
+
+Visit your profile: **https://pwm.platformai.org/contributors/Chengshuai%20Yang%20Yang**
+
+---
+
+## Maintainer Rosters on Modality Pages
+
+When you visit a modality page (e.g., `/modalities/ct`), the page now shows
+a **"Modality Maintainers"** section listing everyone assigned as maintainer
+for that modality.
+
+Each maintainer card shows:
+- Name (links to their profile)
+- Roles badges
+- Earned badge icons
+
+To appear as a maintainer:
+1. Go to `/admin/roles`
+2. Assign yourself the `modality_maintainer` role
+3. Set the modalities you maintain (e.g., `ct`, `mri`)
+4. Visit `/modalities/ct` — you appear in the maintainer roster
+
+---
+
 ## Quick Reference
 
 | Action | URL / Command |
 |--------|--------------|
+| Admin role assignment | `https://pwm.platformai.org/admin/roles` |
+| Your contributor profile | `https://pwm.platformai.org/contributors/Chengshuai%20Yang%20Yang` |
 | Claim review queue | `https://pwm.platformai.org/claims` |
 | Benchmark leaderboard | `https://pwm.platformai.org/benchmark/cassi` |
 | Modality detail | `https://pwm.platformai.org/modalities/ct` |
