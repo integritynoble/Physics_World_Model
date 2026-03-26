@@ -893,6 +893,85 @@ async def modalities_page(
     })
 
 
+@router.get("/modalities/{modality_key}", response_class=HTMLResponse)
+async def modality_detail(
+    request: Request,
+    modality_key: str,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Individual modality detail page with DAG viewer and maintainer list."""
+    from pwm_platform.services.benchmark_database import (
+        get_variant,
+        list_variants_for_modality,
+    )
+    from pwm_platform.services.modality_database import MODALITY_DATABASE
+
+    if modality_key not in MODALITY_DATABASE:
+        raise HTTPException(404, f"Modality '{modality_key}' not found")
+
+    modality = dict(MODALITY_DATABASE[modality_key])
+
+    variant_keys = list_variants_for_modality(modality_key)
+    variants = []
+    for vk in variant_keys:
+        v = get_variant(vk)
+        if v:
+            v["variant_key"] = vk
+            variants.append(v)
+
+    spec_dag = modality.get("spec_dag") or []
+    if not spec_dag and variants:
+        spec_dag = variants[0].get("spec_dag", [])
+    dag_width = max(20 + len(spec_dag) * 160, 200) if spec_dag else 200
+
+    spec_notation = modality.get("spec_notation", "")
+    if not spec_notation and variants:
+        spec_notation = variants[0].get("spec_notation", "")
+
+    from pwm_platform.services.modality_database import list_modalities_by_category
+    related_keys = [
+        k for k in list_modalities_by_category(modality.get("category", ""))
+        if k != modality_key
+    ]
+    related = [
+        {"key": rk, "display_name": MODALITY_DATABASE[rk]["display_name"]}
+        for rk in related_keys[:8]
+    ]
+
+    from sqlalchemy.orm import selectinload
+    maintainers = []
+    try:
+        result = await db.execute(
+            select(ContributorProfile).options(selectinload(ContributorProfile.user))
+        )
+        for p in result.scalars().all():
+            if modality_key in (p.maintained_modalities or []):
+                uname = p.user.username if p.user else ""
+                maintainers.append({
+                    "user_id": p.user_id,
+                    "username": uname,
+                    "email": p.user.email if p.user else "",
+                    "roles": p.roles or [],
+                    "badges": p.badges or [],
+                })
+    except Exception:
+        maintainers = []
+
+    return templates.TemplateResponse("modality_detail.html", {
+        "request": request,
+        "user": user,
+        "modality": modality,
+        "modality_key": modality_key,
+        "variants": variants,
+        "spec_dag": spec_dag,
+        "dag_width": dag_width,
+        "spec_notation": spec_notation,
+        "related": related,
+        "maintainers": maintainers,
+    })
+
+
 @router.get("/benchmark/{variant_key}", response_class=HTMLResponse)
 async def variant_benchmarks_page(
     request: Request,
