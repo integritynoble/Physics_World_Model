@@ -327,3 +327,62 @@ class ParameterSpec(StrictBaseModel):
     identifiability_hint: str = "unknown"
     drift_model: Optional[DriftModel] = None
     units: str = "dimensionless"
+
+
+# ---------------------------------------------------------------------------
+# PrimitiveRef — (registry, version, name) triple
+# ---------------------------------------------------------------------------
+
+
+class PrimitiveRef:
+    """Reference to a primitive by (registry, version, name) triple.
+
+    Backward-compatible: accepts either a string primitive_id or a triple.
+    The canonical string form is ``"registry/version/name"`` (e.g.
+    ``"general/v1/Transform"``).  A bare name like ``"Transform"`` is
+    interpreted as ``("general", "v1", "Transform")``.
+    """
+
+    __slots__ = ("registry", "version", "name", "primitive_id")
+
+    def __init__(
+        self,
+        primitive_id: str = "",
+        registry: str = "general",
+        version: str = "v1",
+        name: str = "",
+    ):
+        if primitive_id and not name:
+            # Parse from string like "general/v1/Transform" or just "Transform"
+            parts = primitive_id.split("/")
+            if len(parts) == 3:
+                self.registry = parts[0]
+                self.version = parts[1]
+                self.name = parts[2]
+            else:
+                self.registry = registry
+                self.version = version
+                self.name = primitive_id
+        else:
+            self.registry = registry
+            self.version = version
+            self.name = name
+        self.primitive_id = f"{self.registry}/{self.version}/{self.name}"
+
+    def __repr__(self) -> str:
+        return f"PrimitiveRef({self.registry}/{self.version}/{self.name})"
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, str):
+            return self.primitive_id == other or self.name == other
+        if isinstance(other, PrimitiveRef):
+            return self.primitive_id == other.primitive_id
+        return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash(self.primitive_id)
+
+    @property
+    def triple(self) -> Tuple[str, str, str]:
+        """Return the (registry, version, name) triple."""
+        return (self.registry, self.version, self.name)

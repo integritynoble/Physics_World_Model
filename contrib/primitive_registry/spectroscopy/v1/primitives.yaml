@@ -1,0 +1,25 @@
+description: "Spectroscopy physics primitives for spectral analysis and reconstruction"
+domain: spectroscopy
+version: v1
+
+primitives:
+  - name: SpectralDispersion
+    symbol: Sd
+    scope: "Wavelength-dependent spatial/angular dispersion"
+    decomposition: ["general/v1/Transform"]
+  - name: SpectralDetection
+    symbol: Sdet
+    scope: "Photon counting or intensity integration per spectral channel"
+    decomposition: ["general/v1/Reduce", "general/v1/Stochastize"]
+  - name: CalibrationLamp
+    symbol: Cl
+    scope: "Reference spectrum from known source for wavelength calibration"
+    decomposition: ["general/v1/Validate"]
+  - name: BaselineCorrection
+    symbol: Bc
+    scope: "Remove instrument background and fluorescence baseline"
+    decomposition: ["general/v1/Regularize", "general/v1/Transform"]
+  - name: SpectralResolution
+    symbol: Sr
+    scope: "Resolution-limited convolution of true spectrum with instrument line shape"
+    decomposition: ["general/v1/Compose", "general/v1/Transform"]

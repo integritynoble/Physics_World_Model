@@ -1,0 +1,12 @@
+domain_id: spectroscopy
+domain_version: v1.0
+display_name: Spectroscopy
+extends: spec.core
+primitive_registry: spectroscopy/v1
+diagnostic_decomposition: SpectroscopyDiagnosticReport
+gates:
+  - resolution_limit
+  - calibration_drift
+  - baseline_error
+noise_model: poisson
+maturity: experimental

@@ -35,6 +35,7 @@ from pwm_core.graph.ir_types import (
     PhysicsTier,
     TensorSpec,
     ParameterSpec,
+    PrimitiveRef,
 )
 from pwm_core.graph.canonical_decompositions import (
     CanonicalDecomposition,
@@ -67,6 +68,7 @@ __all__ = [
     "PhysicsTier",
     "TensorSpec",
     "ParameterSpec",
+    "PrimitiveRef",
     "CanonicalDecomposition",
     "CANONICAL_DECOMPOSITIONS",
     "GraphEdge",

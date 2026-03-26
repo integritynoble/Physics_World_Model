@@ -183,6 +183,44 @@ def emit_runbundle(
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2, default=str)
 
+    # Emit compiled artifacts
+    compiled_dir = bundle_dir / "compiled"
+    compiled_dir.mkdir(exist_ok=True)
+
+    # operatorgraph.json -- simplified graph from harness
+    og = {
+        "version": "1.0.0",
+        "graph_id": f"{result.modality}_graph",
+        "nodes": [
+            {
+                "id": "forward",
+                "primitive": f"imaging/v1/{result.modality}",
+                "role": "forward_model",
+            }
+        ],
+        "edges": [],
+        "compiled_from": manifest["spec_id"],
+    }
+    with open(compiled_dir / "operatorgraph.json", "w") as f:
+        json.dump(og, f, indent=2)
+
+    # computeplan.json
+    cp = {
+        "version": "1.0.0",
+        "plan_id": f"plan_{bundle_id}",
+        "operator_graph_id": og["graph_id"],
+        "steps": [
+            {
+                "step_id": "solve",
+                "primitive": result.solver,
+                "device": "cpu",
+            }
+        ],
+        "target_device": "cpu",
+    }
+    with open(compiled_dir / "computeplan.json", "w") as f:
+        json.dump(cp, f, indent=2)
+
     # Write DR-IS records
     dr_is_records = []
     for scene in result.per_scene:
@@ -314,6 +352,21 @@ def issue_certificate(bundle_dir: Path) -> Optional[Path]:
     cert_path = bundle_dir / "certificate.json"
     with open(cert_path, "w", encoding="utf-8") as f:
         _json.dump(cert.to_dict(), f, indent=2, default=str)
+
+    # Emit judge_report.json
+    judge_report = {
+        "version": "1.0.0",
+        "run_id": run_id,
+        "gate_results": {
+            k: {"verdict": v.verdict.value, "message": v.message}
+            for k, v in gate_results.items()
+        },
+        "trust_tier": trust_tier.value,
+        "risk_flags": [f.value for f in risk_flags],
+    }
+    judge_report_path = bundle_dir / "judge_report.json"
+    with open(judge_report_path, "w", encoding="utf-8") as f:
+        _json.dump(judge_report, f, indent=2, default=str)
 
     logger.info(
         "Certificate issued: %s (tier=%s, risk_flags=%s)",

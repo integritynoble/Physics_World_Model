@@ -1,0 +1,13 @@
+source_registry: spectroscopy/v1
+target_registry: general/v1
+mappings:
+  - source: SpectralDispersion
+    target: ["general/v1/Transform"]
+  - source: SpectralDetection
+    target: ["general/v1/Reduce", "general/v1/Stochastize"]
+  - source: CalibrationLamp
+    target: ["general/v1/Validate"]
+  - source: BaselineCorrection
+    target: ["general/v1/Regularize", "general/v1/Transform"]
+  - source: SpectralResolution
+    target: ["general/v1/Compose", "general/v1/Transform"]
