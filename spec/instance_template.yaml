@@ -1,0 +1,17 @@
+# ProblemInstance template -- one per run
+instance_id: "run_ct_001"
+spec_ref: "spec.core"
+domain_profile_ref: "imaging/v1"
+dataset:
+  modality: ct
+  split: public
+  sample_index: 0
+method:
+  solver: traditional_cpu
+  track: correct
+parameters:
+  seed: 42
+  n_scenes: 5
+  severity: moderate
+  budget_s: 600
+  sandbox: false

@@ -1,0 +1,51 @@
+# Imaging DomainProfile v1
+# Canonical base profile for all computational imaging modalities.
+# Defined in packages/pwm_core/pwm_core/spec/domain_profile.py as IMAGING_V1.
+
+domain_id: imaging
+domain_version: v1
+display_name: "Computational Imaging"
+description: >
+  Universal domain profile for computational imaging. Covers the full
+  spectrum from CT/MRI clinical imaging through compressive sensing,
+  spectral imaging, and microscopy. Adds Triad gates (G1/G2/G3) on top
+  of the universal S1-S4 kernel.
+
+primitive_chain:
+  - Propagate
+  - Modulate
+  - Project
+  - Encode
+  - Convolve
+  - Accumulate
+  - Detect
+  - Sample
+  - Disperse
+  - Scatter
+  - Attenuate
+
+physics_tier: geometric
+noise_model: poisson_gaussian
+
+domain_gates:
+  - gate_id: g1_sampling_recoverability
+    display_name: "G1: Sampling Recoverability"
+    description: >
+      Checks whether the measurement is theoretically recoverable given
+      the sampling operator and the signal's assumed sparsity or smoothness.
+    required: false
+
+  - gate_id: g2_carrier_budget
+    display_name: "G2: Carrier Budget"
+    description: >
+      Checks whether the SNR budget of the physical carrier
+      (photon count, k-space coverage, etc.) is sufficient for the
+      claimed reconstruction accuracy.
+    required: false
+
+  - gate_id: g3_operator_mismatch
+    display_name: "G3: Operator Mismatch"
+    description: >
+      Checks whether the assumed forward model matches the actual
+      measurement process within claimed tolerance bounds.
+    required: false
