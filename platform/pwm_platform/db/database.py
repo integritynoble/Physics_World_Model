@@ -98,6 +98,16 @@ async def init_db() -> None:
             except Exception:
                 pass
 
+        # Idempotent migration: password_reset_tokens table columns
+        for col_def in [
+            "ALTER TABLE password_reset_tokens ADD COLUMN IF NOT EXISTS used BOOLEAN DEFAULT FALSE",
+            "ALTER TABLE password_reset_tokens ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW()",
+        ]:
+            try:
+                await conn.execute(text(col_def))
+            except Exception:
+                pass  # table may not exist yet on first run; create_all handles it
+
         # Ensure platformaigpt@gmail.com is admin
         await conn.execute(text(
             "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"

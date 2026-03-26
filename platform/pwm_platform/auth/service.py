@@ -11,6 +11,8 @@ Both flows result in a JWT access token set as an HttpOnly cookie.
 from __future__ import annotations
 
 import logging
+import secrets
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
 import httpx
@@ -21,7 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pwm_platform.auth.passwords import hash_password, verify_password
 from pwm_platform.auth.token_manager import get_token_manager
 from pwm_platform.config import settings
-from pwm_platform.db.models import User
+from pwm_platform.db.models import PasswordResetToken, User
 
 logger = logging.getLogger(__name__)
 
@@ -278,6 +280,56 @@ class AuthService:
         await db.commit()
         await db.refresh(user)
         return user
+
+
+    # ── Password reset ────────────────────────────────────────────────────
+
+    async def request_password_reset(self, email: str, db: AsyncSession) -> None:
+        """Generate a reset token and send a password reset email.
+
+        Silently succeeds even if email not found (to avoid user enumeration).
+        """
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        if user is None or user.password_hash is None:
+            return  # silent — don't reveal whether email exists
+
+        token = secrets.token_urlsafe(48)
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+        row = PasswordResetToken(user_id=user.id, token=token, expires_at=expires_at)
+        db.add(row)
+        await db.commit()
+
+        from pwm_platform.auth.email import send_password_reset_email
+        await send_password_reset_email(user.email, user.username, token)
+        logger.info("Password reset email sent to %s", email)
+
+    async def confirm_password_reset(
+        self, token: str, new_password: str, db: AsyncSession
+    ) -> None:
+        """Validate the token and update the user's password."""
+        if len(new_password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+
+        result = await db.execute(
+            select(PasswordResetToken).where(PasswordResetToken.token == token)
+        )
+        row = result.scalar_one_or_none()
+
+        now = datetime.now(timezone.utc)
+        if row is None or row.used or row.expires_at < now:
+            raise HTTPException(status_code=400, detail="Reset link is invalid or has expired")
+
+        row.used = True
+
+        user_result = await db.execute(select(User).where(User.id == row.user_id))
+        user = user_result.scalar_one_or_none()
+        if user is None:
+            raise HTTPException(status_code=400, detail="User not found")
+
+        user.password_hash = hash_password(new_password)
+        await db.commit()
+        logger.info("Password reset completed for user %s", user.email)
 
 
 # ── Module-level singleton ───────────────────────────────────────────────

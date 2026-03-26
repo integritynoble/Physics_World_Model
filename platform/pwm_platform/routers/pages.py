@@ -140,6 +140,20 @@ async def login_page(request: Request):
     })
 
 
+@router.get("/forgot-password", response_class=HTMLResponse)
+async def forgot_password_page(request: Request):
+    return templates.TemplateResponse("forgot_password.html", {"request": request})
+
+
+@router.get("/reset-password", response_class=HTMLResponse)
+async def reset_password_page(request: Request, token: str = ""):
+    return templates.TemplateResponse("reset_password.html", {
+        "request": request,
+        "token": token,
+        "error": None if token else "Missing reset token.",
+    })
+
+
 @router.get("/sso/callback")
 async def sso_callback(
     request: Request,

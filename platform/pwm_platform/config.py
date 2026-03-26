@@ -86,6 +86,16 @@ class Settings(BaseSettings):
     WECHAT_NOTIFY_URL: str = "https://pwm.platformai.org/api/v1/subscription/webhook/wechat"
     WECHAT_PAY_EXCHANGE_RATE: float = 7.1        # USD→CNY fallback rate
 
+    # ── SMTP (password reset emails) ─────────────────────────────────────
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = ""                      # e.g. "PWM Platform <noreply@platformai.org>"
+
+    # ── Google OAuth ──────────────────────────────────────────────────────
+    GOOGLE_CLIENT_ID: str = ""
+
     # ── Pydantic-settings config ─────────────────────────────────────────
     model_config = SettingsConfigDict(
         env_file=os.path.join(_PLATFORM_DIR, ".env"),

@@ -14,8 +14,9 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, Form, Header, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,6 +29,8 @@ from pwm_platform.db.models import User
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Auth"])
+
+templates = Jinja2Templates(directory="pwm_platform/templates")
 
 _COOKIE_KWARGS = {
     "key": "access_token",
@@ -138,6 +141,44 @@ async def logout(
 
     response.delete_cookie("access_token", path="/")
     return {"success": True, "message": "Logged out successfully"}
+
+
+@router.post("/forgot-password-form")
+async def forgot_password_form(
+    request: Request,
+    email: str = Form(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Send password reset email (form submission)."""
+    try:
+        await auth_service.request_password_reset(email, db)
+    except Exception as exc:
+        logger.error("Password reset error: %s", exc)
+        # Still show success to avoid user enumeration
+    return templates.TemplateResponse(request, "forgot_password.html", {
+        "success": True,
+        "email": email,
+    })
+
+
+@router.post("/reset-password-form")
+async def reset_password_form(
+    request: Request,
+    token: str = Form(...),
+    password: str = Form(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Process password reset with token (form submission)."""
+    try:
+        await auth_service.confirm_password_reset(token, password, db)
+    except HTTPException as exc:
+        error = exc.detail if isinstance(exc.detail, str) else "Reset failed"
+        return templates.TemplateResponse(request, "reset_password.html", {
+            "error": error,
+            "token": token,
+        }, status_code=400)
+
+    return RedirectResponse("/login?reset=1", status_code=303)
 
 
 @router.get("/me", response_model=AuthResponse)
