@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Gate Dashboard — Physics World Model{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-2xl font-bold text-gray-900">Gate Dashboard</h1>
+    {% if user %}
+    <button onclick="document.getElementById('propose-form').classList.toggle('hidden')"
+            class="px-4 py-2 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
+      + Propose Gate RFC
+    </button>
+    {% endif %}
+  </div>
+  <p class="text-sm text-gray-500 mb-6">
+    Trust gates are evaluation criteria that claims must pass to advance through the trust ratchet.
+    Judge-Rule Authors propose new gates via RFC; admins review and activate them.
+    See <a href="/contributors#judge-rule-author" class="text-indigo-500 hover:underline">Judge-Rule Author</a> role for details.
+  </p>
+
+  <!-- RFC Proposal form -->
+  {% if user %}
+  <div id="propose-form" class="hidden mb-8 bg-white border rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Propose a Gate RFC</h2>
+    <p class="text-xs text-gray-500 mb-4">
+      A gate proposal describes a new automated evaluation criterion (e.g. "PSNR must exceed X dB on the public test set").
+      Approved gates are added to the trust ratchet for one or more modalities.
+    </p>
+    <form id="gate-propose-form" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Gate ID <span class="text-red-500">*</span></label>
+          <input name="gate_id" required placeholder="e.g. psnr_threshold_v1"
+                 class="w-full border rounded px-3 py-2 text-sm font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Modality</label>
+          <input name="modality" placeholder="e.g. cassi, ct (blank = all)"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Title <span class="text-red-500">*</span></label>
+          <input name="title" required placeholder="Short descriptive title for this gate"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Proposed Threshold</label>
+          <input name="proposed_threshold" placeholder="e.g. PSNR > 28.5 dB, SSIM > 0.85"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Evidence / Reference URL</label>
+          <input name="evidence_url" type="url" placeholder="https://arxiv.org/abs/..."
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Description <span class="text-red-500">*</span></label>
+          <textarea name="description" required rows="3"
+                    placeholder="What does this gate measure? How is it computed?"
+                    class="w-full border rounded px-3 py-2 text-sm"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Rationale</label>
+          <textarea name="rationale" rows="2"
+                    placeholder="Why is this gate needed? What failure mode does it prevent?"
+                    class="w-full border rounded px-3 py-2 text-sm"></textarea>
+        </div>
+      </div>
+      <div id="propose-result" class="text-sm"></div>
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+        Submit Gate Proposal
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <!-- Status filter -->
+  <div class="flex gap-2 mb-6">
+    <a href="/gates?status=all" class="px-3 py-1 text-sm border rounded {% if status_filter == 'all' %}bg-gray-100 font-semibold{% else %}hover:bg-gray-100{% endif %}">All</a>
+    <a href="/gates?status=draft" class="px-3 py-1 text-sm border rounded {% if status_filter == 'draft' %}bg-yellow-100 font-semibold text-yellow-800{% else %}bg-yellow-50 text-yellow-700 hover:bg-yellow-100{% endif %}">Draft</a>
+    <a href="/gates?status=under_review" class="px-3 py-1 text-sm border rounded {% if status_filter == 'under_review' %}bg-blue-100 font-semibold text-blue-800{% else %}bg-blue-50 text-blue-700 hover:bg-blue-100{% endif %}">Under Review</a>
+    <a href="/gates?status=active" class="px-3 py-1 text-sm border rounded {% if status_filter == 'active' %}bg-green-100 font-semibold text-green-800{% else %}bg-green-50 text-green-700 hover:bg-green-100{% endif %}">Active</a>
+    <span class="text-sm text-gray-400 ml-auto self-center">{{ proposals | length }} proposal{% if proposals | length != 1 %}s{% endif %}</span>
+  </div>
+
+  <!-- Built-in gates (static) -->
+  <div class="mb-8">
+    <h2 class="text-lg font-bold text-gray-900 mb-3">Built-in Trust Gates</h2>
+    <p class="text-xs text-gray-500 mb-3">Active gates applied automatically to all claim submissions.</p>
+    <div class="space-y-2">
+      {% for gate in [
+        {"id": "S1", "name": "Reproducibility Check", "description": "Reconstruction must be independently rerun from the uploaded code and produce results within 0.5 dB of claimed PSNR.", "status": "active"},
+        {"id": "S2", "name": "Dataset Integrity", "description": "Input measurements must be drawn from the registered benchmark dataset, not a private or custom split.", "status": "active"},
+        {"id": "S3", "name": "Code Availability", "description": "Author must provide a runnable code repository (GitHub, Zenodo, or equivalent).", "status": "active"},
+        {"id": "G1", "name": "PSNR Threshold", "description": "Claimed PSNR must exceed the modality-specific baseline by at least 1.0 dB.", "status": "active"},
+        {"id": "G2", "name": "SSIM Consistency", "description": "SSIM must be consistent with reported PSNR (within expected physical bounds).", "status": "active"},
+        {"id": "G3", "name": "Peer Reproduction", "description": "Results must be independently reproduced by a non-author reviewer.", "status": "active"},
+      ] %}
+      <div class="bg-green-50 border border-green-200 rounded p-3 flex items-start gap-4">
+        <span class="shrink-0 font-mono text-xs font-bold text-green-800 bg-green-100 px-2 py-1 rounded">{{ gate.id }}</span>
+        <div>
+          <p class="text-sm font-semibold text-gray-900">{{ gate.name }}</p>
+          <p class="text-xs text-gray-600 mt-0.5">{{ gate.description }}</p>
+        </div>
+        <span class="shrink-0 ml-auto px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-200 text-green-800">Active</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- RFC Proposals -->
+  <div>
+    <h2 class="text-lg font-bold text-gray-900 mb-3">RFC Proposals</h2>
+    {% if proposals %}
+    <div class="space-y-3">
+      {% for g in proposals %}
+      <div class="bg-white border rounded-lg p-5 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ g.title or g.gate_id }}</h3>
+            <p class="text-xs text-gray-500 mt-1">
+              <span class="font-mono text-indigo-700">{{ g.gate_id }}</span>
+              {% if g.modality %} · {{ g.modality }}{% endif %}
+              {% if g.proposed_threshold %} · {{ g.proposed_threshold }}{% endif %}
+            </p>
+            {% if g.description %}
+            <p class="text-sm text-gray-700 mt-2">{{ g.description }}</p>
+            {% endif %}
+            {% if g.rationale %}
+            <p class="text-xs text-gray-500 mt-1 italic">{{ g.rationale }}</p>
+            {% endif %}
+            <p class="text-xs text-gray-400 mt-2">
+              Proposed by {{ g.proposer }} · {{ g.submitted_at[:10] if g.submitted_at else '' }}
+              {% if g.evidence_url %}
+              · <a href="{{ g.evidence_url }}" target="_blank" class="text-indigo-500 hover:underline">Evidence</a>
+              {% endif %}
+            </p>
+          </div>
+          <span class="shrink-0 ml-4 px-2 py-0.5 text-[10px] font-bold rounded-full
+            {% if g.status == 'active' %}bg-green-100 text-green-800 border border-green-300
+            {% elif g.status == 'under_review' %}bg-blue-100 text-blue-800 border border-blue-300
+            {% else %}bg-yellow-100 text-yellow-800 border border-yellow-300{% endif %}">
+            {{ g.status | replace('_', ' ') | title }}
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white border rounded-lg px-6 py-12 text-center">
+      <p class="text-gray-400 text-sm">No gate proposals yet.</p>
+      {% if user %}
+      <p class="text-gray-400 text-xs mt-1">Use the "Propose Gate RFC" button above to submit a new gate proposal.</p>
+      {% else %}
+      <p class="text-gray-400 text-xs mt-1"><a href="/login" class="text-indigo-500 hover:underline">Sign in</a> to submit a gate proposal.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if user %}
+<script>
+document.getElementById('gate-propose-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const f = e.target;
+  const data = {
+    gate_id: f.gate_id.value,
+    title: f.title.value,
+    modality: f.modality.value,
+    proposed_threshold: f.proposed_threshold.value,
+    evidence_url: f.evidence_url.value,
+    description: f.description.value,
+    rationale: f.rationale.value,
+  };
+  const res = await fetch('/gates/propose', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  });
+  const el = document.getElementById('propose-result');
+  if (res.ok) {
+    el.innerHTML = '<span class="text-green-600 font-medium">Proposal submitted! Admins will review it.</span>';
+    setTimeout(() => location.reload(), 1500);
+  } else {
+    const err = await res.json().catch(() => ({detail: 'Submission failed'}));
+    el.innerHTML = '<span class="text-red-600">' + (err.detail || 'Submission failed') + '</span>';
+  }
+});
+</script>
+{% endif %}
+{% endblock %}

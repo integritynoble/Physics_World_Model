@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}Instrument Registry — Physics World Model{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-2xl font-bold text-gray-900">Instrument Registry</h1>
+    {% if user %}
+    <button onclick="document.getElementById('register-form').classList.toggle('hidden')"
+            class="px-4 py-2 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
+      + Register Instrument
+    </button>
+    {% endif %}
+  </div>
+  <p class="text-sm text-gray-500 mb-6">
+    InstrumentCards — calibrated imaging instruments contributing data to PWM benchmarks.
+    Each card tracks drift budget, contact info, and calibration status.
+    <a href="/instruments/api" class="text-indigo-500 hover:underline">JSON API</a>
+  </p>
+
+  <!-- Register Instrument form (hidden by default) -->
+  {% if user %}
+  <div id="register-form" class="hidden mb-8 bg-white border rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Register InstrumentCard</h2>
+    <p class="text-xs text-gray-500 mb-4">
+      See <a href="/contributors#instrument-contributor" class="text-indigo-500 hover:underline">Instrument Contributor</a> role for eligibility.
+      You must have measured calibration data before registering.
+    </p>
+    <form id="inst-reg-form" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Instrument ID <span class="text-red-500">*</span></label>
+          <input name="instrument_id" required placeholder="e.g. confocal_lab_a_001"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Name <span class="text-red-500">*</span></label>
+          <input name="name" required placeholder="e.g. Zeiss LSM 980 Confocal"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Modality <span class="text-red-500">*</span></label>
+          <input name="modality" required placeholder="e.g. confocal_3d, ct, mri"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Lab / Group</label>
+          <input name="lab" placeholder="e.g. Smith Lab"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Institution</label>
+          <input name="institution" placeholder="e.g. MIT"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Manufacturer</label>
+          <input name="manufacturer" placeholder="e.g. Zeiss"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Model Number</label>
+          <input name="model_number" placeholder="e.g. LSM 980"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Serial Number</label>
+          <input name="serial_number" placeholder="e.g. SN-12345"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Drift Budget (%)</label>
+          <input name="drift_budget_pct" type="number" step="0.1" placeholder="e.g. 2.5"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Contact Email</label>
+          <input name="contact_email" type="email" placeholder="instrument-contact@institution.edu"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+          <textarea name="description" rows="2"
+                    placeholder="Describe the instrument, its capabilities, and what datasets it has contributed..."
+                    class="w-full border rounded px-3 py-2 text-sm"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="is_public" checked class="rounded">
+            Make this instrument publicly visible in the registry
+          </label>
+        </div>
+      </div>
+      <div id="inst-result" class="text-sm"></div>
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+        Register InstrumentCard
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <!-- Modality filter -->
+  <form method="get" action="/instruments" class="flex items-center gap-3 mb-6">
+    <select name="modality" onchange="this.form.submit()"
+            class="border rounded px-3 py-2 text-sm text-gray-700">
+      <option value="">All modalities</option>
+      {% for m in modalities %}
+      <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
+      {% endfor %}
+    </select>
+    {% if modality_filter %}
+    <a href="/instruments" class="text-sm text-gray-500 hover:text-indigo-600">Clear</a>
+    {% endif %}
+    <span class="text-sm text-gray-400 ml-auto">
+      {{ instruments | length }} instrument{% if instruments | length != 1 %}s{% endif %}
+    </span>
+  </form>
+
+  <!-- Instrument list -->
+  {% if instruments %}
+  <div class="space-y-4">
+    {% for inst in instruments %}
+    <div class="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <div class="flex items-center gap-3">
+            <h3 class="font-bold text-gray-900">{{ inst.name }}</h3>
+            <span class="text-xs font-mono text-gray-400">{{ inst.instrument_id }}</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">
+            <span class="font-medium text-indigo-700">{{ inst.modality }}</span>
+            {% if inst.lab %} · {{ inst.lab }}{% endif %}
+            {% if inst.institution %} · {{ inst.institution }}{% endif %}
+            {% if inst.manufacturer %} · {{ inst.manufacturer }} {{ inst.model_number }}{% endif %}
+          </p>
+          {% if inst.description %}
+          <p class="text-sm text-gray-700 mt-2">{{ inst.description }}</p>
+          {% endif %}
+          <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
+            {% if inst.serial_number %}<span>S/N: {{ inst.serial_number }}</span>{% endif %}
+            {% if inst.drift_budget_pct %}<span>Drift budget: {{ inst.drift_budget_pct }}%</span>{% endif %}
+            {% if inst.contact_email %}
+            <a href="mailto:{{ inst.contact_email }}" class="text-indigo-500 hover:underline">{{ inst.contact_email }}</a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="shrink-0 ml-4">
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded-full
+            {% if inst.is_public %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-100 text-gray-500 border border-gray-300{% endif %}">
+            {% if inst.is_public %}Public{% else %}Internal{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="bg-white border rounded-lg px-6 py-16 text-center">
+    <p class="text-gray-400 text-sm">No instruments registered yet.</p>
+    {% if user %}
+    <p class="text-gray-400 text-sm mt-1">Register your instrument above or use <code class="bg-gray-100 px-1">POST /instruments/api/register</code>.</p>
+    {% else %}
+    <p class="text-gray-400 text-sm mt-1"><a href="/login" class="text-indigo-500 hover:underline">Sign in</a> to register an instrument.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if user %}
+<script>
+document.getElementById('inst-reg-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const f = e.target;
+  const data = {
+    instrument_id: f.instrument_id.value,
+    name: f.name.value,
+    modality: f.modality.value,
+    lab: f.lab.value,
+    institution: f.institution.value,
+    manufacturer: f.manufacturer.value,
+    model_number: f.model_number.value,
+    serial_number: f.serial_number.value,
+    description: f.description.value,
+    drift_budget_pct: parseFloat(f.drift_budget_pct.value) || 0,
+    contact_email: f.contact_email.value,
+    is_public: f.is_public.checked,
+    card_data: {},
+  };
+  const res = await fetch('/instruments/api/register', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  });
+  const el = document.getElementById('inst-result');
+  if (res.ok) {
+    el.innerHTML = '<span class="text-green-600 font-medium">Instrument registered!</span>';
+    setTimeout(() => location.reload(), 1500);
+  } else {
+    const err = await res.json().catch(() => ({detail: 'Registration failed'}));
+    el.innerHTML = '<span class="text-red-600">' + (err.detail || 'Registration failed') + '</span>';
+  }
+});
+</script>
+{% endif %}
+{% endblock %}

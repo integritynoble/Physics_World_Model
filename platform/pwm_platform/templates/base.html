@@ -16,18 +16,22 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
-                    <a href="/benchmark" class="text-xl font-bold text-indigo-600">Physics World Model</a>
+                    <a href="/" class="text-xl font-bold text-indigo-600">Physics World Model</a>
                     <a href="/benchmark" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Benchmarks</a>
                     <a href="/speclab" class="text-sm font-medium text-gray-700 hover:text-indigo-600">SpecLab</a>
                     <a href="/modalities" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Modalities</a>
-                    <a href="/benchmark/system-design" class="text-sm font-medium text-gray-700 hover:text-indigo-600">System Design</a>
+                    <a href="/datasets" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Datasets</a>
+                    <a href="/solvers" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Solvers</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/pricing" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Pricing</a>
                     {% if user %}
                         <a href="/subscription" class="text-sm text-gray-700 hover:text-indigo-600">Subscription</a>
                         <span class="text-sm text-gray-600">{{ user.username }}</span>
                         <a href="/contributors" class="text-sm text-gray-700 hover:text-indigo-600">Contributors</a>
+                        <a href="/instruments" class="text-sm text-gray-700 hover:text-indigo-600">Instruments</a>
+                        <a href="/reproduce" class="text-sm text-gray-700 hover:text-indigo-600">Reproduce</a>
+                        <a href="/gates" class="text-sm text-gray-700 hover:text-indigo-600">Gates</a>
+                        <a href="/redteam" class="text-sm text-gray-700 hover:text-indigo-600">Red-Team</a>
                         {% if user.role in ['admin', 'reviewer'] %}
                         <a href="/bootstrap/review" class="text-sm text-gray-700 hover:text-indigo-600">Review</a>
                         <a href="/submissions/review" class="text-sm text-gray-700 hover:text-indigo-600">Submissions</a>
@@ -37,6 +41,7 @@
                         {% if user.role == 'admin' %}
                         <a href="/admin/users" class="text-sm text-gray-700 hover:text-indigo-600">Users</a>
                         {% endif %}
+                        <a href="/pricing" class="text-sm text-gray-700 hover:text-indigo-600">Pricing</a>
                         <form action="/api/v1/auth/logout" method="post" hx-boost="false" class="inline">
                             <button type="submit" class="text-sm text-gray-500 hover:text-red-600">Logout</button>
                         </form>

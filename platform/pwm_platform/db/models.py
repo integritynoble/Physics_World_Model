@@ -527,3 +527,35 @@ class ContributorProfile(Base):
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     user = relationship("User", backref="contributor_profile", uselist=False)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  Instrument Registry
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class Instrument(Base):
+    """Registered instrument / InstrumentCard for calibration tracking."""
+
+    __tablename__ = "instruments"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    instrument_id = Column(String(255), unique=True, nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    modality = Column(String(100), nullable=False, index=True)
+    lab = Column(String(255), default="")
+    institution = Column(String(255), default="")
+    manufacturer = Column(String(255), default="")
+    model_number = Column(String(255), default="")
+    serial_number = Column(String(255), default="")
+    description = Column(Text, default="")
+    calibration_date = Column(DateTime(timezone=True), nullable=True)
+    drift_budget_pct = Column(Float, default=0.0)   # allowed drift in %
+    contact_email = Column(String(255), default="")
+    card_data = Column(JSONB, default=dict)           # full InstrumentCard JSON
+    uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    is_public = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    uploader = relationship("User", foreign_keys=[uploaded_by], lazy="selectin")

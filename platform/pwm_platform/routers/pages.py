@@ -734,6 +734,38 @@ async def run_status_page(
     })
 
 
+@router.get("/datasets", response_class=HTMLResponse)
+async def datasets_browser_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+    modality: str = "",
+    data_type: str = "",
+):
+    """Dataset registry — browse registered DatasetCards."""
+    from sqlalchemy import select as _select
+    stmt = _select(Dataset).order_by(Dataset.created_at.desc()).limit(200)
+    if modality:
+        stmt = stmt.where(Dataset.modality == modality)
+    if data_type:
+        stmt = stmt.where(Dataset.data_type == data_type)
+    result = await db.execute(stmt)
+    datasets = result.scalars().all()
+
+    # Distinct modalities for filter
+    mod_result = await db.execute(_select(Dataset.modality).distinct())
+    modalities = sorted(r[0] for r in mod_result.all() if r[0])
+
+    return templates.TemplateResponse("dataset_browser.html", {
+        "request": request,
+        "user": user,
+        "datasets": datasets,
+        "modalities": modalities,
+        "modality_filter": modality,
+        "data_type_filter": data_type,
+    })
+
+
 @router.get("/benchmark", response_class=HTMLResponse)
 async def datasets_page(
     request: Request,
@@ -1513,8 +1545,254 @@ async def submissions_review_page(
     })
 
 
+@router.get("/reproduce", response_class=HTMLResponse)
+async def reproduce_queue_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    modality: str = "",
+):
+    """Reproduction queue — approved Draft-tier claims awaiting independent verification."""
+    import json as _json
+
+    claims_dir = Path("/tmp/pwm_claim_queue")
+    candidates = []
+    if claims_dir.exists():
+        for f in sorted(claims_dir.glob("*.json"), reverse=True):
+            try:
+                c = _json.loads(f.read_text())
+                # Only show approved draft-tier claims
+                if c.get("status") != "approved" or c.get("trust_tier") not in ("draft", ""):
+                    continue
+                # Already reproduced ones skip
+                if c.get("trust_tier") == "reproduced":
+                    continue
+                if modality and c.get("modality", "") != modality:
+                    continue
+                candidates.append(c)
+            except Exception:
+                continue
+
+    # Distinct modalities for filter
+    all_modalities: list[str] = []
+    if claims_dir.exists():
+        for f in claims_dir.glob("*.json"):
+            try:
+                c = _json.loads(f.read_text())
+                m = c.get("modality", "")
+                if m and m not in all_modalities:
+                    all_modalities.append(m)
+            except Exception:
+                pass
+    all_modalities.sort()
+
+    return templates.TemplateResponse("reproduce.html", {
+        "request": request,
+        "user": user,
+        "candidates": candidates,
+        "modality_filter": modality,
+        "all_modalities": all_modalities,
+    })
+
+
+@router.get("/solvers", response_class=HTMLResponse)
+async def solver_gallery_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+    modality: str = "",
+):
+    """Solver gallery — approved algorithm/solver submissions by the community."""
+    stmt = (
+        select(ChallengeSubmission)
+        .where(ChallengeSubmission.status == "approved")
+        .order_by(ChallengeSubmission.submitted_at.desc())
+        .limit(200)
+    )
+    result = await db.execute(stmt)
+    submissions = result.scalars().all()
+
+    # Group by method_name to deduplicate
+    seen: set[str] = set()
+    solvers: list[dict] = []
+    for s in submissions:
+        key = f"{s.method_name}:{s.variant_key}"
+        if key in seen:
+            continue
+        seen.add(key)
+        # Extract modality from variant_key (first segment before _)
+        mod = modality or s.variant_key.split("_")[0]
+        if modality and not s.variant_key.startswith(modality):
+            continue
+        solvers.append({
+            "method_name": s.method_name,
+            "method_description": s.method_description or "",
+            "variant_key": s.variant_key,
+            "paper_url": s.paper_url or "",
+            "code_url": s.code_url or "",
+            "submitted_at": s.submitted_at.strftime("%Y-%m-%d") if s.submitted_at else "",
+            "submitter": s.submitter.username if s.submitter else "anonymous",
+            "scores": s.scores or {},
+            "trust_tier": s.trust_tier or "draft",
+        })
+
+    # Distinct variant keys for filter
+    vk_result = await db.execute(
+        select(ChallengeSubmission.variant_key).distinct().where(ChallengeSubmission.status == "approved")
+    )
+    variant_keys = sorted(r[0] for r in vk_result.all() if r[0])
+
+    return templates.TemplateResponse("solvers.html", {
+        "request": request,
+        "user": user,
+        "solvers": solvers,
+        "variant_keys": variant_keys,
+        "modality_filter": modality,
+    })
+
+
+@router.get("/gates", response_class=HTMLResponse)
+async def gates_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    status: str = "all",
+):
+    """Gate proposal dashboard — RFC submissions and gate review status."""
+    import json as _json
+
+    gates_dir = Path("/tmp/pwm_gate_proposals")
+    gates_dir.mkdir(parents=True, exist_ok=True)
+    proposals = []
+    for f in sorted(gates_dir.glob("*.json"), reverse=True):
+        try:
+            g = _json.loads(f.read_text())
+            if status != "all" and g.get("status", "draft") != status:
+                continue
+            proposals.append(g)
+        except Exception:
+            continue
+
+    return templates.TemplateResponse("gates.html", {
+        "request": request,
+        "user": user,
+        "proposals": proposals,
+        "status_filter": status,
+    })
+
+
+@router.post("/gates/propose")
+async def gates_propose(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Submit a gate RFC proposal (JSON)."""
+    import json as _json
+    import datetime as _dt
+    import secrets as _secrets
+
+    if not user:
+        from fastapi import HTTPException as _HTTPException
+        raise _HTTPException(status_code=401, detail="Login required to submit gate proposals")
+
+    body = await request.json()
+    proposal_id = f"gate_{_secrets.token_hex(6)}"
+    proposal = {
+        "proposal_id": proposal_id,
+        "title": body.get("title", ""),
+        "gate_id": body.get("gate_id", ""),
+        "description": body.get("description", ""),
+        "rationale": body.get("rationale", ""),
+        "modality": body.get("modality", ""),
+        "proposed_threshold": body.get("proposed_threshold", ""),
+        "evidence_url": body.get("evidence_url", ""),
+        "proposer": user.username,
+        "proposer_id": user.id,
+        "status": "draft",
+        "submitted_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+    }
+
+    gates_dir = Path("/tmp/pwm_gate_proposals")
+    gates_dir.mkdir(parents=True, exist_ok=True)
+    (gates_dir / f"{proposal_id}.json").write_text(_json.dumps(proposal, indent=2))
+
+    return {"proposal_id": proposal_id, "message": "Gate proposal submitted for review"}
+
+
+@router.get("/redteam", response_class=HTMLResponse)
+async def redteam_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+    modality: str = "",
+):
+    """Red-team dashboard — adversarial challenge board and bounty tracking."""
+    import json as _json
+
+    # Red-team claims are approved claims tagged as red-team findings
+    # They're stored in the same claims dir but with a red_team tag
+    claims_dir = Path("/tmp/pwm_claim_queue")
+    redteam_claims: list[dict] = []
+    all_claims: list[dict] = []
+    if claims_dir.exists():
+        for f in sorted(claims_dir.glob("*.json"), reverse=True):
+            try:
+                c = _json.loads(f.read_text())
+                all_claims.append(c)
+                tags = c.get("tags", []) or []
+                method = (c.get("method", "") or "").lower()
+                if "red_team" in tags or "redteam" in tags or "adversarial" in tags or "red-team" in method:
+                    if not modality or c.get("modality", "") == modality:
+                        redteam_claims.append(c)
+            except Exception:
+                continue
+
+    # Distinct modalities from all claims
+    all_modalities = sorted({c.get("modality", "") for c in all_claims if c.get("modality")})
+
+    # Static bounty board — showing open challenges
+    bounties = [
+        {
+            "id": "RT-001",
+            "title": "Reproduced result without claimed code",
+            "description": "Demonstrate that a Certified-tier result cannot be reproduced using only the released code, forcing the claim back to Draft.",
+            "reward": "Reproducer badge + 50 credits",
+            "status": "open",
+            "modality": "any",
+        },
+        {
+            "id": "RT-002",
+            "title": "Dataset contamination in benchmark",
+            "description": "Provide evidence that training data for a top-ranked method overlaps with the hidden test set.",
+            "reward": "Red-Team badge + 100 credits",
+            "status": "open",
+            "modality": "any",
+        },
+        {
+            "id": "RT-003",
+            "title": "Physics-violating reconstruction",
+            "description": "Show that a Certified claim produces results that violate the physical forward model (e.g. negative photon counts in CT).",
+            "reward": "Red-Team badge + 75 credits",
+            "status": "open",
+            "modality": "ct, pet, spect",
+        },
+    ]
+
+    return templates.TemplateResponse("redteam.html", {
+        "request": request,
+        "user": user,
+        "redteam_claims": redteam_claims,
+        "bounties": bounties,
+        "modality_filter": modality,
+        "all_modalities": all_modalities,
+    })
+
+
 @router.get("/claims", response_class=HTMLResponse)
-async def claims_review_page(request: Request, user: Optional[User] = Depends(get_optional_user)):
+async def claims_review_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    modality: str = "",
+    status: str = "all",
+):
     """Claim review queue page."""
     import json as _json
 
@@ -1523,13 +1801,33 @@ async def claims_review_page(request: Request, user: Optional[User] = Depends(ge
     if claims_dir.exists():
         for f in sorted(claims_dir.glob("*.json"), reverse=True):
             try:
-                claims.append(_json.loads(f.read_text()))
+                c = _json.loads(f.read_text())
+                if modality and c.get("modality", "") != modality:
+                    continue
+                if status != "all" and c.get("status", "") != status:
+                    continue
+                claims.append(c)
             except Exception:
                 continue
+    # Collect distinct modalities for the filter dropdown
+    all_modalities: list[str] = []
+    if Path("/tmp/pwm_claim_queue").exists():
+        for f in Path("/tmp/pwm_claim_queue").glob("*.json"):
+            try:
+                c = _json.loads(f.read_text())
+                m = c.get("modality", "")
+                if m and m not in all_modalities:
+                    all_modalities.append(m)
+            except Exception:
+                pass
+    all_modalities.sort()
     return templates.TemplateResponse("claim_review.html", {
         "request": request,
         "user": user,
         "claims": claims,
+        "modality_filter": modality,
+        "status_filter": status,
+        "all_modalities": all_modalities,
     })
 
 

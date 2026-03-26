@@ -25,12 +25,24 @@
     </form>
   </details>
 
-  <!-- Filter tabs -->
-  <div class="flex gap-2 mb-4">
-    <button onclick="loadClaims('all')" class="px-3 py-1 text-sm border rounded hover:bg-gray-100">All</button>
-    <button onclick="loadClaims('pending_review')" class="px-3 py-1 text-sm border rounded bg-yellow-50 text-yellow-700 hover:bg-yellow-100">Pending</button>
-    <button onclick="loadClaims('approved')" class="px-3 py-1 text-sm border rounded bg-green-50 text-green-700 hover:bg-green-100">Approved</button>
-    <button onclick="loadClaims('rejected')" class="px-3 py-1 text-sm border rounded bg-red-50 text-red-700 hover:bg-red-100">Rejected</button>
+  <!-- Modality + status filter row -->
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <form method="get" action="/claims" class="flex items-center gap-2">
+      <select name="modality" onchange="this.form.submit()"
+              class="border rounded px-2 py-1 text-sm text-gray-700">
+        <option value="" {% if not modality_filter %}selected{% endif %}>All modalities</option>
+        {% for m in all_modalities %}
+        <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+      </select>
+      <input type="hidden" name="status" value="{{ status_filter }}">
+    </form>
+    <div class="flex gap-2">
+      <a href="/claims?modality={{ modality_filter }}&status=all" class="px-3 py-1 text-sm border rounded {% if status_filter == 'all' %}bg-gray-100 font-semibold{% else %}hover:bg-gray-100{% endif %}">All</a>
+      <a href="/claims?modality={{ modality_filter }}&status=pending_review" class="px-3 py-1 text-sm border rounded {% if status_filter == 'pending_review' %}bg-yellow-100 font-semibold text-yellow-800{% else %}bg-yellow-50 text-yellow-700 hover:bg-yellow-100{% endif %}">Pending</a>
+      <a href="/claims?modality={{ modality_filter }}&status=approved" class="px-3 py-1 text-sm border rounded {% if status_filter == 'approved' %}bg-green-100 font-semibold text-green-800{% else %}bg-green-50 text-green-700 hover:bg-green-100{% endif %}">Approved</a>
+      <a href="/claims?modality={{ modality_filter }}&status=rejected" class="px-3 py-1 text-sm border rounded {% if status_filter == 'rejected' %}bg-red-100 font-semibold text-red-700{% else %}bg-red-50 text-red-700 hover:bg-red-100{% endif %}">Rejected</a>
+    </div>
   </div>
 
   <!-- Claims list -->
@@ -94,11 +106,6 @@
 </div>
 
 <script>
-function loadClaims(status) {
-  fetch('/claims/queue?status=' + status)
-    .then(r => r.json())
-    .then(data => { location.reload(); });
-}
 function reviewClaim(claimId, action) {
   const reason = action === 'reject' ? prompt('Rejection reason:') : '';
   if (action === 'reject' && reason === null) return;

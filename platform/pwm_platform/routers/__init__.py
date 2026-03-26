@@ -1,6 +1,7 @@
 """PWM Platform routers."""
 
 from pwm_platform.routers.admin_users import router as admin_users_router
+from pwm_platform.routers.instruments import router as instruments_router
 from pwm_platform.routers.auth import router as auth_router
 from pwm_platform.routers.billing import router as billing_router
 from pwm_platform.routers.bootstrap import router as bootstrap_router
@@ -18,6 +19,7 @@ from pwm_platform.routers.trust_promotion import router as trust_promotion_route
 
 __all__ = [
     "admin_users_router",
+    "instruments_router",
     "auth_router",
     "billing_router",
     "bootstrap_router",

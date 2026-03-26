@@ -55,6 +55,56 @@ async def list_datasets(
     }
 
 
+from pydantic import BaseModel as _BaseModel
+
+
+class DatasetRegisterRequest(_BaseModel):
+    dataset_id: str
+    version: str = "1.0.0"
+    modality: str
+    data_type: str  # simulation / real / benchmark
+    description: str = ""
+    source: str = ""
+    license: str = "internal"
+    num_samples: int = 0
+    gcs_prefix: str = ""
+    is_public: bool = False
+    tags: list = []
+
+
+@router.post("/register")
+async def register_dataset(
+    body: DatasetRegisterRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Register a new DatasetCard (Dataset Steward or admin)."""
+    from sqlalchemy import select as _select
+    existing = await db.execute(_select(Dataset).where(Dataset.dataset_id == body.dataset_id))
+    if existing.scalar_one_or_none():
+        from fastapi import HTTPException as _HTTPException
+        raise _HTTPException(status_code=409, detail=f"Dataset '{body.dataset_id}' already registered")
+
+    ds = Dataset(
+        dataset_id=body.dataset_id,
+        version=body.version,
+        modality=body.modality,
+        data_type=body.data_type,
+        description=body.description,
+        source=body.source,
+        license=body.license,
+        num_samples=body.num_samples,
+        gcs_prefix=body.gcs_prefix,
+        is_public=body.is_public,
+        tags=body.tags,
+        created_by=user.id,
+    )
+    db.add(ds)
+    await db.commit()
+    await db.refresh(ds)
+    return {"dataset_id": ds.dataset_id, "created": True}
+
+
 @router.get("/{dataset_id}")
 async def get_dataset(
     dataset_id: str,

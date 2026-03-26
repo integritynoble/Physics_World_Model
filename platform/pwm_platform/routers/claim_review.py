@@ -96,6 +96,19 @@ async def scaffold_claim(req: ScaffoldRequest):
         "history": [{"action": "scaffolded", "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()}],
     }
     _save_claim(claim)
+    # Best-effort notification to admin
+    try:
+        from pwm_platform.config import settings as _settings
+        if _settings.SMTP_USER:
+            import asyncio as _asyncio
+            from pwm_platform.auth.email import send_email as _send_email
+            _asyncio.create_task(_send_email(
+                to=_settings.SMTP_USER,
+                subject=f"[PWM] New claim scaffolded: {claim['title'][:60]}",
+                html_body=f"<p>Claim <b>{claim['claim_id']}</b> scaffolded.<br>Title: {claim['title']}<br>Modality: {claim['modality']}<br>Method: {claim['method']}</p>",
+            ))
+    except Exception:
+        pass
     return claim
 
 

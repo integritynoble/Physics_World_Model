@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}Dataset Registry — Physics World Model{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-2xl font-bold text-gray-900">Dataset Registry</h1>
+    {% if user %}
+    <button onclick="document.getElementById('register-form').classList.toggle('hidden')"
+            class="px-4 py-2 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
+      + Register Dataset
+    </button>
+    {% endif %}
+  </div>
+  <p class="text-sm text-gray-500 mb-6">
+    Registered DatasetCards — simulation, real-world, and benchmark datasets for PWM evaluation.
+    <a href="/api/v1/datasets" class="text-indigo-500 hover:underline">JSON API</a>
+  </p>
+
+  <!-- Register Dataset form (hidden by default) -->
+  {% if user %}
+  <div id="register-form" class="hidden mb-8 bg-white border rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Register a DatasetCard</h2>
+    <form id="dataset-reg-form" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Dataset ID <span class="text-red-500">*</span></label>
+          <input name="dataset_id" required placeholder="e.g. cassi_sim_v1"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Version</label>
+          <input name="version" placeholder="1.0.0" value="1.0.0"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Modality <span class="text-red-500">*</span></label>
+          <input name="modality" required placeholder="e.g. cassi, ct, mri"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Data Type <span class="text-red-500">*</span></label>
+          <select name="data_type" class="w-full border rounded px-3 py-2 text-sm">
+            <option value="simulation">simulation</option>
+            <option value="real">real</option>
+            <option value="benchmark">benchmark</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Num Samples</label>
+          <input name="num_samples" type="number" placeholder="0"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">License</label>
+          <input name="license" placeholder="CC-BY-4.0" value="internal"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+          <textarea name="description" rows="2" placeholder="Brief description of this dataset"
+                    class="w-full border rounded px-3 py-2 text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Source</label>
+          <input name="source" placeholder="Lab, institution, or paper URL"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">GCS Prefix</label>
+          <input name="gcs_prefix" placeholder="gs://bucket/path"
+                 class="w-full border rounded px-3 py-2 text-sm">
+        </div>
+        <div class="col-span-2">
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="is_public" value="true" class="rounded">
+            Make dataset publicly visible
+          </label>
+        </div>
+      </div>
+      <div id="reg-result" class="text-sm"></div>
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+        Register DatasetCard
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <!-- Filters -->
+  <form method="get" action="/datasets" class="flex flex-wrap items-center gap-3 mb-6">
+    <select name="modality" onchange="this.form.submit()"
+            class="border rounded px-3 py-2 text-sm text-gray-700">
+      <option value="">All modalities</option>
+      {% for m in modalities %}
+      <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
+      {% endfor %}
+    </select>
+    <select name="data_type" onchange="this.form.submit()"
+            class="border rounded px-3 py-2 text-sm text-gray-700">
+      <option value="">All types</option>
+      <option value="simulation" {% if data_type_filter == 'simulation' %}selected{% endif %}>Simulation</option>
+      <option value="real" {% if data_type_filter == 'real' %}selected{% endif %}>Real</option>
+      <option value="benchmark" {% if data_type_filter == 'benchmark' %}selected{% endif %}>Benchmark</option>
+    </select>
+    {% if modality_filter or data_type_filter %}
+    <a href="/datasets" class="text-sm text-gray-500 hover:text-indigo-600">Clear filters</a>
+    {% endif %}
+    <span class="text-sm text-gray-400 ml-auto">{{ datasets | length }} dataset{% if datasets | length != 1 %}s{% endif %}</span>
+  </form>
+
+  <!-- Dataset list -->
+  {% if datasets %}
+  <div class="space-y-3">
+    {% for ds in datasets %}
+    <div class="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-gray-900 font-mono">{{ ds.dataset_id }}</h3>
+          <p class="text-xs text-gray-500 mt-1">
+            {{ ds.modality }} ·
+            <span class="{% if ds.data_type == 'simulation' %}text-blue-600{% elif ds.data_type == 'real' %}text-green-600{% else %}text-amber-600{% endif %} font-medium">{{ ds.data_type }}</span>
+            · v{{ ds.version }}
+            {% if ds.num_samples %} · {{ ds.num_samples }} samples{% endif %}
+            {% if ds.license %} · {{ ds.license }}{% endif %}
+          </p>
+          {% if ds.description %}
+          <p class="text-sm text-gray-700 mt-2">{{ ds.description }}</p>
+          {% endif %}
+          {% if ds.source %}
+          <p class="text-xs text-gray-400 mt-1">Source: {{ ds.source }}</p>
+          {% endif %}
+        </div>
+        <div class="flex flex-col items-end gap-2 shrink-0 ml-4">
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded-full
+            {% if ds.is_public %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-100 text-gray-600 border border-gray-300{% endif %}">
+            {% if ds.is_public %}Public{% else %}Internal{% endif %}
+          </span>
+          {% if ds.tags %}
+          <div class="flex flex-wrap gap-1 justify-end">
+            {% for tag in ds.tags %}
+            <span class="text-[10px] px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% if ds.gcs_prefix %}
+      <p class="text-xs font-mono text-gray-400 mt-2 truncate">{{ ds.gcs_prefix }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="bg-white border rounded-lg px-6 py-16 text-center">
+    <p class="text-gray-400 text-sm">No datasets registered yet.</p>
+    {% if user %}
+    <p class="text-gray-400 text-sm mt-1">Use the "Register Dataset" button above or <code class="bg-gray-100 px-1">POST /api/v1/datasets</code> from the CLI.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if user %}
+<script>
+document.getElementById('dataset-reg-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    dataset_id: form.dataset_id.value,
+    version: form.version.value || '1.0.0',
+    modality: form.modality.value,
+    data_type: form.data_type.value,
+    description: form.description.value,
+    source: form.source.value,
+    license: form.license.value,
+    num_samples: parseInt(form.num_samples.value) || 0,
+    gcs_prefix: form.gcs_prefix.value,
+    is_public: form.is_public.checked,
+    tags: [],
+  };
+  const res = await fetch('/api/v1/datasets/register', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  });
+  const el = document.getElementById('reg-result');
+  if (res.ok) {
+    el.innerHTML = '<span class="text-green-600 font-medium">Dataset registered successfully!</span>';
+    setTimeout(() => location.reload(), 1500);
+  } else {
+    const err = await res.json().catch(() => ({detail: 'Registration failed'}));
+    el.innerHTML = '<span class="text-red-600">' + (err.detail || 'Registration failed') + '</span>';
+  }
+});
+</script>
+{% endif %}
+{% endblock %}

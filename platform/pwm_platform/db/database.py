@@ -108,6 +108,17 @@ async def init_db() -> None:
             except Exception:
                 pass  # table may not exist yet on first run; create_all handles it
 
+        # Idempotent migration: instruments table (create_all handles table creation;
+        # add any missing columns for existing installs)
+        for col_def in [
+            "ALTER TABLE instruments ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT TRUE",
+            "ALTER TABLE instruments ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW()",
+        ]:
+            try:
+                await conn.execute(text(col_def))
+            except Exception:
+                pass
+
         # Ensure platformaigpt@gmail.com is admin
         await conn.execute(text(
             "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"

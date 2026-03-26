@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Red-Team Dashboard — Physics World Model{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-2">Red-Team Dashboard</h1>
+  <p class="text-sm text-gray-500 mb-6">
+    Adversarial challenges against published claims — find reproducibility failures, dataset contamination,
+    or physics violations to earn Red-Team badges.
+    See <a href="/contributors#red-team-contributor" class="text-indigo-500 hover:underline">Red-Team Contributor</a> role for details.
+  </p>
+
+  <!-- Intro callout -->
+  <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-8 text-sm text-red-800">
+    <strong>Red-Team Contributor workflow:</strong>
+    <ol class="mt-2 ml-4 list-decimal space-y-1">
+      <li>Pick an open bounty or target a specific Certified-tier claim from the leaderboard.</li>
+      <li>Run adversarial evaluation locally with <code class="bg-red-100 px-1 rounded">pwm evaluate --adversarial</code>.</li>
+      <li>Document your finding: exact failure mode, reproduction steps, affected claim ID.</li>
+      <li>Submit your finding report as a claim via <a href="/claims" class="text-indigo-600 hover:underline">/claims</a> (scaffold a new claim with method = "red-team-finding").</li>
+      <li>Admins review and, if valid, revoke or downgrade the affected claim.</li>
+    </ol>
+  </div>
+
+  <!-- Bounty Board -->
+  <div class="mb-10">
+    <h2 class="text-xl font-bold text-gray-900 mb-3">Open Bounties</h2>
+    <div class="space-y-3">
+      {% for bounty in bounties %}
+      <div class="bg-white border border-red-200 rounded-lg p-5 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-mono text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded">{{ bounty.id }}</span>
+              <h3 class="font-semibold text-gray-900">{{ bounty.title }}</h3>
+            </div>
+            <p class="text-sm text-gray-600">{{ bounty.description }}</p>
+            <div class="flex items-center gap-3 mt-2 text-xs">
+              <span class="text-gray-500">Modality: <strong>{{ bounty.modality }}</strong></span>
+              <span class="text-green-700 font-medium">Reward: {{ bounty.reward }}</span>
+            </div>
+          </div>
+          <span class="shrink-0 ml-4 px-2 py-0.5 text-[10px] font-bold rounded-full
+            {% if bounty.status == 'open' %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-100 text-gray-600 border border-gray-300{% endif %}">
+            {{ bounty.status | title }}
+          </span>
+        </div>
+        {% if user %}
+        <div class="mt-3 pt-3 border-t">
+          <a href="/claims?status=all"
+             class="text-xs text-indigo-600 hover:underline">
+            Scaffold a finding for this bounty &rarr;
+          </a>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Red-team findings -->
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xl font-bold text-gray-900">Submitted Findings</h2>
+      <form method="get" action="/redteam" class="flex items-center gap-2">
+        <select name="modality" onchange="this.form.submit()"
+                class="border rounded px-2 py-1 text-sm text-gray-700">
+          <option value="">All modalities</option>
+          {% for m in all_modalities %}
+          <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+        {% if modality_filter %}
+        <a href="/redteam" class="text-xs text-gray-500 hover:text-indigo-600">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+
+    {% if redteam_claims %}
+    <div class="space-y-3">
+      {% for claim in redteam_claims %}
+      <div class="bg-white border border-red-100 rounded-lg p-4 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ claim.title or 'Untitled finding' }}</h3>
+            <p class="text-xs text-gray-500 mt-1">
+              {% if claim.modality %}<span class="font-medium text-indigo-700">{{ claim.modality }}</span> · {% endif %}
+              {{ claim.method or '' }}
+              {% if claim.authors %} · {{ claim.authors | join(', ') if claim.authors is iterable and claim.authors is not string else claim.authors }}{% endif %}
+            </p>
+          </div>
+          <span class="shrink-0 ml-4 px-2 py-0.5 text-[10px] font-bold rounded-full
+            {% if claim.status == 'approved' %}bg-green-100 text-green-800 border border-green-300
+            {% elif claim.status == 'rejected' %}bg-red-100 text-red-700 border border-red-300
+            {% else %}bg-yellow-100 text-yellow-800 border border-yellow-300{% endif %}">
+            {{ claim.status | replace('_', ' ') | title }}
+          </span>
+        </div>
+        {% if claim.source_url %}
+        <a href="{{ claim.source_url }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-2 inline-block">View evidence &rarr;</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white border rounded-lg px-6 py-12 text-center">
+      <p class="text-gray-400 text-sm">No red-team findings yet.</p>
+      <p class="text-gray-400 text-xs mt-1">
+        Pick a bounty above and scaffold a finding at <a href="/claims" class="text-indigo-500 hover:underline">/claims</a>.
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

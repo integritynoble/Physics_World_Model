@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Solver Gallery — Physics World Model{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-2xl font-bold text-gray-900">Solver Gallery</h1>
+    <a href="/benchmark" class="px-4 py-2 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
+      Submit a Solver
+    </a>
+  </div>
+  <p class="text-sm text-gray-500 mb-6">
+    Community-submitted reconstruction algorithms — approved Method Integrator contributions.
+    Each solver has been accepted on at least one benchmark challenge.
+  </p>
+
+  <!-- Filter -->
+  <form method="get" action="/solvers" class="flex items-center gap-3 mb-6">
+    <select name="modality" onchange="this.form.submit()"
+            class="border rounded px-3 py-2 text-sm text-gray-700">
+      <option value="">All modalities</option>
+      {% for vk in variant_keys %}
+      <option value="{{ vk.split('_')[0] }}"
+              {% if modality_filter and vk.startswith(modality_filter) %}selected{% endif %}>
+        {{ vk }}
+      </option>
+      {% endfor %}
+    </select>
+    {% if modality_filter %}
+    <a href="/solvers" class="text-sm text-gray-500 hover:text-indigo-600">Clear</a>
+    {% endif %}
+    <span class="text-sm text-gray-400 ml-auto">{{ solvers | length }} solver{% if solvers | length != 1 %}s{% endif %}</span>
+  </form>
+
+  {% if solvers %}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for solver in solvers %}
+    <div class="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-start justify-between mb-2">
+        <h3 class="font-bold text-gray-900">{{ solver.method_name }}</h3>
+        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold
+          {% if solver.trust_tier == 'certified' %}bg-green-100 text-green-800
+          {% elif solver.trust_tier == 'reproduced' %}bg-blue-100 text-blue-800
+          {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+          {{ solver.trust_tier | capitalize }}
+        </span>
+      </div>
+
+      <p class="text-xs text-indigo-700 font-mono mb-2">{{ solver.variant_key }}</p>
+
+      {% if solver.method_description %}
+      <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ solver.method_description }}</p>
+      {% endif %}
+
+      {% if solver.scores %}
+      <div class="bg-gray-50 rounded p-2 mb-3">
+        {% for k, v in solver.scores.items() %}
+        <div class="flex justify-between text-xs">
+          <span class="text-gray-500">{{ k }}</span>
+          <span class="font-mono font-bold text-gray-900">{{ "%.3f" | format(v) if v is number else v }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="flex items-center gap-3 text-xs">
+        {% if solver.paper_url %}
+        <a href="{{ solver.paper_url }}" target="_blank" class="text-indigo-500 hover:underline">Paper</a>
+        {% endif %}
+        {% if solver.code_url %}
+        <a href="{{ solver.code_url }}" target="_blank" class="text-indigo-500 hover:underline">Code</a>
+        {% endif %}
+        <span class="text-gray-400 ml-auto">by {{ solver.submitter }} · {{ solver.submitted_at }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="bg-white border rounded-lg px-6 py-16 text-center">
+    <p class="text-gray-400 text-sm">No approved solvers yet.</p>
+    <p class="text-gray-400 text-xs mt-1">
+      <a href="/benchmark" class="text-indigo-500 hover:underline">Submit a solver</a> to a benchmark challenge to appear here.
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
