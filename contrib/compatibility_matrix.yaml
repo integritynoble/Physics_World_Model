@@ -11,7 +11,7 @@ spec_core_compatibility:
     status: "trusted"
   ct_qc/v1:
     spec_core: ">=1.0.0, <2.0.0"
-    status: "reference"
+    status: "certified_compatible"
   combustion/v1:
     spec_core: ">=1.0.0, <2.0.0"
     status: "experimental"

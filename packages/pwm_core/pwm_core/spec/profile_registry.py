@@ -296,7 +296,7 @@ def _build_registry() -> Dict[str, DomainProfile]:
         ],
         physics_tier="statistical",
         noise_model="gaussian",
-        extra={"maturity": DomainProfileMaturity.reference.value},
+        extra={"maturity": DomainProfileMaturity.certified_compatible.value},
     )
 
     return profiles
