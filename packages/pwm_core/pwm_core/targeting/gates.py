@@ -3,8 +3,8 @@
 R1-R4 operational run-gates — explicit pass/fail/warn verdicts.
 
 (S1-S4 are reserved for the paper's formal scientific conditions and are
-**not** checked here; see ``pwm_core.targeting.scientific_gates`` when it
-lands.)
+**not** checked here; see ``pwm_core.targeting.scientific_validity`` for
+the design-time / audit-time S1-S4 verification functions.)
 
 Each gate maps to an existing data source inside a RunBundle:
 
