@@ -1,86 +1,438 @@
 {% extends "base.html" %}
 {% block title %}Solver Gallery — Physics World Model{% endblock %}
+
+{% block head %}
+<style>
+    .solver-card { transition: box-shadow 0.15s ease; }
+    .solver-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .tier-tab { cursor: pointer; transition: all 0.15s ease; }
+    .tier-tab.active { border-color: #4f46e5; color: #4f46e5; background-color: #eef2ff; }
+    .tier-tab:not(.active):hover { background-color: #f9fafb; }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-8">
-  <div class="flex items-center justify-between mb-2">
-    <h1 class="text-2xl font-bold text-gray-900">Solver Gallery</h1>
-    <a href="/benchmark" class="px-4 py-2 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
-      Submit a Solver
-    </a>
-  </div>
-  <p class="text-sm text-gray-500 mb-6">
-    Community-submitted reconstruction algorithms — approved Method Integrator contributions.
-    Each solver has been accepted on at least one benchmark challenge.
-  </p>
+<div class="space-y-8">
 
-  <!-- Filter -->
-  <form method="get" action="/solvers" class="flex items-center gap-3 mb-6">
-    <select name="modality" onchange="this.form.submit()"
-            class="border rounded px-3 py-2 text-sm text-gray-700">
-      <option value="">All modalities</option>
-      {% for vk in variant_keys %}
-      <option value="{{ vk.split('_')[0] }}"
-              {% if modality_filter and vk.startswith(modality_filter) %}selected{% endif %}>
-        {{ vk }}
-      </option>
-      {% endfor %}
-    </select>
-    {% if modality_filter %}
-    <a href="/solvers" class="text-sm text-gray-500 hover:text-indigo-600">Clear</a>
-    {% endif %}
-    <span class="text-sm text-gray-400 ml-auto">{{ solvers | length }} solver{% if solvers | length != 1 %}s{% endif %}</span>
-  </form>
-
-  {% if solvers %}
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-    {% for solver in solvers %}
-    <div class="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
-      <div class="flex items-start justify-between mb-2">
-        <h3 class="font-bold text-gray-900">{{ solver.method_name }}</h3>
-        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold
-          {% if solver.trust_tier == 'certified' %}bg-green-100 text-green-800
-          {% elif solver.trust_tier == 'reproduced' %}bg-blue-100 text-blue-800
-          {% else %}bg-yellow-100 text-yellow-800{% endif %}">
-          {{ solver.trust_tier | capitalize }}
-        </span>
-      </div>
-
-      <p class="text-xs text-indigo-700 font-mono mb-2">{{ solver.variant_key }}</p>
-
-      {% if solver.method_description %}
-      <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ solver.method_description }}</p>
-      {% endif %}
-
-      {% if solver.scores %}
-      <div class="bg-gray-50 rounded p-2 mb-3">
-        {% for k, v in solver.scores.items() %}
-        <div class="flex justify-between text-xs">
-          <span class="text-gray-500">{{ k }}</span>
-          <span class="font-mono font-bold text-gray-900">{{ "%.3f" | format(v) if v is number else v }}</span>
+    <!-- Header -->
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/>
+            </svg>
         </div>
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      <div class="flex items-center gap-3 text-xs">
-        {% if solver.paper_url %}
-        <a href="{{ solver.paper_url }}" target="_blank" class="text-indigo-500 hover:underline">Paper</a>
-        {% endif %}
-        {% if solver.code_url %}
-        <a href="{{ solver.code_url }}" target="_blank" class="text-indigo-500 hover:underline">Code</a>
-        {% endif %}
-        <span class="text-gray-400 ml-auto">by {{ solver.submitter }} · {{ solver.submitted_at }}</span>
-      </div>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Solver Gallery</h1>
+            <p class="text-sm text-gray-500">{{ total_solvers }} solvers across {{ modality_count }} modalities &mdash; from classical to foundation models</p>
+        </div>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="bg-white border rounded-lg px-6 py-16 text-center">
-    <p class="text-gray-400 text-sm">No approved solvers yet.</p>
-    <p class="text-gray-400 text-xs mt-1">
-      <a href="/benchmark" class="text-indigo-500 hover:underline">Submit a solver</a> to a benchmark challenge to appear here.
-    </p>
-  </div>
-  {% endif %}
+
+    <!-- Filters -->
+    <div class="bg-white shadow rounded-lg p-5 space-y-4">
+        <div class="flex flex-wrap items-center gap-4">
+            <!-- Tier filter tabs -->
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mr-1">Tier:</span>
+                <button onclick="filterTier('all')" id="tier-all" class="tier-tab active px-3 py-1.5 text-xs font-semibold rounded-full border border-gray-300">
+                    All
+                </button>
+                <button onclick="filterTier('traditional_cpu')" id="tier-traditional_cpu" class="tier-tab px-3 py-1.5 text-xs font-semibold rounded-full border border-gray-300">
+                    Traditional / CPU
+                </button>
+                <button onclick="filterTier('famous_dl')" id="tier-famous_dl" class="tier-tab px-3 py-1.5 text-xs font-semibold rounded-full border border-gray-300">
+                    Famous DL
+                </button>
+                <button onclick="filterTier('best_quality')" id="tier-best_quality" class="tier-tab px-3 py-1.5 text-xs font-semibold rounded-full border border-gray-300">
+                    Best Quality
+                </button>
+            </div>
+
+            <!-- Modality filter -->
+            <div class="flex items-center gap-2 ml-auto">
+                <label for="modality-filter" class="text-xs font-bold text-gray-500 uppercase tracking-wide">Modality:</label>
+                <select id="modality-filter" onchange="filterModality(this.value)"
+                        class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 pl-3 pr-8 py-1.5">
+                    <option value="all">All modalities</option>
+                    {% for mod_key in modality_keys|sort %}
+                    <option value="{{ mod_key }}">{{ mod_key }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Summary stats -->
+        <div class="grid grid-cols-3 gap-4 pt-2 border-t border-gray-100">
+            <div class="text-center">
+                <div class="text-xl font-bold text-green-700">{{ tier_counts.traditional_cpu }}</div>
+                <div class="text-xs text-gray-500">Traditional / CPU</div>
+            </div>
+            <div class="text-center">
+                <div class="text-xl font-bold text-blue-700">{{ tier_counts.famous_dl }}</div>
+                <div class="text-xs text-gray-500">Famous DL</div>
+            </div>
+            <div class="text-center">
+                <div class="text-xl font-bold text-purple-700">{{ tier_counts.best_quality }}</div>
+                <div class="text-xs text-gray-500">Best Quality</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Traditional / CPU Solvers -->
+    <div id="section-traditional_cpu" class="solver-section space-y-4">
+        <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">Traditional / CPU</span>
+            <h2 class="text-lg font-bold text-gray-900">Classical & Optimization Methods</h2>
+            <span class="text-xs text-gray-400">({{ tier_counts.traditional_cpu }} solvers)</span>
+        </div>
+        <p class="text-sm text-gray-500">
+            Run on CPU with zero training. Classical inverse-problem solvers, variational methods, PnP denoisers, and compressed sensing.
+        </p>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 bg-white shadow rounded-lg overflow-hidden">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Solver</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Params</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Modalities</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Reference</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for solver in solvers_by_tier.traditional_cpu %}
+                    <tr class="solver-card solver-row" data-modalities="{{ solver.modalities|join(',') }}" data-tier="traditional_cpu">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-sm font-semibold text-gray-900">{{ solver.name }}</span>
+                                {% if solver.mask_aware %}
+                                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-50 text-emerald-700" title="Physics-aware: uses forward model">H-aware</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">{{ solver.type }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 font-mono">{{ solver.params }}</td>
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex flex-wrap gap-1 max-w-xs">
+                                {% for m in solver.modalities[:5] %}
+                                <span class="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 text-gray-600">{{ m }}</span>
+                                {% endfor %}
+                                {% if solver.modalities|length > 5 %}
+                                <span class="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 text-gray-500">+{{ solver.modalities|length - 5 }} more</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-gray-500 max-w-xs truncate" title="{{ solver.source }}">{{ solver.source }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Famous DL Solvers -->
+    <div id="section-famous_dl" class="solver-section space-y-4">
+        <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Famous DL</span>
+            <h2 class="text-lg font-bold text-gray-900">Published Deep Learning Methods</h2>
+            <span class="text-xs text-gray-400">({{ tier_counts.famous_dl }} solvers)</span>
+        </div>
+        <p class="text-sm text-gray-500">
+            Well-known deep learning methods from top venues (CVPR, NeurIPS, IEEE TMI, etc.). Includes unrolled networks, transformers, and CNNs.
+        </p>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 bg-white shadow rounded-lg overflow-hidden">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Solver</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Params</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Modalities</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Reference</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for solver in solvers_by_tier.famous_dl %}
+                    <tr class="solver-card solver-row" data-modalities="{{ solver.modalities|join(',') }}" data-tier="famous_dl">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-sm font-semibold text-gray-900">{{ solver.name }}</span>
+                                {% if solver.mask_aware %}
+                                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-50 text-emerald-700" title="Physics-aware: uses forward model">H-aware</span>
+                                {% endif %}
+                                {% if not solver.available %}
+                                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-50 text-amber-700" title="No pretrained checkpoint available yet">no ckpt</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">{{ solver.type }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 font-mono">{{ solver.params }}</td>
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex flex-wrap gap-1 max-w-xs">
+                                {% for m in solver.modalities[:5] %}
+                                <span class="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 text-gray-600">{{ m }}</span>
+                                {% endfor %}
+                                {% if solver.modalities|length > 5 %}
+                                <span class="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 text-gray-500">+{{ solver.modalities|length - 5 }} more</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-gray-500 max-w-xs truncate" title="{{ solver.source }}">{{ solver.source }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Best Quality Solvers -->
+    <div id="section-best_quality" class="solver-section space-y-4">
+        <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">Best Quality</span>
+            <h2 class="text-lg font-bold text-gray-900">State-of-the-Art & Foundation Models</h2>
+            <span class="text-xs text-gray-400">({{ tier_counts.best_quality }} solvers)</span>
+        </div>
+        <p class="text-sm text-gray-500">
+            Diffusion models, score-based methods, physics-informed networks, and foundation models pushing PSNR/SSIM boundaries.
+        </p>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 bg-white shadow rounded-lg overflow-hidden">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Solver</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Params</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Modalities</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Reference</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for solver in solvers_by_tier.best_quality %}
+                    <tr class="solver-card solver-row" data-modalities="{{ solver.modalities|join(',') }}" data-tier="best_quality">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-sm font-semibold text-gray-900">{{ solver.name }}</span>
+                                {% if solver.mask_aware %}
+                                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-50 text-emerald-700" title="Physics-aware: uses forward model">H-aware</span>
+                                {% endif %}
+                                {% if not solver.available %}
+                                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-50 text-amber-700" title="No pretrained checkpoint available yet">no ckpt</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">{{ solver.type }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 font-mono">{{ solver.params }}</td>
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex flex-wrap gap-1 max-w-xs">
+                                {% for m in solver.modalities[:5] %}
+                                <span class="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 text-gray-600">{{ m }}</span>
+                                {% endfor %}
+                                {% if solver.modalities|length > 5 %}
+                                <span class="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 text-gray-500">+{{ solver.modalities|length - 5 }} more</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-gray-500 max-w-xs truncate" title="{{ solver.source }}">{{ solver.source }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Community-Registered Solvers -->
+    {% if community_solvers %}
+    <div class="space-y-4">
+        <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-violet-100 text-violet-800">Community</span>
+            <h2 class="text-lg font-bold text-gray-900">Community-Registered Solvers</h2>
+            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">{{ community_solvers|length }}</span>
+        </div>
+        <div class="overflow-x-auto bg-white shadow rounded-lg">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 border-b">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Modality</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Params</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Registered by</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Code</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for s in community_solvers %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium text-gray-900">{{ s.name }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ s.solver_type }}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-0.5 text-[10px] font-bold rounded bg-violet-50 text-violet-700">{{ s.modality }}</span></td>
+                        <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ s.params or '—' }}</td>
+                        <td class="px-4 py-3 text-gray-500 text-xs">{{ s.registered_by }}</td>
+                        <td class="px-4 py-3">
+                            {% if s.code_url %}
+                            <a href="{{ s.code_url }}" target="_blank" rel="noopener" class="text-indigo-600 hover:underline text-xs">Code</a>
+                            {% else %}<span class="text-gray-300 text-xs">—</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Register a Solver -->
+    <div class="bg-white shadow rounded-lg p-6 space-y-4 border-l-4 border-indigo-400">
+        <h2 class="text-lg font-bold text-gray-900">Register a Solver</h2>
+        <p class="text-sm text-gray-600">
+            Method integrators can register community solvers here. Registered solvers appear above and are
+            eligible for benchmark evaluation.
+        </p>
+        {% if user %}
+        <form id="solver-reg-form" class="space-y-3" onsubmit="registerSolver(event)">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Solver Name <span class="text-red-500">*</span></label>
+                    <input name="name" required placeholder="e.g. MyPnPNet"
+                        class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Type <span class="text-red-500">*</span></label>
+                    <select name="solver_type" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <option value="Deep Learning">Deep Learning</option>
+                        <option value="Diffusion">Diffusion</option>
+                        <option value="Foundation Model">Foundation Model</option>
+                        <option value="PnP">PnP</option>
+                        <option value="Compressed Sensing">Compressed Sensing</option>
+                        <option value="Variational">Variational</option>
+                        <option value="Classical">Classical</option>
+                        <option value="Physics-Informed">Physics-Informed</option>
+                        <option value="Self-Supervised">Self-Supervised</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Modality <span class="text-red-500">*</span></label>
+                    <input name="modality" required placeholder="e.g. ct, mri, cassi"
+                        class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Parameters</label>
+                    <input name="params" placeholder="e.g. 5M, 2.1M"
+                        class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Code URL</label>
+                    <input name="code_url" type="url" placeholder="https://github.com/..."
+                        class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Paper URL</label>
+                    <input name="paper_url" type="url" placeholder="https://arxiv.org/abs/..."
+                        class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                    <input name="description" placeholder="Brief description of the method"
+                        class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+            </div>
+            <div class="flex items-center gap-3 pt-1">
+                <button type="submit"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    Register Solver
+                </button>
+                <span id="solver-reg-msg" class="text-sm text-gray-500 hidden"></span>
+            </div>
+        </form>
+        <script>
+        async function registerSolver(e) {
+            e.preventDefault();
+            const form = document.getElementById('solver-reg-form');
+            const msg = document.getElementById('solver-reg-msg');
+            const data = Object.fromEntries(new FormData(form));
+            data.mask_aware = false;
+            msg.textContent = 'Registering…';
+            msg.classList.remove('hidden', 'text-green-600', 'text-red-600');
+            msg.classList.add('text-gray-500');
+            try {
+                const resp = await fetch('/api/v1/solvers/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if (resp.ok) {
+                    const s = await resp.json();
+                    msg.textContent = 'Registered: ' + s.solver_id;
+                    msg.classList.replace('text-gray-500', 'text-green-600');
+                    form.reset();
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    const err = await resp.json();
+                    msg.textContent = 'Error: ' + (err.detail || resp.status);
+                    msg.classList.replace('text-gray-500', 'text-red-600');
+                }
+            } catch(ex) {
+                msg.textContent = 'Network error';
+                msg.classList.replace('text-gray-500', 'text-red-600');
+            }
+        }
+        </script>
+        {% else %}
+        <p class="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded px-4 py-2">
+            <a href="/login" class="font-medium underline">Log in</a> to register a solver.
+        </p>
+        {% endif %}
+        <div class="flex gap-3 pt-2">
+            <a href="/benchmark"
+               class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-indigo-600 bg-indigo-50 hover:bg-indigo-100">
+                View Benchmarks
+            </a>
+            <a href="/gates"
+               class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-600 bg-gray-50 hover:bg-gray-100">
+                Gate Requirements
+            </a>
+        </div>
+    </div>
+
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var currentTier = 'all';
+    var currentModality = 'all';
+
+    function filterTier(tier) {
+        currentTier = tier;
+        document.querySelectorAll('.tier-tab').forEach(function(btn) {
+            btn.classList.toggle('active', btn.id === 'tier-' + tier);
+        });
+        applyFilters();
+    }
+
+    function filterModality(mod) {
+        currentModality = mod;
+        applyFilters();
+    }
+
+    function applyFilters() {
+        // Show/hide tier sections
+        document.querySelectorAll('.solver-section').forEach(function(section) {
+            var sectionTier = section.id.replace('section-', '');
+            if (currentTier === 'all' || sectionTier === currentTier) {
+                section.style.display = '';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+
+        // Show/hide rows by modality
+        document.querySelectorAll('.solver-row').forEach(function(row) {
+            var mods = row.getAttribute('data-modalities') || '';
+            var showMod = currentModality === 'all' || mods.split(',').indexOf(currentModality) >= 0;
+            var rowTier = row.getAttribute('data-tier');
+            var showTier = currentTier === 'all' || rowTier === currentTier;
+            row.style.display = (showMod && showTier) ? '' : 'none';
+        });
+    }
+</script>
 {% endblock %}
