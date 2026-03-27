@@ -29,29 +29,163 @@ logger = logging.getLogger(__name__)
 GCS_BUCKET = "pwm-benchmark-datasets"
 CACHE_DIR = Path("/tmp/pwm_challenge_cache")
 
-# GCS path templates — tried in order, first match wins
-_GCS_PATH_TEMPLATES = [
-    "datasets/Benchmark/{variant}/{tier}",  # Canonical path
-    "challenge-data/v1.0",                   # Legacy (deprecated)
-]
+# GCS path: gs://pwm-benchmark-datasets/datasets/Benchmark/{storage_name}/{tier}/{storage_name}_challenge_{tier}.h5
+GCS_BENCHMARK_PREFIX = "datasets/Benchmark"
 
+# Maps variant keys → GCS/storage folder name under datasets/Benchmark/
+# e.g. cassi and dd_cassi both live in the "cassi" folder
+_STORAGE_NAME_MAP: dict[str, str] = {
+    "cassi":  "cassi",
+    "dd_cassi":  "cassi",
+    "cassi":     "cassi",
+    "spc_block": "spc",
+    "spc_kronecker": "spc",
+}
+
+# ── Variant key resolution ─────────────────────────────────────────────────
+# Maps LLM-generated or user-provided variant keys → canonical catalog keys.
+# Handles creative names like "mri_undersampled_kspace" → "mri".
+_VARIANT_ALIASES: dict[str, str] = {
+    # CASSI
+    "cassi": "cassi",
+    "sd-cassi": "cassi",
+    "single-disperser-cassi": "cassi",
+    "dd-cassi": "dd_cassi",
+    "double-disperser-cassi": "dd_cassi",
+    # SPC
+    "spc": "spc_block",
+    "single-pixel": "spc_block",
+    "single_pixel_camera": "spc_block",
+    # Medical
+    "xray_ct": "ct",
+    "x_ray_ct": "ct",
+    "computed_tomography": "ct",
+    "ct_reconstruction": "ct",
+    "ct_recon": "ct",
+    "cone_beam_ct": "cbct",
+    "cone-beam-ct": "cbct",
+    "mri_undersampled": "mri",
+    "mri_kspace": "mri",
+    "mri_undersampled_kspace": "mri",
+    "mri_k_space": "mri",
+    "magnetic_resonance_imaging": "mri",
+    "diffusion_mri": "diffusion_mri",
+    "mr_fingerprinting": "mr_fingerprinting",
+    "positron_emission_tomography": "pet",
+    "nuclear_medicine": "spect",
+    # Microscopy
+    "confocal": "confocal_3d",
+    "confocal_microscopy": "confocal_3d",
+    "widefield_microscopy": "widefield",
+    "structured_illumination": "sim",
+    "super_resolution_microscopy": "sim",
+    # Lensless
+    "lensless_imaging": "lensless",
+    "holographic": "lensless",
+    "holography": "lensless",
+    "fresnel_propagation": "lensless",
+    # Others
+    "ghost_imaging_system": "ghost_imaging",
+    "compressed_sensing": "cassi",
+    "hyperspectral": "cassi",
+    "hyperspectral_imaging": "cassi",
+    "dexa_scan": "dexa",
+    "dexa_imaging": "dexa",
+    "dual_energy_xray": "dexa",
+    "optical_diffraction_tomography": "odt",
+    "insar_imaging": "insar",
+    "entangled_photon_imaging": "entangled_photon",
+    "quantum_imaging": "entangled_photon",
+}
+
+
+def _resolve_variant_key(variant_key: str) -> tuple[str, "dict | None"]:
+    """Resolve a possibly-LLM-generated variant key to a canonical one.
+
+    Returns (canonical_key, variant_dict) or (variant_key, None) if not found.
+    Resolution order:
+      1. Exact alias table lookup
+      2. Direct VARIANT_DATABASE lookup
+      3. Prefix segments: "mri_undersampled_kspace" → try "mri", "mri_undersampled"
+      4. Common suffix stripping: "_reconstruction", "_kspace", etc.
+      5. Substring match against all known keys
+    """
+    from pwm_platform.services.benchmark_database import get_variant, list_all_variant_keys
+
+    # 1. Alias table
+    canonical = _VARIANT_ALIASES.get(variant_key)
+    if canonical:
+        v = get_variant(canonical)
+        if v is not None:
+            return canonical, v
+
+    # 2. Direct lookup
+    v = get_variant(variant_key)
+    if v is not None:
+        return variant_key, v
+
+    # 3. Longest-prefix match: "mri_undersampled_kspace" → "mri_undersampled" → "mri"
+    parts = variant_key.split("_")
+    for i in range(len(parts) - 1, 0, -1):
+        key = "_".join(parts[:i])
+        v = get_variant(key)
+        if v is not None:
+            logger.info("Resolved variant '%s' → '%s' via prefix match", variant_key, key)
+            return key, v
+
+    # 4. Strip known suffixes
+    _SUFFIXES = (
+        "_reconstruction", "_recon", "_imaging", "_system", "_model",
+        "_kspace", "_k_space", "_undersampled", "_compressed", "_3d", "_2d",
+        "_scan", "_capture", "_detector", "_sensor",
+    )
+    stripped = variant_key
+    for sfx in _SUFFIXES:
+        if stripped.endswith(sfx):
+            stripped = stripped[: -len(sfx)]
+    if stripped != variant_key:
+        v = get_variant(stripped)
+        if v is not None:
+            logger.info("Resolved variant '%s' → '%s' via suffix strip", variant_key, stripped)
+            return stripped, v
+
+    # 5. Substring: find any known key that contains variant_key or vice versa
+    all_keys = list_all_variant_keys()
+    vk_lower = variant_key.lower().replace("-", "_")
+    for k in all_keys:
+        if k in vk_lower or vk_lower in k:
+            v = get_variant(k)
+            if v is not None:
+                logger.info("Resolved variant '%s' → '%s' via substring match", variant_key, k)
+                return k, v
+
+    return variant_key, None
 
 # ── GCS / HDF5 loading ──────────────────────────────────────────────────
 
 
 def _ensure_challenge_h5(variant: str, tier: str = "public") -> Path:
-    """Download challenge HDF5 from GCS (cached locally).
+    """Return local path to challenge HDF5, downloading from GCS if needed.
 
-    Tries the canonical ``datasets/Benchmark/`` path first, then falls back
-    to the deprecated ``challenge-data/v1.0/`` path.
+    GCS source: gs://pwm-benchmark-datasets/datasets/Benchmark/{storage_name}/{tier}/
+    Cache:      /tmp/pwm_challenge_cache/{storage_name}_challenge_{tier}.h5
+
+    All modalities use the canonical GCS path. cassi/dd_cassi resolve to
+    the 'cassi' folder; spc_block/spc_kronecker resolve to 'spc'.
     """
+    storage_name = _STORAGE_NAME_MAP.get(variant, variant)
+    filename = f"{storage_name}_challenge_{tier}.h5"
+    gcs_key = f"{GCS_BENCHMARK_PREFIX}/{storage_name}/{tier}/{filename}"
+
     cache = CACHE_DIR
     cache.mkdir(parents=True, exist_ok=True)
-    filename = f"{variant}_challenge_{tier}.h5"
-    local_path = cache / filename
-    if local_path.exists() and local_path.stat().st_size > 0:
-        return local_path
+    cache_path = cache / filename
 
+    if cache_path.exists() and cache_path.stat().st_size > 0:
+        logger.info("Cache hit: %s", cache_path)
+        return cache_path
+
+    logger.info("Downloading gs://%s/%s → %s", GCS_BUCKET, gcs_key, cache_path)
     try:
         from google.cloud import storage as gcs_storage
     except ImportError:
@@ -59,26 +193,15 @@ def _ensure_challenge_h5(variant: str, tier: str = "public") -> Path:
 
     client = gcs_storage.Client()
     bucket = client.bucket(GCS_BUCKET)
-
-    errors: list[str] = []
-    for template in _GCS_PATH_TEMPLATES:
-        prefix = template.format(variant=variant, tier=tier)
-        gcs_key = f"{prefix}/{filename}"
-        try:
-            blob = bucket.blob(gcs_key)
-            if blob.exists():
-                blob.download_to_filename(str(local_path))
-                logger.info("Downloaded %s from gs://%s/%s", filename, GCS_BUCKET, gcs_key)
-                return local_path
-        except Exception as e:
-            errors.append(f"{gcs_key}: {e}")
-
-    if local_path.exists() and local_path.stat().st_size == 0:
-        local_path.unlink()
-    raise RuntimeError(
-        f"Cannot find {filename} in GCS. Tried: "
-        + ("; ".join(errors) if errors else "all paths returned not found")
-    )
+    blob = bucket.blob(gcs_key)
+    if not blob.exists():
+        raise RuntimeError(
+            f"Dataset not found in GCS: gs://{GCS_BUCKET}/{gcs_key}\n"
+            f"Available at: gs://{GCS_BUCKET}/{GCS_BENCHMARK_PREFIX}/"
+        )
+    blob.download_to_filename(str(cache_path))
+    logger.info("Downloaded %s (%.1f MB)", filename, cache_path.stat().st_size / 1e6)
+    return cache_path
 
 
 # Modality-specific HDF5 key mappings — standard keys are y, x_true, H_ideal.
@@ -205,8 +328,12 @@ _MASK_INPAINT_MODALITIES: frozenset[str] = frozenset({
 # CASSI: spectral dispersion forward model y = Σ_λ shift(mask * x[:,:,λ], d_λ)
 # Needs GAP-TV reconstruction, NOT mask inpainting
 _CASSI_MODALITIES: frozenset[str] = frozenset({
-    "cassi", "sd_cassi",  # sd_cassi kept for backward compat
+    "cassi", "cassi",  # cassi kept for backward compat
 })
+
+# CACTI: temporal SCI, y = Σ_t mask[:,:,t] * x_true[:,:,t] + noise
+# Needs gap_tv_cacti reconstruction on 3D mask (H, W, T)
+_CACTI_MODALITIES: frozenset[str] = frozenset({"cacti"})
 
 
 def _load_sample(h5_path: Path, sample_idx: int = 0, variant_key: str = "") -> dict:
@@ -381,6 +508,21 @@ def _numpy_to_png_b64(arr: np.ndarray) -> str:
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 
+def _numpy_to_npy_b64(arr: np.ndarray, max_bytes: int = 20 * 1024 * 1024) -> Optional[str]:
+    """Serialize numpy array to base64-encoded .npy bytes (capped at max_bytes)."""
+    if arr is None:
+        return None
+    # Strip complex → magnitude for browser compatibility
+    if np.iscomplexobj(arr):
+        arr = np.abs(arr)
+    estimated = arr.nbytes
+    if estimated > max_bytes:
+        return None  # Too large to embed inline
+    buf = io.BytesIO()
+    np.save(buf, arr.astype(np.float32))  # float32 halves size vs float64
+    return base64.b64encode(buf.getvalue()).decode("ascii")
+
+
 def _normalize_01(arr: np.ndarray) -> np.ndarray:
     """Normalize array to [0, 1] range for scale-invariant metric computation."""
     if np.iscomplexobj(arr):
@@ -424,12 +566,32 @@ def _match_shapes(a: np.ndarray, b: np.ndarray) -> tuple:
 
 
 def _compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
-    xt = _normalize_01(_to_2d_display(x_true))
-    xr = _normalize_01(_to_2d_display(x_recon))
-    xt, xr = _match_shapes(xt, xr)
-    if xt.shape != xr.shape:
+    xt = np.asarray(x_true, dtype=np.float64)
+    xr = np.asarray(x_recon, dtype=np.float64)
+    if np.iscomplexobj(xt):
+        xt = np.abs(xt)
+    if np.iscomplexobj(xr):
+        xr = np.abs(xr)
+    # Multi-channel (>3) data: compute PSNR on full 3D cube directly
+    if xt.ndim == 3 and xt.shape[-1] > 3 and xt.shape == xr.shape:
+        data_range = max(float(xt.max() - xt.min()), 1e-12)
+        mse = float(np.mean((xt - xr) ** 2))
+        if mse < 1e-12:
+            return 60.0
+        return float(10 * np.log10(data_range ** 2 / mse))
+    # 2D / RGB: use joint normalization (same scale for both)
+    xt_d = _to_2d_display(xt)
+    xr_d = _to_2d_display(xr)
+    xt_d, xr_d = _match_shapes(xt_d, xr_d)
+    if xt_d.shape != xr_d.shape:
         return 0.0
-    mse = np.mean((xt - xr) ** 2)
+    lo = min(float(xt_d.min()), float(xr_d.min()))
+    hi = max(float(xt_d.max()), float(xr_d.max()))
+    if hi - lo < 1e-12:
+        return 60.0
+    xt_n = (xt_d - lo) / (hi - lo)
+    xr_n = (xr_d - lo) / (hi - lo)
+    mse = float(np.mean((xt_n - xr_n) ** 2))
     if mse < 1e-12:
         return 60.0
     return float(10 * np.log10(1.0 / mse))
@@ -439,15 +601,36 @@ def _compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
     try:
         from skimage.metrics import structural_similarity
 
-        xt = _normalize_01(_to_2d_display(x_true))
-        xr = _normalize_01(_to_2d_display(x_recon))
-        xt, xr = _match_shapes(xt, xr)
-        if xt.shape != xr.shape:
+        xt = np.asarray(x_true, dtype=np.float64)
+        xr = np.asarray(x_recon, dtype=np.float64)
+        if np.iscomplexobj(xt):
+            xt = np.abs(xt)
+        if np.iscomplexobj(xr):
+            xr = np.abs(xr)
+        # Multi-channel (>3) data: compute SSIM per channel, average
+        if xt.ndim == 3 and xt.shape[-1] > 3 and xt.shape == xr.shape:
+            data_range = max(float(xt.max() - xt.min()), 1e-12)
+            return float(
+                structural_similarity(
+                    xt, xr, data_range=data_range, channel_axis=2
+                )
+            )
+        # 2D / RGB: joint normalization
+        xt_d = _to_2d_display(xt)
+        xr_d = _to_2d_display(xr)
+        xt_d, xr_d = _match_shapes(xt_d, xr_d)
+        if xt_d.shape != xr_d.shape:
             return 0.0
-        mc = xt.ndim == 3 and xt.shape[-1] == 3
+        lo = min(float(xt_d.min()), float(xr_d.min()))
+        hi = max(float(xt_d.max()), float(xr_d.max()))
+        if hi - lo < 1e-12:
+            return 1.0
+        xt_n = (xt_d - lo) / (hi - lo)
+        xr_n = (xr_d - lo) / (hi - lo)
+        mc = xt_n.ndim == 3 and xt_n.shape[-1] == 3
         return float(
             structural_similarity(
-                xt, xr, data_range=1.0, channel_axis=2 if mc else None
+                xt_n, xr_n, data_range=1.0, channel_axis=2 if mc else None
             )
         )
     except (ImportError, ValueError):
@@ -659,14 +842,14 @@ def _tv_admm_ct_reconstruct(
     sinogram: np.ndarray,
     angles: np.ndarray,
     output_size: int | None = None,
-    n_iter: int = 8,
-    tv_weight: float = 0.04,
+    n_iter: int = 20,
+    tv_weight: float = 0.02,
 ) -> np.ndarray:
-    """TV-regularized iterative CT reconstruction for sparse-view / noisy sinograms.
+    """TV-regularized iterative CT reconstruction using gradient descent + TV proximal.
 
-    Uses POCS (Projections onto Convex Sets) with TV denoising:
-    - Data consistency projection (mix measured + reprojected sinogram)
-    - TV denoising (edge-preserving regularization)
+    Uses gradient descent on the data fidelity term with TV denoising proximal step:
+    - Gradient step: x -= step * A^T(Ax - b)  (via FBP of residual sinogram)
+    - TV proximal: x = TV_denoise(x)
     - Non-negativity constraint
     Consistently outperforms FBP for sparse-view CT.
     """
@@ -674,7 +857,7 @@ def _tv_admm_ct_reconstruct(
     from skimage.restoration import denoise_tv_chambolle
     from skimage.transform import iradon, radon
 
-    sino = gaussian_filter(sinogram.astype(np.float64), sigma=[0.5, 1.5])
+    sino = gaussian_filter(sinogram.astype(np.float64), sigma=[0.5, 1.0])
     n_views, n_det = sino.shape
 
     if output_size is None:
@@ -690,8 +873,8 @@ def _tv_admm_ct_reconstruct(
     hi = x.max()
     if hi < 1e-12:
         return x
-    x_n = x / hi
-    sino_n = sino / hi
+    x = x / hi
+    b = sino / hi
 
     def _fwd(img: np.ndarray) -> np.ndarray:
         """Forward Radon → (n_views, n_det)."""
@@ -705,21 +888,19 @@ def _tv_admm_ct_reconstruct(
             s = np.pad(s, ((p, n_det - nd - p), (0, 0)))
         return s.T  # (n_views, n_det)
 
+    step = 0.1
     for _ in range(n_iter):
-        # Data consistency: blend measured and reprojected sinogram
-        sino_cur = _fwd(x_n)
-        sino_blend = sino_n + 0.7 * (sino_n - sino_cur)
-        sino_blend = np.clip(sino_blend, 0.0, None)
-        # FBP on blended sinogram
-        x_new = np.clip(iradon(sino_blend.T, **fbp_kw), 0.0, None)
-        # Normalize and TV denoise
-        h2 = x_new.max()
-        if h2 > 1e-12:
-            x_new = x_new / h2
-        x_n = denoise_tv_chambolle(x_new, weight=tv_weight, max_num_iter=50)
-        x_n = np.clip(x_n, 0.0, None)
+        # Gradient of data fidelity: A^T(Ax - b) via FBP of residual
+        residual = _fwd(x) - b
+        grad = np.clip(iradon(residual.T, theta=angles, filter_name="ramp",
+                               output_size=output_size), -1.0, 1.0)
+        x = x - step * grad
+        x = np.clip(x, 0.0, None)
+        # TV proximal step
+        x = denoise_tv_chambolle(x, weight=tv_weight, max_num_iter=30)
+        x = np.clip(x, 0.0, None)
 
-    return x_n * hi
+    return x * hi
 
 
 def _is_sinogram_data(y: np.ndarray, H: Optional[np.ndarray]) -> bool:
@@ -808,34 +989,50 @@ def _mri_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
 
     if np.iscomplexobj(y):
         if y.ndim == 3:
-            # Multi-coil: iFFT each coil → RSS
+            # Multi-coil: iFFT each coil → RSS (norm='ortho' matches dataset generation)
             coil_imgs = np.fft.ifftshift(
-                np.fft.ifft2(np.fft.ifftshift(y, axes=(-2, -1)), axes=(-2, -1)),
+                np.fft.ifft2(np.fft.ifftshift(y, axes=(-2, -1)), axes=(-2, -1), norm='ortho'),
                 axes=(-2, -1),
             )
             recon = np.sqrt(np.sum(np.abs(coil_imgs) ** 2, axis=0))
         elif y.ndim == 2:
-            recon = np.abs(np.fft.ifftshift(np.fft.ifft2(np.fft.ifftshift(y))))
+            recon = np.abs(np.fft.ifftshift(np.fft.ifft2(np.fft.ifftshift(y), norm='ortho')))
         else:
             recon = np.abs(y)
     else:
         # Not complex — may already be image-domain
         recon = _to_2d_display(y)
 
-    # TV post-processing for CS/regularized algorithms
-    if any(kw in algo_lower for kw in ("tv", "l1", "wavelet", "sparse", "admm", "dwiml")):
-        try:
-            from skimage.restoration import denoise_tv_chambolle
-
-            lo, hi = recon.min(), recon.max()
-            if hi - lo > 1e-12:
-                rn = (recon - lo) / (hi - lo)
-                rn = denoise_tv_chambolle(rn, weight=0.03, max_num_iter=200)
-                recon = rn * (hi - lo) + lo
-        except ImportError:
-            pass
-
     return np.clip(recon, 0, None)
+
+
+def _cacti_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
+    """Reconstruct CACTI temporal SCI data.
+
+    y: (H, W) snapshot measurement = Σ_t mask[:,:,t] * x_true[:,:,t] + noise
+    H_ideal: (H, W, T) binary coded aperture masks
+    Returns: (H, W) mean frame for display, compared against mean(x_true).
+
+    Uses GAP-TV (Generalized Alternating Projection with Total Variation).
+    """
+    y = data.get("y")
+    H = data.get("H_ideal")
+    if y is None or H is None or H.ndim != 3:
+        return _denoise_reconstruct(y if y is not None else np.zeros((64, 64)), algo_name)
+
+    try:
+        from pwm_core.recon.cacti_solvers import gap_tv_cacti
+
+        x_hat = gap_tv_cacti(
+            y.astype(np.float32),
+            H.astype(np.float32),
+            iterations=100,
+            tv_weight=0.1,
+        )
+        # Return mean frame (H, W) so _compute_psnr compares against mean(x_true)
+        return np.mean(x_hat, axis=-1).astype(np.float32)
+    except ImportError:
+        return _denoise_reconstruct(y, algo_name)
 
 
 def _deconv_reconstruct(
@@ -1338,117 +1535,71 @@ def _compressive_reconstruct(
         return _to_2d_display(y)
 
 
-def _algorithm_base_reconstruct(data: dict, variant_key: str, algo_name: str = "") -> np.ndarray:
-    """Universal dispatch to algorithm_base/{modality}/solvers.py.
+def _spc_reconstruct_by_algo(data: dict, algo_name: str = "") -> np.ndarray:
+    """Dispatch SPC reconstruction to per-algorithm solver from algorithm_base.
 
-    Resolves algorithm name → solver function, builds operator from data,
-    and runs the solver. Works for all 170+ modalities.
+    SPC challenge data uses PSF-blurred measurements.
+    Routes to algorithm_base/spc/solvers.py functions.
     """
     import sys
     import importlib
 
     y = data["y"].astype(np.float32)
 
-    algo_base_paths = [
+    # Import SPC solvers module
+    spc_paths = [
         "/app/algorithm_base",
+        str(Path(__file__).resolve().parents[3] / "algorithm_base"),
         "/home/spiritai/pwm/Physics_World_Model/pwm/public/algorithm_base",
     ]
-    for p in algo_base_paths:
+    for p in spc_paths:
         if p not in sys.path:
             sys.path.insert(0, p)
-
-    # Map variant_key to module name (handle aliases)
-    mod_name = variant_key.replace("-", "_")
-
     try:
-        solver_mod = importlib.import_module(f"{mod_name}.solvers")
+        spc_mod = importlib.import_module("spc.solvers")
     except ImportError:
-        logger.warning("No algorithm_base/%s/solvers.py found", mod_name)
-        return None  # Signal caller to use default reconstruction
-
-    solvers = getattr(solver_mod, "SOLVERS", {})
-    if not solvers:
-        return None
+        logger.warning("Cannot import spc.solvers — falling back to Tikhonov")
+        H = data.get("H_ideal")
+        if H is not None and H.ndim == 2:
+            return _compressive_reconstruct(y, H, algo_name)
+        return _denoise_reconstruct(y, algo_name)
 
     # Build name → solver_key mapping
-    name_to_key = {info["name"].lower(): key for key, info in solvers.items()}
+    name_to_key = {}
+    for key, info in spc_mod.SOLVERS.items():
+        name_to_key[info["name"].lower()] = key
+
+    # Find matching solver
     algo_lower = algo_name.lower().strip()
     solver_key = name_to_key.get(algo_lower)
 
-    # Partial match
+    # Try partial matching if exact match fails
     if solver_key is None:
         for name, key in name_to_key.items():
             if algo_lower in name or name in algo_lower:
                 solver_key = key
                 break
 
-    # Fall back to traditional_cpu
     if solver_key is None:
-        solver_key = "traditional_cpu" if "traditional_cpu" in solvers else next(iter(solvers))
-        logger.info("Algorithm '%s' not found for %s, using '%s'", algo_name, mod_name, solver_key)
+        solver_key = "traditional_cpu"
+        logger.warning("SPC solver '%s' not found, falling back to TVAL3", algo_name)
 
-    # Build config with all available data fields
-    cfg = {"n_iter": 200, "max_iter": 200}
-    angles = data.get("angles")
-    if angles is None:
-        angles = data.get("angles_deg")
-    if angles is not None:
-        cfg["angles"] = angles
-    x_true = data.get("x_true")
-    if x_true is not None:
-        cfg["output_size"] = x_true.shape[0]
-    elif y.ndim == 2:
-        # Estimate output size from sinogram detector count
-        cfg["output_size"] = min(y.shape)
-
-    # Prefer run_solver() dispatch if available (handles internal mapping)
-    run_solver_fn = getattr(solver_mod, "run_solver", None)
-    if run_solver_fn is not None:
-        try:
-            x_recon = run_solver_fn(solver_key, y, None, cfg)
-            if x_recon is not None:
-                return np.clip(x_recon, 0, None).astype(np.float32)
-        except Exception as exc:
-            logger.warning("run_solver %s/%s failed: %s", mod_name, solver_key, exc)
-
-    # Fall back to direct function call
-    solver_info = solvers[solver_key]
+    solver_info = spc_mod.SOLVERS[solver_key]
     fn_name = solver_info["function"]
-    solver_fn = getattr(solver_mod, fn_name, None)
-    if solver_fn is None:
-        logger.warning("Function %s not found in %s.solvers", fn_name, mod_name)
-        return None
+    solver_fn = getattr(spc_mod, fn_name)
 
-    # Build operator from data
-    H = data.get("H_ideal")
-    op = None
-    if hasattr(solver_mod, "MaskOperator") and H is not None and H.ndim == 2 and len(np.unique(H)) <= 3:
-        op = solver_mod.MaskOperator(H)
-    elif hasattr(solver_mod, "_extract_operator"):
-        try:
-            op = solver_mod._extract_operator(None, y, {})
-        except Exception:
-            pass
-    if op is None:
-        for op_cls_name in ["SPCOperator", "Operator", "ForwardOperator"]:
-            op_cls = getattr(solver_mod, op_cls_name, None)
-            if op_cls is not None:
-                try:
-                    op = op_cls(y.shape[:2])
-                except Exception:
-                    pass
-                break
+    # Build operator
+    op = spc_mod.SPCOperator(y.shape[:2])
 
-    cfg = {"n_iter": 200, "max_iter": 200}
+    # Run solver
+    cfg = {"n_iter": 200}
     try:
         x_recon = solver_fn(y, op, cfg)
     except Exception as exc:
-        logger.warning("Solver %s/%s failed: %s", mod_name, algo_name, exc)
-        return None
+        logger.warning("SPC solver %s failed: %s — falling back to TVAL3", algo_name, exc)
+        x_recon = spc_mod._run_tval3(y, op, cfg)
 
-    if x_recon is not None:
-        return np.clip(x_recon, 0, None).astype(np.float32)
-    return None
+    return np.clip(x_recon, 0, None).astype(np.float32)
 
 
 # ── Reconstruction dispatch ──────────────────────────────────────────────
@@ -1464,14 +1615,17 @@ _CASSI_MODAL_GPU: dict[str, tuple[str, str]] = {
     "MiJUN-5stg":  ("mijun_5stg",  "checkpoint/cassi/our_mamba_5stg_recovered.pth"),
 }
 
+# CT algorithms that run on Modal T4 GPU via TTO (no pretrained weights).
+_CT_MODAL_GPU: set[str] = {"DLCT", "BM3D-CT", "PnP-ADMM"}
+
 # CASSI DL models that can run on CPU via GCS checkpoint download.
 # Treating them as non-DL routes them through _cassi_reconstruct_by_algo → _cassi_model_reconstruct.
 _CASSI_CPU_RUNNABLE: set[str] = {
     "TSA-Net", "λ-Net", "ADMM-Net", "GAP-Net", "DGSMP",
     "HDNet", "MST-L", "MST++", "CST-L-Plus", "BIRNAT",
     "BiSRNet", "PADUT-3stg", "RDLUF-MixS2-9stg", "SSR-L",
-    # DAUHST-9stg → _CASSI_MODAL_GPU (Modal T4 GPU)
-    # MiJUN-5stg  → _CASSI_MODAL_GPU (Modal T4 GPU, Mamba too slow on CPU)
+    "DAUHST-9stg",  # can run on CPU (~30s), GPU preferred
+    # MiJUN-5stg  → _CASSI_MODAL_GPU only (Mamba too slow on CPU)
 }
 
 
@@ -1886,6 +2040,8 @@ def _detect_recon_type(
         return "phase_retrieval"
     if variant_key in _CASSI_MODALITIES:
         return "cassi"
+    if variant_key in _CACTI_MODALITIES:
+        return "cacti"
     if variant_key in _MASK_INPAINT_MODALITIES:
         return "mask_inpaint"
     if variant_key in _DENOISING_MODALITIES:
@@ -1980,14 +2136,6 @@ def _dispatch_reconstruction(
         recon_type = "deconvolution"
 
     def _compute_reconstruction() -> np.ndarray:
-        # Try algorithm_base dispatch first for per-algorithm reconstruction
-        try:
-            ab_result = _algorithm_base_reconstruct(data, variant_key, algo_name)
-            if ab_result is not None:
-                return ab_result
-        except Exception as exc:
-            logger.debug("algorithm_base dispatch failed for %s/%s: %s", variant_key, algo_name, exc)
-
         try:
             if recon_type == "sinogram":
                 # Sinogram → FBP / PINER-CT
@@ -2050,12 +2198,18 @@ def _dispatch_reconstruction(
                 # 3D spectral format: route by algorithm name
                 return _cassi_reconstruct_by_algo(data, algo_name)
 
+            if recon_type == "cacti":
+                return _cacti_reconstruct(data, algo_name)
+
             if recon_type == "mask_inpaint":
                 if H is not None:
                     return _mask_inpaint_reconstruct(y, H)
                 return _denoise_reconstruct(y, algo_name)
 
             if recon_type == "matrix_inverse":
+                # SPC variants: dispatch to per-algorithm solver
+                if variant_key in ("spc", "spc_block", "spc_kronecker"):
+                    return _spc_reconstruct_by_algo(data, algo_name)
                 if H is not None and H.ndim == 2:
                     return _compressive_reconstruct(y, H, algo_name)
 
@@ -2168,6 +2322,7 @@ async def _try_modal_gpu(
             "use_drunet": use_drunet,
             "cassi_model_key": sample_data.get("cassi_model_key"),
             "ckpt_bytes": sample_data.get("ckpt_bytes"),
+            "algo_name": sample_data.get("algo_name", ""),
         })
         # Use async API so the event loop is not blocked during GPU inference
         result_bytes = await reconstruct_gpu.remote.aio(payload)
@@ -2190,8 +2345,8 @@ async def run_common_reconstruction(
     algorithm_name: str,
     user_measurement: Optional[np.ndarray] = None,
     user_matrix: Optional[np.ndarray] = None,
-    sample_index: int = 0,
     user_ground_truth: Optional[np.ndarray] = None,
+    sample_index: int = 0,
 ) -> dict:
     """Run a single algorithm on standard benchmark or user data.
 
@@ -2205,8 +2360,8 @@ async def run_common_reconstruction(
         algorithm_name,
         user_measurement,
         user_matrix,
-        sample_index,
         user_ground_truth,
+        sample_index,
     )
 
 
@@ -2215,11 +2370,21 @@ async def _run_common_async(
     algorithm_name: str,
     user_measurement: Optional[np.ndarray],
     user_matrix: Optional[np.ndarray],
-    sample_index: int = 0,
     user_ground_truth: Optional[np.ndarray] = None,
+    sample_index: int = 0,
 ) -> dict:
     """Async common-mode reconstruction (awaits Modal GPU calls non-blocking)."""
+    import asyncio
     t0 = time.perf_counter()
+
+    # ── Scientific simulation shortcut ───────────────────────────────────────
+    # Variants like sod_shock_tube, seismic_fwi run their own physics solvers
+    # and don't need any benchmark H5 data.
+    from pwm_platform.services.scientific_simulators import is_scientific_sim, run_simulation
+    if is_scientific_sim(variant_key):
+        result = await asyncio.to_thread(run_simulation, variant_key, {})
+        result["runtime_ms"] = int((time.perf_counter() - t0) * 1000)
+        return result
 
     from pwm_platform.services.benchmark_database import (
         get_algorithms,
@@ -2227,21 +2392,14 @@ async def _run_common_async(
         resolve_algorithm,
     )
 
-    # Variant aliases: resolve short names to catalog entries
-    _VARIANT_ALIASES: dict[str, str] = {
-        "cassi": "sd_cassi",  # short alias → canonical variant key
-        "sd-cassi": "sd_cassi",
-        "spc": "spc_block",
-    }
-    catalog_key = _VARIANT_ALIASES.get(variant_key, variant_key)
-    variant = get_variant(catalog_key)
-    # Fallback: if alias target not found, try variant_key directly
-    if variant is None and catalog_key != variant_key:
-        variant = get_variant(variant_key)
-        if variant is not None:
-            catalog_key = variant_key
+    # Resolve LLM-generated or short variant keys → canonical catalog entries
+    catalog_key, variant = _resolve_variant_key(variant_key)
     if variant is None:
-        raise ValueError(f"Unknown variant: {variant_key}")
+        raise ValueError(
+            f"Unknown imaging modality: '{variant_key}'. "
+            "Please describe the modality more specifically in the chat "
+            "(e.g. 'ct', 'mri', 'cassi', 'lensless')."
+        )
 
     category = variant.get("category", "compressive")
     algo_info = resolve_algorithm(variant_key, category, algorithm_name)
@@ -2259,6 +2417,8 @@ async def _run_common_async(
         sample_data: dict = {"y": user_measurement}
         if user_matrix is not None:
             sample_data["H_ideal"] = user_matrix
+        if user_ground_truth is not None:
+            sample_data["x_true"] = user_ground_truth
     else:
         try:
             h5_path = _ensure_challenge_h5(variant_key, "public")
@@ -2299,12 +2459,20 @@ async def _run_common_async(
     )
     is_dl = any(kw in algo_type for kw in _DL_KEYWORDS)
 
+    # Algorithms explicitly marked unavailable in the catalog (e.g. DLCT, BM3D-CT)
+    # are treated as DL placeholders even if their type doesn't match _DL_KEYWORDS.
+    if not is_dl and algo_info.get("available", True) is False:
+        is_dl = True
+
     # Physics-informed methods we can actually run get treated as classical
-    if algorithm_name in _RUNNABLE_PHYSICS_INFORMED:
+    _runnable_lower = {n.lower() for n in _RUNNABLE_PHYSICS_INFORMED}
+    if algorithm_name.lower() in _runnable_lower:
         is_dl = False
 
     # CASSI DL models with GCS checkpoints run on CPU via _cassi_model_reconstruct
-    if catalog_key in ("sd_cassi", "cassi") and algorithm_name in _CASSI_CPU_RUNNABLE:
+    # Use case-insensitive matching to handle UI/LLM name variations
+    _cassi_cpu_lower = {n.lower() for n in _CASSI_CPU_RUNNABLE}
+    if catalog_key == "cassi" and algorithm_name.lower() in _cassi_cpu_lower:
         is_dl = False
 
     # Run reconstruction via central dispatch
@@ -2317,7 +2485,7 @@ async def _run_common_async(
     # ── CASSI Modal GPU path (DAUHST-9stg, MiJUN-5stg) ───────────────────────
     # Try Modal T4 GPU first; fall back to GAP-TV baseline only if GPU fails.
     # One Modal invocation per request — checkpoint bytes sent in the payload.
-    if catalog_key in ("sd_cassi", "cassi") and algorithm_name in _CASSI_MODAL_GPU:
+    if catalog_key == "cassi" and algorithm_name in _CASSI_MODAL_GPU:
         cassi_gpu_key, cassi_ckpt_gcs = _CASSI_MODAL_GPU[algorithm_name]
         ckpt_cache = CACHE_DIR / f"cassi_{cassi_gpu_key}.pth"
         if not ckpt_cache.exists():
@@ -2343,9 +2511,65 @@ async def _run_common_async(
                 gpu_ran = True
                 dl_note = False
         if not gpu_ran:
-            # Modal unavailable or checkpoint missing — show GAP-TV baseline
-            x_recon = _dispatch_reconstruction(sample_data, variant_key, category, "")
-            dl_note = True
+            # Modal unavailable — try CPU model inference before falling back to GAP-TV
+            try:
+                x_recon = _dispatch_reconstruction(sample_data, variant_key, category, algorithm_name)
+                dl_note = False
+            except Exception:
+                x_recon = _dispatch_reconstruction(sample_data, variant_key, category, "")
+                dl_note = True
+
+    elif variant_key == "ct" and algorithm_name in _CT_MODAL_GPU:
+        # CT GPU path: TTO dictionary learning / BM3D / PnP-ADMM on T4
+        _fbp_baseline = _dispatch_reconstruction(sample_data, variant_key, category, "")
+        sample_data_for_gpu = dict(sample_data)
+        sample_data_for_gpu["algo_name"] = algorithm_name
+        sample_data_for_gpu["reconstruction_baseline"] = _fbp_baseline
+        x_gpu, psnr_from_gpu, ssim_from_gpu = await _try_modal_gpu(
+            sample_data_for_gpu, variant_key
+        )
+        if x_gpu is not None:
+            x_recon = x_gpu
+            gpu_ran = True
+            dl_note = False
+        else:
+            x_recon = _fbp_baseline
+
+    elif catalog_key == "cassi" and algorithm_name.lower() in _cassi_cpu_lower:
+        # CASSI CPU DL path (HDNet, MST-L, etc.) — pre-check GCS availability so
+        # we can surface the placeholder notice if the checkpoint is unavailable.
+        algo_lower_key = algorithm_name.lower().strip()
+        cpu_model_info = _CASSI_ALGO_MAP.get(algo_lower_key)
+        if cpu_model_info is None:
+            for _mkey, _mval in _CASSI_ALGO_MAP.items():
+                if _mkey in algo_lower_key or algo_lower_key in _mkey:
+                    cpu_model_info = _mval
+                    break
+        if cpu_model_info is not None:
+            cpu_model_key, cpu_ckpt_gcs = cpu_model_info
+            ckpt_cache = CACHE_DIR / f"cassi_{cpu_model_key}.pth"
+            if not ckpt_cache.exists():
+                try:
+                    from google.cloud import storage as _gcs
+                    _client = _gcs.Client()
+                    _bucket = _client.bucket(GCS_BUCKET)
+                    _blob = _bucket.blob(cpu_ckpt_gcs)
+                    _blob.download_to_filename(str(ckpt_cache))
+                    logger.info("Downloaded %s from GCS", cpu_model_key)
+                except Exception as _e:
+                    logger.warning(
+                        "Cannot download %s checkpoint: %s, showing GAP-TV baseline",
+                        cpu_model_key, _e,
+                    )
+            if ckpt_cache.exists():
+                x_recon = _cassi_model_reconstruct(sample_data, cpu_model_key, cpu_ckpt_gcs)
+                # dl_note stays False — real DL inference ran on CPU
+            else:
+                x_recon = _dispatch_reconstruction(sample_data, variant_key, category, "")
+                dl_note = True  # GCS unavailable; showing GAP-TV baseline
+        else:
+            # Classical name that ended up in _CASSI_CPU_RUNNABLE
+            x_recon = _dispatch_reconstruction(sample_data, variant_key, category, effective_algo)
 
     elif not is_dl:
         x_recon = _dispatch_reconstruction(
@@ -2457,5 +2681,14 @@ async def _run_common_async(
 
     if has_gt and x_true is not None:
         result["ground_truth_image"] = _numpy_to_png_b64(x_true)
+
+    # Dataset download arrays (base64 .npy, capped at 20 MB each)
+    result["npy_measurement"] = _numpy_to_npy_b64(y)
+    result["npy_reconstruction"] = _numpy_to_npy_b64(x_recon)
+    if has_gt and x_true is not None:
+        result["npy_ground_truth"] = _numpy_to_npy_b64(x_true)
+    h_arr = sample_data.get("H_ideal")
+    if h_arr is not None:
+        result["npy_h_matrix"] = _numpy_to_npy_b64(h_arr)
 
     return result
