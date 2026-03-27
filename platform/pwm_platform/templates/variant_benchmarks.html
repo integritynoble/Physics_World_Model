@@ -272,15 +272,30 @@
                                         <span class="text-green-700 font-mono">{{ entry.psnr }} dB</span>
                                         <span class="text-blue-700 font-mono">SSIM {{ "%.3f" | format(entry.ssim) }}</span>
                                     </div>
-                                    <a href="/speclab?mode=common&modality={{ variant_key }}&algorithm={{ entry.method | urlencode }}"
+                                    {% if entry.available is defined and not entry.available %}
+                                    <div class="mt-3 block w-full text-center px-3 py-2 bg-gray-200 text-gray-500 text-xs font-bold rounded-lg cursor-not-allowed">
+                                        Checkpoint unavailable
+                                    </div>
+                                    {% else %}
+                                    <a href="/speclab?type=reconstruct&modality={{ variant_key }}&algorithm={{ entry.method | urlencode }}"
                                        class="mt-3 block w-full text-center px-3 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 no-underline">
-                                        Run it yourself &rarr;
+                                        Try in SpecLab &rarr;
                                     </a>
+                                    {% endif %}
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-right font-mono text-lg font-bold text-indigo-800">{{ "%.3f" | format(entry.score) }}</td>
                             <td class="px-4 py-3 text-right font-mono text-gray-700">{{ entry.psnr }}</td>
                             <td class="px-4 py-3 text-right font-mono text-gray-700">{{ "%.3f" | format(entry.ssim) }}</td>
+                            <td class="px-4 py-3">
+                                {% set tt = entry.get('trust_tier', 'draft') %}
+                                {% if tt == 'certified' %}<span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 border border-green-300">&#10003; Certified</span>
+                                {% elif tt == 'reproduced' %}<span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300">&#8635; Reproduced</span>
+                                {% elif tt == 'author_confirmed' %}<span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-300">&#10003; Confirmed</span>
+                                {% elif tt == 'rejected' %}<span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-300">&#10007; Rejected</span>
+                                {% else %}<span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500 border border-gray-300">&#9679; Draft</span>
+                                {% endif %}
+                            </td>
                             <td class="px-4 py-3 text-xs text-gray-500">{{ entry.source }}</td>
                         </tr>
                         {% endfor %}
@@ -290,6 +305,7 @@
             {% if normal_lb %}
             <p class="text-xs text-gray-400 italic mt-2">Dataset: {{ normal_lb[0].dataset }}</p>
             {% endif %}
+
         </div>
         {% endif %}
 
@@ -311,6 +327,7 @@
                             <th class="px-4 py-3 text-right font-medium text-green-700">Public<div class="text-[10px] font-normal text-gray-400">PSNR / SSIM</div></th>
                             <th class="px-4 py-3 text-right font-medium text-amber-700">Dev<div class="text-[10px] font-normal text-gray-400">PSNR / SSIM</div></th>
                             <th class="px-4 py-3 text-right font-medium text-purple-700">Hidden<div class="text-[10px] font-normal text-gray-400">PSNR / SSIM</div></th>
+                            <th class="px-4 py-3 text-left font-medium text-gray-600">Trust</th>
                             <th class="px-4 py-3 text-left font-medium text-gray-600">Source</th>
                         </tr>
                     </thead>
@@ -329,10 +346,16 @@
                                     <p class="text-sm font-bold text-gray-900">{{ entry.method }}</p>
                                     <p class="text-xs text-gray-500 mt-1">{{ entry.source }}</p>
                                     <div class="mt-2 text-xs text-amber-700 font-mono">Score {{ "%.3f" | format(entry.overall_score) }}</div>
-                                    <a href="/speclab?mode=common&modality={{ variant_key }}&algorithm={{ entry.method | urlencode }}"
-                                       class="mt-3 block w-full text-center px-3 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 no-underline">
-                                        Run it yourself &rarr;
+                                    {% if entry.available is defined and not entry.available %}
+                                    <div class="mt-3 block w-full text-center px-3 py-2 bg-gray-200 text-gray-500 text-xs font-bold rounded-lg cursor-not-allowed">
+                                        Checkpoint unavailable
+                                    </div>
+                                    {% else %}
+                                    <a href="/speclab?type=mismatch&modality={{ variant_key }}&algorithm={{ entry.method | urlencode }}"
+                                       class="mt-3 block w-full text-center px-3 py-2 bg-amber-600 text-white text-xs font-bold rounded-lg hover:bg-amber-700 no-underline">
+                                        Correct &amp; Reconstruct &rarr;
                                     </a>
+                                    {% endif %}
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-right font-mono text-lg font-bold text-amber-800">{{ "%.3f" | format(entry.overall_score) }}</td>
@@ -348,6 +371,20 @@
                                 {% else %}&mdash;{% endif %}
                             </td>
                             {% endfor %}
+                            <td class="px-4 py-3">
+                                {% set tt = entry.get('trust_tier', 'draft') %}
+                                {% if tt == 'certified' %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 border border-green-300" title="Certified: all S1–S4 gates passed and independently reproduced">&#10003; Certified</span>
+                                {% elif tt == 'reproduced' %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300" title="Reproduced: independently verified by a third party">&#8635; Reproduced</span>
+                                {% elif tt == 'author_confirmed' %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-300" title="Author-confirmed: author ran the harness and gates passed">&#10003; Confirmed</span>
+                                {% elif tt == 'rejected' %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-300" title="Rejected: one or more hard gates (S1/S2/S3) failed">&#10007; Rejected</span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500 border border-gray-300" title="Draft: gates not yet evaluated">&#9679; Draft</span>
+                                {% endif %}
+                            </td>
                             <td class="px-4 py-3 text-xs text-gray-500">{{ entry.source }}</td>
                         </tr>
                         {% endfor %}
@@ -380,6 +417,37 @@
         {% endif %}
 
     </div>
+
+    <!-- Report Issue / Flag Entry (visible to any logged-in user) -->
+    {% if user %}
+    <details class="mt-4">
+        <summary class="text-xs text-orange-600 cursor-pointer hover:text-orange-700 font-medium">Report an issue with this leaderboard</summary>
+        <form class="mt-2 p-3 bg-orange-50 border border-orange-200 rounded-lg" onsubmit="event.preventDefault(); reportIssue(this);">
+            <input type="hidden" name="variant_key" value="{{ variant.key or variant_key }}">
+            <input type="hidden" name="reporter_id" value="{{ user.id }}">
+            <div class="mb-2">
+                <label class="block text-xs font-medium text-gray-700 mb-1">What's wrong?</label>
+                <select name="issue_type" class="w-full px-2 py-1 text-xs border rounded">
+                    <option value="wrong_psnr">PSNR/SSIM looks incorrect or impossible</option>
+                    <option value="wrong_method">Method name or description is wrong</option>
+                    <option value="duplicate">Duplicate entry</option>
+                    <option value="missing_paper">Important paper is missing from leaderboard</option>
+                    <option value="trust_tier_wrong">Trust tier badge is incorrect</option>
+                    <option value="other">Other issue</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="block text-xs font-medium text-gray-700 mb-1">Details</label>
+                <textarea name="details" rows="2" required placeholder="Describe the issue..." class="w-full px-2 py-1 text-xs border rounded"></textarea>
+            </div>
+            <button type="submit" class="px-3 py-1 text-xs bg-orange-600 text-white rounded hover:bg-orange-700">Submit Report</button>
+            <span id="report-status" class="text-xs text-gray-500 ml-2"></span>
+        </form>
+    </details>
+    {% if user and user.role in ['admin', 'reviewer'] %}
+    <p class="mt-2 text-xs text-gray-400">Admin: <a href="/claims" class="text-indigo-500 hover:underline font-medium">Review all claims &amp; reports &rarr;</a></p>
+    {% endif %}
+    {% endif %}
 
     <!-- Scoring formula (compact, only for challenge tab) -->
     {% if bm and bm.scoring %}
@@ -1068,6 +1136,39 @@ function startDownload(btn, url) {
         btn.disabled = false;
         btn.style.opacity = '1';
     }, 4000);
+}
+
+function reportIssue(form) {
+    var data = new FormData(form);
+    var details = data.get('details') || '';
+    var issueType = data.get('issue_type') || 'other';
+    fetch('/claims/scaffold', {
+        method: 'POST',
+        credentials: 'include',
+        body: new URLSearchParams({
+            title: '[DISPUTE] ' + issueType + ' — ' + data.get('variant_key') + ': ' + details.substring(0, 120),
+            modality: data.get('variant_key'),
+            method: issueType,
+            arxiv_id: '',
+            authors: '',
+            source_url: '',
+            claimed_psnr: '',
+            claimed_ssim: '',
+            claim_type: 'trust_dispute',
+        })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        var status = document.getElementById('report-status');
+        status.textContent = 'Report submitted (claim ID: ' + d.claim_id + '). Admin will review at /claims';
+        status.className = 'text-xs text-green-600 ml-2';
+        form.reset();
+    })
+    .catch(function(e) {
+        var status = document.getElementById('report-status');
+        status.textContent = 'Error: ' + e.message;
+        status.className = 'text-xs text-red-600 ml-2';
+    });
 }
 </script>
 {% endblock %}
