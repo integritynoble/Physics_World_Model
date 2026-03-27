@@ -58,6 +58,7 @@ _TYPE_TIER_RULES = {
     "reconstruction":  {"dev"},
     "algorithm":       {"hidden"},
     "dataset":         {"public", "dev", "hidden"},
+    "solver":          {"public", "dev", "hidden"},
 }
 
 

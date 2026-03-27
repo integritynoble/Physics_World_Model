@@ -1,226 +1,1424 @@
-{% extends "base.html" %}
-{% block title %}SpecLab — Physics World Model{% endblock %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpecLab — Physics World Model</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        html, body { height: 100%; margin: 0; overflow: hidden; }
+        #guide-modal { animation: none; }
+        #guide-modal:not(.hidden) { display: flex; align-items: stretch; justify-content: center; }
+        /* Sidebar scrollbar */
+        #sidebar-history::-webkit-scrollbar { width: 4px; }
+        #sidebar-history::-webkit-scrollbar-track { background: transparent; }
+        #sidebar-history::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 2px; }
+        /* Chat log scrollbar */
+        #chat-log::-webkit-scrollbar { width: 6px; }
+        #chat-log::-webkit-scrollbar-track { background: transparent; }
+        #chat-log::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+        /* Spec panel scrollbar */
+        #spec-intro, #spec-md-wrapper { scrollbar-width: thin; scrollbar-color: #e5e7eb transparent; }
+        /* Bounce animation */
+        @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+        .bounce-dot { animation: bounce 1.2s infinite; }
+        /* Textarea auto-grow */
+        #chat-textarea { field-sizing: content; min-height: 24px; max-height: 200px; }
+        /* Prose in assistant messages */
+        .assistant-prose p { margin: 0.5em 0; }
+        .assistant-prose p:first-child { margin-top: 0; }
+        .assistant-prose p:last-child { margin-bottom: 0; }
+        .assistant-prose ul { list-style: disc; padding-left: 1.25em; margin: 0.5em 0; }
+        .assistant-prose li { margin: 0.2em 0; }
+        .assistant-prose code { background:#f3f4f6; padding:2px 6px; border-radius:4px; font-size:0.8em; font-family:monospace; }
+        .assistant-prose pre { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:12px; overflow-x:auto; font-size:0.75em; margin:0.75em 0; }
+        .assistant-prose strong { font-weight:600; color:#111827; }
+        /* spec.md rendered prose */
+        #spec-md-content h1 { font-size:1.1rem; font-weight:700; color:#111827; border-bottom:1px solid #e5e7eb; padding-bottom:0.5rem; margin:0 0 1rem; }
+        #spec-md-content h2 { font-size:0.65rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.08em; margin:1.25rem 0 0.5rem; }
+        #spec-md-content p  { font-size:0.875rem; color:#374151; line-height:1.6; margin:0.4rem 0; }
+        #spec-md-content code { background:#f3f4f6; padding:2px 6px; border-radius:4px; font-size:0.75rem; font-family:monospace; color:#1f2937; }
+        #spec-md-content pre { background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:1rem; font-size:0.75rem; overflow-x:auto; line-height:1.6; margin:0.75rem 0; }
+        #spec-md-content table { width:100%; font-size:0.75rem; border-collapse:collapse; margin:0.75rem 0; }
+        #spec-md-content th { text-align:left; padding:6px 12px; background:#f9fafb; font-weight:600; color:#6b7280; border-bottom:1px solid #e5e7eb; }
+        #spec-md-content td { padding:6px 12px; border-bottom:1px solid #f3f4f6; color:#374151; }
+        #spec-md-content ul { padding-left:1.5em; margin:0.4rem 0; }
+        #spec-md-content li { font-size:0.875rem; color:#374151; margin:0.25rem 0; }
+        #spec-md-content strong { font-weight:600; color:#111827; }
+        #spec-md-content blockquote { border-left:4px solid #c7d2fe; padding-left:1rem; color:#6b7280; font-style:italic; margin:0.75rem 0; }
+        #spec-md-content em { color:#6b7280; font-style:italic; }
+    </style>
+</head>
+<body class="h-full bg-white flex overflow-hidden">
 
-{% block content %}
-<div class="space-y-6">
-    <!-- Header -->
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900">SpecLab</h1>
-        <p class="text-sm text-gray-500">Interactive Spec Builder for Imaging System Design</p>
-    </div>
+{# ══════════════════════════════════════════════════════════════
+   LEFT SIDEBAR — dark, Claude-style conversation list
+══════════════════════════════════════════════════════════════ #}
+<div class="flex flex-col bg-[#1a1a1a] text-white overflow-hidden flex-shrink-0" style="width:260px">
 
-    <!-- Tab Navigation -->
-    <div class="border-b border-gray-200">
-        <nav class="-mb-px flex gap-6" aria-label="SpecLab modes">
-            <button id="tab-common" onclick="switchTab('common')"
-                    class="tab-btn whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium transition-colors
-                           {% if speclab_mode == 'common' %}border-indigo-600 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %}">
-                Reconstruction
+    {# Top: logo + new chat #}
+    <div class="px-3 pt-4 pb-3 flex-shrink-0">
+        <div class="flex items-center justify-between mb-3 px-1">
+            <a href="/benchmark" class="flex items-center gap-2 group">
+                <div class="w-6 h-6 rounded-md bg-indigo-500 flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12"/>
+                    </svg>
+                </div>
+                <span class="text-sm font-semibold text-white/90 group-hover:text-white">SpecLab</span>
+            </a>
+            {# Pencil / new chat icon button #}
+            <button onclick="newChat()" title="New chat"
+                    class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                </svg>
             </button>
-            <button id="tab-advanced" onclick="switchTab('advanced')"
-                    class="tab-btn whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium transition-colors
-                           {% if speclab_mode == 'advanced' %}border-indigo-600 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %}">
-                Advanced Mode
-            </button>
-        </nav>
-    </div>
-
-    <!-- ═══ Common Mode Tab ═══ -->
-    <div id="panel-common" class="{% if speclab_mode != 'common' %}hidden{% endif %}">
-        {% include "_spec_common_mode.html" %}
-    </div>
-
-    <!-- ═══ Advanced Mode Tab ═══ -->
-    <div id="panel-advanced" class="{% if speclab_mode != 'advanced' %}hidden{% endif %} space-y-6">
-        <!-- Introduction — Three Usage Modes -->
-        <div class="bg-white shadow rounded-lg px-6 py-5 space-y-4">
-            <h2 class="text-lg font-semibold text-gray-900">Advanced Workflows</h2>
-            <p class="text-sm text-gray-600 leading-relaxed">
-                Design, compare, and simulate any imaging system using natural language. Supports all 168 modalities &mdash; from
-                <strong>CACTI</strong> and <strong>MRI</strong> to <strong>NeRF</strong> and
-                <strong>cryo-EM</strong>.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {# ── Mode 1: Prompt → Spec → Simulate ── #}
-                <div class="rounded-lg border-2 border-indigo-200 bg-indigo-50/30 px-4 py-3 space-y-2">
-                    <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-800">Design</span>
-                        <h3 class="text-sm font-bold text-indigo-900">Prompt &rarr; Spec &rarr; Simulate</h3>
-                    </div>
-                    <p class="text-xs text-indigo-700">
-                        <strong>Design</strong> a system, <strong>compare</strong> across 168 modalities, or <strong>recommend</strong> the best system+solver for your task.
-                    </p>
-                    <div class="space-y-1">
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-indigo-500 font-bold mt-0.5">a</span>
-                            <span class="text-indigo-800"><strong>System retrieval:</strong> &ldquo;Which imaging system for NDT under $50k?&rdquo;</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-indigo-500 font-bold mt-0.5">b</span>
-                            <span class="text-indigo-800"><strong>Solver recommendation:</strong> &ldquo;Best algorithm for CACTI at &lt;10s latency?&rdquo;</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-indigo-500 font-bold mt-0.5">c</span>
-                            <span class="text-indigo-800"><strong>Co-design:</strong> &ldquo;Design a single-shot system for retinal imaging&rdquo;</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-green-600 font-bold mt-0.5">&rarr;</span>
-                            <span class="text-green-800"><strong>Simulate:</strong> Run physics benchmark on recommended system</span>
-                        </div>
-                    </div>
-                </div>
-
-                {# ── Mode 2: Dataset + Reconstruct ── #}
-                <div class="rounded-lg border-2 border-amber-200 bg-amber-50/30 px-4 py-3 space-y-2">
-                    <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">Diagnose</span>
-                        <h3 class="text-sm font-bold text-amber-900">Data &rarr; Spec &rarr; Reconstruct</h3>
-                    </div>
-                    <p class="text-xs text-amber-700">Upload your measurement data, build a matched spec, then reconstruct with the best solver.</p>
-                    <div class="space-y-1">
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-amber-500 font-bold mt-0.5">1</span>
-                            <span class="text-amber-800"><strong>Upload:</strong> .npy, .mat, .h5, .npz</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-amber-500 font-bold mt-0.5">2</span>
-                            <span class="text-amber-800"><strong>Describe:</strong> &ldquo;MRI k-space, 4x undersampling&rdquo;</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-amber-600 font-bold mt-0.5">3</span>
-                            <span class="text-amber-900"><strong>Reconstruct</strong> with best PWM solver</span>
-                        </div>
-                    </div>
-                </div>
-
-                {# ── Catalog Browser ── #}
-                <div class="rounded-lg border-2 border-emerald-200 bg-emerald-50/30 px-4 py-3 space-y-2">
-                    <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Catalog</span>
-                        <h3 class="text-sm font-bold text-emerald-900">168-System Catalog</h3>
-                    </div>
-                    <p class="text-xs text-emerald-700">Browse all imaging systems with hardware specs, costs, solver benchmarks, and adequacy profiles.</p>
-                    <div class="space-y-1">
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-emerald-500 font-bold mt-0.5">&bull;</span>
-                            <span class="text-emerald-800">19 categories, 26 carrier types</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-emerald-500 font-bold mt-0.5">&bull;</span>
-                            <span class="text-emerald-800">1,367 algorithms with PSNR/SSIM benchmarks</span>
-                        </div>
-                        <div class="flex items-start gap-2 text-xs">
-                            <span class="text-emerald-500 font-bold mt-0.5">&bull;</span>
-                            <span class="text-emerald-800">Feasibility gates + Pareto ranking</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="text-xs text-gray-400">
-                All 168 imaging modalities with system descriptors, solver benchmarks, and cost data.
-                Powered by the PWM-SyS System-to-Solver Co-Design Benchmark.
-            </p>
         </div>
 
-        <!-- Spec Builder Chat + Sidebar -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="lg:col-span-2">
-                {% include "_spec_chat_box.html" %}
-            </div>
-            <div class="lg:col-span-1">
-                {% include "_spec_chat_sidebar.html" %}
-            </div>
+        {# Search (cosmetic for now) #}
+        <div class="relative">
+            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+            </svg>
+            <input type="text" placeholder="Search chats…"
+                   class="w-full bg-white/5 text-xs text-gray-300 placeholder-gray-600 pl-8 pr-3 py-1.5 rounded-lg border border-white/5 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-colors">
         </div>
+    </div>
 
-        <!-- Recent Runs Table -->
-        <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Recent Runs</h2>
-            </div>
+    {# Session list (scrollable) #}
+    <div id="sidebar-history" class="flex-1 overflow-y-auto px-2 pb-2 min-h-0 space-y-0.5">
+        {% if user %}
+        <div hx-get="/api/v1/spec-chat/sessions"
+             hx-trigger="load"
+             hx-swap="innerHTML"
+             hx-target="#sidebar-history"
+             class="px-3 py-2 text-xs text-gray-600">Loading…</div>
+        {% else %}
+        <div class="px-3 py-6 text-center">
+            <p class="text-xs text-gray-500 mb-2">Sign in to save chats</p>
+            <a href="/login" class="text-xs text-indigo-400 hover:text-indigo-300">Sign in →</a>
+        </div>
+        {% endif %}
+    </div>
 
-            {% if runs %}
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Run ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modality</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visibility</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compute</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        {% for run in runs %}
-                        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='/runs/{{ run.run_id }}'">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-indigo-600">{{ run.run_id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ run.modality }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ run.task_kind }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {% if run.status == 'completed' %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">completed</span>
-                                {% elif run.status == 'running' %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">running</span>
-                                {% elif run.status == 'failed' %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">failed</span>
-                                {% elif run.status == 'pending' %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">pending</span>
-                                {% else %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ run.status }}</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {% if run.is_public %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Public</span>
-                                {% else %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-600">Private</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ run.compute_mode }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ run.submitted_at.strftime('%Y-%m-%d %H:%M') if run.submitted_at else '—' }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    {# Platform navigation #}
+    <div class="px-3 pb-1 flex-shrink-0">
+        <details class="px-3 py-1">
+            <summary class="text-[10px] font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:text-gray-400">Platform</summary>
+            <div class="mt-1 space-y-0.5">
+                <a href="/benchmark" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Benchmarks</a>
+                <a href="/modalities" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Modalities</a>
+                <a href="/datasets" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Datasets</a>
+                <a href="/solvers" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Solvers</a>
+                <a href="/instruments" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Instruments</a>
+                <a href="/gates" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Gates</a>
+                <a href="/reproduce" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Reproduce</a>
+                <a href="/redteam" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Red Team</a>
+                <a href="/claims" class="block px-2 py-1 text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 rounded">Claims</a>
             </div>
-            {% else %}
-            <div class="px-6 py-12 text-center">
-                <p class="text-gray-500">No runs yet.</p>
-                {% if user %}
-                <a href="/runs/new" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Submit your first run</a>
-                {% else %}
-                <a href="/login" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Sign in to submit a run</a>
-                {% endif %}
+        </details>
+    </div>
+
+    {# Guide button #}
+    <div class="px-3 pb-1 flex-shrink-0">
+        <button onclick="openGuide()"
+                class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors text-xs">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+            </svg>
+            How to use SpecLab
+        </button>
+    </div>
+
+    {# User footer with dropdown menu #}
+    <div class="px-3 py-3 border-t border-white/5 flex-shrink-0 relative" id="speclab-profile-wrapper">
+        {% if user %}
+        <button onclick="document.getElementById('speclab-profile-menu').classList.toggle('hidden')"
+                class="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/5 group text-left">
+            <div class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0 text-xs font-bold text-white">
+                {{ (user.username or user.email or "U")[0] | upper }}
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-xs text-gray-300 truncate font-medium">{{ user.username or user.email }}</p>
+                <p class="text-[10px] text-gray-600 truncate">{{ user.role or "user" }}</p>
+            </div>
+            <svg class="w-3 h-3 text-gray-600 group-hover:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg>
+        </button>
+        <div id="speclab-profile-menu" class="hidden absolute bottom-full left-3 right-3 mb-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl py-1 z-50">
+            <div class="px-3 py-2 border-b border-gray-700">
+                <p class="text-xs font-medium text-gray-200">{{ user.username }}</p>
+                <p class="text-[10px] text-gray-500">{{ user.email }}</p>
+                <span class="inline-flex mt-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold
+                    {% if user.role == 'admin' %}bg-red-900 text-red-300{% elif user.role == 'reviewer' %}bg-yellow-900 text-yellow-300{% else %}bg-gray-700 text-gray-400{% endif %}">
+                    {{ user.role }}
+                </span>
+            </div>
+            <a href="/contributors/{{ user.username | urlencode }}" class="block px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5">My Profile & Roles</a>
+            <a href="/contributors/apply" class="block px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5">Apply for Role</a>
+            <div class="border-t border-gray-700 mt-1 pt-1">
+            <a href="/pricing" class="block px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5">Pricing</a>
+            <a href="/subscription" class="block px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5">Subscription</a>
+            </div>
+            {% if user.role in ['admin', 'reviewer'] %}
+            <div class="border-t border-gray-700 mt-1 pt-1">
+                <p class="px-3 py-1 text-[9px] font-bold text-gray-600 uppercase tracking-wider">Claim Curator</p>
+                <a href="/claims" class="block px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5">Review & Approve Claims</a>
             </div>
             {% endif %}
+            {% if user.role == 'admin' %}
+            <div class="border-t border-gray-700 mt-1 pt-1">
+                <p class="px-3 py-1 text-[9px] font-bold text-gray-600 uppercase tracking-wider">Admin</p>
+                <a href="/admin/users" class="block px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5">Users &amp; Roles</a>
+            </div>
+            {% endif %}
+            <div class="border-t border-gray-700 mt-1 pt-1">
+                <form action="/api/v1/auth/logout" method="post" hx-boost="false">
+                    <button type="submit" class="block w-full text-left px-3 py-1.5 text-xs text-red-400 hover:bg-red-900/30">Logout</button>
+                </form>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('click', function(e) {
+            var w = document.getElementById('speclab-profile-wrapper');
+            var m = document.getElementById('speclab-profile-menu');
+            if (w && m && !w.contains(e.target)) m.classList.add('hidden');
+        });
+        </script>
+        {% else %}
+        <a href="/login" class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-gray-300 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14"/>
+            </svg>
+            <span class="text-xs">Sign in</span>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{# ══════════════════════════════════════════════════════════════
+   CENTER — Main chat (Claude-style, full height)
+══════════════════════════════════════════════════════════════ #}
+<div class="flex flex-col flex-1 min-w-0 bg-white overflow-hidden">
+
+    {# Chat messages (scrollable) #}
+    <div id="chat-log" class="flex-1 overflow-y-auto min-h-0">
+        {# Empty / welcome state — minimal CTA #}
+        <div id="chat-empty-state" class="flex flex-col items-center justify-center h-full px-6 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-5 shadow-lg">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-semibold text-gray-900 mb-2">Physics World Model</h1>
+            <p class="text-gray-500 text-sm max-w-sm mb-6">Generate a <strong class="text-gray-700">spec.md</strong> for your imaging system — then click <strong class="text-gray-700">Run</strong> to reconstruct, design, or run a scientific simulation.</p>
+            <div class="flex gap-3 flex-wrap justify-center mb-8">
+                <button onclick="openGuide('guide-tab-reconstruct')"
+                        class="px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition-colors">
+                    1 · Reconstruct
+                </button>
+                <button onclick="openGuide('guide-tab-mismatch')"
+                        class="px-4 py-2 rounded-xl border border-amber-200 bg-amber-50 text-amber-700 text-xs font-semibold hover:bg-amber-100 transition-colors">
+                    2 · Mismatch
+                </button>
+                <button onclick="openGuide('guide-tab-design')"
+                        class="px-4 py-2 rounded-xl border border-green-200 bg-green-50 text-green-700 text-xs font-semibold hover:bg-green-100 transition-colors">
+                    3 · Design
+                </button>
+                <button onclick="openGuide('guide-tab-simulate')"
+                        class="px-4 py-2 rounded-xl border border-purple-200 bg-purple-50 text-purple-700 text-xs font-semibold hover:bg-purple-100 transition-colors">
+                    4 · Sci-Sim
+                </button>
+            </div>
+            <button onclick="openGuide()"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+                View guide &amp; examples
+            </button>
+        </div>
+    </div>
+
+    {# Thinking indicator #}
+    <div id="chat-spinner" class="htmx-indicator px-6 py-2 border-t border-gray-100 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-1">
+            <div class="flex gap-1">
+                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 bounce-dot" style="animation-delay:0ms"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 bounce-dot" style="animation-delay:180ms"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 bounce-dot" style="animation-delay:360ms"></div>
+            </div>
+            <span id="chat-spinner-text" class="text-xs text-gray-400">Generating spec.md…</span>
+            <span id="chat-spinner-elapsed" class="text-xs text-gray-300 ml-auto"></span>
+        </div>
+        <div id="chat-progress-bar" class="hidden w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+            <div id="chat-progress-fill" class="bg-indigo-400 h-full rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+        <div id="chat-progress-stage" class="hidden text-[10px] text-gray-400 mt-1"></div>
+    </div>
+    <script>
+    (function(){
+        var _timer=null, _start=0;
+        var _stages=[
+            {t:0,  pct:5,  label:'Loading dataset from GCS…'},
+            {t:3,  pct:15, label:'Preparing measurement data…'},
+            {t:5,  pct:25, label:'Loading model checkpoint…'},
+            {t:10, pct:40, label:'Running reconstruction…'},
+            {t:20, pct:60, label:'Computing metrics (PSNR, SSIM)…'},
+            {t:30, pct:75, label:'Generating visualization…'},
+            {t:40, pct:85, label:'Finalizing results…'},
+            {t:50, pct:92, label:'Almost done…'},
+        ];
+        function startProgress(isRun){
+            _start=Date.now();
+            var bar=document.getElementById('chat-progress-bar');
+            var fill=document.getElementById('chat-progress-fill');
+            var stage=document.getElementById('chat-progress-stage');
+            var elapsed=document.getElementById('chat-spinner-elapsed');
+            if(!isRun){bar.classList.add('hidden');stage.classList.add('hidden');return;}
+            bar.classList.remove('hidden');stage.classList.remove('hidden');
+            fill.style.width='2%';
+            _timer=setInterval(function(){
+                var sec=((Date.now()-_start)/1000)|0;
+                if(elapsed) elapsed.textContent=sec+'s';
+                for(var i=_stages.length-1;i>=0;i--){
+                    if(sec>=_stages[i].t){
+                        fill.style.width=_stages[i].pct+'%';
+                        stage.textContent=_stages[i].label;
+                        break;
+                    }
+                }
+            },500);
+        }
+        function stopProgress(){
+            if(_timer){clearInterval(_timer);_timer=null;}
+            var bar=document.getElementById('chat-progress-bar');
+            var fill=document.getElementById('chat-progress-fill');
+            var stage=document.getElementById('chat-progress-stage');
+            var elapsed=document.getElementById('chat-spinner-elapsed');
+            if(fill)fill.style.width='100%';
+            if(stage)stage.textContent='Done';
+            if(elapsed){var sec=((Date.now()-_start)/1000)|0;elapsed.textContent=sec+'s total';}
+            setTimeout(function(){
+                if(bar)bar.classList.add('hidden');
+                if(stage)stage.classList.add('hidden');
+                if(elapsed)elapsed.textContent='';
+                if(fill)fill.style.width='0%';
+            },1500);
+        }
+        document.body.addEventListener('htmx:beforeRequest',function(e){
+            var txt=document.getElementById('chat-spinner-text');
+            var isRun=txt&&txt.textContent.indexOf('Running')>=0;
+            startProgress(isRun);
+        });
+        document.body.addEventListener('htmx:afterRequest',function(){stopProgress();});
+        window._startSpecProgress=startProgress;
+        window._stopSpecProgress=stopProgress;
+    })();
+    </script>
+
+    {# Input area #}
+    <div class="px-4 pb-4 pt-2 flex-shrink-0 max-w-3xl mx-auto w-full">
+        {% if user %}
+        <form id="chat-form"
+              hx-post="/api/v1/spec-chat/{{ chat_variant_key | default('cassi') }}"
+              hx-target="#chat-log"
+              hx-swap="beforeend"
+              hx-indicator="#chat-spinner"
+              hx-on::before-request="hideEmptyState(); showPendingMessage(document.getElementById('chat-textarea').value.trim()); resetInput(); var _st=document.getElementById('chat-spinner-text'); if(_st) _st.textContent='Generating spec.md…';"
+              hx-on::after-request="scrollChatLog(); refreshSidebar();">
+            <input type="hidden" name="session_id" id="chat-session-id" value="">
+            <input type="hidden" name="uploaded_spec_md" id="uploaded-spec-md" value="">
+            {# Hidden file picker for spec.md upload #}
+            <input type="file" id="spec-file-input" accept=".md,.txt" class="hidden"
+                   onchange="onSpecFileSelected(this)">
+            {# Attachment preview badge (shown after upload) #}
+            <div id="spec-attachment-badge" class="hidden mb-1 flex items-center gap-1.5">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 border border-indigo-200 rounded text-[11px] text-indigo-700">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span id="spec-attachment-name">spec.md</span>
+                </span>
+                <button type="button" onclick="clearSpecAttachment()" class="text-[11px] text-gray-400 hover:text-red-500">×</button>
+            </div>
+            <div class="flex items-end gap-3 bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm focus-within:border-gray-300 focus-within:shadow-md transition-all">
+                {# Paperclip — attach spec.md #}
+                <button type="button" onclick="document.getElementById('spec-file-input').click()"
+                        title="Upload spec.md"
+                        class="flex-shrink-0 w-7 h-7 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-colors mb-0.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                </button>
+                <textarea id="chat-textarea" name="message" required rows="1"
+                          placeholder="Describe your imaging system, or ask to refine the spec.md…"
+                          oninput="autoGrow(this)"
+                          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();var v=this.value.trim();if(!v)return;if(checkRunKeyword(v)){this.value='';autoGrow(this);return;}this.closest('form').dispatchEvent(new Event('submit',{bubbles:true}));}"
+                          class="flex-1 text-sm text-gray-800 resize-none outline-none bg-transparent placeholder-gray-400 leading-relaxed"
+                          style="min-height:24px;max-height:200px"></textarea>
+                <button type="submit"
+                        class="flex-shrink-0 w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-gray-700 transition-colors disabled:opacity-40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-center text-[11px] text-gray-400 mt-2">
+                Type <kbd class="px-1.5 py-0.5 bg-gray-100 rounded text-gray-500 font-mono text-[10px]">run</kbd> to execute spec.md &nbsp;·&nbsp; Shift+Enter for newline &nbsp;·&nbsp; attach spec.md with the paperclip →
+            </p>
+        </form>
+
+        {# ── Upload your own dataset ── #}
+        <div class="mt-3">
+            <button type="button" onclick="toggleUploadPanel()"
+                    class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-dashed border-gray-300 hover:border-indigo-300 hover:bg-indigo-50/40 transition-all text-xs text-gray-500 hover:text-indigo-600 group">
+                <span class="flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                    Upload your dataset to reconstruct
+                </span>
+                <svg id="upload-chevron" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <div id="upload-panel" class="hidden mt-2 bg-white border border-gray-200 rounded-xl overflow-hidden">
+
+                {# ── Example cards (drag or click to run) ── #}
+                <div class="px-3 pt-3 pb-2 border-b border-gray-100">
+                    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Example datasets — drag or click to run</p>
+                    <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                        {% set _examples = [
+                            ("cassi",    "CASSI",      "Hyperspectral", "GAP-TV",     "🌈"),
+                            ("ct",       "CT",         "Sinogram",      "FBP",        "🩻"),
+                            ("mri",      "MRI",        "k-Space",       "CS-MRI",     "🧲"),
+                            ("spc",      "SPC",        "Single-Pixel",  "GAP-TV",     "📷"),
+                            ("cacti",    "CACTI",      "Video SCI",     "E2E-FFDNet", "🎬"),
+                            ("confocal", "Confocal",   "Microscopy",    "Richardson-Lucy", "🔬"),
+                            ("sem",      "SEM",        "Electron",      "DRUNet",     "⚛️"),
+                            ("sar",      "SAR",        "Radar",         "CS-MRI",     "📡"),
+                            ("afm",      "AFM",        "Probe",         "Richardson-Lucy", "🔭"),
+                        ] %}
+                        {% for key, name, desc, algo, icon in _examples %}
+                        <div class="flex-shrink-0 w-28 p-2 rounded-lg border border-gray-200 bg-gray-50 hover:border-indigo-300 hover:bg-indigo-50/60 cursor-grab active:cursor-grabbing transition-all select-none"
+                             draggable="true"
+                             data-example-key="{{ key }}"
+                             data-example-algo="{{ algo }}"
+                             ondragstart="onExampleDragStart(event, '{{ key }}', '{{ algo }}')"
+                             onclick="loadExample('{{ key }}', '{{ algo }}')"
+                             title="Click or drag to run {{ name }} example">
+                            <div class="text-lg mb-1 leading-none">{{ icon }}</div>
+                            <div class="text-[11px] font-semibold text-gray-800 leading-tight">{{ name }}</div>
+                            <div class="text-[10px] text-gray-500 leading-tight">{{ desc }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# ── Drop zone + manual upload ── #}
+                <div class="p-3 space-y-3"
+                     id="upload-drop-zone"
+                     ondragover="event.preventDefault(); this.classList.add('bg-indigo-50','border-indigo-300')"
+                     ondragleave="this.classList.remove('bg-indigo-50','border-indigo-300')"
+                     ondrop="onExampleDrop(event)">
+                <form id="upload-recon-form"
+                      hx-post="/api/v1/spec-chat/reconstruct-common"
+                      hx-target="#chat-log"
+                      hx-swap="beforeend"
+                      hx-indicator="#chat-spinner"
+                      hx-encoding="multipart/form-data"
+                      hx-disabled-elt="#upload-run-btn"
+                      hx-on::before-request="var _st=document.getElementById('chat-spinner-text'); if(_st) _st.textContent='Running spec.md…'; hideEmptyState();"
+                      hx-on::after-request="scrollChatLog();">
+                    <input type="hidden" name="modality" id="upload-modality" value="{{ chat_variant_key | default('cassi') }}">
+                    <input type="hidden" name="algorithm" id="upload-algorithm" value="GAP-TV">
+                    <input type="hidden" name="sample_index" value="0">
+
+                    {# spec.md upload row #}
+                    <div class="mb-2">
+                        <label class="block text-[11px] font-medium text-gray-600 mb-1">
+                            spec.md <span class="text-gray-400">optional — auto-fills modality &amp; algorithm</span>
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="file" id="upload-spec-file" accept=".md,.txt"
+                                   onchange="onUploadSpecFile(this)"
+                                   class="block flex-1 text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-medium file:bg-purple-50 file:text-purple-600 hover:file:bg-purple-100 cursor-pointer">
+                            <span id="upload-spec-badge" class="hidden text-[10px] text-green-600 font-medium whitespace-nowrap">✓ loaded</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Measurement y <span class="text-red-400">*</span></label>
+                            <input type="file" name="measurement_file" accept=".npy,.npz,.mat,.h5,.hdf5"
+                                   class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-medium file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Ground Truth x <span class="text-gray-400">optional</span></label>
+                            <input type="file" name="ground_truth_file" accept=".npy,.npz,.mat,.h5,.hdf5"
+                                   class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-medium file:bg-green-50 file:text-green-600 hover:file:bg-green-100 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">H matrix <span class="text-gray-400">optional</span></label>
+                            <input type="file" name="matrix_file" accept=".npy,.npz,.mat,.h5,.hdf5"
+                                   class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-medium file:bg-gray-50 file:text-gray-600 hover:file:bg-gray-100 cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="flex-1">
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Modality</label>
+                            <input type="text" id="upload-modality-input" value="{{ chat_variant_key | default('cassi') }}" placeholder="e.g. cassi, ct, mri"
+                                   oninput="document.getElementById('upload-modality').value=this.value"
+                                   class="w-full text-[11px] px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-400">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Algorithm</label>
+                            <input type="text" id="upload-algorithm-input" value="GAP-TV" placeholder="e.g. GAP-TV, TwIST, PnP-ADMM"
+                                   oninput="document.getElementById('upload-algorithm').value=this.value"
+                                   class="w-full text-[11px] px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-400">
+                        </div>
+                        <div class="flex-shrink-0 pt-4">
+                            <button id="upload-run-btn" type="submit"
+                                    class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Run
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400">Data: .npy, .npz, .mat (MATLAB), .h5/.hdf5. y = measurement (required). x = ground truth for PSNR/SSIM. H = forward model (optional).</p>
+                </form>
+                </div>{# /upload-drop-zone #}
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <p class="text-sm text-gray-500 mb-3">Sign in to generate spec.md files with AI</p>
+            <a href="/login" class="px-6 py-2.5 bg-gray-900 text-white text-sm rounded-xl hover:bg-gray-700 transition-colors">Sign in</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{# ══════════════════════════════════════════════════════════════
+   RIGHT PANEL — spec.md viewer (Claude artifact-style)
+══════════════════════════════════════════════════════════════ #}
+<div class="flex flex-col bg-gray-50 border-l border-gray-200 overflow-hidden flex-shrink-0" style="width:42%">
+
+    {# Header #}
+    <div class="px-5 py-3 border-b border-gray-200 bg-white flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+            </svg>
+            <span class="text-sm font-semibold text-gray-900">spec.md</span>
+            <span id="spec-usage-badge" class="hidden text-xs px-2 py-0.5 rounded-full font-medium"></span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button id="copy-spec-btn" onclick="copySpec()"
+                    class="hidden text-xs text-gray-500 hover:text-gray-800 px-2.5 py-1 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors bg-white">
+                Copy
+            </button>
+            <button id="dl-spec-btn" onclick="downloadSpecMd('spec.md')"
+                    class="hidden text-xs text-gray-500 hover:text-gray-800 px-2.5 py-1 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors bg-white">
+                ↓ Download
+            </button>
+            <button id="run-spec-btn" onclick="runSpec()"
+                    class="hidden inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-white hover:bg-gray-700 transition-colors shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+                </svg>
+                Run
+            </button>
+        </div>
+    </div>
+
+    {# Intro (no spec yet) #}
+    <div id="spec-intro" class="flex-1 overflow-y-auto min-h-0 p-5">
+        <div class="max-w-sm mx-auto space-y-4">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">What is spec.md?</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">A structured file that fully describes your imaging system — forward model, noise, algorithm, and objective — so it can be <em>run</em>, <em>simulated</em>, or <em>redesigned</em> by PWM.</p>
+            </div>
+
+            {# Example spec.md #}
+            <div class="rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-800 px-3 py-2 flex items-center gap-1.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                    <span class="ml-1 text-xs text-gray-400 font-mono">spec.md</span>
+                </div>
+                <div class="bg-gray-50 p-4 font-mono text-[11px] leading-relaxed">
+                    <div class="text-gray-900 font-bold">## Objective</div>
+                    <div class="text-gray-600 mb-2">Reconstruct CASSI using RDLUF-MixS². PSNR ≥ 34 dB.</div>
+                    <div class="text-gray-900 font-bold">## Configuration</div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-1 mb-2">
+                        <div class="text-gray-500">```yaml</div>
+                        <div><span class="text-blue-600">variant_key</span>: <span class="text-green-700">cassi</span></div>
+                        <div><span class="text-blue-600">usage_type</span>: <span class="text-green-700">reconstruct</span></div>
+                        <div><span class="text-blue-600">algorithm</span>: <span class="text-green-700">RDLUF-MixS²</span></div>
+                        <div class="text-gray-500">```</div>
+                        <div class="text-[10px] text-amber-600 font-sans mt-1">↑ Run button reads this</div>
+                    </div>
+                    <div class="text-gray-900 font-bold">## Forward Model</div>
+                    <div class="text-gray-600">SD-CASSI · prism · 28 spectral channels · 256×256</div>
+                    <div class="text-gray-900 font-bold mt-1">## Noise Model</div>
+                    <div class="text-gray-600">Mixed Poisson-Gaussian η₄</div>
+                </div>
+            </div>
+
+            {# 4 types 2×2 grid #}
+            <div class="grid grid-cols-2 gap-1.5">
+                <div class="p-2.5 bg-white rounded-xl border border-indigo-100">
+                    <div class="text-[10px] font-bold text-indigo-700">1 · Reconstruct</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">Algorithm on benchmark data</div>
+                </div>
+                <div class="p-2.5 bg-white rounded-xl border border-amber-100">
+                    <div class="text-[10px] font-bold text-amber-700">2 · Mismatch</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">Correct model error + reconstruct</div>
+                </div>
+                <div class="p-2.5 bg-white rounded-xl border border-green-100">
+                    <div class="text-[10px] font-bold text-green-700">3 · Design</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">Design system for application</div>
+                </div>
+                <div class="p-2.5 bg-white rounded-xl border border-purple-100">
+                    <div class="text-[10px] font-bold text-purple-700">4 · Sci-Sim</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">Scientific simulation</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# spec.md rendered content #}
+    <div id="spec-md-wrapper" class="hidden flex-1 overflow-y-auto min-h-0">
+        <div id="spec-md-content" class="px-6 py-5 bg-white min-h-full"></div>
+    </div>
+
+    <input type="hidden" id="spec-config-data" value="">
+</div>
+
+<script>
+// ── spec.md panel ─────────────────────────────────────────────────────────
+
+function updateSpecPanel(specMd, configJson) {
+    var intro   = document.getElementById('spec-intro');
+    var wrapper = document.getElementById('spec-md-wrapper');
+    var content = document.getElementById('spec-md-content');
+    var runBtn  = document.getElementById('run-spec-btn');
+    var copyBtn = document.getElementById('copy-spec-btn');
+    var badge   = document.getElementById('spec-usage-badge');
+    var cfgIn   = document.getElementById('spec-config-data');
+
+    if (specMd) {
+        content.innerHTML = window.marked ? marked.parse(specMd) : specMd.replace(/\n/g,'<br>');
+        intro.classList.add('hidden');
+        wrapper.classList.remove('hidden');
+        runBtn.classList.remove('hidden');
+        copyBtn.classList.remove('hidden');
+        cfgIn.dataset.rawMd = specMd;
+        var dlBtn = document.getElementById('dl-spec-btn');
+        if (dlBtn) dlBtn.classList.remove('hidden');
+    }
+    if (configJson) {
+        cfgIn.value = configJson;
+        try {
+            var cfg = JSON.parse(configJson);
+            var ut = cfg.usage_type || 'reconstruct';
+            var colorMap = {
+                reconstruct: 'bg-indigo-100 text-indigo-700',
+                mismatch:    'bg-amber-100 text-amber-700',
+                design:      'bg-green-100 text-green-700',
+                simulate:    'bg-purple-100 text-purple-700',
+            };
+            badge.textContent = ut;
+            badge.className = 'text-xs px-2 py-0.5 rounded-full font-medium ' + (colorMap[ut] || 'bg-gray-100 text-gray-700');
+            badge.classList.remove('hidden');
+        } catch(e) {}
+    }
+}
+
+// Pick up spec panel updates from HTMX-swapped chat messages
+// Data stored as textContent (not data-attributes) to avoid HTML quoting issues
+document.body.addEventListener('htmx:afterSwap', function() {
+    // Remove optimistic pending bubble (real message has arrived)
+    var pending = document.getElementById('chat-pending-msg');
+    if (pending) pending.remove();
+
+    var els = document.querySelectorAll('.spec-panel-update');
+    if (!els.length) return;
+    var last = els[els.length - 1];
+    try {
+        var data = JSON.parse(last.textContent);
+        if (data.spec_md) updateSpecPanel(data.spec_md, data.spec_config);
+    } catch(e) { console.error('spec panel update:', e); }
+});
+
+// Optimistic user message — show immediately on submit before server responds
+function _escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function showPendingMessage(text) {
+    var old = document.getElementById('chat-pending-msg');
+    if (old) old.remove();
+    var el = document.createElement('div');
+    el.id = 'chat-pending-msg';
+    el.innerHTML =
+        '<div class="px-4 py-5 border-b border-gray-100 bg-gray-50">' +
+          '<div class="max-w-3xl mx-auto flex gap-3">' +
+            '<div class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-white">U</div>' +
+            '<div class="flex-1 min-w-0 pt-0.5"><p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">' + _escHtml(text) + '</p></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="px-4 py-5 border-b border-gray-100">' +
+          '<div class="max-w-3xl mx-auto flex gap-3">' +
+            '<div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">' +
+              '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12"/></svg>' +
+            '</div>' +
+            '<div class="flex-1 min-w-0 pt-1"><span class="text-sm text-gray-400 italic">Thinking…</span></div>' +
+          '</div>' +
+        '</div>';
+    var log = document.getElementById('chat-log');
+    if (log) { log.appendChild(el); log.scrollTop = log.scrollHeight; }
+}
+
+// ── Run ───────────────────────────────────────────────────────────────────
+
+function runSpec() {
+    var cfgStr = document.getElementById('spec-config-data').value;
+    if (!cfgStr) { alert('No spec loaded. Describe an imaging system first.'); return; }
+    try { var cfg = JSON.parse(cfgStr); } catch(e) { alert('Invalid spec config.'); return; }
+    hideEmptyState();
+    var ut  = cfg.usage_type || 'reconstruct';
+    var vk  = cfg.variant_key || 'cassi';
+    var alg = cfg.algorithm || 'GAP-TV';
+    var idx = cfg.sample_index || 0;
+    var sid = document.getElementById('chat-session-id')?.value || '';
+
+    var _st = document.getElementById('chat-spinner-text');
+    if (_st) _st.textContent = 'Running spec.md…';
+    // Mismatch and design specs use the simulate endpoint to show mismatch analysis
+    if (ut === 'mismatch' || ut === 'design') {
+        htmx.ajax('POST', '/api/v1/spec-chat/' + vk + '/simulate', {
+            target: '#chat-log', swap: 'beforeend',
+            values: { spec_json: cfgStr, session_id: sid },
+        });
+    } else {
+        // Reconstruct and other types use the standard benchmark dataset via reconstruct-common
+        htmx.ajax('POST', '/api/v1/spec-chat/reconstruct-common', {
+            target: '#chat-log', swap: 'beforeend',
+            values: { modality: vk, algorithm: alg, sample_index: idx },
+        });
+    }
+    scrollChatLog();
+}
+
+// ── Downloads ─────────────────────────────────────────────────────────────
+
+function downloadSpecMd(filename) {
+    var raw = document.getElementById('spec-config-data')?.dataset.rawMd || '';
+    if (!raw) { alert('No spec.md yet — run a simulation first.'); return; }
+    var blob = new Blob([raw], { type: 'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename || 'spec.md';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+function downloadBase64Img(imgId, filename) {
+    var img = document.getElementById(imgId);
+    if (!img) return;
+    var a = document.createElement('a');
+    a.href = img.src;
+    a.download = filename || 'image.png';
+    a.click();
+}
+
+// ── Guide modal ───────────────────────────────────────────────────────────
+
+function openGuide(tabId) {
+    var modal = document.getElementById('guide-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    showGuideTab(tabId || 'guide-tab-reconstruct');
+    localStorage.setItem('pwm_guide_seen', '1');
+}
+
+function closeGuide() {
+    var modal = document.getElementById('guide-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function showGuideTab(id) {
+    document.querySelectorAll('.guide-tab').forEach(function(el) { el.classList.add('hidden'); });
+    var tab = document.getElementById(id);
+    if (tab) tab.classList.remove('hidden');
+
+    // Update tab buttons
+    document.querySelectorAll('[id^="gbtn-"]').forEach(function(btn) {
+        btn.classList.remove('border-indigo-600','border-amber-500','border-green-600','border-purple-600',
+                             'text-indigo-700','text-amber-700','text-green-700','text-purple-700',
+                             'bg-indigo-50','bg-amber-50','bg-green-50','bg-purple-50');
+        btn.classList.add('border-transparent','text-gray-500');
+    });
+    var colors = {
+        'guide-tab-reconstruct': ['border-indigo-600','text-indigo-700','bg-indigo-50'],
+        'guide-tab-mismatch':    ['border-amber-500', 'text-amber-700', 'bg-amber-50'],
+        'guide-tab-design':      ['border-green-600', 'text-green-700', 'bg-green-50'],
+        'guide-tab-simulate':    ['border-purple-600','text-purple-700','bg-purple-50'],
+    };
+    var activeBtn = document.getElementById('gbtn-' + id);
+    if (activeBtn && colors[id]) {
+        activeBtn.classList.remove('border-transparent','text-gray-500');
+        colors[id].forEach(function(c) { activeBtn.classList.add(c); });
+    }
+}
+
+function guideSubmit(prompt) {
+    closeGuide();
+    setTimeout(function() { setAndSubmit(prompt); }, 100);
+}
+
+// Keyboard close
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeGuide();
+});
+
+// Auto-open on first visit
+if (!localStorage.getItem('pwm_guide_seen')) {
+    setTimeout(openGuide, 600);
+}
+
+// ── Example dataset cards — drag & click ──────────────────────────────────
+
+function onExampleDragStart(event, key, algo) {
+    event.dataTransfer.setData('example-key', key);
+    event.dataTransfer.setData('example-algo', algo);
+}
+
+function onExampleDrop(event) {
+    event.preventDefault();
+    var zone = document.getElementById('upload-drop-zone');
+    if (zone) zone.classList.remove('bg-indigo-50', 'border-indigo-300');
+    var key = event.dataTransfer.getData('example-key');
+    var algo = event.dataTransfer.getData('example-algo');
+    if (key) loadExample(key, algo);
+}
+
+function loadExample(key, algo) {
+    // Update modality and algorithm fields
+    document.getElementById('upload-modality').value = key;
+    document.getElementById('upload-modality-input').value = key;
+    document.getElementById('upload-algorithm').value = algo || 'GAP-TV';
+    document.getElementById('upload-algorithm-input').value = algo || 'GAP-TV';
+
+    // Clear file inputs (we will use benchmark data)
+    var form = document.getElementById('upload-recon-form');
+    if (form) {
+        Array.from(form.querySelectorAll('input[type=file]')).forEach(function(inp) {
+            inp.value = '';
+        });
+    }
+
+    // Highlight active card
+    document.querySelectorAll('[data-example-key]').forEach(function(card) {
+        var active = card.dataset.exampleKey === key;
+        card.classList.toggle('border-indigo-400', active);
+        card.classList.toggle('bg-indigo-100', active);
+        card.classList.toggle('border-gray-200', !active);
+        card.classList.toggle('bg-gray-50', !active);
+    });
+
+    // Auto-submit to run reconstruction using benchmark data
+    var btn = document.getElementById('upload-run-btn');
+    if (btn) btn.click();
+}
+
+// ── Upload-panel spec.md parser ───────────────────────────────────────────
+
+function onUploadSpecFile(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var text = e.target.result;
+
+        // Extract variant_key / modality
+        var modalityMatch = text.match(/variant_key\s*[:=]\s*["']?([a-z_0-9]+)["']?/i)
+                         || text.match(/modality\s*[:=]\s*["']?([a-z_0-9]+)["']?/i);
+        if (modalityMatch) {
+            var mod = modalityMatch[1].toLowerCase();
+            document.getElementById('upload-modality').value = mod;
+            document.getElementById('upload-modality-input').value = mod;
+        }
+
+        // Extract algorithm
+        var algoMatch = text.match(/algorithm\s*[:=]\s*["']?([A-Za-z0-9_\-\+]+)["']?/i);
+        if (algoMatch) {
+            var algo = algoMatch[1];
+            document.getElementById('upload-algorithm').value = algo;
+            document.getElementById('upload-algorithm-input').value = algo;
+        }
+
+        // Show loaded badge
+        var badge = document.getElementById('upload-spec-badge');
+        if (badge) badge.classList.remove('hidden');
+
+        // Also load into right panel
+        updateSpecPanel(text, null);
+    };
+    reader.readAsText(file);
+    input.value = '';
+}
+
+function toggleUploadPanel() {
+    var panel = document.getElementById('upload-panel');
+    var chevron = document.getElementById('upload-chevron');
+    if (!panel) return;
+    var hidden = panel.classList.toggle('hidden');
+    if (chevron) chevron.style.transform = hidden ? '' : 'rotate(180deg)';
+}
+
+function downloadNpy(b64, filename) {
+    // Decode base64-encoded .npy bytes and trigger download
+    var binary = atob(b64);
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    var blob = new Blob([bytes], { type: 'application/octet-stream' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename || 'array.npy';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+}
+
+// ── Copy ──────────────────────────────────────────────────────────────────
+
+function copySpec() {
+    var raw = document.getElementById('spec-config-data')?.dataset.rawMd || '';
+    if (!raw) return;
+    navigator.clipboard.writeText(raw).then(function() {
+        var btn = document.getElementById('copy-spec-btn');
+        if (btn) { var o = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = o; }, 1500); }
+    });
+}
+
+// ── Chat helpers ──────────────────────────────────────────────────────────
+
+function hideEmptyState() {
+    var es = document.getElementById('chat-empty-state');
+    if (es) es.remove();
+}
+
+function scrollChatLog() {
+    var log = document.getElementById('chat-log');
+    if (log) setTimeout(function(){ log.scrollTop = log.scrollHeight; }, 60);
+}
+
+function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+}
+
+function resetInput() {
+    var ta = document.getElementById('chat-textarea');
+    if (ta) { ta.value = ''; ta.style.height = '24px'; ta.focus(); }
+    // Clear spec.md attachment after send
+    clearSpecAttachment();
+}
+
+// ── Spec.md file attachment ────────────────────────────────────────────────
+
+function onSpecFileSelected(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var content = e.target.result;
+        // Store in hidden input for backend
+        document.getElementById('uploaded-spec-md').value = content;
+        // Show attachment badge
+        var badge = document.getElementById('spec-attachment-badge');
+        var name = document.getElementById('spec-attachment-name');
+        if (badge) badge.classList.remove('hidden');
+        if (name) name.textContent = file.name;
+        // Load into spec panel immediately
+        updateSpecPanel(content, null);
+        // Auto-focus textarea
+        var ta = document.getElementById('chat-textarea');
+        if (ta) ta.focus();
+    };
+    reader.readAsText(file);
+    input.value = '';  // Allow re-selecting same file
+}
+
+function clearSpecAttachment() {
+    document.getElementById('uploaded-spec-md').value = '';
+    var badge = document.getElementById('spec-attachment-badge');
+    if (badge) badge.classList.add('hidden');
+}
+
+function setPrompt(text) {
+    var ta = document.getElementById('chat-textarea');
+    if (ta) { ta.value = text; ta.focus(); autoGrow(ta); }
+}
+
+function setAndSubmit(text) {
+    setPrompt(text);
+    var form = document.getElementById('chat-form');
+    if (form) form.dispatchEvent(new Event('submit', { bubbles: true }));
+}
+
+function newChat() {
+    document.getElementById('chat-log').innerHTML = `
+        <div id="chat-empty-state" class="flex flex-col items-center justify-center h-full px-6 py-16 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-5 shadow-lg">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-semibold text-gray-900 mb-2">Physics World Model</h1>
+            <p class="text-gray-500 text-sm max-w-md">Describe an imaging system to generate a spec.md</p>
+        </div>`;
+    var sid = document.getElementById('chat-session-id');
+    if (sid) sid.value = '';
+    document.getElementById('spec-intro').classList.remove('hidden');
+    document.getElementById('spec-md-wrapper').classList.add('hidden');
+    document.getElementById('run-spec-btn').classList.add('hidden');
+    document.getElementById('copy-spec-btn').classList.add('hidden');
+    var dlBtnN = document.getElementById('dl-spec-btn');
+    if (dlBtnN) dlBtnN.classList.add('hidden');
+    document.getElementById('spec-usage-badge').classList.add('hidden');
+    document.getElementById('spec-config-data').value = '';
+    resetInput();
+}
+
+function loadSession(sessionId) {
+    hideEmptyState();
+    htmx.ajax('GET', '/api/v1/spec-chat/sessions/' + sessionId + '/load', {
+        target: '#chat-log', swap: 'innerHTML',
+    });
+    htmx.ajax('GET', '/api/v1/spec-chat/sessions/' + sessionId + '/spec-md', {
+        target: 'body', swap: 'none',
+    });
+}
+
+function startNewChat() { newChat(); }
+
+function deleteSession(sessionId) {
+    if (!confirm('Delete this conversation?')) return;
+    fetch('/api/v1/spec-chat/sessions/' + sessionId, { method: 'DELETE' }).then(function(r) {
+        if (r.ok) {
+            var item = document.getElementById('history-item-' + sessionId);
+            if (item) item.remove();
+            var cur = document.getElementById('chat-session-id');
+            if (cur && cur.value === sessionId) newChat();
+        }
+    });
+}
+
+function refreshSidebar() {
+    var h = document.getElementById('sidebar-history');
+    if (h) htmx.trigger(h, 'load');
+}
+
+function checkRunKeyword(msg) {
+    if (/^\s*run\s*$/i.test(msg)) { runSpec(); return true; }
+    return false;
+}
+
+function formatRelativeTime(iso) {
+    if (!iso) return '';
+    var d = new Date(iso), diff = Math.floor((new Date() - d) / 60000);
+    if (diff < 1)  return 'just now';
+    if (diff < 60) return diff + 'm ago';
+    var h = Math.floor(diff / 60);
+    if (h < 24) return h + 'h ago';
+    var day = Math.floor(h / 24);
+    if (day === 1) return 'Yesterday';
+    if (day < 7)   return day + 'd ago';
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+function applyRelativeTimes() {
+    document.querySelectorAll('.relative-time').forEach(function(el) {
+        var ts = el.getAttribute('data-ts');
+        if (ts) el.textContent = formatRelativeTime(ts);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', applyRelativeTimes);
+document.addEventListener('htmx:afterSettle', applyRelativeTimes);
+document.addEventListener('htmx:afterSettle', scrollChatLog);
+document.addEventListener('htmx:afterSettle', function() {
+    var chatSid = document.getElementById('chat-session-id');
+    var upSid   = document.getElementById('upload-session-id');
+    if (chatSid && upSid) upSid.value = chatSid.value;
+});
+
+// ── URL param auto-submit ─────────────────────────────────────────────────
+(function() {
+    var p   = new URLSearchParams(window.location.search);
+    var type     = p.get('type') || p.get('mode');
+    var modality = p.get('modality') || p.get('variant');
+    var algo     = p.get('algorithm');
+    if (!type || !modality) return;
+    var prompts = {
+        reconstruct: 'Generate a spec.md to reconstruct ' + modality.toUpperCase()
+                     + (algo ? ' using the ' + algo + ' algorithm' : ' using the best available algorithm')
+                     + '. Include reference PSNR and SSIM on the PWM benchmark.',
+        common:      'Generate a spec.md to reconstruct ' + modality.toUpperCase()
+                     + (algo ? ' using ' + algo : '') + '. Include reference PSNR and SSIM.',
+        mismatch:    'Generate a spec.md to correct model mismatch in ' + modality.toUpperCase() + ' and reconstruct. Include mismatch parameter ranges and correction method.',
+        design:      'Generate a spec.md to design an imaging system based on ' + modality.toUpperCase() + '. Include full system DAG.',
+        simulate:    'Generate a spec.md for a scientific simulation of ' + modality.toUpperCase() + ' — specify the governing equations, solver, and physical parameters.',
+    };
+    var prompt = prompts[type] || prompts.reconstruct;
+    setTimeout(function() {
+        var form = document.getElementById('chat-form');
+        var ta   = document.getElementById('chat-textarea');
+        if (ta && form) { ta.value = prompt; form.dispatchEvent(new Event('submit', { bubbles: true })); }
+    }, 400);
+})();
+</script>
+
+{# ══════════════════════════════════════════════════════════════
+   GUIDE MODAL — tabbed intro + examples + dataset downloads
+══════════════════════════════════════════════════════════════ #}
+<div id="guide-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    {# Backdrop #}
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeGuide()"></div>
+
+    {# Panel #}
+    <div class="absolute inset-4 md:inset-8 lg:inset-16 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+
+        {# Modal header #}
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-gray-900">Physics World Model — SpecLab Guide</h2>
+                    <p class="text-xs text-gray-500">Four ways to use spec.md · examples · downloadable datasets</p>
+                </div>
+            </div>
+            <button onclick="closeGuide()" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        {# Tab bar #}
+        <div class="flex gap-1 px-6 pt-4 pb-0 flex-shrink-0">
+            {% for gtab_id, gtab_label, gtab_bg, gtab_text in [
+                ('guide-tab-reconstruct','1 · Reconstruct','bg-indigo-600','text-white'),
+                ('guide-tab-mismatch',  '2 · Mismatch',  'bg-amber-500', 'text-white'),
+                ('guide-tab-design',    '3 · Design',    'bg-green-600', 'text-white'),
+                ('guide-tab-simulate',  '4 · Sci-Sim',   'bg-purple-600','text-white'),
+            ] %}
+            <button type="button" onclick="showGuideTab('{{ gtab_id }}')"
+                    id="gbtn-{{ gtab_id }}"
+                    class="px-4 py-2 rounded-t-xl text-xs font-semibold border-b-2 transition-all
+                           {% if loop.first %}border-indigo-600 text-indigo-700 bg-indigo-50{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50{% endif %}">
+                {{ gtab_label }}
+            </button>
+            {% endfor %}
+            <div class="flex-1 border-b-2 border-gray-100"></div>
+        </div>
+
+        {# Scrollable body #}
+        <div class="flex-1 overflow-y-auto px-6 py-5">
+
+            {# ══ Tab 1: Reconstruct ══ #}
+            <div id="guide-tab-reconstruct" class="guide-tab">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div>
+                        <div class="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-5 mb-4">
+                            <h3 class="text-sm font-bold text-indigo-700 mb-2">What is Reconstruct?</h3>
+                            <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                Runs an inversion algorithm to recover an image <strong>x</strong> from its measurement <strong>y = H·x + noise</strong>.
+                                Choose a modality (CASSI, CT, MRI, SPC…) and a solver (GAP-TV, FBP, CS-MRI, RDLUF…).
+                                PWM runs the algorithm on benchmark data and reports PSNR / SSIM.
+                            </p>
+                            <p class="text-xs font-semibold text-gray-500 mb-1">When to use:</p>
+                            <ul class="text-xs text-gray-600 space-y-1 ml-3 list-disc">
+                                <li>Benchmarking a solver on standard PWM data</li>
+                                <li>Reconstructing your own captured measurement (.npy / .mat)</li>
+                                <li>Comparing classical vs. deep-learning performance</li>
+                            </ul>
+                        </div>
+                        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                            <h3 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3">Workflow</h3>
+                            <div class="space-y-2">
+                                {% for step, desc in [
+                                    ('① Describe','Tell SpecLab: modality + algorithm + any constraints'),
+                                    ('② Generate','AI produces a spec.md with H, noise model, solver config'),
+                                    ('③ Run','Click Run — PWM reconstructs & shows PSNR/SSIM'),
+                                    ('④ Refine','Ask to switch algorithm or tune parameters in chat'),
+                                ] %}
+                                <div class="flex items-start gap-2">
+                                    <span class="text-[11px] font-bold text-indigo-600 flex-shrink-0 mt-0.5">{{ step }}</span>
+                                    <span class="text-xs text-gray-600">{{ desc }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Example prompts — click to use</h3>
+                        <div class="space-y-2 mb-4">
+                            {% for prompt in [
+                                "Generate a spec.md to reconstruct CASSI hyperspectral imaging using GAP-TV. Include reference PSNR and SSIM on the PWM benchmark.",
+                                "Reconstruct a CT sinogram using FBP on the PWM benchmark and compare to iterative TV reconstruction.",
+                                "Reconstruct MRI k-space data with 4× undersampling using CS-MRI (ADMM) on the PWM benchmark.",
+                                "Reconstruct a single-pixel camera (SPC) compressed measurement using TVAL3 at 25% compression ratio.",
+                            ] %}
+                            <button onclick="guideSubmit('{{ prompt }}')"
+                                    class="w-full text-left px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/50 transition-all text-xs text-gray-700 leading-relaxed">
+                                "{{ prompt }}"
+                            </button>
+                            {% endfor %}
+                        </div>
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Example datasets (.npy)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            {% for key, name, roles in [
+                                ('cassi','CASSI',[('measurement','Measurement y'),('ground_truth','Ground Truth x')]),
+                                ('ct',   'CT',   [('measurement','Sinogram y'),   ('ground_truth','Phantom x')]),
+                                ('mri',  'MRI',  [('measurement','k-Space y'),    ('ground_truth','MR Image x')]),
+                            ] %}
+                            <div class="rounded-xl border border-gray-200 bg-white p-3">
+                                <p class="text-[11px] font-semibold text-gray-800 mb-2">{{ name }}</p>
+                                {% for role, label in roles %}
+                                <a href="/api/v1/spec-chat/example-data/{{ key }}/{{ role }}"
+                                   download="{{ key }}_{{ role }}.npy"
+                                   class="flex items-center gap-1 text-[11px] text-indigo-600 hover:text-indigo-800 mb-1.5 group">
+                                    <svg class="w-3 h-3 flex-shrink-0 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    {{ label }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ══ Tab 2: Mismatch ══ #}
+            <div id="guide-tab-mismatch" class="guide-tab hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div>
+                        <div class="rounded-2xl border border-amber-100 bg-amber-50/50 p-5 mb-4">
+                            <h3 class="text-sm font-bold text-amber-700 mb-2">What is Mismatch?</h3>
+                            <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                Handles a gap between the calibrated forward model <strong>H̃</strong> and the true one <strong>H</strong>
+                                caused by manufacturing tolerances, environment, or drift.
+                                PWM quantifies mismatch parameters, corrects <strong>H̃ → H</strong>, then reconstructs.
+                            </p>
+                            <p class="text-xs font-semibold text-gray-500 mb-1">Common mismatch sources:</p>
+                            <ul class="text-xs text-gray-600 space-y-1 ml-3 list-disc">
+                                <li>CASSI dispersion shift (lens misalignment)</li>
+                                <li>CT source–detector distance error</li>
+                                <li>MRI B₀ field inhomogeneity</li>
+                                <li>Lensless PSF phase error from vibration</li>
+                            </ul>
+                        </div>
+                        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                            <h3 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3">Workflow</h3>
+                            <div class="space-y-2">
+                                {% for step, desc in [
+                                    ('① Describe','Specify modality + mismatch type + parameter range'),
+                                    ('② Generate','AI produces spec.md with mismatch_params + correction method'),
+                                    ('③ Run','PWM corrects H̃ → H, then reconstructs'),
+                                    ('④ Quantify','Compare PSNR before/after correction in chat'),
+                                ] %}
+                                <div class="flex items-start gap-2">
+                                    <span class="text-[11px] font-bold text-amber-600 flex-shrink-0 mt-0.5">{{ step }}</span>
+                                    <span class="text-xs text-gray-600">{{ desc }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Example prompts — click to use</h3>
+                        <div class="space-y-2 mb-4">
+                            {% for prompt in [
+                                "Generate a spec.md to correct dispersion mismatch in CASSI (shift ±2 pixels) and reconstruct. Include mismatch parameter ranges and correction method.",
+                                "Correct CT sinogram geometry mismatch where source-detector distance has 5% error, then reconstruct using TV.",
+                                "Handle MRI B0 field inhomogeneity mismatch (±100 Hz off-resonance) in k-space and reconstruct with CS-MRI.",
+                                "Correct PSF mismatch in lensless imaging where the calibrated PSF has 10% phase error, then reconstruct.",
+                            ] %}
+                            <button onclick="guideSubmit('{{ prompt }}')"
+                                    class="w-full text-left px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-amber-300 hover:bg-amber-50/50 transition-all text-xs text-gray-700 leading-relaxed">
+                                "{{ prompt }}"
+                            </button>
+                            {% endfor %}
+                        </div>
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Example datasets (.npy)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            {% for key, name, roles in [
+                                ('cassi','CASSI',[('measurement','Snapshot y'),   ('ground_truth','Cube x')]),
+                                ('ct',   'CT',   [('measurement','Sinogram y'),   ('ground_truth','Phantom x')]),
+                                ('mri',  'MRI',  [('measurement','k-Space y'),    ('ground_truth','MR Image x')]),
+                            ] %}
+                            <div class="rounded-xl border border-gray-200 bg-white p-3">
+                                <p class="text-[11px] font-semibold text-gray-800 mb-2">{{ name }}</p>
+                                {% for role, label in roles %}
+                                <a href="/api/v1/spec-chat/example-data/{{ key }}/{{ role }}"
+                                   download="{{ key }}_{{ role }}.npy"
+                                   class="flex items-center gap-1 text-[11px] text-amber-600 hover:text-amber-800 mb-1.5 group">
+                                    <svg class="w-3 h-3 flex-shrink-0 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    {{ label }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ══ Tab 3: Design ══ #}
+            <div id="guide-tab-design" class="guide-tab hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div>
+                        <div class="rounded-2xl border border-green-100 bg-green-50/50 p-5 mb-4">
+                            <h3 class="text-sm font-bold text-green-700 mb-2">What is Design?</h3>
+                            <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                Generates a full imaging system architecture from a high-level specification.
+                                You provide the <strong>application</strong>, <strong>constraints</strong> (budget, size, SNR, resolution),
+                                and <strong>target</strong>. PWM outputs a system DAG:
+                                <em>light source → optics → aperture → sensor → digitizer → reconstruction algorithm</em>,
+                                with component specs and trade-off analysis.
+                            </p>
+                            <p class="text-xs font-semibold text-gray-500 mb-1">When to use:</p>
+                            <ul class="text-xs text-gray-600 space-y-1 ml-3 list-disc">
+                                <li>Starting a new instrument from scratch</li>
+                                <li>Hardware–algorithm co-design optimization</li>
+                                <li>Procurement spec writing</li>
+                                <li>Comparing system architectures for a given target</li>
+                            </ul>
+                        </div>
+                        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                            <h3 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3">Workflow</h3>
+                            <div class="space-y-2">
+                                {% for step, desc in [
+                                    ('① Describe','State application + constraints (budget, size, resolution, SNR)'),
+                                    ('② Generate','AI outputs a spec.md with full system DAG + component specs'),
+                                    ('③ Review','Read the right-panel spec.md — component list + trade-offs'),
+                                    ('④ Refine','Chat to optimize a component or relax a constraint'),
+                                ] %}
+                                <div class="flex items-start gap-2">
+                                    <span class="text-[11px] font-bold text-green-600 flex-shrink-0 mt-0.5">{{ step }}</span>
+                                    <span class="text-xs text-gray-600">{{ desc }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="mt-3 px-3 py-2 bg-green-50 rounded-lg border border-green-100 text-xs text-green-800">
+                                <strong>No dataset needed</strong> — Design works entirely from text.
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Example prompts — click to use</h3>
+                        <div class="space-y-2">
+                            {% for prompt in [
+                                "Design an optimal imaging system for retinal OCT under $50k budget. Include full system DAG, component specs, and expected axial resolution.",
+                                "Design a portable CASSI hyperspectral camera for field agriculture: battery-powered, <500g, 400–900 nm, 10 spectral bands.",
+                                "Design a low-dose CT scanner for pediatric chest imaging. Minimize radiation dose while maintaining 1 mm spatial resolution.",
+                                "Design a lensless on-chip microscope for point-of-care pathology: smartphone-compatible, single LED, 10 µm resolution.",
+                                "Design a single-pixel camera for terahertz imaging of concealed objects, 32×32 resolution, <1s acquisition time.",
+                                "Design a fluorescence lifetime imaging system (FLIM) for live cell imaging with <100 ps temporal resolution.",
+                            ] %}
+                            <button onclick="guideSubmit('{{ prompt }}')"
+                                    class="w-full text-left px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-green-300 hover:bg-green-50/50 transition-all text-xs text-gray-700 leading-relaxed">
+                                "{{ prompt }}"
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ══ Tab 4: Scientific Simulation ══ #}
+            <div id="guide-tab-simulate" class="guide-tab hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div>
+                        <div class="rounded-2xl border border-purple-100 bg-purple-50/50 p-5 mb-4">
+                            <h3 class="text-sm font-bold text-purple-700 mb-2">What is Scientific Simulation?</h3>
+                            <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                Runs a <strong>physics-based forward model</strong> from first principles — governing equations, material parameters, boundary conditions — to generate synthetic observables.
+                                Unlike imaging reconstruction, the "measurement" is a physical field (pressure wave, temperature, gravitational strain, concentration) rather than a detector readout.
+                                PWM encodes the PDE / ODE / statistical model in <code class="bg-white/80 px-1 rounded text-xs">spec.md</code> and runs the simulation, then optionally inverts it.
+                            </p>
+                            <p class="text-xs font-semibold text-gray-500 mb-1">Scientific domains covered:</p>
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-0.5">
+                                {% for domain in [
+                                    'Seismic / geophysics (FWI)',
+                                    'Combustion chemistry (GRI-Mech)',
+                                    'Gravitational wave astronomy',
+                                    'Plasma / MHD physics',
+                                    'Computational fluid dynamics',
+                                    'Molecular dynamics / DFT',
+                                    'Atmospheric / climate physics',
+                                    'Quantum chemistry / TDDFT',
+                                ] %}
+                                <div class="flex items-center gap-1 text-xs text-gray-600">
+                                    <span class="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0"></span>{{ domain }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                            <h3 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3">Workflow</h3>
+                            <div class="space-y-2">
+                                {% for step, desc in [
+                                    ('① Describe','State the physical system, governing equations, and parameters of interest'),
+                                    ('② Generate','AI produces spec.md with forward model, solver settings, and output observables'),
+                                    ('③ Simulate','PWM runs the forward model and visualises the physical field'),
+                                    ('④ Invert','Optionally: run inversion / parameter estimation to recover unknowns'),
+                                ] %}
+                                <div class="flex items-start gap-2">
+                                    <span class="text-[11px] font-bold text-purple-600 flex-shrink-0 mt-0.5">{{ step }}</span>
+                                    <span class="text-xs text-gray-600">{{ desc }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Example prompts — click to use</h3>
+                        <div class="space-y-2">
+                            {% for prompt in [
+                                "Run seismic full-waveform inversion (FWI) on a 2D Marmousi velocity model. Use a 10 Hz Ricker wavelet source, 48 receivers, and adjoint-state gradient with L-BFGS. Show recovered P-wave velocity map and data misfit vs. iteration.",
+                                "Simulate GRI-Mech 3.0 auto-ignition of a stoichiometric CH₄/air mixture (φ=1.0) at T=1000 K, P=1 atm. Integrate the ODE system, plot temperature and OH mole fraction vs. time, and report ignition delay.",
+                                "Simulate gravitational-wave strain from a binary black hole merger (m₁=30 M☉, m₂=25 M☉, spin-aligned) using the IMRPhenomD waveform, add LIGO O3 noise PSD, and compute matched-filter SNR.",
+                                "Run 2D compressible Navier-Stokes simulation of a shock tube (Sod problem) at t=0.2 s on a 500-cell grid. Show density, velocity, and pressure profiles and compare to analytic Riemann solution.",
+                                "Simulate DFTB+ molecular dynamics of a 64-atom silicon crystal at 300 K for 10 ps using the Nosé-Hoover thermostat. Plot MSD vs. time and compute diffusion coefficient.",
+                                "Simulate atmospheric radiative transfer for a standard mid-latitude summer atmosphere using DISORT. Compute upwelling and downwelling irradiance at 10 pressure levels from 200–1000 hPa.",
+                            ] %}
+                            <button onclick="guideSubmit('{{ prompt }}')"
+                                    class="w-full text-left px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-purple-300 hover:bg-purple-50/50 transition-all text-xs text-gray-700 leading-relaxed">
+                                "{{ prompt }}"
+                            </button>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4 rounded-xl border border-purple-100 bg-purple-50/30 p-3 text-xs text-purple-800">
+                            <strong>Bring your own data.</strong> Upload initial conditions, velocity models, or measured spectra via the dataset panel below the chat. PWM will incorporate them into the simulation spec.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>{# /scrollable body #}
+
+        {# Modal footer #}
+        <div class="px-6 py-3 border-t border-gray-100 flex items-center justify-between flex-shrink-0 bg-gray-50/50">
+            <p class="text-xs text-gray-400">Press <kbd class="px-1.5 py-0.5 bg-white rounded border text-gray-500 font-mono text-[10px]">Esc</kbd> to close</p>
+            <button onclick="closeGuide()" class="px-4 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-700 transition-colors">
+                Got it — start chatting
+            </button>
         </div>
     </div>
 </div>
 
-<script>
-function switchTab(mode) {
-    // Update tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('border-indigo-600', 'text-indigo-600');
-        btn.classList.add('border-transparent', 'text-gray-500');
-    });
-    document.getElementById('tab-' + mode).classList.remove('border-transparent', 'text-gray-500');
-    document.getElementById('tab-' + mode).classList.add('border-indigo-600', 'text-indigo-600');
-
-    // Update panels
-    document.getElementById('panel-common').classList.toggle('hidden', mode !== 'common');
-    document.getElementById('panel-advanced').classList.toggle('hidden', mode !== 'advanced');
-
-    // Update URL without reload
-    var url = new URL(window.location);
-    url.searchParams.set('mode', mode);
-    history.replaceState(null, '', url);
-}
-</script>
-{% endblock %}
+</body>
+</html>

@@ -32,9 +32,19 @@ actions, and badges are awarded automatically when milestones are reached.
 
 Go to **https://pwm.platformai.org/login** and sign in (or create an account).
 
-### 2. Get your roles assigned
+### 2. Apply for a role (self-service)
 
-An admin assigns contributor roles via the **Users & Roles** page:
+Any logged-in user can apply for a contributor role:
+
+1. Click your username → **Apply for Role** → **https://pwm.platformai.org/contributors/apply**
+2. Select the role from the dropdown and provide a short reason
+3. An admin reviews and approves your application
+
+> **API/CLI note:** Role names use `snake_case` in the API: `modality_maintainer`, `claim_curator`, `benchmark_reviewer`, `dataset_steward`, `method_integrator`, `judge_rule_author`, `red_team_contributor`, `instrument_contributor`.
+
+### 3. Get your roles assigned (admin path)
+
+An admin can also assign contributor roles directly via the **Users & Roles** page:
 
 - Admin goes to **https://pwm.platformai.org/admin/users**
 - Clicks **Edit** on your account
@@ -220,7 +230,19 @@ PWM has two gate families:
 | **R1-R4** (operational) | Spec completeness, reproducibility, metric integrity, budget | Every run |
 | **S1-S4** (scientific) | Finite specifiability, stability, approximability, certifiability | Design/audit time |
 
-To propose a new gate, create an RFC:
+To propose a new gate, use the web form on the **Gate Dashboard**:
+
+1. Go to **https://pwm.platformai.org/gates**
+2. Log in, then fill in the **"Propose a New Gate (RFC)"** form:
+   - **Gate Name** (`gate_name`): short name, e.g. `Zero-Mean Normalization Check`
+   - **Description** (`description`): what this gate checks and its pass/fail criteria
+   - **Modality** (optional): which modality this gate targets, or leave blank for universal
+   - **Rationale** (optional): why this gate is needed
+3. Click **"Submit RFC Proposal"** — the proposal appears immediately in the "Submitted Proposals" section.
+
+> **API field names:** The web form and API both use `gate_name` and `description` (not `title` or `checks`).
+
+Or via file (for complex RFCs):
 
 ```bash
 cp docs/governance/RFC_TEMPLATE.md docs/governance/rfcs/RFC-0001-my-new-gate.md

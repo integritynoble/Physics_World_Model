@@ -3,79 +3,158 @@
 {% block content %}
 <div class="max-w-5xl mx-auto px-4 py-8">
   <h1 class="text-2xl font-bold text-gray-900 mb-2">Claim Review Queue</h1>
-  <p class="text-sm text-gray-500 mb-6">Review scaffolded ClaimCards from arXiv and manual submissions. Approve to add to leaderboard at Draft tier.</p>
+  <p class="text-sm text-gray-500 mb-2">Review scaffolded ClaimCards from arXiv and manual submissions. Approve to add to leaderboard at Draft tier.</p>
 
-  <!-- Scaffold new claim form -->
-  <details class="mb-8 bg-white border rounded-lg">
-    <summary class="px-4 py-3 cursor-pointer font-medium text-indigo-700 hover:bg-indigo-50">+ Scaffold new ClaimCard</summary>
-    <form id="scaffold-form" class="p-4 border-t space-y-3"
-          hx-post="/claims/scaffold" hx-target="#claims-list" hx-swap="innerHTML"
-          hx-on::after-request="this.reset(); htmx.ajax('GET','/claims/queue/html','#claims-list')">
-      <div class="grid grid-cols-2 gap-3">
-        <input name="arxiv_id" placeholder="arXiv ID (e.g. 2603.12345)" class="border rounded px-3 py-2 text-sm">
-        <input name="source_url" placeholder="Paper URL (optional)" class="border rounded px-3 py-2 text-sm">
-        <input name="title" placeholder="Paper title" class="border rounded px-3 py-2 text-sm col-span-2" required>
-        <div id="dup-warning" class="hidden text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded px-3 py-2 mt-1 col-span-2">Possible duplicate detected: <span id="dup-match"></span></div>
-        <input name="authors" placeholder="Authors (comma-separated)" class="border rounded px-3 py-2 text-sm col-span-2">
-        <input name="modality" placeholder="Modality (e.g. cassi, ct, mri)" class="border rounded px-3 py-2 text-sm">
-        <input name="method" placeholder="Method name (e.g. MST-L)" class="border rounded px-3 py-2 text-sm">
-        <input name="claimed_psnr" type="number" step="0.01" placeholder="Claimed PSNR (dB)" class="border rounded px-3 py-2 text-sm">
-        <input name="claimed_ssim" type="number" step="0.001" placeholder="Claimed SSIM" class="border rounded px-3 py-2 text-sm">
-        <select name="claim_type" class="border rounded px-3 py-2 text-sm col-span-2">
-          <option value="">Auto-detect from title prefix</option>
-          <option value="paper_claim">Paper Claim</option>
-          <option value="reproduction_issue">Reproduction Issue</option>
-          <option value="red_team">Red-Team Report</option>
-          <option value="maintainer_scaffold">Missing Paper (Maintainer)</option>
-          <option value="trust_dispute">Trust Dispute</option>
-          <option value="test">Test / Demo</option>
-        </select>
+  <!-- How it works (collapsible) -->
+  <details class="mb-6 bg-indigo-50 border border-indigo-200 rounded-lg">
+    <summary class="px-4 py-2 cursor-pointer text-sm font-medium text-indigo-700 hover:bg-indigo-100">How does this page work?</summary>
+    <div class="px-4 py-3 text-xs text-gray-600 space-y-2 border-t border-indigo-200">
+      <p><strong>What is a ClaimCard?</strong> A ClaimCard is a structured record of a scientific result claim — typically from a paper. It captures who claimed the result, what they claimed (method, PSNR, SSIM), and where it was published.</p>
+      <p><strong>What does "Scaffold" mean?</strong> Scaffolding creates a new ClaimCard and puts it in the review queue at "Pending" status. It does NOT publish the result to the leaderboard — a reviewer must approve it first.</p>
+      <p><strong>What does "Approve" do?</strong> Approving moves the claim to the benchmark leaderboard at <span class="px-1 py-0.5 bg-gray-200 rounded text-[10px] font-bold">Draft</span> trust tier. The result is now visible but not yet verified.</p>
+      <p><strong>What does "Reject" do?</strong> Rejecting removes the claim from the queue with a reason. The submitter may re-apply with corrections.</p>
+      <p><strong>What does "Mark Reproduced" do?</strong> When a Benchmark Reviewer independently confirms the result, they click this to upgrade the trust tier from Draft to <span class="px-1 py-0.5 bg-blue-200 rounded text-[10px] font-bold">Reproduced</span>.</p>
+      <p><strong>What does "Demote to Draft" do?</strong> If a reproduction fails or an error is found, a reviewer can demote the claim back to Draft for re-evaluation.</p>
+      <div class="mt-2 p-2 bg-white rounded border border-indigo-100">
+        <p class="font-medium text-gray-700 mb-1">Trust-tier progression:</p>
+        <p class="text-[10px] text-gray-500">Draft → Author-confirmed → Reproduced → Certified</p>
       </div>
-      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Scaffold ClaimCard</button>
-    </form>
 
-    <!-- Batch scaffold section -->
-    <div class="border-t mt-4 pt-4 px-4 pb-4">
-      <h3 class="text-sm font-medium text-gray-700 mb-2">Batch scaffold from arXiv ID list</h3>
-      <form id="batch-scaffold-form" class="space-y-3">
-        <textarea name="arxiv_ids" rows="4" placeholder="One arXiv ID per line:&#10;2603.12345&#10;2501.98765&#10;2312.00001"
-                  class="w-full border rounded px-3 py-2 text-sm font-mono"></textarea>
-        <div class="flex gap-3 items-end">
-          <div>
-            <label class="text-xs text-gray-500">Default modality</label>
-            <input name="modality" placeholder="e.g. ct" class="border rounded px-2 py-1 text-sm w-24">
-          </div>
-          <div>
-            <label class="text-xs text-gray-500">Default method</label>
-            <input name="default_method" placeholder="e.g. DiffusionCT" class="border rounded px-2 py-1 text-sm w-32">
-          </div>
-          <button type="submit" class="px-4 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
-            Scaffold Batch
-          </button>
+      <div class="mt-3">
+        <p class="font-medium text-gray-700 mb-2">Example 1: Single scaffold (one paper)</p>
+        <div class="bg-gray-50 rounded p-2 text-[10px] text-gray-600 space-y-0.5">
+          <p>1. Click <strong>"+ Scaffold new ClaimCard"</strong> below</p>
+          <p>2. Fill in:</p>
+          <table class="ml-3 text-[10px]">
+            <tr><td class="pr-2 text-gray-400">arXiv ID:</td><td><code>2204.07908</code></td></tr>
+            <tr><td class="pr-2 text-gray-400">Title:</td><td><code>MST: Mask-guided Spectral-wise Transformer</code></td></tr>
+            <tr><td class="pr-2 text-gray-400">Authors:</td><td><code>Yuanhao Cai, Jing Lin, Haoqian Wang</code></td></tr>
+            <tr><td class="pr-2 text-gray-400">Modality:</td><td><code>cassi</code></td></tr>
+            <tr><td class="pr-2 text-gray-400">Method:</td><td><code>MST</code></td></tr>
+            <tr><td class="pr-2 text-gray-400">PSNR:</td><td><code>35.18</code></td></tr>
+            <tr><td class="pr-2 text-gray-400">SSIM:</td><td><code>0.948</code></td></tr>
+          </table>
+          <p>3. Click <strong>"Scaffold ClaimCard"</strong> → claim appears in queue with "Pending" badge</p>
+          <p>4. Click <strong>"Approve"</strong> → claim goes to CASSI leaderboard at Draft tier</p>
         </div>
-        <div id="batch-result" class="text-sm"></div>
-      </form>
+      </div>
+
+      <div class="mt-3">
+        <p class="font-medium text-gray-700 mb-2">Example 2: Batch scaffold (multiple papers at once)</p>
+        <div class="bg-gray-50 rounded p-2 text-[10px] text-gray-600 space-y-0.5">
+          <p>1. Click <strong>"+ Batch scaffold from arXiv IDs"</strong> below</p>
+          <p>2. Enter multiple arXiv IDs, one per line:</p>
+          <pre class="ml-3 bg-white p-1 rounded text-[10px] font-mono">2204.07908
+2305.18727
+2312.00001</pre>
+          <p>3. Click <strong>"Scaffold Batch"</strong> → the system fetches each paper from arXiv, scores relevance, and creates ClaimCards for relevant ones</p>
+          <p>4. Claims appear in the queue below — review and approve each one individually</p>
+          <p class="text-gray-400 mt-1">Note: papers not related to computational imaging (relevance &lt; 0.2) are automatically filtered out.</p>
+        </div>
+      </div>
     </div>
   </details>
 
-  <!-- Modality + status filter row -->
-  <div class="flex flex-wrap items-center gap-3 mb-4">
-    <form method="get" action="/claims" class="flex items-center gap-2">
-      <select name="modality" onchange="this.form.submit()"
-              class="border rounded px-2 py-1 text-sm text-gray-700">
-        <option value="" {% if not modality_filter %}selected{% endif %}>All modalities</option>
-        {% for m in all_modalities %}
-        <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
-        {% endfor %}
-      </select>
-      <input type="hidden" name="status" value="{{ status_filter }}">
-    </form>
-    <div class="flex gap-2">
-      <a href="/claims?modality={{ modality_filter }}&status=all" class="px-3 py-1 text-sm border rounded {% if status_filter == 'all' %}bg-gray-100 font-semibold{% else %}hover:bg-gray-100{% endif %}">All</a>
-      <a href="/claims?modality={{ modality_filter }}&status=pending_review" class="px-3 py-1 text-sm border rounded {% if status_filter == 'pending_review' %}bg-yellow-100 font-semibold text-yellow-800{% else %}bg-yellow-50 text-yellow-700 hover:bg-yellow-100{% endif %}">Pending</a>
-      <a href="/claims?modality={{ modality_filter }}&status=approved" class="px-3 py-1 text-sm border rounded {% if status_filter == 'approved' %}bg-green-100 font-semibold text-green-800{% else %}bg-green-50 text-green-700 hover:bg-green-100{% endif %}">Approved</a>
-      <a href="/claims?modality={{ modality_filter }}&status=rejected" class="px-3 py-1 text-sm border rounded {% if status_filter == 'rejected' %}bg-red-100 font-semibold text-red-700{% else %}bg-red-50 text-red-700 hover:bg-red-100{% endif %}">Rejected</a>
-    </div>
+  <!-- Scaffold forms -->
+  <div class="mb-8 space-y-3">
+    <!-- Single scaffold -->
+    <details class="bg-white border rounded-lg">
+      <summary class="px-4 py-3 cursor-pointer font-medium text-indigo-700 hover:bg-indigo-50">
+        + Scaffold new ClaimCard
+        <span class="text-xs text-gray-400 font-normal ml-2">(create a new paper claim for review)</span>
+      </summary>
+      <form id="scaffold-form" class="p-4 border-t space-y-3" onsubmit="event.preventDefault(); scaffoldClaim(this)">
+        <p class="text-xs text-gray-400 mb-2">Fill in the paper details below. Only <strong>Title</strong> is required — other fields help reviewers evaluate the claim faster.</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-0.5">arXiv ID</label>
+            <input name="arxiv_id" placeholder="e.g. 2603.12345" class="w-full border rounded px-3 py-2 text-sm" title="The arXiv paper ID — auto-generates a link to the paper">
+          </div>
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-0.5">Paper URL (optional)</label>
+            <input name="source_url" placeholder="https://..." class="w-full border rounded px-3 py-2 text-sm" title="Direct link to the paper if not on arXiv">
+          </div>
+          <div class="col-span-2">
+            <label class="block text-[10px] text-gray-500 mb-0.5">Paper Title <span class="text-red-400">*required</span></label>
+            <input name="title" placeholder="Full title of the paper" class="w-full border rounded px-3 py-2 text-sm" required title="The full title — use [RED-TEAM] or [MISSING] prefix for special claim types">
+          </div>
+          <div class="col-span-2">
+            <label class="block text-[10px] text-gray-500 mb-0.5">Authors</label>
+            <input name="authors" placeholder="Comma-separated (e.g. Cai, Lin, Wang)" class="w-full border rounded px-3 py-2 text-sm" title="Author names, comma-separated">
+          </div>
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-0.5">Modality</label>
+            <input name="modality" placeholder="e.g. cassi, ct, mri" class="w-full border rounded px-3 py-2 text-sm" title="Which imaging modality this result applies to">
+          </div>
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-0.5">Method Name</label>
+            <input name="method" placeholder="e.g. MST-L, GAP-TV" class="w-full border rounded px-3 py-2 text-sm" title="Name of the reconstruction algorithm">
+          </div>
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-0.5">Claimed PSNR (dB)</label>
+            <input name="claimed_psnr" type="number" step="0.01" placeholder="e.g. 35.4" class="w-full border rounded px-3 py-2 text-sm" title="Peak Signal-to-Noise Ratio claimed in the paper">
+          </div>
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-0.5">Claimed SSIM</label>
+            <input name="claimed_ssim" type="number" step="0.001" placeholder="e.g. 0.94" class="w-full border rounded px-3 py-2 text-sm" title="Structural Similarity Index claimed in the paper (0-1)">
+          </div>
+          <div class="col-span-2">
+            <label class="block text-[10px] text-gray-500 mb-0.5">Claim Type</label>
+            <select name="claim_type" class="w-full border rounded px-3 py-2 text-sm" title="What kind of claim this is — auto-detected from title prefix if left as default">
+              <option value="">Auto-detect from title prefix</option>
+              <option value="paper_claim">Paper Claim — result from a published paper</option>
+              <option value="reproduction_issue">Reproduction Issue — report a reproduction discrepancy</option>
+              <option value="red_team">Red-Team Report — vulnerability or gate bypass finding</option>
+              <option value="maintainer_scaffold">Missing Paper — important paper missing from leaderboard</option>
+              <option value="trust_dispute">Trust Dispute — challenge an existing trust-tier decision</option>
+              <option value="test">Test / Demo — simulation only, never promote</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700" title="Creates the ClaimCard and adds it to the review queue at 'Pending' status">Scaffold ClaimCard</button>
+          <span class="text-[10px] text-gray-400">Creates claim in queue — does NOT publish to leaderboard</span>
+          <span id="scaffold-msg" class="text-sm text-gray-500 hidden"></span>
+        </div>
+      </form>
+    </details>
+
+    <!-- Batch scaffold -->
+    <details class="bg-white border rounded-lg">
+      <summary class="px-4 py-3 cursor-pointer font-medium text-indigo-700 hover:bg-indigo-50">+ Batch scaffold from arXiv IDs</summary>
+      <form class="p-4 border-t space-y-3" onsubmit="event.preventDefault(); scaffoldBatch(this)">
+        <p class="text-xs text-gray-500">Paste arXiv IDs (one per line, or comma-separated). Up to 50 per batch.</p>
+        <div class="grid grid-cols-3 gap-3">
+          <textarea name="arxiv_ids" rows="5" required placeholder="2301.00001&#10;2301.00002&#10;2301.00003"
+            class="border rounded px-3 py-2 text-sm font-mono col-span-2"></textarea>
+          <div class="space-y-2">
+            <input name="modality" placeholder="Default modality (optional)" class="w-full border rounded px-3 py-2 text-sm">
+            <input name="default_method" placeholder="Default method (optional)" class="w-full border rounded px-3 py-2 text-sm">
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Batch Scaffold</button>
+          <span id="batch-msg" class="text-sm text-gray-500 hidden"></span>
+        </div>
+      </form>
+    </details>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="flex gap-2 mb-4 flex-wrap items-center">
+    <a href="/claims?status=all" class="px-3 py-1 text-sm border rounded {% if status_filter == 'all' %}bg-gray-200 font-semibold{% else %}hover:bg-gray-100{% endif %}">All</a>
+    <a href="/claims?status=pending_review" class="px-3 py-1 text-sm border rounded {% if status_filter == 'pending_review' %}bg-yellow-200 font-semibold text-yellow-900{% else %}bg-yellow-50 text-yellow-700 hover:bg-yellow-100{% endif %}">Pending</a>
+    <a href="/claims?status=approved" class="px-3 py-1 text-sm border rounded {% if status_filter == 'approved' %}bg-green-200 font-semibold text-green-900{% else %}bg-green-50 text-green-700 hover:bg-green-100{% endif %}">Approved</a>
+    <a href="/claims?status=rejected" class="px-3 py-1 text-sm border rounded {% if status_filter == 'rejected' %}bg-red-200 font-semibold text-red-900{% else %}bg-red-50 text-red-700 hover:bg-red-100{% endif %}">Rejected</a>
+    <select id="modality-filter" onchange="filterByModality(this.value)" class="px-3 py-1 text-sm border rounded">
+      <option value="">All modalities</option>
+      <option value="ct">CT</option>
+      <option value="mri">MRI</option>
+      <option value="cassi">CASSI</option>
+      <option value="pet">PET</option>
+      <option value="ultrasound">Ultrasound</option>
+    </select>
+    <span class="text-xs text-gray-400 ml-auto self-center">{{ claims | length }} claim{% if claims | length != 1 %}s{% endif %}</span>
   </div>
 
   <!-- Claims list -->
@@ -122,26 +201,18 @@
         <button onclick="reviewClaim('{{ claim.claim_id }}', 'reject')"
                 class="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700">Reject</button>
       </div>
-      {% elif claim.status == 'approved' and claim.trust_tier == 'draft' %}
-      <div class="mt-3">
+      {% elif claim.status == 'approved' and claim.trust_tier in ('draft', 'author_confirmed') %}
+      <div class="mt-3 flex gap-2">
         <button onclick="reviewClaim('{{ claim.claim_id }}', 'reproduce')"
                 class="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700">Mark Reproduced</button>
+        <button onclick="demoteClaim('{{ claim.claim_id }}')"
+                class="px-3 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600">Demote to Draft</button>
       </div>
       {% endif %}
 
       {% if claim.source_url %}
       <a href="{{ claim.source_url }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-2 inline-block">View paper</a>
       {% endif %}
-      <div class="mt-2 flex items-center gap-2 text-xs">
-        <span class="text-gray-400">Assigned to:</span>
-        <span class="assignee-label font-medium text-gray-700">{{ claim.assigned_to or 'unassigned' }}</span>
-        <button onclick="showAssign('{{ claim.claim_id }}')"
-                class="text-indigo-500 hover:underline text-xs">change</button>
-        <span id="assign-form-{{ claim.claim_id }}" class="hidden">
-          <input id="assignee-input-{{ claim.claim_id }}" placeholder="username or blank" class="border rounded px-2 py-0.5 text-xs w-28">
-          <button onclick="submitAssign('{{ claim.claim_id }}')" class="text-xs bg-indigo-600 text-white px-2 py-0.5 rounded hover:bg-indigo-700">Save</button>
-        </span>
-      </div>
     </div>
     {% endfor %}
 
@@ -152,6 +223,49 @@
 </div>
 
 <script>
+function scaffoldClaim(form) {
+  const msg = document.getElementById('scaffold-msg');
+  msg.textContent = 'Scaffolding…';
+  msg.classList.remove('hidden', 'text-green-600', 'text-red-600');
+  msg.classList.add('text-gray-500');
+  const formData = new FormData(form);
+  fetch('/claims/scaffold', { method: 'POST', body: formData })
+    .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.detail || 'Error')))
+    .then(d => {
+      msg.textContent = 'Scaffolded: ' + (d.title || d.claim_id);
+      msg.classList.replace('text-gray-500', 'text-green-600');
+      form.reset();
+      setTimeout(() => location.reload(), 1200);
+    })
+    .catch(e => {
+      msg.textContent = 'Error: ' + e;
+      msg.classList.replace('text-gray-500', 'text-red-600');
+    });
+}
+function scaffoldBatch(form) {
+  const msg = document.getElementById('batch-msg');
+  msg.textContent = 'Scaffolding batch…';
+  msg.classList.remove('hidden', 'text-green-600', 'text-red-600');
+  msg.classList.add('text-gray-500');
+  const data = Object.fromEntries(new FormData(form));
+  fetch('/claims/scaffold-batch', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  })
+    .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.detail || 'Error')))
+    .then(d => {
+      const n = d.total_created !== undefined ? d.total_created : (Array.isArray(d) ? d.length : 1);
+      msg.textContent = 'Scaffolded ' + n + ' claim(s).';
+      msg.classList.replace('text-gray-500', 'text-green-600');
+      form.reset();
+      setTimeout(() => location.reload(), 1200);
+    })
+    .catch(e => {
+      msg.textContent = 'Error: ' + e;
+      msg.classList.replace('text-gray-500', 'text-red-600');
+    });
+}
 function reviewClaim(claimId, action) {
   const reason = action === 'reject' ? prompt('Rejection reason:') : '';
   if (action === 'reject' && reason === null) return;
@@ -161,94 +275,33 @@ function reviewClaim(claimId, action) {
     body: JSON.stringify({reviewer: 'admin', reason: reason || ''})
   }).then(() => location.reload());
 }
-
-function showAssign(claimId) {
-  document.getElementById('assign-form-' + claimId).classList.toggle('hidden');
+function filterByModality(value) {
+  var cards = document.querySelectorAll('#claims-list > div');
+  cards.forEach(function(card) {
+    if (!value) {
+      card.style.display = '';
+      return;
+    }
+    var text = card.textContent.toLowerCase();
+    if (text.indexOf(value.toLowerCase()) !== -1) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
 }
-function submitAssign(claimId) {
-  const assignee = document.getElementById('assignee-input-' + claimId).value;
-  fetch('/claims/' + claimId + '/assign', {
+function demoteClaim(claimId) {
+  const reason = prompt('Reason for demotion:');
+  if (reason === null) return;
+  fetch('/claims/' + claimId + '/demote', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({assignee: assignee}),
-  }).then(() => location.reload());
-}
-
-// Duplicate detection
-(function() {
-  let allClaims = null;
-  async function loadClaims() {
-    if (allClaims) return allClaims;
-    try {
-      const r = await fetch('/claims/queue?status=all');
-      const d = await r.json();
-      allClaims = d.claims || [];
-    } catch(e) { allClaims = []; }
-    return allClaims;
-  }
-  function similarity(a, b) {
-    a = a.toLowerCase().replace(/[^a-z0-9 ]/g, '');
-    b = b.toLowerCase().replace(/[^a-z0-9 ]/g, '');
-    const wa = new Set(a.split(' ').filter(Boolean));
-    const wb = new Set(b.split(' ').filter(Boolean));
-    let common = 0;
-    wa.forEach(w => { if (wb.has(w)) common++; });
-    return common / Math.max(wa.size, wb.size, 1);
-  }
-  async function checkDup(val, field) {
-    if (val.length < 6) return;
-    const claims = await loadClaims();
-    let best = null, bestScore = 0;
-    for (const c of claims) {
-      const score = Math.max(
-        similarity(val, c.title || ''),
-        similarity(val, c.method || '')
-      );
-      if (score > bestScore) { bestScore = score; best = c; }
-    }
-    const warn = document.getElementById('dup-warning');
-    const match = document.getElementById('dup-match');
-    if (bestScore > 0.6 && best) {
-      match.textContent = '"' + (best.title || best.method) + '" (' + best.claim_id + ')';
-      warn.classList.remove('hidden');
-    } else {
-      warn.classList.add('hidden');
-    }
-  }
-  document.addEventListener('DOMContentLoaded', function() {
-    const titleInput = document.querySelector('input[name="title"]');
-    const methodInput = document.querySelector('input[name="method"]');
-    if (titleInput) titleInput.addEventListener('blur', e => checkDup(e.target.value, 'title'));
-    if (methodInput) methodInput.addEventListener('blur', e => checkDup(e.target.value, 'method'));
+    credentials: 'include',
+    body: JSON.stringify({reviewer: 'reviewer', reason: reason})
+  }).then(r => r.json()).then(d => {
+    if (d.detail) alert('Error: ' + d.detail);
+    location.reload();
   });
-})();
-
-document.addEventListener('DOMContentLoaded', function() {
-  const batchForm = document.getElementById('batch-scaffold-form');
-  if (batchForm) {
-    batchForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const f = e.target;
-      const res = await fetch('/claims/scaffold-batch', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          arxiv_ids: f.arxiv_ids.value,
-          modality: f.modality.value,
-          default_method: f.default_method.value,
-        }),
-      });
-      const el = document.getElementById('batch-result');
-      if (res.ok) {
-        const d = await res.json();
-        el.innerHTML = '<span class="text-green-600 font-medium">Created ' + d.total_created + ' claims.' + (d.skipped.length ? ' Skipped (already exist): ' + d.skipped.join(', ') : '') + '</span>';
-        if (d.total_created > 0) setTimeout(() => location.reload(), 2000);
-      } else {
-        const err = await res.json().catch(() => ({}));
-        el.innerHTML = '<span class="text-red-600">' + (err.detail || 'Batch scaffold failed') + '</span>';
-      }
-    });
-  }
-});
+}
 </script>
 {% endblock %}
