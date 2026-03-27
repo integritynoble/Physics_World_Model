@@ -81,8 +81,7 @@ async def audit_log_page(
     action_result = await db.execute(select(AuditLog.action).distinct())
     action_types = sorted(r[0] for r in action_result.all() if r[0])
 
-    return templates.TemplateResponse("audit_log.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "audit_log.html", {
         "user": user,
         "entries": entries,
         "action_types": action_types,
