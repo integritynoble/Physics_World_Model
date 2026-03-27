@@ -49,6 +49,9 @@ class ClaimCard(BaseModel):
     authors : list[str]
     tags : list[str]
     created_at : str
+    claim_type : str
+        Claim type: paper_claim, reproduction_issue, red_team,
+        maintainer_scaffold, test, trust_dispute.
     extra : dict, optional
     """
 
@@ -60,6 +63,10 @@ class ClaimCard(BaseModel):
     modality: str = ""
     method_id: Optional[str] = None
     spec_id: Optional[str] = None
+    claim_type: str = Field(
+        default="paper_claim",
+        description="Type: paper_claim, reproduction_issue, red_team, maintainer_scaffold, test, trust_dispute",
+    )
     trust_tier: str = "draft"
     run_id: Optional[str] = None
     verified_value: Optional[float] = None

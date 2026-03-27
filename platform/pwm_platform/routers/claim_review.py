@@ -36,6 +36,7 @@ class ScaffoldRequest(BaseModel):
     claimed_psnr: Optional[float] = None
     claimed_ssim: Optional[float] = None
     source_url: str = ""
+    claim_type: str = ""  # explicit type; empty = auto-detect from title prefix
 
 
 class ReviewAction(BaseModel):
@@ -78,6 +79,24 @@ async def get_claim(claim_id: str):
 @router.post("/scaffold")
 async def scaffold_claim(req: ScaffoldRequest):
     """Manually scaffold a new ClaimCard."""
+    # Determine claim_type: explicit field takes priority, otherwise auto-detect from title prefix
+    if req.claim_type:
+        claim_type = req.claim_type
+    else:
+        title_lower = req.title.lower()
+        if title_lower.startswith("[red-team]"):
+            claim_type = "red_team"
+        elif title_lower.startswith("[reproduce]"):
+            claim_type = "reproduction_issue"
+        elif title_lower.startswith("[missing]"):
+            claim_type = "maintainer_scaffold"
+        elif title_lower.startswith("[test]") or title_lower.startswith("[demo]"):
+            claim_type = "test"
+        elif title_lower.startswith("[dispute]"):
+            claim_type = "trust_dispute"
+        else:
+            claim_type = "paper_claim"
+
     claim_id = f"claim_manual_{req.arxiv_id.replace('.', '_').replace('/', '_') or datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
     claim = {
         "claim_id": claim_id,
@@ -90,6 +109,7 @@ async def scaffold_claim(req: ScaffoldRequest):
         "method": req.method,
         "claimed_psnr": req.claimed_psnr,
         "claimed_ssim": req.claimed_ssim,
+        "claim_type": claim_type,
         "trust_tier": "draft",
         "status": "pending_review",
         "scaffolded_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -150,6 +170,7 @@ async def scaffold_batch(req: BatchScaffoldRequest):
             "method": req.default_method,
             "claimed_psnr": None,
             "claimed_ssim": None,
+            "claim_type": "paper_claim",
             "trust_tier": "draft",
             "status": "pending_review",
             "scaffolded_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),

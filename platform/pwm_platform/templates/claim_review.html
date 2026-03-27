@@ -21,6 +21,15 @@
         <input name="method" placeholder="Method name (e.g. MST-L)" class="border rounded px-3 py-2 text-sm">
         <input name="claimed_psnr" type="number" step="0.01" placeholder="Claimed PSNR (dB)" class="border rounded px-3 py-2 text-sm">
         <input name="claimed_ssim" type="number" step="0.001" placeholder="Claimed SSIM" class="border rounded px-3 py-2 text-sm">
+        <select name="claim_type" class="border rounded px-3 py-2 text-sm col-span-2">
+          <option value="">Auto-detect from title prefix</option>
+          <option value="paper_claim">Paper Claim</option>
+          <option value="reproduction_issue">Reproduction Issue</option>
+          <option value="red_team">Red-Team Report</option>
+          <option value="maintainer_scaffold">Missing Paper (Maintainer)</option>
+          <option value="trust_dispute">Trust Dispute</option>
+          <option value="test">Test / Demo</option>
+        </select>
       </div>
       <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Scaffold ClaimCard</button>
     </form>
@@ -99,6 +108,9 @@
           {% endif %}
           {% if claim.trust_tier %}
             <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-gray-100 text-gray-500 border border-gray-300">{{ claim.trust_tier }}</span>
+          {% endif %}
+          {% if claim.claim_type %}
+            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">{{ claim.claim_type | replace('_', ' ') }}</span>
           {% endif %}
         </div>
       </div>
