@@ -273,8 +273,12 @@ function reviewClaim(claimId, action) {
   fetch('/claims/' + claimId + '/' + action, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
+    credentials: 'include',
     body: JSON.stringify({reviewer: _reviewerUsername, reason: reason || ''})
-  }).then(() => location.reload());
+  }).then(function(r) {
+    if (!r.ok) return r.json().then(function(d) { throw d.detail || ('Error ' + r.status); });
+    location.reload();
+  }).catch(function(e) { alert('Failed to ' + action + ': ' + e); });
 }
 function filterByModality(value) {
   var cards = document.querySelectorAll('#claims-list > div');

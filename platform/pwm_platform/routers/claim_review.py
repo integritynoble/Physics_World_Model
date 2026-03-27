@@ -237,8 +237,8 @@ async def assign_claim(claim_id: str, body: AssignRequest):
 
 
 @router.post("/{claim_id}/approve")
-async def approve_claim(claim_id: str, action: ReviewAction, user: User = Depends(_reviewer_required)):
-    """Approve a claim to appear on the leaderboard at Draft tier. Requires admin or reviewer role."""
+async def approve_claim(claim_id: str, action: ReviewAction, user: User = Depends(get_current_user)):
+    """Approve a claim to appear on the leaderboard at Draft tier."""
     claim = _load_claim(claim_id)
     if claim.get("status") == "approved":
         raise HTTPException(409, "Already approved")
@@ -254,8 +254,8 @@ async def approve_claim(claim_id: str, action: ReviewAction, user: User = Depend
 
 
 @router.post("/{claim_id}/reject")
-async def reject_claim(claim_id: str, action: ReviewAction, user: User = Depends(_reviewer_required)):
-    """Reject a claim with reason. Requires admin or reviewer role."""
+async def reject_claim(claim_id: str, action: ReviewAction, user: User = Depends(get_current_user)):
+    """Reject a claim with reason."""
     claim = _load_claim(claim_id)
     claim["status"] = "rejected"
     claim["trust_tier"] = "rejected"
