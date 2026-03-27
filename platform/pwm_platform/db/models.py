@@ -559,3 +559,26 @@ class Instrument(Base):
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     uploader = relationship("User", foreign_keys=[uploaded_by], lazy="selectin")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  Audit Log
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class AuditLog(Base):
+    """Platform audit log — records significant contributor and admin actions."""
+
+    __tablename__ = "audit_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    action = Column(String(100), nullable=False, index=True)   # e.g. "claim_approved"
+    actor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    actor_name = Column(String(100), default="")               # denormalized for speed
+    resource_type = Column(String(50), default="")             # "claim", "instrument", etc.
+    resource_id = Column(String(255), default="")              # the resource identifier
+    detail = Column(Text, default="")                          # JSON or free text
+    ip_address = Column(String(45), default="")
+    created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
+
+    actor = relationship("User", foreign_keys=[actor_id], lazy="selectin")

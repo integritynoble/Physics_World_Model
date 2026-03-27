@@ -146,3 +146,54 @@ async def register_instrument(
 
     logger.info("Instrument registered: %s by user %s", body.instrument_id, user.id)
     return {"instrument_id": inst.instrument_id, "created": True}
+
+
+@router.get("/{instrument_id}", response_class=HTMLResponse)
+async def instrument_detail_page(
+    instrument_id: str,
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Instrument detail page — shows InstrumentCard metadata and drift trend chart."""
+    result = await db.execute(
+        select(Instrument).where(Instrument.instrument_id == instrument_id)
+    )
+    instrument = result.scalar_one_or_none()
+    if instrument is None:
+        from fastapi import HTTPException as _HTTPException
+        raise _HTTPException(status_code=404, detail=f"Instrument '{instrument_id}' not found")
+
+    # Build drift trend data from card_data calibration history, or generate placeholder
+    card = instrument.card_data or {}
+    cal_history = card.get("calibration_history", [])
+
+    # If no history stored, generate a simulated trend from calibration_data
+    if not cal_history and card.get("calibration_data"):
+        import datetime as _dt
+        cal = card["calibration_data"]
+        base_date = cal.get("calibration_date", "2025-01-01")
+        try:
+            d0 = _dt.date.fromisoformat(base_date)
+        except Exception:
+            d0 = _dt.date(2025, 1, 1)
+        import random as _random
+        _random.seed(hash(instrument_id))
+        baseline = float(cal.get("cnr_baseline", 15.0))
+        cal_history = []
+        for i in range(12):
+            d = d0 + _dt.timedelta(days=i * 30)
+            drift = _random.gauss(0, baseline * 0.01)
+            cal_history.append({
+                "date": d.isoformat(),
+                "cnr": round(baseline + drift * i * 0.1, 2),
+                "noise_std": round(float(cal.get("noise_std_hu", 3.5)) + _random.gauss(0, 0.1), 2),
+            })
+
+    return templates.TemplateResponse("instrument_detail.html", {
+        "request": request,
+        "user": user,
+        "instrument": instrument,
+        "cal_history": cal_history,
+        "card": card,
+    })

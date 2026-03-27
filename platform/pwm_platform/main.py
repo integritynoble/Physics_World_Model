@@ -21,6 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from pwm_platform.config import settings
 from pwm_platform.db.database import init_db
 from pwm_platform.routers import (
+    audit_router,
     admin_users_router,
     auth_router,
     billing_router,
@@ -93,6 +94,7 @@ app.mount("/static", StaticFiles(directory="pwm_platform/static"), name="static"
 
 # ── Register routers ────────────────────────────────────────────────────
 
+app.include_router(audit_router)
 app.include_router(admin_users_router)
 app.include_router(auth_router)
 app.include_router(billing_router)

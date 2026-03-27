@@ -15,6 +15,7 @@
         <input name="arxiv_id" placeholder="arXiv ID (e.g. 2603.12345)" class="border rounded px-3 py-2 text-sm">
         <input name="source_url" placeholder="Paper URL (optional)" class="border rounded px-3 py-2 text-sm">
         <input name="title" placeholder="Paper title" class="border rounded px-3 py-2 text-sm col-span-2" required>
+        <div id="dup-warning" class="hidden text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded px-3 py-2 mt-1 col-span-2">Possible duplicate detected: <span id="dup-match"></span></div>
         <input name="authors" placeholder="Authors (comma-separated)" class="border rounded px-3 py-2 text-sm col-span-2">
         <input name="modality" placeholder="Modality (e.g. cassi, ct, mri)" class="border rounded px-3 py-2 text-sm">
         <input name="method" placeholder="Method name (e.g. MST-L)" class="border rounded px-3 py-2 text-sm">
@@ -23,6 +24,29 @@
       </div>
       <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Scaffold ClaimCard</button>
     </form>
+
+    <!-- Batch scaffold section -->
+    <div class="border-t mt-4 pt-4 px-4 pb-4">
+      <h3 class="text-sm font-medium text-gray-700 mb-2">Batch scaffold from arXiv ID list</h3>
+      <form id="batch-scaffold-form" class="space-y-3">
+        <textarea name="arxiv_ids" rows="4" placeholder="One arXiv ID per line:&#10;2603.12345&#10;2501.98765&#10;2312.00001"
+                  class="w-full border rounded px-3 py-2 text-sm font-mono"></textarea>
+        <div class="flex gap-3 items-end">
+          <div>
+            <label class="text-xs text-gray-500">Default modality</label>
+            <input name="modality" placeholder="e.g. ct" class="border rounded px-2 py-1 text-sm w-24">
+          </div>
+          <div>
+            <label class="text-xs text-gray-500">Default method</label>
+            <input name="default_method" placeholder="e.g. DiffusionCT" class="border rounded px-2 py-1 text-sm w-32">
+          </div>
+          <button type="submit" class="px-4 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+            Scaffold Batch
+          </button>
+        </div>
+        <div id="batch-result" class="text-sm"></div>
+      </form>
+    </div>
   </details>
 
   <!-- Modality + status filter row -->
@@ -96,6 +120,16 @@
       {% if claim.source_url %}
       <a href="{{ claim.source_url }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-2 inline-block">View paper</a>
       {% endif %}
+      <div class="mt-2 flex items-center gap-2 text-xs">
+        <span class="text-gray-400">Assigned to:</span>
+        <span class="assignee-label font-medium text-gray-700">{{ claim.assigned_to or 'unassigned' }}</span>
+        <button onclick="showAssign('{{ claim.claim_id }}')"
+                class="text-indigo-500 hover:underline text-xs">change</button>
+        <span id="assign-form-{{ claim.claim_id }}" class="hidden">
+          <input id="assignee-input-{{ claim.claim_id }}" placeholder="username or blank" class="border rounded px-2 py-0.5 text-xs w-28">
+          <button onclick="submitAssign('{{ claim.claim_id }}')" class="text-xs bg-indigo-600 text-white px-2 py-0.5 rounded hover:bg-indigo-700">Save</button>
+        </span>
+      </div>
     </div>
     {% endfor %}
 
@@ -115,5 +149,94 @@ function reviewClaim(claimId, action) {
     body: JSON.stringify({reviewer: 'admin', reason: reason || ''})
   }).then(() => location.reload());
 }
+
+function showAssign(claimId) {
+  document.getElementById('assign-form-' + claimId).classList.toggle('hidden');
+}
+function submitAssign(claimId) {
+  const assignee = document.getElementById('assignee-input-' + claimId).value;
+  fetch('/claims/' + claimId + '/assign', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({assignee: assignee}),
+  }).then(() => location.reload());
+}
+
+// Duplicate detection
+(function() {
+  let allClaims = null;
+  async function loadClaims() {
+    if (allClaims) return allClaims;
+    try {
+      const r = await fetch('/claims/queue?status=all');
+      const d = await r.json();
+      allClaims = d.claims || [];
+    } catch(e) { allClaims = []; }
+    return allClaims;
+  }
+  function similarity(a, b) {
+    a = a.toLowerCase().replace(/[^a-z0-9 ]/g, '');
+    b = b.toLowerCase().replace(/[^a-z0-9 ]/g, '');
+    const wa = new Set(a.split(' ').filter(Boolean));
+    const wb = new Set(b.split(' ').filter(Boolean));
+    let common = 0;
+    wa.forEach(w => { if (wb.has(w)) common++; });
+    return common / Math.max(wa.size, wb.size, 1);
+  }
+  async function checkDup(val, field) {
+    if (val.length < 6) return;
+    const claims = await loadClaims();
+    let best = null, bestScore = 0;
+    for (const c of claims) {
+      const score = Math.max(
+        similarity(val, c.title || ''),
+        similarity(val, c.method || '')
+      );
+      if (score > bestScore) { bestScore = score; best = c; }
+    }
+    const warn = document.getElementById('dup-warning');
+    const match = document.getElementById('dup-match');
+    if (bestScore > 0.6 && best) {
+      match.textContent = '"' + (best.title || best.method) + '" (' + best.claim_id + ')';
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.querySelector('input[name="title"]');
+    const methodInput = document.querySelector('input[name="method"]');
+    if (titleInput) titleInput.addEventListener('blur', e => checkDup(e.target.value, 'title'));
+    if (methodInput) methodInput.addEventListener('blur', e => checkDup(e.target.value, 'method'));
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  const batchForm = document.getElementById('batch-scaffold-form');
+  if (batchForm) {
+    batchForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const f = e.target;
+      const res = await fetch('/claims/scaffold-batch', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          arxiv_ids: f.arxiv_ids.value,
+          modality: f.modality.value,
+          default_method: f.default_method.value,
+        }),
+      });
+      const el = document.getElementById('batch-result');
+      if (res.ok) {
+        const d = await res.json();
+        el.innerHTML = '<span class="text-green-600 font-medium">Created ' + d.total_created + ' claims.' + (d.skipped.length ? ' Skipped (already exist): ' + d.skipped.join(', ') : '') + '</span>';
+        if (d.total_created > 0) setTimeout(() => location.reload(), 2000);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        el.innerHTML = '<span class="text-red-600">' + (err.detail || 'Batch scaffold failed') + '</span>';
+      }
+    });
+  }
+});
 </script>
 {% endblock %}

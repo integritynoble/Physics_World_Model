@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block title %}{{ instrument.name }} — Instrument Registry — Physics World Model{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-gray-500 mb-4">
+    <a href="/instruments" class="hover:text-indigo-600">Instrument Registry</a>
+    <span class="mx-1">/</span>
+    <span class="text-gray-900">{{ instrument.name }}</span>
+  </nav>
+
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">{{ instrument.name }}</h1>
+      <p class="text-sm text-gray-500 mt-1 font-mono">{{ instrument.instrument_id }}</p>
+    </div>
+    <span class="px-2 py-0.5 text-xs font-bold rounded-full
+      {% if instrument.is_public %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-100 text-gray-600 border border-gray-300{% endif %}">
+      {% if instrument.is_public %}Public{% else %}Internal{% endif %}
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left: metadata -->
+    <div class="lg:col-span-1 space-y-4">
+      <div class="bg-white border rounded-lg p-4">
+        <h2 class="text-sm font-semibold text-gray-700 mb-3">InstrumentCard Details</h2>
+        <dl class="space-y-2 text-sm">
+          <div>
+            <dt class="text-xs text-gray-400">Modality</dt>
+            <dd class="font-medium text-indigo-700">{{ instrument.modality }}</dd>
+          </div>
+          {% if instrument.manufacturer %}
+          <div>
+            <dt class="text-xs text-gray-400">Manufacturer</dt>
+            <dd class="text-gray-800">{{ instrument.manufacturer }}{% if instrument.model_number %} {{ instrument.model_number }}{% endif %}</dd>
+          </div>
+          {% endif %}
+          {% if instrument.serial_number %}
+          <div>
+            <dt class="text-xs text-gray-400">Serial Number</dt>
+            <dd class="font-mono text-gray-700">{{ instrument.serial_number }}</dd>
+          </div>
+          {% endif %}
+          {% if instrument.lab %}
+          <div>
+            <dt class="text-xs text-gray-400">Lab</dt>
+            <dd class="text-gray-800">{{ instrument.lab }}</dd>
+          </div>
+          {% endif %}
+          {% if instrument.institution %}
+          <div>
+            <dt class="text-xs text-gray-400">Institution</dt>
+            <dd class="text-gray-800">{{ instrument.institution }}</dd>
+          </div>
+          {% endif %}
+          {% if instrument.drift_budget_pct %}
+          <div>
+            <dt class="text-xs text-gray-400">Drift Budget</dt>
+            <dd class="font-mono text-gray-800">{{ instrument.drift_budget_pct }}%</dd>
+          </div>
+          {% endif %}
+          {% if instrument.contact_email %}
+          <div>
+            <dt class="text-xs text-gray-400">Contact</dt>
+            <dd><a href="mailto:{{ instrument.contact_email }}" class="text-indigo-500 hover:underline">{{ instrument.contact_email }}</a></dd>
+          </div>
+          {% endif %}
+          {% if instrument.created_at %}
+          <div>
+            <dt class="text-xs text-gray-400">Registered</dt>
+            <dd class="text-gray-600">{{ instrument.created_at.strftime('%Y-%m-%d') }}</dd>
+          </div>
+          {% endif %}
+        </dl>
+      </div>
+
+      {% if instrument.description %}
+      <div class="bg-white border rounded-lg p-4">
+        <h2 class="text-sm font-semibold text-gray-700 mb-2">Description</h2>
+        <p class="text-sm text-gray-700">{{ instrument.description }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Raw card_data extra fields -->
+      {% if card %}
+      <div class="bg-white border rounded-lg p-4">
+        <h2 class="text-sm font-semibold text-gray-700 mb-2">Calibration Parameters</h2>
+        {% if card.calibration_data %}
+        <dl class="space-y-1 text-xs text-gray-600">
+          {% for k, v in card.calibration_data.items() %}
+          {% if k != 'calibration_history' %}
+          <div class="flex justify-between">
+            <dt class="text-gray-400">{{ k | replace('_', ' ') | title }}</dt>
+            <dd class="font-mono">{{ v }}</dd>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </dl>
+        {% endif %}
+        {% if card.known_artifacts %}
+        <p class="text-xs font-medium text-gray-600 mt-3 mb-1">Known Artifacts</p>
+        <ul class="list-disc list-inside text-xs text-amber-700 space-y-0.5">
+          {% for a in card.known_artifacts %}
+          <li>{{ a }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right: drift trend charts -->
+    <div class="lg:col-span-2 space-y-6">
+      {% if cal_history %}
+      <div class="bg-white border rounded-lg p-5">
+        <h2 class="text-base font-semibold text-gray-800 mb-1">CNR Drift Trend</h2>
+        <p class="text-xs text-gray-400 mb-4">
+          Contrast-to-noise ratio over time. Drift budget:
+          <strong>{{ instrument.drift_budget_pct or '—' }}%</strong>.
+          {% if cal_history | length <= 2 %}Values below are simulated for illustration.{% endif %}
+        </p>
+        <canvas id="cnr-chart" height="180"></canvas>
+      </div>
+
+      <div class="bg-white border rounded-lg p-5">
+        <h2 class="text-base font-semibold text-gray-800 mb-1">Noise Std Drift Trend</h2>
+        <p class="text-xs text-gray-400 mb-4">Background noise standard deviation over time. Lower is better.</p>
+        <canvas id="noise-chart" height="180"></canvas>
+      </div>
+
+      <!-- Calibration history table -->
+      <div class="bg-white border rounded-lg p-5">
+        <h2 class="text-base font-semibold text-gray-800 mb-3">Calibration Log</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b text-left text-gray-500">
+                <th class="pb-2 font-medium">Date</th>
+                <th class="pb-2 font-medium">CNR</th>
+                <th class="pb-2 font-medium">Noise Std</th>
+                <th class="pb-2 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              {% for row in cal_history %}
+              <tr>
+                <td class="py-1.5 font-mono">{{ row.date }}</td>
+                <td class="py-1.5 font-mono">{{ "%.2f" | format(row.cnr) if row.cnr is defined else '—' }}</td>
+                <td class="py-1.5 font-mono">{{ "%.2f" | format(row.noise_std) if row.noise_std is defined else '—' }}</td>
+                <td class="py-1.5">
+                  {% set drift_pct = ((row.cnr - cal_history[0].cnr) / cal_history[0].cnr * 100) | abs if cal_history[0].cnr else 0 %}
+                  {% if instrument.drift_budget_pct and drift_pct > instrument.drift_budget_pct %}
+                  <span class="text-red-600 font-semibold">&#9888; Drift exceeded</span>
+                  {% else %}
+                  <span class="text-green-600">OK</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="bg-white border rounded-lg px-6 py-12 text-center">
+        <p class="text-gray-400 text-sm">No calibration history available yet.</p>
+        <p class="text-gray-400 text-xs mt-1">
+          Include a <code class="bg-gray-100 px-1">calibration_history</code> array in the instrument's <code class="bg-gray-100 px-1">card_data</code> JSON to populate drift trend charts.
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if cal_history %}
+<script>
+const calHistory = {{ cal_history | tojson }};
+const labels = calHistory.map(r => r.date);
+const cnrData = calHistory.map(r => r.cnr ?? null);
+const noiseData = calHistory.map(r => r.noise_std ?? null);
+const driftBudget = {{ instrument.drift_budget_pct or 0 }};
+const cnrBaseline = cnrData[0] || 0;
+
+// CNR chart
+new Chart(document.getElementById('cnr-chart'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'CNR',
+      data: cnrData,
+      borderColor: '#4f46e5',
+      backgroundColor: 'rgba(79,70,229,0.08)',
+      tension: 0.3,
+      fill: true,
+      pointRadius: 4,
+    }],
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      annotation: driftBudget ? {
+        annotations: {
+          upperBound: {
+            type: 'line',
+            yMin: cnrBaseline * (1 + driftBudget / 100),
+            yMax: cnrBaseline * (1 + driftBudget / 100),
+            borderColor: 'rgba(239,68,68,0.5)',
+            borderDash: [6,3],
+            label: { content: '+' + driftBudget + '% limit', display: true, position: 'end' },
+          },
+          lowerBound: {
+            type: 'line',
+            yMin: cnrBaseline * (1 - driftBudget / 100),
+            yMax: cnrBaseline * (1 - driftBudget / 100),
+            borderColor: 'rgba(239,68,68,0.5)',
+            borderDash: [6,3],
+          },
+        }
+      } : undefined,
+    },
+    scales: { y: { beginAtZero: false } },
+  },
+});
+
+// Noise chart
+new Chart(document.getElementById('noise-chart'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Noise Std',
+      data: noiseData,
+      borderColor: '#f59e0b',
+      backgroundColor: 'rgba(245,158,11,0.08)',
+      tension: 0.3,
+      fill: true,
+      pointRadius: 4,
+    }],
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: false } },
+  },
+});
+</script>
+{% endif %}
+{% endblock %}

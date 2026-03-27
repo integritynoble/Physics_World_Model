@@ -123,7 +123,7 @@
       <div class="flex items-start justify-between">
         <div class="flex-1">
           <div class="flex items-center gap-3">
-            <h3 class="font-bold text-gray-900">{{ inst.name }}</h3>
+            <a href="/instruments/{{ inst.instrument_id }}" class="font-bold text-gray-900 hover:text-indigo-600">{{ inst.name }}</a>
             <span class="text-xs font-mono text-gray-400">{{ inst.instrument_id }}</span>
           </div>
           <p class="text-xs text-gray-500 mt-1">

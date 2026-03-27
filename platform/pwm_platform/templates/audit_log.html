@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Audit Log — Admin — Physics World Model{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-2">Platform Audit Log</h1>
+  <p class="text-sm text-gray-500 mb-6">
+    Significant contributor and admin actions. Records claims approved/rejected,
+    role applications processed, instruments registered, and trust tier changes.
+  </p>
+
+  <!-- Filter -->
+  <form method="get" action="/admin/audit" class="flex items-center gap-3 mb-6">
+    <select name="action" onchange="this.form.submit()"
+            class="border rounded px-3 py-2 text-sm text-gray-700">
+      <option value="">All actions</option>
+      {% for a in action_types %}
+      <option value="{{ a }}" {% if action_filter == a %}selected{% endif %}>{{ a }}</option>
+      {% endfor %}
+    </select>
+    {% if action_filter %}
+    <a href="/admin/audit" class="text-sm text-gray-500 hover:text-indigo-600">Clear</a>
+    {% endif %}
+    <span class="ml-auto text-sm text-gray-400">{{ entries | length }} entries</span>
+    <a href="/admin/audit/api" class="text-sm text-indigo-500 hover:underline">JSON</a>
+  </form>
+
+  {% if entries %}
+  <div class="bg-white border rounded-lg overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 border-b">
+        <tr class="text-left text-xs font-medium text-gray-500">
+          <th class="px-4 py-3">Timestamp</th>
+          <th class="px-4 py-3">Action</th>
+          <th class="px-4 py-3">Actor</th>
+          <th class="px-4 py-3">Resource</th>
+          <th class="px-4 py-3">Detail</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for e in entries %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
+            {{ e.created_at.strftime('%Y-%m-%d %H:%M') if e.created_at else '—' }}
+          </td>
+          <td class="px-4 py-2.5">
+            <span class="inline-flex px-2 py-0.5 rounded text-xs font-mono font-medium
+              {% if 'approved' in e.action %}bg-green-100 text-green-800
+              {% elif 'rejected' in e.action or 'revoked' in e.action %}bg-red-100 text-red-800
+              {% elif 'registered' in e.action %}bg-blue-100 text-blue-800
+              {% else %}bg-gray-100 text-gray-700{% endif %}">
+              {{ e.action }}
+            </span>
+          </td>
+          <td class="px-4 py-2.5 text-gray-700">{{ e.actor_name or ('user_' ~ e.actor_id) if e.actor_id else '—' }}</td>
+          <td class="px-4 py-2.5 text-xs font-mono text-gray-600">
+            {% if e.resource_type %}<span class="text-gray-400">{{ e.resource_type }}:</span>{% endif %}
+            {{ e.resource_id or '—' }}
+          </td>
+          <td class="px-4 py-2.5 text-xs text-gray-500 max-w-xs truncate" title="{{ e.detail }}">{{ e.detail or '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="bg-white border rounded-lg px-6 py-16 text-center">
+    <p class="text-gray-400 text-sm">No audit entries yet.</p>
+    <p class="text-gray-400 text-xs mt-1">Entries are recorded automatically as contributors and admins take actions.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

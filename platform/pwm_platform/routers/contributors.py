@@ -549,6 +549,60 @@ async def api_record_action(
     }
 
 
+@router.post("/api/check-maturity")
+async def api_check_maturity(db: AsyncSession = Depends(get_db)):
+    """Auto-compute maturity level for all contributor profiles.
+
+    Level 0: Account exists
+    Level 1: At least one contributor role approved
+    Level 2: 3+ contributions in history
+    Level 3: claim_curator or benchmark_reviewer + 5+ reproductions OR 10+ claims reviewed
+    Level 4: Modality Maintainer + 5+ certifications (sustained contribution)
+    """
+    import datetime as _dt
+    result = await db.execute(
+        select(ContributorProfile).options(selectinload(ContributorProfile.user))
+    )
+    profiles = result.scalars().all()
+    updates = {}
+    for p in profiles:
+        roles = p.roles or []
+        history_len = len(p.contribution_history or [])
+        reproductions = p.total_reproductions or 0
+        claims_reviewed = p.total_claims_reviewed or 0
+        certifications = p.total_certifications or 0
+
+        if "modality_maintainer" in roles and certifications >= 5:
+            level = 4
+        elif ("claim_curator" in roles or "benchmark_reviewer" in roles) and (reproductions >= 5 or claims_reviewed >= 10):
+            level = 3
+        elif history_len >= 3:
+            level = 2
+        elif len(roles) >= 1:
+            level = 1
+        else:
+            level = 0
+
+        old_level = p.badge_tier  # reuse badge_tier field as proxy (or add a new field)
+        # Store maturity level in contribution_history metadata (lightweight approach)
+        # Update bio_extras via card_data or just track in a comment
+        # For now, append a maturity check event to history if level changed
+        history = list(p.contribution_history or [])
+        last_level_entry = next((h for h in reversed(history) if h.get("action") == "maturity_check"), None)
+        last_level = last_level_entry.get("level", 0) if last_level_entry else 0
+        if level != last_level:
+            history.append({
+                "action": "maturity_check",
+                "level": level,
+                "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+            })
+            p.contribution_history = history
+            updates[p.user_id] = {"old_level": last_level, "new_level": level}
+
+    await db.commit()
+    return {"updated": updates, "total_profiles": len(profiles)}
+
+
 @router.post("/api/check-badges")
 async def api_check_all_badges(db: AsyncSession = Depends(get_db)):
     """Scan all profiles and award any earned badges."""

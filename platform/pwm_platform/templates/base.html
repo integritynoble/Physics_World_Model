@@ -40,6 +40,7 @@
                         {% endif %}
                         {% if user.role == 'admin' %}
                         <a href="/admin/users" class="text-sm text-gray-700 hover:text-indigo-600">Users</a>
+                        <a href="/admin/audit" class="text-sm text-gray-700 hover:text-indigo-600">Audit</a>
                         {% endif %}
                         <a href="/pricing" class="text-sm text-gray-700 hover:text-indigo-600">Pricing</a>
                         <form action="/api/v1/auth/logout" method="post" hx-boost="false" class="inline">

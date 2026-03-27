@@ -78,6 +78,9 @@
         </div>
       </div>
       <div id="reg-result" class="text-sm"></div>
+      <div id="phi-warning" class="hidden text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+        ⚠ Possible PHI detected in dataset ID or description. Anonymize before registering (remove patient IDs, dates of birth, names, or medical record numbers).
+      </div>
       <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
         Register DatasetCard
       </button>
@@ -146,6 +149,12 @@
       {% if ds.gcs_prefix %}
       <p class="text-xs font-mono text-gray-400 mt-2 truncate">{{ ds.gcs_prefix }}</p>
       {% endif %}
+      <div class="mt-2 flex items-center gap-3 text-xs">
+        <a href="/api/v1/datasets/history/{{ ds.dataset_id }}"
+           target="_blank" class="text-indigo-400 hover:underline">Version history</a>
+        <a href="/api/v1/datasets/{{ ds.dataset_id }}"
+           target="_blank" class="text-indigo-400 hover:underline">Full metadata</a>
+      </div>
     </div>
     {% endfor %}
   </div>
@@ -161,6 +170,24 @@
 
 {% if user %}
 <script>
+// PHI detection
+const PHI_PATTERNS = [
+  /\b\d{3}-\d{2}-\d{4}\b/,           // SSN
+  /\bMRN[:\s]*\d+/i,                  // Medical Record Number
+  /\bpatient[\s_-]*id[:\s]*\d+/i,     // Patient ID
+  /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,]*\d{1,2}[\s,]*\d{4}\b/i, // dates
+  /\bDOB[:\s]/i,                       // Date of Birth label
+  /\bD\.O\.B\./i,
+];
+function checkPHI() {
+  const val = (document.querySelector('[name="dataset_id"]')?.value || '') + ' ' +
+              (document.querySelector('[name="description"]')?.value || '');
+  const hasPHI = PHI_PATTERNS.some(p => p.test(val));
+  document.getElementById('phi-warning').classList.toggle('hidden', !hasPHI);
+}
+document.querySelector('[name="dataset_id"]')?.addEventListener('input', checkPHI);
+document.querySelector('[name="description"]')?.addEventListener('input', checkPHI);
+
 document.getElementById('dataset-reg-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const form = e.target;

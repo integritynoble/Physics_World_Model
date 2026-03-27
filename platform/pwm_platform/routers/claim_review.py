@@ -112,6 +112,55 @@ async def scaffold_claim(req: ScaffoldRequest):
     return claim
 
 
+class BatchScaffoldRequest(BaseModel):
+    arxiv_ids: str  # newline- or comma-separated arXiv IDs
+    modality: str = ""
+    default_method: str = ""
+
+
+@router.post("/scaffold-batch")
+async def scaffold_batch(req: BatchScaffoldRequest):
+    """Scaffold multiple ClaimCards from a list of arXiv IDs."""
+    import re as _re
+    raw = _re.split(r"[\n,;]+", req.arxiv_ids)
+    ids = [x.strip() for x in raw if x.strip()]
+    if not ids:
+        raise HTTPException(400, "No arXiv IDs provided")
+    if len(ids) > 50:
+        raise HTTPException(400, "Maximum 50 arXiv IDs per batch")
+
+    created = []
+    skipped = []
+    for arxiv_id in ids:
+        # Normalize: strip "arxiv:" prefix, whitespace
+        arxiv_id = arxiv_id.replace("arxiv:", "").replace("arXiv:", "").strip()
+        claim_id = f"claim_manual_{arxiv_id.replace('.', '_').replace('/', '_')}"
+        p = CLAIMS_DIR / f"{claim_id}.json"
+        if p.exists():
+            skipped.append(arxiv_id)
+            continue
+        claim = {
+            "claim_id": claim_id,
+            "source_type": "arxiv",
+            "source_id": arxiv_id,
+            "source_url": f"https://arxiv.org/abs/{arxiv_id}",
+            "title": f"[Auto-scaffolded] arXiv:{arxiv_id}",
+            "authors": [],
+            "modality": req.modality,
+            "method": req.default_method,
+            "claimed_psnr": None,
+            "claimed_ssim": None,
+            "trust_tier": "draft",
+            "status": "pending_review",
+            "scaffolded_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "history": [{"action": "batch_scaffolded", "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()}],
+        }
+        _save_claim(claim)
+        created.append(arxiv_id)
+
+    return {"created": created, "skipped": skipped, "total_created": len(created)}
+
+
 @router.post("/{claim_id}/approve")
 async def approve_claim(claim_id: str, action: ReviewAction):
     """Approve a claim to appear on the leaderboard at Draft tier."""
@@ -159,3 +208,23 @@ async def mark_reproduced(claim_id: str, action: ReviewAction):
                               "timestamp": claim["reproduced_at"]})
     _save_claim(claim)
     return claim
+
+
+class AssignRequest(BaseModel):
+    assignee: str = ""  # username or empty to unassign
+
+
+@router.post("/{claim_id}/assign")
+async def assign_claim(claim_id: str, body: AssignRequest):
+    """Assign a claim to a reviewer/curator for follow-up."""
+    claim = _load_claim(claim_id)
+    claim["assigned_to"] = body.assignee
+    claim["assigned_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    claim["history"] = claim.get("history", [])
+    claim["history"].append({
+        "action": "assigned",
+        "to": body.assignee,
+        "timestamp": claim["assigned_at"],
+    })
+    _save_claim(claim)
+    return {"claim_id": claim_id, "assigned_to": body.assignee}

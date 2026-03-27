@@ -107,6 +107,54 @@
     </div>
   </div>
 
+  <!-- Gate Simulation Tool -->
+  <div class="mb-10">
+    <h2 class="text-xl font-bold text-gray-900 mb-2">Gate Simulation Tool</h2>
+    <p class="text-xs text-gray-500 mb-4">
+      Enter a claim's metrics below to see which built-in gates it would pass or fail.
+      Results are computed locally — no data is sent to the server.
+    </p>
+    <div class="bg-white border rounded-lg p-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Claimed PSNR (dB)</label>
+          <input id="sim-psnr" type="number" step="0.1" placeholder="e.g. 32.5"
+                 class="w-full border rounded px-3 py-2 text-sm" oninput="simulateGates()">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Claimed SSIM</label>
+          <input id="sim-ssim" type="number" step="0.001" min="0" max="1" placeholder="e.g. 0.92"
+                 class="w-full border rounded px-3 py-2 text-sm" oninput="simulateGates()">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Modality baseline PSNR (dB)</label>
+          <input id="sim-baseline" type="number" step="0.1" placeholder="e.g. 28.0"
+                 class="w-full border rounded px-3 py-2 text-sm" oninput="simulateGates()">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Code repo URL</label>
+          <input id="sim-code" type="url" placeholder="https://github.com/..."
+                 class="w-full border rounded px-3 py-2 text-sm" oninput="simulateGates()">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Paper URL</label>
+          <input id="sim-paper" type="url" placeholder="https://arxiv.org/abs/..."
+                 class="w-full border rounded px-3 py-2 text-sm" oninput="simulateGates()">
+        </div>
+        <div class="flex items-end">
+          <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input id="sim-reproduced" type="checkbox" class="rounded" onchange="simulateGates()">
+            Independently reproduced
+          </label>
+        </div>
+      </div>
+      <div id="sim-results" class="space-y-2 hidden">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Simulation Results</p>
+      </div>
+      <p id="sim-placeholder" class="text-xs text-gray-400 italic">Enter PSNR and baseline to start simulation.</p>
+    </div>
+  </div>
+
   <!-- RFC Proposals -->
   <div>
     <h2 class="text-lg font-bold text-gray-900 mb-3">RFC Proposals</h2>
@@ -157,6 +205,93 @@
     {% endif %}
   </div>
 </div>
+
+<script>
+function simulateGates() {
+  const psnr = parseFloat(document.getElementById('sim-psnr').value);
+  const ssim = parseFloat(document.getElementById('sim-ssim').value);
+  const baseline = parseFloat(document.getElementById('sim-baseline').value);
+  const code = document.getElementById('sim-code').value.trim();
+  const paper = document.getElementById('sim-paper').value.trim();
+  const reproduced = document.getElementById('sim-reproduced').checked;
+
+  if (isNaN(psnr) && isNaN(baseline)) {
+    document.getElementById('sim-results').classList.add('hidden');
+    document.getElementById('sim-placeholder').classList.remove('hidden');
+    return;
+  }
+
+  const gates = [
+    {
+      id: 'S1', name: 'Reproducibility Check',
+      check: () => ({ pass: reproduced, reason: reproduced ? 'Marked as independently reproduced.' : 'Not yet marked as reproduced. A reviewer must independently re-run from your code.' }),
+    },
+    {
+      id: 'S2', name: 'Dataset Integrity',
+      check: () => ({ pass: true, reason: 'Cannot be automatically verified — admin confirms dataset source on submission.' }),
+    },
+    {
+      id: 'S3', name: 'Code Availability',
+      check: () => {
+        const pass = code.length > 0;
+        return { pass, reason: pass ? 'Code URL provided: ' + code : 'No code repository URL provided. Required for trust advancement.' };
+      },
+    },
+    {
+      id: 'G1', name: 'PSNR Threshold',
+      check: () => {
+        if (isNaN(psnr) || isNaN(baseline)) return { pass: null, reason: 'Enter both PSNR and baseline PSNR to evaluate.' };
+        const margin = psnr - baseline;
+        const pass = margin >= 1.0;
+        return { pass, reason: `PSNR ${psnr} dB vs baseline ${baseline} dB → margin ${margin >= 0 ? '+' : ''}${margin.toFixed(1)} dB (need ≥ +1.0 dB)` };
+      },
+    },
+    {
+      id: 'G2', name: 'SSIM Consistency',
+      check: () => {
+        if (isNaN(psnr) || isNaN(ssim)) return { pass: null, reason: 'Enter both PSNR and SSIM to evaluate.' };
+        // Rough physical consistency: high PSNR should correlate with high SSIM
+        const expectedMinSsim = Math.max(0.5, Math.min(0.99, (psnr - 20) / 40));
+        const pass = ssim >= expectedMinSsim;
+        return { pass, reason: `SSIM ${ssim.toFixed(3)} vs expected minimum ${expectedMinSsim.toFixed(3)} for PSNR ${psnr} dB. ${pass ? 'Physically consistent.' : 'SSIM too low for claimed PSNR — may indicate metric mismatch.'}` };
+      },
+    },
+    {
+      id: 'G3', name: 'Peer Reproduction',
+      check: () => ({ pass: reproduced, reason: reproduced ? 'Claimed as reproduced. Admin will verify.' : 'Peer reproduction required before Certified tier.' }),
+    },
+  ];
+
+  document.getElementById('sim-placeholder').classList.add('hidden');
+  const container = document.getElementById('sim-results');
+  container.classList.remove('hidden');
+  container.innerHTML = '<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Simulation Results</p>';
+
+  let allPass = true;
+  gates.forEach(g => {
+    const result = g.check();
+    if (result.pass === false) allPass = false;
+    const color = result.pass === true ? 'green' : result.pass === false ? 'red' : 'gray';
+    const icon = result.pass === true ? '✓' : result.pass === false ? '✗' : '?';
+    container.innerHTML += `
+      <div class="flex items-start gap-3 p-3 rounded border ${color === 'green' ? 'bg-green-50 border-green-200' : color === 'red' ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}">
+        <span class="shrink-0 font-mono text-xs font-bold px-1.5 py-0.5 rounded ${color === 'green' ? 'bg-green-200 text-green-900' : color === 'red' ? 'bg-red-200 text-red-900' : 'bg-gray-200 text-gray-700'}">${g.id}</span>
+        <div class="flex-1">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-semibold text-gray-800">${g.name}</span>
+            <span class="text-sm ${color === 'green' ? 'text-green-700' : color === 'red' ? 'text-red-700' : 'text-gray-500'} font-bold">${icon}</span>
+          </div>
+          <p class="text-xs text-gray-600 mt-0.5">${result.reason}</p>
+        </div>
+      </div>`;
+  });
+
+  const summary = allPass
+    ? '<div class="mt-3 p-3 bg-green-100 border border-green-300 rounded text-sm font-semibold text-green-800">✓ All gates pass — this claim would be eligible for Certified tier.</div>'
+    : '<div class="mt-3 p-3 bg-yellow-50 border border-yellow-300 rounded text-sm font-semibold text-yellow-800">Some gates fail — address the issues above before submitting for trust promotion.</div>';
+  container.innerHTML += summary;
+}
+</script>
 
 {% if user %}
 <script>

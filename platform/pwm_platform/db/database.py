@@ -119,6 +119,16 @@ async def init_db() -> None:
             except Exception:
                 pass
 
+        # Idempotent migration: audit_log table columns
+        for col_def in [
+            "ALTER TABLE audit_log ADD COLUMN IF NOT EXISTS ip_address VARCHAR(45) DEFAULT ''",
+            "ALTER TABLE audit_log ADD COLUMN IF NOT EXISTS actor_name VARCHAR(100) DEFAULT ''",
+        ]:
+            try:
+                await conn.execute(text(col_def))
+            except Exception:
+                pass
+
         # Ensure platformaigpt@gmail.com is admin
         await conn.execute(text(
             "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"

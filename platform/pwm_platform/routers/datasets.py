@@ -105,6 +105,41 @@ async def register_dataset(
     return {"dataset_id": ds.dataset_id, "created": True}
 
 
+@router.get("/history/{dataset_id}")
+async def dataset_version_history(
+    dataset_id: str,
+    db: AsyncSession = Depends(get_db),
+):
+    """Get version history for a dataset (all versions sharing the same base ID)."""
+    # Strip version suffix (e.g. "cassi_sim_v2" → "cassi_sim")
+    import re as _re
+    base_id = _re.sub(r'_v\d+(\.\d+)*$', '', dataset_id)
+
+    stmt = (
+        select(Dataset)
+        .where(Dataset.dataset_id.like(f"{base_id}%"))
+        .order_by(Dataset.created_at.asc())
+    )
+    result = await db.execute(stmt)
+    versions = result.scalars().all()
+
+    return {
+        "base_id": base_id,
+        "versions": [
+            {
+                "dataset_id": d.dataset_id,
+                "version": d.version,
+                "modality": d.modality,
+                "num_samples": d.num_samples,
+                "is_public": d.is_public,
+                "created_at": d.created_at.isoformat() if d.created_at else None,
+            }
+            for d in versions
+        ],
+        "total": len(versions),
+    }
+
+
 @router.get("/{dataset_id}")
 async def get_dataset(
     dataset_id: str,
