@@ -626,6 +626,13 @@ function updateSpecPanel(specMd, configJson) {
             badge.textContent = ut;
             badge.className = 'text-xs px-2 py-0.5 rounded-full font-medium ' + (colorMap[ut] || 'bg-gray-100 text-gray-700');
             badge.classList.remove('hidden');
+            // Sync algorithm to upload form so it reflects the spec
+            if (cfg.algorithm) {
+                var _algoHidden = document.getElementById('upload-algorithm');
+                var _algoInput  = document.getElementById('upload-algorithm-input');
+                if (_algoHidden) _algoHidden.value = cfg.algorithm;
+                if (_algoInput)  _algoInput.value  = cfg.algorithm;
+            }
         } catch(e) {}
     }
 }

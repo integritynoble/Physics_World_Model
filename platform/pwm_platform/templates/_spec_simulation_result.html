@@ -43,23 +43,50 @@
             </div>
         </div>
 
-        {# ── Mismatch analysis ── #}
+        {# ── Mismatch analysis — uncorrected vs corrected comparison ── #}
         {% if result.mismatch_gap_db and result.mismatch_gap_db > 0 %}
         <div class="mb-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <p class="text-[10px] font-semibold text-amber-700 uppercase tracking-wide mb-2">Mismatch Analysis</p>
-            <div class="flex gap-3 flex-wrap">
-                <div class="px-3 py-2 bg-white border border-amber-200 rounded-lg text-center">
-                    <span class="block text-[10px] font-semibold text-amber-600 uppercase">Mismatch Penalty</span>
-                    <span class="block text-sm font-bold text-amber-800 font-mono">−{{ "%.1f"|format(result.mismatch_gap_db) }} dB</span>
+            <p class="text-[10px] font-semibold text-amber-700 uppercase tracking-wide mb-2">Mismatch Analysis — Uncorrected vs Corrected</p>
+
+            {# ── Summary badges ── #}
+            <div class="flex gap-3 flex-wrap mb-3">
+                <div class="px-3 py-2 bg-white border border-red-200 rounded-lg text-center">
+                    <span class="block text-[10px] font-semibold text-red-500 uppercase">Uncorrected Penalty</span>
+                    <span class="block text-sm font-bold text-red-700 font-mono">−{{ "%.1f"|format(result.mismatch_gap_db) }} dB</span>
                 </div>
                 {% if result.recovery_db and result.recovery_db > 0 %}
-                <div class="px-3 py-2 bg-white border border-amber-200 rounded-lg text-center">
-                    <span class="block text-[10px] font-semibold text-amber-600 uppercase">Recovery Gain</span>
+                <div class="px-3 py-2 bg-white border border-green-200 rounded-lg text-center">
+                    <span class="block text-[10px] font-semibold text-green-600 uppercase">Correction Gain</span>
                     <span class="block text-sm font-bold text-green-700 font-mono">+{{ "%.1f"|format(result.recovery_db) }} dB</span>
                 </div>
                 {% endif %}
             </div>
-            <p class="text-[10px] text-amber-600 mt-2">Correcting this mismatch recovers {{ "%.1f"|format(result.mismatch_gap_db) }} dB of PSNR.</p>
+
+            {# ── Per-method comparison table ── #}
+            {% if result.methods %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-amber-100">
+                            <th class="text-left px-2 py-1.5 border border-amber-200 text-amber-800 font-semibold">Method</th>
+                            <th class="text-right px-2 py-1.5 border border-amber-200 text-red-600 font-semibold">Uncorrected</th>
+                            <th class="text-right px-2 py-1.5 border border-amber-200 text-green-700 font-semibold">Corrected</th>
+                            <th class="text-right px-2 py-1.5 border border-amber-200 text-amber-700 font-semibold">Δ PSNR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in result.methods[:5] %}
+                        <tr class="{{ 'bg-white' if loop.index is odd else 'bg-amber-50' }}">
+                            <td class="px-2 py-1.5 border border-amber-200 text-gray-700 font-medium">{{ m.display_name }}</td>
+                            <td class="px-2 py-1.5 border border-amber-200 text-red-600 text-right font-mono">{{ "%.2f"|format(m.psnr_ii) }} dB</td>
+                            <td class="px-2 py-1.5 border border-amber-200 text-green-700 text-right font-mono">{{ "%.2f"|format(m.psnr_iii) }} dB</td>
+                            <td class="px-2 py-1.5 border border-amber-200 text-amber-800 text-right font-mono">+{{ "%.2f"|format(m.recovery_ii_iii) }} dB</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
 

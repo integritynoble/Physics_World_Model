@@ -1,103 +1,114 @@
-{# Common Mode reconstruction result — HTMX partial #}
-<div class="space-y-4 border-t border-gray-200 pt-4">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h3 class="text-base font-bold text-gray-900">
-                {{ result.algorithm_name }}
-                {% if result.gpu_accelerated %}
-                <span class="ml-1 text-xs font-medium bg-green-100 text-green-700 px-1.5 py-0.5 rounded">GPU</span>
-                {% endif %}
-            </h3>
-            <p class="text-xs text-gray-500">{{ result.algorithm_type }} &middot; {{ result.algorithm_source }}</p>
-        </div>
-        <span class="text-xs text-gray-400">{{ result.variant_name }} &middot; {{ result.runtime_ms }} ms</span>
-    </div>
+{# Common Mode reconstruction result — minimal: images + metrics + downloads #}
+<div class="px-4 py-5 border-b border-gray-100">
+    <div class="max-w-3xl mx-auto">
 
-    {% if result.is_dl_placeholder %}
-    <!-- DL method CPU fallback notice -->
-    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
-        <p class="text-sm text-amber-800">
-            <strong>{{ result.algorithm_name }}</strong> is a deep-learning method.
-            GPU inference unavailable — showing
-            <strong>{{ result.baseline_method or "classical" }}</strong> baseline for reference.
-            {% if result.expected_psnr %}
-            Expected performance: <strong>{{ result.expected_psnr }} dB</strong> PSNR.
+        {# ── Status badge ── #}
+        <div class="flex items-center gap-2 mb-3">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Done
+            </span>
+            <span class="text-xs text-gray-500">{{ result.algorithm_name }} · {{ result.variant_name }} · {{ result.runtime_ms }} ms</span>
+        </div>
+
+        {% if result.is_dl_placeholder %}
+        <div class="mb-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+            <strong>{{ result.algorithm_name }}</strong> is not available on this benchmark — showing <strong>{{ result.baseline_method or "classical" }}</strong> baseline.
+            {% if result.expected_psnr %}Expected PSNR: <strong>{{ result.expected_psnr }} dB</strong>{% endif %}
+        </div>
+        {% endif %}
+
+        {# ── Image grid ── #}
+        <div class="grid grid-cols-{% if result.ground_truth_image %}3{% else %}2{% endif %} gap-2 mb-3">
+            {% if result.ground_truth_image %}
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ result.ground_truth_image }}"
+                     alt="Ground Truth" class="w-full rounded border border-gray-200" id="gt-img-{{ result.variant_key }}">
+                <span class="text-[11px] text-gray-400 mt-1 block">Ground Truth</span>
+            </div>
             {% endif %}
-        </p>
-    </div>
-    {% endif %}
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ result.measurement_image }}"
+                     alt="Measurement" class="w-full rounded border border-gray-200">
+                <span class="text-[11px] text-gray-400 mt-1 block">Measurement</span>
+            </div>
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ result.reconstructed_image }}"
+                     alt="Reconstruction" class="w-full rounded border border-gray-200" id="recon-img-{{ result.variant_key }}">
+                <span class="text-[11px] text-gray-400 mt-1 block">Reconstruction</span>
+            </div>
+        </div>
 
-    <!-- Images: GT | Measurement | Reconstruction -->
-    <div class="grid grid-cols-{% if result.ground_truth_image %}3{% else %}2{% endif %} gap-3">
-        {% if result.ground_truth_image %}
-        <div class="text-center">
-            <p class="text-xs font-medium text-gray-600 mb-1">Ground Truth</p>
-            <img src="data:image/png;base64,{{ result.ground_truth_image }}"
-                 alt="Ground truth" class="w-full rounded border border-gray-200" />
+        {# ── PSNR / SSIM ── #}
+        {% if result.psnr is not none or result.ssim is not none %}
+        <div class="flex gap-3 mb-3">
+            {% if result.psnr is not none %}
+            <div class="px-4 py-2 bg-blue-50 border border-blue-100 rounded-lg text-center">
+                <span class="block text-[10px] font-semibold text-blue-500 uppercase">PSNR</span>
+                <span class="block text-base font-bold text-blue-800 font-mono">{{ result.psnr }} dB</span>
+            </div>
+            {% endif %}
+            {% if result.ssim is not none %}
+            <div class="px-4 py-2 bg-blue-50 border border-blue-100 rounded-lg text-center">
+                <span class="block text-[10px] font-semibold text-blue-500 uppercase">SSIM</span>
+                <span class="block text-base font-bold text-blue-800 font-mono">{{ result.ssim }}</span>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
-        <div class="text-center">
-            <p class="text-xs font-medium text-gray-600 mb-1">Measurement</p>
-            <img src="data:image/png;base64,{{ result.measurement_image }}"
-                 alt="Measurement" class="w-full rounded border border-gray-200" />
-        </div>
-        <div class="text-center">
-            <p class="text-xs font-medium text-gray-600 mb-1">
-                {% if result.is_dl_placeholder and result.baseline_method %}
-                    {{ result.baseline_method }} Baseline
-                {% else %}
-                    Reconstruction
-                {% endif %}
-            </p>
-            <img src="data:image/png;base64,{{ result.reconstructed_image }}"
-                 alt="Reconstruction" class="w-full rounded border border-gray-200" />
-        </div>
-    </div>
 
-    <!-- Metrics -->
-    {% if result.psnr is not none or result.ssim is not none or result.expected_psnr is not none %}
-    <div class="flex gap-4 justify-center flex-wrap">
-        {% if result.psnr is not none %}
-        <div class="bg-green-50 border border-green-200 rounded-lg px-4 py-2 text-center">
-            <p class="text-xs text-green-600 font-medium">
-                {% if result.is_dl_placeholder %}Baseline PSNR{% else %}PSNR{% endif %}
-            </p>
-            <p class="text-lg font-bold text-green-800 font-mono">{{ result.psnr }} dB</p>
+        {# ── Downloads — Images ── #}
+        <div class="flex flex-wrap gap-2 mb-2">
+            <button onclick="downloadBase64Img('recon-img-{{ result.variant_key }}', 'reconstruction.png')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Reconstruction (.png)
+            </button>
+            {% if result.ground_truth_image %}
+            <button onclick="downloadBase64Img('gt-img-{{ result.variant_key }}', 'ground_truth.png')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Ground Truth (.png)
+            </button>
+            {% endif %}
+            <button onclick="downloadSpecMd('spec.md')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                spec.md
+            </button>
         </div>
-        {% endif %}
-        {% if result.ssim is not none %}
-        <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-center">
-            <p class="text-xs text-blue-600 font-medium">
-                {% if result.is_dl_placeholder %}Baseline SSIM{% else %}SSIM{% endif %}
-            </p>
-            <p class="text-lg font-bold text-blue-800 font-mono">{{ result.ssim }}</p>
-        </div>
-        {% endif %}
-        {% if result.expected_psnr is not none %}
-        <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-center">
-            <p class="text-xs text-indigo-600 font-medium">Expected PSNR</p>
-            <p class="text-lg font-bold text-indigo-800 font-mono">{{ result.expected_psnr }} dB</p>
-        </div>
-        {% endif %}
-        {% if result.expected_ssim is not none %}
-        <div class="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-center">
-            <p class="text-xs text-purple-600 font-medium">Expected SSIM</p>
-            <p class="text-lg font-bold text-purple-800 font-mono">{{ result.expected_ssim }}</p>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
 
-    <!-- Actions -->
-    <div class="flex gap-3 pt-2">
-        <a href="/speclab?mode=advanced"
-           class="flex-1 text-center px-3 py-2 border border-gray-300 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-50 no-underline">
-            Open in Advanced Mode
-        </a>
-        <a href="/benchmark/{{ result.variant_key }}"
-           class="flex-1 text-center px-3 py-2 border border-indigo-300 text-indigo-700 text-xs font-medium rounded-lg hover:bg-indigo-50 no-underline">
-            View Full Benchmark
-        </a>
+        {# ── Downloads — NumPy arrays ── #}
+        <div class="flex flex-wrap gap-2">
+            {% if result.npy_reconstruction %}
+            <button onclick="downloadNpy('{{ result.npy_reconstruction }}', '{{ result.variant_key }}_reconstruction.npy')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-700 text-white hover:bg-slate-800 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Reconstruction (.npy)
+            </button>
+            {% endif %}
+            {% if result.npy_ground_truth %}
+            <button onclick="downloadNpy('{{ result.npy_ground_truth }}', '{{ result.variant_key }}_ground_truth.npy')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-600 text-white hover:bg-slate-700 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Ground Truth (.npy)
+            </button>
+            {% endif %}
+            {% if result.npy_measurement %}
+            <button onclick="downloadNpy('{{ result.npy_measurement }}', '{{ result.variant_key }}_measurement.npy')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-600 text-white hover:bg-slate-700 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Measurement (.npy)
+            </button>
+            {% endif %}
+            {% if result.npy_h_matrix %}
+            <button onclick="downloadNpy('{{ result.npy_h_matrix }}', '{{ result.variant_key }}_H_matrix.npy')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-600 text-white hover:bg-slate-700 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                H Matrix (.npy)
+            </button>
+            {% endif %}
+        </div>
+
     </div>
 </div>

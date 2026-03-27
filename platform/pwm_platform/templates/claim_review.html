@@ -223,6 +223,7 @@
 </div>
 
 <script>
+var _reviewerUsername = {{ (user.username if user else 'admin') | tojson }};
 function scaffoldClaim(form) {
   const msg = document.getElementById('scaffold-msg');
   msg.textContent = 'Scaffolding…';
@@ -272,7 +273,7 @@ function reviewClaim(claimId, action) {
   fetch('/claims/' + claimId + '/' + action, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({reviewer: 'admin', reason: reason || ''})
+    body: JSON.stringify({reviewer: _reviewerUsername, reason: reason || ''})
   }).then(() => location.reload());
 }
 function filterByModality(value) {

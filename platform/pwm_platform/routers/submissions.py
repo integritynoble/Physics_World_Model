@@ -139,7 +139,7 @@ async def create_submission(
     if not is_score_report:
         # Validate file
         if file is None or file.filename == "":
-            raise HTTPException(400, "A file is required")
+            raise HTTPException(400, f"A file is required. Accepted formats: {', '.join(sorted(ALLOWED_EXTENSIONS))}")
         if not _allowed_extension(file.filename):
             raise HTTPException(400, f"File type not allowed. Accepted: {', '.join(sorted(ALLOWED_EXTENSIONS))}")
 
