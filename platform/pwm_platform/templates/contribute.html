@@ -58,7 +58,7 @@
                     <strong>Required:</strong> Measurements (y), forward model (H), ground truth (x), true spec parameters.
                 </div>
                 <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=public&submission_type=dataset&category=contribution"
-                        hx-target="#submission-area" hx-swap="innerHTML"
+                        hx-target="#submission-area" hx-swap="innerHTML show:#submission-area:top"
                         class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 cursor-pointer">
                     Submit Public Dataset
                 </button>
@@ -77,7 +77,7 @@
                     <strong>Required:</strong> Measurements (y), forward model (H), spec ranges. Ground truth held server-side for scoring.
                 </div>
                 <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=dev&submission_type=dataset&category=contribution"
-                        hx-target="#submission-area" hx-swap="innerHTML"
+                        hx-target="#submission-area" hx-swap="innerHTML show:#submission-area:top"
                         class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 cursor-pointer">
                     Submit Dev Dataset
                 </button>
@@ -96,13 +96,16 @@
                     <strong>Required:</strong> Complete dataset with ground truth. All data remains private and is only used for blind evaluation.
                 </div>
                 <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=hidden&submission_type=dataset&category=contribution"
-                        hx-target="#submission-area" hx-swap="innerHTML"
+                        hx-target="#submission-area" hx-swap="innerHTML show:#submission-area:top"
                         class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 cursor-pointer">
                     Submit Hidden Dataset
                 </button>
             </div>
         </div>
     </div>
+
+    <!-- Submission form area (HTMX target) — right after buttons so the user sees it -->
+    <div id="submission-area"></div>
 
     <!-- Dataset Format Reference -->
     <div class="space-y-4">
@@ -171,9 +174,6 @@ File attributes:
             </div>
         </div>
     </div>
-
-    <!-- Submission form area (HTMX target) -->
-    <div id="submission-area"></div>
 
     <!-- Guidelines -->
     <div class="bg-white shadow rounded-lg p-6 space-y-3">
