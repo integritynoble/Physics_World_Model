@@ -228,8 +228,7 @@ async def create_proposal(
     existing = modality_key in MODALITY_DATABASE
     if existing:
         entry = MODALITY_DATABASE[modality_key]
-        return templates.TemplateResponse("_bootstrap_result.html", {
-            "request": request,
+        return templates.TemplateResponse(request, "_bootstrap_result.html", {
             "already_exists": True,
             "modality_key": modality_key,
             "entry": entry,
@@ -250,8 +249,7 @@ async def create_proposal(
     if similar:
         bootstrap_templates = generate_bootstrap_templates(query, similar[0])
 
-    return templates.TemplateResponse("_bootstrap_result.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_bootstrap_result.html", {
         "already_exists": False,
         "query": query,
         "similar": similar,

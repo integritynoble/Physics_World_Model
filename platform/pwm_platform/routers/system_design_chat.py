@@ -117,8 +117,7 @@ async def chat(
         logger.error("System design chat error: %s", exc, exc_info=True)
         description = f"Error generating plan: {type(exc).__name__}: {exc}"
 
-    return templates.TemplateResponse("_sysdesign_message.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_sysdesign_message.html", {
         "user_message": message,
         "assistant_text": description,
         "judge_text": judge_text,
@@ -166,8 +165,7 @@ async def run(
     await append_to_conversation(db, session_id, "user", "[Run Performance Analysis]")
     await append_to_conversation(db, session_id, "model", analysis)
 
-    return templates.TemplateResponse("_sysdesign_message.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_sysdesign_message.html", {
         "user_message": "Run Performance Analysis",
         "assistant_text": analysis,
         "judge_text": "",
@@ -197,8 +195,7 @@ async def load_example(
             status_code=404,
         )
 
-    return templates.TemplateResponse("_sysdesign_example.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_sysdesign_example.html", {
         "example": example,
     })
 
@@ -219,8 +216,7 @@ async def get_spec(
     state: dict = meta_raw or {}
     content = state.get("plan_md", "") if view == "plan" else state.get("spec_md", "")
 
-    return templates.TemplateResponse("_sysdesign_spec.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_sysdesign_spec.html", {
         "content": content,
         "view": view,
         "session_id": session_id,

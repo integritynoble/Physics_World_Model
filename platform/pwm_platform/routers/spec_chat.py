@@ -127,8 +127,7 @@ async def system_recommend(
             status_code=200,
         )
 
-    return templates.TemplateResponse("_spec_system_result.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_system_result.html", {
         "result": result,
         "session_id": session_id,
     })
@@ -340,8 +339,7 @@ async def reconstruct_common(
             return
 
         # Render the result template and stream the HTML
-        rendered = templates.TemplateResponse("_spec_common_result.html", {
-            "request": request,
+        rendered = templates.TemplateResponse(request, "_spec_common_result.html", {
             "result": result,
         })
         yield rendered.body
@@ -366,8 +364,7 @@ async def chat_message(
         try:
             result = recommend(sys_query)
             # Also show user message bubble + system result
-            return templates.TemplateResponse("_spec_system_result.html", {
-                "request": request,
+            return templates.TemplateResponse(request, "_spec_system_result.html", {
                 "result": result,
                 "session_id": session_id,
                 "user_message": message,
@@ -419,8 +416,7 @@ async def chat_message(
         response_text = await call_gemini(system_prompt, history)
     except Exception as exc:
         logger.error("Gemini API error: %s", exc, exc_info=True)
-        return templates.TemplateResponse("_spec_chat_message.html", {
-            "request": request,
+        return templates.TemplateResponse(request, "_spec_chat_message.html", {
             "session_id": session_id,
             "variant_key": variant_key,
             "user_message": message,
@@ -436,8 +432,7 @@ async def chat_message(
     # Parse spec from response
     explanation, spec = parse_spec_from_response(response_text)
 
-    return templates.TemplateResponse("_spec_chat_message.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_chat_message.html", {
         "session_id": session_id,
         "variant_key": variant_key,
         "user_message": message,
@@ -501,8 +496,7 @@ async def load_example(
     await append_to_conversation(db, session_id, "user", user_text)
     await append_to_conversation(db, session_id, "model", full_response)
 
-    return templates.TemplateResponse("_spec_chat_message.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_chat_message.html", {
         "session_id": session_id,
         "variant_key": variant_key,
         "user_message": user_text,
@@ -564,8 +558,7 @@ async def simulate_spec(
             status_code=200,
         )
 
-    return templates.TemplateResponse("_spec_simulation_result.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_simulation_result.html", {
         "result": result,
     })
 
@@ -689,8 +682,7 @@ async def upload_dataset(
     )
     await append_to_conversation(db, session_id, "model", assistant_text)
 
-    return templates.TemplateResponse("_spec_chat_message.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_chat_message.html", {
         "session_id": session_id,
         "variant_key": variant_key,
         "user_message": f"Uploaded: {ds_meta_dict['original_filename']}",
@@ -755,8 +747,7 @@ async def reconstruct_dataset(
             status_code=200,
         )
 
-    return templates.TemplateResponse("_spec_reconstruction_result.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_reconstruction_result.html", {
         "result": result,
     })
 
@@ -783,8 +774,7 @@ async def list_sessions(
             db, user.id, variant_key=variant_key or None,
         )
 
-    return templates.TemplateResponse("_spec_chat_history.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_chat_history.html", {
         "user": user,
         "sessions": sessions,
         "current_session_id": current_session,
@@ -830,8 +820,7 @@ async def load_session(
             else:
                 i += 1
 
-            rendered = templates.TemplateResponse("_spec_chat_message.html", {
-                "request": request,
+            rendered = templates.TemplateResponse(request, "_spec_chat_message.html", {
                 "session_id": session_id,
                 "variant_key": variant_key,
                 "user_message": user_msg,
@@ -924,8 +913,7 @@ async def sidebar_modalities(request: Request):
     from pwm_platform.routers.pages import _build_sidebar_data
 
     sidebar_data = _build_sidebar_data()
-    return templates.TemplateResponse("_spec_modalities_panel.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_spec_modalities_panel.html", {
         "sidebar_categories": sidebar_data["sidebar_categories"],
     })
 

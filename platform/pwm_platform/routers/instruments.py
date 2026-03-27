@@ -65,8 +65,7 @@ async def instruments_page(
     mod_result = await db.execute(select(Instrument.modality).distinct())
     modalities = sorted(r[0] for r in mod_result.all() if r[0])
 
-    return templates.TemplateResponse("instruments.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "instruments.html", {
         "user": user,
         "instruments": instruments,
         "modalities": modalities,
@@ -190,8 +189,7 @@ async def instrument_detail_page(
                 "noise_std": round(float(cal.get("noise_std_hu", 3.5)) + _random.gauss(0, 0.1), 2),
             })
 
-    return templates.TemplateResponse("instrument_detail.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "instrument_detail.html", {
         "user": user,
         "instrument": instrument,
         "cal_history": cal_history,

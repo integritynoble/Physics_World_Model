@@ -83,13 +83,11 @@ async def submission_form(
 ):
     """Return the inline submission form partial (or sign-in prompt)."""
     if user is None:
-        return templates.TemplateResponse("_submission_signin.html", {
-            "request": request,
+        return templates.TemplateResponse(request, "_submission_signin.html", {
             "tier_name": tier_name,
             "submission_type": submission_type,
         })
-    return templates.TemplateResponse("_submission_form.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_submission_form.html", {
         "user": user,
         "variant_key": variant_key,
         "tier_name": tier_name,
@@ -222,8 +220,7 @@ async def create_submission(
         submission_type, category, credit_cost,
     )
 
-    return templates.TemplateResponse("_submission_success.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_submission_success.html", {
         "submission": submission,
     })
 
@@ -303,8 +300,7 @@ async def review_submission(
         except Exception:
             logger.warning("GCS upload failed for %s (non-fatal)", submission_id, exc_info=True)
 
-    return templates.TemplateResponse("_submission_review_card.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "_submission_review_card.html", {
         "s": submission,
     })
 

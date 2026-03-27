@@ -133,8 +133,7 @@ templates = Jinja2Templates(directory="pwm_platform/templates")
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     """Login page — CompareGPT SSO redirect."""
-    return templates.TemplateResponse("login.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "login.html", {
         "sso_enabled": bool(settings.SSO_REDIRECT_URL),
         "sso_url": settings.SSO_REDIRECT_URL,
     })
@@ -142,21 +141,19 @@ async def login_page(request: Request):
 
 @router.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
-    return templates.TemplateResponse("signup.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "signup.html", {
         "google_client_id": settings.GOOGLE_CLIENT_ID,
     })
 
 
 @router.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password_page(request: Request):
-    return templates.TemplateResponse("forgot_password.html", {"request": request})
+    return templates.TemplateResponse(request, "forgot_password.html", {"request": request})
 
 
 @router.get("/reset-password", response_class=HTMLResponse)
 async def reset_password_page(request: Request, token: str = ""):
-    return templates.TemplateResponse("reset_password.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "reset_password.html", {
         "token": token,
         "error": None if token else "Missing reset token.",
     })
@@ -571,8 +568,7 @@ async def pricing_page(
         balance = await svc.get_account_balance(user.id)
         current_plan = balance["plan_tier"]
 
-    return templates.TemplateResponse("pricing.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "pricing.html", {
         "user": user,
         "status": status,
         "current_plan": current_plan,
@@ -597,8 +593,7 @@ async def subscription_page(
     transactions = await svc.get_transaction_history(user.id, limit=20)
     payments = await svc.get_payment_history(user.id, limit=20)
 
-    return templates.TemplateResponse("subscription.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "subscription.html", {
         "user": user,
         "status": status,
         "balance": balance,
@@ -653,8 +648,7 @@ async def speclab(
 
     speclab_mode = mode if mode in ("common", "advanced") else "common"
 
-    return templates.TemplateResponse("speclab.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "speclab.html", {
         "user": user,
         "runs": runs,
         "chat_variant_key": "sd_cassi",
@@ -686,8 +680,7 @@ async def new_run_page(
     if not modalities:
         modalities = _FALLBACK_MODALITIES
 
-    return templates.TemplateResponse("run_new.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "run_new.html", {
         "user": user,
         "modalities": modalities,
     })
@@ -704,14 +697,14 @@ async def run_status_page(
     result = await db.execute(select(Run).where(Run.run_id == run_id))
     run = result.scalar_one_or_none()
     if run is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Run not found"
         }, status_code=404)
 
     # Access control: private runs only visible to owner or admin
     if not run.is_public:
         if user is None or (run.user_id != user.id and user.role != "admin"):
-            return templates.TemplateResponse("404.html", {
+            return templates.TemplateResponse(request, "404.html", {
                 "request": request, "user": user, "message": "Run not found"
             }, status_code=404)
 
@@ -725,8 +718,7 @@ async def run_status_page(
         )
         report = report_result.scalar_one_or_none()
 
-    return templates.TemplateResponse("run_status.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "run_status.html", {
         "user": user,
         "run": run,
         "report": report,
@@ -756,8 +748,7 @@ async def datasets_browser_page(
     mod_result = await db.execute(_select(Dataset.modality).distinct())
     modalities = sorted(r[0] for r in mod_result.all() if r[0])
 
-    return templates.TemplateResponse("dataset_browser.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "dataset_browser.html", {
         "user": user,
         "datasets": datasets,
         "modalities": modalities,
@@ -854,8 +845,7 @@ async def datasets_page(
     # ── System Design Benchmark summary stats
     sys_catalog_stats = _get_system_catalog_stats()
 
-    return templates.TemplateResponse("datasets.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "datasets.html", {
         "user": user,
         "grouped": grouped,
         "category_labels": category_labels,
@@ -887,8 +877,7 @@ async def system_design_page(
         cat = sys_data.get("category", "other")
         grouped.setdefault(cat, []).append(sys_data)
 
-    return templates.TemplateResponse("system_design.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "system_design.html", {
         "user": user,
         "catalog": catalog,
         "grouped": grouped,
@@ -924,8 +913,7 @@ async def modalities_page(
         entry["modality_key"] = k
         modalities.append(entry)
 
-    return templates.TemplateResponse("modalities.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "modalities.html", {
         "user": user,
         "modalities": modalities,
         "categories": list_all_categories(),
@@ -998,8 +986,7 @@ async def modality_detail(
     except Exception:
         maintainers = []
 
-    return templates.TemplateResponse("modality_detail.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "modality_detail.html", {
         "user": user,
         "modality": modality,
         "modality_key": modality_key,
@@ -1028,7 +1015,7 @@ async def variant_benchmarks_page(
 
     variant = get_variant(variant_key)
     if variant is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Variant not found"
         }, status_code=404)
 
@@ -1098,8 +1085,7 @@ async def variant_benchmarks_page(
                     "algorithms": algos,
                 })
 
-    return templates.TemplateResponse("variant_benchmarks.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "variant_benchmarks.html", {
         "user": user,
         "variant": variant,
         "variant_key": variant_key,
@@ -1127,7 +1113,7 @@ async def challenge_tier_page(
 
     variant = get_variant(variant_key)
     if variant is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Variant not found"
         }, status_code=404)
 
@@ -1139,19 +1125,19 @@ async def challenge_tier_page(
             break
 
     if challenge is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "No challenge benchmark for this variant"
         }, status_code=404)
 
     # Validate tier name
     if tier_name not in ("public", "dev", "hidden"):
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Invalid tier name"
         }, status_code=404)
 
     tier = challenge.get("tiers", {}).get(tier_name)
     if tier is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Tier not found"
         }, status_code=404)
 
@@ -1357,8 +1343,7 @@ async def challenge_tier_page(
     scenario_ii_baselines = baselines.get("scenario_ii", []) if tier_name == "public" else []
     scenario_iii_baselines = baselines.get("scenario_iii", []) if tier_name == "public" else []
 
-    return templates.TemplateResponse("challenge_tier.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "challenge_tier.html", {
         "user": user,
         "variant": variant,
         "variant_key": variant_key,
@@ -1391,7 +1376,7 @@ async def compete_page(
 
     variant = get_variant(variant_key)
     if variant is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Variant not found"
         }, status_code=404)
 
@@ -1408,8 +1393,7 @@ async def compete_page(
             if tier_ds and tier_ds.get("gcs_object_path"):
                 tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
-    return templates.TemplateResponse("compete.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "compete.html", {
         "user": user,
         "variant": variant,
         "variant_key": variant_key,
@@ -1428,12 +1412,11 @@ async def contribute_page(
 
     variant = get_variant(variant_key)
     if variant is None:
-        return templates.TemplateResponse("404.html", {
+        return templates.TemplateResponse(request, "404.html", {
             "request": request, "user": user, "message": "Variant not found"
         }, status_code=404)
 
-    return templates.TemplateResponse("contribute.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "contribute.html", {
         "user": user,
         "variant": variant,
         "variant_key": variant_key,
@@ -1457,8 +1440,7 @@ async def my_runs_page(
     runs_result = await db.execute(stmt)
     runs = runs_result.scalars().all()
 
-    return templates.TemplateResponse("my_runs.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "my_runs.html", {
         "user": user,
         "runs": runs,
         "selected_visibility": visibility,
@@ -1474,8 +1456,7 @@ async def bootstrap_new_page(
     user: Optional[User] = Depends(get_optional_user),
 ):
     """New modality bootstrap wizard — public page."""
-    return templates.TemplateResponse("bootstrap_new.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "bootstrap_new.html", {
         "user": user,
     })
 
@@ -1497,8 +1478,7 @@ async def bootstrap_review_page(
     )
     proposals = result.scalars().all()
 
-    return templates.TemplateResponse("bootstrap_review.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "bootstrap_review.html", {
         "user": user,
         "proposals": proposals,
     })
@@ -1534,8 +1514,7 @@ async def submissions_review_page(
     )
     counts = dict(count_result.all())
 
-    return templates.TemplateResponse("submissions_review.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "submissions_review.html", {
         "user": user,
         "submissions": submissions,
         "status_filter": status,
@@ -1585,8 +1564,7 @@ async def reproduce_queue_page(
                 pass
     all_modalities.sort()
 
-    return templates.TemplateResponse("reproduce.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "reproduce.html", {
         "user": user,
         "candidates": candidates,
         "modality_filter": modality,
@@ -1641,8 +1619,7 @@ async def solver_gallery_page(
     )
     variant_keys = sorted(r[0] for r in vk_result.all() if r[0])
 
-    return templates.TemplateResponse("solvers.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "solvers.html", {
         "user": user,
         "solvers": solvers,
         "variant_keys": variant_keys,
@@ -1713,8 +1690,7 @@ async def gates_page(
         except Exception:
             continue
 
-    return templates.TemplateResponse("gates.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "gates.html", {
         "user": user,
         "proposals": proposals,
         "status_filter": status,
@@ -1818,8 +1794,7 @@ async def redteam_page(
         },
     ]
 
-    return templates.TemplateResponse("redteam.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "redteam.html", {
         "user": user,
         "redteam_claims": redteam_claims,
         "bounties": bounties,
@@ -1863,8 +1838,7 @@ async def claims_review_page(
             except Exception:
                 pass
     all_modalities.sort()
-    return templates.TemplateResponse("claim_review.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "claim_review.html", {
         "user": user,
         "claims": claims,
         "modality_filter": modality,
@@ -1894,8 +1868,7 @@ async def admin_roles_page(
     profiles_list = profiles_result.scalars().all()
     profiles_by_user = {p.user_id: p for p in profiles_list}
 
-    return templates.TemplateResponse("admin_roles.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "admin_roles.html", {
         "user": user,
         "all_users": all_users,
         "profiles_by_user": profiles_by_user,
@@ -1916,8 +1889,7 @@ async def admin_users_page(
 
     result = await db.execute(select(User).order_by(User.id))
     users = result.scalars().all()
-    return templates.TemplateResponse("admin_users.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "admin_users.html", {
         "user": user,
         "users": users,
     })
