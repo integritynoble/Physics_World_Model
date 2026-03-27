@@ -270,6 +270,7 @@ async def api_get_modality_maintainers(
 @router.post("/api/apply")
 async def apply_for_role(
     request: Request,
+    current_user: User = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
     """User applies for a contributor role."""
@@ -287,8 +288,12 @@ async def apply_for_role(
         reason = body.get("reason", "")
         modalities = body.get("modalities", "")
 
+    # Fall back to authenticated user's ID if not provided in body
+    if not user_id and current_user:
+        user_id = current_user.id
+
     if not role or not user_id:
-        raise HTTPException(400, "user_id and role are required")
+        raise HTTPException(400, "role is required; either pass user_id or authenticate")
 
     if role not in VALID_ROLES:
         raise HTTPException(400, f"Invalid role: {role}. Valid: {VALID_ROLES}")
