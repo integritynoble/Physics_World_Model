@@ -1650,6 +1650,48 @@ async def solver_gallery_page(
     })
 
 
+@router.get("/api/v1/solvers")
+async def list_solvers():
+    """Return all available solvers from the algorithm catalog."""
+    try:
+        from pwm_platform.services.benchmark_database._algorithm_catalog import (
+            _CATEGORY_ALGORITHMS,
+            _VARIANT_OVERRIDES,
+        )
+    except ImportError:
+        return {"solvers": [], "total": 0}
+
+    solvers: dict[str, dict] = {}
+
+    # Collect from category pools
+    for category, algos in _CATEGORY_ALGORITHMS.items():
+        for algo in algos:
+            name = algo.get("name", "")
+            if name and name not in solvers:
+                solvers[name] = {
+                    "name": name,
+                    "type": algo.get("type", ""),
+                    "params": algo.get("params", ""),
+                    "source": algo.get("source", ""),
+                    "category": category,
+                }
+
+    # Collect from variant overrides
+    for variant_key, algos in _VARIANT_OVERRIDES.items():
+        for algo in algos:
+            name = algo.get("name", "")
+            if name and name not in solvers:
+                solvers[name] = {
+                    "name": name,
+                    "type": algo.get("type", ""),
+                    "params": algo.get("params", ""),
+                    "source": algo.get("source", ""),
+                    "category": variant_key,
+                }
+
+    return {"solvers": list(solvers.values()), "total": len(solvers)}
+
+
 @router.get("/gates", response_class=HTMLResponse)
 async def gates_page(
     request: Request,
