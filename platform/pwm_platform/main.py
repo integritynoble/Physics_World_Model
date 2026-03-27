@@ -18,6 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from pwm_platform.auth.dependencies import LoginRedirect
+
 from pwm_platform.config import settings
 from pwm_platform.db.database import init_db
 from pwm_platform.routers import (
@@ -118,11 +120,19 @@ app.include_router(pages_router)
 # ── Global exception handlers ───────────────────────────────────────────
 
 
+@app.exception_handler(LoginRedirect)
+async def login_redirect_handler(request: Request, exc: LoginRedirect):
+    """Redirect unauthenticated page requests to /login?next=<path>."""
+    return RedirectResponse(f"/login?next={exc.next_url}", status_code=302)
+
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    """Redirect unauthenticated UI requests to /login; pass through others."""
+    """Redirect unauthenticated UI requests to /login?next=; pass through others."""
     if exc.status_code == 401 and "text/html" in request.headers.get("accept", ""):
-        return RedirectResponse("/login")
+        from urllib.parse import quote
+        next_path = quote(str(request.url.path), safe="/")
+        return RedirectResponse(f"/login?next={next_path}", status_code=302)
     return JSONResponse(status_code=exc.status_code, content={"detail": str(exc.detail)})
 
 

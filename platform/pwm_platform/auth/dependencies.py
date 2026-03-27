@@ -12,6 +12,7 @@ instead of localStorage, eliminating XSS token theft.
 from __future__ import annotations
 
 from typing import Optional
+from urllib.parse import quote
 
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy import select
@@ -20,6 +21,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pwm_platform.auth.token_manager import get_token_manager
 from pwm_platform.db.database import get_db
 from pwm_platform.db.models import User
+
+
+class LoginRedirect(Exception):
+    """Raised by page dependencies to redirect unauthenticated users to /login."""
+
+    def __init__(self, next_url: str = "/"):
+        self.next_url = next_url
 
 
 async def get_current_user(
@@ -82,6 +90,34 @@ async def get_optional_user(
 
     if user is None or not user.is_active:
         return None
+
+    return user
+
+
+async def get_page_user(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> User:
+    """Like get_current_user but redirects to /login for HTML page routes.
+
+    Use this instead of get_current_user on any route decorated with
+    response_class=HTMLResponse so unauthenticated browsers get a redirect
+    rather than a raw JSON 401.
+    """
+    token = _extract_token_or_none(request)
+    if token is None:
+        raise LoginRedirect(quote(str(request.url.path), safe="/"))
+
+    tm = get_token_manager()
+    user_id = tm.verify_access_token(token)
+    if user_id is None:
+        raise LoginRedirect(quote(str(request.url.path), safe="/"))
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+
+    if user is None or not user.is_active:
+        raise LoginRedirect(quote(str(request.url.path), safe="/"))
 
     return user
 

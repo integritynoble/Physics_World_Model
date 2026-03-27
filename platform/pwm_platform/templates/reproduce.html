@@ -1,151 +1,267 @@
 {% extends "base.html" %}
 {% block title %}Reproduction Queue — Physics World Model{% endblock %}
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold text-gray-900 mb-2">Reproduction Queue</h1>
-  <p class="text-sm text-gray-500 mb-6">
-    Approved claims at <span class="font-semibold text-yellow-700">Draft</span> trust tier awaiting independent reproduction.
-    Reproducing a claim promotes it from Draft → Reproduced tier.
-    See <a href="/contributors#benchmark-reviewer" class="text-indigo-500 hover:underline">Benchmark Reviewer</a> role for details.
-  </p>
-
-  <!-- Workflow note -->
-  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-sm text-blue-800">
-    <strong>How reproduction works:</strong>
-    <ol class="mt-2 ml-4 list-decimal space-y-1">
-      <li>Pick a claim from the list below.</li>
-      <li>Download the paper and code, run the evaluation locally using <code class="bg-blue-100 px-1 rounded">pwm evaluate</code>.</li>
-      <li>Upload your RunBundle (results HDF5 + metrics JSON) using the form below.</li>
-      <li>An admin will verify your run and promote the claim to Reproduced tier.</li>
-    </ol>
-    <p class="mt-2 text-blue-600 text-xs">
-      [Server shell required] — <code>pwm evaluate --claim &lt;claim_id&gt; --bundle path/to/run.tar.gz</code>
-    </p>
-  </div>
-
-  <!-- Modality filter -->
-  <form method="get" action="/reproduce" class="flex items-center gap-3 mb-6">
-    <select name="modality" onchange="this.form.submit()"
-            class="border rounded px-3 py-2 text-sm text-gray-700">
-      <option value="">All modalities</option>
-      {% for m in all_modalities %}
-      <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
-      {% endfor %}
-    </select>
-    {% if modality_filter %}
-    <a href="/reproduce" class="text-sm text-gray-500 hover:text-indigo-600">Clear</a>
-    {% endif %}
-    <span class="text-sm text-gray-400 ml-auto">{{ candidates | length }} claim{% if candidates | length != 1 %}s{% endif %} awaiting reproduction</span>
-  </form>
-
-  {% if candidates %}
-  <div class="space-y-4">
-    {% for claim in candidates %}
-    <div class="bg-white border rounded-lg p-5 shadow-sm">
-      <div class="flex items-start justify-between">
-        <div class="flex-1">
-          <h3 class="font-semibold text-gray-900">{{ claim.title or 'Untitled' }}</h3>
-          <p class="text-xs text-gray-500 mt-1">
-            {% if claim.modality %}<span class="font-medium text-indigo-700">{{ claim.modality }}</span> · {% endif %}
-            {{ claim.method or 'Unknown method' }}
-            {% if claim.authors %} · {{ claim.authors | join(', ') if claim.authors is iterable and claim.authors is not string else claim.authors }}{% endif %}
-          </p>
-          {% if claim.claimed_psnr or claim.claimed_ssim %}
-          <p class="text-xs text-gray-500 mt-1">
-            Claimed:
-            {% if claim.claimed_psnr %}PSNR = <strong>{{ claim.claimed_psnr }}</strong> dB{% endif %}
-            {% if claim.claimed_ssim %} · SSIM = <strong>{{ claim.claimed_ssim }}</strong>{% endif %}
-          </p>
-          {% endif %}
-          {% if claim.source_url %}
-          <a href="{{ claim.source_url }}" target="_blank"
-             class="text-xs text-indigo-500 hover:underline mt-1 inline-block">
-            View paper &rarr;
-          </a>
-          {% endif %}
-        </div>
-        <div class="shrink-0 ml-4 flex flex-col items-end gap-2">
-          <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-yellow-100 text-yellow-800 border border-yellow-300">Draft</span>
-          <span class="text-[10px] text-gray-400">{{ claim.claim_id }}</span>
-        </div>
-      </div>
-
-      <!-- Reproduction upload form -->
-      {% if user %}
-      <details class="mt-4 border-t pt-3">
-        <summary class="text-sm font-medium text-indigo-700 cursor-pointer hover:text-indigo-900">
-          Submit reproduction &rarr;
-        </summary>
-        <form class="mt-3 space-y-3 repro-form" data-claim-id="{{ claim.claim_id }}">
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Your username / identifier</label>
-              <input name="reproducer" placeholder="{{ user.username }}" value="{{ user.username }}"
-                     class="w-full border rounded px-3 py-2 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Reproduction PSNR (dB)</label>
-              <input name="psnr" type="number" step="0.01" placeholder="Measured PSNR"
-                     class="w-full border rounded px-3 py-2 text-sm">
-            </div>
-            <div class="col-span-2">
-              <label class="block text-xs font-medium text-gray-600 mb-1">Notes / evidence summary</label>
-              <textarea name="notes" rows="2" placeholder="Describe your reproduction setup, dataset used, any differences from paper..."
-                        class="w-full border rounded px-3 py-2 text-sm"></textarea>
-            </div>
-          </div>
-          <div class="repro-result text-sm"></div>
-          <button type="submit"
-                  class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
-            Submit Reproduction
-          </button>
-        </form>
-      </details>
-      {% else %}
-      <p class="mt-3 text-xs text-gray-400">
-        <a href="/login" class="text-indigo-500 hover:underline">Sign in</a> to submit a reproduction.
-      </p>
-      {% endif %}
+<div class="space-y-8">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Reproduction Queue</h1>
+        <p class="mt-1 text-sm text-gray-600">
+            Claims awaiting independent reproduction. Pick one, run the evaluation, and help advance the trust tier.
+            <strong class="text-indigo-700">{{ claims | length }}</strong> claims need reproduction.
+        </p>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="bg-white border rounded-lg px-6 py-16 text-center">
-    {% if modality_filter %}
-    <p class="text-gray-400 text-sm">No Draft-tier claims for modality <strong>{{ modality_filter }}</strong>.</p>
-    <a href="/reproduce" class="text-indigo-500 text-sm hover:underline">Show all modalities</a>
+
+    <!-- How it works -->
+    <div class="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-lg p-5">
+        <h2 class="text-sm font-bold text-indigo-900 mb-2">How Reproduction Works</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-indigo-800">
+            <div class="flex items-start gap-2">
+                <span class="shrink-0 w-6 h-6 rounded-full bg-indigo-200 text-indigo-800 font-bold text-xs flex items-center justify-center">1</span>
+                <div>
+                    <p class="font-medium">Choose a claim</p>
+                    <p class="text-xs text-indigo-600 mt-0.5">Pick from the queue below based on your modality expertise.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-2">
+                <span class="shrink-0 w-6 h-6 rounded-full bg-indigo-200 text-indigo-800 font-bold text-xs flex items-center justify-center">2</span>
+                <div>
+                    <p class="font-medium">Run the evaluation</p>
+                    <p class="text-xs text-indigo-600 mt-0.5">Copy the <code class="bg-indigo-100 px-1 rounded">pwm evaluate</code> command and run it locally.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-2">
+                <span class="shrink-0 w-6 h-6 rounded-full bg-indigo-200 text-indigo-800 font-bold text-xs flex items-center justify-center">3</span>
+                <div>
+                    <p class="font-medium">Report results</p>
+                    <p class="text-xs text-indigo-600 mt-0.5">Mark as reproduced on the <a href="/claims" class="underline font-medium">Claims</a> page to advance trust tier.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="flex flex-wrap items-center gap-3">
+        <label for="modality-filter" class="text-sm font-medium text-gray-700">Filter by modality:</label>
+        <select id="modality-filter" onchange="filterClaims()"
+                class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="">All modalities</option>
+            {% for m in modalities %}
+            <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+        </select>
+        <label for="tier-filter" class="text-sm font-medium text-gray-700 ml-4">Trust tier:</label>
+        <select id="tier-filter" onchange="filterClaims()"
+                class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="">All tiers</option>
+            <option value="draft">Draft</option>
+            <option value="author_confirmed">Author Confirmed</option>
+        </select>
+        <span id="visible-count" class="text-xs text-gray-400 ml-2"></span>
+    </div>
+
+    <!-- Claims list -->
+    {% if claims %}
+    <div class="space-y-4" id="claims-list">
+        {% for claim in claims %}
+        <div class="claim-card bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow border-l-4
+            {% if claim.trust_tier == 'draft' %}border-yellow-400{% else %}border-blue-400{% endif %}"
+            data-modality="{{ claim.modality }}" data-tier="{{ claim.trust_tier }}">
+            <div class="flex items-start justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="text-base font-bold text-gray-900">{{ claim.title or 'Untitled Claim' }}</h3>
+                        {% if claim.modality %}
+                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700">{{ claim.modality }}</span>
+                        {% endif %}
+                    </div>
+                    {% if claim.method %}
+                    <p class="mt-1 text-sm text-gray-600">Method: <span class="font-medium">{{ claim.method }}</span></p>
+                    {% endif %}
+                    {% if claim.authors %}
+                    <p class="mt-0.5 text-xs text-gray-400">
+                        {{ claim.authors | join(', ') if claim.authors is iterable and claim.authors is not string else claim.authors }}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="flex flex-col items-end gap-1.5 shrink-0">
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full uppercase
+                        {% if claim.trust_tier == 'draft' %}bg-yellow-100 text-yellow-800 border border-yellow-300{% else %}bg-blue-100 text-blue-800 border border-blue-300{% endif %}">
+                        {{ claim.trust_tier | replace('_', ' ') }}
+                    </span>
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-100 text-green-800 border border-green-300">
+                        {{ claim.status }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Claimed metrics -->
+            {% if claim.claimed_psnr or claim.claimed_ssim %}
+            <div class="mt-3 flex gap-4">
+                {% if claim.claimed_psnr %}
+                <div class="bg-gray-50 rounded px-3 py-2 text-center">
+                    <div class="text-lg font-bold text-gray-900 font-mono">{{ "%.2f" | format(claim.claimed_psnr) }}</div>
+                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">PSNR (dB)</div>
+                </div>
+                {% endif %}
+                {% if claim.claimed_ssim %}
+                <div class="bg-gray-50 rounded px-3 py-2 text-center">
+                    <div class="text-lg font-bold text-gray-900 font-mono">{{ "%.4f" | format(claim.claimed_ssim) }}</div>
+                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">SSIM</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Actions row -->
+            <div class="mt-4 flex items-center gap-3 flex-wrap">
+                <button onclick="copyCommand('{{ claim.modality or 'unknown' }}', '{{ claim.method or 'method' }}', '{{ claim.claim_id }}')"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                    Copy Evaluate Command
+                </button>
+                {% if claim.source_url %}
+                <a href="{{ claim.source_url }}" target="_blank"
+                   class="inline-flex items-center gap-1 px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    View Paper
+                </a>
+                {% endif %}
+                {% if user %}
+                <button onclick="toggleReproForm('{{ claim.claim_id }}')"
+                        class="inline-flex items-center gap-1 px-3 py-2 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100 transition-colors">
+                    Submit Reproduction Result
+                </button>
+                {% else %}
+                <a href="/login?next=/reproduce"
+                   class="inline-flex items-center gap-1 px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                    Log in to submit result
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Inline reproduction form (hidden by default) -->
+            {% if user %}
+            <div id="repro-form-{{ claim.claim_id }}" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg space-y-3">
+                <p class="text-xs font-semibold text-green-800">Submit Reproduction Result for: <span class="font-mono">{{ claim.claim_id }}</span></p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Reproduced PSNR (dB)</label>
+                        <input type="number" step="0.01" id="repro-psnr-{{ claim.claim_id }}"
+                            placeholder="{{ '%.2f' | format(claim.claimed_psnr) if claim.claimed_psnr else 'e.g. 31.42' }}"
+                            class="w-full border rounded px-2 py-1.5 text-sm focus:ring-1 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Reproduced SSIM</label>
+                        <input type="number" step="0.001" id="repro-ssim-{{ claim.claim_id }}"
+                            placeholder="{{ '%.4f' | format(claim.claimed_ssim) if claim.claimed_ssim else 'e.g. 0.9201' }}"
+                            class="w-full border rounded px-2 py-1.5 text-sm focus:ring-1 focus:ring-green-500">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Notes (optional)</label>
+                        <input type="text" id="repro-notes-{{ claim.claim_id }}"
+                            placeholder="Hardware, version, deviations…"
+                            class="w-full border rounded px-2 py-1.5 text-sm focus:ring-1 focus:ring-green-500">
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="submitRepro('{{ claim.claim_id }}')"
+                            class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700">
+                        Confirm Reproduction
+                    </button>
+                    <button onclick="toggleReproForm('{{ claim.claim_id }}')"
+                            class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+                    <span id="repro-msg-{{ claim.claim_id }}" class="text-sm hidden"></span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Copy feedback -->
+            <div id="copy-feedback-{{ claim.claim_id }}" class="mt-2 text-xs text-green-600 font-medium hidden">
+                Command copied to clipboard!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     {% else %}
-    <p class="text-gray-400 text-sm">No claims awaiting reproduction.</p>
-    <p class="text-gray-400 text-xs mt-1">Claims appear here once they are approved at <a href="/claims" class="text-indigo-500 hover:underline">Draft tier</a>.</p>
+    <div class="bg-white shadow rounded-lg px-6 py-12 text-center">
+        <svg class="mx-auto w-12 h-12 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="mt-3 text-gray-500">No claims awaiting reproduction.</p>
+        <p class="mt-1 text-sm text-gray-400">All current claims have been reproduced, or there are no approved claims yet.</p>
+        <a href="/claims" class="mt-4 inline-block text-sm text-indigo-600 hover:underline font-medium">View all claims</a>
+    </div>
     {% endif %}
-  </div>
-  {% endif %}
 </div>
 
 <script>
-document.querySelectorAll('.repro-form').forEach(function(form) {
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const claimId = form.dataset.claimId;
-    const reproducer = form.reproducer.value || 'anonymous';
-    const notes = form.notes.value || '';
-    const psnr = form.psnr.value ? parseFloat(form.psnr.value) : null;
-    const reason = notes + (psnr ? ' | PSNR=' + psnr + ' dB' : '');
-
-    const res = await fetch('/claims/' + claimId + '/reproduce', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({reviewer: reproducer, reason: reason}),
+function filterClaims() {
+    var modSel = document.getElementById('modality-filter').value;
+    var tierSel = document.getElementById('tier-filter').value;
+    var cards = document.querySelectorAll('.claim-card');
+    var count = 0;
+    cards.forEach(function(card) {
+        var matchMod = !modSel || card.dataset.modality === modSel;
+        var matchTier = !tierSel || card.dataset.tier === tierSel;
+        if (matchMod && matchTier) {
+            card.style.display = '';
+            count++;
+        } else {
+            card.style.display = 'none';
+        }
     });
-    const el = form.querySelector('.repro-result');
-    if (res.ok) {
-      el.innerHTML = '<span class="text-green-600 font-medium">Reproduction submitted! An admin will verify and promote this claim.</span>';
-      form.querySelectorAll('input,textarea,button').forEach(i => i.disabled = true);
-    } else {
-      const err = await res.json().catch(() => ({}));
-      el.innerHTML = '<span class="text-red-600">' + (err.detail || 'Submission failed') + '</span>';
+    var label = [];
+    if (modSel) label.push(modSel);
+    if (tierSel) label.push(tierSel);
+    document.getElementById('visible-count').textContent = label.length ? count + ' shown' : '';
+}
+
+function toggleReproForm(claimId) {
+    var form = document.getElementById('repro-form-' + claimId);
+    if (form) form.classList.toggle('hidden');
+}
+
+async function submitRepro(claimId) {
+    var psnrEl = document.getElementById('repro-psnr-' + claimId);
+    var ssimEl = document.getElementById('repro-ssim-' + claimId);
+    var notesEl = document.getElementById('repro-notes-' + claimId);
+    var msgEl = document.getElementById('repro-msg-' + claimId);
+    var reason = 'Independently reproduced.';
+    if (notesEl && notesEl.value) reason += ' Notes: ' + notesEl.value;
+    if (psnrEl && psnrEl.value) reason += ' Repro PSNR=' + psnrEl.value + 'dB';
+    if (ssimEl && ssimEl.value) reason += ' SSIM=' + ssimEl.value;
+    msgEl.textContent = 'Submitting…';
+    msgEl.className = 'text-sm text-gray-500';
+    msgEl.classList.remove('hidden');
+    try {
+        var resp = await fetch('/claims/' + claimId + '/reproduce', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({reviewer: 'reviewer', reason: reason})
+        });
+        if (resp.ok) {
+            msgEl.textContent = '✓ Reproduction recorded — trust tier advanced to "reproduced".';
+            msgEl.className = 'text-sm text-green-700 font-medium';
+            setTimeout(function() { location.reload(); }, 1800);
+        } else {
+            var err = await resp.json();
+            msgEl.textContent = 'Error: ' + (err.detail || resp.status);
+            msgEl.className = 'text-sm text-red-600';
+        }
+    } catch(ex) {
+        msgEl.textContent = 'Network error';
+        msgEl.className = 'text-sm text-red-600';
     }
-  });
-});
+}
+
+function copyCommand(modality, method, claimId) {
+    var cmd = 'pwm evaluate --modality ' + modality + ' --method "' + method + '" --claim-id ' + claimId + ' --tier public';
+    navigator.clipboard.writeText(cmd).then(function() {
+        var fb = document.getElementById('copy-feedback-' + claimId);
+        if (fb) {
+            fb.classList.remove('hidden');
+            setTimeout(function() { fb.classList.add('hidden'); }, 2500);
+        }
+    }).catch(function() {
+        prompt('Copy this command:', cmd);
+    });
+}
 </script>
 {% endblock %}
