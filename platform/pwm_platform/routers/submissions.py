@@ -109,7 +109,7 @@ async def create_submission(
     tier_name: str = Form(...),
     submission_type: str = Form(...),
     category: str = Form("competition"),
-    method_name: str = Form(...),
+    method_name: str = Form(""),
     method_description: str = Form(""),
     paper_url: str = Form(""),
     code_url: str = Form(""),
@@ -126,6 +126,12 @@ async def create_submission(
         raise HTTPException(400, f"Invalid submission type: {submission_type}")
     if tier_name not in allowed_tiers:
         raise HTTPException(400, f"{submission_type} submissions are not allowed on {tier_name} tier")
+
+    # Auto-generate method_name for solver uploads if not provided
+    if not method_name.strip() and submission_type == "solver" and file and file.filename:
+        method_name = os.path.splitext(file.filename)[0]
+    if not method_name.strip():
+        raise HTTPException(400, "Method name is required")
 
     # Score report doesn't need a file
     is_score_report = submission_type == "score_report"

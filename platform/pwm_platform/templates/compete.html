@@ -378,13 +378,14 @@ def estimate_b0_inhomog(x_hat):
             msgEl.classList.remove('hidden');
             try {
                 var resp = await fetch('/api/v1/submissions/', {method: 'POST', body: formData, credentials: 'include'});
-                var data = await resp.json();
                 if (resp.ok) {
-                    msgEl.textContent = '✓ Solver uploaded — submission ID: ' + (data.submission_id || data.id || 'OK');
+                    msgEl.textContent = '\u2713 Solver uploaded successfully!';
                     msgEl.className = 'text-sm text-green-700 font-medium';
                     form.reset();
                 } else {
-                    msgEl.textContent = 'Error: ' + (data.detail || resp.status);
+                    var text = await resp.text();
+                    try { var j = JSON.parse(text); text = j.detail || resp.status; } catch(e) {}
+                    msgEl.textContent = 'Error: ' + text;
                     msgEl.className = 'text-sm text-red-600';
                 }
             } catch(ex) {
