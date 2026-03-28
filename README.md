@@ -41,13 +41,13 @@ PWM is designed to be:
 - [Quickstart](#quickstart)
 
 **Capabilities (detailed)**
-- [What PWM can do](#what-pwm-can-do-harness--current-best-methods) — two modes, four tracks, 64 modalities
+- [What PWM can do](#what-pwm-can-do-harness--current-best-methods) — two modes, four tracks, 172 modalities
 - [The ExperimentSpec model](#the-experimentspec-model) — 8 state groups
 - [Operator correction mode](#operator-correction-mode-measured-y--a---fitcorrect-operator---reconstruct) — calibration pipeline
 - [DeepInv integration](#deepinv-integration)
 
 **Data & Benchmarks**
-- [Modality Coverage](#modality-coverage) — 64-modality catalog
+- [Modality Coverage](#modality-coverage) — 172-modality catalog
 - [Benchmark Results](#benchmark-results-26-modalities-with-psnr-table) — PSNR/SSIM tables
 - [Datasets & Model Weights](DATA.md) — **all heavy data is stored in GCS** (`gs://pwm-benchmark-datasets/`); see DATA.md for download instructions
 
@@ -95,7 +95,7 @@ pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
 
 ## The Rails: SolveEverything Implementation
 
-PWM is the first repository that implements all 10 gears of the [SolveEverything.org](https://solveeverything.org/) abundance engine as a concrete, runnable reference for **computational imaging**: 64 modalities, 99 implementation primitives mapped to 10 canonical types, 43+ solvers, a built-in adversarial evaluation harness (LIP-Arena), and a complete audit trail (RunBundle + DR-IS). See [`rails/`](rails/) for the complete mapping:
+PWM is the first repository that implements all 10 gears of the [SolveEverything.org](https://solveeverything.org/) abundance engine as a concrete, runnable reference for **computational imaging**: 172 modalities, 99 implementation primitives mapped to 10 canonical types, 43+ solvers, a built-in adversarial evaluation harness (LIP-Arena), and a complete audit trail (RunBundle + DR-IS). See [`rails/`](rails/) for the complete mapping:
 
 | Gear | Status | PWM Implementation |
 |------|--------|--------------------|
@@ -293,7 +293,7 @@ pwm view runs/latest
 ```
 
 PWM will:
-1) select a CasePack from the 64 validated modalities,
+1) select a CasePack from the 172 validated modalities,
 2) compile a draft spec,
 3) validate/repair,
 4) simulate measurement `y`,
@@ -314,7 +314,7 @@ pwm view runs/latest
 ```python
 from pwm_core.api import endpoints
 
-# Option 1: Run from prompt (auto-selects casepack from 64 modalities)
+# Option 1: Run from prompt (auto-selects casepack from 172 modalities)
 result = endpoints.run(prompt="widefield deconvolution, low dose")
 print(f"RunBundle: {result['runbundle_path']}")
 print(f"Verdict: {result['diagnosis']['verdict']}")
@@ -346,7 +346,7 @@ result = endpoints.run(spec=compile_result.draft_spec, out_dir="runs/")
 # Navigate to project directory
 cd packages/pwm_core
 
-# Run ALL 64 modalities (~28 min)
+# Run ALL 172 modalities (~28 min)
 python benchmarks/run_all.py --all
 
 # Run specific modality
@@ -403,7 +403,7 @@ Every run in both modes produces the four mandatory ISA artifacts:
 
 **Track 2 (Diagnose):** After reconstruction, PWM attributes failure to the dominant Triad gate (sampling, noise, or operator mismatch) -- scored on attribution accuracy, evidence quality, and robustness under gate-flip scenarios.
 
-PWM supports **64 validated imaging modalities** with prompt-driven workflows:
+PWM supports **172 validated imaging modalities** with prompt-driven workflows:
 
 **Microscopy:**
 - `widefield` - Richardson-Lucy deconvolution (27.31 dB)
@@ -707,16 +707,16 @@ PWM supports solver portfolios, including:
 
 ## Modality Coverage
 
-PWM's registry contains **64 imaging modalities** spanning microscopy, medical imaging, coherent/computational optics, electron microscopy, remote sensing, and more.
+PWM's registry contains **172 imaging modalities** spanning microscopy, medical imaging, coherent/computational optics, electron microscopy, remote sensing, and more.
 
-- **64** modalities in `contrib/modalities.yaml` with forward-model templates and solver portfolios
+- **172** modalities in `contrib/modalities.yaml` with forward-model templates and solver portfolios
 - **26** modalities with quantitative PSNR benchmark results (table below)
 - **16** modalities with operator-correction calibration tests (see [Operator correction mode](#operator-correction-mode-measured-y--a---fitcorrect-operator---reconstruct))
 
-## Modality Catalog (64)
+## Modality Catalog (172)
 
 <details>
-<summary>All 64 modalities grouped by execution tier (click to expand)</summary>
+<summary>All 172 modalities grouped by execution tier (click to expand)</summary>
 
 *Catalog generated from `contrib/modalities.yaml`. Tier groupings follow `docs/PLAN_v4_report_contract.md` §5.2.*
 
@@ -866,7 +866,7 @@ PYTHONPATH="$PWD:$PWD/packages/pwm_core" python scripts/run_cacti_benchmark.py
 ```bash
 cd packages/pwm_core
 
-# Run ALL 64 modalities (~28 min)
+# Run ALL 172 modalities (~28 min)
 python benchmarks/run_all.py --all
 
 # Run core modalities only (faster)
@@ -1029,7 +1029,7 @@ pwm/
           graph_operator.py  # to_canonical(), canonical_dag_string()
           compiler.py      # Compiles specs to graphs with canonical tags
         agents/            # 17 agent modules + contracts + registry
-        physics/           # 64 modality operators
+        physics/           # 172 modality operators
         analysis/          # Metrics, bottleneck, uncertainty
         core/              # Runner, RunBundle, simulator
         api/               # Pydantic types, endpoints
@@ -1040,14 +1040,14 @@ pwm/
           pet_ct/          # PET/CT QC (scaffold)
           spect_ct/        # SPECT/CT QC (scaffold)
       contrib/
-        modalities.yaml    # 64-modality source of truth
+        modalities.yaml    # 172-modality source of truth
         mismatch_db.yaml   # Mismatch parameters per modality
         photon_db.yaml     # Photon models
         compression_db.yaml # Recoverability calibration tables
         metrics_db.yaml    # Per-modality metric sets
         solver_registry.yaml # 43+ solvers
       benchmarks/
-        run_all.py         # 64-modality benchmark suite
+        run_all.py         # 172-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
       tests/               # 3985 unit tests (incl. 32 canonical + 210 clinical)
     pwm_AI_Scientist/      # AI_Scientist adapter (thin)
@@ -1061,7 +1061,7 @@ PWM uses **6 YAML registries** as the source of truth for all modalities, solver
 
 | Registry | Entries | Purpose |
 |----------|---------|---------|
-| `modalities.yaml` | 64 modalities | Forward model families + upload templates |
+| `modalities.yaml` | 172 modalities | Forward model families + upload templates |
 | `mismatch_db.yaml` | Per-modality | Mismatch parameters and ranges |
 | `photon_db.yaml` | Per-modality | Photon/noise models (model_id, not formulas) |
 | `compression_db.yaml` | Calibration tables | Recoverability with provenance fields |
@@ -1105,7 +1105,7 @@ PWM is intended to be extended by the community. All algorithms are open source 
 
 #### Level 1: New Solver (Easiest)
 
-**Who**: Any ML researcher, PhD student, or imaging lab. **Your solver never knows what modality it's solving** -- write once, compete on all 64+ modalities.
+**Who**: Any ML researcher, PhD student, or imaging lab. **Your solver never knows what modality it's solving** -- write once, compete on all 172+ modalities.
 
 ```bash
 # 1. Scaffold
@@ -1263,7 +1263,7 @@ See also: [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contribution guide.
 | [`docs/operator_mode.md`](docs/operator_mode.md) | Operator correction pipeline + 16 calibration modalities |
 | [`docs/quickstart/README.md`](docs/quickstart/README.md) | Getting started guide |
 | **Modalities & Data** | |
-| [`packages/pwm_core/contrib/modalities.yaml`](packages/pwm_core/contrib/modalities.yaml) | 64-modality registry (source of truth) |
+| [`packages/pwm_core/contrib/modalities.yaml`](packages/pwm_core/contrib/modalities.yaml) | 172-modality registry (source of truth) |
 | [`packages/pwm_core/contrib/solver_registry.yaml`](packages/pwm_core/contrib/solver_registry.yaml) | 43+ solver registry |
 | [`docs/benchmark_results_26_modalities.md`](docs/benchmark_results_26_modalities.md) | Benchmark results (26 modalities with PSNR) |
 | **Governance** | |
@@ -1277,9 +1277,93 @@ See also: [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contribution guide.
 
 ---
 
+## Dyson Swarm Vision
+
+PWM's long-term trajectory extends beyond terrestrial imaging. The same 10-primitive operator graph that models a CT scanner or an MRI coil can, in principle, model the energy-collection geometry of a **Dyson swarm** -- a megastructure of orbiting solar collectors.
+
+**Why this matters for PWM:**
+
+| Terrestrial imaging | Dyson swarm analogue |
+|---------------------|----------------------|
+| Forward operator $H$ maps scene $x$ to measurement $y$ | Orbital geometry maps stellar flux to collector signals |
+| Gate 1 (Recoverability): null-space from limited views | Orbital gaps create unobservable stellar-surface patches |
+| Gate 2 (Carrier Budget): photon noise floor | Photon statistics at interplanetary distances |
+| Gate 3 (Operator Mismatch): $H_{\text{nom}} \neq H_{\text{true}}$ | Orbital perturbations shift collector positions |
+| Triad Decomposition diagnoses bottleneck | Same decomposition identifies which swarm element limits energy capture |
+| Calibration loop corrects mismatch | Station-keeping corrects orbital drift |
+
+**Concrete connections:**
+- **Primitive reuse.** A Dyson collector's transfer function is a composition of `Propagate` (free-space), `Modulate` (reflector geometry), `Accumulate` (spectral integration), and `Detect` (converter response) -- all existing PWM primitives.
+- **Scalable orchestration.** PWM's multi-agent system (PlanAgent, MismatchAgent, RecoverabilityAgent) maps directly to swarm management: plan collection schedules, detect misaligned collectors, and diagnose energy shortfalls.
+- **SolveEverything Gear 8 (Compute + Energy).** The abundance engine treats energy as a measurable resource with an RoIC (Return on Invested Compute). A Dyson swarm is the physical instantiation of Gear 8 -- converting stellar energy into usable compute at civilizational scale.
+
+**Current status:** Speculative. PWM's immediate focus is terrestrial computational imaging across 172 modalities. The Dyson swarm connection is documented here as a long-horizon design principle: build the operator algebra general enough that it scales from microscopes to megastructures.
+
+See [`rails/gear08_compute_energy.md`](rails/gear08_compute_energy.md) for the energy-compute framework.
+
+---
+
+## Code of Conduct
+
+We are committed to providing a welcoming and inclusive experience for everyone. All participants in the PWM community -- including contributors, maintainers, and users -- are expected to be respectful and constructive.
+
+- Be kind and courteous in all interactions
+- Respect differing viewpoints and experiences
+- Accept constructive criticism gracefully
+- Focus on what is best for the community and the science
+- Show empathy toward other community members
+
+Unacceptable behavior includes harassment, trolling, personal attacks, and publishing others' private information. Violations may result in temporary or permanent bans from the project.
+
+Report concerns to **platformaigpt@gmail.com**. All reports are reviewed confidentially.
+
+---
+
+## Contributing
+
+We welcome contributions of all kinds. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full guide.
+
+**Quick start:**
+1. Fork the repository and create a feature branch
+2. Make your changes with tests
+3. Run `pwm evaluate` to verify your changes don't break existing benchmarks
+4. Open a pull request
+
+**Contribution types:**
+- **New solver:** Implement `ReconSolver` protocol, register in `solver_registry.yaml`, beat the current default on the harness
+- **New modality:** Add forward model, solver portfolio, and benchmark data for a new imaging system
+- **New dataset:** Contribute benchmark data via the [Contribute page](https://pwm.platformai.org/benchmark/ct/contribute) or `pwm ingest`
+- **Bug fix / improvement:** Open an issue first, then submit a PR
+- **Documentation:** Fix typos, improve explanations, add examples
+
+**8 contributor roles** with step-by-step examples: see [`docs/Contributor_examples.md`](docs/Contributor_examples.md) and the [Contributors page](https://pwm.platformai.org/contributors).
+
+---
+
 ## License
 
-See `LICENSE`.
+This project is licensed under the terms specified in the `LICENSE` file.
+
+See [`LICENSE`](LICENSE) for full details.
+
+---
+
+## Security
+
+If you discover a security vulnerability in PWM, please report it responsibly.
+
+**Do NOT open a public issue for security vulnerabilities.**
+
+Instead, email **platformaigpt@gmail.com** with:
+- A description of the vulnerability
+- Steps to reproduce
+- Potential impact assessment
+
+We will acknowledge receipt within 48 hours and provide a timeline for a fix. Security researchers who report valid vulnerabilities responsibly will be credited in the release notes (unless they prefer to remain anonymous).
+
+**Scope:** Security issues in PWM include gate bypass vulnerabilities (e.g., circumventing R3 artifact integrity checks), authentication/authorization flaws on the platform, and any issue that could lead to incorrect trust-tier assignments on the leaderboard.
+
+See also: the [Red Team page](https://pwm.platformai.org/redteam) for the adversarial testing bounty board.
 
 ---
 
