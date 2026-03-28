@@ -107,7 +107,7 @@ jobs:
             --solver   "$SOLVER" \
             --track    "$TRACK" \
             --n-scenes "$N_SCENES" \
-            --out-dir  runs/ \
+            --output   runs/ \
             --emit-certificate
 
           # Find the created bundle
