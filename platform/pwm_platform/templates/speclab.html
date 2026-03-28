@@ -1050,6 +1050,28 @@ function applyRelativeTimes() {
     });
 }
 
+// ── Network error handler (htmx:sendError) ────────────────────────────────
+// Fires when a request fails at the network level (proxy timeout, connection
+// reset). First CASSI/CT/MRI run downloads ~50MB of GCS data and can take
+// 60–90 s on cold start — long enough to hit an upstream proxy timeout.
+// Show a friendly retry message so the user isn't left with a blank spinner.
+document.body.addEventListener('htmx:sendError', function(e) {
+    stopProgress();
+    var chatLog = document.getElementById('chat-log');
+    if (!chatLog) return;
+    var url = e.detail && e.detail.requestConfig && e.detail.requestConfig.path || '';
+    var isRun = url.indexOf('reconstruct-common') >= 0 || url.indexOf('simulate') >= 0;
+    if (!isRun) return;
+    var msg = document.createElement('div');
+    msg.className = 'flex justify-start';
+    msg.innerHTML = '<div class="px-4 py-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800 max-w-lg">'
+        + '<strong>Connection timeout</strong> — the first run downloads benchmark data from the cloud, which can take 60–90 s. '
+        + 'Please click <strong>Run</strong> again — it will be fast now that the data is cached.'
+        + '</div>';
+    chatLog.appendChild(msg);
+    scrollChatLog();
+});
+
 document.addEventListener('DOMContentLoaded', applyRelativeTimes);
 document.addEventListener('htmx:afterSettle', applyRelativeTimes);
 document.addEventListener('htmx:afterSettle', scrollChatLog);

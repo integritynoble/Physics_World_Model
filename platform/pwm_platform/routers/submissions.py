@@ -14,7 +14,8 @@ Admin review:
 
 Endpoints:
   GET   /api/v1/submissions/form               — inline HTMX form partial
-  POST  /api/v1/submissions/                    — create submission
+  POST  /api/v1/submissions/                    — create submission (multipart/form-data)
+  POST  /api/v1/submissions/score-report        — create score report (application/json)
   POST  /api/v1/submissions/report-score        — report public tier score
   PATCH /api/v1/submissions/{id}/review         — admin approve/reject with feedback
   PATCH /api/v1/submissions/{id}/set-score      — admin sets score for dev/hidden result
@@ -29,8 +30,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -229,6 +231,81 @@ async def create_submission(
 
     return templates.TemplateResponse(request, "_submission_success.html", {
         "submission": submission,
+    })
+
+
+# ── POST /score-report — JSON-compatible score report submission ──────────
+
+
+class ScoreReportRequest(BaseModel):
+    variant_key: str
+    tier_name: str = "public"
+    method_name: str
+    method_description: str = ""
+    paper_url: str = ""
+    code_url: str = ""
+    reported_psnr: float | None = None
+    reported_ssim: float | None = None
+    category: str = "competition"
+
+
+@router.post("/score-report")
+async def create_score_report_json(
+    body: ScoreReportRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Create a score_report submission from a JSON body (programmatic API)."""
+    allowed_tiers = _TYPE_TIER_RULES["score_report"]
+    if body.tier_name not in allowed_tiers:
+        raise HTTPException(400, f"score_report submissions are only allowed on {allowed_tiers} tiers")
+
+    if not body.method_name.strip():
+        raise HTTPException(400, "method_name is required")
+
+    submission_id = f"sub-{uuid.uuid4().hex[:12]}"
+
+    scores: dict = {}
+    if body.reported_psnr is not None:
+        scores["psnr"] = body.reported_psnr
+    if body.reported_ssim is not None:
+        scores["ssim"] = body.reported_ssim
+
+    submission = ChallengeSubmission(
+        submission_id=submission_id,
+        submission_type="score_report",
+        category=body.category,
+        variant_key=body.variant_key,
+        tier_name=body.tier_name,
+        credit_cost=0.0,
+        submitted_by=user.id,
+        method_name=body.method_name.strip(),
+        method_description=body.method_description.strip(),
+        paper_url=body.paper_url.strip(),
+        code_url=body.code_url.strip(),
+        file_path="score_report",
+        original_filename="score_report",
+        file_size_bytes=0,
+        scores=scores or None,
+        status="pending",
+    )
+    db.add(submission)
+    await db.commit()
+    await db.refresh(submission)
+
+    logger.info(
+        "Score report %s created by user %s for %s/%s",
+        submission_id, user.username, body.variant_key, body.tier_name,
+    )
+
+    return JSONResponse({
+        "submission_id": submission.submission_id,
+        "status": submission.status,
+        "variant_key": submission.variant_key,
+        "tier_name": submission.tier_name,
+        "method_name": submission.method_name,
+        "scores": submission.scores,
+        "submitted_at": submission.submitted_at.isoformat() if submission.submitted_at else None,
     })
 
 
