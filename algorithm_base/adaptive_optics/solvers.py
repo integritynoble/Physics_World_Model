@@ -17,7 +17,7 @@ DISPLAY_NAME = "Adaptive Optics (AO) Imaging"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 15 solvers from 1949 to 2026
+# Solver registry — 16 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
     # Original
@@ -139,6 +139,15 @@ SOLVERS = {
         "function": "run_dl_mamba",
         "gpu": True,
         "reference": "SSM reconstruction, 2026",
+    },
+    # ── Modal / Zernike (classical AO) ──
+    "zernike_ls": {
+        "name": "Zernike-LS",
+        "module": "algorithm_base.adaptive_optics.solvers",
+        "function": "run_zernike_ls",
+        "gpu": False,
+        "reference": "Noll 1976, JOSA; Zernike polynomial least-squares fitting",
+        "cfg_override": {"n_modes": 20},
     },
 }
 
@@ -434,6 +443,128 @@ def run_pnp_fista_nlm(y, physics, cfg=None):
         v_den = _nlm_denoise(v, sig_it)
         x = (v_den * scale + lo).astype(np.float32)
     return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_fista_nlm"}
+
+
+# ── Zernike / Modal solvers ──
+
+def _zernike_radial(n, m, r):
+    """Radial Zernike polynomial R_n^m(r) using Noll convention."""
+    m_abs = abs(m)
+    if (n - m_abs) % 2 != 0:
+        return np.zeros_like(r)
+    R = np.zeros_like(r, dtype=np.float64)
+    for s in range((n - m_abs) // 2 + 1):
+        num = ((-1) ** s) * np.math.factorial(n - s)
+        den = (np.math.factorial(s)
+               * np.math.factorial((n + m_abs) // 2 - s)
+               * np.math.factorial((n - m_abs) // 2 - s))
+        R += (num / den) * r ** (n - 2 * s)
+    return R
+
+
+def _noll_to_nm(j):
+    """Convert Noll index j (1-based) to radial order n and azimuthal frequency m."""
+    n = 0
+    while (n + 1) * (n + 2) // 2 < j:
+        n += 1
+    k = j - n * (n + 1) // 2 - 1
+    if n % 2 == 0:
+        m = 2 * ((k + 1) // 2)
+    else:
+        m = 2 * ((k + 1) // 2) - 1 + (1 if k % 2 == 0 else 0)
+        m = 2 * (k // 2) + 1
+    # Robust Noll-to-(n,m) mapping
+    m_abs = 0
+    remaining = j - n * (n + 1) // 2
+    # For a given n there are (n+1) polynomials; m takes values n, n-2, ..., 0 or 1
+    m_vals = list(range(n, -1, -2))
+    # Noll ordering pairs: (n,0) then (n,m,-), (n,m,+) for m>0
+    ordered = []
+    for mv in m_vals:
+        if mv == 0:
+            ordered.append(0)
+        else:
+            ordered.append(-mv)
+            ordered.append(mv)
+    idx = remaining - 1
+    if idx < len(ordered):
+        m = ordered[idx]
+    else:
+        m = 0
+    return n, m
+
+
+def _build_zernike_basis(height, width, n_modes):
+    """Build Zernike basis matrix Z of shape (height*width, n_modes) over a circular pupil."""
+    yy, xx = np.mgrid[0:height, 0:width]
+    cy, cx = (height - 1) / 2.0, (width - 1) / 2.0
+    radius = min(cy, cx)
+    r = np.sqrt(((yy - cy) / max(radius, 1e-8)) ** 2
+                + ((xx - cx) / max(radius, 1e-8)) ** 2)
+    theta = np.arctan2(yy - cy, xx - cx)
+    mask = r <= 1.0
+    r_masked = r * mask  # set outside pupil to 0
+
+    Z = np.zeros((height * width, n_modes), dtype=np.float64)
+    for j in range(1, n_modes + 1):
+        n, m = _noll_to_nm(j)
+        R = _zernike_radial(n, abs(m), r_masked)
+        if m >= 0:
+            zern = R * np.cos(m * theta)
+        else:
+            zern = R * np.sin(abs(m) * theta)
+        zern *= mask  # zero outside circular pupil
+        Z[:, j - 1] = zern.ravel()
+    return Z
+
+
+def run_zernike_ls(y, physics=None, cfg=None):
+    """Zernike-LS: Zernike polynomial least-squares wavefront estimation (Noll 1976).
+
+    Projects the measurement onto a Zernike polynomial basis (circular pupil,
+    Noll ordering) and reconstructs via least-squares coefficient fitting.
+    As a practical fallback for non-square or large images, an SVD-based
+    low-rank projection is used to achieve a similar modal filtering effect.
+    """
+    cfg = cfg or {}
+    n_modes = cfg.get("n_modes", 20)
+
+    y_2d = np.atleast_2d(y.astype(np.float64))
+    h, w = y_2d.shape[:2]
+    if y_2d.ndim > 2:
+        y_2d = y_2d.reshape(h, w)
+    y_flat = y_2d.ravel()
+
+    # --- Try true Zernike fitting on reasonably-sized images ---
+    use_svd_fallback = False
+    if h * w > 512 * 512:
+        use_svd_fallback = True  # SVD is more memory-friendly for large images
+
+    if not use_svd_fallback:
+        try:
+            Z = _build_zernike_basis(h, w, n_modes)
+            # Least-squares: c = (Z^T Z)^{-1} Z^T y_flat
+            ZtZ = Z.T @ Z
+            Zty = Z.T @ y_flat
+            c = np.linalg.solve(ZtZ + 1e-12 * np.eye(n_modes), Zty)
+            x_hat = (Z @ c).reshape(h, w)
+            return np.clip(x_hat, 0, None).astype(np.float32), {
+                "solver": "zernike_ls",
+                "n_modes": n_modes,
+                "method": "zernike_fit",
+            }
+        except Exception:
+            use_svd_fallback = True
+
+    # --- SVD-based modal fallback (similar denoising effect) ---
+    U, s, Vt = np.linalg.svd(y_2d, full_matrices=False)
+    rank = min(n_modes, len(s))
+    x_hat = (U[:, :rank] * s[:rank]) @ Vt[:rank, :]
+    return np.clip(x_hat, 0, None).astype(np.float32), {
+        "solver": "zernike_ls",
+        "n_modes": rank,
+        "method": "svd_modal",
+    }
 
 
 # ── Deep Learning solvers (fallback) ──

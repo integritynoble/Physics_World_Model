@@ -17,7 +17,7 @@ DISPLAY_NAME = "Active Thermography (IR)"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 15 solvers from 1949 to 2026
+# Solver registry — 16 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
     # Original
@@ -139,6 +139,15 @@ SOLVERS = {
         "function": "run_dl_diffusion",
         "gpu": True,
         "reference": "Diffusion for probe imaging, 2025",
+    },
+    # ── Thermographic Signal Reconstruction ──
+    "tsr": {
+        "name": "TSR (Thermographic Signal Reconstruction)",
+        "module": "algorithm_base.active_thermography.solvers",
+        "function": "run_tsr",
+        "gpu": False,
+        "reference": "Shepard et al., Proc SPIE 2003",
+        "cfg_override": {"poly_degree": 7},
     },
 }
 
@@ -434,6 +443,80 @@ def run_pnp_fista_nlm(y, physics, cfg=None):
         v_den = _nlm_denoise(v, sig_it)
         x = (v_den * scale + lo).astype(np.float32)
     return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_fista_nlm"}
+
+
+# ── TSR (Thermographic Signal Reconstruction) ──
+
+def run_tsr(y, operator=None, cfg=None):
+    """TSR – Thermographic Signal Reconstruction (Shepard et al. 2003).
+
+    For a 3-D temporal sequence (n_pixels x n_frames or n_frames x H x W):
+      1. Build a log-time axis and take log of pixel intensities.
+      2. Fit a polynomial (degree 5-7) in log-log space per pixel.
+      3. Evaluate the first derivative of the polynomial to enhance
+         sub-surface defect contrast.
+
+    For a plain 2-D single-frame image: falls back to Wiener deconvolution
+    using the provided (or default) operator.
+    """
+    cfg = cfg or {}
+    poly_degree = cfg.get("poly_degree", 7)
+    deriv_order = cfg.get("deriv_order", 1)
+    eps = 1e-12
+
+    # ------------------------------------------------------------------
+    # Single-frame fallback (2-D image, no temporal axis)
+    # ------------------------------------------------------------------
+    if y.ndim == 2:
+        physics = _ensure_operator(y, operator, cfg)
+        return run_wiener(y, physics, {"reg": cfg.get("reg", 0.01)})
+
+    # ------------------------------------------------------------------
+    # Temporal sequence — reshape to (n_pixels, n_frames)
+    # ------------------------------------------------------------------
+    if y.ndim == 3:
+        # Assume (n_frames, H, W)
+        n_frames, H, W = y.shape
+        pixels = y.reshape(n_frames, -1).T          # (n_pixels, n_frames)
+    else:
+        # Assume rows=pixels, cols=frames
+        pixels = y.astype(np.float32)
+        n_frames = pixels.shape[1]
+        H = W = None
+
+    # Time axis: frame indices starting at 1 (avoid log(0))
+    t = np.arange(1, n_frames + 1, dtype=np.float64)
+    log_t = np.log(t)
+
+    # Clamp pixel values to positive before log
+    pixels_pos = np.maximum(pixels.astype(np.float64), eps)
+    log_pixels = np.log(pixels_pos)
+
+    # ------------------------------------------------------------------
+    # Polynomial fit in log-log space & derivative evaluation
+    # ------------------------------------------------------------------
+    n_px = pixels.shape[0]
+    # Choose a representative time for reconstruction (mid-sequence)
+    t_eval_idx = cfg.get("eval_frame", n_frames // 2)
+    t_eval = log_t[min(t_eval_idx, n_frames - 1)]
+
+    recon = np.empty(n_px, dtype=np.float64)
+    for i in range(n_px):
+        coeffs = np.polyfit(log_t, log_pixels[i], deg=poly_degree)
+        # Derivative of the polynomial
+        d_coeffs = np.polyder(coeffs, m=deriv_order)
+        recon[i] = np.polyval(d_coeffs, t_eval)
+
+    # ------------------------------------------------------------------
+    # Reshape back to spatial image
+    # ------------------------------------------------------------------
+    if H is not None and W is not None:
+        recon_img = recon.reshape(H, W).astype(np.float32)
+    else:
+        recon_img = recon.astype(np.float32)
+
+    return recon_img, {"solver": "tsr", "poly_degree": poly_degree,
+                       "deriv_order": deriv_order, "eval_frame": t_eval_idx}
 
 
 # ── Deep Learning solvers (fallback) ──

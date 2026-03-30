@@ -17,7 +17,7 @@ DISPLAY_NAME = "Electron Energy Loss Spectroscopy (EELS)"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 16 solvers from 1949 to 2026
+# Solver registry — 17 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
     # Original
@@ -147,6 +147,15 @@ SOLVERS = {
         "function": "run_dl_diffusion",
         "gpu": True,
         "reference": "Diffusion for spectroscopy, 2025",
+    },
+    # ── Power-law background subtraction ──
+    "powerlaw_eels": {
+        "name": "PowerLaw-EELS",
+        "module": "algorithm_base.eels.solvers",
+        "function": "run_powerlaw_eels",
+        "gpu": False,
+        "reference": "Egerton, EELS in the Electron Microscope, 2011",
+        "cfg_override": {"pre_edge_frac": 0.25},
     },
 }
 
@@ -442,6 +451,81 @@ def run_pnp_fista_nlm(y, physics, cfg=None):
         v_den = _nlm_denoise(v, sig_it)
         x = (v_den * scale + lo).astype(np.float32)
     return np.maximum(x, 0).astype(np.float32), {"solver": "pnp_fista_nlm"}
+
+
+def run_powerlaw_eels(y, operator=None, cfg=None):
+    """Power-law background subtraction for EELS (Egerton 2011).
+
+    EELS spectra exhibit a power-law background I(E) = A * E^(-r).
+    Fits log(I) vs log(E) in the pre-edge region using np.polyfit (degree 1)
+    to estimate A and r, then extrapolates and subtracts the background.
+
+    For 2D images (not explicit spectra), falls back to operator-adjoint
+    Wiener-like deconvolution.
+    """
+    cfg = cfg or {}
+    pre_edge_frac = cfg.get("pre_edge_frac", 0.25)
+    eps = 1e-12
+
+    y_f = np.asarray(y, dtype=np.float32)
+
+    # --- 1D spectrum ---
+    if y_f.ndim == 1:
+        n = y_f.shape[0]
+        energy = np.arange(1, n + 1, dtype=np.float64)
+        pre_end = max(int(n * pre_edge_frac), 2)
+        log_e = np.log(energy[:pre_end])
+        log_i = np.log(np.maximum(y_f[:pre_end].astype(np.float64), eps))
+        coeffs = np.polyfit(log_e, log_i, 1)  # coeffs[0] = -r, coeffs[1] = log(A)
+        r = -coeffs[0]
+        A = np.exp(coeffs[1])
+        background = A * energy ** (-r)
+        x_hat = y_f.astype(np.float64) - background
+        x_hat = np.clip(x_hat, 0, None)
+        lo, hi = x_hat.min(), x_hat.max()
+        if hi - lo > eps:
+            x_hat = (x_hat - lo) / (hi - lo)
+        return x_hat.astype(np.float32), {"solver": "powerlaw_eels", "A": float(A), "r": float(r)}
+
+    # --- 2D spectrum image (rows are spectra) ---
+    if y_f.ndim == 2:
+        # If an operator is provided, this is an imaging problem; use Wiener fallback
+        if operator is not None:
+            physics = _ensure_operator(y_f, operator, cfg)
+            reg = cfg.get("reg", 0.01)
+            y_2d = y_f.reshape(physics.shape).astype(np.float32)
+            Y = np.fft.rfft2(y_2d)
+            H = physics.otf
+            denom = H * np.conj(H) + reg
+            X = (np.conj(H) * Y) / denom
+            estimate = np.fft.irfft2(X, s=physics.shape)
+            return np.clip(estimate, 0, None).astype(np.float32), {"solver": "powerlaw_eels", "mode": "wiener_2d"}
+
+        # Otherwise treat each row as a spectrum and apply power-law subtraction
+        nrows, ncols = y_f.shape
+        energy = np.arange(1, ncols + 1, dtype=np.float64)
+        pre_end = max(int(ncols * pre_edge_frac), 2)
+        log_e = np.log(energy[:pre_end])
+        result = np.zeros_like(y_f, dtype=np.float64)
+        for i in range(nrows):
+            spectrum = y_f[i].astype(np.float64)
+            log_i = np.log(np.maximum(spectrum[:pre_end], eps))
+            coeffs = np.polyfit(log_e, log_i, 1)
+            r = -coeffs[0]
+            A = np.exp(coeffs[1])
+            background = A * energy ** (-r)
+            row = spectrum - background
+            result[i] = np.clip(row, 0, None)
+        lo, hi = result.min(), result.max()
+        if hi - lo > eps:
+            result = (result - lo) / (hi - lo)
+        return result.astype(np.float32), {"solver": "powerlaw_eels", "mode": "row_spectra"}
+
+    # --- 3D or higher: flatten to 2D, process rows, reshape back ---
+    original_shape = y_f.shape
+    y_2d = y_f.reshape(-1, original_shape[-1])
+    result, info = run_powerlaw_eels(y_2d, operator=None, cfg=cfg)
+    return result.reshape(original_shape).astype(np.float32), info
 
 
 # ── Deep Learning solvers (fallback) ──

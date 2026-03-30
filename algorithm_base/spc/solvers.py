@@ -259,6 +259,13 @@ SOLVERS = {
         "gpu": False,
         "reference": "Boyd et al., Found. Trends ML 2011",
     },
+    "fista_tv": {
+        "name": "FISTA-TV",
+        "module": "__self__",
+        "function": "_run_fista_tv",
+        "gpu": False,
+        "reference": "Beck & Teboulle, SIAM J. Imaging Sci. 2009; Chambolle, J. Math. Imaging Vis. 2004",
+    },
     # ---- New Deep Learning (6 algorithms) ----
     "pnp_hqs_drunet": {
         "name": "PnP-HQS (DRUNet)",
@@ -1447,6 +1454,55 @@ def _run_admm_tv(y, operator, cfg):
     return _final_norm(x.reshape(op.img_shape))
 
 
+# ---------------------------------------------------------------------------
+# 23. FISTA-TV -- FISTA with Total Variation regularization
+# ---------------------------------------------------------------------------
+
+def _run_fista_tv(y, operator, cfg):
+    """FISTA-TV -- Fast Iterative Shrinkage-Thresholding with TV regularization.
+
+    Solves  min_x  1/2 ||Phi x - y||^2 + lam * TV(x)
+    using FISTA (Nesterov momentum acceleration) where the proximal step
+    applies Chambolle's TV denoising instead of L1 soft-thresholding.
+
+    Reference: Beck & Teboulle, SIAM J. Imaging Sci. 2009 (FISTA);
+               Chambolle, J. Math. Imaging Vis. 2004 (TV proximal).
+    """
+    cfg = cfg or {}
+    op = _extract_operator(operator, y, cfg)
+    y_flat = y.flatten().astype(np.float32)
+    H, W = op.img_shape
+
+    niter = cfg.get("max_iter", 80)
+    step = cfg.get("stepsize", 0.01)
+    lam = cfg.get("lambda", 0.02)
+    tv_niter = cfg.get("tv_niter", 20)
+
+    # Initialise from back-projection
+    x = op.adjoint(y_flat).copy()
+    t = 1.0
+    x_old = x.copy()
+
+    for it in range(niter):
+        # Gradient of data fidelity: A^T(Ax - y)
+        grad = op.adjoint(op.forward(x) - y_flat)
+        z = x - step * grad
+
+        # Proximal step: TV denoising (replaces L1 soft-threshold)
+        z_img = z.reshape(H, W)
+        tv_weight = lam * step / (1.0 + 0.05 * it)
+        x_new_img = _tv_prox_2d(z_img, weight=tv_weight, niter=tv_niter)
+        x_new = x_new_img.flatten()
+
+        # FISTA momentum update (Nesterov acceleration)
+        t_new = (1.0 + np.sqrt(1.0 + 4.0 * t * t)) / 2.0
+        x = x_new + (t - 1.0) / t_new * (x_new - x_old)
+        x_old = x_new.copy()
+        t = t_new
+
+    return _final_norm(x.reshape(op.img_shape))
+
+
 # ===================================================================
 # Deep Learning solver implementations (16 solvers)
 # Each uses algorithm_base.shared.dl_engine with UNIQUE hyperparameters
@@ -1908,3 +1964,10 @@ def run_dpir_spc(y: np.ndarray, operator: Any = None,
     """DPIR. GPU.
     Reference: Zhang et al., IEEE TPAMI 2022"""
     return run_solver("dpir_spc", y, operator, cfg)
+
+
+def run_fista_tv(y: np.ndarray, operator: Any = None,
+                 cfg: Optional[Dict] = None) -> np.ndarray:
+    """FISTA-TV -- FISTA with Total Variation regularization. CPU only.
+    Reference: Beck & Teboulle, SIAM J. Imaging Sci. 2009; Chambolle 2004"""
+    return run_solver("fista_tv", y, operator, cfg)

@@ -45,6 +45,14 @@ SOLVERS = {
         "reference": "Richardson 1972, JOSA",
     },
     # ── Classical (1949-1974) ──
+    "matched_filter": {
+        "name": "Matched Filter",
+        "module": "algorithm_base.sar.solvers",
+        "function": "run_matched_filter",
+        "gpu": False,
+        "reference": "Range-Doppler algorithm; Turin, IRE Trans IT 1960",
+        "cfg_override": {},
+    },
     "wiener": {
         "name": "Wiener Deconvolution",
         "module": "algorithm_base.sar.solvers",
@@ -273,6 +281,24 @@ def run_wiener(y, physics, cfg=None):
     X = (np.conj(H) * Y) / denom
     estimate = np.fft.irfft2(X, s=physics.shape)
     return np.clip(estimate, 0, None).astype(np.float32), {"solver": "wiener"}
+
+
+def run_matched_filter(y, operator=None, cfg=None):
+    """Matched filter (range-Doppler algorithm) for SAR.
+
+    Performs 2-D FFT correlation: conjugate-multiply the spectrum of the
+    measurement with the reference function (OTF) and IFFT back.  For a
+    PSF-based forward model this is equivalent to Wiener filtering with
+    SNR -> inf (no regularisation), i.e. the adjoint / correlation operation.
+    Implemented by reusing run_wiener with a very large effective SNR.
+    """
+    cfg = cfg or {}
+    operator = _ensure_operator(y, operator, cfg)
+    # SNR=1e6 -> regularisation term ~ 1e-6, effectively zero
+    wiener_cfg = {"reg": 1.0 / 1e6}
+    estimate, info = run_wiener(y, operator, wiener_cfg)
+    info["solver"] = "matched_filter"
+    return estimate, info
 
 
 def run_landweber(y, physics, cfg=None):

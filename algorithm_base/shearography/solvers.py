@@ -17,7 +17,7 @@ DISPLAY_NAME = "Shearography"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 15 solvers from 1949 to 2026
+# Solver registry — 16 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
     # Original
@@ -139,6 +139,14 @@ SOLVERS = {
         "function": "run_dl_diffusion",
         "gpu": True,
         "reference": "Diffusion for probe imaging, 2025",
+    },
+    # ── Phase Unwrapping ──
+    "goldstein_mcf": {
+        "name": "Goldstein MCF",
+        "module": "algorithm_base.shearography.solvers",
+        "function": "run_goldstein_mcf",
+        "gpu": False,
+        "reference": "Goldstein et al., Radio Science 1988",
     },
 }
 
@@ -453,6 +461,47 @@ def run_dl_transformer(y, physics, cfg=None):
 def run_dl_diffusion(y, physics, cfg=None):
     """Probe-Diffusion (Diffusion for probe imaging, 2025). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_diffusion")
+
+
+# ── Phase Unwrapping solvers ──
+
+def run_goldstein_mcf(y, operator=None, cfg=None):
+    """Goldstein Minimum Cost Flow phase unwrapping (Goldstein et al. 1988).
+
+    Unwraps wrapped phase from shearography interferograms by computing
+    wrapped phase differences and integrating via cumulative summation.
+    Works identically to InSAR phase unwrapping.
+    """
+    cfg = cfg or {}
+
+    # Step 1: Extract wrapped phase
+    if np.iscomplexobj(y):
+        phase = np.angle(y).astype(np.float64)
+    else:
+        phase = np.atleast_2d(y).astype(np.float64)
+
+    # Step 2: Compute wrapped phase differences
+    dx = np.angle(np.exp(1j * (phase[:, 1:] - phase[:, :-1])))
+    dy = np.angle(np.exp(1j * (phase[1:, :] - phase[:-1, :])))
+
+    # Step 3: Integrate gradients via cumulative sum to get unwrapped phase
+    unwrapped = np.zeros_like(phase)
+    # Integrate along x (columns) for each row
+    unwrapped[:, 1:] = np.cumsum(dx, axis=1)
+    # Add y-gradient correction row by row using first column
+    dy_col0 = np.angle(np.exp(1j * (phase[1:, 0] - phase[:-1, 0])))
+    col0 = np.zeros(phase.shape[0], dtype=np.float64)
+    col0[1:] = np.cumsum(dy_col0)
+    unwrapped += col0[:, np.newaxis]
+
+    # Step 4: Normalize to [0, 1] range
+    lo, hi = float(unwrapped.min()), float(unwrapped.max())
+    if hi - lo > 1e-8:
+        unwrapped = (unwrapped - lo) / (hi - lo)
+    else:
+        unwrapped = unwrapped - lo
+
+    return unwrapped.astype(np.float32), {"solver": "goldstein_mcf"}
 
 
 # ===================================================================

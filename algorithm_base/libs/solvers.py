@@ -17,7 +17,7 @@ DISPLAY_NAME = "Laser-Induced Breakdown Spectroscopy (LIBS) Imaging"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 15 solvers from 1949 to 2026
+# Solver registry — 16 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
     # Original
@@ -140,6 +140,16 @@ SOLVERS = {
         "gpu": True,
         "reference": "Diffusion for spectroscopy, 2025",
     },
+    # ── Baseline Correction ──
+    "sg_als": {
+        "name": "SG-ALS",
+        "module": "algorithm_base.libs.solvers",
+        "function": "run_sg_als",
+        "gpu": False,
+        "reference": "Savitzky & Golay 1964; Eilers 2005 (ALS)",
+        "cfg_override": {"sg_window": 11, "sg_polyorder": 3,
+                         "als_lam": 1e6, "als_p": 0.01, "als_iters": 10},
+    },
 }
 
 
@@ -196,6 +206,11 @@ def _nlm_denoise(img, sigma=0.05):
         img.astype(np.float64), patch_size=5, patch_distance=6,
         h=0.8 * sigma, fast_mode=True, sigma=sigma,
     ).astype(np.float32)
+
+
+def _final_norm(x):
+    """Clip to [0, 1] for output."""
+    return np.clip(x, 0, 1).astype(np.float32)
 
 
 def _dl_fallback(y, physics, cfg, solver_name):
@@ -453,6 +468,64 @@ def run_dl_transformer(y, physics, cfg=None):
 def run_dl_diffusion(y, physics, cfg=None):
     """Spec-Diffusion (Diffusion for spectroscopy, 2025). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_diffusion")
+
+
+# ── Baseline Correction solvers ──
+
+def _als_baseline(y_row, lam=1e6, p=0.01, niter=10):
+    """Asymmetric Least Squares baseline estimation for a 1-D signal.
+
+    References: Eilers & Boelens, 2005.
+    """
+    import scipy.sparse as sp
+    from scipy.sparse.linalg import spsolve
+    L = len(y_row)
+    D = sp.diags([1, -2, 1], [0, 1, 2], shape=(L - 2, L))
+    H = lam * D.T.dot(D)
+    w = np.ones(L, dtype=np.float64)
+    y_d = np.asarray(y_row, dtype=np.float64)
+    for _ in range(niter):
+        W = sp.diags(w, 0)
+        Z = W + H
+        z = spsolve(Z, w * y_d)
+        w = np.where(y_d > z, p, 1 - p)
+    return z.astype(np.float32)
+
+
+def run_sg_als(y, operator=None, cfg=None):
+    """SG-ALS: Savitzky-Golay smoothing + ALS baseline correction.
+
+    Step 1 – Savitzky-Golay smoothing (spectral axis).
+    Step 2 – Asymmetric Least Squares baseline estimation per spectrum.
+    Step 3 – Subtract baseline from smoothed signal.
+    Output is clipped to [0, 1] via _final_norm.
+
+    References: Savitzky & Golay, Anal Chem 1964; Eilers 2005 (ALS).
+    """
+    from scipy.signal import savgol_filter
+    cfg = cfg or {}
+    window = cfg.get("sg_window", 11)
+    polyorder = cfg.get("sg_polyorder", 3)
+    als_lam = cfg.get("als_lam", 1e6)
+    als_p = cfg.get("als_p", 0.01)
+    als_iters = cfg.get("als_iters", 10)
+
+    y_f = np.asarray(y, dtype=np.float32)
+
+    if y_f.ndim == 1:
+        # 1-D spectrum
+        smoothed = savgol_filter(y_f, window_length=window, polyorder=polyorder).astype(np.float32)
+        baseline = _als_baseline(smoothed, lam=als_lam, p=als_p, niter=als_iters)
+        corrected = smoothed - baseline
+        return _final_norm(corrected), {"solver": "sg_als"}
+
+    # 2-D (image / spectral map): axis=1 is spectral
+    smoothed = savgol_filter(y_f, window_length=window, polyorder=polyorder, axis=1).astype(np.float32)
+    corrected = np.empty_like(smoothed)
+    for i in range(smoothed.shape[0]):
+        baseline = _als_baseline(smoothed[i], lam=als_lam, p=als_p, niter=als_iters)
+        corrected[i] = smoothed[i] - baseline
+    return _final_norm(corrected), {"solver": "sg_als"}
 
 
 # ===================================================================

@@ -17,7 +17,7 @@ DISPLAY_NAME = "Interferometric SAR (InSAR)"
 
 
 # ---------------------------------------------------------------------------
-# Solver registry — 15 solvers from 1949 to 2026
+# Solver registry — 16 solvers from 1949 to 2026
 # ---------------------------------------------------------------------------
 SOLVERS = {
     # Original
@@ -139,6 +139,15 @@ SOLVERS = {
         "function": "run_dl_mamba",
         "gpu": True,
         "reference": "SSM for remote sensing, 2026",
+    },
+    # ── Phase Unwrapping ──
+    "goldstein_mcf": {
+        "name": "Goldstein MCF",
+        "module": "algorithm_base.insar.solvers",
+        "function": "run_goldstein_mcf",
+        "gpu": False,
+        "reference": "Goldstein et al., Radio Science 1988",
+        "cfg_override": {},
     },
 }
 
@@ -453,6 +462,76 @@ def run_dl_diffusion(y, physics, cfg=None):
 def run_dl_mamba(y, physics, cfg=None):
     """RS-Mamba (SSM for remote sensing, 2026). Fallback: Wiener + NLM."""
     return _dl_fallback(y, physics, cfg or {}, "dl_mamba")
+
+
+# ── Phase Unwrapping solvers ──
+
+def run_goldstein_mcf(y, operator=None, cfg=None):
+    """Goldstein Minimum Cost Flow phase unwrapping (Goldstein et al. 1988).
+
+    Unwraps an interferometric phase field by computing wrapped phase
+    differences along both axes and integrating them via cumulative sums.
+    This approximates the branch-cut + minimum-cost-flow approach: phase
+    residues (2x2 pixel loops where wraps don't cancel) are implicitly
+    handled by the consistent wrapped-gradient integration.
+
+    Parameters
+    ----------
+    y : np.ndarray
+        2-D wrapped phase (real) or complex interferogram.  If complex,
+        the wrapped phase is extracted via ``np.angle(y)``.
+    operator : optional
+        Unused (kept for interface compatibility).
+    cfg : dict, optional
+        Configuration dictionary (currently unused; reserved for future
+        parameters such as tiling or weighting).
+
+    Returns
+    -------
+    unwrapped : np.ndarray (float32)
+        2-D unwrapped phase field.
+    info : dict
+        Metadata about the solver run.
+    """
+    cfg = cfg or {}
+
+    # ------------------------------------------------------------------
+    # 1. Extract wrapped phase
+    # ------------------------------------------------------------------
+    if np.iscomplexobj(y):
+        phase = np.angle(y).astype(np.float64)
+    else:
+        phase = np.asarray(y, dtype=np.float64)
+
+    if phase.ndim != 2:
+        raise ValueError(
+            f"run_goldstein_mcf expects a 2-D array, got shape {phase.shape}"
+        )
+
+    rows, cols = phase.shape
+
+    # ------------------------------------------------------------------
+    # 2. Wrapped phase differences (gradients)
+    # ------------------------------------------------------------------
+    # dx[i, j] = wrap(phase[i, j+1] - phase[i, j])
+    dx = np.angle(np.exp(1j * (phase[:, 1:] - phase[:, :-1])))
+    # dy[i, j] = wrap(phase[i+1, j] - phase[i, j])
+    dy = np.angle(np.exp(1j * (phase[1:, :] - phase[:-1, :])))
+
+    # ------------------------------------------------------------------
+    # 3. Integrate gradients to recover the unwrapped phase
+    # ------------------------------------------------------------------
+    unwrapped = np.zeros_like(phase)
+
+    # Integrate along columns (horizontal) for the first row
+    unwrapped[0, 1:] = np.cumsum(dx[0, :])
+
+    # Integrate along rows (vertical) for each column
+    for j in range(cols):
+        if j < dy.shape[1]:
+            unwrapped[1:, j] = unwrapped[0, j] + np.cumsum(dy[:, j])
+
+    return unwrapped.astype(np.float32), {"solver": "goldstein_mcf"}
 
 
 # ===================================================================

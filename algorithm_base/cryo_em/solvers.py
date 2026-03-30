@@ -1,9 +1,9 @@
 """Solvers for Cryo-EM Single Particle Analysis (cryo_em).
 
-25 reconstruction algorithms:
-  Classical (11): Wiener-CTF, Phase-Flip, Back-Projection, SIRT-3D,
+26 reconstruction algorithms:
+  Classical (12): Wiener-CTF, Phase-Flip, Back-Projection, SIRT-3D,
                   Landweber, Tikhonov, TV-ADMM, PnP-ADMM-NLM,
-                  Weighted Back-Projection, CGLS, PnP-FISTA-NLM
+                  Weighted Back-Projection, CGLS, PnP-FISTA-NLM, CTFFIND4
   Deep Learning (14): RELION, CryoSPARC, CryoDRGN, CryoDRGN2, CryoAI,
                       DeepEMenhancer, Topaz-Denoise, CryoSTAR, CryoMamba,
                       PnP-HQS-DRUNet, CryoGAN, CryoFIRE, CryoFormer,
@@ -180,6 +180,14 @@ SOLVERS = {
         "function": "run_pnp_fista_nlm",
         "gpu": False,
         "reference": "Beck & Teboulle 2009, SIAM J. Imaging Sci.",
+        "cfg_override": {},
+    },
+    "ctffind4": {
+        "name": "CTFFIND4",
+        "module": "algorithm_base.cryo_em.solvers",
+        "function": "run_ctffind4",
+        "gpu": False,
+        "reference": "Rohou & Grigorieff 2015, J. Struct. Biol.",
         "cfg_override": {},
     },
     # ── Deep Learning (GPU) ──────────────────────────────────────────────
@@ -578,6 +586,95 @@ def run_pnp_fista_nlm(y, physics=None, cfg=None):
         x = x.astype(np.float32)
 
     return np.clip(x, 0, 1).astype(np.float32)
+
+
+def run_ctffind4(y, physics=None, cfg=None):
+    """CTFFIND4: auto-estimate CTF from power spectrum, then Wiener correct.
+
+    Estimates the Contrast Transfer Function directly from the micrograph
+    by computing the radial power spectrum, finding the dominant defocus
+    from the first zero-crossing, and applying a phase-corrected Wiener
+    filter for CTF correction.
+    Reference: Rohou & Grigorieff 2015, J. Struct. Biol.
+    """
+    cfg = cfg or {}
+    eps = cfg.get("eps", 1e-2)
+    # Default electron microscopy parameters
+    voltage_kv = cfg.get("voltage_kv", 300.0)
+    cs_mm = cfg.get("cs_mm", 2.7)
+    pixel_size_A = cfg.get("pixel_size_A", 1.0)
+
+    yf = y.astype(np.float64)
+    ny, nx = yf.shape[:2]
+
+    # ── Step 1: Compute 2D power spectrum ─────────────────────────────────
+    Y = np.fft.fft2(yf)
+    Y_shifted = np.fft.fftshift(Y)
+    ps2d = np.abs(Y_shifted) ** 2
+
+    # ── Step 2: Radial average of the power spectrum ──────────────────────
+    cy, cx = ny // 2, nx // 2
+    yy, xx = np.ogrid[:ny, :nx]
+    r = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2).astype(int)
+    max_r = min(cy, cx)
+    radial_profile = np.zeros(max_r)
+    for ri in range(max_r):
+        mask = r == ri
+        if np.any(mask):
+            radial_profile[ri] = ps2d[mask].mean()
+
+    # ── Step 3: Estimate dominant defocus from first zero-crossing ────────
+    # Convert parameters to consistent units (Angstroms)
+    wavelength_A = 12.264 / np.sqrt(voltage_kv * 1e3 + 0.9785 * (voltage_kv * 1e3) ** 2 / 1e6)
+    cs_A = cs_mm * 1e7  # mm -> Angstroms
+
+    # Spatial frequency axis (1/Angstrom) for each radial bin
+    freq = np.arange(max_r) / (max_r * pixel_size_A * 2.0)
+
+    # Smooth the radial profile and find the first minimum (zero-crossing)
+    if max_r > 5:
+        kernel_size = max(3, max_r // 20)
+        kernel = np.ones(kernel_size) / kernel_size
+        smooth_profile = np.convolve(radial_profile, kernel, mode='same')
+    else:
+        smooth_profile = radial_profile
+
+    # Find first local minimum after DC (skip first few bins)
+    skip = max(3, max_r // 20)
+    first_zero_idx = skip
+    for i in range(skip, max_r - 1):
+        if smooth_profile[i] < smooth_profile[i - 1] and smooth_profile[i] < smooth_profile[i + 1]:
+            first_zero_idx = i
+            break
+
+    # Estimate defocus from the first zero: CTF zero at pi*defocus*lambda*f^2 = pi
+    # => defocus = 1 / (lambda * f_zero^2)
+    f_zero = freq[first_zero_idx] if first_zero_idx < max_r else freq[max_r // 4]
+    f_zero = max(f_zero, 1e-10)  # avoid division by zero
+    defocus_A = 1.0 / (wavelength_A * f_zero ** 2 + 1e-30)
+
+    # Clamp defocus to physically reasonable range (1000 A to 100000 A)
+    defocus_A = np.clip(defocus_A, 1000.0, 100000.0)
+
+    # ── Step 4: Build estimated CTF and apply Wiener correction ───────────
+    # 2D spatial frequency grid
+    fy = np.fft.fftfreq(ny, d=pixel_size_A)
+    fx = np.fft.fftfreq(nx, d=pixel_size_A)
+    Fx, Fy = np.meshgrid(fx, fy)
+    F2 = Fx ** 2 + Fy ** 2
+
+    # CTF model: -sin(pi * (defocus * lambda * f^2 - 0.5 * Cs * lambda^3 * f^4))
+    chi = np.pi * (defocus_A * wavelength_A * F2
+                   - 0.5 * cs_A * wavelength_A ** 3 * F2 ** 2)
+    ctf_est = -np.sin(chi)
+
+    # Wiener-type CTF correction: x = IFFT(FFT(y) * conj(CTF) / (|CTF|^2 + eps))
+    CTF_conj = ctf_est  # CTF is real-valued, conj = identity
+    denom = ctf_est ** 2 + eps
+    X = Y * CTF_conj / denom
+    x = np.real(np.fft.ifft2(X)).astype(np.float32)
+
+    return _final_norm(x)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
