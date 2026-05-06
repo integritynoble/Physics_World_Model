@@ -1,0 +1,2 @@
+packages/pwm_core/weights/mst/*.pth filter=lfs diff=lfs merge=lfs -text
+packages/pwm_core/weights/efficientsci/*.pth filter=lfs diff=lfs merge=lfs -text

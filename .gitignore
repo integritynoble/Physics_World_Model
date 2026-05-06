@@ -59,9 +59,20 @@ papers/pwm_flagship/contribution_packages/
 # Pitch deck
 pitch_deck/
 
-# Heavy local data (served from GCS)
+# Heavy local data (served from GCS, except reference-solver weights below).
+# Use `weights/*` (single-level) instead of `weights/` (recursive) so
+# the `!` exceptions below can re-include the specific reference-solver
+# weight files. A recursive directory ignore can't be overridden.
 packages/pwm_core/pwm_core/weights/
-packages/pwm_core/weights/
+packages/pwm_core/weights/*
+# Reference-solver weights are committed via Git LFS so a fresh clone
+# can run cassi_mst.py + cacti_efficientsci.py without a separate
+# download step. Keep these `!` exceptions in sync with the LFS
+# tracking patterns in .gitattributes.
+!packages/pwm_core/weights/mst/
+!packages/pwm_core/weights/mst/*.pth
+!packages/pwm_core/weights/efficientsci/
+!packages/pwm_core/weights/efficientsci/*.pth
 checkpoint/
 datasets/benchmark/**/public/
 datasets/benchmark/**/dev/
