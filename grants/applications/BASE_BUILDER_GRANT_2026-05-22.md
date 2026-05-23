@@ -108,7 +108,7 @@ A typical $50K audit budget targets protocols with $10M+ TVL. PWM's worst-case b
 
 **Chengshuai (Abraham) Yang** — Founder, sole engineer
 - Research Associate, UT Southwestern Medical Center (computational imaging)
-- ORCID: 0000-0003-2840-5344
+- ORCID: [ORCID REDACTED]
 - 11 years computational imaging research; multiple peer-reviewed publications
 - Built PWM solo over 2024-2026; this is the first deployment
 - Independent of UTSW for PWM (no institutional endorsement, no IP shared, no funds flow)
@@ -271,7 +271,7 @@ This grant funds **one audit**. PWM's long-term operating budget comes from a po
 | Phased architecture deployment | https://github.com/integritynoble/Physics_World_Model/blob/master/grants/coordination/PWM_PHASED_ARCHITECTURE_DEPLOYMENT_2026-05-22.md |
 | Master plan (Tracks 1-8) | https://github.com/integritynoble/Physics_World_Model/blob/master/grants/plan/PLAN.md |
 | Funding strategy | https://github.com/integritynoble/Physics_World_Model/blob/master/grants/funds/PWM_PRE_DEPLOY_AUDIT_FUNDING_OPTIONS_2026-05-17.md |
-| ORCID | https://orcid.org/0000-0003-2840-5344 |
+| ORCID | [ORCID REDACTED] |
 
 ### Deployed contract addresses (Base mainnet, chainId 8453)
 
@@ -292,7 +292,7 @@ This grant funds **one audit**. PWM's long-term operating budget comes from a po
 ## 13. Contact
 
 **Chengshuai (Abraham) Yang**
-- Email: integrityyang@gmail.com / platformaiyang@gmail.com
+- Email: [EMAIL REDACTED] / [EMAIL REDACTED]
 - GitHub: integritynoble
 - Affiliation (research): Research Associate, UT Southwestern Medical Center (computational imaging) — independent of UTSW for PWM
 - Affiliation (legal entity for grant receipt): NextGen PlatformAI C Corp (Founder); receiving entity may shift to PWM Foundation post-NumFOCUS
@@ -357,7 +357,7 @@ T+9-10 weeks: governance cap-raise via 3 executeCall proposals (48h timelock eac
 T+~10 weeks: full-scale launch; PWM-CI-1 CASSI benchmark opens
 
 ## Team
-Single founder at deploy: Chengshuai (Abraham) Yang. Research Associate, UT Southwestern Medical Center (computational imaging). 11 years research. ORCID 0000-0003-2840-5344. Built PWM solo over 2024-2026.
+Single founder at deploy: Chengshuai (Abraham) Yang. Research Associate, UT Southwestern Medical Center (computational imaging). 11 years research. ORCID [ORCID REDACTED]. Built PWM solo over 2024-2026.
 
 Path A bootstrap: all 5 founder HW wallets currently Director-controlled. Co-founder recruitment Track 4a active; rotations Months 1-6 post-mainnet via documented governance with 48h timelock.
 
@@ -379,4 +379,4 @@ Deployer (retired post-handoff): 0xA5349f9E42CeC9612E10648609F6E29d0BA0f325
 Full deploy log: github.com/integritynoble/Physics_World_Model/blob/master/grants/deploy/PWM_MAINNET_DEPLOY_LOG_2026-05-22.md
 
 ## Contact
-Chengshuai (Abraham) Yang — integrityyang@gmail.com / platformaiyang@gmail.com — GitHub: integritynoble
+Chengshuai (Abraham) Yang — [EMAIL REDACTED] / [EMAIL REDACTED] — GitHub: integritynoble
