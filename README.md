@@ -143,9 +143,11 @@ PWM's algorithm toolkit is grounded in two theoretical results:
 
 ### Finite Primitive Basis (FPB) Theorem
 
-Every imaging forward model admits an ε-approximate representation as a typed DAG over exactly **10 canonical primitives**: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, Scatter.
+Every imaging forward model admits an ε-approximate representation as a typed DAG over exactly **11 imaging primitives**: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, Scatter, Attenuate.
 
-Basis growth saturates at K=10 for N=31 modalities — no new primitive has been needed across 172 modalities.
+These are the *physics dialect* — they describe how photons, X-rays, acoustic waves, and electrons interact with matter to produce measurements. Basis growth saturates at K=11 across 172 modalities.
+
+> **Two primitive namespaces.** The 11 imaging primitives are the physics-level language for forward models. A separate set of **12 general computational primitives** (Differentiate, Integrate, Solve, Evaluate, Evolve, Transform, Project, Sample, Couple, Constrain, Discretize, Optimize) forms the computational substrate used to discretize, simulate, invert, and validate those forward models — see *"A Judge Agent Closes the Reliability Gap in AI-Generated Scientific Simulation"* (Yang, 2026), Table 3.
 
 ### Triad Decomposition
 
