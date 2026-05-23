@@ -3,68 +3,113 @@
 
 {% block navbar %}{% endblock %}
 
+{% block head %}
+{% if google_client_id %}
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
-<div class="min-h-screen flex items-center justify-center">
-    <div class="max-w-md w-full space-y-8">
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="max-w-md w-full space-y-8 px-4">
         <div class="text-center">
-            <h1 class="text-3xl font-bold text-indigo-600">Physics World Model</h1>
-            <p class="mt-2 text-gray-600">Physics World Model for Imaging System Autonomy</p>
+            <a href="/benchmark">
+                <h1 class="text-3xl font-bold text-indigo-600">Physics World Model</h1>
+            </a>
+            <p class="mt-2 text-gray-500 text-sm">Benchmark for Imaging System Autonomy</p>
         </div>
 
-        {% if request.query_params.get('error') %}
-        <div class="bg-red-50 border border-red-200 rounded p-4 text-red-700 text-sm">
-            Authentication failed. Please try again.
-        </div>
-        {% endif %}
+        <div class="bg-white shadow-md rounded-xl p-8 space-y-6">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900">Sign in</h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Browsing is open to everyone. Sign in to submit reconstruction runs.
+                </p>
+            </div>
 
-        <div class="bg-white shadow rounded-lg p-8 space-y-6">
-            <h2 class="text-xl font-semibold text-gray-900">Sign in to run experiments</h2>
-            <p class="text-sm text-gray-500">
-                Browsing datasets, modalities, and results is open to everyone.
-                Sign in is required to submit reconstruction runs.
-            </p>
+            {% if error %}
+            <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
+                {{ error }}
+            </div>
+            {% endif %}
 
             {% if sso_enabled %}
             <!-- CompareGPT SSO Login (primary) -->
             <a href="{{ sso_url }}"
-               class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+               class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm
+                      text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                 Sign in with CompareGPT
             </a>
-            {% else %}
-            <!-- Fallback: local email + password (when SSO not configured) -->
-            <form hx-post="/api/v1/auth/login"
-                  hx-target="#login-error"
-                  hx-swap="innerHTML"
-                  class="space-y-4">
+            {% endif %}
+
+            {% if google_client_id %}
+            <!-- Google Sign-In -->
+            <div id="g_id_onload"
+                 data-client_id="{{ google_client_id }}"
+                 data-login_uri="/api/v1/auth/google"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left"
+                 data-width="100%">
+            </div>
+            {% if not sso_enabled %}
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-400">or continue with email</span>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if not sso_enabled %}
+            <!-- Local email + password login -->
+            <form method="POST" action="/api/v1/auth/login-form" class="space-y-4">
+                {% if request.query_params.get('next') %}
+                <input type="hidden" name="next" value="{{ request.query_params.get('next') }}">
+                {% endif %}
 
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="email" id="email" required
-                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" id="email" required autocomplete="email"
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                            placeholder="you@example.com">
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" name="password" id="password" required
-                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" name="password" id="password" required autocomplete="current-password"
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                            placeholder="••••••••">
                 </div>
 
-                <div id="login-error"></div>
-
                 <button type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg
+                               shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900
+                               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500
+                               transition-colors">
                     Sign in with email
                 </button>
             </form>
             {% endif %}
         </div>
 
-        <p class="text-center text-sm text-gray-400">
-            <a href="/forgot-password" class="hover:text-indigo-500">Forgot password?</a>
-            &nbsp;·&nbsp;
-            <a href="/" class="hover:text-indigo-500">Back to SpecLab</a>
+        <p class="text-center text-sm text-gray-500 space-x-4">
+            <a href="/forgot-password" class="hover:text-indigo-600">Forgot password?</a>
+            <span>·</span>
+            <a href="/signup" class="hover:text-indigo-600">Create account</a>
+            <span>·</span>
+            <a href="/benchmark" class="hover:text-indigo-600">Browse without signing in</a>
         </p>
     </div>
 </div>

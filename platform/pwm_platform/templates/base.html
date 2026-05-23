@@ -26,7 +26,7 @@
                 <div class="flex items-center space-x-4">
                     {% if user %}
                         <a href="/subscription" class="text-sm text-gray-700 hover:text-indigo-600">Subscription</a>
-                        <span class="text-sm text-gray-600">{{ user.username }}</span>
+                        <a href="/settings" class="text-sm text-gray-700 hover:text-indigo-600">{{ user.username }}</a>
                         <a href="/contributors" class="text-sm text-gray-700 hover:text-indigo-600">Contributors</a>
                         <a href="/instruments" class="text-sm text-gray-700 hover:text-indigo-600">Instruments</a>
                         <a href="/reproduce" class="text-sm text-gray-700 hover:text-indigo-600">Reproduce</a>

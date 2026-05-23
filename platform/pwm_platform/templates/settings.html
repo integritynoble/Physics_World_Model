@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Account Settings — Physics World Model{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10 space-y-8">
+
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Account Settings</h1>
+        <p class="mt-1 text-sm text-gray-500">Manage your account and API access.</p>
+    </div>
+
+    <!-- Profile section -->
+    <div class="bg-white shadow-sm rounded-xl p-6 space-y-4">
+        <h2 class="text-lg font-semibold text-gray-900">Profile</h2>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+                <span class="font-medium text-gray-500">Username</span>
+                <p class="mt-1 text-gray-900">{{ user.username }}</p>
+            </div>
+            <div>
+                <span class="font-medium text-gray-500">Email</span>
+                <p class="mt-1 text-gray-900">{{ user.email or "—" }}</p>
+            </div>
+            <div>
+                <span class="font-medium text-gray-500">Role</span>
+                <p class="mt-1 text-gray-900 capitalize">{{ user.role }}</p>
+            </div>
+            <div>
+                <span class="font-medium text-gray-500">Member since</span>
+                <p class="mt-1 text-gray-900">{{ user.created_at.strftime("%B %Y") if user.created_at else "—" }}</p>
+            </div>
+        </div>
+
+        {% if user.email and user.password_hash %}
+        <div class="pt-2 border-t border-gray-100">
+            <a href="/forgot-password"
+               class="text-sm text-indigo-600 hover:text-indigo-500">
+                Change password →
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- API Key section -->
+    <div class="bg-white shadow-sm rounded-xl p-6 space-y-4">
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900">API Key</h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Use your API key to authenticate programmatic requests.
+                Pass it as <code class="bg-gray-100 px-1 rounded text-xs">Authorization: Bearer pwm_...</code>
+            </p>
+        </div>
+
+        <!-- Show current key state -->
+        <div id="api-key-section">
+            {% if has_api_key %}
+            <div class="flex items-center gap-3">
+                <code class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-mono text-gray-700">
+                    {{ masked_key }}
+                </code>
+                <button onclick="rotateKey()"
+                        class="px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200
+                               rounded-lg hover:bg-amber-100 transition-colors">
+                    Rotate
+                </button>
+                <button onclick="revokeKey()"
+                        class="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200
+                               rounded-lg hover:bg-red-100 transition-colors">
+                    Revoke
+                </button>
+            </div>
+            {% else %}
+            <div class="text-sm text-gray-500 italic mb-3">No API key yet.</div>
+            <button onclick="generateKey()"
+                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg
+                           hover:bg-indigo-700 transition-colors">
+                Generate API key
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- New key reveal (shown after generate/rotate) -->
+        <div id="new-key-reveal" class="hidden space-y-3">
+            <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                <p class="text-xs text-green-700 font-medium mb-1">
+                    Save this key — it will only be shown once.
+                </p>
+                <code id="new-key-value" class="block text-sm font-mono text-green-900 break-all"></code>
+            </div>
+            <button onclick="dismissNewKey()"
+                    class="px-3 py-1.5 text-xs font-medium text-gray-600 border border-gray-300
+                           rounded-lg hover:bg-gray-50 transition-colors">
+                I've saved it
+            </button>
+        </div>
+
+        <div id="api-key-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
+
+        <!-- Usage example -->
+        <div class="border-t border-gray-100 pt-4">
+            <p class="text-xs font-medium text-gray-500 mb-2">Example usage</p>
+            <pre class="bg-gray-50 rounded-lg p-3 text-xs font-mono text-gray-700 overflow-x-auto">curl https://pwm.platformai.org/api/v1/auth/me \
+  -H "Authorization: Bearer YOUR_API_KEY"</pre>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function generateKey() {
+    await callApiKey('POST', '/api/v1/auth/api-key/generate');
+}
+
+async function rotateKey() {
+    if (!confirm('This will invalidate your existing API key. Continue?')) return;
+    await callApiKey('POST', '/api/v1/auth/api-key/generate');
+}
+
+async function revokeKey() {
+    if (!confirm('This will permanently revoke your API key. Continue?')) return;
+    const res = await fetch('/api/v1/auth/api-key', { method: 'DELETE' });
+    if (res.ok) {
+        document.getElementById('api-key-section').innerHTML =
+            '<div class="text-sm text-gray-500 italic mb-3">No API key.</div>' +
+            '<button onclick="generateKey()" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Generate API key</button>';
+        document.getElementById('new-key-reveal').classList.add('hidden');
+    } else {
+        showError('Failed to revoke key. Please try again.');
+    }
+}
+
+async function callApiKey(method, url) {
+    hideError();
+    const res = await fetch(url, { method });
+    if (!res.ok) { showError('Request failed. Please try again.'); return; }
+    const data = await res.json();
+    if (data.api_key) {
+        document.getElementById('new-key-value').textContent = data.api_key;
+        document.getElementById('new-key-reveal').classList.remove('hidden');
+        // Update section to show masked key + rotate/revoke buttons
+        const masked = data.api_key.slice(0, 8) + '...' + data.api_key.slice(-4);
+        document.getElementById('api-key-section').innerHTML =
+            `<div class="flex items-center gap-3">
+                <code class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-mono text-gray-700">${masked}</code>
+                <button onclick="rotateKey()" class="px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors">Rotate</button>
+                <button onclick="revokeKey()" class="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">Revoke</button>
+            </div>`;
+    }
+}
+
+function dismissNewKey() {
+    document.getElementById('new-key-reveal').classList.add('hidden');
+}
+
+function showError(msg) {
+    const el = document.getElementById('api-key-error');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+}
+
+function hideError() {
+    document.getElementById('api-key-error').classList.add('hidden');
+}
+</script>
+{% endblock %}

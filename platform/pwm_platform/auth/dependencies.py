@@ -30,37 +30,41 @@ class LoginRedirect(Exception):
         self.next_url = next_url
 
 
+async def _resolve_token(token: str, db: AsyncSession) -> Optional[User]:
+    """Try JWT first, then API key lookup. Returns user or None."""
+    # 1. JWT session token
+    tm = get_token_manager()
+    user_id = tm.verify_access_token(token)
+    if user_id is not None:
+        result = await db.execute(select(User).where(User.id == user_id))
+        return result.scalar_one_or_none()
+
+    # 2. Personal API key (pwm_... prefix)
+    if token.startswith("pwm_"):
+        result = await db.execute(select(User).where(User.api_key == token))
+        return result.scalar_one_or_none()
+
+    return None
+
+
 async def get_current_user(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> User:
     """Extract and verify the authenticated user from the request.
 
+    Accepts JWT cookies/Bearer tokens and personal API keys (pwm_...).
     Raises 401 if no valid token or user not found.
     """
     token = _extract_token(request)
 
-    tm = get_token_manager()
-    user_id = tm.verify_access_token(token)
-    if user_id is None:
+    user = await _resolve_token(token, db)
+    if user is None or not user.is_active:
         raise HTTPException(
             status_code=401,
             detail={
                 "error": "invalid_token",
                 "message": "Access token is invalid or expired",
-                "require_reauth": True,
-            },
-        )
-
-    result = await db.execute(select(User).where(User.id == user_id))
-    user = result.scalar_one_or_none()
-
-    if user is None or not user.is_active:
-        raise HTTPException(
-            status_code=401,
-            detail={
-                "error": "user_not_found",
-                "message": "User not found or deactivated",
                 "require_reauth": True,
             },
         )
@@ -80,14 +84,7 @@ async def get_optional_user(
     if token is None:
         return None
 
-    tm = get_token_manager()
-    user_id = tm.verify_access_token(token)
-    if user_id is None:
-        return None
-
-    result = await db.execute(select(User).where(User.id == user_id))
-    user = result.scalar_one_or_none()
-
+    user = await _resolve_token(token, db)
     if user is None or not user.is_active:
         return None
 
@@ -108,14 +105,7 @@ async def get_page_user(
     if token is None:
         raise LoginRedirect(quote(str(request.url.path), safe="/"))
 
-    tm = get_token_manager()
-    user_id = tm.verify_access_token(token)
-    if user_id is None:
-        raise LoginRedirect(quote(str(request.url.path), safe="/"))
-
-    result = await db.execute(select(User).where(User.id == user_id))
-    user = result.scalar_one_or_none()
-
+    user = await _resolve_token(token, db)
     if user is None or not user.is_active:
         raise LoginRedirect(quote(str(request.url.path), safe="/"))
 

@@ -132,10 +132,11 @@ templates = Jinja2Templates(directory="pwm_platform/templates")
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    """Login page — CompareGPT SSO redirect."""
+    """Login page — SSO redirect, Google OAuth, or local email/password."""
     return templates.TemplateResponse(request, "login.html", {
         "sso_enabled": bool(settings.SSO_REDIRECT_URL),
         "sso_url": settings.SSO_REDIRECT_URL,
+        "google_client_id": settings.GOOGLE_CLIENT_ID,
     })
 
 
@@ -143,6 +144,21 @@ async def login_page(request: Request):
 async def signup_page(request: Request):
     return templates.TemplateResponse(request, "signup.html", {
         "google_client_id": settings.GOOGLE_CLIENT_ID,
+    })
+
+
+@router.get("/settings", response_class=HTMLResponse)
+async def settings_page(
+    request: Request,
+    user: User = Depends(get_current_user),
+):
+    """User account settings — API key management."""
+    key = user.api_key or ""
+    masked_key = (key[:8] + "..." + key[-4:]) if key else None
+    return templates.TemplateResponse(request, "settings.html", {
+        "user": user,
+        "has_api_key": bool(key),
+        "masked_key": masked_key,
     })
 
 

@@ -22,6 +22,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from pwm_platform.auth.dependencies import get_current_user
 from pwm_platform.auth.service import auth_service
+from pwm_platform.auth.token_manager import get_token_manager
 from pwm_platform.config import settings
 from pwm_platform.db.database import get_db
 from pwm_platform.db.models import User
@@ -208,6 +209,108 @@ async def signup_form(
     redirect = RedirectResponse("/benchmark", status_code=303)
     redirect.set_cookie(value=result["access_token"], **_COOKIE_KWARGS)
     return redirect
+
+
+@router.post("/login-form")
+async def login_form(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    next: str = Form(default="/benchmark"),
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle login from HTML form. Sets cookie + redirects on success."""
+    try:
+        result = await auth_service.local_login(email, password, db)
+    except HTTPException:
+        return templates.TemplateResponse(request, "login.html", {
+            "error": "Invalid email or password.",
+            "sso_enabled": bool(settings.SSO_REDIRECT_URL),
+            "sso_url": settings.SSO_REDIRECT_URL,
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+        }, status_code=401)
+
+    redirect_to = next if next and next.startswith("/") else "/benchmark"
+    redirect = RedirectResponse(redirect_to, status_code=303)
+    redirect.set_cookie(value=result["access_token"], **_COOKIE_KWARGS)
+    return redirect
+
+
+@router.post("/google")
+async def google_login(
+    credential: str = Form(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Verify a Google Sign-In credential (ID token) and return a JWT."""
+    if not settings.GOOGLE_CLIENT_ID:
+        raise HTTPException(status_code=501, detail="Google OAuth not configured")
+
+    try:
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as google_requests
+
+        id_info = id_token.verify_oauth2_token(
+            credential,
+            google_requests.Request(),
+            settings.GOOGLE_CLIENT_ID,
+        )
+    except Exception as exc:
+        logger.warning("Google token verification failed: %s", exc)
+        raise HTTPException(status_code=401, detail="Invalid Google credential")
+
+    email = id_info.get("email")
+    name = id_info.get("name") or id_info.get("given_name") or ""
+    google_sub = id_info.get("sub")
+
+    if not email or not google_sub:
+        raise HTTPException(status_code=401, detail="Missing fields in Google token")
+
+    user = await auth_service.upsert_google_user(db, google_sub=google_sub, email=email, name=name)
+
+    tm = get_token_manager()
+    access_token = tm.create_access_token(user.id)
+
+    redirect = RedirectResponse("/benchmark", status_code=303)
+    redirect.set_cookie(value=access_token, **_COOKIE_KWARGS)
+    return redirect
+
+
+# ── API key management ───────────────────────────────────────────────────
+
+
+@router.get("/api-key")
+async def get_api_key(user: User = Depends(get_current_user)):
+    """Return the current user's API key (masked except last 4 chars)."""
+    key = user.api_key or ""
+    if key:
+        masked = key[:8] + "..." + key[-4:]
+    else:
+        masked = None
+    return {"success": True, "has_key": bool(key), "masked_key": masked}
+
+
+@router.post("/api-key/generate")
+async def generate_api_key(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Generate a new API key, revoking any existing one. Returns the full key once."""
+    new_key = await auth_service.generate_api_key(user.id, db)
+    return {
+        "success": True,
+        "api_key": new_key,
+        "note": "Save this key now — it will not be shown again in full.",
+    }
+
+
+@router.delete("/api-key")
+async def revoke_api_key(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Revoke the current API key."""
+    await auth_service.revoke_api_key(user.id, db)
+    return {"success": True, "message": "API key revoked"}
 
 
 @router.post("/forgot-password-form")

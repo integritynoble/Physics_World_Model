@@ -282,6 +282,61 @@ class AuthService:
         return user
 
 
+    # ── Google OAuth ─────────────────────────────────────────────────────────
+
+    async def upsert_google_user(
+        self,
+        db: AsyncSession,
+        *,
+        google_sub: str,
+        email: str,
+        name: str,
+    ) -> "User":
+        """Create or update a user authenticated via Google OAuth."""
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+
+        if user:
+            user.username = name or user.username
+        else:
+            user = User(
+                email=email,
+                username=name or email.split("@")[0],
+                role="user",
+                api_key=None,
+            )
+            db.add(user)
+
+        await db.commit()
+        await db.refresh(user)
+        logger.info("Google OAuth upsert: %s (id=%s)", email, user.id)
+        return user
+
+    # ── API key management ────────────────────────────────────────────────────
+
+    async def generate_api_key(self, user_id: int, db: AsyncSession) -> str:
+        """Generate a new personal API key for the user, replacing any existing one."""
+        new_key = "pwm_" + secrets.token_urlsafe(32)
+
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user.api_key = new_key
+        await db.commit()
+        logger.info("Generated new API key for user %s", user_id)
+        return new_key
+
+    async def revoke_api_key(self, user_id: int, db: AsyncSession) -> None:
+        """Revoke the user's API key."""
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if user:
+            user.api_key = None
+            await db.commit()
+            logger.info("Revoked API key for user %s", user_id)
+
     # ── Password reset ────────────────────────────────────────────────────
 
     async def request_password_reset(self, email: str, db: AsyncSession) -> None:
