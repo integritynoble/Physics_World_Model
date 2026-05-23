@@ -1,0 +1,446 @@
+# Ethereum Foundation Ecosystem Support Program (ESP) Application
+## Physics World Model (PWM): A Verified AI4Science Platform on Base L2
+
+**Applicant:** Chengshuai (Abraham) Yang
+**Project name:** PWM — Physics World Model
+**Target grant amount:** **$50,000 USD** (or ETH equivalent)
+**Application date:** 2026-05-22
+**Submission portal:** https://esp.ethereum.foundation/applicants
+**Project website:** https://physicsworldmodel.org
+**GitHub:** https://github.com/integritynoble/pwm
+**Mainnet:** **Already deployed 2026-05-22T18:52:09Z on Base mainnet (chainId 8453)** — see verification below
+
+---
+
+## Executive Summary
+
+Machine learning benchmark integrity depends on test-set secrecy, but **leakage is endemic**. ImageNet was leaked. SQuAD was leaked. Most "SOTA" claims include unconscious test-set contamination through hyperparameter tuning. Existing platforms (Kaggle, MLPerf, Hugging Face, Papers with Code) rely on **trust in the host organization** — once a host has exposed a test set, even unintentionally, no recovery is possible.
+
+**PWM solves this cryptographically.** Test set hashes are committed to a smart contract on Ethereum L2 (Base mainnet) at benchmark creation. Submissions are evaluated in a deterministic Docker environment; verified PSNR/SSIM scores are written as cryptographic L4 certificates citable in subsequent literature. **The product is the verified benchmark. Ethereum L2 is the cryptographic substrate that makes the benchmark trustworthy.**
+
+PWM is now LIVE on Base mainnet as of **2026-05-22T18:52:09Z** with the founding two anchors — CASSI and CACTI (compressive spectral / temporal imaging) — registered. 9 smart contracts deployed and Basescan-verified. 25/25 post-deploy verifier GREEN ×2. Independent on-chain verification: **10/10 PASS** (this application's evidence section).
+
+The protocol operates under **soft-launch caps** (`MINTING_PAUSED=true`, `TREASURY_TRANSFERS_PAUSED=true`, `submissionPermissionless=false`, $100 TVL cap). Total at-risk capital is ≤$100 USD-equivalent during the first 30 days while we seek formal audit funding.
+
+**We are requesting $50,000 from EF ESP to:**
+
+1. **Engage a credentialed audit firm** (Spearbit / Cantina / Halborn / OpenZeppelin / Cyfrin / Zellic) for the formal third-party audit ($22K)
+2. **Implement three critical pre-cap-raise features** identified by our economic-attack agent (A5): on-chain rank verification, creator-address cross-check, 90-day rolling activity window ($15-20K)
+3. **Seed a public bug bounty via Immunefi** with USDC tiers ($4K)
+4. **PWM-CI-1 launch** (CASSI reconstruction benchmark; opens 2026-06-21 / D9+30 after Phase 1b activation governance proposals)
+
+After the audit clears and the three features ship, governance lifts the soft-launch caps via 3-of-5 multisig + 48-hour timelock. The protocol operates at production scale.
+
+---
+
+## 1. The Problem PWM Solves
+
+### 1.1 The reproducibility crisis is structural, not individual
+
+In a 2016 *Nature* survey of 1,576 scientists, **52% described a "significant" reproducibility crisis** in their field. In computational imaging (the founder's domain), independent reproduction of published methods routinely **fails 30-70% of the time** when subtle implementation choices (preprocessing, hyperparameters, dataset versions) drift from published descriptions. The same crisis affects ML benchmarks (Recht et al., 2019), epidemiology models (Ioannidis, 2005), and increasingly LLM-generated scientific code.
+
+### 1.2 Why on-chain test-set commitment is different
+
+Existing reproducibility efforts (Code Ocean, Datacite DOIs, ReScience, Papers with Code, Kaggle, MLPerf) rely on **institutional trust** — a third party certifies that a result has been reproduced or that a benchmark's test set has been properly held out. They are valuable but have three limitations:
+
+1. **Centralized custodian.** If the certifying institution disappears or its records are corrupted, the reproducibility claim is lost. Test sets can be leaked, accidentally or intentionally.
+2. **No financial incentive for reproducers.** Reproducers are uncredited or thinly credited; they bear the cost without participating in upside.
+3. **No formal challenge mechanism.** Disputes about whether a reproduction is valid resolve through editorial gatekeeping, not adversarial review with material stakes.
+
+**On-chain test-set commitment on Ethereum L2 addresses all three:**
+
+1. **Cryptographic immutability.** Every Principle / Specification / Benchmark / Certificate is hashed and registered immutably on `PWMRegistry`. The record cannot be tampered with, even by the original author or PWM Foundation.
+2. **Programmatic reward distribution.** When a Certificate is verified, the protocol automatically distributes PWM to the algorithm contributor (55%), benchmark creator (15%), spec author (10%), principle author (5%), and the per-principle treasury (15%). Reproducers earn — by design.
+3. **Stake-backed challenge.** Anyone can challenge a Certificate within a 7-day window by staking PWM. Successful challenge slashes the original stake; failed challenge slashes the challenger. Disputes resolve through skin-in-the-game arbitration.
+
+### 1.3 Why Ethereum (and L2 — specifically Base)
+
+We chose Base, an Ethereum L2, for three reasons:
+
+1. **Per-transaction cost.** PWM artifacts are written frequently. At ~$0.05 per Base transaction, per-artifact economics work for individual researchers. At Ethereum mainnet's ~$5+ per transaction, small-bounty reproducibility work would be economically infeasible.
+
+2. **Ethereum's verifiable-computation ecosystem.** PWM's long-term roadmap describes a **Judge Agent** that uses Ethereum-compatible verifiable-computation primitives (ZK-coprocessors, optimistic verification) to provably check reproduction claims on-chain. Building on Ethereum L2 means access to that primitive ecosystem (zkSync, RISC Zero, Brevis, Espresso) as it matures. We chose Ethereum (not Solana, not Cosmos) precisely because the verifiable-computation tooling here is the most mature.
+
+3. **Public-goods alignment.** Ethereum Foundation has explicitly funded protocols building **open infrastructure** rather than monetizable products: Sismo (anonymous credentials), Bedrock contributor work, ScopeLift's UniStaker. PWM is structurally identical — public-goods scientific infrastructure run as a 501(c)(3)-trajectory nonprofit (NumFOCUS sponsorship Round 4, October 15 2026 deadline).
+
+---
+
+## 2. The Protocol
+
+### 2.1 Architecture (9 deployed contracts on Base mainnet)
+
+| Contract | LoC | Address (chainId 8453) | Purpose |
+|---|---|---|---|
+| `PWMToken` | 49 | `0x7326781182b9cDc1eF9Fa147fB689862f893dA14` | ERC-20 capped at 21M; OpenZeppelin ERC20Capped + 4-year founder vesting |
+| `PWMGovernance` | 449 | `0x83F210b9A8E5F0FAfE133c700F888b3A303f9b15` | 3-of-5 founder multisig + 48-hour timelock + arbitrary-call execution primitive + founder rotation |
+| `PWMRegistry` | 75 | `0x9F91784c2fa884A79473304050C581424E006fbd` | Append-only artifact log; ownable; emits ArtifactRegistered events |
+| `PWMStakingERC20` | 184 | `0x88D7860d800Cc68d905751696C3c0B4875Af950b` | Three-tier staking (L1=10 PWM, L2=2 PWM, L3=1 PWM); graduation / challenge / fraud |
+| `PWMRewardERC20` | 204 | `0x06B341BBFB3435561986f7C1821551E56D909b3D` | Benchmark pool; ranked-draw distribution (40/5/2/1/1/1/1/1/1/1 ranks 1-10) |
+| `PWMTreasuryERC20` | 96 | `0xe0FE4A050a926da763907dFA872fA51ba359b061` | Per-principle T_k treasury; 50% adversarial bounty cap; pause flag |
+| `PWMMintingERC20` | 287 | `0x629190D88cdB0C4a2cFEe00Dd7EdD490c465B235` | Zeno minting formula; activity-weighted; rolling-window upgrade (this grant) |
+| `PWMCertificate` | 261 | `0x014492dEfc66D5b58b86027cEB636d4c84289eAe` | L4 certificates; 7-day / 14-day challenge window; permissionless flag |
+| `PWMVesting` | 91 | `0x9c57BA6f844dAAecB050D83f31A8279E04a441a9` | 4-year linear founder vesting with 1-year cliff; non-revocable; **immutable beneficiary** |
+
+All 9 Basescan-verified. Total ~1,400 LoC. No upgrade proxies — code is immutable.
+
+### 2.2 Token economics
+
+| Allocation | Amount | Notes |
+|---|---|---|
+| Minting pool (`PWMMintingERC20`) | 17,220,000 PWM (82%) | Distributed via Zeno formula; never reaches zero asymptotically |
+| Reserve (Gnosis Safe, 3-of-5) | 2,100,000 PWM (10%) | Spending ≥ 50K PWM requires DAO vote (≥⅔ weight, 14-day window); smaller grants approved by 3-of-5 |
+| Liquidity (Uniswap v3 PWM/USDC LP) | 1,050,000 PWM (5%) | Seeded post-audit, Phase 2 (Months 6-12); initial price discovered via LP |
+| Founding team (`PWMVesting`) | 630,000 PWM (3%) | 4-year linear, 1-year cliff. **Immutable beneficiary. No team tokens accessible at deploy.** |
+| **Total** | **21,000,000 PWM (100%)** | Cap enforced in `PWMToken` constructor |
+
+All allocations verified on-chain via `balanceOf()` calls 2026-05-22.
+
+### 2.3 The Zeno minting formula
+
+The Minting pool emits per-Solution via:
+
+```
+A_{k,j,b} = (M_pool - M_emitted) × w_k / Σ(w_j) × w_{k,j,b} / Σ(w_{k,j',b'})
+```
+
+Where:
+- `w_k = δ_k × max(activity_k, 1)` — per-principle weight
+- `w_{k,j,b} = ρ_{j,b} × max(activity_{k,j,b}, ρ_{j,b})` — per-benchmark weight
+- `δ_k`, `ρ_{j,b}` — governance-tunable difficulty / rigor parameters
+- `activity_k`, `activity_{k,j,b}` — number of completed events under principle k / benchmark b
+
+**Key property: M_emitted approaches M_pool asymptotically but never reaches it.** This is the protocol's Zeno property: emissions shrink as the pool depletes, ensuring perpetual incentive (smaller as the pool runs down, but never zero). This is **structurally different from Bitcoin's halving** — emissions are continuous and demand-responsive, not discrete and supply-scheduled.
+
+**Limitation we explicitly seek to fix with this grant:** the current `activity_k` is **cumulative**. Per the v15 paper spec, it should be a **90-day rolling window** to prevent first-mover perpetual advantage. The grant funds Finding F-7 (see §4) which implements the rolling window correctly.
+
+### 2.4 Governance flow
+
+All admin actions on the 5 ERC20-sibling contracts route through `PWMGovernance.executeExec(target, data)`:
+
+1. Founder #1 proposes — auto-approves (1/3)
+2. Founders #2, #3 approve (2/3 → 3/3)
+3. **48-hour timelock starts when quorum is reached** (not when proposal was made — A1-v3 fix)
+4. After timelock, any founder calls `executeExec(id)`; the contract performs the arbitrary call
+
+Pause flags are governance-flippable. Stake / pool caps are governance-tunable. There is no upgrade proxy — the contract code is immutable.
+
+A second proposal type (`activateDAO()`) is a **one-way switch**, no earlier than D9+12 months (2027-05-22), that transitions to contribution-weighted voting.
+
+### 2.5 Soft-launch caps (verified on chain as of 2026-05-22)
+
+| Cap | Soft-launch value (live) | Production target (post-audit) |
+|---|---|---|
+| `staking.maxTotalStakeWei` | 100 PWM | 10,000+ PWM |
+| `reward.maxBenchmarkPoolWei` | 100 PWM | 10,000+ PWM |
+| `minting.mintingPaused` | **`true`** (verified) | `false` |
+| `treasury.transfersPaused` | **`true`** (verified) | `false` |
+| `certificate.submissionPermissionless` | **`false`** (verified) | `true` (post-F-1 oracle ship) |
+| `PWMVesting` cliff | 1-year, non-revocable | unchanged |
+
+**With these caps, total at-risk capital for the first 30 days is ≤$100 USD-equivalent.** Bounded by the cap mechanics, not by trust in the audit timing.
+
+### 2.6 Genesis content (curated approach — Director's Option A decision 2026-05-22)
+
+PWM ships **6 cryptographically-verified founding artifacts** on Base mainnet, NOT 1,591:
+
+| Layer | Count | Artifacts |
+|---|---|---|
+| L1 (Principle) | 2 | CASSI (L1-025), CACTI (L1-027) |
+| L2 (Spec) | 2 | CASSI Spec (L2-025-001), CACTI Spec (L2-027-001) |
+| L3 (Benchmark) | 2 | CASSI Benchmark (L3-025-001-001), CACTI Benchmark (L3-027-001-001) |
+| **Total** | **6** | All `exists()=true` on PWMRegistry, verified 2026-05-22 |
+
+The other 1,591 stub-tier metadata artifacts remain on Base Sepolia testnet until polished to v3 quality via the Bounty 7 program. **We chose honest scope over inflated launch numbers.** Future additions to mainnet require governance proposal (3-of-5 multisig + 48h timelock per batch).
+
+---
+
+## 3. Pre-Deploy Security Posture
+
+We invested 7 hours and ~$200 in Claude API costs before mainnet deploy. **The multi-agent review produced 16 review documents + 4 sub-GPU verification documents + 6 implementation commits.** Full audit trail: https://github.com/integritynoble/pwm/tree/main/pwm-team/deploy/findings/
+
+### 3.1 What we found and fixed
+
+| ID | Severity | Issue | Status |
+|---|---|---|---|
+| C-1 | CRITICAL | `PWMCertificate.submit()` permissionless self-deal exploit | ✅ Fixed in commit `203df847` |
+| C-2 | CRITICAL | `PWMGovernance` had no execute primitive — all admin functions would have been permanently unreachable post-handoff | ✅ Fixed in commit `fe3ba529` (executeCall primitive added) |
+| H-1 | HIGH | `PWMMintingERC20.mintingPaused` flag missing | ✅ Fixed in commit `203df847` |
+| H-2 | HIGH | `PWMTreasuryERC20.transfersPaused` flag missing | ✅ Fixed in commit `203df847` |
+| H-3 | HIGH | Governance timelock measured from `proposedAt`, not from quorum-reached time | ✅ Fixed in commit `41efadb8` |
+| H-4 | HIGH | `deploy/erc20.js` didn't transfer `PWMRegistry` ownership | ✅ Fixed via deferred-handoff design |
+| 6 MEDIUM | MED | Various (rollover sequencing, p-parameter griefing, etc.) | ✅ All addressed pre-deploy |
+
+### 3.2 Automated tooling results
+
+| Tool | Result |
+|---|---|
+| Slither (static analysis, 12 detector modules) | 58 raw findings → **0 deploy-blocking after triage** |
+| **Mythril (symbolic execution, 12 detectors, 318 min runtime)** | **0 issues across all 9 contracts** |
+| Hardhat invariant tests (11 new invariants from A7) | All passing |
+| Echidna property-test specification | Authored; requires `echidna-test` CLI binary to run |
+| Hardhat unit test suite | **199 / 199 passing** |
+| Sepolia governance rehearsal | Full propose → 3-of-5 approve → 48h timelock → execute cycle completed on Base Sepolia |
+
+### 3.3 Post-deploy verification (2026-05-22 — independent re-verification)
+
+| Check | Result |
+|---|---|
+| All 9 contracts have bytecode on Base | ✅ |
+| Chain ID 8453 (Base mainnet) | ✅ |
+| PWMToken.totalSupply() = 21M PWM | ✅ |
+| PWMMintingERC20 balance = 17.22M PWM (mining pool) | ✅ |
+| PWMVesting balance = 630K PWM (founding team, vested) | ✅ |
+| Ledger #1 balance = 1.05M PWM (liquidity) | ✅ |
+| PWMRegistry owned by PWMGovernance (handoff confirmed) | ✅ |
+| All 5 founder addresses match expected | ✅ |
+| `PWMMintingERC20.mintingPaused() = true` (soft-launch active) | ✅ |
+| All 6 CASSI+CACTI genesis artifacts on PWMRegistry | ✅ |
+| **Total: 10/10 PASS** | ✅ |
+
+### 3.4 The economic-attack agent's findings (A5) — what this grant funds
+
+The A5 agent surfaced 2 HIGH + 5 MED + 3 LOW economic-attack scenarios. **Three findings are blocking pre-cap-raise:**
+
+- **F-1 (HIGH)**: The `rank` field in `PWMCertificate.submit()` is caller-supplied. Once `submissionPermissionless = true`, any address can submit a rank-1 cert and extract 40% of any benchmark pool. The soft-launch posture (governance-gated approvedSubmitter) bounds this for 30 days — but to lift the cap, we need on-chain rank verification (oracle attestation OR challenge-period rank dispute). **Engineering effort: 1-3 months**.
+- **F-3 (HIGH-equivalent at scale)**: `submit()` accepts caller-supplied `l1Creator/l2Creator/l3Creator` addresses without verifying they match `PWMRegistry.getArtifact(benchmarkHash).creator`. Mismatched creator fields drain royalties to wrong addresses. **Engineering effort: ~20 LoC + tests + audit**.
+- **F-7 (HIGH-equivalent at scale)**: The `activity_k` cumulative counter (vs. spec's 90-day rolling window) creates a permanent first-mover advantage. **Engineering effort: ~50 LoC + invariant tests + audit**.
+
+---
+
+## 4. Use of Funds — Milestones and Deliverables
+
+### Total: $50,000
+
+| # | Item | Budget | Timeline | Deliverable |
+|---|---|---|---|---|
+| **M1** | Formal third-party audit | $22,000 | Month 1-2 | Audit report from credentialed firm; SoW signed within 2 weeks of disbursement; 4-6 week fieldwork; published report committed to repo |
+| **M2** | Audit remediation engineering | $3,000 | Month 2-3 | All HIGH/CRITICAL audit findings resolved; commits pushed; auditor sign-off; tagged release `pwm-v1.0-audited` |
+| **M3** | F-1 on-chain rank verification | $13,000 | Month 3-5 | Specification doc + smart-contract implementation + unit/integration tests + Slither/Mythril re-clean; design rationale published as research note |
+| **M4** | F-3 creator-address cross-check | $3,000 | Month 3 | Implementation + tests + Slither/Mythril re-clean |
+| **M5** | F-7 90-day rolling activity window | $5,000 | Month 3-4 | Refactor `activity_k` from cumulative to rolling window per spec §10.3; invariant tests; gas profile published |
+| **M6** | Public bug bounty (Immunefi) | $4,000 | Month 1 | Bounty page live; USDC tiers seeded for HIGH ($2K) + CRITICAL ($5K); public announcement |
+| **Total** | | **$50,000** | | |
+
+### 4.1 Audit firm shortlist (M1)
+
+| Firm | Strengths | Estimated fee |
+|---|---|---|
+| **Spearbit / Cantina** | Strong Solidity / governance / multisig expertise; nonprofit pool | $20-25K |
+| **Halborn** | Faster turnaround (2-3 weeks); strong on small protocols | $18-22K |
+| **OpenZeppelin** | Best-in-class for OZ-based contracts (PWM extensively uses OZ ERC20Capped, Ownable, SafeERC20) | $25-30K |
+| **Cyfrin** | Educational focus + strong on small protocols | $15-20K |
+| **Zellic** | Strong DeFi adjacency + thorough; up-and-coming | $18-25K |
+| **Code4rena private contest** | Crowdsourced; fast; depth varies | $15-25K |
+
+Selection method: RFP to all 6; pick on response quality + scope clarity + timeline + cost. Decision criteria committed publicly post-engagement.
+
+### 4.2 F-1 oracle vs challenge-mechanism design choice (M3)
+
+This is the longest-lead item:
+
+- **Option A — Oracle attestation.** Trusted oracle attests to off-chain leaderboard state. Pros: simpler smart-contract logic. Cons: centralized trust point.
+- **Option B — Challenge-period rank dispute.** Within the 7-day challenge window, anyone can submit a higher-ranking competitor's solution + stake-backed proof. Pros: fully on-chain; matches PWM's stake-backed dispute pattern. Cons: more complex implementation; subject to timing griefing.
+- **Option C — Hybrid.** Off-chain pre-attestation by a small set of approved verifiers + on-chain challenge period.
+
+We will publish a design document with Option B (recommended) and Option C as fallback. The grant supports the implementation of Option B as the primary deliverable; if scope reveals it's infeasible in budget, Option C is the fallback.
+
+### 4.3 Why this budget and not larger
+
+1. **PWM has smaller risk surface than typical DeFi.** No AMM, oracles, flash loans, custody, upgrade proxies. The audit is a 9-contract, ~1,400-LoC engagement.
+2. **We've already done the auditor's week-1 work.** The 7-hour multi-agent review + Slither + Mythril clean state means the audit firm starts from a clean baseline. Shorter fieldwork = lower cost.
+3. **Operating budget comes from other sources.** Sloan Foundation OSS (~$250K-1M), CZI Essential Open Source (~$250K-1M), per-principle treasury accrual, Reserve grants.
+4. **We want to return underused funds.** $50K with a clear deliverable bundle is preferable to $100K with margin for scope creep.
+
+---
+
+## 5. Team
+
+**Chengshuai (Abraham) Yang** — Founder, sole engineer (Path A bootstrap)
+
+- Research Associate, UT Southwestern Medical Center (computational imaging — CT reconstruction, compressive sensing, deep learning–priors)
+- ORCID: 0000-0003-2840-5344
+- 11 years of computational imaging research
+- 30+ technical publications across IEEE TMI, Medical Physics, ECCV, ICCV
+- Built PWM solo from 2024 to 2026 deployment
+- **Independent of UTSW for PWM** (no institutional endorsement, no IP shared, no funds flow)
+
+**Operational structure during this grant period:**
+
+- All 5 founder hardware wallet slots in PWMGovernance currently controlled by the Founder (Path A bootstrap, documented at `pwm-team/coordination/wallet/PWM_DECISION_RECORD_PATH_A_2026-05-12.md`)
+- Co-founder recruitment is active (Track 4a of master plan); rotations to genuine 3-of-5 multi-party governance happen Months 1-6 post-mainnet
+- All grant-funded work is performed by the Founder OR contracted to external auditor (M1); deliverables are independently verifiable by EF reviewers via the public GitHub repository
+
+**Why solo is OK for this grant:**
+
+- The audit (M1, $22K) is performed by external firm, not the Founder
+- F-3 + F-7 are small engineering tasks (~70 LoC combined) with formal acceptance criteria
+- F-1 (the longer-lead item) has a published design document; the implementation is checkable by anyone with Solidity expertise
+- All commits are public, signed, and timestamped; progress is reviewable in real time
+
+---
+
+## 6. Open Source and Public Goods Commitments
+
+1. **License: MIT.** All code (smart contracts, web explorer, indexer, deploy scripts, documentation) is open source from day 1. MIT permits commercial use (consistent with sustainable nonprofit operations) while requiring attribution.
+
+2. **501(c)(3) trajectory.** PWM applying for fiscal sponsorship under NumFOCUS (Round 4 application target: October 15, 2026). Independent foundation status anticipated by Year 3.
+
+3. **No founder premine accessible at deploy.** 630,000 PWM founding-team allocation is locked in `PWMVesting.sol` with **immutable beneficiary** + 1-year cliff + 4-year linear release.
+
+4. **Reserve governance.** 2.1M PWM Reserve held in a separate 3-of-5 Gnosis Safe (NOT the protocol governance). Spending ≥ 50,000 PWM requires DAO vote (≥⅔ weight, 14-day window). Smaller grants approved by 3-of-5 multisig with public proposal logs.
+
+5. **Tokens are utility for protocol participation, NOT investment contracts.** Foundation does NOT engage in price-management activity, marketing tokens as investments, or speculation discourse. PWM tokens reward verified contributions.
+
+6. **Public block explorer.** https://physicsworldmodel.org + https://explorer.physicsworldmodel.org index the registry + Certificate submissions. Indexer code at `pwm-team/infrastructure/agent-web/` — also MIT.
+
+---
+
+## 7. Risks Acknowledged
+
+| Risk | Probability | Mitigation |
+|---|---|---|
+| Audit firm finds HIGH/CRITICAL the multi-agent review missed | Moderate | M2 remediation budget covers this; auditor sign-off is the deliverable, not a clean first report |
+| F-1 oracle design proves infeasible in budget | Low-moderate | Option C (approved-verifier hybrid) is the documented fallback |
+| Mainnet bug surfaces during soft-launch window (pre-audit) | Bounded by caps | Maximum loss ≤$100 USD-equivalent for first 30 days; 48-hour timelock to pause |
+| Founder operational risk (Path A bootstrap, single key holder) | Moderate | 48-hour timelock prevents instant-action even with all 5 keys; co-founder recruitment via Track 4a Months 1-6 post-mainnet |
+| Adoption: PWM-CI-1 attracts <5 external submitters at Phase 1b opening | Moderate | Direct outreach to 30-50 candidate researchers from Founder's academic network (per `PWM_USER_ACQUISITION_STRATEGY_2026-05-22.md §6.3`); Wave 2 announcements (Twitter/X + HackerNews + Reddit) at D9+30 |
+| Token-speculation discourse harms scientific orientation | Moderate | Conservative caps + 4-year founder vesting + immutable beneficiary + Reserve-governed grants + crisis comms playbook for response (`CRISIS_COMMS_PLAYBOOK_2026-05-21.md`) |
+
+---
+
+## 8. Sustainability Beyond This Grant
+
+This grant funds one audit + three critical features. PWM's operating budget for Year 1-3 is a portfolio:
+
+| Source | Status | Estimated amount |
+|---|---|---|
+| **EF ESP (this application)** | Pending | $50K |
+| Base Builder Grant (Track 7b) | Applied in parallel | $25K |
+| Sloan Foundation OSS | Q4 2026 application | $200K-1M |
+| CZI Essential Open Source | Q4 2026 - Q1 2027 application | $250K-1M |
+| Mozilla MOSS | Q4 2026 application | $10-250K |
+| NSF POSE | Gated on Track K (PI mentor) | $300K-1.5M |
+| **Protocol-generated:** Stream A (minting) | Live D9+30 | ~2.7M PWM/year initial, declining |
+| **Protocol-generated:** Stream B (adversarial bond pool) | Live D9+30 | TBD |
+| **Protocol-generated:** Stream C (usage fees, Phase 3 Year 2+) | Year 2+ | USD-denominated paid in PWM |
+| **Reserve allocation grants** | Live | 2.1M PWM cap, distributed by 3-of-5 → DAO |
+
+**By Month 18 post-launch**, operating costs (audit refresh, hosting, community workshops, conference presence) become self-funded from Streams A+B+C, with grants becoming supplementary rather than essential.
+
+---
+
+## 9. Why EF ESP Specifically
+
+We considered Base Builder Grant (filed in parallel), Sloan OSS (Q4), CZI EOSS (Q4), and Mozilla MOSS (Q4). EF ESP is our top priority because:
+
+1. **EF has explicitly funded smart-contract audits as public-goods infrastructure** (Sismo, Bedrock contributor work, others). The deliverable shape (audit report + remediation commits + auditor sign-off) maps cleanly to ESP grant precedents.
+
+2. **EF reviewers are technically expert.** They will read the SECURITY_REVIEW doc, examine the multi-agent review trail, and evaluate the audit firm shortlist substantively. We want that scrutiny — it makes our case better, not worse.
+
+3. **Ethereum's verifiable-computation roadmap matters to us.** PWM's long-term design depends on Ethereum-compatible ZK / optimistic verification primitives. Being known to the EF community (via this grant) opens future collaboration channels for the Judge Agent / verifiable simulation roadmap.
+
+4. **Public-goods alignment is mutual.** EF's mission is to build infrastructure that benefits the whole ecosystem rather than capturing value for any one party. PWM is structured identically — open source, no premine, capped emission, governance-tokenized only after Year 1, eventually 501(c)(3).
+
+---
+
+## 10. Timeline
+
+```
+2026-05-22              ✅ Mainnet deploy (Base L2; soft-launch caps active; 25/25 verifier GREEN ×2)
+2026-05-22 → 2026-06-21 ✅ Soft-launch window; ≤$100 at-risk capital
+2026-05-22              EF ESP application submitted (this document)
+
+2026-06-15±             Decision from EF (typical 4-6 week turnaround)
+
+2026-06-19              Grant disbursement OR fallback (see §11)
+2026-06-19 → 2026-06-21 Phase 1b activation (3 × 48h governance proposals to unpause)
+2026-06-21              ✅ PWM-CI-1 CASSI reconstruction benchmark OPEN
+2026-06-19 → 2026-06-26 RFP issued to 6 audit firms; select; sign SoW
+2026-06-26 → 2026-08-07 Audit fieldwork (4-6 weeks standard)
+
+2026-08-07 → 2026-08-21 M2 remediation; auditor re-engagement; sign-off
+2026-08-21              Tagged release `pwm-v1.0-audited`
+
+2026-06-26 → 2026-10-15 Parallel: F-3 implementation + tests (M4)
+2026-07-15 → 2026-09-30 Parallel: F-7 90-day rolling window (M5)
+2026-08-15 → 2026-11-30 F-1 design document + Option B implementation (M3)
+
+2026-12-01              All three pre-cap-raise features (F-1, F-3, F-7) shipped + audited
+2026-12-08              Governance cap-raise sequence (3 × 48h timelock cycles)
+2026-12-15              Production-scale operation; full cap-raise complete
+```
+
+**Grant deliverable schedule** (commits + reports landed by these dates, public verification at `https://github.com/integritynoble/pwm`):
+
+| Date | Deliverable |
+|---|---|
+| 2026-06-30 | Audit firm SoW signed; tagged version under review |
+| 2026-08-07 | Audit report (PDF + summary doc committed to repo) |
+| 2026-08-21 | M2 remediation commits; auditor sign-off; tagged `pwm-v1.0-audited` |
+| 2026-09-30 | M4 (F-3 fix) + M5 (F-7 rolling window) shipped + tested |
+| 2026-11-30 | M3 (F-1 oracle / challenge mechanism) shipped + tested |
+| 2026-12-15 | Full cap-raise complete; protocol at production scale |
+| 2027-02-01 | Final grant report to EF: deliverables checklist + summary of unspent funds (if any) |
+
+---
+
+## 11. If Grant Denied or Reduced
+
+- **If denied entirely:** soft-launch caps stay engaged. We reapply to Sloan OSS (Q4 2026) and CZI EOSS (Q4 2026 - Q1 2027) for operational budget. Audit funding pivots to Reserve allocation grants OR Base Builder Grant (filed in parallel). Production-scale operation delayed by 3-6 months.
+
+- **If reduced (e.g., $25K instead of $50K):** Audit (M1, M2) is fully funded; the three pre-cap-raise features (M3-M5) are deferred to subsequent grants. Soft-launch caps stay engaged until those features ship.
+
+- **If granted in full but audit firm SoWs come in over budget:** Scope is reduced — auditor focuses on `PWMGovernance` + `PWMRewardERC20` + `PWMCertificate` (the contracts handling fund flow), with the other 6 left for a follow-on engagement.
+
+---
+
+## 12. Links and References
+
+| Resource | URL |
+|---|---|
+| Project website | https://physicsworldmodel.org |
+| Block explorer | https://explorer.physicsworldmodel.org |
+| Testnet explorer | https://test.physicsworldmodel.org |
+| GitHub | https://github.com/integritynoble/pwm |
+| **Mainnet deploy log** | https://github.com/integritynoble/pwm/blob/main/pwm-team/deploy/PWM_MAINNET_DEPLOY_LOG_2026-05-22.md |
+| **Security review (multi-agent)** | https://github.com/integritynoble/pwm/blob/main/pwm-team/deploy/findings/SECURITY_REVIEW_2026-05-18.md |
+| **Mythril triage (0 issues)** | https://github.com/integritynoble/pwm/blob/main/pwm-team/deploy/findings/A4_v2_mythril_triage_2026-05-18.md |
+| Slither raw + triage | https://github.com/integritynoble/pwm/blob/main/pwm-team/deploy/findings/A4_slither_triage_2026-05-18.md |
+| A5 economic-attack agent (source for M3-M5) | https://github.com/integritynoble/pwm/blob/main/pwm-team/deploy/findings/A5_economic_attack_modeling_2026-05-18.md |
+| Master plan (Tracks 1-8) | https://github.com/integritynoble/pwm/blob/main/pwm-team/plan/PLAN.md |
+| Value framing (AI4Science) | https://github.com/integritynoble/pwm/blob/main/pwm-team/coordination/PWM_VALUE_FRAMING_2026-05-22.md |
+| User acquisition strategy | https://github.com/integritynoble/pwm/blob/main/pwm-team/coordination/PWM_USER_ACQUISITION_STRATEGY_2026-05-22.md |
+| Phased architecture deployment | https://github.com/integritynoble/pwm/blob/main/pwm-team/coordination/PWM_PHASED_ARCHITECTURE_DEPLOYMENT_2026-05-22.md |
+| Path A bootstrap decision record | https://github.com/integritynoble/pwm/blob/main/pwm-team/coordination/wallet/PWM_DECISION_RECORD_PATH_A_2026-05-12.md |
+| Director ORCID | https://orcid.org/0000-0003-2840-5344 |
+
+### References
+
+1. Baker, M. (2016). "1,500 scientists lift the lid on reproducibility." *Nature* 533, 452-454. https://www.nature.com/articles/533452a
+2. Ioannidis, J.P.A. (2005). "Why Most Published Research Findings Are False." *PLOS Medicine* 2(8): e124. https://doi.org/10.1371/journal.pmed.0020124
+3. Recht, B., Roelofs, R., Schmidt, L., & Shankar, V. (2019). "Do ImageNet classifiers generalize to ImageNet?" *ICML 2019*. https://arxiv.org/abs/1902.10811
+4. NumFOCUS Fiscal Sponsorship Program: https://numfocus.org/projects-overview
+
+---
+
+## 13. Contact
+
+**Chengshuai (Abraham) Yang**
+
+- Email (primary): integrityyang@gmail.com
+- Email (project): platformaiyang@gmail.com
+- GitHub: [@integritynoble](https://github.com/integritynoble)
+- ORCID: [0000-0003-2840-5344](https://orcid.org/0000-0003-2840-5344)
+- Affiliation (research): Research Associate, UT Southwestern Medical Center (computational imaging) — independent of UTSW for PWM
+- Affiliation (legal entity for grant receipt): NextGen PlatformAI C Corp (Founder); may shift to PWM Foundation post-NumFOCUS
+
+I welcome the EF reviewer team to schedule a 30-60 minute video call. **I can demonstrate the protocol live on Base mainnet right now — visit https://physicsworldmodel.org.** Available US business hours (Central time).
+
+---
+
+**Thank you for your consideration.**
+
+PWM is a scientific public good now LIVE on Base mainnet as of 2026-05-22T18:52:09Z. The audit this grant funds is the last technical gate between bounded-risk soft-launch and full-scale operation. Every deliverable in §4 is concrete, time-bounded, and publicly verifiable.
+
+— Chengshuai (Abraham) Yang
+2026-05-22 (Day 1 of mainnet)
