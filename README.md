@@ -1,6 +1,10 @@
 # PWM — Physics World Model for Imaging System Autonomy
 
-**Live Platform: [pwm.platformai.org](https://pwm.platformai.org)**
+**Live Platform: [physicsworldmodel.org](https://physicsworldmodel.org)** · **Block Explorer: [explorer.physicsworldmodel.org](https://explorer.physicsworldmodel.org)**
+
+> 🪙 **PWM mainnet went live on Base on 2026-05-22.** 9 smart contracts deployed, Basescan-verified, 10/10 independent on-chain verification PASS. See [`mainnet/`](mainnet/) for the protocol layer — contracts, security review, strategy, grant applications, roadmap.
+>
+> The protocol layer (`mainnet/`) is complementary to the algorithm catalog + evaluation harness in the rest of this repo. PWM combines verified AI4Science benchmarks (on-chain cryptographic substrate) with the algorithm research toolkit (this repo's main content).
 
 [![Discussions](https://img.shields.io/github/discussions/integritynoble/Physics_World_Model?label=Discussions&logo=github)](https://github.com/integritynoble/Physics_World_Model/discussions)
 [![Good First Issues](https://img.shields.io/github/issues/integritynoble/Physics_World_Model/good%20first%20issue?label=Good%20First%20Issues&color=7057ff)](https://github.com/integritynoble/Physics_World_Model/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
@@ -1332,11 +1336,11 @@ We welcome contributions of all kinds. See [`CONTRIBUTING.md`](CONTRIBUTING.md) 
 **Contribution types:**
 - **New solver:** Implement `ReconSolver` protocol, register in `solver_registry.yaml`, beat the current default on the harness
 - **New modality:** Add forward model, solver portfolio, and benchmark data for a new imaging system
-- **New dataset:** Contribute benchmark data via the [Contribute page](https://pwm.platformai.org/benchmark/ct/contribute) or `pwm ingest`
+- **New dataset:** Contribute benchmark data via the [Contribute page](https://physicsworldmodel.org/benchmark/ct/contribute) or `pwm ingest`
 - **Bug fix / improvement:** Open an issue first, then submit a PR
 - **Documentation:** Fix typos, improve explanations, add examples
 
-**8 contributor roles** with step-by-step examples: see [`docs/Contributor_examples.md`](docs/Contributor_examples.md) and the [Contributors page](https://pwm.platformai.org/contributors).
+**8 contributor roles** with step-by-step examples: see [`docs/Contributor_examples.md`](docs/Contributor_examples.md) and the [Contributors page](https://physicsworldmodel.org/contributors).
 
 ---
 
@@ -1363,7 +1367,7 @@ We will acknowledge receipt within 48 hours and provide a timeline for a fix. Se
 
 **Scope:** Security issues in PWM include gate bypass vulnerabilities (e.g., circumventing R3 artifact integrity checks), authentication/authorization flaws on the platform, and any issue that could lead to incorrect trust-tier assignments on the leaderboard.
 
-See also: the [Red Team page](https://pwm.platformai.org/redteam) for the adversarial testing bounty board.
+See also: the [Red Team page](https://physicsworldmodel.org/redteam) for the adversarial testing bounty board.
 
 ---
 
