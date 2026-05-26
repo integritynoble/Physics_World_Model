@@ -41,6 +41,71 @@
         {% endif %}
     </div>
 
+    <!-- PWM Token section -->
+    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 shadow-sm rounded-xl p-6 space-y-4">
+        <div class="flex items-start justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">PWM Tokens</h2>
+                <p class="mt-1 text-sm text-gray-600">
+                    Protocol reward tokens. Earned when your principles, specs, benchmarks, or solutions
+                    are reviewed by founders and promoted from <span class="font-mono text-xs bg-gray-200 px-1 rounded">testnet</span>
+                    to <span class="font-mono text-xs bg-green-200 px-1 rounded">mainnet</span>.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white rounded-lg p-4 border border-indigo-100">
+                <div class="text-xs uppercase tracking-wider text-gray-500 font-medium">Current Balance</div>
+                <div class="mt-1 text-2xl font-bold text-indigo-600">{{ "%.2f"|format(pwm_balance) }} <span class="text-sm text-gray-400">PWM</span></div>
+            </div>
+            <div class="bg-white rounded-lg p-4 border border-indigo-100">
+                <div class="text-xs uppercase tracking-wider text-gray-500 font-medium">Lifetime Earned</div>
+                <div class="mt-1 text-2xl font-bold text-gray-700">{{ "%.2f"|format(pwm_lifetime_earned) }} <span class="text-sm text-gray-400">PWM</span></div>
+            </div>
+        </div>
+
+        <!-- On-chain wallet -->
+        <div class="pt-2 border-t border-indigo-100">
+            <label class="text-xs uppercase tracking-wider text-gray-500 font-medium">On-chain Wallet (for future settlement)</label>
+            <div class="mt-2 flex gap-2">
+                <input type="text" id="wallet-address" value="{{ pwm_wallet or '' }}"
+                       placeholder="0x..."
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button onclick="saveWallet()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                    Save
+                </button>
+            </div>
+            <div id="wallet-status" class="hidden mt-2 text-xs"></div>
+        </div>
+
+        <!-- Recent transactions -->
+        {% if pwm_transactions %}
+        <div class="pt-2 border-t border-indigo-100">
+            <h3 class="text-sm font-medium text-gray-700 mb-2">Recent transactions</h3>
+            <div class="space-y-1">
+                {% for t in pwm_transactions %}
+                <div class="flex items-center justify-between text-xs bg-white rounded px-3 py-2 border border-gray-100">
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-gray-900 truncate">{{ t.description }}</div>
+                        <div class="text-gray-400">{{ t.created_at[:10] if t.created_at else '' }} · {{ t.transaction_type }}</div>
+                    </div>
+                    <div class="ml-3 font-mono font-medium {% if t.amount > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                        {{ "%+.2f"|format(t.amount) }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="pt-2 border-t border-indigo-100 text-xs text-gray-500 italic">
+            No transactions yet. Submit a principle, spec, benchmark, or solution and earn PWM when it's promoted to mainnet.
+        </div>
+        {% endif %}
+    </div>
+
     <!-- API Key section -->
     <div class="bg-white shadow-sm rounded-xl p-6 space-y-4">
         <div>
@@ -160,6 +225,32 @@ function showError(msg) {
 
 function hideError() {
     document.getElementById('api-key-error').classList.add('hidden');
+}
+
+async function saveWallet() {
+    const addr = document.getElementById('wallet-address').value.trim();
+    const status = document.getElementById('wallet-status');
+    if (!addr) {
+        status.className = 'mt-2 text-xs text-red-600';
+        status.textContent = 'Please enter a wallet address.';
+        status.classList.remove('hidden');
+        return;
+    }
+    try {
+        const res = await fetch('/api/v1/pwm-token/wallet', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({address: addr}),
+        });
+        if (!res.ok) throw new Error('Failed');
+        status.className = 'mt-2 text-xs text-green-600';
+        status.textContent = 'Wallet address saved.';
+        status.classList.remove('hidden');
+    } catch (e) {
+        status.className = 'mt-2 text-xs text-red-600';
+        status.textContent = 'Failed to save wallet address.';
+        status.classList.remove('hidden');
+    }
 }
 </script>
 {% endblock %}

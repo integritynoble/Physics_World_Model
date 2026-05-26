@@ -33,6 +33,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from pwm_platform.db.database import get_db
 from pwm_platform.db.models import ChallengeSubmission
+from pwm_platform.services.pwm_token_service import pwm_token_service
 
 router = APIRouter(prefix="/trust", tags=["trust"])
 
@@ -140,14 +141,49 @@ async def promote_trust_tier(
     sub.trust_tier = target
     await db.commit()
 
-    return {
+    response: dict = {
         "submission_id": submission_id,
         "previous_tier": current_tier,
         "new_tier": target,
+        "deploy_status": "mainnet" if target == "certified" else "testnet",
         "promoted_at": datetime.now(timezone.utc).isoformat(),
         "comment": body.comment,
         "reviewer_id": body.reviewer_id,
     }
+
+    # Award PWM tokens on promotion to certified (testnet → mainnet)
+    if target == "certified" and sub.submitted_by is not None:
+        try:
+            artifact_type = sub.submission_type or "solution"
+            # Try to parse reviewer_id as int for awarded_by; ignore if not numeric
+            awarded_by_id: Optional[int] = None
+            if body.reviewer_id:
+                try:
+                    awarded_by_id = int(body.reviewer_id)
+                except (TypeError, ValueError):
+                    awarded_by_id = None
+
+            txn = await pwm_token_service.award_for_promotion(
+                user_id=sub.submitted_by,
+                submission_id=submission_id,
+                artifact_type=artifact_type,
+                awarded_by=awarded_by_id,
+                db=db,
+            )
+            response["pwm_token_reward"] = {
+                "transaction_id": txn.transaction_id,
+                "amount": txn.amount,
+                "balance_after": txn.balance_after,
+                "artifact_type": artifact_type,
+            }
+        except Exception:  # noqa: BLE001 — log but don't fail promotion
+            import logging
+            logging.getLogger(__name__).exception(
+                "Failed to award PWM tokens for submission %s", submission_id
+            )
+            response["pwm_token_reward_error"] = "Award failed — contact admin"
+
+    return response
 
 
 @router.post("/demote/{submission_id}")

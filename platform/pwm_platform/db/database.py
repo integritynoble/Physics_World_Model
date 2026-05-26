@@ -129,6 +129,20 @@ async def init_db() -> None:
             except Exception:
                 pass
 
+        # Idempotent migration: pwm_token_accounts / pwm_token_transactions
+        # (tables created by create_all above; this just guards against drift)
+        for col_def in [
+            "ALTER TABLE pwm_token_accounts ADD COLUMN IF NOT EXISTS on_chain_address VARCHAR(255)",
+            "ALTER TABLE pwm_token_accounts ADD COLUMN IF NOT EXISTS lifetime_earned DOUBLE PRECISION DEFAULT 0.0",
+            "ALTER TABLE pwm_token_transactions ADD COLUMN IF NOT EXISTS artifact_type VARCHAR(30)",
+            "ALTER TABLE pwm_token_transactions ADD COLUMN IF NOT EXISTS submission_id VARCHAR(100)",
+            "ALTER TABLE pwm_token_transactions ADD COLUMN IF NOT EXISTS awarded_by INTEGER",
+        ]:
+            try:
+                await conn.execute(text(col_def))
+            except Exception:
+                pass
+
         # Ensure platformaigpt@gmail.com is admin
         await conn.execute(text(
             "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"

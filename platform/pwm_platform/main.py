@@ -41,6 +41,7 @@ from pwm_platform.routers import (
     system_design_chat_router,
     trust_promotion_router,
     solvers_router,
+    pwm_token_router,
 )
 
 logging.basicConfig(
@@ -114,6 +115,7 @@ app.include_router(submissions_router)
 app.include_router(trust_promotion_router)
 app.include_router(instruments_router)
 app.include_router(solvers_router)
+app.include_router(pwm_token_router)
 app.include_router(pages_router)
 
 

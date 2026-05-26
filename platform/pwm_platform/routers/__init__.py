@@ -18,6 +18,7 @@ from pwm_platform.routers.submissions import router as submissions_router
 from pwm_platform.routers.system_design_chat import router as system_design_chat_router
 from pwm_platform.routers.trust_promotion import router as trust_promotion_router
 from pwm_platform.routers.solvers import router as solvers_router
+from pwm_platform.routers.pwm_token import router as pwm_token_router
 
 __all__ = [
     "audit_router",
@@ -38,4 +39,5 @@ __all__ = [
     "system_design_chat_router",
     "trust_promotion_router",
     "solvers_router",
+    "pwm_token_router",
 ]

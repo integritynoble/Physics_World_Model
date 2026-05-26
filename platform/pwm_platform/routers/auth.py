@@ -230,10 +230,23 @@ async def login_form(
             "google_client_id": settings.GOOGLE_CLIENT_ID,
         }, status_code=401)
 
-    redirect_to = next if next and next.startswith("/") else "/benchmark"
+    redirect_to = _safe_next(next)
     redirect = RedirectResponse(redirect_to, status_code=303)
     redirect.set_cookie(value=result["access_token"], **_COOKIE_KWARGS)
     return redirect
+
+
+def _safe_next(next_url: str) -> str:
+    """Return a safe relative redirect path, blocking open-redirect attacks.
+
+    Only paths starting with a single '/' (not '//' or '/\\') are allowed.
+    """
+    if not next_url or not next_url.startswith("/"):
+        return "/benchmark"
+    # Block protocol-relative URLs like "//evil.com" or "/\\evil.com"
+    if next_url.startswith("//") or next_url.startswith("/\\"):
+        return "/benchmark"
+    return next_url
 
 
 @router.post("/google")
@@ -254,16 +267,22 @@ async def google_login(
             google_requests.Request(),
             settings.GOOGLE_CLIENT_ID,
         )
-    except Exception as exc:
+    except ValueError as exc:
         logger.warning("Google token verification failed: %s", exc)
         raise HTTPException(status_code=401, detail="Invalid Google credential")
+    except Exception as exc:
+        logger.exception("Unexpected error verifying Google token: %s", exc)
+        raise HTTPException(status_code=500, detail="Google sign-in temporarily unavailable")
 
     email = id_info.get("email")
     name = id_info.get("name") or id_info.get("given_name") or ""
     google_sub = id_info.get("sub")
+    email_verified = id_info.get("email_verified", False)
 
     if not email or not google_sub:
         raise HTTPException(status_code=401, detail="Missing fields in Google token")
+    if not email_verified:
+        raise HTTPException(status_code=401, detail="Google account email is not verified")
 
     user = await auth_service.upsert_google_user(db, google_sub=google_sub, email=email, name=name)
 

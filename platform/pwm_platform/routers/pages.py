@@ -151,14 +151,25 @@ async def signup_page(request: Request):
 async def settings_page(
     request: Request,
     user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
-    """User account settings — API key management."""
+    """User account settings — API key + PWM token balance."""
+    from pwm_platform.services.pwm_token_service import pwm_token_service
+
     key = user.api_key or ""
     masked_key = (key[:8] + "..." + key[-4:]) if key else None
+
+    pwm_balance_data = await pwm_token_service.get_balance(user.id, db)
+    pwm_transactions = await pwm_token_service.list_transactions(user.id, db, limit=10)
+
     return templates.TemplateResponse(request, "settings.html", {
         "user": user,
         "has_api_key": bool(key),
         "masked_key": masked_key,
+        "pwm_balance": pwm_balance_data["balance"],
+        "pwm_lifetime_earned": pwm_balance_data["lifetime_earned"],
+        "pwm_wallet": pwm_balance_data["on_chain_address"],
+        "pwm_transactions": pwm_transactions,
     })
 
 

@@ -486,6 +486,56 @@ class PasswordResetToken(Base):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  PWM Token (protocol reward token)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class PWMTokenAccount(Base):
+    """Off-chain PWM token balance for each user.
+
+    Tokens are awarded when a contributor's submission is promoted from
+    testnet (any trust_tier) to mainnet (trust_tier == 'certified') by a founder.
+    """
+
+    __tablename__ = "pwm_token_accounts"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False, index=True)
+    balance = Column(Float, default=0.0, nullable=False)
+    lifetime_earned = Column(Float, default=0.0, nullable=False)
+    on_chain_address = Column(String(255), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    user = relationship("User", backref="pwm_token_account", uselist=False)
+
+
+class PWMTokenTransaction(Base):
+    """Immutable ledger of PWM token movements.
+
+    transaction_type values:
+      - 'award_promotion'  : auto-awarded when submission promoted to certified
+      - 'award_manual'     : founder/admin manual award
+      - 'spend'            : user-initiated spend (future)
+      - 'adjust'           : admin balance adjustment (refund / clawback)
+    """
+
+    __tablename__ = "pwm_token_transactions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    transaction_id = Column(String(64), unique=True, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    amount = Column(Float, nullable=False)  # positive = credit, negative = debit
+    transaction_type = Column(String(30), nullable=False, index=True)
+    description = Column(String(500), default="")
+    submission_id = Column(String(100), nullable=True, index=True)  # links to ChallengeSubmission
+    artifact_type = Column(String(30), nullable=True)  # principle / spec / benchmark / solution
+    awarded_by = Column(Integer, ForeignKey("users.id"), nullable=True)  # founder who triggered the award
+    balance_after = Column(Float, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  Contributor Economy
 # ═══════════════════════════════════════════════════════════════════════════
 
