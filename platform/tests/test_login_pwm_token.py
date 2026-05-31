@@ -222,6 +222,47 @@ check("/trust/promote includes pwm_token_reward",
 check("/trust/promote awards 100 PWM for solution",
       r.json().get("pwm_token_reward", {}).get("amount") == 100.0)
 
+# ── Modification submission reward ───────────────────────────────────────
+
+# Test 22-25: award-modification via ChallengeSubmission (sub_002 belongs to user 1 = alice)
+# sub_002 was created earlier in the trust_promote test (solution, submitted_by=1)
+r = ac.post("/api/v1/pwm-token/award-modification", json={
+    "submission_id": "sub_002",
+    "amount": 2.5,
+    "comment": "Good improvement",
+})
+check("award-modification 200", r.status_code == 200, f"status={r.status_code} body={r.text[:300]}")
+body_mod = r.json()
+check("award-modification amount=2.5", body_mod.get("amount_awarded") == 2.5,
+      f"amount={body_mod.get('amount_awarded')}")
+
+# Idempotency — same submission_id must return the same transaction
+r2 = ac.post("/api/v1/pwm-token/award-modification", json={
+    "submission_id": "sub_002",
+    "amount": 2.5,
+    "comment": "re-award attempt",
+})
+check("award-modification idempotency: same txn",
+      r2.json().get("transaction_id") == body_mod.get("transaction_id"),
+      f"first={body_mod.get('transaction_id')} second={r2.json().get('transaction_id')}")
+
+# Out-of-range amount → 422 (Pydantic rejects it before hitting the service)
+r3 = ac.post("/api/v1/pwm-token/award-modification", json={
+    "submission_id": "sub_002",
+    "amount": 99.0,
+    "comment": "too much",
+})
+check("award-modification out-of-range → 422", r3.status_code == 422,
+      f"status={r3.status_code}")
+
+# Non-existent submission → 404
+r4 = ac.post("/api/v1/pwm-token/award-modification", json={
+    "submission_id": "nonexistent_sub_xyz",
+    "amount": 1.0,
+})
+check("award-modification unknown submission → 404", r4.status_code == 404,
+      f"status={r4.status_code}")
+
 # ── Paper review access + spend ──────────────────────────────────────────
 
 # Test 22: paper-access when balance is sufficient for deep review

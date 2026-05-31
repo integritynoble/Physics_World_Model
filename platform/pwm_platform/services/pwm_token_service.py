@@ -56,6 +56,9 @@ PAPER_REVIEW_COSTS: dict[str, float] = {
 # 5th wallet — owned by the developer of the paper review feature.
 PAPER_REVIEW_PROVIDER_WALLET = "0xa53F7e7Bc6B0Cc182d048217646082DDB2DacfE3"
 
+# Modification submission reward range (founder sets amount at review time)
+MODIFICATION_REWARD_RANGE = (0.1, 5.0)
+
 
 class PWMTokenService:
     """Stateless service — each method receives its own DB session."""
@@ -203,6 +206,74 @@ class PWMTokenService:
             submission_id=None,
             artifact_type=None,
             awarded_by=adjusted_by,
+            db=db,
+        )
+
+    async def award_for_modification(
+        self,
+        *,
+        user_id: int,
+        submission_id: str,
+        amount: float,
+        comment: str,
+        awarded_by: int,
+        db: AsyncSession,
+    ) -> PWMTokenTransaction:
+        """Award PWM tokens for a reviewed modification submission (0.1–5.0 PWM).
+
+        Idempotent per submission_id — re-awarding the same modification returns
+        the existing transaction without crediting again.
+
+        Also stamps `pwm_awarded` on the PWMSubmission row if found.
+        """
+        if not (0.1 <= amount <= 5.0):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Modification reward must be between 0.1 and 5.0 PWM (got {amount})",
+            )
+
+        # Idempotency check
+        result = await db.execute(
+            select(PWMTokenTransaction).where(
+                PWMTokenTransaction.submission_id == submission_id,
+                PWMTokenTransaction.transaction_type == "award_modification",
+            )
+        )
+        existing = result.scalar_one_or_none()
+        if existing is not None:
+            logger.info(
+                "Modification award already exists for submission %s (txn %s)",
+                submission_id,
+                existing.transaction_id,
+            )
+            return existing
+
+        # Stamp pwm_awarded on PWMSubmission if the model exists in this codebase
+        try:
+            from pwm_platform.db.models import PWMSubmission
+            sub_result = await db.execute(
+                select(PWMSubmission).where(PWMSubmission.submission_id == submission_id)
+            )
+            sub = sub_result.scalar_one_or_none()
+            if sub is not None:
+                sub.pwm_awarded = amount
+                if sub.status in ("testnet", "reviewing"):
+                    sub.status = "mainnet"
+        except ImportError:
+            pass  # PWMSubmission not available in this codebase variant
+
+        description = f"Modification reward: {submission_id}"
+        if comment:
+            description += f" — {comment}"
+
+        return await self._credit(
+            user_id=user_id,
+            amount=amount,
+            transaction_type="award_modification",
+            description=description,
+            submission_id=submission_id,
+            artifact_type="modification",
+            awarded_by=awarded_by,
             db=db,
         )
 

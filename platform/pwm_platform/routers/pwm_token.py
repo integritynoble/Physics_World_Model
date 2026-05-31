@@ -30,6 +30,7 @@ from pwm_platform.services.pwm_token_service import (
     DEFAULT_PROMOTION_REWARD,
     PAPER_REVIEW_COSTS,
     PAPER_REVIEW_PROVIDER_WALLET,
+    MODIFICATION_REWARD_RANGE,
     pwm_token_service,
 )
 
@@ -59,6 +60,17 @@ class AdjustRequest(BaseModel):
 class PromoteToMainnetRequest(BaseModel):
     submission_id: str
     comment: str = ""
+
+
+class AwardModificationRequest(BaseModel):
+    submission_id: str = Field(..., min_length=1, max_length=128)
+    amount: float = Field(
+        ...,
+        ge=0.1,
+        le=5.0,
+        description="PWM tokens to award (0.1–5.0). Founder sets this at review time.",
+    )
+    comment: str = Field("", max_length=500)
 
 
 class SpendRequest(BaseModel):
@@ -203,6 +215,67 @@ async def manual_award(
         "success": True,
         "transaction_id": txn.transaction_id,
         "balance_after": txn.balance_after,
+    }
+
+
+@router.post("/award-modification")
+async def award_modification(
+    body: AwardModificationRequest,
+    admin: User = Depends(require_role("admin")),
+    db: AsyncSession = Depends(get_db),
+):
+    """Award PWM tokens for a reviewed modification submission (0.1–5.0 PWM).
+
+    The founder sets the exact amount based on the quality of the modification.
+    Idempotent: re-submitting the same submission_id returns the existing award.
+    Also promotes the PWMSubmission row to status='mainnet' if not already there.
+    """
+    # Resolve submitter from PWMSubmission, fallback to ChallengeSubmission
+    user_id: Optional[int] = None
+
+    try:
+        from pwm_platform.db.models import PWMSubmission
+        result = await db.execute(
+            select(PWMSubmission).where(PWMSubmission.submission_id == body.submission_id)
+        )
+        sub = result.scalar_one_or_none()
+        if sub is not None:
+            user_id = sub.submitted_by_id
+    except ImportError:
+        pass  # PWMSubmission not available in this codebase variant
+
+    if user_id is None:
+        result2 = await db.execute(
+            select(ChallengeSubmission).where(
+                ChallengeSubmission.submission_id == body.submission_id
+            )
+        )
+        legacy = result2.scalar_one_or_none()
+        if legacy is not None:
+            user_id = legacy.submitted_by
+
+    if user_id is None:  # not found in either model
+        raise HTTPException(
+            status_code=404,
+            detail=f"Submission '{body.submission_id}' not found or has no owner",
+        )
+
+    txn = await pwm_token_service.award_for_modification(
+        user_id=user_id,
+        submission_id=body.submission_id,
+        amount=body.amount,
+        comment=body.comment,
+        awarded_by=admin.id,
+        db=db,
+    )
+    return {
+        "success": True,
+        "submission_id": body.submission_id,
+        "user_id": user_id,
+        "transaction_id": txn.transaction_id,
+        "amount_awarded": txn.amount,
+        "balance_after": txn.balance_after,
+        "reward_range": list(MODIFICATION_REWARD_RANGE),
     }
 
 
