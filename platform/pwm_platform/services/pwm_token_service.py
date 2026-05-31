@@ -42,6 +42,20 @@ PROMOTION_REWARDS: dict[str, float] = {
 
 DEFAULT_PROMOTION_REWARD = 100.0
 
+# ── Service costs ────────────────────────────────────────────────────────
+#
+# PWM tokens required to access premium platform features.
+# Shallow review is always free; deep review requires PAPER_REVIEW_COSTS["deep"].
+#
+PAPER_REVIEW_COSTS: dict[str, float] = {
+    "deep": 10.0,     # full multi-reviewer simulation
+    "shallow": 0.0,   # single reviewer, always free
+}
+
+# Provider wallet that receives paper review payments.
+# 5th wallet — owned by the developer of the paper review feature.
+PAPER_REVIEW_PROVIDER_WALLET = "0xa53F7e7Bc6B0Cc182d048217646082DDB2DacfE3"
+
 
 class PWMTokenService:
     """Stateless service — each method receives its own DB session."""
@@ -189,6 +203,76 @@ class PWMTokenService:
             submission_id=None,
             artifact_type=None,
             awarded_by=adjusted_by,
+            db=db,
+        )
+
+    async def spend(
+        self,
+        *,
+        user_id: int,
+        amount: float,
+        purpose: str,
+        provider_wallet: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        db: AsyncSession,
+    ) -> PWMTokenTransaction:
+        """Deduct PWM tokens from a user's balance for a platform service.
+
+        Args:
+            user_id: The user spending tokens.
+            amount: Positive amount to deduct.
+            purpose: Human-readable label (e.g. 'paper_review_deep').
+            provider_wallet: Wallet address that receives the payment (for audit trail).
+            idempotency_key: Optional unique key — if a spend transaction with
+                this key already exists for this user, return it without deducting again.
+            db: Async DB session.
+
+        Raises:
+            HTTPException 402 if the user's balance is insufficient.
+        """
+        if amount <= 0:
+            raise HTTPException(status_code=400, detail="amount must be positive")
+
+        # Idempotency: don't charge twice for the same operation
+        if idempotency_key:
+            result = await db.execute(
+                select(PWMTokenTransaction).where(
+                    PWMTokenTransaction.user_id == user_id,
+                    PWMTokenTransaction.submission_id == idempotency_key,
+                    PWMTokenTransaction.transaction_type == "spend",
+                )
+            )
+            existing = result.scalar_one_or_none()
+            if existing is not None:
+                logger.info(
+                    "PWM spend already recorded for key %s (txn %s)",
+                    idempotency_key,
+                    existing.transaction_id,
+                )
+                return existing
+
+        # Balance check
+        account = await self.get_or_create_account(user_id, db)
+        if account.balance < amount:
+            raise HTTPException(
+                status_code=402,
+                detail=(
+                    f"Insufficient PWM balance. Required: {amount}, "
+                    f"available: {account.balance:.2f}"
+                ),
+            )
+
+        wallet_note = f" → provider {provider_wallet}" if provider_wallet else ""
+        description = f"{purpose}{wallet_note}"
+
+        return await self._record(
+            user_id=user_id,
+            amount=-amount,
+            transaction_type="spend",
+            description=description,
+            submission_id=idempotency_key,
+            artifact_type=purpose,
+            awarded_by=None,
             db=db,
         )
 

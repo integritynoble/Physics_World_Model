@@ -28,6 +28,8 @@ from pwm_platform.db.models import ChallengeSubmission, PWMTokenAccount, User
 from pwm_platform.services.pwm_token_service import (
     PROMOTION_REWARDS,
     DEFAULT_PROMOTION_REWARD,
+    PAPER_REVIEW_COSTS,
+    PAPER_REVIEW_PROVIDER_WALLET,
     pwm_token_service,
 )
 
@@ -57,6 +59,21 @@ class AdjustRequest(BaseModel):
 class PromoteToMainnetRequest(BaseModel):
     submission_id: str
     comment: str = ""
+
+
+class SpendRequest(BaseModel):
+    amount: float = Field(..., gt=0, description="PWM tokens to spend")
+    purpose: str = Field(..., min_length=1, max_length=100)
+    provider_wallet: Optional[str] = Field(
+        None,
+        max_length=255,
+        description="Wallet address receiving the payment (audit trail)",
+    )
+    idempotency_key: Optional[str] = Field(
+        None,
+        max_length=128,
+        description="Unique key to prevent double-charging the same operation",
+    )
 
 
 # ── User-facing endpoints (own data) ─────────────────────────────────────
@@ -97,6 +114,71 @@ async def set_wallet(
     return {
         "success": True,
         "on_chain_address": account.on_chain_address,
+    }
+
+
+# ── Spending endpoints ───────────────────────────────────────────────────
+
+
+@router.post("/spend")
+async def spend_tokens(
+    body: SpendRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Deduct PWM tokens from the authenticated user's balance for a platform service.
+
+    Returns HTTP 402 if the balance is insufficient.
+    Idempotent when `idempotency_key` is provided — safe to retry.
+    """
+    txn = await pwm_token_service.spend(
+        user_id=user.id,
+        amount=body.amount,
+        purpose=body.purpose,
+        provider_wallet=body.provider_wallet,
+        idempotency_key=body.idempotency_key,
+        db=db,
+    )
+    balance_before = txn.balance_after + body.amount
+    return {
+        "success": True,
+        "transaction_id": txn.transaction_id,
+        "amount_spent": body.amount,
+        "balance_before": balance_before,
+        "balance_after": txn.balance_after,
+        "purpose": body.purpose,
+        "provider_wallet": body.provider_wallet,
+    }
+
+
+@router.get("/paper-access")
+async def paper_access(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return the user's paper review access level based on their PWM balance.
+
+    Does NOT deduct tokens — call /spend to charge before running deep review.
+    """
+    data = await pwm_token_service.get_balance(user.id, db)
+    balance = data["balance"]
+    deep_cost = PAPER_REVIEW_COSTS["deep"]
+    can_afford_deep = balance >= deep_cost
+    return {
+        "success": True,
+        "balance": balance,
+        "deep_cost": deep_cost,
+        "shallow_cost": PAPER_REVIEW_COSTS["shallow"],
+        "can_afford_deep": can_afford_deep,
+        "review_level": "deep" if can_afford_deep else "shallow",
+        "provider_wallet": PAPER_REVIEW_PROVIDER_WALLET,
+        "message": (
+            None
+            if can_afford_deep
+            else f"You need {deep_cost} PWM for deep review. "
+            f"Your balance: {balance:.2f} PWM. "
+            "Earn PWM by submitting verified principles, specs, benchmarks, or solutions."
+        ),
     }
 
 

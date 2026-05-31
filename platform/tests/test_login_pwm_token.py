@@ -222,6 +222,58 @@ check("/trust/promote includes pwm_token_reward",
 check("/trust/promote awards 100 PWM for solution",
       r.json().get("pwm_token_reward", {}).get("amount") == 100.0)
 
+# ── Paper review access + spend ──────────────────────────────────────────
+
+# Test 22: paper-access when balance is sufficient for deep review
+# alice now has 1250 PWM (balance from earlier tests), well above the 10 PWM deep cost
+r = c2.get("/api/v1/pwm-token/paper-access")
+check("paper-access 200", r.status_code == 200, f"status={r.status_code}")
+check("paper-access can_afford_deep=True", r.json().get("can_afford_deep") is True,
+      f"body={r.json()}")
+check("paper-access review_level=deep", r.json().get("review_level") == "deep")
+
+# Test 25: spend tokens for deep paper review
+r = c2.post("/api/v1/pwm-token/spend", json={
+    "amount": 10.0,
+    "purpose": "paper_review_deep",
+    "provider_wallet": "0xa53F7e7Bc6B0Cc182d048217646082DDB2DacfE3",
+    "idempotency_key": "paper-test-001",
+})
+check("spend 200", r.status_code == 200, f"status={r.status_code} body={r.text[:200]}")
+body = r.json()
+check("spend balance_after decremented", body.get("balance_after") == body.get("balance_before") - 10.0,
+      f"before={body.get('balance_before')} after={body.get('balance_after')}")
+
+# Test 26: spend idempotency — same idempotency_key must not double-charge
+r2 = c2.post("/api/v1/pwm-token/spend", json={
+    "amount": 10.0,
+    "purpose": "paper_review_deep",
+    "provider_wallet": "0xa53F7e7Bc6B0Cc182d048217646082DDB2DacfE3",
+    "idempotency_key": "paper-test-001",
+})
+check("spend idempotency: same key → same txn",
+      r2.json().get("transaction_id") == body.get("transaction_id"),
+      f"first={body.get('transaction_id')} second={r2.json().get('transaction_id')}")
+
+# Test 27: spend with insufficient balance → 402
+# Create a fresh user with 0 balance, extract JWT, and attempt spend
+client.post("/api/v1/auth/signup-form",
+            data={"username": "broke_user", "email": "broke@example.com",
+                  "password": "pw123456", "next": "/"})
+r_login_broke = client.post("/api/v1/auth/login-form",
+                             data={"email": "broke@example.com", "password": "pw123456",
+                                   "next": "/"}, follow_redirects=False)
+broke_jwt = r_login_broke.cookies.get("access_token")
+cb2 = TestClient(app)
+cb2.cookies.set("access_token", broke_jwt)
+r_broke = cb2.post("/api/v1/pwm-token/spend", json={
+    "amount": 10.0,
+    "purpose": "paper_review_deep",
+    "provider_wallet": "0xa53F7e7Bc6B0Cc182d048217646082DDB2DacfE3",
+})
+check("spend with 0 balance → 402", r_broke.status_code == 402,
+      f"status={r_broke.status_code} body={r_broke.text[:200]}")
+
 # Summary
 print()
 passed = sum(1 for _, c, _ in results if c)
