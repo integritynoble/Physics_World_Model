@@ -129,6 +129,28 @@ async def set_wallet(
     }
 
 
+@router.get("/wallet-export")
+async def export_wallet_key(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return the decrypted private key for the user's platform-managed wallet.
+
+    Only works for custodial wallets generated at signup.
+    Returns 400 if the user connected their own external wallet (no key stored).
+    Show this key to the user ONCE with a strong warning to save it securely.
+    """
+    private_key = await pwm_token_service.export_private_key(user.id, db)
+    return {
+        "success": True,
+        "private_key": private_key,
+        "warning": (
+            "Save this private key securely. It gives full control of your wallet. "
+            "The platform does not store it in plaintext and cannot recover it for you."
+        ),
+    }
+
+
 # ── Spending endpoints ───────────────────────────────────────────────────
 
 
@@ -159,7 +181,11 @@ async def spend_tokens(
         "balance_before": balance_before,
         "balance_after": txn.balance_after,
         "purpose": body.purpose,
-        "provider_wallet": body.provider_wallet,
+        "provider_wallet": txn.provider_wallet,
+        # 90/10 split recorded for on-chain settlement (M6 credits these on Base)
+        "provider_amount": txn.provider_amount,
+        "pool_amount": txn.pool_amount,
+        "provider_split_bps": txn.provider_split_bps,
     }
 
 

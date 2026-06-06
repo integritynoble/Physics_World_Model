@@ -16,6 +16,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    LargeBinary,
     String,
     Text,
     func,
@@ -49,6 +50,13 @@ class User(Base):
     sso_user_id = Column(Integer, unique=True, nullable=True)
     sso_token = Column(String(512), nullable=True)
     api_key = Column(String(255), nullable=True)
+
+    # SIWE / Web3 identity (lowercase 0x… EIP-55 not enforced at DB layer).
+    # Unique when present; nullable so traditional email accounts can exist.
+    wallet_address = Column(String(42), unique=True, nullable=True, index=True)
+
+    # How this account was created. Values: "local", "sso", "siwe", "google"
+    auth_method = Column(String(20), default="local", nullable=False, server_default="local")
 
     # Access control
     role = Column(String(20), default="user")                # user / admin / reviewer
@@ -287,6 +295,21 @@ class ChallengeSubmission(Base):
     reviewer  = relationship("User", foreign_keys=[reviewer_id], lazy="selectin")
 
 
+class PasswordResetToken(Base):
+    """One-time password reset tokens (expire in 1 hour)."""
+
+    __tablename__ = "password_reset_tokens"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    token = Column(String(64), unique=True, nullable=False, index=True)
+    used = Column(Boolean, default=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    user = relationship("User")
+
+
 class SpecChatSession(Base):
     """Persistent multi-turn spec builder chat session."""
 
@@ -295,7 +318,7 @@ class SpecChatSession(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     session_id = Column(String(64), unique=True, nullable=False, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    variant_key = Column(String(100), default="sd_cassi")
+    variant_key = Column(String(100), default="cassi")
     history = Column(JSONB, default=list)     # [{role, content}, ...]
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
@@ -304,6 +327,10 @@ class SpecChatSession(Base):
     dataset_meta = Column(JSONB, nullable=True)
     matrix_meta = Column(JSONB, nullable=True)
     ground_truth_meta = Column(JSONB, nullable=True)
+
+    # Spec.md — generated spec file and usage type
+    spec_md = Column(Text, nullable=True)
+    usage_type = Column(String(20), nullable=True)  # reconstruct / mismatch / design / simulate
 
     # Relationships
     user = relationship("User")
@@ -466,26 +493,6 @@ class ModalityBasics(Base):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-#  Auth — Password Reset
-# ═══════════════════════════════════════════════════════════════════════════
-
-
-class PasswordResetToken(Base):
-    """One-time password reset tokens (expire in 1 hour)."""
-
-    __tablename__ = "password_reset_tokens"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    token = Column(String(64), unique=True, nullable=False, index=True)
-    used = Column(Boolean, default=False)
-    expires_at = Column(DateTime(timezone=True), nullable=False)
-    created_at = Column(DateTime(timezone=True), default=_utcnow)
-
-    user = relationship("User")
-
-
-# ═══════════════════════════════════════════════════════════════════════════
 #  PWM Token (protocol reward token)
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -504,6 +511,9 @@ class PWMTokenAccount(Base):
     balance = Column(Float, default=0.0, nullable=False)
     lifetime_earned = Column(Float, default=0.0, nullable=False)
     on_chain_address = Column(String(255), nullable=True)
+    # Fernet-encrypted private key for platform-managed wallets.
+    # Null for users who supplied their own external wallet address.
+    wallet_private_key_enc = Column(String(512), nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
@@ -525,18 +535,29 @@ class PWMTokenTransaction(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     transaction_id = Column(String(64), unique=True, nullable=False, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    amount = Column(Float, nullable=False)  # positive = credit, negative = debit
+    amount = Column(Float, nullable=False)
     transaction_type = Column(String(30), nullable=False, index=True)
     description = Column(String(500), default="")
-    submission_id = Column(String(100), nullable=True, index=True)  # links to ChallengeSubmission
-    artifact_type = Column(String(30), nullable=True)  # principle / spec / benchmark / solution
-    awarded_by = Column(Integer, ForeignKey("users.id"), nullable=True)  # founder who triggered the award
+    submission_id = Column(String(100), nullable=True, index=True)
+    artifact_type = Column(String(30), nullable=True)
+    awarded_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     balance_after = Column(Float, nullable=False)
+    # ── 90/10 split (record-only; M6 settles these credits on-chain) ──────
+    # On a `spend` row these capture the intended on-chain distribution of the
+    # spent amount: provider_amount (provider_split_bps of the spend) to
+    # provider_wallet, pool_amount (the remainder) to the mining pool. They are
+    # NOT off-chain credits (the ledger is user-keyed and has no pool account) —
+    # the promotion/settlement relayer reads them to credit provider + pool on
+    # Base. NULL on non-spend rows (awards / adjustments).
+    provider_wallet = Column(String(64), nullable=True)
+    provider_amount = Column(Float, nullable=True)
+    pool_amount = Column(Float, nullable=True)
+    provider_split_bps = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-#  Contributor Economy
+#  Contributor Profiles
 # ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -580,7 +601,7 @@ class ContributorProfile(Base):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-#  Instrument Registry
+#  Instrument
 # ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -600,9 +621,9 @@ class Instrument(Base):
     serial_number = Column(String(255), default="")
     description = Column(Text, default="")
     calibration_date = Column(DateTime(timezone=True), nullable=True)
-    drift_budget_pct = Column(Float, default=0.0)   # allowed drift in %
+    drift_budget_pct = Column(Float, default=0.0)
     contact_email = Column(String(255), default="")
-    card_data = Column(JSONB, default=dict)           # full InstrumentCard JSON
+    card_data = Column(JSONB, default=dict)
     uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     is_public = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
@@ -622,13 +643,311 @@ class AuditLog(Base):
     __tablename__ = "audit_log"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    action = Column(String(100), nullable=False, index=True)   # e.g. "claim_approved"
+    action = Column(String(100), nullable=False, index=True)
     actor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    actor_name = Column(String(100), default="")               # denormalized for speed
-    resource_type = Column(String(50), default="")             # "claim", "instrument", etc.
-    resource_id = Column(String(255), default="")              # the resource identifier
-    detail = Column(Text, default="")                          # JSON or free text
+    actor_name = Column(String(100), default="")
+    resource_type = Column(String(50), default="")
+    resource_id = Column(String(255), default="")
+    detail = Column(Text, default="")
     ip_address = Column(String(45), default="")
     created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
 
     actor = relationship("User", foreign_keys=[actor_id], lazy="selectin")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  PWM Protocol — Principles, Specs, Benchmarks, Activity, Solutions
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class Principle(Base):
+    """L1 Principle — physics fingerprint and observable profile."""
+
+    __tablename__ = "principles"
+
+    principle_id        = Column(String(16),  primary_key=True)   # L1-xxx artifact ID
+    document_hash       = Column(String(64),  nullable=False)
+    physics_fingerprint = Column(JSONB,        nullable=False)     # carrier, mechanism, primitives …
+    observable_profile  = Column(JSONB,        nullable=False)     # {obs: {floor, sota_reference}}
+    size_tiers          = Column(JSONB,        nullable=False)     # {dim: [tier_values]}
+    hardness_fn         = Column(JSONB,        nullable=False)     # {type, baseline, metric}
+    initiator_dataset   = Column(JSONB,        nullable=False)     # [{name, ipfs_cid, license_hash, weight}]
+    status              = Column(String(20),   nullable=False, default="draft", index=True)
+    staked_pwm          = Column(Float,        nullable=False, default=0.0)
+    created_at          = Column(DateTime(timezone=True), default=_utcnow)
+    chain_hash          = Column(String(66),   nullable=True)      # 0x + keccak256 of canonical JSON
+    chain_tx_hash       = Column(String(66),   nullable=True)      # Base Sepolia registration tx
+    chain_block         = Column(Integer,      nullable=True)      # block number of registration
+
+    digital_twins       = relationship("ProtocolDigitalTwin", back_populates="principle", lazy="selectin")
+
+
+class ProtocolDigitalTwin(Base):
+    """L2 Digital Twin — six-tuple (Omega, E, B, I, O, epsilon).
+
+    Formerly named "Spec" / table `protocol_digital_twins`; renamed to "Digital Twin"
+    (table `protocol_digital_twins`, PK `digital_twin_id`) in the 2026-06 rename.
+    """
+
+    __tablename__ = "protocol_digital_twins"
+
+    digital_twin_id     = Column(String(16),  primary_key=True)   # L2-xxx-xxx artifact ID
+    principle_id        = Column(String(16),  ForeignKey("principles.principle_id"), nullable=False, index=True)
+    digital_twin_case   = Column(String(100), nullable=False)
+    omega_type          = Column(String(10),  nullable=False)      # 'range' | 'point'
+    omega               = Column(JSONB,        nullable=False)
+    epsilon             = Column(JSONB,        nullable=False)
+    difficulty_score    = Column(Float,        nullable=True)      # d(Ω_i) or d(P)
+    delta_tier          = Column(Integer,      nullable=True)      # 1 | 3 | 5 | 10 | 50
+    fingerprint         = Column(String(64),   nullable=True, index=True)  # for I-benchmark dupe check
+    status              = Column(String(20),   nullable=False, default="pending", index=True)
+    submitted_by        = Column(String(255),  nullable=False)
+    created_at          = Column(DateTime(timezone=True), default=_utcnow)
+    chain_hash          = Column(String(66),   nullable=True)
+    chain_tx_hash       = Column(String(66),   nullable=True)
+    chain_block         = Column(Integer,      nullable=True)
+
+    principle           = relationship("Principle", back_populates="digital_twins")
+    benchmarks          = relationship("ProtocolBenchmark", back_populates="digital_twin", lazy="selectin")
+
+
+class DigitalTwinSetupImage(Base):
+    """Experimental-setup figure for an L2 digital twin (best-effort).
+
+    Stored in a side-table — NOT a column on `protocol_digital_twins` — so the
+    hot catalog/list queries never drag image blobs through TOAST. One image per
+    digital twin. Images are sourced ONLY from open-access CC BY / CC0 papers;
+    `license` + `attribution` + `source_url` must always be recorded.
+    Formerly `DigitalTwinSetupImage` / table `digital_twin_setup_images`.
+    """
+
+    __tablename__ = "digital_twin_setup_images"
+
+    digital_twin_id = Column(String(16), ForeignKey("protocol_digital_twins.digital_twin_id"), primary_key=True)
+    image_bytes  = Column(LargeBinary, nullable=False)
+    mime         = Column(String(32),  nullable=False, default="image/jpeg")
+    width        = Column(Integer,     nullable=True)
+    height       = Column(Integer,     nullable=True)
+    source_url   = Column(Text,        nullable=True)   # paper / page the figure came from
+    caption      = Column(Text,        nullable=True)   # figure caption
+    attribution  = Column(Text,        nullable=True)   # authors / journal
+    license      = Column(String(32),  nullable=True)   # must be CC BY / CC0 / public-domain
+    uploaded_by  = Column(String(255), nullable=True)   # "auto-fetch" or admin username
+    created_at   = Column(DateTime(timezone=True), default=_utcnow)
+
+
+class CliAuthoringSession(Base):
+    """In-progress artifact bundle being authored in the browser CLI (/cli).
+
+    One active session per (user, layer): holds the field values + the
+    Haiku-drafted MD/JSON across requests so `show`/`validate`/`submit` work.
+    """
+
+    __tablename__ = "cli_authoring_sessions"
+
+    id           = Column(Integer, primary_key=True, autoincrement=True)
+    user_id      = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    layer        = Column(String(20), nullable=False)   # principle | digital-twin | benchmark | solution
+    fields       = Column(JSONB, nullable=False, default=dict)   # {field: value}
+    draft_md     = Column(Text, nullable=True)
+    draft_json   = Column(JSONB, nullable=True)
+    is_active    = Column(Boolean, nullable=False, default=True, index=True)
+    created_at   = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at   = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+
+class CliHaikuUsage(Base):
+    """Per-user/day Haiku call counter for the CLI rate limit (100/day)."""
+
+    __tablename__ = "cli_haiku_usage"
+
+    user_id      = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    day          = Column(String(10), primary_key=True)   # YYYY-MM-DD (UTC)
+    count        = Column(Integer, nullable=False, default=0)
+    updated_at   = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+
+class ProtocolBenchmark(Base):
+    """L3 Benchmark — parametric (P-benchmark) or fixed I-benchmark tier."""
+
+    __tablename__ = "protocol_benchmarks"
+
+    benchmark_id        = Column(String(20),  primary_key=True)   # L3-xxx-xxx-xxx artifact ID
+    digital_twin_id     = Column(String(16),  ForeignKey("protocol_digital_twins.digital_twin_id"), nullable=False, index=True)
+    benchmark_type      = Column(String(20),  nullable=False)      # 'parametric' | 'fixed'
+    tier                = Column(String(5),   nullable=True)       # 'XS' | 'M' | 'XL' | NULL
+    manifest            = Column(JSONB,        nullable=False)
+    ipfs_cid            = Column(String(255),  nullable=True)
+    benchmark_hash      = Column(String(64),   nullable=False)
+    quality_tier        = Column(String(20),   nullable=False, default="standard")  # standard | verified
+    builder             = Column(String(255),  nullable=False)
+    royalty_bps         = Column(Integer,      nullable=False, default=1500)         # 15% = 1500 bps
+    created_at          = Column(DateTime(timezone=True), default=_utcnow)
+    chain_hash          = Column(String(66),   nullable=True)
+    chain_tx_hash       = Column(String(66),   nullable=True)   # parent L3 tx — shared across T1/T2/T3/T4 tier rows
+    chain_block         = Column(Integer,      nullable=True)
+
+    digital_twin        = relationship("ProtocolDigitalTwin", back_populates="benchmarks")
+    activity            = relationship("BenchmarkActivity", back_populates="benchmark", uselist=False)
+    solutions           = relationship("ProtocolSolution", back_populates="benchmark", lazy="selectin")
+
+
+class BenchmarkActivity(Base):
+    """Activity tracking for pool weight calculation (Σ d(Ω_s) last 90 days)."""
+
+    __tablename__ = "benchmark_activity"
+
+    id                  = Column(Integer, primary_key=True, autoincrement=True)
+    principle_id        = Column(String(16),  ForeignKey("principles.principle_id"), nullable=False, index=True)
+    digital_twin_id     = Column(String(16),  ForeignKey("protocol_digital_twins.digital_twin_id"), nullable=False, index=True)
+    benchmark_id        = Column(String(20),  ForeignKey("protocol_benchmarks.benchmark_id"), nullable=False, unique=True, index=True)
+    activity_score      = Column(Float,        nullable=False, default=0.0)  # Σ d(Ω_s) last 90 days
+    last_updated        = Column(DateTime(timezone=True), default=_utcnow)
+
+    benchmark           = relationship("ProtocolBenchmark", back_populates="activity")
+
+
+class ProtocolSolution(Base):
+    """L4 Solution — verified S4 certificate submission."""
+
+    __tablename__ = "protocol_solutions"
+
+    solution_id         = Column(String(100), primary_key=True)
+    benchmark_id        = Column(String(100), ForeignKey("protocol_benchmarks.benchmark_id"), nullable=False, index=True)
+    solver_id           = Column(String(255), nullable=False, index=True)
+    certificate_hash    = Column(String(64),  nullable=False)
+    omega_s             = Column(JSONB,        nullable=True)       # Ω at which solution was evaluated
+    difficulty_score    = Column(Float,        nullable=False)      # d(Ω_s)
+    quality_ratio       = Column(Float,        nullable=False)      # q ∈ [0.75, 1.0]
+    status              = Column(String(20),   nullable=False, default="pending", index=True)
+    reward_pwm          = Column(Float,        nullable=True)
+    submitted_at        = Column(DateTime(timezone=True), default=_utcnow)
+    finalized_at        = Column(DateTime(timezone=True), nullable=True)
+
+    benchmark           = relationship("ProtocolBenchmark", back_populates="solutions")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  PWM Protocol — Governance and Challenges
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class GovernanceProposal(Base):
+    """Sub-DAO governance proposal (conviction voting, no hard deadline)."""
+
+    __tablename__ = "governance_proposals"
+
+    proposal_id     = Column(String(64),  primary_key=True)
+    principle_id    = Column(String(16),  ForeignKey("principles.principle_id"), nullable=False, index=True)
+    proposal_type   = Column(String(40),  nullable=False)      # dataset_add | dataset_replace | sota_update | …
+    payload         = Column(JSONB,        nullable=False)      # type-specific content
+    conviction      = Column(Float,        nullable=False, default=0.0)
+    threshold_pct   = Column(Float,        nullable=False)      # 0.50 or 0.667
+    status          = Column(String(20),   nullable=False, default="open", index=True)
+    created_by      = Column(String(255),  nullable=False)
+    created_at      = Column(DateTime(timezone=True), default=_utcnow)
+    resolved_at     = Column(DateTime(timezone=True), nullable=True)
+
+    votes           = relationship("GovernanceVote", back_populates="proposal", lazy="selectin")
+
+
+class GovernanceVote(Base):
+    """A single conviction vote cast by a contributor."""
+
+    __tablename__ = "governance_votes"
+
+    vote_id         = Column(String(64),  primary_key=True)
+    proposal_id     = Column(String(64),  ForeignKey("governance_proposals.proposal_id"), nullable=False, index=True)
+    voter_id        = Column(String(255), nullable=False, index=True)
+    weight          = Column(Float,        nullable=False)
+    voted_at        = Column(DateTime(timezone=True), default=_utcnow)
+
+    proposal        = relationship("GovernanceProposal", back_populates="votes")
+
+
+class GovernanceDelegation(Base):
+    """Liquid democracy delegation for a specific Principle's sub-DAO."""
+
+    __tablename__ = "governance_delegations"
+
+    id              = Column(Integer, primary_key=True, autoincrement=True)
+    delegator_id    = Column(String(255), nullable=False, index=True)
+    delegate_id     = Column(String(255), nullable=False, index=True)
+    principle_id    = Column(String(16),  ForeignKey("principles.principle_id"), nullable=False, index=True)
+    created_at      = Column(DateTime(timezone=True), default=_utcnow)
+    revoked_at      = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        __import__("sqlalchemy").UniqueConstraint("delegator_id", "principle_id", name="uq_delegation_delegator_principle"),
+    )
+
+
+class ProtocolChallenge(Base):
+    """On-chain challenge record (mirrored off-chain for platform UI)."""
+
+    __tablename__ = "protocol_challenges"
+
+    challenge_id    = Column(String(64),  primary_key=True)
+    cert_hash       = Column(String(64),  nullable=False, index=True)
+    solution_id     = Column(String(100), ForeignKey("protocol_solutions.solution_id"), nullable=True, index=True)
+    challenger      = Column(String(255), nullable=False)
+    evidence_type   = Column(String(40),  nullable=False)   # REPLAY_MISMATCH | METRIC_MISMATCH | GATE_FAILURE | …
+    evidence_hash   = Column(String(64),  nullable=False)
+    disputed_step   = Column(Integer,     nullable=True)     # 0-5 for bisection
+    bond_amount     = Column(Float,        nullable=False)
+    status          = Column(String(20),   nullable=False, default="open", index=True)
+    verdict         = Column(String(20),   nullable=True)    # upheld | dismissed
+    verdict_log     = Column(JSONB,        nullable=True)    # [{verifier_id, verdict, message}, ...]
+    submitted_at    = Column(DateTime(timezone=True), default=_utcnow)
+    created_at      = Column(DateTime(timezone=True), default=_utcnow)
+    resolved_at     = Column(DateTime(timezone=True), nullable=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  PWM Submission System
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class PWMSubmission(Base):
+    """User-submitted PWM protocol artifact — Principle, Spec, I-Benchmark, or Solution."""
+
+    __tablename__ = "pwm_submissions"
+
+    id               = Column(Integer,  primary_key=True, autoincrement=True)
+    submission_id    = Column(String(64), unique=True, nullable=False, index=True)
+    submission_type  = Column(String(20), nullable=False, index=True)
+    # "principle" | "spec" | "benchmark" | "solution"
+
+    # Submitter identity
+    submitted_by_id  = Column(Integer, ForeignKey("users.id"), nullable=True)
+    submitter_wallet = Column(String(42), nullable=True)
+    submitter_label  = Column(String(255), nullable=False, server_default="anonymous")
+
+    # Status lifecycle
+    status           = Column(String(20), nullable=False, default="testnet", index=True)
+    # "testnet" | "reviewing" | "mainnet" | "rejected" | "needs_revision"
+
+    # Parent reference for hierarchy (spec→principle, benchmark→spec, solution→principle)
+    parent_id        = Column(String(255), nullable=True)
+    parent_type      = Column(String(20),  nullable=True)
+
+    # All simplified form fields as JSONB
+    form_data        = Column(JSONB, nullable=False, default=dict)
+
+    # Verification output
+    gate_results     = Column(JSONB, nullable=True)
+    # {S1: {pass: bool, reason: str}, S2: {...}, S3: {...}, S4: {...}}
+    verdict          = Column(String(20), nullable=True)   # ACCEPT | NEEDS_REVISION | REJECT
+    verdict_reason   = Column(Text, nullable=True)
+    verified_at      = Column(DateTime(timezone=True), nullable=True)
+
+    # Revision tracking
+    revision_count   = Column(Integer, nullable=False, default=0)
+    original_id      = Column(String(64), nullable=True)   # original submission_id for revisions
+
+    # PWM reward (set on mainnet promotion)
+    pwm_awarded      = Column(Float, nullable=True)
+
+    # Timestamps
+    submitted_at     = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at       = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)

@@ -67,7 +67,14 @@
 
         <!-- On-chain wallet -->
         <div class="pt-2 border-t border-indigo-100">
-            <label class="text-xs uppercase tracking-wider text-gray-500 font-medium">On-chain Wallet</label>
+            <div class="flex items-center justify-between">
+                <label class="text-xs uppercase tracking-wider text-gray-500 font-medium">On-chain Wallet</label>
+                {% if pwm_is_custodial %}
+                <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">Platform-managed</span>
+                {% else %}
+                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">External</span>
+                {% endif %}
+            </div>
             <div class="mt-2 flex gap-2">
                 <input type="text" id="wallet-address" value="{{ pwm_wallet or '' }}"
                        placeholder="0x..."
@@ -79,6 +86,24 @@
                 </button>
             </div>
             <div id="wallet-status" class="hidden mt-2 text-xs"></div>
+
+            {% if pwm_is_custodial %}
+            <!-- Export private key (custodial wallets only) -->
+            <div class="mt-3">
+                <button onclick="exportKey()"
+                        class="text-xs text-indigo-600 hover:text-indigo-500 underline underline-offset-2">
+                    Export private key →
+                </button>
+                <div id="key-reveal" class="hidden mt-2 bg-red-50 border border-red-200 rounded-lg p-3 space-y-2">
+                    <p class="text-xs text-red-700 font-semibold">
+                        Save this key securely. Anyone with it controls your wallet. The platform will not show it again after you leave this page.
+                    </p>
+                    <code id="key-value" class="block text-xs font-mono text-red-900 break-all"></code>
+                    <button onclick="document.getElementById('key-reveal').classList.add('hidden')"
+                            class="text-xs text-gray-500 hover:text-gray-700">Dismiss</button>
+                </div>
+            </div>
+            {% endif %}
 
             <!-- Settlement pending note -->
             {% if pwm_wallet %}
@@ -243,6 +268,22 @@ function showError(msg) {
 
 function hideError() {
     document.getElementById('api-key-error').classList.add('hidden');
+}
+
+async function exportKey() {
+    try {
+        const res = await fetch('/api/v1/pwm-token/wallet-export');
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.detail || 'Failed to export key.');
+            return;
+        }
+        const data = await res.json();
+        document.getElementById('key-value').textContent = data.private_key;
+        document.getElementById('key-reveal').classList.remove('hidden');
+    } catch (e) {
+        alert('Failed to export private key. Please try again.');
+    }
 }
 
 async function saveWallet() {

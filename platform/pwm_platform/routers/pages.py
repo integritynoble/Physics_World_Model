@@ -13,7 +13,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import or_, select
@@ -130,18 +130,104 @@ templates = Jinja2Templates(directory="pwm_platform/templates")
 # ── Public pages (visible to everyone) ──────────────────────────────────
 
 
+@router.get("/about", response_class=HTMLResponse)
+async def about_page(request: Request, user: Optional[User] = Depends(get_optional_user)):
+    """About page — introduction to Physics World Model as a Dyson Swarm."""
+    return templates.TemplateResponse(request, "about.html", {"user": user, "active": "about"})
+
+
+@router.get("/roadmap", response_class=HTMLResponse)
+async def roadmap_page(request: Request, user: Optional[User] = Depends(get_optional_user)):
+    """Roadmap — project phases and current status."""
+    return templates.TemplateResponse(request, "roadmap.html", {"user": user, "active": "roadmap"})
+
+
+@router.get("/specs", include_in_schema=False)
+async def specs_page_legacy_redirect(request: Request):
+    """Legacy URL — 301 to the renamed /digital-twins (preserve query string)."""
+    qs = request.url.query
+    return RedirectResponse(url="/digital-twins" + (f"?{qs}" if qs else ""), status_code=301)
+
+
+@router.get("/digital-twins", response_class=HTMLResponse)
+async def specs_page(
+    request: Request,
+    q: str = "",
+    domain: str = "",
+    status: str = "all",
+    db: AsyncSession = Depends(get_db),
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """L2 Digital Twins — browse all submitted digital twins."""
+    from pwm_platform.db.models import PWMSubmission
+    from sqlalchemy import desc, func, select
+
+    query = (
+        select(PWMSubmission)
+        .where(PWMSubmission.submission_type == "spec")
+        .order_by(desc(PWMSubmission.submitted_at))
+    )
+    if status != "all":
+        query = query.where(PWMSubmission.status == status)
+    result = await db.execute(query)
+    all_specs = result.scalars().all()
+
+    # Filter by search query
+    if q:
+        q_lower = q.lower()
+        all_specs = [
+            s for s in all_specs
+            if q_lower in str(s.form_data).lower()
+        ]
+
+    # Stats
+    counts_result = await db.execute(
+        select(PWMSubmission.status, func.count(PWMSubmission.id))
+        .where(PWMSubmission.submission_type == "spec")
+        .group_by(PWMSubmission.status)
+    )
+    counts = dict(counts_result.all())
+
+    return templates.TemplateResponse(request, "specs.html", {
+        "user": user,
+        "active": "specs",
+        "specs": all_specs,
+        "counts": counts,
+        "total": sum(counts.values()),
+        "q": q,
+        "status_filter": status,
+    })
+
+
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    """Login page — SSO redirect, Google OAuth, or local email/password."""
+    """Login page — SIWE wallet + Coinbase Wallet + Web3Auth + Google + email.
+
+    Also pulls the on-chain config (Base Sepolia / Base mainnet) from the
+    onchain router so Web3Auth creates wallets on the same chain the rest
+    of the site operates on. Without this the embedded wallet would land
+    on Base mainnet by default (Web3Auth's hardcoded fallback), and the
+    user would need to manually switch chains before doing anything.
+    """
+    from pwm_platform.routers.onchain import _CONFIG as _ONCHAIN
     return templates.TemplateResponse(request, "login.html", {
-        "sso_enabled": bool(settings.SSO_REDIRECT_URL),
-        "sso_url": settings.SSO_REDIRECT_URL,
         "google_client_id": settings.GOOGLE_CLIENT_ID,
+        "sso_url": settings.SSO_REDIRECT_URL,
+        "web3auth_client_id": settings.WEB3AUTH_CLIENT_ID,
+        "web3auth_network": settings.WEB3AUTH_NETWORK,
+        # Chain config matches what /api/v1/onchain/config exposes — same
+        # chainId, rpcUrl, explorer for the embedded wallet.
+        "chain_id_hex": "0x" + format(_ONCHAIN.get("chainId") or 84532, "x"),
+        "chain_id_int": _ONCHAIN.get("chainId") or 84532,
+        "chain_rpc_url": _ONCHAIN.get("rpcUrl") or "https://sepolia.base.org",
+        "chain_explorer_url": _ONCHAIN.get("explorerUrl") or "https://sepolia.basescan.org",
+        "chain_display_name": "Base Sepolia" if (_ONCHAIN.get("chainId") == 84532) else "Base",
     })
 
 
 @router.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
+    """Sign-up page — create new account."""
     return templates.TemplateResponse(request, "signup.html", {
         "google_client_id": settings.GOOGLE_CLIENT_ID,
     })
@@ -169,20 +255,22 @@ async def settings_page(
         "pwm_balance": pwm_balance_data["balance"],
         "pwm_lifetime_earned": pwm_balance_data["lifetime_earned"],
         "pwm_wallet": pwm_balance_data["on_chain_address"],
+        "pwm_is_custodial": pwm_balance_data["is_custodial"],
         "pwm_transactions": pwm_transactions,
     })
 
 
 @router.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password_page(request: Request):
-    return templates.TemplateResponse(request, "forgot_password.html", {"request": request})
+    """Forgot password page."""
+    return templates.TemplateResponse(request, "forgot_password.html")
 
 
 @router.get("/reset-password", response_class=HTMLResponse)
 async def reset_password_page(request: Request, token: str = ""):
+    """Password reset page (with token from email link)."""
     return templates.TemplateResponse(request, "reset_password.html", {
         "token": token,
-        "error": None if token else "Missing reset token.",
     })
 
 
@@ -486,7 +574,7 @@ def _build_sidebar_data() -> dict:
     raw_cats = get_categories()
 
     # Reverse mapping: variant_key → example dataset key, AND example_key → example_key
-    # (modality catalog IDs may differ from variant_keys, e.g. "cassi" vs "sd_cassi")
+    # (modality catalog IDs may differ from variant_keys, e.g. "cassi" vs "cassi")
     _variant_to_example = {v["variant_key"]: k for k, v in EXAMPLE_DATASETS.items()}
     # Also map by the example key itself (e.g. "spc" → "spc", "cassi" → "cassi")
     for k in EXAMPLE_DATASETS:
@@ -565,15 +653,95 @@ def _build_sidebar_data() -> dict:
 
 
 @router.get("/", response_class=HTMLResponse)
-async def home_redirect():
-    """Redirect root to the benchmark page."""
-    return RedirectResponse("/benchmark", status_code=302)
+async def home_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Homepage — hero + flagship leaderboards + benchmark grid."""
+    from collections import OrderedDict
+
+    from pwm_platform.services.benchmark_database import (
+        VARIANT_DATABASE,
+        list_all_variant_keys,
+    )
+
+    CATEGORY_ORDER = [
+        ("compressive", "Compressive"),
+        ("medical", "Medical"),
+        ("medical_ultrasound", "Medical Ultrasound"),
+        ("coherent", "Coherent"),
+        ("microscopy", "Microscopy"),
+        ("electron_microscopy", "Electron Microscopy"),
+        ("clinical_optics", "Clinical Optics"),
+        ("computational", "Computational"),
+        ("computational_photography", "Computational Photography"),
+        ("neural_rendering", "Neural Rendering"),
+        ("depth_imaging", "Depth Imaging"),
+        ("remote_sensing", "Remote Sensing"),
+        ("particle_imaging", "Particle Imaging"),
+        ("scanning_probe", "Scanning Probe"),
+        ("industrial_inspection", "Industrial Inspection"),
+        ("spectroscopy", "Spectroscopy"),
+        ("astronomy", "Astronomy"),
+        ("ultrafast", "Ultrafast"),
+        ("quantum", "Quantum"),
+        ("experimental_science", "Experimental Science"),
+        ("scientific_instrumentation", "Scientific Instrumentation"),
+        ("multi_modal_fusion", "Multi-Modal Fusion"),
+    ]
+    category_labels = dict(CATEGORY_ORDER)
+
+    grouped: dict[str, list[dict]] = OrderedDict()
+    for cat_key, _label in CATEGORY_ORDER:
+        grouped[cat_key] = []
+
+    for key in list_all_variant_keys():
+        entry = dict(VARIANT_DATABASE[key])
+        entry["variant_key"] = key
+        benchmarks = entry.get("benchmarks", [])
+        entry["num_benchmarks"] = len(benchmarks)
+        challenge = next((b for b in benchmarks if b.get("is_challenge")), None)
+        entry["leaderboard"] = challenge.get("leaderboard", [])[:3] if challenge else []
+        cat = entry.get("category", "other")
+        if cat not in grouped:
+            grouped[cat] = []
+        grouped[cat].append(entry)
+
+    grouped = OrderedDict((k, v) for k, v in grouped.items() if v)
+    total_variants = sum(len(v) for v in grouped.values())
+
+    FEATURED_KEYS = [
+        "ct", "mri", "cryo_em", "ultrasound", "cassi",
+        "nerf", "oct", "pet", "sar", "ghost_imaging",
+    ]
+    featured = []
+    for fk in FEATURED_KEYS:
+        entry = VARIANT_DATABASE.get(fk)
+        if entry is None:
+            continue
+        normal_lb = entry.get("normal_leaderboard") or []
+        featured.append({
+            "variant_key": fk,
+            "display_name": entry["display_name"],
+            "category": category_labels.get(entry.get("category", ""), entry.get("category", "")),
+            "leaderboard": normal_lb[:3],
+        })
+
+    return templates.TemplateResponse(request, "home.html", {
+        "user": user,
+        "grouped": grouped,
+        "category_labels": category_labels,
+        "total_variants": total_variants,
+        "featured": featured,
+        "active": "home",
+    })
 
 
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_redirect():
-    """Redirect old /dashboard URL to /speclab."""
-    return RedirectResponse("/speclab", status_code=301)
+    """Redirect old /dashboard URL to /ai4science."""
+    return RedirectResponse("/ai4science", status_code=301)
 
 
 # ── Pricing & Billing pages ──────────────────────────────────────────────
@@ -636,6 +804,8 @@ async def speclab(
     mode: str = "common",
     modality: str = "",
     algorithm: str = "",
+    usage_type: str = "",
+    type: str = "",  # alias from benchmark links (?type=reconstruct)
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -658,7 +828,7 @@ async def speclab(
     chat_sessions: list[dict] = []
     if user:
         from pwm_platform.services.gemini_client import list_user_sessions
-        chat_sessions = await list_user_sessions(db, user.id, variant_key="sd_cassi")
+        chat_sessions = await list_user_sessions(db, user.id, variant_key="cassi")
 
     # Build grouped_variants for Common Mode modality picker
     grouped_variants = _build_grouped_variants()
@@ -674,11 +844,13 @@ async def speclab(
             preselect_algorithms = get_algorithms(modality, cat)
 
     speclab_mode = mode if mode in ("common", "advanced") else "common"
+    # Merge ?type= (from benchmark links) and ?usage_type= — default to reconstruct
+    resolved_usage_type = usage_type or type or "reconstruct"
 
     return templates.TemplateResponse(request, "speclab.html", {
         "user": user,
         "runs": runs,
-        "chat_variant_key": "sd_cassi",
+        "chat_variant_key": "cassi",
         "chat_sessions": chat_sessions,
         "sessions": chat_sessions,
         "current_session_id": "",
@@ -687,8 +859,9 @@ async def speclab(
         "preselect_modality": modality,
         "preselect_algorithm": algorithm,
         "preselect_algorithms": preselect_algorithms,
+        "usage_type": resolved_usage_type,
         **sidebar_data,
-    })
+    }, headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"})
 
 
 @router.get("/runs/new", response_class=HTMLResponse)
@@ -725,14 +898,14 @@ async def run_status_page(
     run = result.scalar_one_or_none()
     if run is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Run not found"
+            "user": user, "message": "Run not found"
         }, status_code=404)
 
     # Access control: private runs only visible to owner or admin
     if not run.is_public:
         if user is None or (run.user_id != user.id and user.role != "admin"):
             return templates.TemplateResponse(request, "404.html", {
-                "request": request, "user": user, "message": "Run not found"
+                "user": user, "message": "Run not found"
             }, status_code=404)
 
     is_owner = user is not None and run.user_id == user.id
@@ -750,37 +923,6 @@ async def run_status_page(
         "run": run,
         "report": report,
         "is_owner": is_owner,
-    })
-
-
-@router.get("/datasets", response_class=HTMLResponse)
-async def datasets_browser_page(
-    request: Request,
-    user: Optional[User] = Depends(get_optional_user),
-    db: AsyncSession = Depends(get_db),
-    modality: str = "",
-    data_type: str = "",
-):
-    """Dataset registry — browse registered DatasetCards."""
-    from sqlalchemy import select as _select
-    stmt = _select(Dataset).order_by(Dataset.created_at.desc()).limit(200)
-    if modality:
-        stmt = stmt.where(Dataset.modality == modality)
-    if data_type:
-        stmt = stmt.where(Dataset.data_type == data_type)
-    result = await db.execute(stmt)
-    datasets = result.scalars().all()
-
-    # Distinct modalities for filter
-    mod_result = await db.execute(_select(Dataset.modality).distinct())
-    modalities = sorted(r[0] for r in mod_result.all() if r[0])
-
-    return templates.TemplateResponse(request, "dataset_browser.html", {
-        "user": user,
-        "datasets": datasets,
-        "modalities": modalities,
-        "modality_filter": modality,
-        "data_type_filter": data_type,
     })
 
 
@@ -851,7 +993,7 @@ async def datasets_page(
 
     # ── Featured Modalities — 10 attention-grabbing picks with mini leaderboards
     FEATURED_KEYS = [
-        "ct", "mri", "cryo_em", "ultrasound", "sd_cassi",
+        "ct", "mri", "cryo_em", "ultrasound", "cassi",
         "nerf", "oct", "pet", "sar", "ghost_imaging",
     ]
     featured = []
@@ -882,7 +1024,24 @@ async def datasets_page(
     })
 
 
-@router.get("/benchmark/system-design", response_class=HTMLResponse)
+@router.get("/benchmark/contribution", response_class=HTMLResponse)
+async def contribution_hub(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Global contribution hub — 5 contribution types with credits/monetization."""
+    return templates.TemplateResponse(request, "contribution_hub.html", {
+        "user": user,
+    })
+
+
+@router.get("/benchmark/system-design")
+async def system_design_redirect():
+    """Redirect old /benchmark/system-design URL to /benchmark/contribution."""
+    return RedirectResponse("/benchmark/contribution", status_code=301)
+
+
+@router.get("/benchmark/system-design-legacy", response_class=HTMLResponse)
 async def system_design_page(
     request: Request,
     user: Optional[User] = Depends(get_optional_user),
@@ -920,31 +1079,57 @@ async def modalities_page(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Modality catalog — serves from Physics World Model knowledge base."""
-    from pwm_platform.services.modality_database import (
-        MODALITY_DATABASE,
-        list_all_categories,
-        list_all_modality_keys,
-        list_modalities_by_category,
-    )
+    """Modality catalog — serves all 169+ variants from benchmark database."""
+    from pwm_platform.services.benchmark_database import VARIANT_DATABASE
+    from pwm_platform.services.benchmark_database._modality_catalog import MODALITY_CATALOG
+    from pwm_platform.services.modality_database import MODALITY_DATABASE
+
+    # Build a merged catalog: VARIANT_DATABASE is authoritative for the full list;
+    # MODALITY_DATABASE supplies rich physics metadata where available.
+    all_entries: list[dict] = []
+    seen: set[str] = set()
+    for key, ventry in VARIANT_DATABASE.items():
+        if key in seen:
+            continue
+        seen.add(key)
+        entry: dict = {}
+        # Rich metadata from MODALITY_DATABASE takes priority
+        if key in MODALITY_DATABASE:
+            entry = dict(MODALITY_DATABASE[key])
+        else:
+            # Supplement from MODALITY_CATALOG for modalities without a DB entry
+            cat_entry = MODALITY_CATALOG.get(ventry.get("parent_modality", key), {})
+            entry["display_name"] = ventry.get("display_name") or cat_entry.get("display_name") or key
+            entry["category"] = ventry.get("category") or cat_entry.get("category") or "other"
+            entry["description"] = cat_entry.get("description", "")
+            entry["physics_class"] = cat_entry.get("carrier", "")
+            entry["spec_notation"] = ventry.get("spec_notation") or cat_entry.get("spec_notation", "")
+        entry["modality_key"] = key
+        all_entries.append(entry)
+
+    # Include MODALITY_DATABASE entries not covered by VARIANT_DATABASE (e.g. spc parent)
+    for key, mentry in MODALITY_DATABASE.items():
+        if key not in seen:
+            entry = dict(mentry)
+            entry["modality_key"] = key
+            all_entries.append(entry)
+            seen.add(key)
+
+    # Sort alphabetically by display_name
+    all_entries.sort(key=lambda e: e.get("display_name", "").lower())
 
     if category:
-        keys = list_modalities_by_category(category)
-    else:
-        keys = list_all_modality_keys()
+        all_entries = [e for e in all_entries if e.get("category") == category]
 
-    # Build template-friendly objects with modality_key included
-    modalities = []
-    for k in keys:
-        entry = dict(MODALITY_DATABASE[k])
-        entry["modality_key"] = k
-        modalities.append(entry)
+    # Collect all unique categories for the filter buttons
+    all_categories = sorted({e.get("category", "") for e in all_entries if e.get("category")})
 
     return templates.TemplateResponse(request, "modalities.html", {
         "user": user,
-        "modalities": modalities,
-        "categories": list_all_categories(),
+        "modalities": all_entries,
+        "categories": all_categories,
         "selected_category": category,
+        "total_count": len(all_entries),
     })
 
 
@@ -955,18 +1140,34 @@ async def modality_detail(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Individual modality detail page with DAG viewer and maintainer list."""
+    """Individual modality detail page with DAG viewer and trust badges."""
     from pwm_platform.services.benchmark_database import (
         get_variant,
         list_variants_for_modality,
+        VARIANT_DATABASE,
     )
+    from pwm_platform.services.benchmark_database._modality_catalog import MODALITY_CATALOG
     from pwm_platform.services.modality_database import MODALITY_DATABASE
 
-    if modality_key not in MODALITY_DATABASE:
+    if modality_key not in MODALITY_DATABASE and modality_key not in VARIANT_DATABASE:
         raise HTTPException(404, f"Modality '{modality_key}' not found")
 
-    modality = dict(MODALITY_DATABASE[modality_key])
+    if modality_key in MODALITY_DATABASE:
+        modality = dict(MODALITY_DATABASE[modality_key])
+    else:
+        ventry = VARIANT_DATABASE[modality_key]
+        parent = ventry.get("parent_modality", modality_key)
+        cat_entry = MODALITY_CATALOG.get(parent, MODALITY_CATALOG.get(modality_key, {}))
+        modality = {
+            "display_name": ventry.get("display_name") or cat_entry.get("display_name") or modality_key,
+            "category": ventry.get("category") or cat_entry.get("category") or "other",
+            "description": cat_entry.get("description", ""),
+            "physics_class": cat_entry.get("carrier", ""),
+            "spec_notation": ventry.get("spec_notation") or cat_entry.get("spec_notation", ""),
+            "spec_dag": ventry.get("spec_dag") or cat_entry.get("spec_dag", []),
+        }
 
+    # Find all benchmark variants for this modality
     variant_keys = list_variants_for_modality(modality_key)
     variants = []
     for vk in variant_keys:
@@ -975,25 +1176,31 @@ async def modality_detail(
             v["variant_key"] = vk
             variants.append(v)
 
+    # Compute SVG width for the DAG viewer
     spec_dag = modality.get("spec_dag") or []
+    # Also try to pull spec_dag from the first variant if not on the modality itself
     if not spec_dag and variants:
         spec_dag = variants[0].get("spec_dag", [])
     dag_width = max(20 + len(spec_dag) * 160, 200) if spec_dag else 200
 
+    # Spec notation: try modality first, fall back to first variant
     spec_notation = modality.get("spec_notation", "")
     if not spec_notation and variants:
         spec_notation = variants[0].get("spec_notation", "")
 
-    from pwm_platform.services.modality_database import list_modalities_by_category
+    # Related modalities in the same category — search VARIANT_DATABASE for breadth
+    target_cat = modality.get("category", "")
     related_keys = [
-        k for k in list_modalities_by_category(modality.get("category", ""))
-        if k != modality_key
+        k for k, v in VARIANT_DATABASE.items()
+        if v.get("category") == target_cat and k != modality_key
     ]
-    related = [
-        {"key": rk, "display_name": MODALITY_DATABASE[rk]["display_name"]}
-        for rk in related_keys[:8]
-    ]
+    related = []
+    for rk in related_keys[:8]:
+        rv = VARIANT_DATABASE[rk]
+        rname = rv.get("display_name") or (MODALITY_DATABASE.get(rk, {}).get("display_name")) or rk
+        related.append({"key": rk, "display_name": rname})
 
+    # Fetch maintainers for this modality from the contributor profiles table
     from sqlalchemy.orm import selectinload
     maintainers = []
     try:
@@ -1003,10 +1210,11 @@ async def modality_detail(
         for p in result.scalars().all():
             if modality_key in (p.maintained_modalities or []):
                 uname = p.user.username if p.user else ""
+                uemail = p.user.email if p.user else ""
                 maintainers.append({
                     "user_id": p.user_id,
                     "username": uname,
-                    "email": p.user.email if p.user else "",
+                    "email": uemail,
                     "roles": p.roles or [],
                     "badges": p.badges or [],
                 })
@@ -1026,11 +1234,185 @@ async def modality_detail(
     })
 
 
+# ── Trust-tier infrastructure: merge community submissions into leaderboards ──
+
+
+async def _merge_community_submissions(
+    variant: dict,
+    variant_key: str,
+    db: AsyncSession,
+) -> None:
+    """Merge approved community ChallengeSubmission rows into the variant's
+    challenge leaderboard in-place.  Each approved submission carries its own
+    trust_tier (draft / author_confirmed / reproduced / certified) which is
+    rendered as a badge on the leaderboard table.
+
+    Only submissions with status='approved' and matching variant_key are merged.
+    Duplicate method names are skipped (synthetic baseline takes precedence).
+    """
+    # Find the challenge benchmark entry inside the variant dict
+    challenge = None
+    for bm in variant.get("benchmarks", []):
+        if bm.get("is_challenge"):
+            challenge = bm
+            break
+    if challenge is None:
+        return
+
+    leaderboard = challenge.get("leaderboard", [])
+
+    # Query approved community submissions for this variant
+    try:
+        result = await db.execute(
+            select(ChallengeSubmission).where(
+                ChallengeSubmission.variant_key == variant_key,
+                ChallengeSubmission.status == "approved",
+            )
+        )
+        submissions = result.scalars().all()
+    except Exception:
+        # DB might not have the table yet (pre-migration); silently skip
+        return
+
+    if not submissions:
+        return
+
+    # Build set of existing method names to avoid duplicates
+    existing_methods = {e.get("method", "").lower() for e in leaderboard}
+
+    for sub in submissions:
+        method_lower = (sub.method_name or "").lower()
+        if method_lower in existing_methods:
+            continue
+
+        # Extract scores from the submission's scored JSON
+        scores = sub.scores or {}
+        pub = scores.get("public", {})
+        dev = scores.get("dev", {})
+        hid = scores.get("hidden", {})
+
+        pub_score = pub.get("score")
+        dev_score = dev.get("score")
+        hid_score = hid.get("score")
+
+        score_vals = [s for s in (pub_score, dev_score, hid_score) if s is not None]
+        overall = round(sum(score_vals) / len(score_vals), 3) if score_vals else 0.0
+
+        entry = {
+            "rank": 0,
+            "method": sub.method_name,
+            "public_score": pub_score,
+            "dev_score": dev_score,
+            "hidden_score": hid_score,
+            "overall_score": overall,
+            "details": {
+                "public": {
+                    "psnr": pub.get("psnr"),
+                    "ssim": pub.get("ssim"),
+                    "consistency": pub.get("consistency"),
+                },
+                "dev": {
+                    "psnr": dev.get("psnr"),
+                    "ssim": dev.get("ssim"),
+                    "consistency": dev.get("consistency"),
+                },
+                "hidden": {
+                    "psnr": hid.get("psnr"),
+                    "ssim": hid.get("ssim"),
+                    "consistency": hid.get("consistency"),
+                },
+            },
+            "source": f"Community — {sub.submitter.username}" if sub.submitter else "Community",
+            "trust_tier": sub.trust_tier or "draft",
+            "submission_id": sub.submission_id,
+        }
+        leaderboard.append(entry)
+        existing_methods.add(method_lower)
+
+    # Re-sort and re-rank entire leaderboard
+    leaderboard.sort(key=lambda e: e.get("overall_score", 0), reverse=True)
+    for i, e in enumerate(leaderboard, 1):
+        e["rank"] = i
+    challenge["leaderboard"] = leaderboard
+
+
+def _merge_approved_claims_into_leaderboard(variant: dict, variant_key: str) -> None:
+    """Merge approved claims from /tmp/pwm_claim_queue/ into the normal leaderboard.
+
+    Approved claims appear at Draft trust tier alongside the catalog algorithms.
+    This bridges the claims workflow with the benchmark leaderboard.
+    """
+    import json as _json
+
+    claims_dir = Path("/tmp/pwm_claim_queue")
+    if not claims_dir.exists():
+        return
+
+    normal_lb = variant.get("normal_leaderboard")
+    if normal_lb is None:
+        normal_lb = []
+        variant["normal_leaderboard"] = normal_lb
+
+    existing_methods = {e.get("method", "").lower() for e in normal_lb}
+
+    for f in sorted(claims_dir.glob("*.json")):
+        try:
+            claim = _json.loads(f.read_text())
+        except Exception:
+            continue
+
+        # Only approved claims for this modality
+        if claim.get("status") != "approved":
+            continue
+        claim_mod = (claim.get("modality") or "").lower()
+        if claim_mod != variant_key.lower() and claim_mod != variant.get("parent_modality", "").lower():
+            continue
+
+        method = claim.get("method") or claim.get("title", "")[:30]
+        if method.lower() in existing_methods:
+            continue
+
+        # Parse PSNR/SSIM
+        try:
+            psnr = float(claim.get("claimed_psnr") or 0)
+        except (ValueError, TypeError):
+            psnr = 0.0
+        try:
+            ssim = float(claim.get("claimed_ssim") or 0)
+        except (ValueError, TypeError):
+            ssim = 0.0
+
+        # Compute score same as catalog: 0.5 * clip((psnr-15)/30, 0, 1) + 0.5 * ssim
+        psnr_norm = max(0.0, min(1.0, (psnr - 15.0) / 30.0))
+        score = round(0.5 * psnr_norm + 0.5 * ssim, 4)
+
+        entry = {
+            "rank": 0,
+            "method": method,
+            "score": score,
+            "psnr": round(psnr, 2),
+            "ssim": round(ssim, 4),
+            "source": claim.get("source_id") or "Claim",
+            "trust_tier": claim.get("trust_tier", "draft"),
+            "dataset": variant_key,
+            "claim_id": claim.get("claim_id", ""),
+        }
+        normal_lb.append(entry)
+        existing_methods.add(method.lower())
+
+    # Re-sort and re-rank
+    normal_lb.sort(key=lambda e: e.get("score", 0), reverse=True)
+    for i, e in enumerate(normal_lb, 1):
+        e["rank"] = i
+    variant["normal_leaderboard"] = normal_lb
+
+
 @router.get("/benchmark/{variant_key}", response_class=HTMLResponse)
 async def variant_benchmarks_page(
     request: Request,
     variant_key: str,
     user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
 ):
     """Variant benchmark page — benchmarks, modality intro, spec DAG, leaderboards, credits."""
     from pwm_platform.services.benchmark_database import (
@@ -1043,7 +1425,7 @@ async def variant_benchmarks_page(
     variant = get_variant(variant_key)
     if variant is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Variant not found"
+            "user": user, "message": "Variant not found"
         }, status_code=404)
 
     # Fetch parent modality data for the introduction section
@@ -1068,9 +1450,15 @@ async def variant_benchmarks_page(
                 if tier_ds and tier_ds.get("gcs_object_path"):
                     tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
+    # ── Merge approved community submissions into challenge leaderboards ──
+    await _merge_community_submissions(variant, variant_key, db)
+
+    # ── Merge approved claims into normal leaderboard ──
+    _merge_approved_claims_into_leaderboard(variant, variant_key)
+
     # Map variant_key to InverseNet paper figure subdirectory
     _PAPER_FIG_MAP = {
-        "sd_cassi": "cassi",
+        "cassi": "cassi",
         "cacti": "cacti",
         "spc_block": "spc",
         "spc_kronecker": "spc",
@@ -1112,6 +1500,8 @@ async def variant_benchmarks_page(
                     "algorithms": algos,
                 })
 
+    from pwm_platform.routers.redesign import MAINNET_VARIANTS
+
     return templates.TemplateResponse(request, "variant_benchmarks.html", {
         "user": user,
         "variant": variant,
@@ -1121,6 +1511,7 @@ async def variant_benchmarks_page(
         "benchmark_gallery": benchmark_gallery,
         "paper_fig_dir": paper_fig_dir,
         "algo_comparison": algo_comparison,
+        "on_mainnet": variant_key in MAINNET_VARIANTS,
     })
 
 
@@ -1130,6 +1521,7 @@ async def challenge_tier_page(
     variant_key: str,
     tier_name: str,
     user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
 ):
     """Challenge tier detail page — expanded view of a single tier."""
     from pwm_platform.services.benchmark_database import (
@@ -1141,7 +1533,7 @@ async def challenge_tier_page(
     variant = get_variant(variant_key)
     if variant is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Variant not found"
+            "user": user, "message": "Variant not found"
         }, status_code=404)
 
     # Find the challenge benchmark
@@ -1153,19 +1545,19 @@ async def challenge_tier_page(
 
     if challenge is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "No challenge benchmark for this variant"
+            "user": user, "message": "No challenge benchmark for this variant"
         }, status_code=404)
 
     # Validate tier name
     if tier_name not in ("public", "dev", "hidden"):
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Invalid tier name"
+            "user": user, "message": "Invalid tier name"
         }, status_code=404)
 
     tier = challenge.get("tiers", {}).get(tier_name)
     if tier is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Tier not found"
+            "user": user, "message": "Tier not found"
         }, status_code=404)
 
     # Wire download URLs for challenge tiers
@@ -1179,7 +1571,7 @@ async def challenge_tier_page(
 
     # Map variant_key to InverseNet paper figure subdirectory
     _PAPER_FIG_MAP = {
-        "sd_cassi": "cassi",
+        "cassi": "cassi",
         "cacti": "cacti",
         "spc_block": "spc",
         "spc_kronecker": "spc",
@@ -1194,6 +1586,9 @@ async def challenge_tier_page(
     }
     paper_extra_chart = _EXTRA_CHART_MAP.get(paper_fig_dir)
 
+    # ── Merge approved community submissions into challenge leaderboard ──
+    await _merge_community_submissions(variant, variant_key, db)
+
     # Build per-tier leaderboard: filter + re-rank by this tier's score
     tier_leaderboard = []
     tier_score_key = f"{tier_name}_score"
@@ -1206,7 +1601,7 @@ async def challenge_tier_page(
     # Data preview images for challenge tier pages
     # Multi-view labels for hand-crafted variants with spectral/temporal views
     _MULTI_VIEW_LABELS = {
-        "sd_cassi": ("Band 7 (~450 nm)", "Band 21 (~650 nm)"),
+        "cassi": ("Band 7 (~450 nm)", "Band 21 (~650 nm)"),
         "cacti": ("Frame 0 (t=0)", "Frame 7 (t=7)"),
     }
     _TIER_SCENE_SHARED = {"public": 0, "dev": 1, "hidden": 2}
@@ -1404,7 +1799,7 @@ async def compete_page(
     variant = get_variant(variant_key)
     if variant is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Variant not found"
+            "user": user, "message": "Variant not found"
         }, status_code=404)
 
     challenge = None
@@ -1440,7 +1835,7 @@ async def contribute_page(
     variant = get_variant(variant_key)
     if variant is None:
         return templates.TemplateResponse(request, "404.html", {
-            "request": request, "user": user, "message": "Variant not found"
+            "user": user, "message": "Variant not found"
         }, status_code=404)
 
     return templates.TemplateResponse(request, "contribute.html", {
@@ -1551,107 +1946,423 @@ async def submissions_review_page(
     })
 
 
-@router.get("/reproduce", response_class=HTMLResponse)
-async def reproduce_queue_page(
+@router.get("/claims", response_class=HTMLResponse)
+async def claims_review_page(
     request: Request,
     user: Optional[User] = Depends(get_optional_user),
-    modality: str = "",
+    status: str = "all",
 ):
-    """Reproduction queue — approved Draft-tier claims awaiting independent verification."""
+    """Claim review queue page with optional status filter."""
     import json as _json
 
     claims_dir = Path("/tmp/pwm_claim_queue")
-    candidates = []
+    claims = []
     if claims_dir.exists():
         for f in sorted(claims_dir.glob("*.json"), reverse=True):
             try:
                 c = _json.loads(f.read_text())
-                # Only show approved draft-tier claims
-                if c.get("status") != "approved" or c.get("trust_tier") not in ("draft", ""):
+                if status != "all" and c.get("status") != status:
                     continue
-                # Already reproduced ones skip
-                if c.get("trust_tier") == "reproduced":
-                    continue
-                if modality and c.get("modality", "") != modality:
-                    continue
-                candidates.append(c)
+                claims.append(c)
             except Exception:
                 continue
-
-    # Distinct modalities for filter
-    all_modalities: list[str] = []
-    if claims_dir.exists():
-        for f in claims_dir.glob("*.json"):
-            try:
-                c = _json.loads(f.read_text())
-                m = c.get("modality", "")
-                if m and m not in all_modalities:
-                    all_modalities.append(m)
-            except Exception:
-                pass
-    all_modalities.sort()
-
-    return templates.TemplateResponse(request, "reproduce.html", {
-        "user": user,
-        "candidates": candidates,
-        "modality_filter": modality,
-        "all_modalities": all_modalities,
-    })
+    return templates.TemplateResponse(
+        request, "claim_review.html",
+        {"user": user, "claims": claims, "status_filter": status},
+    )
 
 
-@router.get("/solvers", response_class=HTMLResponse)
-async def solver_gallery_page(
+@router.get("/datasets", response_class=HTMLResponse)
+async def datasets_browser_page(
     request: Request,
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
-    modality: str = "",
 ):
-    """Solver gallery — approved algorithm/solver submissions by the community."""
-    stmt = (
-        select(ChallengeSubmission)
-        .where(ChallengeSubmission.status == "approved")
-        .order_by(ChallengeSubmission.submitted_at.desc())
-        .limit(200)
-    )
-    result = await db.execute(stmt)
-    submissions = result.scalars().all()
+    """Dataset browser page — browse, filter, and register datasets."""
+    import json as _json
 
-    # Group by method_name to deduplicate
-    seen: set[str] = set()
-    solvers: list[dict] = []
-    for s in submissions:
-        key = f"{s.method_name}:{s.variant_key}"
-        if key in seen:
-            continue
-        seen.add(key)
-        # Extract modality from variant_key (first segment before _)
-        mod = modality or s.variant_key.split("_")[0]
-        if modality and not s.variant_key.startswith(modality):
-            continue
-        solvers.append({
-            "method_name": s.method_name,
-            "method_description": s.method_description or "",
-            "variant_key": s.variant_key,
-            "paper_url": s.paper_url or "",
-            "code_url": s.code_url or "",
-            "submitted_at": s.submitted_at.strftime("%Y-%m-%d") if s.submitted_at else "",
-            "submitter": s.submitter.username if s.submitter else "anonymous",
-            "scores": s.scores or {},
-            "trust_tier": s.trust_tier or "draft",
-        })
+    datasets: list[dict] = []
 
-    # Distinct variant keys for filter
-    vk_result = await db.execute(
-        select(ChallengeSubmission.variant_key).distinct().where(ChallengeSubmission.status == "approved")
-    )
-    variant_keys = sorted(r[0] for r in vk_result.all() if r[0])
+    # 1. Load from database (Dataset model)
+    try:
+        result = await db.execute(select(Dataset).order_by(Dataset.created_at.desc()))
+        for d in result.scalars().all():
+            datasets.append({
+                "modality": d.modality,
+                "name": d.dataset_id,
+                "description": d.description or "",
+                "num_samples": d.num_samples,
+                "format": (d.tags or [{}])[0] if isinstance(d.tags, list) and d.tags else "",
+                "license": d.license or "internal",
+                "source_url": d.source or "",
+            })
+    except Exception:
+        pass
 
-    return templates.TemplateResponse(request, "solvers.html", {
+    # 2. Load from JSON file store (/tmp/pwm_datasets/)
+    ds_dir = Path("/tmp/pwm_datasets")
+    if ds_dir.exists():
+        for f in sorted(ds_dir.glob("*.json")):
+            try:
+                entry = _json.loads(f.read_text())
+                datasets.append({
+                    "modality": entry.get("modality", ""),
+                    "name": entry.get("name", f.stem),
+                    "description": entry.get("description", ""),
+                    "num_samples": entry.get("num_samples"),
+                    "format": entry.get("format", ""),
+                    "license": entry.get("license", "internal"),
+                    "source_url": entry.get("source_url", ""),
+                })
+            except Exception:
+                continue
+
+    modalities = sorted(set(d["modality"] for d in datasets if d["modality"]))
+
+    return templates.TemplateResponse(request, "datasets_browser.html", {
         "user": user,
-        "solvers": solvers,
-        "variant_keys": variant_keys,
-        "modality_filter": modality,
+        "datasets": datasets,
+        "modalities": modalities,
+        "selected_modality": "",
     })
+
+
+@router.get("/instruments", response_class=HTMLResponse)
+async def instruments_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Instrument registry page — browse registered InstrumentCards."""
+    import json as _json
+
+    instruments: list[dict] = []
+
+    # Load from /tmp/pwm_ct_qc_demo/ (pre-existing demo data)
+    demo_card = Path("/tmp/pwm_ct_qc_demo/instrument_card.json")
+    demo_qc = Path("/tmp/pwm_ct_qc_demo/ct_qc_diagnostic_report.json")
+    if demo_card.exists():
+        try:
+            card = _json.loads(demo_card.read_text())
+            qc_report = None
+            if demo_qc.exists():
+                qc_report = _json.loads(demo_qc.read_text())
+            card["qc_report"] = qc_report
+            instruments.append(card)
+        except Exception:
+            pass
+
+    # Load from /tmp/pwm_instruments/ (user-registered)
+    inst_dir = Path("/tmp/pwm_instruments")
+    if inst_dir.exists():
+        for f in sorted(inst_dir.glob("*.json")):
+            try:
+                card = _json.loads(f.read_text())
+                # Avoid duplicates with demo card
+                if card.get("instrument_id") != "siemens_somatom_001":
+                    instruments.append(card)
+            except Exception:
+                continue
+
+    return templates.TemplateResponse(request, "instruments.html", {
+        "user": user,
+        "instruments": instruments,
+    })
+
+
+@router.get("/instruments/{instrument_id}", response_class=HTMLResponse)
+async def instrument_detail_page(
+    request: Request,
+    instrument_id: str,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Instrument detail page — drift charts, calibration history, QC metrics."""
+    import json as _json
+
+    card = None
+
+    # Check demo card first
+    demo_card = Path("/tmp/pwm_ct_qc_demo/instrument_card.json")
+    if demo_card.exists():
+        try:
+            c = _json.loads(demo_card.read_text())
+            if c.get("instrument_id") == instrument_id:
+                card = c
+        except Exception:
+            pass
+
+    # Check user-registered instruments
+    if card is None:
+        inst_file = Path(f"/tmp/pwm_instruments/{instrument_id}.json")
+        if inst_file.exists():
+            try:
+                card = _json.loads(inst_file.read_text())
+            except Exception:
+                pass
+
+    if card is None:
+        raise HTTPException(status_code=404, detail=f"Instrument {instrument_id} not found")
+
+    # Normalize file-store fields to match template expectations
+    instrument = {
+        "instrument_id": card.get("instrument_id", instrument_id),
+        "name": card.get("name") or f"{card.get('manufacturer','')} {card.get('model','')}".strip() or instrument_id,
+        "modality": card.get("modality", ""),
+        "manufacturer": card.get("manufacturer", ""),
+        "model_number": card.get("model", card.get("model_number", "")),
+        "serial_number": card.get("serial_number", ""),
+        "lab": card.get("lab", ""),
+        "institution": card.get("institution", ""),
+        "description": card.get("description", ""),
+        "calibration_date": card.get("calibration_date") or card.get("last_qc_date"),
+        "drift_budget_pct": card.get("drift_budget_pct", 0.0),
+        "contact_email": card.get("contact_email", ""),
+        "is_public": card.get("is_public", True),
+        "card_data": card,
+    }
+
+    return templates.TemplateResponse(request, "instrument_detail.html", {
+        "user": user,
+        "instrument": instrument,
+    })
+
+
+@router.get("/reproduce", response_class=HTMLResponse)
+async def reproduce_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Reproduction queue — approved claims that need independent reproduction."""
+    import json as _json
+
+    claims_dir = Path("/tmp/pwm_claim_queue")
+    claims: list[dict] = []
+    modalities_set: set[str] = set()
+
+    if claims_dir.exists():
+        for f in sorted(claims_dir.glob("*.json"), reverse=True):
+            try:
+                c = _json.loads(f.read_text())
+                # Only show approved claims at draft or author_confirmed tier
+                if (c.get("status") == "approved"
+                        and c.get("trust_tier") in ("draft", "author_confirmed")):
+                    claims.append(c)
+                    if c.get("modality"):
+                        modalities_set.add(c["modality"])
+            except Exception:
+                continue
+
+    return templates.TemplateResponse(request, "reproduce.html", {
+        "user": user,
+        "claims": claims,
+        "modalities": sorted(modalities_set),
+    })
+
+
+@router.get("/admin/roles", response_class=HTMLResponse)
+async def admin_roles_page(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin role management page -- assign roles and modality maintainership."""
+    if user.role not in ("admin", "reviewer"):
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    from pwm_platform.routers.contributors import BADGE_DEFINITIONS, VALID_ROLES
+
+    # Fetch all users with their contributor profiles
+    users_result = await db.execute(
+        select(User).order_by(User.id.asc()).limit(200)
+    )
+    all_users = users_result.scalars().all()
+
+    # Fetch all contributor profiles
+    profiles_result = await db.execute(select(ContributorProfile))
+    profiles_list = profiles_result.scalars().all()
+    profiles_by_user = {p.user_id: p for p in profiles_list}
+
+    return templates.TemplateResponse(
+        request,
+        "admin_roles.html",
+        {
+            "user": user,
+            "all_users": all_users,
+            "profiles_by_user": profiles_by_user,
+            "valid_roles": VALID_ROLES,
+            "badge_definitions": BADGE_DEFINITIONS,
+        },
+    )
+
+
+@router.get("/admin/users", response_class=HTMLResponse)
+async def admin_users_page(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin user management page."""
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    result = await db.execute(select(User).order_by(User.id))
+    users = result.scalars().all()
+    return templates.TemplateResponse(
+        request,
+        "admin_users.html",
+        {
+            "user": user,
+            "users": users,
+        },
+    )
+
+
+@router.get("/admin/audit", response_class=HTMLResponse)
+async def admin_audit_page(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin audit log page -- shows recent contribution history entries."""
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    from sqlalchemy.orm import selectinload as _sil
+
+    result = await db.execute(
+        select(ContributorProfile)
+        .options(_sil(ContributorProfile.user))
+        .order_by(ContributorProfile.id.desc())
+    )
+    profiles = result.scalars().all()
+
+    # Collect all contribution_history entries
+    audit_entries = []
+    for p in profiles:
+        username = p.user.username if p.user else f"User #{p.user_id}"
+        for entry in (p.contribution_history or [])[-20:]:
+            audit_entries.append({
+                "user_id": p.user_id,
+                "username": username,
+                **entry,
+            })
+
+    # Sort by timestamp descending
+    audit_entries.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+
+    return templates.TemplateResponse(
+        request,
+        "admin_audit.html",
+        {
+            "user": user,
+            "entries": audit_entries[:100],
+        },
+    )
+
+
+# ── Solver Gallery, Gate Dashboard, Red Team pages ─────────────────────
+
+
+# Tier classification for solver types
+_TRADITIONAL_TYPES = frozenset({
+    "Classical", "Variational", "PnP", "Compressed Sensing",
+    "Low-Rank", "Statistical", "Dictionary Learning", "Self-Supervised",
+})
+_BEST_QUALITY_TYPES = frozenset({
+    "Diffusion", "Diffusion Model", "Score-Based", "Score-based",
+    "Foundation Model", "Physics-Informed", "Generative",
+})
+
+
+def _classify_tier(algo_type: str) -> str:
+    """Classify an algorithm type into one of the three display tiers."""
+    if algo_type in _TRADITIONAL_TYPES:
+        return "traditional_cpu"
+    if algo_type in _BEST_QUALITY_TYPES:
+        return "best_quality"
+    return "famous_dl"
+
+
+def _build_solver_list() -> dict:
+    """Build a deduplicated, tier-grouped solver list from the algorithm catalog."""
+    from pwm_platform.services.benchmark_database._algorithm_catalog import (
+        _CATEGORY_ALGORITHMS,
+        _VARIANT_OVERRIDES,
+    )
+
+    # Collect (solver_name, type) -> {solver_info, modalities set}
+    seen: dict[tuple[str, str], dict] = {}
+
+    def _ingest(algos: list[dict], modality_key: str):
+        for algo in algos:
+            key = (algo["name"], algo.get("type", ""))
+            if key not in seen:
+                seen[key] = {
+                    "name": algo["name"],
+                    "type": algo.get("type", "Unknown"),
+                    "params": algo.get("params", "0"),
+                    "source": algo.get("source", ""),
+                    "mask_aware": algo.get("mask_aware", False),
+                    "available": algo.get("available", True),
+                    "modalities": set(),
+                }
+            seen[key]["modalities"].add(modality_key)
+
+    # Ingest variant overrides
+    for variant_key, algos in _VARIANT_OVERRIDES.items():
+        _ingest(algos, variant_key)
+
+    # Ingest category algorithms
+    for cat_key, algos in _CATEGORY_ALGORITHMS.items():
+        _ingest(algos, cat_key)
+
+    # Group by tier
+    tiers: dict[str, list[dict]] = {
+        "traditional_cpu": [],
+        "famous_dl": [],
+        "best_quality": [],
+    }
+    modality_keys: set[str] = set()
+    for solver in seen.values():
+        solver["modalities"] = sorted(solver["modalities"])
+        modality_keys.update(solver["modalities"])
+        tier = _classify_tier(solver["type"])
+        tiers[tier].append(solver)
+
+    # Sort each tier by name
+    for tier_list in tiers.values():
+        tier_list.sort(key=lambda s: s["name"].lower())
+
+    return {
+        "solvers_by_tier": tiers,
+        "tier_counts": {k: len(v) for k, v in tiers.items()},
+        "total_solvers": sum(len(v) for v in tiers.values()),
+        "modality_keys": sorted(modality_keys),
+        "modality_count": len(modality_keys),
+    }
+
+
+@router.get("/solvers", response_class=HTMLResponse)
+async def solvers_page(
+    request: Request,
+    user=Depends(get_optional_user),
+):
+    """Solver Gallery — all available solvers grouped by tier."""
+    import json as _json
+    data = _build_solver_list()
+    # Load community-registered solvers
+    community: list[dict] = []
+    solvers_dir = Path("/tmp/pwm_solvers")
+    if solvers_dir.exists():
+        for f in sorted(solvers_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
+            try:
+                community.append(_json.loads(f.read_text()))
+            except Exception:
+                pass
+    return templates.TemplateResponse(
+        request,
+        "solvers.html",
+        {"user": user, "community_solvers": community, **data},
+    )
 
 
 @router.get("/api/v1/solvers")
@@ -1693,64 +2404,114 @@ async def list_solvers():
                     "category": variant_key,
                 }
 
+    # Merge community-registered solvers
+    import json as _json
+    community_dir = Path("/tmp/pwm_solvers")
+    if community_dir.exists():
+        for f in sorted(community_dir.glob("*.json")):
+            try:
+                card = _json.loads(f.read_text())
+                name = card.get("name", "")
+                if name and name not in solvers:
+                    solvers[name] = {
+                        "name": name,
+                        "type": card.get("solver_type", ""),
+                        "params": card.get("params", ""),
+                        "source": card.get("code_url", "community"),
+                        "category": card.get("modality", "community"),
+                        "solver_id": card.get("solver_id"),
+                        "registered_by": card.get("registered_by"),
+                    }
+            except Exception:
+                pass
+
     return {"solvers": list(solvers.values()), "total": len(solvers)}
 
 
 @router.get("/gates", response_class=HTMLResponse)
 async def gates_page(
     request: Request,
-    user: Optional[User] = Depends(get_optional_user),
-    status: str = "all",
+    user=Depends(get_optional_user),
 ):
-    """Gate proposal dashboard — RFC submissions and gate review status."""
+    """Gate Dashboard — all active gates organized by layer."""
     import json as _json
-
-    gates_dir = Path("/tmp/pwm_gate_proposals")
-    gates_dir.mkdir(parents=True, exist_ok=True)
+    gates = {
+        "operational": [
+            {"id": "R1", "name": "Spec Completeness", "scope": "Universal", "checks": "All CoreSpec fields bound and type-valid"},
+            {"id": "R2", "name": "Reproducibility", "scope": "Universal", "checks": "Seeds, versions, hashes recorded"},
+            {"id": "R3", "name": "Metric Integrity", "scope": "Universal", "checks": "SHA-256 hashes match stored artifacts"},
+            {"id": "R4", "name": "Budget Compliance", "scope": "Universal", "checks": "Runtime within declared budget"},
+        ],
+        "scientific": [
+            {"id": "S1", "name": "Finite Specifiability", "scope": "Design time", "checks": "Problem admits finite type-valid description"},
+            {"id": "S2", "name": "Hadamard Stability", "scope": "Design time", "checks": "Well-posed (existence, uniqueness, continuity)"},
+            {"id": "S3", "name": "Approximability", "scope": "Design time", "checks": "Convergent discretization exists"},
+            {"id": "S4", "name": "Certifiability", "scope": "Audit time", "checks": "Computable error bounds exist"},
+        ],
+        "imaging": [
+            {"id": "G1", "name": "Recoverability", "scope": "Imaging", "checks": "Information-theoretic recovery limit"},
+            {"id": "G2", "name": "Carrier Budget", "scope": "Imaging", "checks": "Measurement capacity (photon count, k-space)"},
+            {"id": "G3", "name": "Operator Mismatch", "scope": "Imaging", "checks": "Forward model accuracy"},
+        ],
+        "ct_qc": [
+            {"id": "drift", "name": "Drift Detection", "scope": "CT QC", "checks": "Temporal drift from baseline"},
+            {"id": "artifact", "name": "Artifact Detection", "scope": "CT QC", "checks": "Ring, cupping, streak artifacts"},
+            {"id": "threshold", "name": "Threshold Breach", "scope": "CT QC", "checks": "QC metric exceeds clinical limit"},
+        ],
+    }
     proposals = []
-    for f in sorted(gates_dir.glob("*.json"), reverse=True):
-        try:
-            g = _json.loads(f.read_text())
-            if status != "all" and g.get("status", "draft") != status:
-                continue
-            proposals.append(g)
-        except Exception:
-            continue
-
-    return templates.TemplateResponse(request, "gates.html", {
-        "user": user,
-        "proposals": proposals,
-        "status_filter": status,
-    })
+    proposals_dir = Path("/tmp/pwm_gate_proposals")
+    if proposals_dir.exists():
+        for p in sorted(proposals_dir.glob("*.json"), key=lambda f: f.stat().st_mtime, reverse=True):
+            try:
+                proposals.append(_json.loads(p.read_text()))
+            except Exception:
+                pass
+    return templates.TemplateResponse(
+        request,
+        "gates.html",
+        {"user": user, "gates": gates, "proposals": proposals},
+    )
 
 
 @router.post("/gates/propose")
 async def gates_propose(
     request: Request,
-    user: Optional[User] = Depends(get_optional_user),
+    user=Depends(get_optional_user),
 ):
-    """Submit a gate RFC proposal (JSON)."""
+    """Submit a gate RFC proposal (JSON or form)."""
     import json as _json
     import datetime as _dt
     import secrets as _secrets
 
     if not user:
-        from fastapi import HTTPException as _HTTPException
-        raise _HTTPException(status_code=401, detail="Login required to submit gate proposals")
+        raise HTTPException(status_code=401, detail="Login required to propose a gate RFC")
 
-    body = await request.json()
-    proposal_id = f"gate_{_secrets.token_hex(6)}"
+    content_type = request.headers.get("content-type", "")
+    if "form" in content_type:
+        form = await request.form()
+        gate_name = form.get("gate_name", "")
+        description = form.get("description", "")
+        modality = form.get("modality", "")
+        rationale = form.get("rationale", "")
+    else:
+        body = await request.json()
+        gate_name = body.get("gate_name", "")
+        description = body.get("description", "")
+        modality = body.get("modality", "")
+        rationale = body.get("rationale", "")
+
+    if not gate_name or not description:
+        raise HTTPException(status_code=400, detail="gate_name and description are required")
+
+    proposal_id = f"rfc_{_secrets.token_hex(6)}_{_dt.datetime.now(_dt.timezone.utc).strftime('%Y%m%d%H%M%S')}"
     proposal = {
         "proposal_id": proposal_id,
-        "title": body.get("title", ""),
-        "gate_id": body.get("gate_id", ""),
-        "description": body.get("description", ""),
-        "rationale": body.get("rationale", ""),
-        "modality": body.get("modality", ""),
-        "proposed_threshold": body.get("proposed_threshold", ""),
-        "evidence_url": body.get("evidence_url", ""),
-        "proposer": user.username,
-        "proposer_id": user.id,
+        "gate_name": gate_name,
+        "description": description,
+        "modality": modality,
+        "rationale": rationale,
+        "proposed_by": user.username if user else "anonymous",
         "status": "draft",
         "submitted_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
     }
@@ -1759,166 +2520,109 @@ async def gates_propose(
     gates_dir.mkdir(parents=True, exist_ok=True)
     (gates_dir / f"{proposal_id}.json").write_text(_json.dumps(proposal, indent=2))
 
-    return {"proposal_id": proposal_id, "message": "Gate proposal submitted for review"}
+    return proposal
+
+
+@router.post("/gates/{proposal_id}/vote")
+async def gates_vote(
+    proposal_id: str,
+    request: Request,
+    user=Depends(get_optional_user),
+):
+    """Vote on a gate RFC proposal (admin/reviewer only).
+
+    Body JSON: {"action": "approve"|"reject"|"comment", "comment": "..."}
+    Three approvals with zero rejections → auto-accept.
+    Any rejection → status stays draft until resolved.
+    """
+    import json as _json
+    import datetime as _dt
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Login required")
+    if user.role not in ("admin", "reviewer"):
+        raise HTTPException(status_code=403, detail="Only admin/reviewer can vote on RFCs")
+
+    gates_dir = Path("/tmp/pwm_gate_proposals")
+    proposal_path = gates_dir / f"{proposal_id}.json"
+    if not proposal_path.exists():
+        raise HTTPException(status_code=404, detail=f"Proposal {proposal_id} not found")
+
+    body = await request.json()
+    action = body.get("action", "")
+    comment = body.get("comment", "")
+
+    if action not in ("approve", "reject", "comment"):
+        raise HTTPException(status_code=400, detail="action must be approve, reject, or comment")
+
+    proposal = _json.loads(proposal_path.read_text())
+    votes = proposal.setdefault("votes", [])
+
+    # Prevent duplicate votes from same user (same action)
+    existing = [v for v in votes if v["user"] == user.username and v["action"] == action]
+    if existing and action != "comment":
+        raise HTTPException(status_code=409, detail=f"You already voted '{action}' on this proposal")
+
+    votes.append({
+        "user": user.username,
+        "role": user.role,
+        "action": action,
+        "comment": comment,
+        "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+    })
+
+    # Auto-accept: ≥3 approvals and 0 rejections
+    n_approve = sum(1 for v in votes if v["action"] == "approve")
+    n_reject = sum(1 for v in votes if v["action"] == "reject")
+
+    if n_reject > 0:
+        proposal["status"] = "disputed"
+    elif n_approve >= 3:
+        proposal["status"] = "accepted"
+    elif n_approve >= 1:
+        proposal["status"] = "under_review"
+
+    proposal["votes"] = votes
+    proposal_path.write_text(_json.dumps(proposal, indent=2))
+
+    return {
+        "proposal_id": proposal_id,
+        "status": proposal["status"],
+        "approvals": n_approve,
+        "rejections": n_reject,
+        "total_votes": len([v for v in votes if v["action"] != "comment"]),
+    }
 
 
 @router.get("/redteam", response_class=HTMLResponse)
 async def redteam_page(
     request: Request,
-    user: Optional[User] = Depends(get_optional_user),
-    db: AsyncSession = Depends(get_db),
-    modality: str = "",
+    user=Depends(get_optional_user),
 ):
-    """Red-team dashboard — adversarial challenge board and bounty tracking."""
+    """Red Team Dashboard — adversarial testing bounty board and reports."""
     import json as _json
 
-    # Red-team claims are approved claims tagged as red-team findings
-    # They're stored in the same claims dir but with a red_team tag
     claims_dir = Path("/tmp/pwm_claim_queue")
     redteam_claims: list[dict] = []
-    all_claims: list[dict] = []
     if claims_dir.exists():
-        for f in sorted(claims_dir.glob("*.json"), reverse=True):
+        for f in claims_dir.glob("*.json"):
             try:
                 c = _json.loads(f.read_text())
-                all_claims.append(c)
-                tags = c.get("tags", []) or []
-                method = (c.get("method", "") or "").lower()
-                if "red_team" in tags or "redteam" in tags or "adversarial" in tags or "red-team" in method:
-                    if not modality or c.get("modality", "") == modality:
-                        redteam_claims.append(c)
-            except Exception:
-                continue
-
-    # Distinct modalities from all claims
-    all_modalities = sorted({c.get("modality", "") for c in all_claims if c.get("modality")})
-
-    # Static bounty board — showing open challenges
-    bounties = [
-        {
-            "id": "RT-001",
-            "title": "Reproduced result without claimed code",
-            "description": "Demonstrate that a Certified-tier result cannot be reproduced using only the released code, forcing the claim back to Draft.",
-            "reward": "Reproducer badge + 50 credits",
-            "status": "open",
-            "modality": "any",
-        },
-        {
-            "id": "RT-002",
-            "title": "Dataset contamination in benchmark",
-            "description": "Provide evidence that training data for a top-ranked method overlaps with the hidden test set.",
-            "reward": "Red-Team badge + 100 credits",
-            "status": "open",
-            "modality": "any",
-        },
-        {
-            "id": "RT-003",
-            "title": "Physics-violating reconstruction",
-            "description": "Show that a Certified claim produces results that violate the physical forward model (e.g. negative photon counts in CT).",
-            "reward": "Red-Team badge + 75 credits",
-            "status": "open",
-            "modality": "ct, pet, spect",
-        },
-    ]
-
-    return templates.TemplateResponse(request, "redteam.html", {
-        "user": user,
-        "redteam_claims": redteam_claims,
-        "bounties": bounties,
-        "modality_filter": modality,
-        "all_modalities": all_modalities,
-    })
-
-
-@router.get("/claims", response_class=HTMLResponse)
-async def claims_review_page(
-    request: Request,
-    user: Optional[User] = Depends(get_optional_user),
-    modality: str = "",
-    status: str = "all",
-):
-    """Claim review queue page."""
-    import json as _json
-
-    claims_dir = Path("/tmp/pwm_claim_queue")
-    claims = []
-    if claims_dir.exists():
-        for f in sorted(claims_dir.glob("*.json"), reverse=True):
-            try:
-                c = _json.loads(f.read_text())
-                if modality and c.get("modality", "") != modality:
-                    continue
-                if status != "all" and c.get("status", "") != status:
-                    continue
-                claims.append(c)
-            except Exception:
-                continue
-    # Collect distinct modalities for the filter dropdown
-    all_modalities: list[str] = []
-    if Path("/tmp/pwm_claim_queue").exists():
-        for f in Path("/tmp/pwm_claim_queue").glob("*.json"):
-            try:
-                c = _json.loads(f.read_text())
-                m = c.get("modality", "")
-                if m and m not in all_modalities:
-                    all_modalities.append(m)
+                if "[RED-TEAM]" in c.get("title", "") or c.get("method", "") == "red_team":
+                    redteam_claims.append(c)
             except Exception:
                 pass
-    all_modalities.sort()
-    return templates.TemplateResponse(request, "claim_review.html", {
-        "user": user,
-        "claims": claims,
-        "modality_filter": modality,
-        "status_filter": status,
-        "all_modalities": all_modalities,
-    })
 
+    bounties = [
+        {"gate": "R1", "challenge": "Create a manifest that passes R1 with missing CoreSpec fields", "difficulty": "Medium", "status": "Open"},
+        {"gate": "R2", "challenge": "Produce non-reproducible results that still pass R2", "difficulty": "Hard", "status": "Open"},
+        {"gate": "R3", "challenge": "Bypass SHA-256 hash verification", "difficulty": "Very Hard", "status": "Open"},
+        {"gate": "R4", "challenge": "Hide budget overrun from R4 detection", "difficulty": "Medium", "status": "Open"},
+        {"gate": "Social", "challenge": "Inflate metrics while passing all automated gates", "difficulty": "Easy (by design)", "status": "Documented"},
+    ]
 
-@router.get("/admin/roles", response_class=HTMLResponse)
-async def admin_roles_page(
-    request: Request,
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-):
-    """Admin role management page — assign roles and modality maintainership."""
-    if user.role not in ("admin", "reviewer"):
-        raise HTTPException(status_code=403, detail="Admin access required")
-
-    from pwm_platform.routers.contributors import BADGE_DEFINITIONS, VALID_ROLES
-
-    users_result = await db.execute(
-        select(User).order_by(User.id.asc()).limit(200)
+    return templates.TemplateResponse(
+        request,
+        "redteam.html",
+        {"user": user, "claims": redteam_claims, "bounties": bounties},
     )
-    all_users = users_result.scalars().all()
-
-    profiles_result = await db.execute(select(ContributorProfile))
-    profiles_list = profiles_result.scalars().all()
-    profiles_by_user = {p.user_id: p for p in profiles_list}
-
-    return templates.TemplateResponse(request, "admin_roles.html", {
-        "user": user,
-        "all_users": all_users,
-        "profiles_by_user": profiles_by_user,
-        "valid_roles": VALID_ROLES,
-        "badge_definitions": BADGE_DEFINITIONS,
-    })
-
-
-@router.get("/admin/users", response_class=HTMLResponse)
-async def admin_users_page(
-    request: Request,
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-):
-    """Admin user management page."""
-    if user.role != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-
-    result = await db.execute(select(User).order_by(User.id))
-    users = result.scalars().all()
-    return templates.TemplateResponse(request, "admin_users.html", {
-        "user": user,
-        "users": users,
-    })
-
-

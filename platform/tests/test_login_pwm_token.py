@@ -54,6 +54,24 @@ r = client.post("/api/v1/auth/signup-form", data={
 check("signup-form returns 303", r.status_code == 303, f"status={r.status_code} body={r.text[:200]}")
 check("signup sets cookie", "access_token" in r.cookies)
 
+# Test 1b: wallet auto-provisioned on signup
+# After signup alice should have a PWM account with an on_chain_address already set
+signup_jwt = r.cookies.get("access_token")
+c_signup = TestClient(app); c_signup.cookies.set("access_token", signup_jwt)
+r_bal = c_signup.get("/api/v1/pwm-token/balance")
+check("wallet auto-provisioned: on_chain_address set",
+      r_bal.json().get("on_chain_address", "").startswith("0x"),
+      f"on_chain_address={r_bal.json().get('on_chain_address')}")
+check("wallet auto-provisioned: is_custodial=True",
+      r_bal.json().get("is_custodial") is True,
+      f"is_custodial={r_bal.json().get('is_custodial')}")
+r_export = c_signup.get("/api/v1/pwm-token/wallet-export")
+check("wallet-export 200", r_export.status_code == 200,
+      f"status={r_export.status_code}")
+check("wallet-export returns 64-char hex private key",
+      len(r_export.json().get("private_key", "").lstrip("0x")) == 64,
+      f"key={r_export.json().get('private_key', '')[:12]}...")
+
 # Test 2: login with same creds
 r = client.post("/api/v1/auth/login-form", data={
     "email": "alice@test.com", "password": "password123",
@@ -284,6 +302,20 @@ check("spend 200", r.status_code == 200, f"status={r.status_code} body={r.text[:
 body = r.json()
 check("spend balance_after decremented", body.get("balance_after") == body.get("balance_before") - 10.0,
       f"before={body.get('balance_before')} after={body.get('balance_after')}")
+
+# Test 25b: 90/10 split is recorded on the spend (record-only; M6 settles on-chain)
+check("spend split provider_amount=9.0 (90%)", body.get("provider_amount") == 9.0,
+      f"provider_amount={body.get('provider_amount')}")
+check("spend split pool_amount=1.0 (10%)", body.get("pool_amount") == 1.0,
+      f"pool_amount={body.get('pool_amount')}")
+check("spend split provider+pool == amount_spent",
+      round((body.get("provider_amount") or 0) + (body.get("pool_amount") or 0), 6) == 10.0,
+      f"provider={body.get('provider_amount')} pool={body.get('pool_amount')}")
+check("spend split provider_split_bps=9000", body.get("provider_split_bps") == 9000,
+      f"bps={body.get('provider_split_bps')}")
+check("spend split echoes provider_wallet",
+      body.get("provider_wallet") == "0xa53F7e7Bc6B0Cc182d048217646082DDB2DacfE3",
+      f"provider_wallet={body.get('provider_wallet')}")
 
 # Test 26: spend idempotency — same idempotency_key must not double-charge
 r2 = c2.post("/api/v1/pwm-token/spend", json={

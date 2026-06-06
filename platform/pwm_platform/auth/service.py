@@ -11,6 +11,7 @@ Both flows result in a JWT access token set as an HttpOnly cookie.
 from __future__ import annotations
 
 import logging
+import os
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
@@ -24,6 +25,7 @@ from pwm_platform.auth.passwords import hash_password, verify_password
 from pwm_platform.auth.token_manager import get_token_manager
 from pwm_platform.config import settings
 from pwm_platform.db.models import PasswordResetToken, User
+from pwm_platform.services.pwm_token_service import pwm_token_service
 
 logger = logging.getLogger(__name__)
 
@@ -182,10 +184,89 @@ class AuthService:
         await db.commit()
         await db.refresh(user)
 
+        await pwm_token_service.provision_pwm_account(user.id, db)
+
         tm = get_token_manager()
         access_token = tm.create_access_token(user.id)
 
         logger.info("Created local user: %s (id=%s)", email, user.id)
+        return {
+            "success": True,
+            "access_token": access_token,
+            "user": _user_to_dict(user),
+        }
+
+    # ── Google OAuth login ───────────────────────────────────────────────
+
+    async def google_login(
+        self, credential: str, db: AsyncSession
+    ) -> Dict[str, Any]:
+        """Verify a Google Identity Services credential and return a JWT.
+
+        Uses Google's tokeninfo endpoint to verify the credential without
+        requiring the google-auth library directly.
+        """
+        async with httpx.AsyncClient() as client:
+            try:
+                resp = await client.get(
+                    "https://oauth2.googleapis.com/tokeninfo",
+                    params={"id_token": credential},
+                    timeout=10.0,
+                )
+            except httpx.RequestError as exc:
+                logger.error("Google tokeninfo request error: %s", exc)
+                raise HTTPException(status_code=503, detail="Google auth service unavailable")
+
+        if resp.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid Google credential")
+
+        info = resp.json()
+
+        # Verify audience matches our client ID
+        if settings.GOOGLE_CLIENT_ID and info.get("aud") != settings.GOOGLE_CLIENT_ID:
+            raise HTTPException(status_code=401, detail="Google credential audience mismatch")
+
+        email = info.get("email", "")
+        if not email or not info.get("email_verified") == "true":
+            raise HTTPException(status_code=401, detail="Google email not verified")
+
+        google_sub = info.get("sub", "")
+        name = info.get("name") or info.get("given_name") or email.split("@")[0]
+
+        # Find existing user by Google sub or email, or create new
+        from sqlalchemy import select as _select
+        result = await db.execute(
+            _select(User).where(
+                (User.sso_user_id == int(google_sub[:9])) |
+                (User.email == email)
+            )
+        )
+        user = result.scalar_one_or_none()
+
+        is_new_user = user is None
+        if user is None:
+            user = User(
+                email=email,
+                username=name,
+                role="user",
+                sso_user_id=int(google_sub[:9]) if google_sub.isdigit() else None,
+            )
+            db.add(user)
+        else:
+            # Update name if changed
+            if name and not user.password_hash:
+                user.username = name
+
+        await db.commit()
+        await db.refresh(user)
+
+        if is_new_user:
+            await pwm_token_service.provision_pwm_account(user.id, db)
+
+        tm = get_token_manager()
+        access_token = tm.create_access_token(user.id)
+
+        logger.info("Google login: %s (id=%s)", email, user.id)
         return {
             "success": True,
             "access_token": access_token,
@@ -228,6 +309,59 @@ class AuthService:
             "user": _user_to_dict(user),
         }
 
+    # ── SIWE (Sign-In with Ethereum) ─────────────────────────────────────
+
+    async def login_or_create_siwe_user(
+        self,
+        wallet_address: str,
+        db: AsyncSession,
+    ) -> Dict[str, Any]:
+        """Look up a user by wallet_address, creating one if absent.
+
+        The display username defaults to the wallet's short form (first 6 +
+        last 4 hex chars). Users can change their display name later from
+        their profile page.
+        """
+        addr = wallet_address.lower()
+        result = await db.execute(select(User).where(User.wallet_address == addr))
+        user = result.scalar_one_or_none()
+
+        if user is None:
+            short = f"{addr[:6]}…{addr[-4:]}"
+            user = User(
+                username=short,
+                wallet_address=addr,
+                auth_method="siwe",
+                role="user",
+                email=None,
+                password_hash=None,
+            )
+            db.add(user)
+            await db.commit()
+            await db.refresh(user)
+            # SIWE users already have a wallet — register it directly, no custodial key
+            await pwm_token_service.provision_pwm_account(user.id, db, existing_wallet=addr)
+            logger.info("Created SIWE user %s (id=%s)", addr, user.id)
+        else:
+            # Update last-login marker (auth_method could be local/sso already
+            # if the user previously linked an address; preserve original).
+            if user.auth_method == "local":
+                # First time signing in via wallet on an existing local account:
+                # mark the auth method as hybrid by keeping local + filling
+                # wallet_address. Nothing to flip.
+                pass
+
+        if not user.is_active:
+            raise HTTPException(status_code=403, detail="Account is deactivated")
+
+        tm = get_token_manager()
+        access_token = tm.create_access_token(user.id)
+        return {
+            "success": True,
+            "access_token": access_token,
+            "user": _user_to_dict(user),
+        }
+
     # ── Logout ───────────────────────────────────────────────────────────
 
     async def logout_user(self, user_id: int, db: AsyncSession) -> Dict[str, Any]:
@@ -241,81 +375,10 @@ class AuthService:
 
         return {"success": True, "message": "Logged out successfully"}
 
-    # ── Internal helpers ─────────────────────────────────────────────────
-
-    async def _upsert_sso_user(
-        self,
-        db: AsyncSession,
-        *,
-        sso_user_id: int,
-        username: str,
-        role: str,
-        sso_token: str,
-        api_key: Optional[str],
-    ) -> User:
-        """Insert or update an SSO-authenticated user."""
-        result = await db.execute(
-            select(User).where(User.sso_user_id == sso_user_id)
-        )
-        user = result.scalar_one_or_none()
-
-        if user:
-            if username:
-                user.username = username
-            if role:
-                user.role = role
-            user.sso_token = sso_token
-            if api_key is not None:
-                user.api_key = api_key
-        else:
-            user = User(
-                sso_user_id=sso_user_id,
-                username=username or f"user_{sso_user_id}",
-                role=role or "user",
-                sso_token=sso_token,
-                api_key=api_key,
-            )
-            db.add(user)
-
-        await db.commit()
-        await db.refresh(user)
-        return user
-
-
-    # ── Google OAuth ─────────────────────────────────────────────────────────
-
-    async def upsert_google_user(
-        self,
-        db: AsyncSession,
-        *,
-        google_sub: str,
-        email: str,
-        name: str,
-    ) -> "User":
-        """Create or update a user authenticated via Google OAuth."""
-        result = await db.execute(select(User).where(User.email == email))
-        user = result.scalar_one_or_none()
-
-        if user:
-            user.username = name or user.username
-        else:
-            user = User(
-                email=email,
-                username=name or email.split("@")[0],
-                role="user",
-                api_key=None,
-            )
-            db.add(user)
-
-        await db.commit()
-        await db.refresh(user)
-        logger.info("Google OAuth upsert: %s (id=%s)", email, user.id)
-        return user
-
     # ── API key management ────────────────────────────────────────────────────
 
     async def generate_api_key(self, user_id: int, db: AsyncSession) -> str:
-        """Generate a new personal API key for the user, replacing any existing one."""
+        """Generate a new personal API key, replacing any existing one."""
         new_key = "pwm_" + secrets.token_urlsafe(32)
 
         result = await db.execute(select(User).where(User.id == user_id))
@@ -337,7 +400,7 @@ class AuthService:
             await db.commit()
             logger.info("Revoked API key for user %s", user_id)
 
-    # ── Password reset ────────────────────────────────────────────────────
+    # ── Password reset ───────────────────────────────────────────────────
 
     async def request_password_reset(self, email: str, db: AsyncSession) -> None:
         """Generate a reset token and send a password reset email.
@@ -375,8 +438,10 @@ class AuthService:
         if row is None or row.used or row.expires_at < now:
             raise HTTPException(status_code=400, detail="Reset link is invalid or has expired")
 
+        # Mark token used
         row.used = True
 
+        # Update password
         user_result = await db.execute(select(User).where(User.id == row.user_id))
         user = user_result.scalar_one_or_none()
         if user is None:
@@ -385,6 +450,50 @@ class AuthService:
         user.password_hash = hash_password(new_password)
         await db.commit()
         logger.info("Password reset completed for user %s", user.email)
+
+    # ── Internal helpers ─────────────────────────────────────────────────
+
+    async def _upsert_sso_user(
+        self,
+        db: AsyncSession,
+        *,
+        sso_user_id: int,
+        username: str,
+        role: str,
+        sso_token: str,
+        api_key: Optional[str],
+    ) -> User:
+        """Insert or update an SSO-authenticated user."""
+        result = await db.execute(
+            select(User).where(User.sso_user_id == sso_user_id)
+        )
+        user = result.scalar_one_or_none()
+
+        is_new_sso_user = user is None
+        if user:
+            if username:
+                user.username = username
+            if role:
+                user.role = role
+            user.sso_token = sso_token
+            if api_key is not None:
+                user.api_key = api_key
+        else:
+            user = User(
+                sso_user_id=sso_user_id,
+                username=username or f"user_{sso_user_id}",
+                role=role or "user",
+                sso_token=sso_token,
+                api_key=api_key,
+            )
+            db.add(user)
+
+        await db.commit()
+        await db.refresh(user)
+
+        if is_new_sso_user:
+            await pwm_token_service.provision_pwm_account(user.id, db)
+        return user
 
 
 # ── Module-level singleton ───────────────────────────────────────────────
@@ -402,6 +511,8 @@ def _user_to_dict(user: User) -> dict:
             "user_id": user.id,
             "user_name": user.username,
             "role": user.role,
+            "wallet_address": user.wallet_address,
+            "auth_method": user.auth_method,
         },
         "balance": {
             "credit": 0,
