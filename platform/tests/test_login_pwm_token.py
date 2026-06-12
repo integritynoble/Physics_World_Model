@@ -347,6 +347,59 @@ r_broke = cb2.post("/api/v1/pwm-token/spend", json={
 check("spend with 0 balance → 402", r_broke.status_code == 402,
       f"status={r_broke.status_code} body={r_broke.text[:200]}")
 
+# ── CSRF protection (double-submit cookie + origin check) ────────────────
+from pwm_platform.auth.csrf import generate_csrf_token, CSRF_COOKIE_NAME
+
+# Cross-origin browser POST (Origin header from another site) → 403
+c_csrf = TestClient(app)
+r = c_csrf.post("/api/v1/auth/login-form", data={
+    "email": "alice@test.com", "password": "password123",
+}, headers={"origin": "https://evil.example"}, follow_redirects=False)
+check("CSRF: cross-origin POST → 403", r.status_code == 403, f"status={r.status_code}")
+
+# Sandboxed-iframe attack sends "Origin: null" → 403
+r = c_csrf.post("/api/v1/auth/login-form", data={
+    "email": "alice@test.com", "password": "password123",
+}, headers={"origin": "null"}, follow_redirects=False)
+check("CSRF: 'Origin: null' POST → 403", r.status_code == 403, f"status={r.status_code}")
+
+# Same-origin browser POST (Origin matches host) → allowed
+r = c_csrf.post("/api/v1/auth/login-form", data={
+    "email": "alice@test.com", "password": "password123",
+}, headers={"origin": "http://testserver"}, follow_redirects=False)
+check("CSRF: same-origin POST → 303", r.status_code == 303, f"status={r.status_code}")
+
+# Tampered/forged token with no origin header → 403
+c_csrf2 = TestClient(app)
+c_csrf2.cookies.set(CSRF_COOKIE_NAME, generate_csrf_token())
+r = c_csrf2.post("/api/v1/auth/login-form", data={
+    "email": "alice@test.com", "password": "password123",
+    "csrf_token": "forged.deadbeef",
+}, follow_redirects=False)
+check("CSRF: forged token → 403", r.status_code == 403, f"status={r.status_code}")
+
+# Full double-submit flow: GET /login issues cookie + embeds token; POST passes
+c_csrf3 = TestClient(app)
+r_page = c_csrf3.get("/login")
+issued = r_page.cookies.get(CSRF_COOKIE_NAME) or c_csrf3.cookies.get(CSRF_COOKIE_NAME)
+check("CSRF: GET /login sets csrf_token cookie", bool(issued), f"cookies={dict(r_page.cookies)}")
+check("CSRF: token embedded in login form", issued is not None and issued in r_page.text)
+# The cookie is Secure; TestClient is http://, so re-set it manually
+# (same pattern the suite uses for access_token).
+c_csrf3.cookies.set(CSRF_COOKIE_NAME, issued or "")
+r = c_csrf3.post("/api/v1/auth/login-form", data={
+    "email": "alice@test.com", "password": "password123",
+    "csrf_token": issued or "",
+}, follow_redirects=False)
+check("CSRF: valid double-submit token → 303", r.status_code == 303, f"status={r.status_code}")
+
+# Programmatic client (no Origin, no token, no cookie) still works
+r = TestClient(app).post("/api/v1/auth/login-form", data={
+    "email": "alice@test.com", "password": "password123",
+}, follow_redirects=False)
+check("CSRF: header-less programmatic POST still works", r.status_code == 303,
+      f"status={r.status_code}")
+
 # Summary
 print()
 passed = sum(1 for _, c, _ in results if c)

@@ -20,6 +20,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from pwm_platform.auth.csrf import enforce_csrf
 from pwm_platform.auth.dependencies import get_current_user
 from pwm_platform.auth.service import auth_service
 from pwm_platform.auth.token_manager import get_token_manager
@@ -184,9 +185,11 @@ async def signup_form(
     email: str = Form(...),
     username: str = Form(...),
     password: str = Form(...),
+    csrf_token: str = Form(""),
     db: AsyncSession = Depends(get_db),
 ):
     """Handle registration from HTML form. Sets cookie + redirects to /benchmark."""
+    enforce_csrf(request, csrf_token)
     if len(password) < 8:
         return templates.TemplateResponse(request, "signup.html", {
             "error": "Password must be at least 8 characters",
@@ -217,9 +220,11 @@ async def login_form(
     email: str = Form(...),
     password: str = Form(...),
     next: str = Form(default="/benchmark"),
+    csrf_token: str = Form(""),
     db: AsyncSession = Depends(get_db),
 ):
     """Handle login from HTML form. Sets cookie + redirects on success."""
+    enforce_csrf(request, csrf_token)
     try:
         result = await auth_service.local_login(email, password, db)
     except HTTPException:
@@ -336,9 +341,11 @@ async def revoke_api_key(
 async def forgot_password_form(
     request: Request,
     email: str = Form(...),
+    csrf_token: str = Form(""),
     db: AsyncSession = Depends(get_db),
 ):
     """Send password reset email (form submission)."""
+    enforce_csrf(request, csrf_token)
     try:
         await auth_service.request_password_reset(email, db)
     except Exception as exc:
@@ -355,9 +362,11 @@ async def reset_password_form(
     request: Request,
     token: str = Form(...),
     password: str = Form(...),
+    csrf_token: str = Form(""),
     db: AsyncSession = Depends(get_db),
 ):
     """Process password reset with token (form submission)."""
+    enforce_csrf(request, csrf_token)
     try:
         await auth_service.confirm_password_reset(token, password, db)
     except HTTPException as exc:

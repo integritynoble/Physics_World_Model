@@ -209,12 +209,17 @@ async def login_page(request: Request):
     on Base mainnet by default (Web3Auth's hardcoded fallback), and the
     user would need to manually switch chains before doing anything.
     """
-    from pwm_platform.routers.onchain import _CONFIG as _ONCHAIN
+    # The onchain router exists only in the pwm_nonprofit mirror; this
+    # codebase falls back to the Base Sepolia defaults below.
+    try:
+        from pwm_platform.routers.onchain import _CONFIG as _ONCHAIN
+    except ImportError:
+        _ONCHAIN = {}
     return templates.TemplateResponse(request, "login.html", {
         "google_client_id": settings.GOOGLE_CLIENT_ID,
         "sso_url": settings.SSO_REDIRECT_URL,
-        "web3auth_client_id": settings.WEB3AUTH_CLIENT_ID,
-        "web3auth_network": settings.WEB3AUTH_NETWORK,
+        "web3auth_client_id": getattr(settings, "WEB3AUTH_CLIENT_ID", ""),
+        "web3auth_network": getattr(settings, "WEB3AUTH_NETWORK", ""),
         # Chain config matches what /api/v1/onchain/config exposes — same
         # chainId, rpcUrl, explorer for the embedded wallet.
         "chain_id_hex": "0x" + format(_ONCHAIN.get("chainId") or 84532, "x"),

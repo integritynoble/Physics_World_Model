@@ -18,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from pwm_platform.auth.csrf import CSRFTokenMiddleware
 from pwm_platform.auth.dependencies import LoginRedirect
 
 from pwm_platform.config import settings
@@ -92,6 +93,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# CSRF — issues the signed csrf_token cookie and exposes it to templates
+# as request.state.csrf_token. Validation happens in the auth form
+# endpoints via enforce_csrf(). See pwm_platform/auth/csrf.py.
+app.add_middleware(CSRFTokenMiddleware)
 
 # Static files (CSS, JS, images)
 app.mount("/static", StaticFiles(directory="pwm_platform/static"), name="static")
