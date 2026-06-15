@@ -215,25 +215,28 @@ class DifferentiableMST(nn.Module):
         y = y.to(self.device)
         mask_2d = mask_2d.to(self.device)
 
-        # Convert measurement to initial spectral estimate via shift_back
-        # shape: [B, L, H, W]
+        from pwm_core.recon.mst import shift_torch
+
+        # MST's official init_meas normalizes the raw CASSI measurement before
+        # shift_back; without this the model input is ~nC/2x off-scale. (Omitting
+        # it — plus the two errors below — gave only ~12 dB instead of ~35.)
+        y = y / self.L * 2
+
+        # Initial spectral estimate H = shift_back(meas)  [B, L, H, W].
         x_initial = shift_back_meas_torch(y, step=self.step, nC=self.L)
 
-        # Expand mask to all bands and weight initial estimate
-        # mask_2d: [H, W] -> [1, 1, H, W] -> [1, L, H, W]
+        # Per-band mask → shifted → Phi, which drives the model's mask-guided
+        # attention. mask_2d: [H, W] -> [1, L, H, W] -> shift -> [1, L, H, W_ext].
         if mask_2d.ndim == 2:
-            mask_expanded = mask_2d.unsqueeze(0).unsqueeze(0)  # [1, 1, H, W]
+            mask_bands = mask_2d.unsqueeze(0).unsqueeze(0).expand_as(x_initial)
         else:
-            mask_expanded = mask_2d  # assume already expanded
+            mask_bands = mask_2d.expand_as(x_initial)
+        phi = shift_torch(mask_bands.contiguous(), step=self.step)
 
-        mask_expanded = mask_expanded.expand_as(x_initial)  # [1, L, H, W]
-
-        # Weight initial estimate by mask
-        x_weighted = x_initial * mask_expanded
-
-        # Forward through MST model
+        # The MST input is H (NOT H*mask); the mask enters via Phi inside the
+        # model. set_grad_enabled(True) keeps inputs differentiable when frozen.
         with torch.set_grad_enabled(True):
-            x_recon = self.model(x_weighted)
+            x_recon = self.model(x_initial, phi)
 
         # Clamp to valid range [0, 1]
         x_recon = torch.clamp(x_recon, min=0.0, max=1.0)
