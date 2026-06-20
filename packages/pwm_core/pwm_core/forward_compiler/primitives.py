@@ -12,7 +12,6 @@ from typing import Any, Callable, Dict, Optional, Tuple
 
 import numpy as np
 
-from pwm_core.mismatch.subpixel import subpixel_shift_2d
 from pwm_core.physics.spectral.dispersion_models import dispersion_shift
 
 
@@ -97,24 +96,71 @@ register_primitive(Primitive(
 
 
 # --- band_shift: shift each spectral band by dispersion (H,W,L)->(H,W,L) -----
-def _band_shift_fwd(x, dispersion=None, sign=1.0):
-    disp = dispersion or {}
-    L = x.shape[-1]
-    out = np.zeros_like(x)
-    for l in range(L):
-        dx, dy = dispersion_shift(disp, band=l)
-        out[..., l] = subpixel_shift_2d(x[..., l], sign * dx, sign * dy)
+# Implemented as an EXACT linear bilinear shift so the adjoint is exact at any
+# (including sub-pixel) shift. A zero-fill integer shift S_k has transpose
+# S_{-k}; the fractional blend (1-a)*S_f + a*S_{f+1} transposes term-by-term.
+
+def _roll_zero_1d(arr, k, axis):
+    """Shift `arr` along `axis` by integer k (k>0 => toward higher index),
+    filling vacated entries with zero. Its transpose is the same op with -k."""
+    if k == 0:
+        return arr.copy()
+    out = np.zeros_like(arr)
+    n = arr.shape[axis]
+    if abs(k) >= n:
+        return out
+    src = [slice(None)] * arr.ndim
+    dst = [slice(None)] * arr.ndim
+    if k > 0:
+        dst[axis] = slice(k, None)
+        src[axis] = slice(0, n - k)
+    else:
+        dst[axis] = slice(0, n + k)
+        src[axis] = slice(-k, None)
+    out[tuple(dst)] = arr[tuple(src)]
     return out
 
 
-def _band_shift_adj(y, dispersion=None, sign=1.0):
-    return _band_shift_fwd(y, dispersion=dispersion, sign=-sign)
+def _shift_axis(img, s, axis):
+    f = int(np.floor(s))
+    a = float(s - f)
+    return (1.0 - a) * _roll_zero_1d(img, f, axis) + a * _roll_zero_1d(img, f + 1, axis)
+
+
+def _shift_axis_adj(img, s, axis):
+    f = int(np.floor(s))
+    a = float(s - f)
+    return (1.0 - a) * _roll_zero_1d(img, -f, axis) + a * _roll_zero_1d(img, -(f + 1), axis)
+
+
+def _band_shift_fwd(x, dispersion=None):
+    disp = dispersion if dispersion is not None else {}
+    xf = np.asarray(x, dtype=np.float64)
+    L = xf.shape[-1]
+    out = np.zeros_like(xf)
+    for l in range(L):
+        dx, dy = dispersion_shift(disp, band=l)
+        # dx shifts columns (axis=1, horizontal); dy shifts rows (axis=0, vertical)
+        out[..., l] = _shift_axis(_shift_axis(xf[..., l], dx, axis=1), dy, axis=0)
+    return out
+
+
+def _band_shift_adj(y, dispersion=None):
+    disp = dispersion if dispersion is not None else {}
+    yf = np.asarray(y, dtype=np.float64)
+    L = yf.shape[-1]
+    out = np.zeros_like(yf)
+    for l in range(L):
+        dx, dy = dispersion_shift(disp, band=l)
+        # (Sy Sx)^T = Sx^T Sy^T  -> apply Sy^T (axis 0) then Sx^T (axis 1)
+        out[..., l] = _shift_axis_adj(_shift_axis_adj(yf[..., l], dy, axis=0), dx, axis=1)
+    return out
 
 
 register_primitive(Primitive(
     name="band_shift",
     forward=_band_shift_fwd,
     adjoint=_band_shift_adj,
-    out_shape=lambda in_shape, dispersion=None, sign=1.0: tuple(in_shape),
+    out_shape=lambda in_shape, dispersion=None: tuple(in_shape),
     is_linear=True,
 ))

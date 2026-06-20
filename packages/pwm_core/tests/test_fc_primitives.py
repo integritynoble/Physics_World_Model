@@ -67,3 +67,12 @@ def test_unknown_primitive_raises():
 def test_registry_contains_linear_builtins():
     for name in ("scale", "mask_multiply", "band_shift", "band_sum"):
         assert name in PRIMITIVES
+
+
+def test_band_shift_adjoint_subpixel_exact():
+    # Fractional dispersion must still pass the adjoint inner-product test
+    # (the old reverse-shift adjoint failed here at ~6e-2).
+    p = get_primitive("band_shift")
+    disp = {"dispersion_model": "poly", "disp_poly_x": [0.3, 0.7], "disp_poly_y": [0.0, 0.5]}
+    in_shape = (8, 8, 4)
+    assert _adjoint_inner_product_ok(p, in_shape, {"dispersion": disp}, tol=1e-9)
