@@ -25,3 +25,13 @@ __all__ = [
     "classify_linearity", "probe_conditioning",
     "from_modality", "from_spec_fields",
 ]
+
+
+# Register the compiler as a shared-registry operator factory so other pwm_core
+# code can build operators from a ForwardModel via the standard registry.
+def _register_in_global_registry() -> None:
+    from pwm_core.core.registry import get_registry
+    get_registry().register_operator("forward_compiler", compile_model)
+
+
+_register_in_global_registry()
