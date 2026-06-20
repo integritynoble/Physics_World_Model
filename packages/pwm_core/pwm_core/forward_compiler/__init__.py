@@ -11,9 +11,15 @@ from pwm_core.forward_compiler.primitives import (
     PRIMITIVES, Primitive, get_primitive, register_primitive,
 )
 from pwm_core.forward_compiler.compiler import CompiledOperator, compile_model
+from pwm_core.forward_compiler.validate import (
+    ForwardModelReport, validate_forward_model, validate_dimensions,
+    classify_linearity, probe_conditioning,
+)
 
 __all__ = [
     "ForwardModel", "Stage",
     "PRIMITIVES", "Primitive", "get_primitive", "register_primitive",
     "CompiledOperator", "compile_model",
+    "ForwardModelReport", "validate_forward_model", "validate_dimensions",
+    "classify_linearity", "probe_conditioning",
 ]
