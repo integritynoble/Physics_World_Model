@@ -15,6 +15,7 @@ from pwm_core.forward_compiler.validate import (
     ForwardModelReport, validate_forward_model, validate_dimensions,
     classify_linearity, probe_conditioning,
 )
+from pwm_core.forward_compiler.bridge import from_modality, from_spec_fields
 
 __all__ = [
     "ForwardModel", "Stage",
@@ -22,4 +23,5 @@ __all__ = [
     "CompiledOperator", "compile_model",
     "ForwardModelReport", "validate_forward_model", "validate_dimensions",
     "classify_linearity", "probe_conditioning",
+    "from_modality", "from_spec_fields",
 ]
