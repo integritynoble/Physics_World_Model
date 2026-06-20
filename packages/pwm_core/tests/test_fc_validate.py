@@ -80,3 +80,12 @@ def test_validate_forward_model_nonlinear_skips_adjoint():
     assert rep.is_linear is False
     assert rep.adjoint is None
     assert any("non-linear" in w for w in rep.warnings)
+
+
+def test_validate_forward_model_nonlinear_summary_does_not_crash():
+    m = ForwardModel(name="nl_sum", x_shape=(4, 4),
+                     stages=[Stage(op="square_magnitude", params={})])
+    rep = validate_forward_model(m)
+    s = rep.summary()                      # must not raise on None spectral_norm
+    assert "nl_sum" in s
+    assert "N/A" in s

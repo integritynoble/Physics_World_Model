@@ -30,9 +30,10 @@ class ForwardModelReport:
 
     def summary(self) -> str:
         adj = self.adjoint.summary() if self.adjoint else "adjoint=N/A (non-linear)"
+        sn = self.conditioning.get("spectral_norm")
+        sn_str = f"{sn:.3g}" if isinstance(sn, (int, float)) else "N/A"
         return (f"ForwardModelReport[{self.name}] ok={self.ok} linear={self.is_linear} "
-                f"x{self.x_shape}->y{self.y_shape} | {adj} | "
-                f"||A||~{self.conditioning.get('spectral_norm', float('nan')):.3g}")
+                f"x{self.x_shape}->y{self.y_shape} | {adj} | ||A||~{sn_str}")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
