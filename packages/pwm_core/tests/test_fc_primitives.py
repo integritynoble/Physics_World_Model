@@ -76,3 +76,24 @@ def test_band_shift_adjoint_subpixel_exact():
     disp = {"dispersion_model": "poly", "disp_poly_x": [0.3, 0.7], "disp_poly_y": [0.0, 0.5]}
     in_shape = (8, 8, 4)
     assert _adjoint_inner_product_ok(p, in_shape, {"dispersion": disp}, tol=1e-9)
+
+
+def test_square_magnitude_nonlinear_no_adjoint():
+    p = get_primitive("square_magnitude")
+    x = np.array([-2.0, 3.0], dtype=np.float64)
+    assert np.allclose(p.forward(x), [4.0, 9.0])
+    assert p.is_linear is False
+    assert p.adjoint is None
+    assert p.out_shape((2,)) == (2,)
+
+
+def test_gaussian_noise_nonlinear_and_seeded():
+    p = get_primitive("gaussian_noise")
+    x = np.zeros((4, 4), dtype=np.float64)
+    y1 = p.forward(x, sigma=0.5, seed=7)
+    y2 = p.forward(x, sigma=0.5, seed=7)
+    assert p.is_linear is False
+    assert p.adjoint is None
+    assert np.allclose(y1, y2)          # seeded => reproducible
+    assert y1.std() > 0.0               # noise actually added
+    assert p.out_shape((4, 4), sigma=0.5) == (4, 4)

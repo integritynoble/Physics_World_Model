@@ -164,3 +164,28 @@ register_primitive(Primitive(
     out_shape=lambda in_shape, dispersion=None: tuple(in_shape),
     is_linear=True,
 ))
+
+
+# --- square_magnitude: y = x**2 (intensity / phase-retrieval forward) --------
+register_primitive(Primitive(
+    name="square_magnitude",
+    forward=lambda x: np.abs(x) ** 2,
+    adjoint=None,
+    out_shape=lambda in_shape: tuple(in_shape),
+    is_linear=False,
+))
+
+
+# --- gaussian_noise: y = x + N(0, sigma^2), seeded for reproducibility -------
+def _gaussian_noise_fwd(x, sigma=0.0, seed=0):
+    rng = np.random.default_rng(int(seed))
+    return x + rng.standard_normal(x.shape) * float(sigma)
+
+
+register_primitive(Primitive(
+    name="gaussian_noise",
+    forward=_gaussian_noise_fwd,
+    adjoint=None,
+    out_shape=lambda in_shape, sigma=0.0, seed=0: tuple(in_shape),
+    is_linear=False,
+))
