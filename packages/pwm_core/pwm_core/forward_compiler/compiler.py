@@ -68,3 +68,32 @@ def compile_model(model: ForwardModel) -> CompiledOperator:
         shape = tuple(int(d) for d in out_shape)
     return CompiledOperator(model, x_shape=tuple(model.x_shape),
                             y_shape=shape, stages_resolved=resolved)
+
+
+def as_torch(op: CompiledOperator):
+    """Wrap a *linear* CompiledOperator as a differentiable torch callable.
+
+    Returns a function f(x: Tensor) -> Tensor whose backward applies the
+    operator's adjoint (the exact vjp for a linear map). Raises if the operator
+    is non-linear.
+    """
+    if not op.is_linear:
+        raise ValueError(
+            f"as_torch requires a linear operator; {op.operator_id!r} is non-linear")
+    import torch
+
+    class _OpFn(torch.autograd.Function):
+        @staticmethod
+        def forward(ctx, x):
+            dtype, device = x.dtype, x.device
+            ctx._meta = (dtype, device)
+            y = op.forward(x.detach().cpu().numpy())
+            return torch.as_tensor(np.asarray(y), dtype=dtype, device=device)
+
+        @staticmethod
+        def backward(ctx, grad_out):
+            dtype, device = ctx._meta
+            gx = op.adjoint(grad_out.detach().cpu().numpy())
+            return torch.as_tensor(np.asarray(gx), dtype=dtype, device=device)
+
+    return _OpFn.apply
