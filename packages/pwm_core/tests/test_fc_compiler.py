@@ -5,7 +5,9 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from pwm_core.forward_compiler import ForwardModel, Stage, compile_model
+from pwm_core.forward_compiler import (
+    ForwardModel, Stage, compile_model, from_modality, NativeCompiledOperator,
+)
 from pwm_core.physics.base import BaseOperator
 
 
@@ -64,3 +66,46 @@ def test_band_sum_n_bands_injected():
     op = compile_model(_cassi_model(L=5))
     back = op.adjoint(np.ones((8, 8)))
     assert back.shape == (8, 8, 5)
+
+
+# ── native_operator stage: wrap any pwm_core.physics operator ──────────────────
+
+_NATIVE_MODALITIES = [
+    ("mri",          dict(H=16, W=16)),
+    ("ct",           dict(H=16, W=16, n_angles=18)),
+    ("lensless",     dict(H=16, W=16)),
+    ("holography",   dict(H=16, W=16)),
+    ("ptychography", dict(H=16, W=16, probe_size=4, n_positions=3)),
+    ("fluorescence", dict(H=16, W=16)),
+    ("lightsheet",   dict(H=8,  W=8,  D=4)),
+    ("ultrasound",   dict(H=16, W=16)),
+    ("photoacoustic",dict(H=16, W=16)),
+]
+
+
+@pytest.mark.parametrize("modality,kw", _NATIVE_MODALITIES)
+def test_native_modality_forward_runs(modality, kw):
+    op = compile_model(from_modality(modality, **kw))
+    assert isinstance(op, NativeCompiledOperator)
+    x = np.random.default_rng(0).standard_normal(op.x_shape).astype(np.float64)
+    y = op.forward(x)
+    assert np.all(np.isfinite(y))
+
+
+def test_native_operator_only_as_sole_stage():
+    m = ForwardModel(
+        name="bad_native",
+        x_shape=(8, 8),
+        stages=[
+            Stage(op="scale", params={"c": 2.0}),
+            Stage(op="native_operator",
+                  params={"class": "pwm_core.physics.mri.mri_operator.MRIOperator"}),
+        ],
+    )
+    with pytest.raises(ValueError, match="sole stage"):
+        compile_model(m)
+
+
+def test_from_modality_unknown_raises():
+    with pytest.raises(ValueError, match="unknown modality"):
+        from_modality("xray_banana", H=8, W=8)
