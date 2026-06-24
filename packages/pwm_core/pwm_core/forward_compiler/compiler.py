@@ -70,9 +70,21 @@ class NativeCompiledOperator(BaseOperator):
         self.model = model
         self._native = native_op
         self._x_shape = tuple(native_op.x_shape)
-        self._y_shape = tuple(native_op.y_shape)
-        self._is_linear = True
-        self._supports_autodiff = False
+        # Derive y_shape from an actual forward pass rather than the operator's
+        # declared y_shape — several pwm_core operators leave y_shape at the
+        # BaseOperator default (1,) while their forward returns a real 2-D/3-D
+        # array (e.g. CTOperator → (n_angles, W)). Trusting the declaration makes
+        # check_adjoint/probe_conditioning generate wrong-shaped probes → crash.
+        probe = np.zeros(self._x_shape, dtype=np.float64)
+        self._y_shape = tuple(np.asarray(native_op.forward(probe)).shape)
+        # Inherit the operator's own declarations rather than assuming linearity.
+        # Native physics operators often provide a reconstruction-style adjoint
+        # (e.g. MRI |IFFT|, CT back-projection) that is NOT an exact transpose,
+        # so the validator treats their adjoint check as advisory (see validate).
+        self._is_linear = bool(getattr(native_op, "is_linear", True))
+        self._supports_autodiff = bool(getattr(native_op, "supports_autodiff", False))
+        # Flag read by validate_forward_model to soften the exact-adjoint test.
+        self.is_native = True
 
     def forward(self, x: np.ndarray) -> np.ndarray:
         return self._native.forward(np.asarray(x))

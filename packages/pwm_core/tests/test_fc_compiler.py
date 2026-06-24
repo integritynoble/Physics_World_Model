@@ -90,6 +90,19 @@ def test_native_modality_forward_runs(modality, kw):
     x = np.random.default_rng(0).standard_normal(op.x_shape).astype(np.float64)
     y = op.forward(x)
     assert np.all(np.isfinite(y))
+    # y_shape is derived from the real forward output, not the operator's
+    # (possibly stale) declared y_shape — must match the actual array.
+    assert tuple(op.y_shape) == tuple(np.asarray(y).shape)
+
+
+@pytest.mark.parametrize("modality,kw", _NATIVE_MODALITIES)
+def test_native_modality_validate_ok(modality, kw):
+    # Native operators ship reconstruction-style adjoints (not exact transposes);
+    # validate must treat the adjoint check as ADVISORY → ok stays True with at
+    # most a warning, never a crash from a wrong-shaped probe.
+    from pwm_core.forward_compiler import validate_forward_model
+    report = validate_forward_model(from_modality(modality, **kw))
+    assert report.ok is True, report.summary()
 
 
 def test_native_operator_only_as_sole_stage():

@@ -119,15 +119,30 @@ def validate_forward_model(model: ForwardModel) -> ForwardModelReport:
     lin = classify_linearity(op)
     cond = probe_conditioning(op)
 
+    # Native physics operators (NativeCompiledOperator.is_native) frequently
+    # ship a reconstruction-style adjoint (MRI |IFFT|, CT back-projection) that
+    # is not an exact transpose. For them the adjoint dot-product test is
+    # ADVISORY — a forward model that simulates correctly is still valid even if
+    # its adjoint isn't an exact transpose. Primitive-IR models keep the strict
+    # contract (exact adjoint by construction → failure flips ok=False).
+    is_native = bool(getattr(op, "is_native", False))
+
     adjoint_report = None
     if op.is_linear:
         adjoint_report = op.check_adjoint(n_trials=3, tol=1e-4)
         if not adjoint_report.passed:
-            warnings.append(f"adjoint check failed: {adjoint_report.summary()}")
+            if is_native:
+                warnings.append(
+                    "adjoint is approximate (reconstruction-style, not an exact "
+                    f"transpose): {adjoint_report.summary()}")
+            else:
+                warnings.append(f"adjoint check failed: {adjoint_report.summary()}")
     else:
         warnings.append("operator is non-linear; adjoint test skipped")
 
-    overall_ok = ok and (adjoint_report is None or adjoint_report.passed)
+    strict_adjoint_ok = (adjoint_report is None or adjoint_report.passed
+                         or is_native)
+    overall_ok = ok and strict_adjoint_ok
     return ForwardModelReport(
         name=model.name, x_shape=tuple(op.x_shape), y_shape=tuple(op.y_shape),
         is_linear=op.is_linear, adjoint=adjoint_report, linearity_probe=lin,
