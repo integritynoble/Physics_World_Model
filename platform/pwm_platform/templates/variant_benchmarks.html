@@ -1031,28 +1031,6 @@
         {% endif %}
     </div>
 
-    <!-- ═══ Credits Summary ═══ -->
-    <div class="bg-white shadow rounded-lg p-6">
-        <h2 class="text-lg font-bold text-gray-900 mb-4">Credits System</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="text-center px-4 py-6 bg-indigo-50 rounded-lg">
-                <div class="text-3xl font-bold text-indigo-700">{{ variant.credits_config.profit_pool_pct }}%</div>
-                <div class="mt-1 text-sm text-gray-600">Platform Profit Pool</div>
-                <div class="mt-0.5 text-xs text-gray-400">Revenue allocated to benchmark rewards</div>
-            </div>
-            <div class="text-center px-4 py-6 bg-green-50 rounded-lg">
-                <div class="text-3xl font-bold text-green-700">{{ variant.credits_config.winner_share_pct }}%</div>
-                <div class="mt-1 text-sm text-gray-600">Winner Share</div>
-                <div class="mt-0.5 text-xs text-gray-400">Top algorithm receives from pool</div>
-            </div>
-            <div class="text-center px-4 py-6 bg-amber-50 rounded-lg">
-                <div class="text-3xl font-bold text-amber-700">${{ variant.credits_config.min_withdrawal_usd }}</div>
-                <div class="mt-1 text-sm text-gray-600">Min Withdrawal</div>
-                <div class="mt-0.5 text-xs text-gray-400">Minimum payout threshold</div>
-            </div>
-        </div>
-    </div>
-
     <!-- ═══ Primitives Reference ═══ -->
     <details class="bg-white shadow rounded-lg">
         <summary class="px-6 py-4 cursor-pointer text-sm font-semibold text-gray-700 hover:text-indigo-600">
