@@ -337,6 +337,41 @@ async def revoke_api_key(
     return {"success": True, "message": "API key revoked"}
 
 
+class DeleteAccountBody(BaseModel):
+    confirm: str
+
+
+@router.post("/delete-account")
+async def delete_account(
+    body: DeleteAccountBody,
+    request: Request,
+    response: Response,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Permanently deactivate + anonymize the logged-in account.
+
+    The PWM ledger rows and custodial wallet stay in the database for audit
+    integrity, but the account can no longer log in, its email is freed for
+    a fresh registration, and the API key is revoked. Irreversible.
+    """
+    enforce_csrf(request)
+    if body.confirm != "DELETE":
+        raise HTTPException(status_code=400, detail='Type "DELETE" to confirm')
+
+    user.is_active = False
+    user.email = f"deleted-{user.id}@deleted.invalid"
+    user.username = "Deleted user"
+    user.password_hash = None
+    user.sso_user_id = None
+    user.sso_token = None
+    user.api_key = None
+    await db.commit()
+
+    response.delete_cookie("access_token", path="/")
+    return {"success": True, "message": "Account deleted"}
+
+
 @router.post("/forgot-password-form")
 async def forgot_password_form(
     request: Request,

@@ -212,6 +212,40 @@
         </div>
     </div>
 
+    <!-- Danger zone -->
+    <div class="bg-white shadow-sm rounded-xl p-6 space-y-4 border border-red-100">
+        <div>
+            <h2 class="text-lg font-semibold text-red-700">Danger zone</h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Deleting your account signs you out everywhere, revokes your API key, and frees your
+                email for a fresh registration. Your PWM ledger history is retained for audit integrity,
+                but you will lose access to this account and its balance. <strong>This cannot be undone</strong>.
+            </p>
+        </div>
+        <button type="button" id="del-toggle-btn" onclick="toggleDeleteForm()"
+                class="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
+            Delete account…
+        </button>
+        <div id="del-form" class="hidden space-y-3 bg-red-50 border border-red-200 rounded-lg p-4">
+            <label for="del-confirm" class="block text-xs font-medium text-gray-600">
+                Type <code class="bg-white px-1 rounded font-mono">DELETE</code> to confirm
+            </label>
+            <input id="del-confirm" type="text" autocomplete="off" placeholder="DELETE"
+                   class="w-full sm:w-64 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-red-500 focus:ring-red-500">
+            <div id="del-msg" class="hidden text-sm text-red-700"></div>
+            <div class="flex items-center gap-2">
+                <button type="button" id="del-submit" onclick="submitDeleteAccount()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                    Permanently delete my account
+                </button>
+                <button type="button" onclick="toggleDeleteForm()"
+                        class="px-3 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -310,6 +344,42 @@ async function saveWallet() {
         status.textContent = 'Failed to save wallet address.';
         status.classList.remove('hidden');
     }
+}
+
+// ── Delete account ──────────────────────────────────────────────────────
+function toggleDeleteForm() {
+    const form = document.getElementById('del-form');
+    form.classList.toggle('hidden');
+    if (!form.classList.contains('hidden')) document.getElementById('del-confirm').focus();
+}
+
+async function submitDeleteAccount() {
+    const msg = document.getElementById('del-msg');
+    const confirmVal = document.getElementById('del-confirm').value.trim();
+    msg.classList.add('hidden');
+    if (confirmVal !== 'DELETE') {
+        msg.textContent = 'Please type DELETE (all caps) to confirm.';
+        msg.classList.remove('hidden');
+        return;
+    }
+    const btn = document.getElementById('del-submit');
+    btn.disabled = true; const prev = btn.textContent; btn.textContent = 'Deleting…';
+    try {
+        const res = await fetch('/api/v1/auth/delete-account', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ confirm: confirmVal }),
+        });
+        if (res.ok) { window.location.href = '/'; return; }
+        const d = await res.json().catch(() => ({}));
+        msg.textContent = '✗ ' + (d.detail || ('Error ' + res.status));
+        msg.classList.remove('hidden');
+    } catch (e) {
+        msg.textContent = '✗ ' + e;
+        msg.classList.remove('hidden');
+    }
+    btn.disabled = false; btn.textContent = prev;
 }
 </script>
 {% endblock %}
