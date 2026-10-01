@@ -48,3 +48,9 @@ def test_the_validator_agrees_with_the_runtime_judge(tmp_path):
         for k in ("psnr", "psnr_before", "lesion_cnr", "lesion_contrast_retained"):
             assert ours[k] == pytest.approx(theirs[k], rel=1e-3, abs=1e-3), k
         assert val.verdict(ours)["passed"] == domains._judge_ldct(theirs).passed
+
+
+def test_qualification_keeps_noisy_pairs_and_names_the_reason_for_the_rest(monkeypatch):
+    monkeypatch.setattr(fam, "noise_ratio", lambda p: {"C1": 2.4, "L1": 1.1}[p])
+    q = fam.qualify(["C1", "L1"])
+    assert q["qualified"] == ["C1"] and "1.10 < 1.5" in q["excluded"]["L1"]

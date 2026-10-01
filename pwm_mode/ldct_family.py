@@ -45,6 +45,36 @@ def corpus():
     return sorted(meta["patients"]), vols
 
 
+MIN_NOISE_RATIO = 1.5      # a low-dose problem's input must be clearly noisier than its full-dose reference
+
+
+def noise_ratio(patient: str) -> float:
+    """Low-dose noise over full-dose noise (high-pass residual in soft tissue), averaged over the patient's slices."""
+    from scipy.ndimage import gaussian_filter as gf
+    _, vols = corpus()
+    full, low = vols[f"full_{patient}"], vols[f"low_{patient}"]
+    rs = []
+    for s in range(full.shape[0]):
+        f, l = full[s].astype(float), low[s].astype(float)
+        soft = (gf(f, 2) > -100) & (gf(f, 2) < 200)
+        rs.append((l - gf(l, 2))[soft].std() / max((f - gf(f, 2))[soft].std(), 1e-6))
+    return float(np.mean(rs))
+
+
+def qualify(patients: List[str]) -> Dict[str, Any]:
+    """Qualification before optimization: a pair whose low-dose slice is barely noisier than its reference is not a
+    low-dose problem (any restoration only moves it away from the reference). Returns the qualified patients and, for
+    each excluded one, the measured reason."""
+    ok, excluded = [], {}
+    for p in patients:
+        r = noise_ratio(p)
+        if r >= MIN_NOISE_RATIO:
+            ok.append(p)
+        else:
+            excluded[p] = f"low/full noise ratio {r:.2f} < {MIN_NOISE_RATIO}"
+    return {"qualified": ok, "excluded": excluded}
+
+
 def anatomy(patient: str) -> str:
     return {"C": "chest", "L": "abdomen", "N": "head"}.get(patient[:1], "other")
 

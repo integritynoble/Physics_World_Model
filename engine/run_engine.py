@@ -102,8 +102,12 @@ def main(argv=None):
     t0 = time.time()
 
     pats, _ = fam.corpus()
+    qual = fam.qualify(pats)                      # qualification before optimization (run 2's lesson)
+    (out / "qualification.json").write_text(json.dumps(qual, indent=1))
+    say(f"qualified {len(qual['qualified'])} of {len(pats)} patients; excluded: {qual['excluded']}")
+    pats = qual["qualified"]
     sp = fam.split(pats)
-    problems = fam.build_family(store)
+    problems = fam.build_family(store, patients=pats)
     by_pat = {}
     for p in problems:
         by_pat.setdefault(p["patient"], []).append(p)
