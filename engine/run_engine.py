@@ -128,18 +128,26 @@ def main(argv=None):
             jobs.append((str(store), p["problem_id"], best["payload"]["params"] if match else DEFAULTS))
         return list(pool.map(run_one, jobs))
 
+    # Development patients per anatomy: the first two search, the next one checks (never the same patient).
+    dev_by_anat = {}
+    for q in sp["development"]:
+        dev_by_anat.setdefault(fam.anatomy(q), []).append(q)
+    short = [an for an, qs in dev_by_anat.items() if len(qs) < 3]
+    if short:
+        raise SystemExit(f"need 3 development patients per anatomy (2 search, 1 check); short: {short}")
+    roles = {an: (qs[:2], qs[2]) for an, qs in dev_by_anat.items()}
+    (out / "roles.json").write_text(json.dumps(roles, indent=1))
+
     results["pwm"]["L0"] = pwm_at(st0["n"])
     rng = random.Random(7)
     space = list(itertools.product(*GRID.values()))
-    dev_pats = sp["development"]
-    search_pat, check_pat = dev_pats[0], dev_pats[-1]
     for step, contrasts in enumerate(STEPS, 1):
-        for hu in contrasts:
-            for r in fam.RADII:
-                cond = fam.conditions(search_pat, hu, r)
+        for hu, r, (anat, (search_pats, check_pat)) in itertools.product(contrasts, fam.RADII, sorted(roles.items())):
+            if True:
+                cond = fam.conditions(search_pats[0], hu, r)
                 cands = [dict(zip(GRID, c)) for c in rng.sample(space, min(a.candidates, len(space)))]
                 cands.append(dict(DEFAULTS))
-                search = [p for p in by_pat[search_pat] if p["conditions"] == cond]
+                search = [p for q in search_pats for p in by_pat[q] if p["conditions"] == cond]
                 runs = list(pool.map(run_one, [(str(store), p["problem_id"], c) for c in cands for p in search]))
                 score = {}
                 for rr in runs:
@@ -148,8 +156,8 @@ def main(argv=None):
                 ranked = sorted(score.items(), key=lambda kv: (-sum(x["passed"] for x in kv[1]),
                                                               -float(np.mean([x["objective"] for x in kv[1]]))))
                 best_params = json.loads(ranked[0][0])
-                sub = lib.submit(field="ldct", layer="L4", id=f"ldct-sol-c{int(hu)}-r{r}",
-                                 title=f"Guided bilateral tuned for a {int(hu)} HU, {r} px lesion",
+                sub = lib.submit(field="ldct", layer="L4", id=f"ldct-sol-{anat}-c{int(hu)}-r{r}",
+                                 title=f"Guided bilateral tuned for a {int(hu)} HU, {r} px lesion ({anat})",
                                  summary="setting found by development search; validated on another patient",
                                  payload={"method": "guided-bilateral (runtime run_solver)", "params": best_params},
                                  conditions=cond, source_problems=[p["problem_id"] for p in search],
