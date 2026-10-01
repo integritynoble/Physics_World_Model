@@ -29,6 +29,7 @@ from mcp.server.mcpserver import MCPServer
 
 from . import catalog, ldct
 from .ledger import Ledger, LedgerError, micro, pwm
+from .library import Library, LibraryError
 
 WORKSPACE = Path(os.environ.get("PWM_MODE_WORKSPACE", os.getcwd())).resolve()
 PAYER = os.environ.get("PWM_MODE_PAYER", "user:test-owner")
@@ -159,6 +160,82 @@ def pwm_receipt(run_id: str) -> str:
     return _dump(r)
 
 
+# ---- the PWM library (the knowledge engine) ------------------------------------------
+# A session reads one pinned library state (PWM_LIBRARY_STATE, else the latest at start), so everything a run used is
+# named by that state's digest. New work enters only through pwm_submit, and only the validator can accept it.
+
+_library: Optional[Library] = None
+_pinned: Dict[str, Any] = {}
+
+
+def library() -> Library:
+    global _library
+    if _library is None:
+        _library = Library(Path(os.environ.get("PWM_MODE_HOME", Path.home() / ".ai4science-pwm-mode")) / "library")
+    return _library
+
+
+def pinned_state() -> int:
+    if "n" not in _pinned:
+        want = os.environ.get("PWM_LIBRARY_STATE")
+        _pinned["n"] = int(want) if want and want.isdigit() else library().head()
+    return _pinned["n"]
+
+
+@server.tool()
+def pwm_library() -> str:
+    """Free: the library state this session reads (pinned for the whole session) and what it holds."""
+    if library().head() < 0:
+        return _dump({"state": None, "note": "the library is empty on this machine"})
+    st = library().state(pinned_state())
+    layers: Dict[str, int] = {}
+    for ref in st["artifacts"]:
+        a = library().get(ref, st["n"])
+        layers[a["layer"]] = layers.get(a["layer"], 0) + 1
+    return _dump({"state": st["label"], "digest": st["digest"], "artifacts": layers, "latest": library().head()})
+
+
+@server.tool()
+def pwm_search(field: str = "ldct", layer: Optional[str] = None, query: str = "",
+               conditions: Optional[Dict[str, Any]] = None, quote_id: Optional[str] = None) -> str:
+    """Paid (pwm.library.search): search the pinned library state for principles (L1), twins (L2), benchmarks (L3) and
+    accepted solutions (L4). Pass the problem's conditions (e.g. lesion_hu, lesion_r) to rank the closest first."""
+    return _charged("pwm.library.search", quote_id,
+                    lambda: {"state": f"L{pinned_state()}",
+                             "results": library().search(field=field, layer=layer, query=query,
+                                                         conditions=conditions, state=pinned_state())},
+                    lambda r: True, lambda r: {"state": r["state"], "n": len(r["results"])})
+
+
+@server.tool()
+def pwm_get(ref: str, quote_id: Optional[str] = None) -> str:
+    """Paid (pwm.library.get): one artifact from the pinned state (e.g. 'ldct-sol-c150-r5@1'): its payload (for a
+    solution, the method and parameters), conditions, contributors and the validator's evidence."""
+    def work():
+        try:
+            return {"artifact": library().get(ref, pinned_state())}
+        except LibraryError as exc:
+            raise ValueError(str(exc))
+    return _charged("pwm.library.get", quote_id, work, lambda r: True, lambda r: {"ref": ref})
+
+
+@server.tool()
+def pwm_submit(field: str, layer: str, id: str, title: str, payload: Dict[str, Any],
+               conditions: Dict[str, Any], source_problems: List[str], summary: str = "",
+               based_on: Optional[str] = None) -> str:
+    """Free: submit a solution (L4) or benchmark (L3) for the library. It is NOT added now: the external validator
+    reruns it on protected data and only a pass adds it, as a new library state. Credit the solution you started from
+    in based_on."""
+    try:
+        sub = library().submit(field=field, layer=layer, id=id, title=title, summary=summary, payload=payload,
+                               conditions=conditions, source_problems=source_problems, submitter=PAYER,
+                               based_on=based_on)
+    except LibraryError as exc:
+        return _dump({"error": str(exc)})
+    return _dump({"submission": sub["id"], "state": "pending",
+                  "next": "the validator decides; nothing you report about your own results counts"})
+
+
 # ---- low-dose CT: agent, tools, judge -----------------------------------------------
 
 @server.tool()
@@ -169,10 +246,18 @@ def ldct_describe() -> str:
 
 @server.tool()
 def ldct_solve(seed: int = 0, params: Optional[Dict[str, float]] = None,
-               quote_id: Optional[str] = None) -> str:
+               quote_id: Optional[str] = None, from_solution: Optional[str] = None) -> str:
     """Paid (ldct.solve): run the low-dose CT research agent end to end on a real patient
     scan (seed 0-3): restore it and have the LDCT judge score fidelity and lesion
-    detectability against the withheld full-dose scan. Charged only if the judge passes."""
+    detectability against the withheld full-dose scan. Charged only if the judge passes.
+    from_solution: start from an accepted library solution (e.g. 'ldct-sol-c150-r5@1'); its
+    parameters are used unless params overrides them."""
+    if from_solution:
+        try:
+            base = library().get(from_solution, pinned_state())["payload"].get("params") or {}
+        except LibraryError as exc:
+            return _dump({"error": str(exc), "charged_pwm": "0"})
+        params = dict(base, **(params or {}))
     return _charged(
         "ldct.solve", quote_id,
         lambda: ldct.solve(seed=seed, params=params,

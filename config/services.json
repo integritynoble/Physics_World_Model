@@ -130,6 +130,44 @@
           "share_bps": 10000
         }
       ]
+    },
+    {
+      "id": "pwm.library.search",
+      "kind": "database",
+      "title": "Search the PWM library (principles, twins, benchmarks, accepted solutions) at the pinned state",
+      "price_pwm": "0.05",
+      "settles_only": "a delivered result list; an error is not charged",
+      "agreement": {
+        "id": "test-library-search",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-library-curation",
+          "role": "contributor: library curation",
+          "share_bps": 10000
+        }
+      ]
+    },
+    {
+      "id": "pwm.library.get",
+      "kind": "database",
+      "title": "Fetch one library artifact (its payload, conditions and validated evidence)",
+      "price_pwm": "0.2",
+      "settles_only": "a delivered artifact; an unknown reference is not charged",
+      "agreement": {
+        "id": "test-library-get",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-artifact-authors",
+          "role": "contributors: the artifact's authors (per artifact once agreements exist)",
+          "share_bps": 10000
+        }
+      ]
     }
   ],
   "models": [

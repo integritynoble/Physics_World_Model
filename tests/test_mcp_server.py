@@ -80,3 +80,29 @@ def test_field_tool_and_cap_exhaustion(srv):
     J(srv.ldct_field("field_principles"))
     third = J(srv.ldct_field("field_principles"))
     assert third["error"] == "not authorised"
+
+
+# ---- the library tools (knowledge engine) ----
+def test_library_tools_read_a_pinned_state_and_submissions_wait_for_the_validator(srv, tmp_path, monkeypatch):
+    from pwm_mode.library import Library
+    lib = Library(tmp_path / "lib")
+    lib.seed([{"id": "ldct-benchmark-lesion", "layer": "L3", "field": "ldct", "title": "Lesion benchmark",
+               "conditions": {}, "payload": {}}])
+    sub = lib.submit(field="ldct", layer="L4", id="ldct-sol-c150-r5", title="tuned", summary="",
+                     payload={"params": {"sigma_s": 4.5}}, conditions={"lesion_hu": 150.0, "lesion_r": 5},
+                     source_problems=["dev"], submitter="engine-search")
+    lib.accept(sub["id"], {"passed": True, "validator": "validator-ldct-1", "objective": 4.0})
+    monkeypatch.setattr(srv, "_library", lib)
+    monkeypatch.setattr(srv, "_pinned", {"n": 0})                     # this session pinned L0
+    assert J(srv.pwm_library())["state"] == "L0"
+    assert J(srv.pwm_search(conditions={"lesion_hu": 150.0}))["error"] == "not authorised"
+    srv.pwm_authorize("5")
+    got = J(srv.pwm_search(conditions={"lesion_hu": 150.0, "lesion_r": 5}))
+    assert [r["layer"] for r in got["result"]["results"]] == ["L3"]  # L1's solution is not in L0
+    miss = J(srv.pwm_get("ldct-sol-c150-r5@1"))
+    assert miss["status"] == "failed" and miss["receipt"]["status"] != "settled"   # not in L0: not charged
+    monkeypatch.setattr(srv, "_pinned", {"n": 1})
+    art = J(srv.pwm_get("ldct-sol-c150-r5@1"))["result"]["artifact"]
+    assert art["payload"]["params"] == {"sigma_s": 4.5} and art["evidence"]["validator"] == "validator-ldct-1"
+    s = J(srv.pwm_submit("ldct", "L4", "ldct-sol-mine", "mine", {"params": {}}, {}, ["p"]))
+    assert s["state"] == "pending" and lib.head() == 1                # submitting adds nothing

@@ -1,0 +1,229 @@
+{
+ "split": {
+  "development": [
+   "C016",
+   "C067"
+  ],
+  "held_out": [
+   "C052",
+   "C111"
+  ]
+ },
+ "common": {
+  "n": 54,
+  "pass_rate": 0.8518518518518519,
+  "mean_cnr": 13.14640635391318,
+  "mean_retained": 0.786726483095295
+ },
+ "pwm": {
+  "L0": {
+   "n": 54,
+   "pass_rate": 0.8518518518518519,
+   "mean_cnr": 13.14640635391318,
+   "mean_retained": 0.786726483095295
+  },
+  "after step 1 (L3)": {
+   "n": 54,
+   "pass_rate": 0.9074074074074074,
+   "mean_cnr": 13.73806503573904,
+   "mean_retained": 0.8031540969602561
+  },
+  "after step 2 (L5)": {
+   "n": 54,
+   "pass_rate": 0.9629629629629629,
+   "mean_cnr": 13.586296539494775,
+   "mean_retained": 0.8298143338640691
+  },
+  "after step 3 (L8)": {
+   "n": 54,
+   "pass_rate": 0.9814814814814815,
+   "mean_cnr": 12.950071460564148,
+   "mean_retained": 0.8508144396617744
+  }
+ },
+ "library_states": [
+  {
+   "added": [
+    "ldct-principle-edge-preserving@1",
+    "ldct-twin-paired-tcia@1",
+    "ldct-benchmark-lesion@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:24:42Z",
+   "digest": "369c191d87ddc4d7ad44a60a4369d5da4c3c24d7c51f36067fff3fb0039ce901",
+   "label": "L0",
+   "n": 0,
+   "parent": null,
+   "why": "L0: principle, twin and benchmark; no solutions"
+  },
+  {
+   "added": [
+    "ldct-sol-c150-r3@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:25:33Z",
+   "digest": "6dfebda0fe45a044375d6910bafacc1259b3fa637584dc307c351c643cd75645",
+   "label": "L1",
+   "n": 1,
+   "parent": 0,
+   "why": "accepted sub-369efb12e43e"
+  },
+  {
+   "added": [
+    "ldct-sol-c150-r5@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:25:56Z",
+   "digest": "15d11602d827edd605e53de257521713e5775cd371634bd02d8ef7f58e9de0b3",
+   "label": "L2",
+   "n": 2,
+   "parent": 1,
+   "why": "accepted sub-44bbb94b16fa"
+  },
+  {
+   "added": [
+    "ldct-sol-c150-r7@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-sol-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:26:23Z",
+   "digest": "4b1a4b400ddbbda00e4415d512474e852ad2c232db5e43cad5e4d936aeab4a04",
+   "label": "L3",
+   "n": 3,
+   "parent": 2,
+   "why": "accepted sub-7b2f6c9e1535"
+  },
+  {
+   "added": [
+    "ldct-sol-c100-r3@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c100-r3@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-sol-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:27:03Z",
+   "digest": "ebdf268efa2969b82366490cbf00bf5162438e878443b0dac32df46ae581facb",
+   "label": "L4",
+   "n": 4,
+   "parent": 3,
+   "why": "accepted sub-959589b43f98"
+  },
+  {
+   "added": [
+    "ldct-sol-c100-r7@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c100-r3@1",
+    "ldct-sol-c100-r7@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-sol-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:27:46Z",
+   "digest": "3ed9590bb94e876aa681104933df82f74dc92f92b697eeb0dcd4d526dc987ca3",
+   "label": "L5",
+   "n": 5,
+   "parent": 4,
+   "why": "accepted sub-38ca0dfda334"
+  },
+  {
+   "added": [
+    "ldct-sol-c200-r3@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c100-r3@1",
+    "ldct-sol-c100-r7@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-sol-c150-r7@1",
+    "ldct-sol-c200-r3@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:28:24Z",
+   "digest": "8e43e58b7e62f414eefb0bf7df0012e5f00db786ebe5c3174c551f52346aaff2",
+   "label": "L6",
+   "n": 6,
+   "parent": 5,
+   "why": "accepted sub-e8b91f5051eb"
+  },
+  {
+   "added": [
+    "ldct-sol-c200-r5@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c100-r3@1",
+    "ldct-sol-c100-r7@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-sol-c150-r7@1",
+    "ldct-sol-c200-r3@1",
+    "ldct-sol-c200-r5@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:28:45Z",
+   "digest": "b147bfc8d13bcdb1034c7941f699f0ecccd1fcf7be91c70098cc28589f893691",
+   "label": "L7",
+   "n": 7,
+   "parent": 6,
+   "why": "accepted sub-9e4c2e06d2d8"
+  },
+  {
+   "added": [
+    "ldct-sol-c200-r7@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-c100-r3@1",
+    "ldct-sol-c100-r7@1",
+    "ldct-sol-c150-r3@1",
+    "ldct-sol-c150-r5@1",
+    "ldct-sol-c150-r7@1",
+    "ldct-sol-c200-r3@1",
+    "ldct-sol-c200-r5@1",
+    "ldct-sol-c200-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T10:29:04Z",
+   "digest": "9ae7312932385a748c6c2ee79aa41f2b5b66972c42fd6c96c266a5590fd2ce44",
+   "label": "L8",
+   "n": 8,
+   "parent": 7,
+   "why": "accepted sub-4ae7c9d73313"
+  }
+ ],
+ "seconds": 290
+}
