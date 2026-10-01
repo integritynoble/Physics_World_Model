@@ -1,0 +1,33 @@
+Both add-ons are built and run on a test ledger, and a low-dose CT run through OpenCode produced a correct receipt. Two things are not done: the own-LLM check couldn't run because the only model on this host has been down, and Opus 5.5 has never been called live. I stopped before milestone 6 (your review); nothing has charged real PWM.
+
+**Where things are**
+- Code: `/home/cyang-agent/work/AI4SCI-07` on agent-prod. It is not a git repo; `README.md` explains how to run it.
+- My notes: `sessions/2026-09-28-claude-code.md` and `sessions/index.md` in the task folder. I did not edit status.md, log.md or decisions.
+
+**Milestone 1: what is reused.** The low-dose CT benchmark, scorer and judge are imported unchanged from the AI4Science runtime. The judge checks three things: the image improves on the untouched low-dose scan, the lesion stays detectable, and at least half its contrast survives. The data are real paired scans from four patients. The agent's instructions, its field tools and `mcp_pwm.py`'s tools are reused too. The 21 Sep receipts and ledger code became `pwm_mode/ledger.py`. The 21 Sep terminal isn't used.
+
+The platform (read-only) has no contributor agreements, no 3% treasury share and no way to hold funds. Its model proxy takes PWM from the user but pays nobody. The test site runs a branch without the receipts work. So the v1 test ledger is a SQLite file on agent-prod.
+
+**Milestones 2–4: what was built**
+- **MCP server:** the low-dose CT agent (`ldct_solve`), a problem tool, a judge for your own reconstruction, the agent's field tools and the reused validator and CASSI judge. The agent's instructions are served as a prompt. Nothing is charged until the user approves a spending cap for the session.
+- **Model proxy:** OpenAI-compatible, on port 8795 because 8792 is taken. It offers Claude Opus 5.5 through Anthropic's official SDK and Qwen on the fleet's own GPUs.
+- **Metering:** every paid use gets a quote in PWM, a hold on the funds, then either settlement or release, with one receipt each. Settlement pays the service's contributors and 3% to the treasury and is final. Failed runs are released at 0 PWM. Model turns are charged by token use, never above the cap.
+
+**Milestone 5 and the checks**
+- **Tests:** 21 automated tests pass.
+- **C1, end-to-end run in OpenCode:** Qwen, going through the proxy, ran the low-dose CT agent on patient 0. The judge passed (detectability 18.03 against the required 3; image quality 30.10 dB against 25.86 before). The receipt settled 2 PWM: 1.164, 0.388 and 0.388 to the three contributors and 0.06 to the treasury. I checked it against the ledger, not the model's summary: the receipt hash verifies, the books balance to zero, and the payer's balance reconciles exactly.
+- **C2, a failed run is not charged:** passed. Three model turns that failed because Qwen was down were each released at 0 PWM. A deliberately failed CT run through the real MCP connection was also released at 0 PWM, while a good run on another patient settled 2 PWM correctly.
+- **C2, the user's own LLM costs 0 PWM:** not run. The Qwen endpoint was the only model available here and returned errors for the rest of the session. By design your own model never goes through the proxy or the ledger, but that still needs checking live. The setup is ready in `e2e-own/`.
+- **AI4SCI-06:** it hasn't started, so I loaded the add-ons into a stock OpenCode 1.18.32 with a project-local config. Your global OpenCode config is untouched.
+- **Earlier hangs:** OpenCode stalled in the previous session because `opencode run` was waiting on input; closing stdin fixed it.
+
+**Decisions for you**
+1. **Prices:** all are my test proposals. Low-dose CT agent 2 PWM, judge 0.5, problem 0.2, field tools and validator 0.01, CASSI judge 0.5. Opus 5.5 is 0.8 PWM per million input tokens and 4.0 per million output: Anthropic's list price at the runtime's rate of 5 USD per PWM.
+2. **Who gets paid:** the contributor accounts are placeholders. Each service needs its contributor agreement naming the real beneficiaries.
+3. **Judge charging:** the agent run is charged only if the judge passes. The judge itself is charged whenever it delivers a verdict, pass or fail. Is that what you want?
+4. **Rounding:** on very small model turns the treasury's 3% rounds down to 0. It happened once, on a turn costing 0.000004 PWM.
+5. **Opus 5.5 live:** the route is built but has never made a real call. There's no Anthropic key on this host, and a live call would spend money, so it needs a key and your OK.
+6. **Moving the ledger to the test site:** this means changing the shared platform repo and redeploying the test site, so I haven't done it without your go-ahead. It would also be the step towards gate G3.
+7. **Uncommitted runtime code:** the agent's instructions and field tools that I reuse exist only as uncommitted changes in the runtime repo. They should be committed there.
+
+The owner-acceptance criterion (C1: you accept it personally) is still open.

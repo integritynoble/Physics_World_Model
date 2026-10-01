@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.pytest_cache/
+config/test_keys.json
+config/.owner_test_key
+*.npy
+e2e*/ldct_problem/

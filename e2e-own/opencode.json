@@ -1,0 +1,41 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "own/qwen3.8:27b",
+  "provider": {
+    "own": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "My own LLM (not via AI4Science)",
+      "options": {
+        "baseURL": "https://physicsworldmodel.org/qwen/v1",
+        "apiKey": "{file:/srv/fleet/qwen-workers-key}"
+      },
+      "models": {
+        "qwen3.8:27b": {
+          "name": "qwen3.8:27b"
+        }
+      }
+    }
+  },
+  "mcp": {
+    "ai4science-pwm": {
+      "type": "local",
+      "command": [
+        "/home/cyang-agent/work/AI4SCI-07/.venv/bin/python",
+        "-m",
+        "pwm_mode.mcp_server"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/cyang-agent/work/AI4SCI-07",
+        "PWM_MODE_PAYER": "user:test-owner",
+        "PWM_MODE_WORKSPACE": "/home/cyang-agent/work/AI4SCI-07/e2e-own"
+      },
+      "enabled": true
+    }
+  },
+  "permission": {
+    "edit": "allow",
+    "bash": "allow",
+    "webfetch": "deny"
+  },
+  "share": "disabled"
+}

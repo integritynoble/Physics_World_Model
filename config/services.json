@@ -1,0 +1,177 @@
+{
+  "$comment": "PWM-mode catalog, TEST LEDGER ONLY. Every price here is a test price proposed by the builder, not an owner-set price; a price change needs the owner (plan v1 stop points). Beneficiaries are TEST placeholder accounts until each service's contributor agreement names its agreed beneficiaries (pwm D9, D16). The 3% treasury line is added by the ledger (pwm D7) and is inclusive of the price.",
+  "network": "test",
+  "services": [
+    {
+      "id": "ldct.solve",
+      "kind": "agent",
+      "title": "Low-dose CT research agent: restore a real low-dose scan and judge it",
+      "price_pwm": "2.0",
+      "settles_only": "a delivered run the LDCT judge passed; a failed or rejected run is not charged",
+      "agreement": {
+        "id": "test-ldct-solve",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-ldct-method",
+          "role": "contributor: method (edge-preserving restoration, radius-4 adoption 2026-08-05)",
+          "share_bps": 6000
+        },
+        {
+          "account": "contrib:test-ldct-corpus",
+          "role": "contributor: corpus and lesion insertion",
+          "share_bps": 2000
+        },
+        {
+          "account": "contrib:test-ldct-judge",
+          "role": "contributor: judge (fidelity + Rose-criterion detectability)",
+          "share_bps": 2000
+        }
+      ]
+    },
+    {
+      "id": "ldct.judge",
+      "kind": "judge",
+      "title": "Low-dose CT judge: score a user's reconstruction against the withheld full-dose key",
+      "price_pwm": "0.5",
+      "settles_only": "a delivered verdict (pass or fail); a run that produces no verdict is not charged",
+      "agreement": {
+        "id": "test-ldct-judge",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-ldct-judge",
+          "role": "contributor: judge",
+          "share_bps": 7000
+        },
+        {
+          "account": "contrib:test-ldct-corpus",
+          "role": "contributor: corpus",
+          "share_bps": 3000
+        }
+      ]
+    },
+    {
+      "id": "ldct.problem",
+      "kind": "tool",
+      "title": "Low-dose CT problem: a real low-dose case (answer key withheld) to solve yourself",
+      "price_pwm": "0.2",
+      "settles_only": "a delivered problem workspace",
+      "agreement": {
+        "id": "test-ldct-problem",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-ldct-corpus",
+          "role": "contributor: corpus",
+          "share_bps": 10000
+        }
+      ]
+    },
+    {
+      "id": "ldct.field",
+      "kind": "tool",
+      "title": "Low-dose CT field tools: principles, claim check, benchmark protocol, vendor-split validation, solutions",
+      "price_pwm": "0.01",
+      "settles_only": "a delivered answer from the field store",
+      "agreement": {
+        "id": "test-ldct-field",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-ldct-field-store",
+          "role": "contributor: field store and charter",
+          "share_bps": 10000
+        }
+      ]
+    },
+    {
+      "id": "pwm.validate",
+      "kind": "tool",
+      "title": "PWM artifact validator (reused from mcp_pwm.py)",
+      "price_pwm": "0.01",
+      "settles_only": "a delivered validation report",
+      "agreement": {
+        "id": "test-pwm-tools",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-ai4science-tools",
+          "role": "contributor: tools",
+          "share_bps": 10000
+        }
+      ]
+    },
+    {
+      "id": "pwm.judge_cassi",
+      "kind": "judge",
+      "title": "CASSI Physics Judge (reused from mcp_pwm.py)",
+      "price_pwm": "0.5",
+      "settles_only": "a delivered verdict",
+      "agreement": {
+        "id": "test-cassi-judge",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "contrib:test-cassi-judge",
+          "role": "contributor: judge",
+          "share_bps": 10000
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "id": "claude-opus-5-5",
+      "title": "Claude Opus 5.5 through AI4Science",
+      "upstream": "anthropic",
+      "pwm_per_million_input": "0.8",
+      "pwm_per_million_output": "4.0",
+      "price_source": "test rate: Anthropic list price for claude-opus-5-5 (4/20 USD per M) at the runtime's 5 USD/PWM reference peg (llm/pricing.py); owner sets the real rate",
+      "agreement": {
+        "id": "test-model-opus-5-5",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "provider:test-anthropic-route",
+          "role": "model provider",
+          "share_bps": 10000
+        }
+      ]
+    },
+    {
+      "id": "qwen3.8:27b",
+      "title": "Qwen 3.8 27B on the fleet's own GPUs",
+      "upstream": "fleet-qwen",
+      "pwm_per_million_input": "0.04",
+      "pwm_per_million_output": "0.16",
+      "price_source": "test rate: the runtime's qwen3.8:27b rate (0.20/0.80 USD per M) at 5 USD/PWM",
+      "agreement": {
+        "id": "test-model-qwen",
+        "version": 1,
+        "status": "test placeholder"
+      },
+      "beneficiaries": [
+        {
+          "account": "provider:test-fleet-gpu",
+          "role": "model provider",
+          "share_bps": 10000
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "ai4science-pwm/qwen3.8:27b",
+  "provider": {
+    "ai4science-pwm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "AI4Science (PWM, test ledger)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8795/v1",
+        "apiKey": "{file:/home/cyang-agent/work/AI4SCI-07/config/.owner_test_key}"
+      },
+      "models": {
+        "qwen3.8:27b": {
+          "name": "Qwen 3.8 27B (PWM)"
+        },
+        "claude-opus-5-5": {
+          "name": "Claude Opus 5.5 (PWM)"
+        }
+      }
+    }
+  },
+  "mcp": {
+    "ai4science-pwm": {
+      "type": "local",
+      "command": [
+        "/home/cyang-agent/work/AI4SCI-07/.venv/bin/python",
+        "-m",
+        "pwm_mode.mcp_server"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/cyang-agent/work/AI4SCI-07",
+        "PWM_MODE_PAYER": "user:test-owner",
+        "PWM_MODE_WORKSPACE": "/home/cyang-agent/work/AI4SCI-07/e2e-fail",
+        "PWM_MODE_FAIL_INJECTION": "1"
+      },
+      "enabled": true
+    }
+  },
+  "permission": {
+    "edit": "allow",
+    "bash": "allow",
+    "webfetch": "deny"
+  },
+  "share": "disabled"
+}
