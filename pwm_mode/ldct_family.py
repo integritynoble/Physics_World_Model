@@ -24,7 +24,8 @@ from typing import Any, Dict, List
 import numpy as np
 
 RUNTIME_SRC = os.environ.get("AI4SCIENCE_SRC", "/home/spiritai/pwm/Physics_World_Model/AI4Science")
-DATA = Path(os.environ.get("AI4SCIENCE_DATA", "/home/spiritai/.ai4science/data")) / "ldct"
+DATA = Path(os.environ.get("PWM_LDCT_CORPUS") or
+            Path(os.environ.get("AI4SCIENCE_DATA", "/home/spiritai/.ai4science/data")) / "ldct")
 _GEN = Path(RUNTIME_SRC) / "ai4science/harness/agents/research_agents/runners/payload/ldct/generate.py"
 
 CONTRASTS = (100.0, 150.0, 200.0)      # HU; faint to clear against ~100 HU full-dose noise
