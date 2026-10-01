@@ -86,7 +86,8 @@ def preflight(base: str, key: str, model: str) -> tuple[bool, str]:
 
 def config(arm: str, ws: Path, a, ledger_path: Path) -> dict:
     c = {"$schema": "https://opencode.ai/config.json", "model": run_model(a.model),
-         "permission": {"edit": "allow", "bash": "allow", "webfetch": "deny"}, "share": "disabled"}
+         "permission": {"edit": "allow", "bash": "allow", "webfetch": "deny", "external_directory": "deny"},
+         "share": "disabled"}
     if not builtin(a.model):
         c["provider"] = {"own": {"npm": "@ai-sdk/openai-compatible", "name": "own model",
                                  "options": {"baseURL": a.base, "apiKey": "{file:%s}" % a.key_file},
@@ -117,6 +118,20 @@ def workspace(arm: str, pid: str, a, ledger_path: Path) -> Path:
     return ws
 
 
+def outside(calls: list, ws: Path) -> list:
+    """Paths and commands a session used outside its workspace. Any one makes the session invalid: the answer
+    keys live outside it (the 1 Oct pilot found agents started in the wrong folder and wandered the repo)."""
+    out, root = [], str(ws.resolve())
+    for c in calls:
+        for p in c.get("paths", []):
+            if isinstance(p, str) and p.startswith("/") and not (p == root or p.startswith(root + "/")):
+                out.append(p)
+        cmd = c.get("command") or ""
+        if "/" in cmd and any(t.startswith(("/", "~", "..")) and not t.startswith(root) for t in cmd.replace("=", " ").split()):
+            out.append("bash: " + cmd[:200])
+    return out
+
+
 def tool_calls(events_path: Path) -> list:
     calls = []
     for line in events_path.read_text(errors="replace").splitlines():
@@ -126,7 +141,10 @@ def tool_calls(events_path: Path) -> list:
             continue
         part = ev.get("part") or {}
         if part.get("type") == "tool":
-            calls.append({"tool": part.get("tool"), "status": (part.get("state") or {}).get("status")})
+            inp = (part.get("state") or {}).get("input") or {}
+            calls.append({"tool": part.get("tool"), "status": (part.get("state") or {}).get("status"),
+                          "paths": [inp[k] for k in ("filePath", "path") if isinstance(inp.get(k), str)],
+                          "command": inp.get("command") if isinstance(inp.get("command"), str) else ""})
     return calls
 
 
@@ -190,13 +208,16 @@ def main(argv=None):
                 try:
                     code = subprocess.run(["opencode", "run", "--format", "json", "-m", run_model(a.model), prompt],
                                           cwd=ws, stdin=subprocess.DEVNULL, stdout=fh, stderr=subprocess.STDOUT,
-                                          timeout=a.timeout, env=dict(os.environ)).returncode
+                                          timeout=a.timeout, env=dict(os.environ, PWD=str(ws))).returncode
                 except subprocess.TimeoutExpired:
                     code = "timeout"          # scored as delivered so far; usually no file, so a fail
+            calls = tool_calls(events)
+            away = outside(calls, ws)
             row = {"at": stamp, "problem": pid, "arm": arm, "model": a.model,
                    "library_state": f"L{a.state}" if arm == "pwm" else None,
                    "exit": code, "seconds": round(time.time() - t0, 1),
-                   "tool_calls": tool_calls(events), **score(pid, ws, a),
+                   "tool_calls": [{"tool": c["tool"], "status": c["status"]} for c in calls],
+                   "outside_workspace": away, "valid": not away, **score(pid, ws, a),
                    "pwm_spent": (before - L.balance_micro(PAYER)) / 1e6}
             with open(rec_path, "a") as fh:
                 fh.write(json.dumps(row) + "\n")

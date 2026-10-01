@@ -67,3 +67,18 @@ def test_builtin_login_model_has_no_provider_block_and_arms_differ_only_by_the_m
     assert al.run_model("qwen3.8:27b") == "own/qwen3.8:27b" and al.run_model(a.model) == a.model
     own = al.config("common", tmp_path, SimpleNamespace(**{**vars(a), "model": "qwen3.8:27b"}), tmp_path / "l")
     assert own["model"] == "own/qwen3.8:27b" and "own" in own["provider"]
+
+
+def test_sessions_are_confined_and_anything_outside_the_workspace_is_recorded(tmp_path):
+    from types import SimpleNamespace
+    from engine import agent_loop as al
+    a = SimpleNamespace(model="openai/gpt-6.1-sol", base="", key_file="", run=str(tmp_path), state=1)
+    assert al.config("common", tmp_path, a, tmp_path / "l")["permission"]["external_directory"] == "deny"
+    ws = tmp_path / "ws"
+    ws.mkdir()
+    calls = [{"paths": [str(ws / "problem.json")], "command": ""},
+             {"paths": ["/home/x/run1/problems/keys/p/full_dose.npy"], "command": ""},
+             {"paths": [], "command": "python code/run_solver.py --workspace ."},
+             {"paths": [], "command": "cat ../../problems/keys/p/full_dose.npy"}]
+    away = al.outside(calls, ws)
+    assert away == ["/home/x/run1/problems/keys/p/full_dose.npy", "bash: cat ../../problems/keys/p/full_dose.npy"]
