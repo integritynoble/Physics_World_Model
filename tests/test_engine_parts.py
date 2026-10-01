@@ -29,6 +29,7 @@ def test_the_public_workspace_never_holds_the_key(tmp_path):
 
 
 def test_the_validator_agrees_with_the_runtime_judge(tmp_path):
+    import pwm_mode.ldct  # noqa: F401  (puts the runtime on sys.path)
     from ai4science.harness.agents.research_agents.runners import domains
     pats, _ = fam.corpus()
     spec = fam.make(tmp_path, pats[0], 1, 150.0, 5)

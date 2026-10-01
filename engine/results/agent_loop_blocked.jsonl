@@ -1,0 +1,1 @@
+{"at": "2026-10-01T20:42:36Z", "status": "blocked", "reason": "model endpoint not available", "probe": "HTTP 502 <!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]>    <html class", "model": "qwen3.8:27b", "base": "https://physicsworldmodel.org/qwen/v1"}
