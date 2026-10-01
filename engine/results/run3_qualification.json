@@ -1,0 +1,30 @@
+{
+ "qualified": [
+  "C002",
+  "C004",
+  "C012",
+  "C016",
+  "C021",
+  "C027",
+  "C030",
+  "C050",
+  "C052",
+  "C067",
+  "C077",
+  "C081"
+ ],
+ "excluded": {
+  "L004": "low/full noise ratio 1.11 < 1.5",
+  "L006": "low/full noise ratio 1.19 < 1.5",
+  "L014": "low/full noise ratio 1.12 < 1.5",
+  "L019": "low/full noise ratio 1.18 < 1.5",
+  "L033": "low/full noise ratio 1.14 < 1.5",
+  "L049": "low/full noise ratio 1.22 < 1.5",
+  "L056": "low/full noise ratio 1.17 < 1.5",
+  "L057": "low/full noise ratio 1.13 < 1.5",
+  "L058": "low/full noise ratio 1.30 < 1.5",
+  "L064": "low/full noise ratio 1.35 < 1.5",
+  "L071": "low/full noise ratio 1.30 < 1.5",
+  "L072": "low/full noise ratio 1.09 < 1.5"
+ }
+}

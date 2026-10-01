@@ -1,0 +1,262 @@
+{
+ "split": {
+  "development": [
+   "C016",
+   "C021",
+   "C030",
+   "C027",
+   "C004",
+   "C002"
+  ],
+  "held_out": [
+   "C052",
+   "C067",
+   "C081",
+   "C012",
+   "C077",
+   "C050"
+  ]
+ },
+ "common": {
+  "n": 162,
+  "pass_rate": 0.7901234567901234,
+  "mean_cnr": 12.284196081032949,
+  "mean_retained": 0.77822365011451
+ },
+ "pwm": {
+  "L0": {
+   "n": 162,
+   "pass_rate": 0.7901234567901234,
+   "mean_cnr": 12.284196081032949,
+   "mean_retained": 0.77822365011451
+  },
+  "after step 1 (L3)": {
+   "n": 162,
+   "pass_rate": 0.8580246913580247,
+   "mean_cnr": 12.72530515063559,
+   "mean_retained": 0.7982135731643059
+  },
+  "after step 2 (L6)": {
+   "n": 162,
+   "pass_rate": 0.9444444444444444,
+   "mean_cnr": 12.680080004969234,
+   "mean_retained": 0.8342060173976581
+  },
+  "after step 3 (L9)": {
+   "n": 162,
+   "pass_rate": 0.9629629629629629,
+   "mean_cnr": 12.217233833201721,
+   "mean_retained": 0.8649141174045987
+  }
+ },
+ "library_states": [
+  {
+   "added": [
+    "ldct-principle-edge-preserving@1",
+    "ldct-twin-paired-tcia@1",
+    "ldct-benchmark-lesion@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:33:28Z",
+   "digest": "369c191d87ddc4d7ad44a60a4369d5da4c3c24d7c51f36067fff3fb0039ce901",
+   "label": "L0",
+   "n": 0,
+   "parent": null,
+   "why": "L0: principle, twin and benchmark; no solutions"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c150-r3@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:35:49Z",
+   "digest": "6110ce4cc4639f31eabf49ac53e22829e6d1c95c650794e58e1eb862a10cb310",
+   "label": "L1",
+   "n": 1,
+   "parent": 0,
+   "why": "accepted sub-a58c16dfa58a"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c150-r5@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:36:34Z",
+   "digest": "076c44a22e5e385eef3f6900a5f66c7b9a4b4ad6c5e340807ca2025c5617092b",
+   "label": "L2",
+   "n": 2,
+   "parent": 1,
+   "why": "accepted sub-2cde2cc93449"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c150-r7@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:37:28Z",
+   "digest": "d5d6e50854bfe41e7fd5441fa47e8f9b3ff5442ac4260ea445dbb79c61e109ed",
+   "label": "L3",
+   "n": 3,
+   "parent": 2,
+   "why": "accepted sub-8aa33b222378"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c100-r3@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c100-r3@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:39:11Z",
+   "digest": "886a7515812326e4afc27c7a8b5f54106dc4e163927b8852854d19d58a87c1fd",
+   "label": "L4",
+   "n": 4,
+   "parent": 3,
+   "why": "accepted sub-24f520dcf366"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c100-r5@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c100-r3@1",
+    "ldct-sol-chest-c100-r5@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:39:55Z",
+   "digest": "53021dba345d3a0d027948976b339dae6618a82f75f8968ac05a79e09eed8b53",
+   "label": "L5",
+   "n": 5,
+   "parent": 4,
+   "why": "accepted sub-0dba442b985d"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c100-r7@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c100-r3@1",
+    "ldct-sol-chest-c100-r5@1",
+    "ldct-sol-chest-c100-r7@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:40:42Z",
+   "digest": "7491262ed3ffa5eb8f465bfb93b6a6a9bed734155ff87ed2e12646e758017860",
+   "label": "L6",
+   "n": 6,
+   "parent": 5,
+   "why": "accepted sub-849030817ee5"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c200-r3@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c100-r3@1",
+    "ldct-sol-chest-c100-r5@1",
+    "ldct-sol-chest-c100-r7@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-sol-chest-c200-r3@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:42:22Z",
+   "digest": "a70c9b3d9b7e87536d022c7a75bbf79f2786f2c2d1b88b8933d8d1daab88406c",
+   "label": "L7",
+   "n": 7,
+   "parent": 6,
+   "why": "accepted sub-3b1e95704a9d"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c200-r5@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c100-r3@1",
+    "ldct-sol-chest-c100-r5@1",
+    "ldct-sol-chest-c100-r7@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-sol-chest-c200-r3@1",
+    "ldct-sol-chest-c200-r5@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:43:06Z",
+   "digest": "3fcd93aeed26903f39d1d748de121a80edf01b0a4bfb4bfae43a622b8bfea4d7",
+   "label": "L8",
+   "n": 8,
+   "parent": 7,
+   "why": "accepted sub-dbecfa625072"
+  },
+  {
+   "added": [
+    "ldct-sol-chest-c200-r7@1"
+   ],
+   "artifacts": [
+    "ldct-benchmark-lesion@1",
+    "ldct-principle-edge-preserving@1",
+    "ldct-sol-chest-c100-r3@1",
+    "ldct-sol-chest-c100-r5@1",
+    "ldct-sol-chest-c100-r7@1",
+    "ldct-sol-chest-c150-r3@1",
+    "ldct-sol-chest-c150-r5@1",
+    "ldct-sol-chest-c150-r7@1",
+    "ldct-sol-chest-c200-r3@1",
+    "ldct-sol-chest-c200-r5@1",
+    "ldct-sol-chest-c200-r7@1",
+    "ldct-twin-paired-tcia@1"
+   ],
+   "created": "2026-10-01T12:43:46Z",
+   "digest": "0716b7cc5c4f975c3c75396070f0dbc66fd59a2a5fb2d34e6868f00795d43161",
+   "label": "L9",
+   "n": 9,
+   "parent": 8,
+   "why": "accepted sub-9c83934e67d0"
+  }
+ ],
+ "seconds": 696
+}
