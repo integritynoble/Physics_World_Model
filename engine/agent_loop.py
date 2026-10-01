@@ -60,7 +60,21 @@ pwm_authorize, then pwm_search with this problem's conditions, and pwm_get the c
 its parameters before you choose yours."""
 
 
+def builtin(model: str) -> bool:
+    """A model named "<provider>/<id>" (e.g. openai/gpt-6.1-sol) uses OpenCode's own login for that provider (the
+    owner's ChatGPT account, 1 Oct 2026); a bare id uses the OpenAI-compatible --base and --key-file."""
+    return "/" in model
+
+
 def preflight(base: str, key: str, model: str) -> tuple[bool, str]:
+    if builtin(model):
+        try:
+            r = subprocess.run(["opencode", "run", "-m", model, "Reply with exactly: ok"], capture_output=True,
+                               text=True, timeout=180, stdin=subprocess.DEVNULL, cwd="/tmp")
+            out = (r.stdout or "") + (r.stderr or "")
+            return r.returncode == 0 and "ok" in r.stdout.lower(), "exit %s %s" % (r.returncode, out[-120:].replace("\n", " "))
+        except Exception as exc:
+            return False, "unreachable: %s" % exc
     try:
         r = httpx.post(base.rstrip("/") + "/chat/completions", timeout=120,
                        headers={"Authorization": "Bearer " + key},
@@ -71,11 +85,12 @@ def preflight(base: str, key: str, model: str) -> tuple[bool, str]:
 
 
 def config(arm: str, ws: Path, a, ledger_path: Path) -> dict:
-    c = {"$schema": "https://opencode.ai/config.json", "model": "own/" + a.model,
-         "provider": {"own": {"npm": "@ai-sdk/openai-compatible", "name": "own model",
-                              "options": {"baseURL": a.base, "apiKey": "{file:%s}" % a.key_file},
-                              "models": {a.model: {"name": a.model}}}},
+    c = {"$schema": "https://opencode.ai/config.json", "model": run_model(a.model),
          "permission": {"edit": "allow", "bash": "allow", "webfetch": "deny"}, "share": "disabled"}
+    if not builtin(a.model):
+        c["provider"] = {"own": {"npm": "@ai-sdk/openai-compatible", "name": "own model",
+                                 "options": {"baseURL": a.base, "apiKey": "{file:%s}" % a.key_file},
+                                 "models": {a.model: {"name": a.model}}}}
     if arm == "pwm":
         c["mcp"] = {"ai4science-pwm": {
             "type": "local", "command": [PY, "-m", "pwm_mode.mcp_server"], "enabled": True,
@@ -84,6 +99,10 @@ def config(arm: str, ws: Path, a, ledger_path: Path) -> dict:
                             "PWM_MODE_LEDGER": str(ledger_path),
                             "AI4SCIENCE_DATA": os.environ.get("AI4SCIENCE_DATA", "/home/spiritai/.ai4science/data")}}}
     return c
+
+
+def run_model(model: str) -> str:
+    return model if builtin(model) else "own/" + model
 
 
 def workspace(arm: str, pid: str, a, ledger_path: Path) -> Path:
@@ -134,12 +153,13 @@ def main(argv=None):
     ap.add_argument("--timeout", type=int, default=600)
     ap.add_argument("--base", default="https://physicsworldmodel.org/qwen/v1")
     ap.add_argument("--key-file", default="/srv/fleet/qwen-workers-key")
-    ap.add_argument("--model", default="qwen3.8:27b")
+    ap.add_argument("--model", default="qwen3.8:27b",
+                    help='a bare id for --base, or "<provider>/<id>" for OpenCode\'s own login (openai/gpt-6.1-sol)')
     a = ap.parse_args(argv)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     rec_path = out / "agent_loop.jsonl"
-    ok, why = preflight(a.base, Path(a.key_file).read_text().strip(), a.model)
+    ok, why = preflight(a.base, "" if builtin(a.model) else Path(a.key_file).read_text().strip(), a.model)
     stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     if not ok:
         rec = {"at": stamp, "status": "blocked", "reason": "model endpoint not available", "probe": why,
@@ -168,7 +188,7 @@ def main(argv=None):
             events = ws / "opencode-events.jsonl"
             with open(events, "w") as fh:
                 try:
-                    code = subprocess.run(["opencode", "run", "--format", "json", "-m", "own/" + a.model, prompt],
+                    code = subprocess.run(["opencode", "run", "--format", "json", "-m", run_model(a.model), prompt],
                                           cwd=ws, stdin=subprocess.DEVNULL, stdout=fh, stderr=subprocess.STDOUT,
                                           timeout=a.timeout, env=dict(os.environ)).returncode
                 except subprocess.TimeoutExpired:
