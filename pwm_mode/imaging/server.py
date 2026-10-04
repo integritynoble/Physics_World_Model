@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 
 from mcp.server.mcpserver import MCPServer
 
-from . import catalog, core, design
+from . import catalog, core, design, lifecycle
 
 server = MCPServer(
     name="ai4science-pwm-imaging",
@@ -23,8 +23,9 @@ server = MCPServer(
         "PWM imaging library. imaging_search finds registered modalities (170, each a spec.md design record with its "
         "validation level and gaps); imaging_modality returns one record; imaging_primitives lists the building "
         "blocks; imaging_design_check compiles a new design and runs the structural compiler (C1-C6) and the three "
-        "gates; imaging_design_submit files a passing design for independent validation. Report a check's own "
-        "status: 'unassessed' is not a pass."),
+        "gates; imaging_design_submit files a passing design for independent validation. Every registered modality "
+        "also has the four lifecycle functions: imaging_lifecycle_design, imaging_simulate, imaging_reconstruct, "
+        "imaging_calibrate (arrays as .npy files). Report a check's own status: 'unassessed' is not a pass."),
 )
 
 
@@ -87,6 +88,54 @@ def imaging_design_submit(spec: Dict[str, Any], submitter: str) -> str:
     lib = Library(Path(os.environ.get("PWM_MODE_HOME", Path.home() / ".ai4science-pwm-mode")) / "library")
     sub = design.submit_design(spec, rep, submitter, lib)
     return _dump({"submission": sub["id"], "state": "pending", "report": rep})
+
+
+def _load(path: str):
+    import numpy as np
+    return np.load(Path(path))
+
+
+def _save(arr, path: str) -> str:
+    import numpy as np
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    np.save(p, arr)
+    return str(p)
+
+
+@server.tool()
+def imaging_lifecycle_design(modality: str) -> str:
+    """Q4 for a registered modality: run the design check on its own spec.md record and forward model."""
+    return _dump(lifecycle.design_check(modality))
+
+
+@server.tool()
+def imaging_simulate(modality: str, x_path: str, out_path: str, overrides: Optional[Dict[str, Any]] = None,
+                     gain: float = 1.0) -> str:
+    """Q3: y = forward model(x) for a registered modality (x: .npy in the template's object shape). Writes y (with the
+    template's noise) to out_path and the clean linear output to out_path with '_clean' appended."""
+    r = lifecycle.simulate(modality, _load(x_path), overrides, gain)
+    clean = out_path.replace(".npy", "") + "_clean.npy"
+    return _dump({"y": _save(r["y"], out_path), "y_clean": _save(r["y_clean"], clean), "template": r["template"]})
+
+
+@server.tool()
+def imaging_reconstruct(modality: str, y_path: str, out_path: str, overrides: Optional[Dict[str, Any]] = None,
+                        gain: float = 1.0, lam: float = 1e-3, iters: int = 60) -> str:
+    """Q1: x from y with the modality's operator (regularised least squares through a verified adjoint; the adjoint
+    used, native or repaired, is reported). Writes x to out_path."""
+    r = lifecycle.reconstruct(modality, _load(y_path), overrides, gain, lam, iters)
+    if r["x"] is None:
+        return _dump({k: v for k, v in r.items() if k != "x"})
+    return _dump(dict({k: v for k, v in r.items() if k != "x"}, x=_save(r["x"], out_path)))
+
+
+@server.tool()
+def imaging_calibrate(modality: str, y_path: str, x_ref_path: Optional[str] = None, k: int = 9) -> str:
+    """Q2: estimate the operator's calibratable parameters (and gain) from y. Blind without x_ref (gain refused: it
+    is absorbable by the scene); reference mode with a known object x_ref (e.g. a calibration target)."""
+    xr = _load(x_ref_path) if x_ref_path else None
+    return _dump(lifecycle.calibrate(modality, _load(y_path), xr, k))
 
 
 def main():

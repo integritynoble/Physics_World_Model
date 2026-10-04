@@ -86,3 +86,42 @@ Gaps:
 - **LIB-40 IMG-07:** C5 adjoint tests for all 170 running templates in CI.
 - **LIB-40 IMG-08:** source and sample design records (paper A2): measured source spectra, contrast-agent size
   distributions, bleaching rates, each with conditions and date.
+
+## The four lifecycle functions, for every modality (5 Oct 2026)
+Owner: every modality must have design, simulate, reconstruct and calibrate. `pwm_mode/imaging/lifecycle.py` gives
+each registered modality all four, built from its own forward-model template. They are exposed as MCP tools
+(`imaging_lifecycle_design`, `imaging_simulate`, `imaging_reconstruct`, `imaging_calibrate`).
+- **design (Q4):** the design check on the modality's own spec.md record and graph.
+- **simulate (Q3):** the template's forward model, with noise, plus its clean linear output.
+- **reconstruct (Q1):** regularised least squares through the linear part, with a **verified adjoint**.
+  - It uses the primitives' own adjoint when that passes the dot-product test.
+  - Otherwise it repairs the adjoint: a fitted constant, or the exact transpose by probing (objects up to 8192
+    entries).
+  - The adjoint used is reported. Nonlinear stages are not inverted.
+- **calibrate (Q2):** a one-at-a-time grid search over the template's learnable parameters, the `mismatch_db`
+  parameters the graph uses, and the gain.
+  - Blind mode uses the data residual; reference mode uses a known object.
+  - Blind mode refuses gain (absorbable, paper A1).
+
+Smoke audit on 7 core modalities (synthetic object; `lifecycle_audit.json`):
+- **reconstruct:** 7/7.
+  - Relative error: CT 0.4% (probed adjoint), MRI 0.8% (probed), widefield 0.2%, lensless 2.9%.
+  - Underdetermined: CASSI 75%, SPC 93%, ultrasound 67%. Plain Tikhonov is not a good solver for these.
+- **calibrate:** 6/7 recover a shifted parameter with a reference.
+- **design:** 4/7 pass. CT, MRI and ultrasound fail C5 because of upstream adjoint bugs.
+- **all four:** 4/7.
+
+Upstream problems found:
+- `mri_kspace` adjoint is off by a constant.
+- `ct_radon` adjoint is not the transpose.
+- The ultrasound acoustic chain adjoint is wrong.
+- Ultrasound `propagate.speed_of_sound` has **no effect** on the output.
+- The CT template declares **no** calibratable parameter (no centre of rotation, no geometry), so only gain can be
+  calibrated.
+
+The full 170-modality audit is heavy (probing builds a dense transpose) and goes to a remote machine:
+`python -m pwm_mode.imaging.lifecycle`.
+- **LIB-40 IMG-09:** run the full four-function audit on all 170 modalities (remote machine) and commit
+  `lifecycle_audit.json`.
+- **LIB-40 IMG-10:** fix the failing adjoints and the dead learnable parameters in `pwm_core` (as a patch), and add
+  geometry calibration parameters to templates that have none (CT centre of rotation, detector offset, ...).

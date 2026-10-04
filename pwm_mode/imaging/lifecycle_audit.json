@@ -1,0 +1,233 @@
+{
+ "summary": {
+  "design": 4,
+  "simulate": 7,
+  "reconstruct": 7,
+  "calibrate": 6,
+  "all_four": 4,
+  "errors": 0,
+  "n": 7
+ },
+ "rows": [
+  {
+   "modality": "cassi",
+   "design": {
+    "ok": true,
+    "chain": "M -> W -> Sigma",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     64,
+     64
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.7485087248981138,
+    "rel_error_backprojection": 0.7733756459258001,
+    "data_residual": 0.00024938817827327566,
+    "adjoint": "native"
+   },
+   "calibrate": {
+    "param": "disperse.disp_step",
+    "true": 1.25,
+    "reference_estimate": 1.25,
+    "ok": true,
+    "parameter_affects_output": true
+   }
+  },
+  {
+   "modality": "ct",
+   "design": {
+    "ok": false,
+    "chain": "Pi",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     180,
+     64
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.003681546915120879,
+    "rel_error_backprojection": 0.5181843850049642,
+    "data_residual": 4.961061000497081e-05,
+    "adjoint": "probe"
+   },
+   "calibrate": {
+    "param": "gain",
+    "ok": true,
+    "note": "only gain: recoverable with a reference target"
+   }
+  },
+  {
+   "modality": "mri",
+   "design": {
+    "ok": false,
+    "chain": "F",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     64,
+     64
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.008302165185752088,
+    "rel_error_backprojection": 0.009287146122301346,
+    "data_residual": 2.441532556460905e-07,
+    "adjoint": "probe"
+   },
+   "calibrate": {
+    "param": "kspace.seed",
+    "true": 162,
+    "reference_estimate": 162,
+    "ok": true,
+    "parameter_affects_output": true
+   }
+  },
+  {
+   "modality": "spc",
+   "design": {
+    "ok": true,
+    "chain": "S",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     614
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.9274472358458697,
+    "rel_error_backprojection": 0.9380818169783279,
+    "data_residual": 0.0011292578236556314,
+    "adjoint": "native"
+   },
+   "calibrate": {
+    "param": "measure.seed",
+    "true": 162,
+    "reference_estimate": 162,
+    "ok": true,
+    "parameter_affects_output": true
+   }
+  },
+  {
+   "modality": "widefield",
+   "design": {
+    "ok": true,
+    "chain": "C",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     64,
+     64
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.0021987443237974596,
+    "rel_error_backprojection": 0.08369186899841287,
+    "data_residual": 0.0010663888954638876,
+    "adjoint": "native"
+   },
+   "calibrate": {
+    "param": "blur.sigma",
+    "true": 2.25,
+    "reference_estimate": 2.25,
+    "ok": true,
+    "parameter_affects_output": true
+   }
+  },
+  {
+   "modality": "lensless",
+   "design": {
+    "ok": true,
+    "chain": "C",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     64,
+     64
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.029131922011159866,
+    "rel_error_backprojection": 0.2892800182512518,
+    "data_residual": 0.001756940987447066,
+    "adjoint": "native"
+   },
+   "calibrate": {
+    "param": "psf_conv.sigma",
+    "true": 5.375,
+    "reference_estimate": 5.375,
+    "ok": true,
+    "parameter_affects_output": true
+   }
+  },
+  {
+   "modality": "ultrasound",
+   "design": {
+    "ok": false,
+    "chain": "P -> P -> D",
+    "gates_assessed": [
+     "G1_recoverability",
+     "G3_mismatch"
+    ]
+   },
+   "simulate": {
+    "ok": true,
+    "y_shape": [
+     64
+    ]
+   },
+   "reconstruct": {
+    "ok": true,
+    "rel_error": 0.670916647304508,
+    "rel_error_backprojection": 0.7142629322125483,
+    "data_residual": 2.5125345283183295e-05,
+    "adjoint": "probe"
+   },
+   "calibrate": {
+    "param": "propagate.speed_of_sound",
+    "true": 1525.0,
+    "reference_estimate": 1400.0,
+    "ok": false,
+    "parameter_affects_output": false
+   }
+  }
+ ]
+}
