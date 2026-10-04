@@ -1,0 +1,6 @@
+FAILED tests/test_canonical_decompositions.py::TestCanonicalEnums::test_canonical_primitive_has_10_members
+FAILED tests/test_canonical_decompositions.py::TestCanonicalEnums::test_canonical_primitive_names
+FAILED tests/test_canonical_decompositions.py::TestCanonicalMapping::test_physics_stage_consistency
+FAILED tests/test_canonical_decompositions.py::TestCanonicalRegistry::test_registry_covers_all_10_types
+FAILED tests/test_canonical_decompositions.py::TestCanonicalDecompositions::test_31_modalities_registered
+FAILED tests/test_canonical_decompositions.py::TestBasisGrowth::test_saturation_at_10

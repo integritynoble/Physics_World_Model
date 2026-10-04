@@ -71,8 +71,11 @@ def _run(template: Dict[str, Any]) -> Dict[str, Any]:
         x = np.random.default_rng(0).random(tuple(template.get("metadata", {}).get("x_shape", [64, 64])))
         y = op.forward(x)
         ok = bool(np.all(np.isfinite(np.asarray(y, dtype=complex))))
-        return {"runs": ok, "canonical_chain": op.canonical_dag_string(), "aliases_applied": notes,
-                "nodes": len(op.forward_plan)}
+        out = {"runs": ok, "canonical_chain": op.canonical_dag_string(), "aliases_applied": notes,
+               "nodes": len(op.forward_plan)}
+        if template.get("metadata", {}).get("repaired_by"):
+            out["repaired_by"] = template["metadata"]["repaired_by"]
+        return out
     except _Timeout:
         return {"runs": False, "error": "timeout", "aliases_applied": notes}
     except Exception as e:  # noqa: BLE001 - the error text is the record

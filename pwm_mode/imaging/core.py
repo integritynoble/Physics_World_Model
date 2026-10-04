@@ -16,13 +16,35 @@ PWM_CORE_SRC = Path(os.environ.get("PWM_CORE_SRC", "/home/spiritai/pwm/Physics_W
 GENESIS_SRC = Path(os.environ.get("PWM_GENESIS_SRC", "/home/spiritai/pwm/Physics_World_Model/pwm_product/genesis"))
 
 # Primitive ids used by some registry templates that were never registered; each has a registered equivalent.
-# (Found by the 5 Oct 2026 coverage audit: 20 modalities' templates failed to compile only because of these names.)
+# (Found by the coverage audit: 20 modalities' templates failed to compile only because of these names. The upstream
+# fix is results/IMG-01/pwm_core_templates.patch, which renames them in graph_templates.yaml; this map stays so that
+# an unpatched pwm_core still works.) fft_2d is not here: fourier_relay is FFT -> transfer function -> IFFT, a
+# propagation, so it is not a Fourier transform; the five templates that used fft_2d are rewritten below instead.
 PRIMITIVE_ALIASES = {
     "propagation_2d": "angular_spectrum",
     "radon_2d": "ct_radon",
-    "fft_2d": "fourier_relay",
     "poisson_gaussian_sensor_noise": "poisson_gaussian_sensor",
 }
+
+# IMG-01: five templates (F -> subsample -> noise) used the unregistered primitives fft_2d and subsample. Both are one
+# registered operator, mri_kspace (FFT then a random k-space mask with a fully sampled centre), as in the MRI template;
+# acceleration 4 becomes sampling_rate 0.25. The noise is complex_gaussian_sensor: the template's real "gaussian" casts
+# the complex visibilities to real and drops the imaginary part. Applied only while a template still contains "subsample".
+SAMPLED_FOURIER_TEMPLATES = ("eht_imaging_graph_v1", "insar_graph_v1", "radio_astronomy_graph_v1",
+                             "radio_interferometry_graph_v1", "xray_crystallography_graph_v1")
+
+
+def repair_template(template: Dict[str, Any]) -> Dict[str, Any]:
+    if not any(n.get("primitive_id") == "subsample" for n in template.get("nodes", [])):
+        return template
+    acc = next(n for n in template["nodes"] if n["primitive_id"] == "subsample")["params"].get("acceleration", 4)
+    shape = template.get("metadata", {}).get("x_shape", [64, 64])
+    noise = dict(next(n for n in template["nodes"] if n["node_id"] == "noise"), primitive_id="complex_gaussian_sensor")
+    return dict(template, nodes=[
+        {"node_id": "kspace", "primitive_id": "mri_kspace", "learnable": ["sampling_rate"],
+         "params": {"H": shape[0], "W": shape[1], "sampling_rate": 1.0 / acc, "seed": 42}}, noise],
+        edges=[{"source": "kspace", "target": "noise"}],
+        metadata=dict(template.get("metadata", {}), repaired_by="IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor"))
 
 # Bounds from the Finite Primitive Basis theorem.
 N_MAX, D_MAX = 20, 10
@@ -43,7 +65,13 @@ def registry():
 
 def contrib(name: str):
     import yaml
-    return yaml.safe_load(open(PWM_CORE_SRC / "contrib" / name))
+    with open(PWM_CORE_SRC / "contrib" / name) as f:
+        data = yaml.safe_load(f)
+    if name == "graph_templates.yaml":
+        for tid in SAMPLED_FOURIER_TEMPLATES:
+            if tid in data["templates"]:
+                data["templates"][tid] = repair_template(data["templates"][tid])
+    return data
 
 
 def primitive_info(pid: str) -> Dict[str, Any]:

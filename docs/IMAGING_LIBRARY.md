@@ -42,13 +42,19 @@ Design is not just masks, sampling and geometry.
 | Level | Count | Meaning |
 |---|---|---|
 | registered | 170 | element chain and forward equation in `modalities.yaml` |
-| runs | 165 | a graph template compiles and runs (145 before the 4 primitive-name aliases) |
+| runs | 170 | a graph template compiles and runs (145 before the primitive-name aliases, 165 before IMG-01 repaired the last five) |
 | canonical | 28 | chain is in the 31-entry validated decomposition registry |
 | real_data | 11 | hardware validation on real data (flagship paper) |
 
 Gaps:
-- 5 templates still fail: `eht_imaging`, `insar`, `radio_astronomy`, `radio_interferometry`,
-  `xray_crystallography`.
+- No template fails to compile or run. That is a weaker claim than "correct": the five sampled-Fourier templates
+  (`eht_imaging`, `insar`, `radio_astronomy`, `radio_interferometry`, `xray_crystallography`) are now one `mri_kspace`
+  node (FFT plus a random k-space mask with a fully sampled centre, 25 % rate) and complex Gaussian noise. That is a
+  generic random-mask Fourier sampler, not a baseline (u,v) track, a SAR phase model or a diffraction geometry, and its
+  `adjoint` is the zero-filled inverse FFT, off by exactly H*W in the dot-product test (xfail in `tests/test_imaging.py`;
+  the MRI template has the same property). Making them physically specific is part of IMG-05/IMG-07.
+- Until pwm_core carries `results/IMG-01/pwm_core_templates.patch`, this repo repairs those five templates at load time
+  (`core.repair_template`) and maps three unregistered names with `PRIMITIVE_ALIASES`. Both become no-ops once patched.
 - **54** modalities have no source element, so source and excitation design cannot be expressed for them.
 - **No** modality records calibration tolerances, so Gate 3 can only be assessed when a design supplies them.
 - 21 registry modalities have no linked principle.
@@ -58,17 +64,18 @@ Gaps:
 - Quantitative reconstruction benchmarks exist for about 39 modalities, and real data for about 12.
 
 ## Tasks for other machines ("LIB-40 IMG-0x"; Abr has an unrelated IMG-01) (heavy work: abraham / WSL, not agent-prod)
-- **LIB-40 IMG-01:** repair the 5 failing templates; upstream the 4 aliases into `pwm_core` (`PRIMITIVE_REGISTRY` aliases,
-  or rename the template ids).
+- **LIB-40 IMG-01 (done here, upstream pending):** the 5 failing templates are repaired; the patch that renames the template ids
+  in `pwm_core` is `results/IMG-01/pwm_core_templates.patch`, to be applied by someone with write access to
+  Physics_World_Model. See `results/IMG-01.md`.
 - **LIB-40 IMG-02:** add source elements to the 54 source-less modalities, from the literature, with units.
 - **LIB-40 IMG-03:** record calibration parameters **with tolerances** per modality (Gate 3). Start from genesis
   `mismatch_parameters` and the flagship tables (e.g. CASSI mask < 0.25 px, CT centre of rotation ~2 px).
 - **LIB-40 IMG-04:** curate the 46 principle-only entries. Add registry entries and templates for the imaging ones; mark
   the rest out of scope.
-- **LIB-40 IMG-05:** extend validated canonical chains (C2/C6) beyond 28 toward all 165 running modalities, with a
+- **LIB-40 IMG-05:** extend validated canonical chains (C2/C6) beyond 28 toward all 170 running modalities, with a
   reference forward model per modality.
 - **LIB-40 IMG-06:** quantitative reconstruction benchmarks for the about 130 modalities at level `runs`, by category, each
   with a strong fixed baseline (LIB-33 showed the library loses to a well-chosen fixed setting in most families).
-- **LIB-40 IMG-07:** C5 adjoint tests for all 165 running templates in CI.
+- **LIB-40 IMG-07:** C5 adjoint tests for all 170 running templates in CI.
 - **LIB-40 IMG-08:** source and sample design records (paper A2): measured source spectra, contrast-agent size
   distributions, bleaching rates, each with conditions and date.

@@ -13663,7 +13663,7 @@
     "forward_model": {
      "equation": "DAG: F --> S --> D",
      "type": "linear_operator",
-     "canonical_chain": null,
+     "canonical_chain": "F",
      "validated_chain": null,
      "graph_templates": [
       "eht_imaging_graph_v1"
@@ -13728,18 +13728,17 @@
    },
    "templates": {
     "eht_imaging_graph_v1": {
-     "runs": false,
-     "error": "GraphCompilationError: Node 'subsample' references unknown primitive_id 'subsample'. Available: ['acoustic_propagation', 'acoustic_receive_sensor', 'acoustic_source', 'adc_clip', 'affine_correction', 'angular_spectrum', 'b_",
-     "aliases_applied": [
-      "fourier: fft_2d -> fourier_relay"
-     ]
+     "runs": true,
+     "canonical_chain": "F",
+     "aliases_applied": [],
+     "nodes": 2,
+     "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor"
     }
    },
    "genesis_principle": "L1-328",
    "genesis_title": "Event Horizon Telescope (EHT) Imaging",
-   "level": "registered",
+   "level": "runs",
    "gaps": [
-    "no running template",
     "no source element (source design not expressible)",
     "calibration tolerances not recorded"
    ]
@@ -15268,7 +15267,7 @@
     "forward_model": {
      "equation": "DAG: F --> S --> D",
      "type": "nonlinear_operator",
-     "canonical_chain": null,
+     "canonical_chain": "F",
      "validated_chain": null,
      "graph_templates": [
       "insar_graph_v1"
@@ -15333,18 +15332,17 @@
    },
    "templates": {
     "insar_graph_v1": {
-     "runs": false,
-     "error": "GraphCompilationError: Node 'subsample' references unknown primitive_id 'subsample'. Available: ['acoustic_propagation', 'acoustic_receive_sensor', 'acoustic_source', 'adc_clip', 'affine_correction', 'angular_spectrum', 'b_",
-     "aliases_applied": [
-      "fourier: fft_2d -> fourier_relay"
-     ]
+     "runs": true,
+     "canonical_chain": "F",
+     "aliases_applied": [],
+     "nodes": 2,
+     "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor"
     }
    },
    "genesis_principle": null,
    "genesis_title": null,
-   "level": "registered",
+   "level": "runs",
    "gaps": [
-    "no running template",
     "no source element (source design not expressible)",
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -18719,7 +18717,7 @@
     "forward_model": {
      "equation": "DAG: F --> S --> D",
      "type": "linear_operator",
-     "canonical_chain": null,
+     "canonical_chain": "F",
      "validated_chain": null,
      "graph_templates": [
       "radio_astronomy_graph_v1"
@@ -18784,18 +18782,17 @@
    },
    "templates": {
     "radio_astronomy_graph_v1": {
-     "runs": false,
-     "error": "GraphCompilationError: Node 'subsample' references unknown primitive_id 'subsample'. Available: ['acoustic_propagation', 'acoustic_receive_sensor', 'acoustic_source', 'adc_clip', 'affine_correction', 'angular_spectrum', 'b_",
-     "aliases_applied": [
-      "fourier: fft_2d -> fourier_relay"
-     ]
+     "runs": true,
+     "canonical_chain": "F",
+     "aliases_applied": [],
+     "nodes": 2,
+     "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor"
     }
    },
    "genesis_principle": null,
    "genesis_title": null,
-   "level": "registered",
+   "level": "runs",
    "gaps": [
-    "no running template",
     "no source element (source design not expressible)",
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -18838,7 +18835,7 @@
     "forward_model": {
      "equation": "DAG: F --> S --> D",
      "type": "linear_operator",
-     "canonical_chain": null,
+     "canonical_chain": "F",
      "validated_chain": null,
      "graph_templates": [
       "radio_interferometry_graph_v1"
@@ -18903,18 +18900,17 @@
    },
    "templates": {
     "radio_interferometry_graph_v1": {
-     "runs": false,
-     "error": "GraphCompilationError: Node 'subsample' references unknown primitive_id 'subsample'. Available: ['acoustic_propagation', 'acoustic_receive_sensor', 'acoustic_source', 'adc_clip', 'affine_correction', 'angular_spectrum', 'b_",
-     "aliases_applied": [
-      "fourier: fft_2d -> fourier_relay"
-     ]
+     "runs": true,
+     "canonical_chain": "F",
+     "aliases_applied": [],
+     "nodes": 2,
+     "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor"
     }
    },
    "genesis_principle": null,
    "genesis_title": null,
-   "level": "registered",
+   "level": "runs",
    "gaps": [
-    "no running template",
     "no source element (source design not expressible)",
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -21285,7 +21281,7 @@
     "forward_model": {
      "equation": "DAG: F --> S --> D",
      "type": "nonlinear_operator",
-     "canonical_chain": null,
+     "canonical_chain": "F",
      "validated_chain": null,
      "graph_templates": [
       "xray_crystallography_graph_v1"
@@ -21350,18 +21346,17 @@
    },
    "templates": {
     "xray_crystallography_graph_v1": {
-     "runs": false,
-     "error": "GraphCompilationError: Node 'subsample' references unknown primitive_id 'subsample'. Available: ['acoustic_propagation', 'acoustic_receive_sensor', 'acoustic_source', 'adc_clip', 'affine_correction', 'angular_spectrum', 'b_",
-     "aliases_applied": [
-      "fourier: fft_2d -> fourier_relay"
-     ]
+     "runs": true,
+     "canonical_chain": "F",
+     "aliases_applied": [],
+     "nodes": 2,
+     "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor"
     }
    },
    "genesis_principle": "L1-286",
    "genesis_title": "X-ray Crystallography",
-   "level": "registered",
+   "level": "runs",
    "gaps": [
-    "no running template",
     "no source element (source design not expressible)",
     "calibration tolerances not recorded"
    ]
@@ -22400,7 +22395,7 @@
  ],
  "summary": {
   "registry_modalities": 170,
-  "runs": 165,
+  "runs": 170,
   "canonical": 28,
   "real_data": 11,
   "with_source_element": 116,
