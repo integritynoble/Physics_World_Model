@@ -17,7 +17,10 @@ Design is not just masks, sampling and geometry.
     system_elements.
   - Each also records its forward-model templates and whether they run, its linked genesis principle, a validation
     level and its gaps.
-  - Plus **46** genesis imaging-family principles that are not in the registry, marked `principle_only`.
+  - Plus the curation of the 46 genesis imaging-family principles that were not linked to the registry (IMG-04,
+    `pwm_mode/imaging/curation.json`): 14 linked to a registry modality, 2 proposed as new modalities
+    (`proposed_modalities`), 30 marked out of scope with a reason (`out_of_scope`). `principle_only` is now empty.
+    Details and caveats: `docs/LIB-40-IMG-04.md`.
   - Rebuild: `python -m pwm_mode.imaging.catalog --build`.
 - `pwm_mode/imaging/design.py`: checks a new design and runs, in order:
   - the spec.md fields;
@@ -61,9 +64,9 @@ Gaps:
   that does not contain the source wavelength, flagged as a gap and not changed.
 - **No** modality records calibration tolerances, so Gate 3 can only be assessed when a design supplies them.
 - 21 registry modalities have no linked principle.
-- The 46 principle-only entries need curation: some are imaging (DIC, DEXA, fNIRS, STEM, 4D-STEM, STEM-EDX, LiDAR,
-  X-ray NDT, PAUT, phase contrast, THz-TDS, phase retrieval); some are not (EM solvers, room and structural
-  acoustics).
+- The 46 principle-only entries are curated (IMG-04), but 26 of the title-matched registry links are still
+  `fuzzy_unverified` and many look wrong (e.g. muon tomography linked to electron tomography); see
+  `docs/LIB-40-IMG-04.md`.
 - Quantitative reconstruction benchmarks exist for about 39 modalities, and real data for about 12.
 
 ## Tasks for other machines ("LIB-40 IMG-0x"; Abr has an unrelated IMG-01) (heavy work: abraham / WSL, not agent-prod)
@@ -73,9 +76,10 @@ Gaps:
 - **LIB-40 IMG-02:** add source elements to the 54 source-less modalities, from the literature, with units.
 - **LIB-40 IMG-03:** record calibration parameters **with tolerances** per modality (Gate 3). Start from genesis
   `mismatch_parameters` and the flagship tables (e.g. CASSI mask < 0.25 px, CT centre of rotation ~2 px).
-- **LIB-40 IMG-04:** curate the 46 principle-only entries. Add registry entries and templates for the imaging ones; mark
-  the rest out of scope.
-- **LIB-40 IMG-05:** extend validated canonical chains (C2/C6) beyond 28 toward all 170 running modalities, with a
+- **LIB-40 IMG-04 (done on `lib/LIB-40-img04-genesis`):** curate the 46 principle-only entries. Add registry entries and
+  templates for the imaging ones; mark the rest out of scope. What is left upstream: the registry entries are
+  proposals (pwm_core is read-only here), and 3 imaging principles have no honest template for lack of primitives.
+- **LIB-40 IMG-05:** extend validated canonical chains (C2/C6) beyond 28 toward all 165 running modalities, with a
   reference forward model per modality.
 - **LIB-40 IMG-06:** quantitative reconstruction benchmarks for the about 130 modalities at level `runs`, by category, each
   with a strong fixed baseline (LIB-33 showed the library loses to a well-chosen fixed setting in most families).

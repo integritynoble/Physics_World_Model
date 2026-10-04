@@ -31,6 +31,7 @@ from . import core, sources
 
 CATALOG_PATH = Path(__file__).with_name("catalog.json")
 SOURCE_DRAFTED_GAP = "source element drafted from general knowledge, not verified against a paper or measurement"
+CURATION_PATH = Path(__file__).with_name("curation.json")
 
 # Flagship paper, "Empirical Validation": hardware validation on real data, all five carrier families.
 REAL_DATA = {"cassi", "cacti", "spc", "lensless", "compressive_holography", "fluorescence_microscopy", "ct", "cbct",
@@ -73,8 +74,10 @@ def _run(template: Dict[str, Any]) -> Dict[str, Any]:
         x = np.random.default_rng(0).random(tuple(template.get("metadata", {}).get("x_shape", [64, 64])))
         y = op.forward(x)
         ok = bool(np.all(np.isfinite(np.asarray(y, dtype=complex))))
-        out = {"runs": ok, "canonical_chain": op.canonical_dag_string(), "aliases_applied": notes,
-               "nodes": len(op.forward_plan)}
+        y2 = op.forward(np.random.default_rng(1).random(x.shape))
+        depends = bool(np.shape(y) != np.shape(y2) or not np.allclose(np.asarray(y, dtype=complex), np.asarray(y2, dtype=complex)))
+        out = {"runs": ok, "depends_on_object": depends, "canonical_chain": op.canonical_dag_string(),
+               "aliases_applied": notes, "nodes": len(op.forward_plan)}
         if template.get("metadata", {}).get("repaired_by"):
             out["repaired_by"] = template["metadata"]["repaired_by"]
         return out
@@ -97,6 +100,20 @@ def _system_elements(m: Dict[str, Any], principle: Optional[Dict[str, Any]]) -> 
             "optics_and_other": groups, "calibration": [{"parameter": p, "tolerance": None} for p in calib]}
 
 
+def _design_check(entry: Dict[str, Any], template: Dict[str, Any]) -> Dict[str, Any]:
+    """Structural compiler (C1-C5) on a proposed template, filled with the entry's own spec fields only; gates and
+    adequacy need inputs the registry does not hold (photon budgets, tolerances), so they are not run here."""
+    from . import design
+    spec = dict(entry["spec_md"], forward_model={"graph": template})
+    rep = design.check_design(spec)
+    ck = rep["checks"]
+    return {"passed_structural": rep.get("passed_structural"),
+            **{k: ck[k].get("pass") for k in ("C1_dag", "C3_bounds", "C4_nonlinear", "C5_adjoint") if k in ck},
+            "matches_validated": ck.get("C2_chain", {}).get("matches_validated"),
+            "novel_composition": ck.get("C2_chain", {}).get("novel_composition"),
+            "gates": "not run (no photon budget or calibration tolerances recorded)"}
+
+
 def build() -> Dict[str, Any]:
     import glob
     mods = core.contrib("modalities.yaml")["modalities"]
@@ -108,6 +125,14 @@ def build() -> Dict[str, Any]:
         if p.get("carrier_family") in IMAGING_FAMILIES:
             genesis[p["artifact_id"]] = p
     titles = {k: _norm(v["title"]) for k, v in genesis.items()}
+    cur = json.loads(CURATION_PATH.read_text())
+    decisions = {d["id"]: d for d in cur["decisions"]}
+    by_registry = {d["registry_id"]: d for d in cur["decisions"] if d["decision"] == "imaging_link" and not d["secondary"]}
+    secondary = {}
+    for d in cur["decisions"]:
+        if d["decision"] == "imaging_link" and d["secondary"]:
+            secondary.setdefault(d["registry_id"], []).append(d["id"])
+    proposals = {k: _run(t) for k, t in cur["proposed_templates"].items()}
     entries = []
     linked = set()
     for mid, m in mods.items():
@@ -115,6 +140,13 @@ def build() -> Dict[str, Any]:
         runs = {k: _run(templates[k]) for k in tids}
         best = difflib.get_close_matches(_norm(m.get("display_name", mid)), list(titles.values()), n=1, cutoff=0.6)
         gid = next((k for k, v in titles.items() if best and v == best[0]), None)
+        link_source = None
+        if gid:
+            a, b = _norm(m.get("display_name", mid)), titles[gid]
+            link_source = "name_match" if a == b or a in b or b in a else "fuzzy_unverified"
+        dec = by_registry.get(mid)
+        if dec:
+            gid, link_source = dec["id"], "curated"
         principle = genesis.get(gid) if gid else None
         if gid:
             linked.add(gid)
@@ -142,7 +174,7 @@ def build() -> Dict[str, Any]:
             "keywords": m.get("keywords", []), "summary": " ".join((m.get("description") or "").split())[:400],
             "spec_md": {
                 "modality": mid,
-                "carrier": _carrier(m, principle),
+                "carrier": dec["carrier"] if dec else _carrier(m, principle),
                 "geometry": {k: v for k, v in m.items() if k in ("signal_dims", "wavelength_range_nm")},
                 "object": (principle or {}).get("world_state_x") or {"x": (m.get("signal_dims") or {}).get("x")},
                 "forward_model": {"equation": m.get("forward_model_equation"), "type": m.get("forward_model_type"),
@@ -156,31 +188,70 @@ def build() -> Dict[str, Any]:
             "default_solver": m.get("default_solver"),
             "upload_template": m.get("upload_template"),
             "templates": runs,
-            "genesis_principle": gid, "genesis_title": (principle or {}).get("title"),
+            "genesis_principle": gid, "genesis_title": (principle or {}).get("title"), "link_source": link_source,
             "level": level,
             "source_validation": "registry" if has_registry_source else (sources.VALIDATION if drafted else None),
             "gaps": [g for g, bad in (("no running template", not running),
+                                      ("every running template ignores the object (forward output does not depend on x)",
+                                       bool(running) and not any(runs[k].get("depends_on_object") for k in running)),
                                       ("no source element (source design not expressible)",
                                        not has_registry_source and not drafted),
                                       (SOURCE_DRAFTED_GAP, bool(drafted)),
                                       ("geometry wavelength_range_nm [400, 700] is a placeholder that does not contain "
                                        "the drafted source wavelength", wl_conflict),
                                       ("no linked genesis principle", gid is None),
-                                      ("calibration tolerances not recorded", True)) if bad],
+                                      ("calibration tolerances not recorded", True)) if bad] + (dec["gaps"] if dec else []),
         })
+        if mid in secondary:
+            entries[-1]["genesis_principles_secondary"] = secondary[mid]
+        if dec:
+            entries[-1]["template_fidelity"] = dec["template_fidelity"]
+            entries[-1]["curation"] = {"principle": dec["id"], "reason": dec["reason"], "previous_link": dec["previous_link"]}
+            if dec["proposed_template"]:
+                tid = dec["proposed_template"]
+                entries[-1]["proposed_templates"] = {tid: {**proposals[tid], "level": "runs" if proposals[tid]["runs"] else "registered",
+                                                           "fidelity": dec["template_fidelity"],
+                                                           "design_check": _design_check(entries[-1], cur["proposed_templates"][tid]),
+                                                           "template": cur["proposed_templates"][tid]}}
     principle_only = [{"id": k, "title": v["title"], "carrier": v.get("carrier"), "dag": v.get("dag"),
                        "level": "principle_only", "gaps": ["not in the modality registry: curate (imaging or not?)"]}
-                      for k, v in sorted(genesis.items()) if k not in linked]
-    cat = {"version": 1, "modalities": entries, "principle_only": principle_only,
+                      for k, v in sorted(genesis.items()) if k not in linked and k not in decisions]
+    out_of_scope = [{"id": d["id"], "title": genesis[d["id"]]["title"], "reason": d["reason"], "borderline": d["borderline"],
+                     "freed_by_relink": d["freed"]}
+                    for d in cur["decisions"] if d["decision"] == "out_of_scope"]
+    proposed_modalities = []
+    for d in cur["decisions"]:
+        if d["decision"] != "imaging_new":
+            continue
+        p = genesis[d["id"]]
+        proposed_modalities.append({
+            "id": d["registry_id"], "title": p["title"], "level": "registered", "genesis_principle": d["id"],
+            "reason": d["reason"], "gaps": d["gaps"],
+            "spec_md": {"modality": d["registry_id"], "carrier": d["carrier"],
+                        "geometry": {}, "object": p.get("world_state_x"),
+                        "forward_model": {"dag": p.get("dag"), "text": p.get("forward_model"), "graph_templates": []},
+                        "noise": [], "target": {"metric": p.get("error_metric"), "secondary": p.get("error_metric_secondary")},
+                        "system_elements": {"calibration": [{"parameter": q, "tolerance": None}
+                                                            for q in p.get("mismatch_parameters") or []]}}})
+    imaging_linked = [d["id"] for d in cur["decisions"] if d["decision"] == "imaging_link" and not d["freed"]]
+    cat = {"version": 2, "modalities": entries, "principle_only": principle_only, "out_of_scope": out_of_scope,
+           "proposed_modalities": proposed_modalities,
            "summary": {"registry_modalities": len(entries),
                        "runs": sum(e["level"] != "registered" for e in entries),
                        "canonical": sum(e["level"] in ("canonical", "real_data") for e in entries),
                        "real_data": sum(e["level"] == "real_data" for e in entries),
+                       "runs_but_ignore_object": sum(any("ignores the object" in g for g in e["gaps"]) for e in entries),
                        "with_source_element": sum(e["source_validation"] == "registry" for e in entries),
                        "with_drafted_source": sum(e["source_validation"] == sources.VALIDATION for e in entries),
                        "without_source": sum(e["source_validation"] is None for e in entries),
                        "genesis_linked": sum(bool(e["genesis_principle"]) for e in entries),
-                       "principle_only": len(principle_only)}}
+                       "principle_only": len(principle_only),
+                       "curated_imaging_linked": len(imaging_linked), "curated_imaging_new": len(proposed_modalities),
+                       "curated_out_of_scope": sum(not o["freed_by_relink"] for o in out_of_scope),
+                       "curated_freed_by_relink": sum(d["freed"] for d in cur["decisions"]),
+                       "links_name_match": sum(e["link_source"] == "name_match" for e in entries),
+                       "links_fuzzy_unverified": sum(e["link_source"] == "fuzzy_unverified" for e in entries),
+                       "links_curated": sum(e["link_source"] == "curated" for e in entries)}}
     return cat
 
 

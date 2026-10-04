@@ -57,8 +57,12 @@ KNOWN_FAILURES = {
     "fluoroscopy_graph_v2": ("fluoro_temporal_integrator",), "angiography_graph_v2": ("fluoro_temporal_integrator",),
     "sonar_graph_v2": ("beamform_delay",),
 }
-COMPILE_ERRORS = ("eht_imaging_graph_v1", "insar_graph_v1", "radio_astronomy_graph_v1", "radio_interferometry_graph_v1",
-                  "xray_crystallography_graph_v1")  # all: unknown primitive_id 'subsample'
+# The five sampled-Fourier templates no longer fail to compile: IMG-01 rewrote them to mri_kspace (merged into LIB-40),
+# so they now share the MRI template's known mri_kspace adjoint failure.
+SAMPLED_FOURIER = ("eht_imaging_graph_v1", "insar_graph_v1", "radio_astronomy_graph_v1", "radio_interferometry_graph_v1",
+                   "xray_crystallography_graph_v1")
+KNOWN_FAILURES.update({n: ("mri_kspace",) for n in SAMPLED_FOURIER})
+COMPILE_ERRORS = ()
 
 TEMPLATES = adjoint.load_templates()
 
