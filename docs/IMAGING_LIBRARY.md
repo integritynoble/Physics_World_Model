@@ -57,7 +57,7 @@ Gaps:
   acoustics).
 - Quantitative reconstruction benchmarks exist for about 39 modalities, and real data for about 12.
 
-## Tasks that can run on other machines (heavy work: abraham / WSL, not agent-prod)
+## Tasks for other machines ("LIB-40 IMG-0x"; Abr has an unrelated IMG-01) (heavy work: abraham / WSL, not agent-prod)
 - **IMG-01:** repair the 5 failing templates; upstream the 4 aliases into `pwm_core` (`PRIMITIVE_REGISTRY` aliases,
   or rename the template ids).
 - **IMG-02:** add source elements to the 54 source-less modalities, from the literature, with units.
