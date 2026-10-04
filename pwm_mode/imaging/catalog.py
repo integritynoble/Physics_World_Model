@@ -19,6 +19,7 @@ Build once with `python -m pwm_mode.imaging.catalog --build` (writes catalog.jso
 from __future__ import annotations
 
 import argparse
+import copy
 import difflib
 import json
 import re
@@ -26,9 +27,10 @@ import signal
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from . import core
+from . import core, sources
 
 CATALOG_PATH = Path(__file__).with_name("catalog.json")
+SOURCE_DRAFTED_GAP = "source element drafted from general knowledge, not verified against a paper or measurement"
 
 # Flagship paper, "Empirical Validation": hardware validation on real data, all five carrier families.
 REAL_DATA = {"cassi", "cacti", "spc", "lensless", "compressive_holography", "fluorescence_microscopy", "ct", "cbct",
@@ -123,6 +125,15 @@ def build() -> Dict[str, Any]:
         if mid in REAL_DATA:
             level = "real_data"
         noise = sorted({n for e in m.get("elements", []) for n in e.get("noise_kinds", [])})
+        system = _system_elements(m, principle)
+        has_registry_source = any(e.get("element_type") == "source" for e in m.get("elements", []))
+        drafted = None if has_registry_source else sources.SOURCES.get(mid)
+        if drafted:
+            system["source"] = copy.deepcopy(drafted)
+        wl = m.get("wavelength_range_nm")
+        source_wl = [e["parameters"][k] for e in (drafted or []) for k in ("wavelength_nm", "pump_wavelength_nm")
+                     if k in e["parameters"]]
+        wl_conflict = bool(drafted and wl == [400, 700] and any(not 400 <= w <= 700 for w in source_wl))
         entries.append({
             "id": mid, "title": m.get("display_name", mid), "category": m.get("category"),
             "keywords": m.get("keywords", []), "summary": " ".join((m.get("description") or "").split())[:400],
@@ -137,16 +148,20 @@ def build() -> Dict[str, Any]:
                 "noise": noise,
                 "target": {"metric": (principle or {}).get("error_metric") or "PSNR_dB",
                            "secondary": (principle or {}).get("error_metric_secondary")},
-                "system_elements": _system_elements(m, principle),
+                "system_elements": system,
             },
             "default_solver": m.get("default_solver"),
             "upload_template": m.get("upload_template"),
             "templates": runs,
             "genesis_principle": gid, "genesis_title": (principle or {}).get("title"),
             "level": level,
+            "source_validation": "registry" if has_registry_source else (sources.VALIDATION if drafted else None),
             "gaps": [g for g, bad in (("no running template", not running),
                                       ("no source element (source design not expressible)",
-                                       not any(e.get("element_type") == "source" for e in m.get("elements", []))),
+                                       not has_registry_source and not drafted),
+                                      (SOURCE_DRAFTED_GAP, bool(drafted)),
+                                      ("geometry wavelength_range_nm [400, 700] is a placeholder that does not contain "
+                                       "the drafted source wavelength", wl_conflict),
                                       ("no linked genesis principle", gid is None),
                                       ("calibration tolerances not recorded", True)) if bad],
         })
@@ -158,8 +173,9 @@ def build() -> Dict[str, Any]:
                        "runs": sum(e["level"] != "registered" for e in entries),
                        "canonical": sum(e["level"] in ("canonical", "real_data") for e in entries),
                        "real_data": sum(e["level"] == "real_data" for e in entries),
-                       "with_source_element": sum("no source element (source design not expressible)" not in e["gaps"]
-                                                  for e in entries),
+                       "with_source_element": sum(e["source_validation"] == "registry" for e in entries),
+                       "with_drafted_source": sum(e["source_validation"] == sources.VALIDATION for e in entries),
+                       "without_source": sum(e["source_validation"] is None for e in entries),
                        "genesis_linked": sum(bool(e["genesis_principle"]) for e in entries),
                        "principle_only": len(principle_only)}}
     return cat

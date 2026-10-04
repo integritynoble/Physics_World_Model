@@ -36,7 +36,7 @@ Design is not just masks, sampling and geometry.
   pending L2 submission; only `Library.accept` by a named validator other than the submitter adds it.
 - `pwm_mode/imaging/server.py`: MCP tools `imaging_search`, `imaging_modality`, `imaging_primitives`,
   `imaging_design_check` and `imaging_design_submit`. Separate from `mcp_server.py` so it merges cleanly.
-- `tests/test_imaging.py`: 7 tests.
+- `tests/test_imaging.py`: 7 tests; `tests/test_imaging_sources.py`: 5 tests for the drafted sources.
 
 ## Coverage today (honest)
 | Level | Count | Meaning |
@@ -49,7 +49,16 @@ Design is not just masks, sampling and geometry.
 Gaps:
 - 5 templates still fail: `eht_imaging`, `insar`, `radio_astronomy`, `radio_interferometry`,
   `xray_crystallography`.
-- **54** modalities have no source element, so source and excitation design cannot be expressed for them.
+- **54** modalities had no source element in the registry. IMG-02 (branch `lib/LIB-40-img02-sources`) adds one for each, in
+  `pwm_mode/imaging/sources.py`, at validation level **drafted**: the radiation or particle, a registered source primitive,
+  numeric parameters with units and constraints, written from general instrument knowledge and **not checked** against a
+  paper, datasheet or measurement (`verified_against` is null). 116 modalities keep their registry source
+  (`source_validation: registry`); the 54 are `source_validation: drafted` and carry a gap saying so. Source primitives do not
+  take these values (only `strength`, or `beam_current_na` for the electron beam), and Gate 2 `photons_per_pixel` stays unset.
+  Catalog carriers that disagree with the real source are noted per element (`carrier_note`, e.g. eddy_current, maldi_msi,
+  sims, atom_probe, neutron_diffraction, nirs_brain, impedance_tomo, magnetic_particle, afm, mfm, desi); 7 modalities
+  (cars, libs, pump_probe, raman_imaging, shg, srs, streak_camera) also have a placeholder `[400, 700]` geometry range
+  that does not contain the source wavelength, flagged as a gap and not changed.
 - **No** modality records calibration tolerances, so Gate 3 can only be assessed when a design supplies them.
 - 21 registry modalities have no linked principle.
 - The 46 principle-only entries need curation: some are imaging (DIC, DEXA, fNIRS, STEM, 4D-STEM, STEM-EDX, LiDAR,

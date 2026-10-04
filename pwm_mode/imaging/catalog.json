@@ -196,6 +196,7 @@
    "genesis_principle": "L1-001",
    "genesis_title": "Widefield Fluorescence Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -384,6 +385,7 @@
    "genesis_principle": "L1-172",
    "genesis_title": "Low-Dose Widefield Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -579,6 +581,7 @@
    "genesis_principle": "L1-173",
    "genesis_title": "Confocal Live-Cell Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -773,6 +776,7 @@
    "genesis_principle": "L1-174",
    "genesis_title": "Confocal 3D Z-Stack",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -977,6 +981,7 @@
    "genesis_principle": "L1-175",
    "genesis_title": "Structured Illumination Microscopy (SIM)",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -1168,6 +1173,7 @@
    "genesis_principle": "L1-176",
    "genesis_title": "Light-Sheet Fluorescence Microscopy (LSFM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -1403,6 +1409,7 @@
    "genesis_principle": "L1-003",
    "genesis_title": "Coded Aperture Snapshot Spectral Imaging (CASSI)",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -1615,6 +1622,7 @@
    "genesis_principle": "L1-002",
    "genesis_title": "Single-Pixel Camera",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -1834,6 +1842,7 @@
    "genesis_principle": "L1-004",
    "genesis_title": "Coded Aperture Compressive Temporal Imaging (CACTI)",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -1999,6 +2008,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -2180,6 +2190,7 @@
    "genesis_principle": "L1-272",
    "genesis_title": "Industrial Computed Tomography",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -2352,6 +2363,7 @@
    "genesis_principle": "L1-262",
    "genesis_title": "Sonar Imaging",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -2572,6 +2584,7 @@
    "genesis_principle": "L1-009",
    "genesis_title": "Electron Ptychographic Imaging",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -2762,6 +2775,7 @@
    "genesis_principle": "L1-233",
    "genesis_title": "Digital Holographic Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -2968,6 +2982,7 @@
    "genesis_principle": "L1-243",
    "genesis_title": "Neural Radiance Fields (NeRF)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -3172,6 +3187,7 @@
    "genesis_principle": "L1-244",
    "genesis_title": "3D Gaussian Splatting (3DGS)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -3360,6 +3376,7 @@
    "genesis_principle": "L1-010",
    "genesis_title": "Lensless (Diffuser Camera) Imaging",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -3537,6 +3554,7 @@
    "genesis_principle": "L1-237",
    "genesis_title": "Panorama Multi-Focus Fusion",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -3736,6 +3754,7 @@
    "genesis_principle": "L1-241",
    "genesis_title": "Light Field Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -3917,6 +3936,7 @@
    "genesis_principle": "L1-203",
    "genesis_title": "Diffuse Optical Tomography",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -4097,6 +4117,7 @@
    "genesis_principle": "L1-313",
    "genesis_title": "Ghost Imaging",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -4296,6 +4317,7 @@
    "genesis_principle": "L1-205",
    "genesis_title": "Optical Coherence Tomography (OCT)",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -4503,6 +4525,7 @@
    "genesis_principle": "L1-177",
    "genesis_title": "Fluorescence Lifetime Imaging (FLIM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -4701,6 +4724,7 @@
    "genesis_principle": "L1-178",
    "genesis_title": "Fourier Ptychographic Microscopy (FPM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -4892,6 +4916,7 @@
    "genesis_principle": "L1-234",
    "genesis_title": "Coherent Diffractive Imaging (CDI) / Phase Retrieval",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5086,6 +5111,7 @@
    "genesis_principle": "L1-242",
    "genesis_title": "Integral Photography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5222,6 +5248,7 @@
    "genesis_principle": "L1-196",
    "genesis_title": "X-ray Radiography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5380,6 +5407,7 @@
    "genesis_principle": "L1-007",
    "genesis_title": "Ultrasound B-mode Imaging",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5525,6 +5553,7 @@
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5660,6 +5689,7 @@
    "genesis_principle": "L1-272",
    "genesis_title": "Industrial Computed Tomography",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5805,6 +5835,7 @@
    "genesis_principle": "L1-245",
    "genesis_title": "Scanning Electron Microscopy (SEM)",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -5969,6 +6000,7 @@
    "genesis_principle": "L1-246",
    "genesis_title": "Transmission Electron Microscopy (TEM)",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6114,6 +6146,7 @@
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6261,6 +6294,7 @@
    "genesis_principle": "L1-246",
    "genesis_title": "Transmission Electron Microscopy (TEM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6400,6 +6434,7 @@
    "genesis_principle": "L1-199",
    "genesis_title": "Fluoroscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6534,6 +6569,7 @@
    "genesis_principle": "L1-200",
    "genesis_title": "Mammography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6674,6 +6710,7 @@
    "genesis_principle": "L1-307",
    "genesis_title": "X-ray Absorption Spectroscopy (XAS/EXAFS)",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6829,6 +6866,7 @@
    "genesis_principle": "L1-008",
    "genesis_title": "Cone-Beam Computed Tomography (CBCT)",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -6970,6 +7008,7 @@
    "genesis_principle": "L1-202",
    "genesis_title": "X-ray Angiography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -7112,6 +7151,7 @@
    "genesis_principle": "L1-209",
    "genesis_title": "Doppler Ultrasound",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -7252,6 +7292,7 @@
    "genesis_principle": "L1-210",
    "genesis_title": "Shear-Wave Elastography",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -7393,6 +7434,7 @@
    "genesis_principle": "L1-206",
    "genesis_title": "Functional MRI (BOLD fMRI)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -7539,6 +7581,7 @@
    "genesis_principle": "L1-207",
    "genesis_title": "MR Spectroscopy (MRS)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -7686,6 +7729,7 @@
    "genesis_principle": "L1-208",
    "genesis_title": "Diffusion MRI (DTI/DWI)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -7839,6 +7883,7 @@
    "genesis_principle": "L1-179",
    "genesis_title": "Two-Photon Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8007,6 +8052,7 @@
    "genesis_principle": "L1-180",
    "genesis_title": "STED Microscopy",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8176,6 +8222,7 @@
    "genesis_principle": "L1-181",
    "genesis_title": "PALM/STORM Localization Microscopy",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8333,6 +8380,7 @@
    "genesis_principle": "L1-182",
    "genesis_title": "TIRF Microscopy",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8479,6 +8527,7 @@
    "genesis_principle": "L1-183",
    "genesis_title": "Polarization Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8631,6 +8680,7 @@
    "genesis_principle": "L1-211",
    "genesis_title": "Fiber Bundle Endoscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8772,6 +8822,7 @@
    "genesis_principle": "L1-212",
    "genesis_title": "Fundus Camera",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -8918,6 +8969,7 @@
    "genesis_principle": "L1-213",
    "genesis_title": "OCT Angiography (OCTA)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -9062,6 +9114,7 @@
    "genesis_principle": "L1-256",
    "genesis_title": "Time-of-Flight Depth Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -9209,6 +9262,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -9346,6 +9400,7 @@
    "genesis_principle": "L1-258",
    "genesis_title": "Structured Light Depth Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -9493,6 +9548,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -9619,6 +9675,7 @@
    "genesis_principle": "L1-262",
    "genesis_title": "Sonar Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -9746,6 +9803,7 @@
    "genesis_principle": "L1-401",
    "genesis_title": "Fresnel Diffraction",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -9874,6 +9932,7 @@
    "genesis_principle": "L1-250",
    "genesis_title": "Electron Backscatter Diffraction (EBSD)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10000,6 +10059,7 @@
    "genesis_principle": "L1-251",
    "genesis_title": "Electron Energy-Loss Spectroscopy (EELS)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10129,6 +10189,7 @@
    "genesis_principle": "L1-252",
    "genesis_title": "Electron Holography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10251,6 +10312,7 @@
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10371,6 +10433,7 @@
    "genesis_principle": "L1-196",
    "genesis_title": "X-ray Radiography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10492,6 +10555,7 @@
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10589,6 +10653,7 @@
    "genesis_principle": "L1-420",
    "genesis_title": "Acoustic Scattering (BEM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10688,6 +10753,7 @@
    "genesis_principle": "L1-281",
    "genesis_title": "Scanning Acoustic Microscopy (SAM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10787,6 +10853,7 @@
    "genesis_principle": "L1-276",
    "genesis_title": "Active Thermography (IR)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -10906,6 +10973,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -10957,7 +11025,42 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Cantilever drive (tapping mode)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "drive_frequency_khz": 300,
+        "drive_amplitude_nm": 20,
+        "tip_radius_nm": 10,
+        "lift_height_nm": 0
+       },
+       "noise": [],
+       "carrier": "force (tip-sample), mechanical",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "drive_frequency_khz",
+         "min": 10,
+         "max": 2000,
+         "reason": "cantilever resonance range, typical"
+        },
+        {
+         "parameter": "tip_radius_nm",
+         "min": 1,
+         "max": 100,
+         "reason": "limits lateral resolution"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Tapping-mode silicon cantilever near its resonance; the image contrast comes from the tip-sample force, light only reads the deflection.",
+       "carrier_note": "catalog says photon; the interaction is the tip-sample force, the optical lever is a detector"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11006,8 +11109,9 @@
    "genesis_principle": "L1-182",
    "genesis_title": "TIRF Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -11058,7 +11162,65 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0,
+        "larmor_frequency_mhz": 127.7
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [
+        {
+         "parameter": "field_strength_T",
+         "min": 1.5,
+         "max": 7.0,
+         "reason": "clinical to ultra-high field"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet, proton Larmor frequency 42.58 MHz/T."
+      },
+      {
+       "name": "Arterial labeling RF",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "label_duration_ms": 1800,
+        "post_label_delay_ms": 1800,
+        "labeling_efficiency_fraction": 0.85
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [
+        {
+         "parameter": "labeling_efficiency_fraction",
+         "min": 0.0,
+         "max": 1.0,
+         "reason": "fraction of inverted spins"
+        },
+        {
+         "parameter": "specific_absorption_rate_w_kg",
+         "min": null,
+         "max": 3.2,
+         "reason": "head SAR limit, normal mode"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Pseudo-continuous labeling, typical consensus timings for adults."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11110,8 +11272,9 @@
    "genesis_principle": "L1-220",
    "genesis_title": "Arterial Spin Labeling (ASL) MRI",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -11161,7 +11324,44 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pulsed UV laser plus standing voltage",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 355,
+        "pulse_duration_ps": 12,
+        "pulse_energy_pj": 50,
+        "repetition_rate_khz": 250,
+        "standing_voltage_kv": 5,
+        "specimen_temperature_k": 50
+       },
+       "noise": [],
+       "carrier": "ions (field evaporated)",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "specimen_temperature_k",
+         "min": 20,
+         "max": 100,
+         "reason": "cryogenic specimen stage"
+        },
+        {
+         "parameter": "pulse_energy_pj",
+         "min": 1,
+         "max": 200,
+         "reason": "too high heats the tip"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Laser-assisted local-electrode atom probe; each pulse triggers field evaporation of one or more ions.",
+       "carrier_note": "catalog says acoustic; the evaporated species are ions"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11210,8 +11410,9 @@
    "genesis_principle": "L1-204",
    "genesis_title": "Photoacoustic Tomography (PAT)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -11308,6 +11509,7 @@
    "genesis_principle": "L1-294",
    "genesis_title": "X-ray Fluorescence Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -11421,6 +11623,7 @@
    "genesis_principle": "L1-215",
    "genesis_title": "Brachytherapy Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -11472,7 +11675,40 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Single-mode CW laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 532,
+        "power_mw": 20,
+        "linewidth_mhz": 1
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "linewidth_mhz",
+         "min": null,
+         "max": 100,
+         "reason": "must resolve a ~5 GHz shift with MHz precision"
+        },
+        {
+         "parameter": "power_mw",
+         "min": null,
+         "max": 60,
+         "reason": "photodamage and heating in live samples, typical"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Single-longitudinal-mode 532 nm laser; the Brillouin shift of water is about 5 GHz, so the linewidth must be far below that."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11524,8 +11760,9 @@
    "genesis_principle": "L1-302",
    "genesis_title": "Brillouin Microscopy",
    "level": "canonical",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -11576,7 +11813,42 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pump and Stokes picosecond lasers",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "pump_wavelength_nm": 817,
+        "stokes_wavelength_nm": 1064,
+        "pulse_duration_ps": 6,
+        "repetition_rate_mhz": 80,
+        "average_power_mw": 10
+       },
+       "noise": [],
+       "carrier": "photon (nonlinear)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "raman_shift_cm1",
+         "min": 500,
+         "max": 3500,
+         "reason": "vibrational window, set by the two wavelengths"
+        },
+        {
+         "parameter": "average_power_mw",
+         "min": null,
+         "max": 50,
+         "reason": "sample damage, typical"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Two synchronised picosecond beams; the difference in wavenumber 1e7/817 - 1e7/1064 = 2841 cm-1 addresses the CH2 stretch."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11628,8 +11900,10 @@
    "genesis_principle": "L1-298",
    "genesis_title": "Coherent Anti-Stokes Raman (CARS) Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -11680,7 +11954,41 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Focused electron beam",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "beam_energy_kev": 10,
+        "beam_current_na": 1.0,
+        "spot_size_nm": 10
+       },
+       "noise": [],
+       "carrier": "electron",
+       "primitive": "electron_beam_source",
+       "constraints": [
+        {
+         "parameter": "beam_energy_kev",
+         "min": 1,
+         "max": 300,
+         "reason": "SEM to STEM range"
+        },
+        {
+         "parameter": "beam_current_na",
+         "min": 0.001,
+         "max": 100,
+         "reason": "beam damage and carrier saturation"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "SEM/STEM electron gun; the beam excites luminescence, the photons are the signal.",
+       "carrier_note": "catalog says electron to photon: the source is the electron, the photon is the signal"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11732,8 +12040,9 @@
    "genesis_principle": "L1-296",
    "genesis_title": "Cathodoluminescence (CL) Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -11784,7 +12093,58 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet."
+      },
+      {
+       "name": "Saturation RF train",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "saturation_b1_ut": 1.0,
+        "saturation_duration_ms": 2000,
+        "offset_min_ppm": -6.0,
+        "offset_max_ppm": 6.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [
+        {
+         "parameter": "saturation_b1_ut",
+         "min": 0.2,
+         "max": 6.0,
+         "reason": "typical range, limited by SAR"
+        },
+        {
+         "parameter": "specific_absorption_rate_w_kg",
+         "min": null,
+         "max": 3.2,
+         "reason": "head SAR limit, normal mode"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Continuous or pulsed-train saturation at a set of offsets from water."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -11836,8 +12196,9 @@
    "genesis_principle": "L1-219",
    "genesis_title": "CEST MRI",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -11934,6 +12295,7 @@
    "genesis_principle": "L1-225",
    "genesis_title": "Contrast-Enhanced Ultrasound",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12048,6 +12410,7 @@
    "genesis_principle": "L1-321",
    "genesis_title": "Correlative Light-Electron Microscopy (CLEM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12162,6 +12525,7 @@
    "genesis_principle": "L1-238",
    "genesis_title": "Coded Exposure / Flutter Shutter",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12276,6 +12640,7 @@
    "genesis_principle": "L1-227",
    "genesis_title": "Confocal Laser Endomicroscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12327,7 +12692,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Target star and its planet",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 600,
+        "bandwidth_fraction": 0.1,
+        "star_planet_contrast_ratio": 1e-10,
+        "stellar_magnitude_mag": 5
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "star_planet_contrast_ratio",
+         "min": 1e-12,
+         "max": 0.0001,
+         "reason": "planet / star flux"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "The star is the dominant source; an Earth-like planet in reflected light is about 1e-10 of the star."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -12379,8 +12772,9 @@
    "genesis_principle": "L1-326",
    "genesis_title": "Stellar Coronagraphy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -12518,6 +12912,7 @@
    "genesis_principle": "L1-011",
    "genesis_title": "Cryo-EM Single Particle Analysis",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12631,6 +13026,7 @@
    "genesis_principle": "L1-253",
    "genesis_title": "Cryo-Electron Tomography (Cryo-ET)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12745,6 +13141,7 @@
    "genesis_principle": "L1-320",
    "genesis_title": "CT + Fluorescence (FLIT)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -12796,7 +13193,33 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Ultrafast pulsed laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 532,
+        "pulse_duration_ps": 7
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "pulse_duration_ps",
+         "min": 0.01,
+         "max": 100,
+         "reason": "shorter than the streak sweep window"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Picosecond pulse illuminating a transient scene; CUP images the scene with a streak camera."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -12848,8 +13271,9 @@
    "genesis_principle": "L1-311",
    "genesis_title": "Compressed Ultrafast Photography (CUP)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -12963,6 +13387,7 @@
    "genesis_principle": "L1-189",
    "genesis_title": "Dark-Field Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -13013,7 +13438,36 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Charged solvent spray",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "spray_voltage_kv": 4.5,
+        "solvent_flow_ul_min": 2.5,
+        "nebulizing_gas_pressure_mpa": 0.7,
+        "spot_size_um": 200
+       },
+       "noise": [],
+       "carrier": "charged droplets",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "spot_size_um",
+         "min": 50,
+         "max": 500,
+         "reason": "sets the spatial resolution"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Electrospray of solvent onto the surface; secondary droplets carry the analyte into the mass spectrometer.",
+       "carrier_note": "catalog says infrared photon; the probe is charged solvent droplets"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13062,8 +13516,9 @@
    "genesis_principle": "L1-300",
    "genesis_title": "FTIR Spectroscopic Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -13182,6 +13637,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -13296,6 +13752,7 @@
    "genesis_principle": "L1-226",
    "genesis_title": "Digital Breast Tomosynthesis",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -13347,7 +13804,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Excitation laser (TIRF)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 561,
+        "intensity_kw_cm2": 0.5,
+        "imager_concentration_nm": 1.0,
+        "frame_time_ms": 100
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "imager_concentration_nm",
+         "min": 0.05,
+         "max": 10,
+         "reason": "too high gives background, too low gives slow acquisition"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Total-internal-reflection excitation of transiently binding dye-labeled imager strands."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13399,8 +13884,9 @@
    "genesis_principle": "L1-194",
    "genesis_title": "DNA-PAINT Super-Resolution",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -13455,7 +13941,34 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "AC excitation coil",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "frequency_khz": 100,
+        "drive_current_ma": 20
+       },
+       "noise": [],
+       "carrier": "electromagnetic (induction)",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "frequency_khz",
+         "min": 0.1,
+         "max": 5000,
+         "reason": "skin depth to sensor bandwidth"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Sinusoidal coil current induces eddy currents in a conductor; the skin depth sets which depth is probed.",
+       "carrier_note": "catalog says xray; the carrier is a low-frequency magnetic field"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13515,8 +14028,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -13573,7 +14087,42 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Focused STEM electron probe",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "beam_energy_kev": 200,
+        "beam_current_na": 0.5,
+        "probe_size_nm": 0.2,
+        "dwell_time_ms": 1
+       },
+       "noise": [],
+       "carrier": "electron",
+       "primitive": "electron_beam_source",
+       "constraints": [
+        {
+         "parameter": "beam_energy_kev",
+         "min": 30,
+         "max": 300,
+         "reason": "STEM range"
+        },
+        {
+         "parameter": "beam_current_na",
+         "min": 0.01,
+         "max": 5,
+         "reason": "counts vs beam damage"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Scanning probe generating characteristic X-rays at each pixel; the X-rays are the signal.",
+       "carrier_note": "catalog says xray: the source is the electron beam, the X-ray is the signal"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13625,8 +14174,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -13677,7 +14227,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Black-hole accretion flow",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "frequency_ghz": 230,
+        "bandwidth_ghz": 4,
+        "wavelength_mm": 1.3
+       },
+       "noise": [],
+       "carrier": "photon (mm-wave radio)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "frequency_ghz",
+         "min": 86,
+         "max": 345,
+         "reason": "VLBI observing bands"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "The astrophysical object emits at 1.3 mm; it cannot be changed."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13738,9 +14315,10 @@
    "genesis_principle": "L1-328",
    "genesis_title": "Event Horizon Telescope (EHT) Imaging",
    "level": "registered",
+   "source_validation": "drafted",
    "gaps": [
     "no running template",
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -13791,7 +14369,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pump laser and nonlinear crystal (SPDC)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "pump_wavelength_nm": 405,
+        "pump_power_mw": 50,
+        "pair_wavelength_nm": 810
+       },
+       "noise": [],
+       "carrier": "photon (entangled pair)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "pump_power_mw",
+         "min": null,
+         "max": 200,
+         "reason": "multi-pair emission raises accidentals"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Type-I or type-II spontaneous parametric down-conversion; energy conservation gives 2 x 405 nm pump photon energy per 810 nm pair photon."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13843,8 +14448,9 @@
    "genesis_principle": "L1-315",
    "genesis_title": "Entangled Photon Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -13895,7 +14501,33 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Ambient scene illumination",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "illuminance_lux": 100,
+        "scene_dynamic_range_db": 120
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "illuminance_lux",
+         "min": 0.1,
+         "max": 100000,
+         "reason": "scene range of an event sensor, typical"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "No controlled source: events come from brightness change under ambient light."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -13947,8 +14579,9 @@
    "genesis_principle": "L1-239",
    "genesis_title": "Event Camera / Dynamic Vision Sensor (DVS)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -14062,6 +14695,7 @@
    "genesis_principle": "L1-184",
    "genesis_title": "Expansion Microscopy (ExM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -14176,6 +14810,7 @@
    "genesis_principle": "L1-254",
    "genesis_title": "Focused Ion Beam SEM (FIB-SEM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -14280,6 +14915,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -14332,7 +14968,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Globar thermal infrared source",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "source_temperature_k": 1200,
+        "wavenumber_min_cm1": 400,
+        "wavenumber_max_cm1": 4000,
+        "spectral_resolution_cm1": 4
+       },
+       "noise": [],
+       "carrier": "infrared photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "spectral_resolution_cm1",
+         "min": 0.1,
+         "max": 16,
+         "reason": "mirror travel"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Silicon carbide globar, broadband mid-infrared; modulated by the interferometer."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -14384,8 +15048,9 @@
    "genesis_principle": "L1-300",
    "genesis_title": "FTIR Spectroscopic Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -14489,6 +15154,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -14541,7 +15207,29 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Entangled or pseudothermal light",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "pump_wavelength_nm": 405,
+        "pump_power_mw": 50,
+        "pair_wavelength_nm": 810
+       },
+       "noise": [],
+       "carrier": "photon (entangled pair)",
+       "primitive": "photon_source",
+       "constraints": [],
+       "descriptors": {
+        "alternatives": "pseudothermal laser through rotating ground glass; computational: laser plus spatial light modulator"
+       },
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "SPDC pairs, as in the first ghost imaging experiment."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -14593,8 +15281,9 @@
    "genesis_principle": "L1-313",
    "genesis_title": "Ghost Imaging",
    "level": "canonical",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -14698,6 +15387,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -14801,6 +15491,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -14853,7 +15544,33 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Ambient scene illumination",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "illuminance_lux": 1000,
+        "scene_dynamic_range_db": 120
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "scene_dynamic_range_db",
+         "min": 60,
+         "max": 160,
+         "reason": "typical scenes"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "A natural scene spans more than 100 dB; no controlled source."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -14905,8 +15622,9 @@
    "genesis_principle": "L1-240",
    "genesis_title": "High Dynamic Range (HDR) Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -14957,7 +15675,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Sun (top-of-atmosphere solar irradiance)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "solar_constant_w_m2": 1361,
+        "solar_zenith_angle_deg": 30,
+        "wavelength_min_nm": 400,
+        "wavelength_max_nm": 2500
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "solar_zenith_angle_deg",
+         "min": 0,
+         "max": 75,
+         "reason": "typical acquisition limit"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Solar constant ~1361 W/m2 at top of atmosphere; the sun is an environmental, uncontrollable source."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -15009,8 +15755,9 @@
    "genesis_principle": "L1-263",
    "genesis_title": "Hyperspectral Remote Sensing",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -15061,7 +15808,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Injected alternating current",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "frequency_khz": 50,
+        "current_ma": 1.0,
+        "n_electrodes_count": 16
+       },
+       "noise": [],
+       "carrier": "electrical current",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "current_ma",
+         "min": null,
+         "max": 5,
+         "reason": "patient safety; the limit rises with frequency, to be verified against IEC 60601-1"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Current injected through surface electrodes, voltages measured at the others.",
+       "carrier_note": "catalog says photon; the carrier is electrical current"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -15113,8 +15888,9 @@
    "genesis_principle": "L1-205",
    "genesis_title": "Optical Coherence Tomography (OCT)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -15227,6 +16003,7 @@
    "genesis_principle": "L1-272",
    "genesis_title": "Industrial Computed Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -15282,7 +16059,36 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "C-band SAR transmitter",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "center_frequency_ghz": 5.405,
+        "bandwidth_mhz": 56.5,
+        "prf_hz": 1700,
+        "incidence_angle_deg": 39,
+        "revisit_days": 12
+       },
+       "noise": [],
+       "carrier": "microwave",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "incidence_angle_deg",
+         "min": 20,
+         "max": 50,
+         "reason": "typical SAR incidence"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Spaceborne C-band radar; two passes at a fixed repeat interval give the interferometric phase."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -15343,9 +16149,10 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "registered",
+   "source_validation": "drafted",
    "gaps": [
     "no running template",
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -15460,6 +16267,7 @@
    "genesis_principle": "L1-186",
    "genesis_title": "Image Scanning Microscopy (ISM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -15559,6 +16367,7 @@
    "genesis_principle": "L1-224",
    "genesis_title": "Intravascular Ultrasound",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -15673,6 +16482,7 @@
    "genesis_principle": "L1-190",
    "genesis_title": "Lattice Light-Sheet Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -15724,7 +16534,36 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pulsed Nd:YAG laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 1064,
+        "pulse_energy_mj": 20,
+        "pulse_duration_ns": 8,
+        "repetition_rate_hz": 10,
+        "spot_diameter_um": 100
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "pulse_energy_mj",
+         "min": 1,
+         "max": 200,
+         "reason": "plasma ignition threshold to crater size"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Nanosecond pulse ablates the surface to a plasma whose emission is the signal."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -15776,8 +16615,10 @@
    "genesis_principle": "L1-301",
    "genesis_title": "Laser-Induced Breakdown Spectroscopy (LIBS) Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -15891,6 +16732,7 @@
    "genesis_principle": "L1-327",
    "genesis_title": "Lucky Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -16005,6 +16847,7 @@
    "genesis_principle": "L1-278",
    "genesis_title": "Machine Vision / Automated Optical Inspection",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -16056,7 +16899,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Drive field and selection gradient",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "drive_frequency_khz": 25,
+        "drive_amplitude_mt": 20,
+        "selection_gradient_t_m": 2.0
+       },
+       "noise": [],
+       "carrier": "magnetic field",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "drive_amplitude_mt",
+         "min": null,
+         "max": 30,
+         "reason": "peripheral nerve stimulation and heating limit, to be verified"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Oscillating drive field moves the field-free point through the tracer; the tracer's nonlinear magnetisation is the signal.",
+       "carrier_note": "catalog says xray; the carrier is a magnetic field"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16108,8 +16979,9 @@
    "genesis_principle": "L1-216",
    "genesis_title": "Portal Imaging (EPID)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -16164,7 +17036,36 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pulsed UV laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 355,
+        "pulse_duration_ns": 3,
+        "repetition_rate_khz": 1,
+        "spot_diameter_um": 20
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "spot_diameter_um",
+         "min": 5,
+         "max": 200,
+         "reason": "spatial resolution"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Matrix-assisted laser desorption/ionization; the ions are the signal.",
+       "carrier_note": "catalog says xray; the probe is a UV laser (or 337 nm nitrogen laser)"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16213,8 +17114,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -16266,7 +17168,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Cantilever with magnetized tip",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "drive_frequency_khz": 75,
+        "drive_amplitude_nm": 20,
+        "lift_height_nm": 50
+       },
+       "noise": [],
+       "carrier": "magnetic stray field (force)",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "lift_height_nm",
+         "min": 10,
+         "max": 200,
+         "reason": "to separate magnetic from van der Waals force"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Two-pass scan: topography first, then the tip is lifted and senses the magnetic force gradient.",
+       "carrier_note": "catalog says photon; the interaction is magnetic force"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16318,8 +17248,9 @@
    "genesis_principle": "L1-176",
    "genesis_title": "Light-Sheet Fluorescence Microscopy (LSFM)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -16433,6 +17364,7 @@
    "genesis_principle": "L1-185",
    "genesis_title": "MINFLUX Nanoscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -16484,7 +17416,50 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet."
+      },
+      {
+       "name": "Mechanical vibration driver",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "vibration_frequency_hz": 60,
+        "displacement_amplitude_um": 50
+       },
+       "noise": [],
+       "carrier": "acoustic (shear wave)",
+       "primitive": "acoustic_source",
+       "constraints": [
+        {
+         "parameter": "vibration_frequency_hz",
+         "min": 20,
+         "max": 200,
+         "reason": "tissue wavelength vs resolution"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "External actuator generating shear waves; liver MRE uses 60 Hz, brain about 50 Hz."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16536,8 +17511,9 @@
    "genesis_principle": "L1-218",
    "genesis_title": "MR Elastography (MRE)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -16588,7 +17564,57 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet."
+      },
+      {
+       "name": "Pseudorandom excitation",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "flip_angle_max_deg": 70,
+        "repetition_time_ms": 12,
+        "n_timepoints_count": 1000
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [
+        {
+         "parameter": "flip_angle_max_deg",
+         "min": 1,
+         "max": 90,
+         "reason": "SAR"
+        },
+        {
+         "parameter": "specific_absorption_rate_w_kg",
+         "min": null,
+         "max": 3.2,
+         "reason": "head SAR limit, normal mode"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Varying flip angle and TR train; each tissue yields a distinct signal evolution."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16640,8 +17666,9 @@
    "genesis_principle": "L1-223",
    "genesis_title": "MR Fingerprinting (MRF)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -16692,7 +17719,51 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet."
+      },
+      {
+       "name": "Time-of-flight excitation",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "flip_angle_deg": 20,
+        "repetition_time_ms": 25,
+        "echo_time_ms": 3.5
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [
+        {
+         "parameter": "repetition_time_ms",
+         "min": 15,
+         "max": 40,
+         "reason": "saturation of static tissue"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Gradient-echo with short TR so that inflowing blood is bright."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16744,8 +17815,9 @@
    "genesis_principle": "L1-221",
    "genesis_title": "MR Angiography (MRA)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -16796,7 +17868,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Sun (top-of-atmosphere solar irradiance)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "solar_constant_w_m2": 1361,
+        "solar_zenith_angle_deg": 30,
+        "wavelength_min_nm": 400,
+        "wavelength_max_nm": 2300
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "solar_zenith_angle_deg",
+         "min": 0,
+         "max": 75,
+         "reason": "typical acquisition limit"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Solar constant ~1361 W/m2 at top of atmosphere; the sun is an environmental, uncontrollable source."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16848,8 +17948,9 @@
    "genesis_principle": "L1-264",
    "genesis_title": "Multispectral Remote Sensing",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -16899,7 +18000,35 @@
      "secondary": "max_error"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Thermal neutron beam",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 0.15,
+        "wavelength_spread_fraction": 0.01,
+        "flux_n_cm2_s": 10000000.0
+       },
+       "noise": [],
+       "carrier": "neutron",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "wavelength_nm",
+         "min": 0.05,
+         "max": 1.0,
+         "reason": "crystal d-spacing range"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Reactor or spallation beam line; 1.5 Angstrom neutrons have thermal energy.",
+       "carrier_note": "catalog says photon; the probe is neutrons"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -16948,8 +18077,9 @@
    "genesis_principle": "L1-401",
    "genesis_title": "Fresnel Diffraction",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -17000,7 +18130,36 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Near-infrared LEDs or laser diodes",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_1_nm": 760,
+        "wavelength_2_nm": 850,
+        "power_mw": 5,
+        "irradiance_mw_mm2": 1.0
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "irradiance_mw_mm2",
+         "min": null,
+         "max": 4.0,
+         "reason": "skin exposure limit at 850 nm, from ANSI Z136.1 (0.2 x 10^(0.002(lambda-700)) W/cm2); to be verified"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Two wavelengths either side of the haemoglobin isosbestic point (about 800 nm) allow oxy- and deoxy-haemoglobin to be separated.",
+       "carrier_note": "catalog says electron; the source is near-infrared light"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -17052,8 +18211,9 @@
    "genesis_principle": "L1-251",
    "genesis_title": "Electron Energy-Loss Spectroscopy (EELS)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -17167,6 +18327,7 @@
    "genesis_principle": "L1-324",
    "genesis_title": "Near-field Scanning Optical Microscopy (NSOM)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -17266,6 +18427,7 @@
    "genesis_principle": "L1-204",
    "genesis_title": "Photoacoustic Tomography (PAT)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -17317,7 +18479,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Sun (top-of-atmosphere solar irradiance)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "solar_constant_w_m2": 1361,
+        "solar_zenith_angle_deg": 30,
+        "wavelength_min_nm": 400,
+        "wavelength_max_nm": 900
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "solar_zenith_angle_deg",
+         "min": 0,
+         "max": 70,
+         "reason": "glint and path length, typical"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Solar constant ~1361 W/m2 at top of atmosphere; the sun is an environmental, uncontrollable source."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -17369,8 +18559,9 @@
    "genesis_principle": "L1-271",
    "genesis_title": "Ocean Color Remote Sensing",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -17469,6 +18660,7 @@
    "genesis_principle": "L1-235",
    "genesis_title": "Optical Diffraction Tomography (ODT)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -17524,7 +18716,33 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Incident particle beam",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "particle_energy_gev": 50,
+        "beam_spot_mm": 10
+       },
+       "noise": [],
+       "carrier": "particle (electron or hadron)",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "particle_energy_gev",
+         "min": 0.1,
+         "max": 1000,
+         "reason": "test beam to collider"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Test-beam electrons or hadrons depositing their energy in the calorimeter."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -17573,8 +18791,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -17630,7 +18849,33 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Thermal emission of the scene",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "brightness_temperature_k": 250,
+        "frequency_ghz": 36.5
+       },
+       "noise": [],
+       "carrier": "microwave (thermal)",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "frequency_ghz",
+         "min": 1,
+         "max": 200,
+         "reason": "radiometer channels"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Passive: the scene itself emits, no transmitter. Typical channels 6.9 to 89 GHz."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -17679,8 +18924,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -17795,6 +19041,7 @@
    "genesis_principle": "L1-316",
    "genesis_title": "PET/CT Fusion",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -17906,6 +19153,7 @@
    "genesis_principle": "L1-317",
    "genesis_title": "PET/MR Fusion",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -18020,6 +19268,7 @@
    "genesis_principle": "L1-187",
    "genesis_title": "Phase Contrast Microscopy",
    "level": "canonical",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -18134,6 +19383,7 @@
    "genesis_principle": "L1-259",
    "genesis_title": "Photometric Stereo",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -18190,7 +19440,36 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "L-band polarimetric SAR transmitter",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "center_frequency_ghz": 1.27,
+        "bandwidth_mhz": 84,
+        "incidence_angle_deg": 35
+       },
+       "noise": [],
+       "carrier": "microwave",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "incidence_angle_deg",
+         "min": 20,
+         "max": 50,
+         "reason": "typical SAR incidence"
+        }
+       ],
+       "descriptors": {
+        "polarization": "quad (HH, HV, VH, VV)"
+       },
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Alternating H and V transmit pulses with H and V receive give the four channels."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -18242,8 +19521,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -18357,6 +19637,7 @@
    "genesis_principle": "L1-216",
    "genesis_title": "Portal Imaging (EPID)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -18470,6 +19751,7 @@
    "genesis_principle": "L1-214",
    "genesis_title": "Proton Therapy Imaging",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -18521,7 +19803,37 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Femtosecond pump and probe pulses",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "pump_wavelength_nm": 720,
+        "probe_wavelength_nm": 810,
+        "pulse_duration_fs": 150,
+        "repetition_rate_mhz": 80,
+        "average_power_mw": 5,
+        "delay_range_ps": 100
+       },
+       "noise": [],
+       "carrier": "photon (ultrafast)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "average_power_mw",
+         "min": null,
+         "max": 20,
+         "reason": "sample damage, typical"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Titanium-sapphire laser with an optical parametric oscillator; the delay line sets the time axis."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -18573,8 +19885,10 @@
    "genesis_principle": "L1-310",
    "genesis_title": "Pump-Probe Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -18625,7 +19939,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pump and nonlinear crystal (SPDC)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "pump_wavelength_nm": 405,
+        "pair_wavelength_nm": 810,
+        "mean_photons_per_mode": 0.01
+       },
+       "noise": [],
+       "carrier": "photon (entangled pair)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "mean_photons_per_mode",
+         "min": null,
+         "max": 0.1,
+         "reason": "quantum advantage requires a source much weaker than one photon per mode"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Signal-idler pairs; the advantage over classical light exists at low brightness."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -18677,8 +20018,9 @@
    "genesis_principle": "L1-314",
    "genesis_title": "Quantum Illumination",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -18733,7 +20075,34 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Astronomical radio source",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "observing_frequency_ghz": 1.4,
+        "bandwidth_mhz": 100,
+        "source_flux_density_jy": 1.0
+       },
+       "noise": [],
+       "carrier": "radio",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "observing_frequency_ghz",
+         "min": 0.05,
+         "max": 100,
+         "reason": "aperture synthesis range"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Natural emission (for example the 21 cm line); the array cannot change it."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -18794,9 +20163,10 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "registered",
+   "source_validation": "drafted",
    "gaps": [
     "no running template",
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -18852,7 +20222,34 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Astronomical radio source (VLBI)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "observing_frequency_ghz": 43,
+        "bandwidth_mhz": 256,
+        "source_flux_density_jy": 1.0
+       },
+       "noise": [],
+       "carrier": "radio",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "observing_frequency_ghz",
+         "min": 0.3,
+         "max": 345,
+         "reason": "VLBI bands"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Compact source observed by widely separated stations; the source is not controllable."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -18913,9 +20310,10 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "registered",
+   "source_validation": "drafted",
    "gaps": [
     "no running template",
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -18967,7 +20365,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "CW excitation laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 785,
+        "power_mw": 10,
+        "spot_diameter_um": 1.0
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "power_mw",
+         "min": null,
+         "max": 50,
+         "reason": "sample heating, material dependent"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "785 nm limits fluorescence background; 532 nm gives a stronger Raman cross-section."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -19019,8 +20444,10 @@
    "genesis_principle": "L1-297",
    "genesis_title": "Raman Imaging / Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -19134,6 +20561,7 @@
    "genesis_principle": "L1-287",
    "genesis_title": "Small-Angle X-ray Scattering (SAXS)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -19233,6 +20661,7 @@
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -19284,7 +20713,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Long-coherence laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 532,
+        "power_mw": 100,
+        "coherence_length_m": 10
+       },
+       "noise": [],
+       "carrier": "coherent photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "coherence_length_m",
+         "min": 0.1,
+         "max": null,
+         "reason": "interference of the two sheared images"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Diode-pumped solid-state laser; the coherence length must exceed the path difference of the shearing optics."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -19336,8 +20792,9 @@
    "genesis_principle": "L1-280",
    "genesis_title": "Shearography",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -19388,7 +20845,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Femtosecond Ti:sapphire laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 890,
+        "pulse_duration_fs": 140,
+        "repetition_rate_mhz": 80,
+        "average_power_mw": 20
+       },
+       "noise": [],
+       "carrier": "photon (nonlinear)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "average_power_mw",
+         "min": null,
+         "max": 50,
+         "reason": "tissue damage, typical"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Second harmonic is produced at 445 nm in non-centrosymmetric structures such as collagen."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -19440,8 +20925,10 @@
    "genesis_principle": "L1-191",
    "genesis_title": "Second Harmonic Generation (SHG) Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -19496,7 +20983,35 @@
      "secondary": null
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Primary ion beam",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "primary_ion_energy_kev": 16,
+        "primary_current_pa": 1,
+        "spot_size_nm": 100
+       },
+       "noise": [],
+       "carrier": "ion",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "spot_size_nm",
+         "min": 50,
+         "max": 5000,
+         "reason": "resolution vs signal"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Cs+ or O2- beam sputtering the surface; secondary ions are the signal.",
+       "carrier_note": "catalog says xray; the probe is an ion beam"
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -19545,8 +21060,9 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "no linked genesis principle",
     "calibration tolerances not recorded"
    ]
@@ -19598,7 +21114,33 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Solar corona",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "coronal_temperature_mk": 1.0,
+        "line_wavelength_nm": 17.1
+       },
+       "noise": [],
+       "carrier": "photon (EUV)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "line_wavelength_nm",
+         "min": 5,
+         "max": 40,
+         "reason": "EUV imaging bands"
+        }
+       ],
+       "descriptors": {},
+       "controllable": false,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Hot plasma emission lines, for example Fe IX at 17.1 nm; not controllable."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -19650,8 +21192,9 @@
    "genesis_principle": "L1-329",
    "genesis_title": "Solar EUV/X-ray Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -19765,6 +21308,7 @@
    "genesis_principle": "L1-318",
    "genesis_title": "SPECT/CT Fusion",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -19876,6 +21420,7 @@
    "genesis_principle": "L1-217",
    "genesis_title": "Photon-Counting Spectral CT",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -19990,6 +21535,7 @@
    "genesis_principle": "L1-192",
    "genesis_title": "Spinning Disk Confocal Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -20041,7 +21587,38 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pump and Stokes picosecond lasers",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "pump_wavelength_nm": 797,
+        "stokes_wavelength_nm": 1031,
+        "pulse_duration_ps": 2,
+        "repetition_rate_mhz": 80,
+        "modulation_frequency_mhz": 20,
+        "pump_power_mw": 20,
+        "stokes_power_mw": 100
+       },
+       "noise": [],
+       "carrier": "photon (nonlinear)",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "raman_shift_cm1",
+         "min": 500,
+         "max": 3500,
+         "reason": "vibrational window"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Stokes beam is intensity-modulated; the loss in the pump is detected by lock-in. 1e7/797 - 1e7/1031 = 2845 cm-1 (CH2)."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -20093,8 +21670,10 @@
    "genesis_principle": "L1-299",
    "genesis_title": "Stimulated Raman Scattering (SRS) Microscopy",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -20144,7 +21723,39 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Tunnelling bias between tip and sample",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "bias_voltage_v": 0.1,
+        "setpoint_current_na": 1.0
+       },
+       "noise": [],
+       "carrier": "electron (tunnelling current)",
+       "primitive": "generic_source",
+       "constraints": [
+        {
+         "parameter": "bias_voltage_v",
+         "min": -5,
+         "max": 5,
+         "reason": "tip and sample stability"
+        },
+        {
+         "parameter": "setpoint_current_na",
+         "min": 0.001,
+         "max": 10,
+         "reason": "gap distance"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "A bias of tenths of a volt drives tunnelling electrons across the vacuum gap; the current falls exponentially with distance."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -20193,8 +21804,9 @@
    "genesis_principle": "L1-323",
    "genesis_title": "Scanning Tunneling Microscopy (STM)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -20245,7 +21857,33 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Pulsed laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "wavelength_nm": 800,
+        "pulse_duration_fs": 100
+       },
+       "noise": [],
+       "carrier": "photon",
+       "primitive": "photon_source",
+       "constraints": [
+        {
+         "parameter": "pulse_duration_fs",
+         "min": 10,
+         "max": 1000000,
+         "reason": "streak time resolution"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Ultrashort pulse whose time profile is mapped onto a spatial axis by the streak tube."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -20297,8 +21935,10 @@
    "genesis_principle": "L1-309",
    "genesis_title": "Streak Camera Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
+    "geometry wavelength_range_nm [400, 700] is a placeholder that does not contain the drafted source wavelength",
     "calibration tolerances not recorded"
    ]
   },
@@ -20349,7 +21989,51 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet."
+      },
+      {
+       "name": "Long-echo gradient echo",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "echo_time_ms": 20,
+        "repetition_time_ms": 30,
+        "flip_angle_deg": 15
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [
+        {
+         "parameter": "echo_time_ms",
+         "min": 5,
+         "max": 40,
+         "reason": "susceptibility contrast vs signal loss"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Long echo time makes phase sensitive to susceptibility."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -20401,8 +22085,9 @@
    "genesis_principle": "L1-222",
    "genesis_title": "Susceptibility-Weighted Imaging (SWI)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -20453,7 +22138,35 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "X-ray tube with source grating",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "tube_voltage_kvp": 40,
+        "tube_current_ma": 25,
+        "focal_spot_mm": 1.0,
+        "design_energy_kev": 28
+       },
+       "noise": [],
+       "carrier": "xray",
+       "primitive": "xray_source",
+       "constraints": [
+        {
+         "parameter": "design_energy_kev",
+         "min": 10,
+         "max": 100,
+         "reason": "grating design energy sets visibility"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Laboratory tube; the source grating makes the large focal spot spatially coherent."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -20505,8 +22218,9 @@
    "genesis_principle": "L1-236",
    "genesis_title": "Talbot-Lau X-ray Grating Interferometry",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -20605,6 +22319,7 @@
    "genesis_principle": "L1-277",
    "genesis_title": "Terahertz Imaging (THz)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -20719,6 +22434,7 @@
    "genesis_principle": "L1-193",
    "genesis_title": "Three-Photon Microscopy",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -20823,6 +22539,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -20875,7 +22592,43 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Ultrasound transducer",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "center_frequency_mhz": 5.0,
+        "fractional_bandwidth_fraction": 0.6
+       },
+       "noise": [],
+       "carrier": "acoustic",
+       "primitive": "acoustic_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Typical diagnostic array."
+      },
+      {
+       "name": "Main magnet (3 T)",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "field_strength_T": 3.0
+       },
+       "noise": [],
+       "carrier": "spin",
+       "primitive": "spin_source",
+       "constraints": [],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Clinical 3 T magnet."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -20927,8 +22680,9 @@
    "genesis_principle": "L1-319",
    "genesis_title": "US/MRI Fusion",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -21042,6 +22796,7 @@
    "genesis_principle": "L1-293",
    "genesis_title": "Wide-Angle X-ray Scattering (WAXS)",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -21144,6 +22899,7 @@
    "genesis_principle": null,
    "genesis_title": null,
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "no linked genesis principle",
     "calibration tolerances not recorded"
@@ -21196,7 +22952,36 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "X-ray free-electron laser",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "photon_energy_kev": 9.5,
+        "pulse_duration_fs": 40,
+        "photons_per_pulse": 1000000000000.0,
+        "repetition_rate_hz": 120,
+        "focus_diameter_um": 1.5
+       },
+       "noise": [],
+       "carrier": "xray",
+       "primitive": "xray_source",
+       "constraints": [
+        {
+         "parameter": "pulse_duration_fs",
+         "min": 1,
+         "max": 100,
+         "reason": "must be shorter than damage processes"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Femtosecond pulses outrun radiation damage ('diffract before destroy')."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -21248,8 +23033,9 @@
    "genesis_principle": "L1-312",
    "genesis_title": "XFEL Serial Femtosecond Crystallography (SFX)",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -21299,7 +23085,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "Synchrotron beam line",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "photon_energy_kev": 12.4,
+        "flux_photons_per_s": 1000000000000.0,
+        "beam_size_um": 100
+       },
+       "noise": [],
+       "carrier": "xray",
+       "primitive": "xray_source",
+       "constraints": [
+        {
+         "parameter": "absorbed_dose_mgy",
+         "min": null,
+         "max": 30,
+         "reason": "Garman limit at 100 K, to be verified"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "12.4 keV is 1.0 Angstrom."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -21360,9 +23173,10 @@
    "genesis_principle": "L1-286",
    "genesis_title": "X-ray Crystallography",
    "level": "registered",
+   "source_validation": "drafted",
    "gaps": [
     "no running template",
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -21475,6 +23289,7 @@
    "genesis_principle": "L1-196",
    "genesis_title": "X-ray Radiography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -21526,7 +23341,34 @@
      "secondary": "SSIM"
     },
     "system_elements": {
-     "source": [],
+     "source": [
+      {
+       "name": "X-ray tube or micro-beam",
+       "transfer": "identity",
+       "throughput": 1.0,
+       "parameters": {
+        "tube_voltage_kvp": 50,
+        "tube_current_ma": 0.5,
+        "spot_size_um": 50
+       },
+       "noise": [],
+       "carrier": "xray",
+       "primitive": "xray_source",
+       "constraints": [
+        {
+         "parameter": "tube_voltage_kvp",
+         "min": 10,
+         "max": 100,
+         "reason": "must exceed the edges of the elements of interest"
+        }
+       ],
+       "descriptors": {},
+       "controllable": true,
+       "validation": "drafted",
+       "verified_against": null,
+       "basis": "Excitation above the absorption edge of the target elements."
+      }
+     ],
      "detector": [
       {
        "name": "Detector",
@@ -21578,8 +23420,9 @@
    "genesis_principle": "L1-279",
    "genesis_title": "X-ray Fluorescence (XRF) Imaging",
    "level": "runs",
+   "source_validation": "drafted",
    "gaps": [
-    "no source element (source design not expressible)",
+    "source element drafted from general knowledge, not verified against a paper or measurement",
     "calibration tolerances not recorded"
    ]
   },
@@ -21690,6 +23533,7 @@
    "genesis_principle": "L1-294",
    "genesis_title": "X-ray Fluorescence Tomography",
    "level": "runs",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -21820,6 +23664,7 @@
    "genesis_principle": "L1-012",
    "genesis_title": "Compressive Holographic Reconstruction",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -21931,6 +23776,7 @@
    "genesis_principle": "L1-176",
    "genesis_title": "Light-Sheet Fluorescence Microscopy (LSFM)",
    "level": "real_data",
+   "source_validation": "registry",
    "gaps": [
     "calibration tolerances not recorded"
    ]
@@ -22404,6 +24250,8 @@
   "canonical": 28,
   "real_data": 11,
   "with_source_element": 116,
+  "with_drafted_source": 54,
+  "without_source": 0,
   "genesis_linked": 149,
   "principle_only": 46
  }
