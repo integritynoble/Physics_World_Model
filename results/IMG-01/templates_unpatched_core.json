@@ -1,0 +1,2212 @@
+{
+ "graph_templates_sha256": "0a1cce42035a6fff32805717a50fceb36c59009fcdb2f211b769be328d459be8",
+ "n_templates": 197,
+ "n_run": 197,
+ "failing": [],
+ "n_with_alias": 20,
+ "n_repaired": 5,
+ "templates": {
+  "acoustic_emission_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "acoustic_microscopy_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "active_thermography_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "adaptive_optics_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "afm_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e37607abd165b997d7afc9ca25f12d371eeccf6834671da851bdd0d276692b5c"
+  },
+  "angiography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "3dcc02f7941e31e5dde962d38883df078efb09be7206b4fa240832c57da16218"
+  },
+  "asl_mri_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "atom_probe_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e37607abd165b997d7afc9ca25f12d371eeccf6834671da851bdd0d276692b5c"
+  },
+  "bioluminescence_tomo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "brachytherapy_img_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "brillouin_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "cacti_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "491e0b8fbad9a7228db61fe1ac12443250eb49cd8e039f3a5be91828d0e0d1e4"
+  },
+  "cacti_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "da4999b649734f19861f4f1a0ed21e39eeb8313af086bd8577f38c1b9028b119"
+  },
+  "cars_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "cassi_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "5b22d9e69c9e690bf0725ed86e462b49978c3f44c2154cba0b0c13e008be089a"
+  },
+  "cassi_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    78
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "7fcd76776f80884741ecc414bb00bc40af6cfaa782c716f642c7f4b4401df420"
+  },
+  "cathodoluminescence_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "cbct_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "3a4564dfbe1349d16cd4b9b4047a0df61466970cefb680b85167c87178813585"
+  },
+  "cest_mri_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "ceus_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "clem_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "coded_exposure_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "compressive_holography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    4,
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "noise: poisson_gaussian_sensor_noise -> poisson_gaussian_sensor"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "a6fe72a82c26fd4088aaf23cbd38eb5d8bad21913fb083f13e912d1a284a94e0"
+  },
+  "confocal_3d_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    32,
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "c64f4d9e6724e4e364bc809b66c6d31d1e50f369f9678c852728d75f9ffa3c69"
+  },
+  "confocal_3d_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    32,
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "c14f2cd08863283faf163fcb5c4b960cf948c142523b1653cfe1ffbabca9e32a"
+  },
+  "confocal_endomicroscopy_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "confocal_livecell_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "5ece4d95d4a61641f91eccae950e5bd1c1ed820feaf275beb108b86a3216485b"
+  },
+  "confocal_livecell_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "60b990f254c81be2378a794a7f07c70f60860f9650f462b8dec8192da2530a43"
+  },
+  "coronagraphy_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "cryo_em_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "cryo_em_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "742e6e6b33e93c85013794a4ed568954df0b5d8590f7a6e1b3d89b244a3c885b"
+  },
+  "cryo_et_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "ct_fluorescence_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "ct_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "1215f76fdbd88e67f0c969e2f6a995f8cb1d838185ad42c776a2b6129edb8f94"
+  },
+  "ct_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "15b69286e57bc5690af375c8f67bfac5e37eaa44bef9970c8168ba5dcccce27c"
+  },
+  "cup_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "dark_field_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "desi_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e37607abd165b997d7afc9ca25f12d371eeccf6834671da851bdd0d276692b5c"
+  },
+  "dexa_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    2,
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b6c488ab483b552006b4e0537bb547d13ec1179eaf8bdbed18442e1af21eaf4f"
+  },
+  "dic_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "diffusion_mri_graph_v2": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "05a494d6cdc626b5ea80599eda96d152e4ef9b89b895d9766cfd9c04126d6368"
+  },
+  "digital_breast_tomo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "dna_paint_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "177df14143c441cadbd1488c45b7f30e06f4a6ceed9dbe3bb30f97552e2be23d"
+  },
+  "doppler_ultrasound_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    32,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ddcc583e138f1d83d6432ea0342bc08eba6aa4bff4d56101640ccf6aad9d2ddd"
+  },
+  "dot_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ac029ab10f5a635640b69f9af3e207b9a2a01102a7bbe6db77e382a6a70deba5"
+  },
+  "dot_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b4bfd37e2a5df7715765000ca061d27a873a8bd2550223b82a4c3ec6aaf20a37"
+  },
+  "ebsd_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b381f0cd7edeb79d1aaedba5e1a3e8bd4fd177cfb1b3b03fe33326f7b8c0cebd"
+  },
+  "eddy_current_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "edx_mapping_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "eels_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "d8d5680bb39fb5c58d5f20ffc4ce27567a168d5e2b20a74993d8a7ee2a8e0e3a"
+  },
+  "eht_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor",
+   "forward_sha256": "053704424804f564d4ff0e7d95c98b9e44f1bcd7e3737aaff593ca486e8b346b"
+  },
+  "elastography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    32,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "c089f4e13a05be9c1550596c6ed1769ae24f1fe282308213780fbb2825fda5f6"
+  },
+  "electron_diffraction_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "31deaf297aa66a014b488f2f4de7661f54d6a993d64740e386b75666ebe062e5"
+  },
+  "electron_holography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "879b3062bad725f34ea7534127cb010753b80d59cd0a151dc54bd3aa158d10b3"
+  },
+  "electron_tomography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "45fb300afee5df14d66142c48fb965e52f559c4602986cb5b964eadda409710b"
+  },
+  "endoscopy_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    4096
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "05bd0a086196d0a96bca06e7836339879e7a57655eae088955cbc2beb14cc369"
+  },
+  "entangled_photon_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "event_camera_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "177df14143c441cadbd1488c45b7f30e06f4a6ceed9dbe3bb30f97552e2be23d"
+  },
+  "expansion_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "fib_sem_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "flash_lidar_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "flim_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ff46072873a3273b6590362b42f364f587c74bb15c890d04c1db53e398f3dc1c"
+  },
+  "flim_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "0a89b1b52b52afcb8d1f3b009f5f69194f725e41795f1d4f4a348248830edad5"
+  },
+  "fluorescence_microscopy_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "noise: poisson_gaussian_sensor_noise -> poisson_gaussian_sensor"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "3b55251dc1d6dec51b15af0b28b076daf1354fc2920df592811174ba0686bb0c"
+  },
+  "fluoroscopy_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "03d2926f0748b1d3991b82d340923ea91eb7765f8eb673b0cfa09c35cc4e3a39"
+  },
+  "fmri_graph_v2": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "181264dff28d9911d5f73084fde643a1e115fd1d1e2584f5ebd36be2abf6453f"
+  },
+  "fpm_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ecefe35b661d0cb917fe4ed1a2f23261e0b3cbdf562817eadb8cc4c70be2c90f"
+  },
+  "fpm_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "676043be04fbf50e3277d26869cff8e5e45af6e26cd9c3e5df111a2f4e5832fd"
+  },
+  "ftir_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "fundus_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "3a031b2bdc497a8a511192a6e20b3f8c9a0418e190de266dd0fd9adebfb8a0bd"
+  },
+  "fwi_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "gaussian_splatting_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "aa53579ce9c92496fd2cf609efa6d92611c589bdb19d105c923061509fbdf589"
+  },
+  "gaussian_splatting_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "97b0389a8ff5c89547da59136429b0dd5df80c9261a0974eaa8d0d47c1a31fb1"
+  },
+  "ghost_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "gpr_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "gravitational_wave_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "hdr_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "holography_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "a9f663cde4e3a6a7185572072f5e321afd457ee6a03b4f6e5f711d7c13c73dff"
+  },
+  "holography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "0350ff15623e32e5bf092eed41c456de9d6a043beff4fdab21fd88d650ebe533"
+  },
+  "hyperspectral_remote_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "impedance_tomo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "177df14143c441cadbd1488c45b7f30e06f4a6ceed9dbe3bb30f97552e2be23d"
+  },
+  "industrial_ct_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "insar_graph_v1": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor",
+   "forward_sha256": "053704424804f564d4ff0e7d95c98b9e44f1bcd7e3737aaff593ca486e8b346b"
+  },
+  "integral_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "369b728a0f0fc114454fcc45e2b56527b964d09851cffda4407485d03105bdb5"
+  },
+  "integral_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e4d907e48f57ec4938a330730a41b2b801276d7b174668b80e395808e5469d7c"
+  },
+  "ism_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "ivus_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "lattice_lightsheet_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "lensless_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "4cb7d8ae29ba26d18c74798a263b402eb4c3aacc626e6930b6cd102b270cee69"
+  },
+  "lensless_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "631802944b0795626697df86912c0a1913a0a32c7718b353fa866d1ee909c6a2"
+  },
+  "libs_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "lidar_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "7cf9cd1c5818777d872f737995b3444ef88a7d40020fd98f4813243255f6aa81"
+  },
+  "light_field_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "9ed8df2e794684db45b40bbedc59f0e6074f03ac31a4243e53dd9dd45972f72a"
+  },
+  "light_field_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "964d4b0ba94a2d126855371cbcc1b20f99a43fcf7a334d2d05ec719e85dd2813"
+  },
+  "lightsheet_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "32823e5f25a857060ffe35c8422c63a521c60e808228ce54a48c1f5814ee9560"
+  },
+  "lightsheet_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "a0856ba16fc82c83cfaa4ae6e07aa6e1d5763d6b4e1219403ae80cbf671ba875"
+  },
+  "lucky_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "machine_vision_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "magnetic_particle_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "maldi_msi_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e37607abd165b997d7afc9ca25f12d371eeccf6834671da851bdd0d276692b5c"
+  },
+  "mammography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "2aa47f6064f5544e4856e79f27e74fa44c11781a4a3d8aea5bfcacc59cdd755b"
+  },
+  "matrix_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    1024
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b330b216915e66060d7fc0a15d9d7d2c6a63ef0ad207c70b60dc20391111d0c9"
+  },
+  "matrix_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    1024
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "34673b9240502d4ea54b31f44b304116a21a95fa4c75cb9e88f4bc74329b24b7"
+  },
+  "mfm_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "minflux_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "mr_elastography_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "mr_fingerprinting_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "mra_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "mri_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "a5ed0d9ae03a8d7c359f7c49056f49b0120828d8c8486a02e44dc9144a22fd0a"
+  },
+  "mri_graph_v2": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ac27abd937fe0c0898b73f58f73cee6f3b6df9db6bed319905bc0659eb2e62f9"
+  },
+  "mrs_graph_v2": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "f2fa2f44104216aaf7c063c06b20268d6b9b7369bd88d3f335ae45fa9fb0b1ed"
+  },
+  "multispectral_sat_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "muon_tomo_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "930d833729a5f75cfa6d86b2f79978eea6924799fa430120b96c7d329d63de8c"
+  },
+  "nerf_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "be3dca6c594c0e710bdd27116247686c459e59d4ab7b7f6fa06c1431907f1990"
+  },
+  "nerf_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b64095ee77272d32c9550217977174c006d21e07e2f570121fa5d0bf9bfd82f3"
+  },
+  "neutron_diffraction_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "neutron_tomo_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "6463aede83ce2c552696474522c8749efd8ad0fb682f5392d75523b511640735"
+  },
+  "nirs_brain_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "nsom_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "ocean_acoustic_tomo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "ocean_color_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "oct_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "1b2b5deffb781e426ec4fd1c7e8e22480156b74e41b7145083887cee00d504d8"
+  },
+  "oct_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "fbf3282a2c1889bb60cc52534af5958fea7577f5337b77c1e771980ef3b18137"
+  },
+  "octa_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ff7a0caa04e506d84b659a4b3f4ac38d6c4031f6fc7842f68bb480d8bbff1239"
+  },
+  "odt_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "palm_storm_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "2fffcb6e8e07de8377a8dd2288d483858d23a760818de561b55a046a5747d0d9"
+  },
+  "panorama_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "750782afbe863786b3b969d10baa7e434fc304d13a5892a3f9b782609eb46d23"
+  },
+  "panorama_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "eab138ed8455363091b3a8de527808a9ed0dae742834cc4840f70f0dd0745310"
+  },
+  "particle_calorimetry_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "passive_microwave_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "pet_ct_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "pet_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    32,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ce5bced4f4decf7bb0c944b87f8ebb07f1177cb02d2c76f5a6017d798b2c1c2e"
+  },
+  "pet_mr_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "phase_contrast_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "phase_retrieval_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "a60c0f98c136b703b4cda2ae2f4dd146093ef0da925114a7bfdd6589acb6dcb1"
+  },
+  "phase_retrieval_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "676043be04fbf50e3277d26869cff8e5e45af6e26cd9c3e5df111a2f4e5832fd"
+  },
+  "photoacoustic_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "9316ed9ffdc053aa51540e72c875523638d57083d1c0cebde2afdc7991cd2e4c"
+  },
+  "photoacoustic_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "bcfb72e7b3aeb00e1b58aa6739aa9e3b4b1865040065e6f083c07d46f0c62c37"
+  },
+  "photometric_stereo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "polarization_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "fb23ea392c0187e1c4f0564a2beef4c3e06c73ea22aef1e83113f4bb4950f7ba"
+  },
+  "polsar_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "portal_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "proton_radiography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "3dcb9962e4251c5987795e282fd2920dde7b9fa993c9fc77a7e6a28ffb4dbf2a"
+  },
+  "proton_therapy_img_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "ptychography_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "c1d89dc07394ce07106fdc28ef7cdb5e9b9e6db2b045802d2386c1696c5ce6c4"
+  },
+  "ptychography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "5d9568aa514574635c7917d5b8f6a873589dee9eac9cfbaed5170897f4cb0852"
+  },
+  "pump_probe_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "quantum_illumination_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "radio_astronomy_graph_v1": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor",
+   "forward_sha256": "053704424804f564d4ff0e7d95c98b9e44f1bcd7e3737aaff593ca486e8b346b"
+  },
+  "radio_interferometry_graph_v1": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor",
+   "forward_sha256": "053704424804f564d4ff0e7d95c98b9e44f1bcd7e3737aaff593ca486e8b346b"
+  },
+  "raman_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "sar_graph_v2": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "383ab2278ec7914a1e57faf280246722d3c489ba46b1ca1f80dd60303ad37bc2"
+  },
+  "saxs_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "seismic_tomo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "sem_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "f666f66be343743905dc692534b8b085e77da68d6d3c73638efed80ad430785e"
+  },
+  "shearography_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "shg_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "sim_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "84d7d66cd25449f43f1a56936f63059d7dd13589aaf081b04984a7bdfd88c2cb"
+  },
+  "sim_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "71454a002d91cefe654c2c5d61de6d215edd958d0e02713d51ad1236a440e334"
+  },
+  "sims_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e37607abd165b997d7afc9ca25f12d371eeccf6834671da851bdd0d276692b5c"
+  },
+  "solar_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "sonar_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "6e2305ca82977f28179b46eee45d1cdaa4eb48210207c802818498f20d141199"
+  },
+  "spc_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    614
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "575c645476bfd77bc8a11f82d8852a11e141951227711633062c9e4c25e08f3e"
+  },
+  "spc_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    614
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "1e0b9d2fd58af74e93daa58c99c580c3e95877c9d0720769802c33026d293af5"
+  },
+  "spect_ct_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "spect_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    32,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b3f40f01e7223a73c2bc9f972d2ef56c4d97974efa1f06911ed19fc8525b643e"
+  },
+  "spectral_ct_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "spinning_disk_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "srs_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "sted_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "adf147c3ce0d4dc1cc3a76b34fd415e6c467b5f061614e2a30457f6f48979014"
+  },
+  "stem_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "596ecd2402c3cec8254fef36d1bcadc6436bb35159d745b30999deaed576a4d3"
+  },
+  "stm_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e37607abd165b997d7afc9ca25f12d371eeccf6834671da851bdd0d276692b5c"
+  },
+  "streak_camera_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "ca5a871d552ab90c43fe53e38a6a9e43974155a9d863a6e1d4c09b489be54e18"
+  },
+  "structured_light_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "9cb50532cb115ca39e25740de873421e15d0a172023616bdf26ed6b8f589b037"
+  },
+  "swi_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "talbot_lau_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "tem_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "5cb35ea6afb39fa036325dc57c4e0e3afe91f87de5322657d5bb9c08baa93602"
+  },
+  "terahertz_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "three_photon_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "tirf_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "56b225107cfc1d9bcf823d1cee769c1ffc1cce99444be12d0a868b19c4c9d655"
+  },
+  "tof_camera_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "dec0f5e2c9a49a2282a2013f5f04b62faaab2f5410d782713912a2e7ad1e91b4"
+  },
+  "two_photon_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "67549a21e5b19439dd2c54bda3e8a990eb2408c135d5fa0cb7198e7e0c53c563"
+  },
+  "ultrasonic_phased_array_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [
+    "propagate: propagation_2d -> angular_spectrum"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "0b6207b0e46970f3c3d51a56fd18de939dc5b6bf6e143cd292e8312a6dace7e9"
+  },
+  "ultrasound_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "b56cdac028dd9bf8a5c6e821c683c83405c2b5bb2cb9f4fd1a6ca96743b6a8d0"
+  },
+  "us_mri_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "waxs_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "weather_radar_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "widefield_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "widefield_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "0b3c4673fdac6f6ea424b0c7964224b4a03d6c52b5a7a98f0b8a9f2328df16e6"
+  },
+  "widefield_lowdose_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "13d751c706dcee759c4db6d235a2e4a4ffb269cf252508d78f3ab41ed4bd2168"
+  },
+  "widefield_lowdose_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "2f2967702227170a62e04fb8de4d0a2a545859deba86dd2f4207a6a30543d9a0"
+  },
+  "xfel_sfx_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "xray_crystallography_graph_v1": {
+   "runs": true,
+   "dtype": "complex128",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": "IMG-01: fft_2d+subsample+gaussian -> mri_kspace+complex_gaussian_sensor",
+   "forward_sha256": "053704424804f564d4ff0e7d95c98b9e44f1bcd7e3737aaff593ca486e8b346b"
+  },
+  "xray_ndt_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    180,
+    64
+   ],
+   "aliases_applied": [
+    "radon: radon_2d -> ct_radon"
+   ],
+   "repaired_by": null,
+   "forward_sha256": "f7247c9a9794ee768af90a02494f0d6b8d48eac7f4190a391066f50cb876fd9a"
+  },
+  "xray_radiography_graph_v2": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "9b6312ddb1327e91b08393d2ef75e77bab96826b5c24865c7ddb1dc66988d2c9"
+  },
+  "xrf_imaging_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  },
+  "xrf_tomo_graph_v1": {
+   "runs": true,
+   "dtype": "float64",
+   "shape": [
+    64,
+    64
+   ],
+   "aliases_applied": [],
+   "repaired_by": null,
+   "forward_sha256": "e51ce2a4700cbc7bffe72e9a019311e9c8145e8d372854514cb4367e339efabc"
+  }
+ }
+}

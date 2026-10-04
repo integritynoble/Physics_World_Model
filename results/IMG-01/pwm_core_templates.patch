@@ -1,0 +1,78 @@
+diff --git a/packages/pwm_core/contrib/graph_templates.yaml b/packages/pwm_core/contrib/graph_templates.yaml
+index dbce909..224175b 100644
+--- a/packages/pwm_core/contrib/graph_templates.yaml
++++ b/packages/pwm_core/contrib/graph_templates.yaml
+@@ -4003,7 +4003,7 @@ templates:
+       - 64
+     nodes: &id001
+     - node_id: propagate
+-      primitive_id: propagation_2d
++      primitive_id: angular_spectrum
+       role: transport
+       params:
+         distance_m: 1.0
+@@ -4119,7 +4119,7 @@ templates:
+       - 64
+     nodes: &id007
+     - node_id: radon
+-      primitive_id: radon_2d
++      primitive_id: ct_radon
+       role: transport
+       params:
+         n_angles: 180
+@@ -4426,28 +4426,23 @@ templates:
+       - 64
+       - 64
+     nodes: &id013
+-    - node_id: fourier
+-      primitive_id: fft_2d
+-      role: transport
+-      params: {}
+-      learnable: []
+-    - node_id: subsample
+-      primitive_id: subsample
+-      role: sensor
++    - node_id: kspace
++      primitive_id: mri_kspace
+       params:
+-        acceleration: 4
++        H: 64
++        W: 64
++        sampling_rate: 0.25
++        seed: 42
+       learnable:
+-      - acceleration
++      - sampling_rate
+     - node_id: noise
+-      primitive_id: gaussian
++      primitive_id: complex_gaussian_sensor
+       role: noise
+       params:
+         sigma: 0.01
+         seed: 0
+     edges: &id014
+-    - source: fourier
+-      target: subsample
+-    - source: subsample
++    - source: kspace
+       target: noise
+   entangled_photon_graph_v1:
+     description: 'Entangled Photon Microscopy: M --> R --> D'
+@@ -5436,7 +5431,7 @@ templates:
+         quantum_efficiency: 0.85
+         gain: 1.0
+     - node_id: noise
+-      primitive_id: poisson_gaussian_sensor_noise
++      primitive_id: poisson_gaussian_sensor
+       role: noise
+       params:
+         peak_photons: 50000.0
+@@ -5496,7 +5491,7 @@ templates:
+         quantum_efficiency: 0.82
+         gain: 1.0
+     - node_id: noise
+-      primitive_id: poisson_gaussian_sensor_noise
++      primitive_id: poisson_gaussian_sensor
+       role: noise
+       params:
+         peak_photons: 10000.0

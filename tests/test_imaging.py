@@ -23,7 +23,7 @@ SPECTRAL = {"nodes": [{"node_id": "m", "primitive_id": "coded_mask", "params": {
 def test_catalog_covers_registry():
     cat = catalog.load()
     assert cat["summary"]["registry_modalities"] == 170
-    assert cat["summary"]["runs"] >= 165
+    assert cat["summary"]["runs"] == 170  # IMG-01: was 165 with the five sampled-Fourier templates failing
     ids = {e["id"] for e in cat["modalities"]}
     assert {"cassi", "mri", "ct", "ultrasound"} <= ids
     for e in cat["modalities"]:
@@ -83,3 +83,69 @@ def test_submitted_design_needs_an_independent_validator(tmp_path):
         lib.accept(sub["id"], {"passed": True, "validator": "user:alice"})
     st = lib.accept(sub["id"], {"passed": True, "validator": "validator-imaging-1", "metrics": {"c5": True}})
     assert any(r.startswith("img-design-spectral-test@") for r in st["artifacts"])
+
+
+FIVE = ["eht_imaging", "insar", "radio_astronomy", "radio_interferometry", "xray_crystallography"]
+
+
+@pytest.mark.parametrize("mid", FIVE)
+def test_img01_sampled_fourier_templates_compile_run_and_keep_the_imaginary_part(mid):
+    import numpy as np
+    e = catalog.get(mid)
+    assert e["level"] in ("runs", "canonical", "real_data")
+    (tid, rec), = e["templates"].items()
+    assert rec["runs"] and not rec.get("error") and rec["aliases_applied"] == []
+    t = core.contrib("graph_templates.yaml")["templates"][tid]
+    assert [n["primitive_id"] for n in t["nodes"]] == ["mri_kspace", "complex_gaussian_sensor"]
+    op = core.compile_graph(*core.normalise_nodes(t["nodes"])[:1], t["edges"], t["metadata"])
+    y = op.forward(np.random.default_rng(0).random(tuple(t["metadata"]["x_shape"])))
+    assert np.iscomplexobj(y) and np.all(np.isfinite(y)) and np.std(y.imag) > 0
+    # about a quarter of the k-space samples plus the fully sampled centre block: far fewer than all, many more than none
+    clean = core.registry()["mri_kspace"](t["nodes"][0]["params"]).forward(np.random.default_rng(3).random(y.shape))
+    frac = float(np.mean(clean != 0))
+    assert 0.25 < frac < 0.45
+
+
+def test_img01_fft_2d_is_not_aliased_to_a_propagation_operator():
+    assert "fft_2d" not in core.PRIMITIVE_ALIASES
+    assert set(core.PRIMITIVE_ALIASES) == {"propagation_2d", "radon_2d", "poisson_gaussian_sensor_noise"}
+
+
+def test_img01_repair_only_touches_templates_that_still_have_subsample():
+    templates = core.contrib("graph_templates.yaml")["templates"]
+    already_fine = templates["mri_graph_v1"]
+    assert core.repair_template(already_fine) is already_fine
+    patched = core.repair_template({"nodes": [{"node_id": "kspace", "primitive_id": "mri_kspace", "params": {}}]})
+    assert patched["nodes"][0]["primitive_id"] == "mri_kspace"
+
+
+def test_img01_pwm_core_patch_applies_to_unpatched_templates_and_fixes_all_unregistered_names(tmp_path):
+    import shutil
+    import subprocess
+    import yaml
+    patch = core.Path(__file__).resolve().parents[1] / "results/IMG-01/pwm_core_templates.patch"
+    src = core.PWM_CORE_SRC / "contrib" / "graph_templates.yaml"
+    if "primitive_id: subsample" not in src.read_text():
+        pytest.skip("pwm_core at PWM_CORE_SRC already carries the IMG-01 fix")
+    if shutil.which("git") is None:
+        pytest.skip("git not available")
+    dst = tmp_path / "packages/pwm_core/contrib"
+    dst.mkdir(parents=True)
+    shutil.copy(src, dst / "graph_templates.yaml")
+    subprocess.run(["git", "apply", "-p1", str(patch)], cwd=tmp_path, check=True)
+    after = yaml.safe_load((dst / "graph_templates.yaml").read_text())["templates"]
+    used = {n["primitive_id"] for t in after.values() for n in t["nodes"]}
+    assert not used & {"fft_2d", "subsample", "propagation_2d", "radon_2d", "poisson_gaussian_sensor_noise"}
+    assert used <= set(core.registry())
+
+
+@pytest.mark.xfail(strict=True, reason="IMG-07 finding: pwm_core mri_kspace.adjoint is the unit-normalised inverse FFT "
+                                       "(zero-filled reconstruction), so the dot-product test fails by exactly H*W; "
+                                       "applies to the MRI template too. Remove this mark when pwm_core fixes it.")
+def test_img01_repaired_operator_passes_the_adjoint_dot_test():
+    import numpy as np
+    op = core.registry()["mri_kspace"]({"H": 64, "W": 64, "sampling_rate": 0.25, "seed": 42})
+    rng = np.random.default_rng(0)
+    x = rng.random((64, 64))
+    y = rng.normal(size=(64, 64)) + 1j * rng.normal(size=(64, 64))
+    assert np.isclose(np.real(np.vdot(y, op.forward(x))), float(np.sum(x * op.adjoint(y))), rtol=1e-6)
