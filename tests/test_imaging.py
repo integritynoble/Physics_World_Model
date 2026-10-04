@@ -83,3 +83,37 @@ def test_submitted_design_needs_an_independent_validator(tmp_path):
         lib.accept(sub["id"], {"passed": True, "validator": "user:alice"})
     st = lib.accept(sub["id"], {"passed": True, "validator": "validator-imaging-1", "metrics": {"c5": True}})
     assert any(r.startswith("img-design-spectral-test@") for r in st["artifacts"])
+
+
+def test_img04_every_principle_has_one_curated_decision():
+    import json
+    cat = catalog.load()
+    cur = json.loads(catalog.CURATION_PATH.read_text())
+    ids = [d["id"] for d in cur["decisions"] if not d["freed"]]
+    assert len(ids) == len(set(ids)) == 46
+    assert cat["principle_only"] == []
+    assert cat["summary"]["curated_imaging_linked"] + cat["summary"]["curated_imaging_new"] + \
+        cat["summary"]["curated_out_of_scope"] == 46
+    assert all(o["reason"] for o in cat["out_of_scope"])
+    for p in cat["proposed_modalities"]:
+        assert set(design.SPEC_FIELDS) <= set(p["spec_md"]) and p["level"] == "registered"
+        assert p["id"] not in {e["id"] for e in cat["modalities"]}
+
+
+def test_img04_links_are_curated_and_corrected():
+    assert catalog.get("dexa")["genesis_principle"] == "L1-201"
+    assert catalog.get("nirs_brain")["spec_md"]["carrier"] == "photon"
+    assert catalog.get("nirs_brain")["genesis_principle"] == "L1-228"
+    assert catalog.get("ct")["genesis_principle"] == "L1-005" and catalog.get("ct")["level"] == "real_data"
+    assert catalog.get("dic")["genesis_principle"] == "L1-188"
+
+
+def test_img04_proposed_templates_run_depend_on_object_and_pass_structural_checks():
+    n = 0
+    for e in catalog.load()["modalities"]:
+        for tid, t in e.get("proposed_templates", {}).items():
+            n += 1
+            assert t["runs"] and t["depends_on_object"], tid
+            assert t["design_check"]["passed_structural"] and t["design_check"]["C5_adjoint"], tid
+            assert "nominal" in t["fidelity"]
+    assert n == 3

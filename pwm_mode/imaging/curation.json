@@ -1,0 +1,647 @@
+{
+ "version": 1,
+ "note": "IMG-04 curation of the 46 principle-only genesis entries. Applied by catalog.build(). Proposed templates are not in the pwm_core registry (read-only here); they are proposals for upstream.",
+ "decisions": [
+  {
+   "id": "L1-188",
+   "decision": "imaging_link",
+   "registry_id": "dic",
+   "carrier": "photon",
+   "reason": "Differential interference contrast microscopy is an imaging modality; the registry already has dic, which the title matcher missed.",
+   "gaps": [
+    "no honest template: the primitive registry has no shear/differential-phase primitive (the existing conv2d -> poisson_gaussian is a generic stub, not DIC)"
+   ],
+   "proposed_template": null,
+   "template_fidelity": "generic stub (conv2d blur); not a DIC forward model",
+   "previous_link": null,
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-201",
+   "decision": "imaging_link",
+   "registry_id": "dexa",
+   "carrier": "xray",
+   "reason": "Dual-energy X-ray absorptiometry is imaging; registry dexa was linked to the wrong principle (L1-307).",
+   "gaps": [],
+   "proposed_template": null,
+   "template_fidelity": "canonical chain in the validated registry (dual_energy_beer_lambert); not validated on hardware",
+   "previous_link": "L1-307",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-228",
+   "decision": "imaging_link",
+   "registry_id": "nirs_brain",
+   "carrier": "photon",
+   "reason": "fNIRS is diffuse optical imaging; registry nirs_brain was linked to EELS (L1-251, carrier electron).",
+   "gaps": [
+    "registry template is a generic stub with a 'Coded Mask' element, which fNIRS does not have"
+   ],
+   "proposed_template": "nirs_v2",
+   "template_fidelity": "nominal: gaussian-blur diffusion + Beer-Lambert; not a photon-diffusion solver",
+   "previous_link": "L1-251",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-248",
+   "decision": "imaging_link",
+   "registry_id": "stem",
+   "carrier": "electron",
+   "reason": "Scanning TEM is imaging; registry stem was linked to plain TEM (L1-246).",
+   "gaps": [
+    "registry template has no scan stage"
+   ],
+   "proposed_template": "stem_v3",
+   "template_fidelity": "nominal: incoherent probe blur + raster subsample; no explicit source node (electron_beam_source returns a constant and discards the object); no coherent contrast, no aberrations",
+   "previous_link": "L1-246",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-249",
+   "decision": "imaging_link",
+   "registry_id": "electron_diffraction",
+   "carrier": "electron",
+   "reason": "4D-STEM records a diffraction pattern per probe position; the nearest registry modality is electron_diffraction, which was linked to Fresnel diffraction (L1-401).",
+   "gaps": [
+    "registry template is a single-pattern diffraction camera: no scan dimension, so not 4D-STEM; a separate 4D-STEM registry entry is needed upstream"
+   ],
+   "proposed_template": null,
+   "template_fidelity": "single-pattern |FFT|^2 only; the 4D (scan x pattern) structure is not modelled",
+   "previous_link": "L1-401",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-255",
+   "decision": "imaging_link",
+   "registry_id": "edx_mapping",
+   "carrier": "electron",
+   "reason": "STEM-EDX is imaging (elemental maps); registry edx_mapping had no link.",
+   "gaps": [
+    "no honest template: yield_model is a scalar and energy_resolving_detector ignores n_channels and energy range (returns x*qe), so there is no spectral axis"
+   ],
+   "proposed_template": null,
+   "template_fidelity": "generic stub",
+   "previous_link": null,
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-257",
+   "decision": "imaging_link",
+   "registry_id": "lidar",
+   "carrier": "photon",
+   "reason": "LiDAR point-cloud imaging; registry lidar had no link.",
+   "gaps": [],
+   "proposed_template": null,
+   "template_fidelity": "runs: scan -> time-of-flight gate -> SPAD; sensor is qe scaling only (dead time not modelled)",
+   "previous_link": null,
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-260",
+   "decision": "imaging_link",
+   "registry_id": "flash_lidar",
+   "carrier": "photon",
+   "reason": "Flash LiDAR with a SPAD array is imaging; registry flash_lidar had no link.",
+   "gaps": [
+    "no honest template: spad_tof_sensor returns x*qe and ignores dead_time_ns, so no chain with this sensor models a SPAD array"
+   ],
+   "proposed_template": null,
+   "template_fidelity": "generic stub (propagation_2d -> gaussian)",
+   "previous_link": null,
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-273",
+   "decision": "imaging_link",
+   "registry_id": "xray_ndt",
+   "carrier": "xray",
+   "reason": "X-ray radiographic NDT is imaging; registry xray_ndt was linked to medical radiography (L1-196).",
+   "gaps": [],
+   "proposed_template": "xray_ndt_v2",
+   "template_fidelity": "nominal: monoenergetic Beer-Lambert transmission; no scatter, beam hardening or focal-spot blur",
+   "previous_link": "L1-196",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-274",
+   "decision": "imaging_link",
+   "registry_id": "ultrasonic_phased_array",
+   "carrier": "acoustic",
+   "reason": "PAUT is imaging; registry ultrasonic_phased_array had no link and its carrier was shown as xray.",
+   "gaps": [
+    "no honest template: beamform_delay averages over axis 0 with no delays, and the principle's full-matrix capture has no primitive"
+   ],
+   "proposed_template": null,
+   "template_fidelity": "generic stub (propagation_2d -> gaussian)",
+   "previous_link": null,
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-406",
+   "decision": "imaging_link",
+   "registry_id": "phase_retrieval",
+   "carrier": "photon",
+   "reason": "Phase retrieval is a computational imaging problem; registry phase_retrieval was linked to CDI (L1-234).",
+   "gaps": [],
+   "proposed_template": null,
+   "template_fidelity": "runs: angular spectrum -> |.|^2 -> Poisson; nominal, not validated",
+   "previous_link": "L1-234",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-005",
+   "decision": "imaging_link",
+   "registry_id": "ct",
+   "carrier": "xray",
+   "reason": "CT reconstruction is the principle behind registry ct (real_data); it was linked to Industrial CT (L1-272).",
+   "gaps": [],
+   "proposed_template": null,
+   "template_fidelity": "unchanged (real_data level comes from the flagship paper, not from this link)",
+   "previous_link": "L1-272",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-006",
+   "decision": "imaging_link",
+   "registry_id": "mri",
+   "carrier": "spin",
+   "reason": "Accelerated MRI reconstruction is the principle behind registry mri (real_data); it was linked to Sonar (L1-262).",
+   "gaps": [],
+   "proposed_template": null,
+   "template_fidelity": "unchanged (real_data level comes from the flagship paper, not from this link)",
+   "previous_link": "L1-262",
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-426",
+   "decision": "imaging_link",
+   "registry_id": "acoustic_emission",
+   "carrier": "acoustic",
+   "reason": "Acoustic-emission source localization maps to registry acoustic_emission (array localization, a passive imaging modality).",
+   "gaps": [
+    "registry template is a generic stub"
+   ],
+   "proposed_template": null,
+   "template_fidelity": "generic stub",
+   "previous_link": null,
+   "secondary": false,
+   "freed": false
+  },
+  {
+   "id": "L1-413",
+   "decision": "imaging_new",
+   "registry_id": "xray_phase_contrast",
+   "carrier": "xray",
+   "reason": "X-ray phase-contrast imaging is imaging and has no registry entry (checked contrib/modalities.yaml: 170 ids, none is phase contrast).",
+   "gaps": [
+    "no template: thin_object_phase is x*exp(-sigma|x|), an amplitude attenuation, not a phase shift, so a phase-contrast chain cannot be built honestly",
+    "needs a phase-object (projection-approximation) primitive and a propagation-based or grating detector"
+   ],
+   "freed": false
+  },
+  {
+   "id": "L1-415",
+   "decision": "imaging_new",
+   "registry_id": "thz_tds",
+   "carrier": "photon",
+   "reason": "THz time-domain spectroscopy is listed as imaging by the owner (THz-TDS imaging); registry terahertz is linked to THz imaging L1-277, which is a different principle, so a separate entry is proposed.",
+   "gaps": [
+    "no template: no pulsed-source/delay-line primitive and no time axis; level stays 'registered'",
+    "borderline: single-point spectroscopy is not imaging unless raster-scanned; confirm with the owner"
+   ],
+   "freed": false
+  },
+  {
+   "id": "L1-032",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: radiation transport and shielding calculation, no image formed.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-058",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: direction-of-arrival estimation is array signal processing (a walkthrough, no image formation).",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-066",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: adaptive filtering for echo cancellation is signal processing.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-283",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: guided-wave testing is a 1D pulse-echo inspection; becomes imaging only as guided-wave tomography. Borderline.",
+   "borderline": true,
+   "freed": false
+  },
+  {
+   "id": "L1-284",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: digital image correlation is a measurement method applied to already-formed images (displacement from a speckle pattern); the camera is not modelled. Borderline.",
+   "borderline": true,
+   "freed": false
+  },
+  {
+   "id": "L1-305",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: UV-Vis absorption is point spectroscopy.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-306",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: NMR spectroscopy is a spectrum, not an image (MRI is registry mri).",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-392",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: Maxwell full-wave simulation is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-393",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: Helmholtz scattering is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-394",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: FDTD is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-395",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: method of moments is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-396",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: antenna pattern and impedance is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-397",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: radar cross-section prediction is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-399",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: waveguide mode analysis is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-400",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: fiber mode solver (eigenproblem).",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-402",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: geometric-optics/eikonal ray solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-403",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: Mie scattering is a scattering-theory calculation.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-404",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: Rayleigh scattering is a scattering-theory calculation.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-405",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: thin-film multilayer optics is a reflectance calculation.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-407",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: photonic-crystal inverse design is device design.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-408",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: metamaterial homogenization is a materials calculation.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-421",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: underwater acoustic propagation (ray tracing) is a propagation solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-422",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: underwater acoustic normal-mode solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-423",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: underwater acoustic parabolic-equation solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-424",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: acoustic beamforming localizes sources by array processing; the same operation is imaging in the passive-acoustic-camera sense. Borderline.",
+   "borderline": true,
+   "freed": false
+  },
+  {
+   "id": "L1-425",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: structural vibration (forced response) is a structural dynamics solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-427",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: vibroacoustics is a structure-borne sound solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-428",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: duct acoustics is a modal solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-429",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: aeroacoustics (Lighthill analogy) is a noise-generation solver.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-430",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: outdoor noise propagation is a propagation calculation.",
+   "borderline": false,
+   "freed": false
+  },
+  {
+   "id": "L1-234",
+   "decision": "imaging_link",
+   "registry_id": "phase_retrieval",
+   "carrier": "photon",
+   "reason": "CDI / Phase Retrieval is also a good title match for registry phase_retrieval (titled 'Coherent Diffractive Imaging / Phase Retrieval'); kept as a second principle next to L1-406.",
+   "gaps": [],
+   "proposed_template": null,
+   "template_fidelity": "see L1-406",
+   "previous_link": null,
+   "secondary": true,
+   "freed": true
+  },
+  {
+   "id": "L1-307",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: X-ray absorption spectroscopy (XAS/EXAFS) is point spectroscopy; it was linked to registry dexa by the title matcher in error.",
+   "borderline": false,
+   "freed": true
+  },
+  {
+   "id": "L1-420",
+   "decision": "out_of_scope",
+   "reason": "Not an imaging modality: acoustic scattering by boundary elements is a propagation/scattering solver; it was linked to registry ultrasound-family entries only by the title matcher.",
+   "borderline": false,
+   "freed": true
+  }
+ ],
+ "proposed_templates": {
+  "xray_ndt_v2": {
+   "nodes": [
+    {
+     "node_id": "n0",
+     "primitive_id": "xray_source",
+     "role": "source",
+     "params": {}
+    },
+    {
+     "node_id": "n1",
+     "primitive_id": "beer_lambert",
+     "role": "transport",
+     "params": {}
+    },
+    {
+     "node_id": "n2",
+     "primitive_id": "photon_sensor",
+     "role": "sensor",
+     "params": {
+      "quantum_efficiency": 0.85,
+      "gain": 1.0
+     }
+    },
+    {
+     "node_id": "n3",
+     "primitive_id": "poisson_gaussian_sensor",
+     "role": "noise",
+     "params": {
+      "peak_photons": 25000.0,
+      "read_sigma": 0.008,
+      "seed": 0
+     }
+    }
+   ],
+   "edges": [
+    {
+     "source": "n0",
+     "target": "n1"
+    },
+    {
+     "source": "n1",
+     "target": "n2"
+    },
+    {
+     "source": "n2",
+     "target": "n3"
+    }
+   ],
+   "metadata": {
+    "x_shape": [
+     64,
+     64
+    ],
+    "modality": "xray_ndt",
+    "proposed": true
+   }
+  },
+  "nirs_v2": {
+   "nodes": [
+    {
+     "node_id": "n0",
+     "primitive_id": "photon_source",
+     "role": "source",
+     "params": {}
+    },
+    {
+     "node_id": "n1",
+     "primitive_id": "scatter_model",
+     "role": "transport",
+     "params": {}
+    },
+    {
+     "node_id": "n2",
+     "primitive_id": "beer_lambert",
+     "role": "transport",
+     "params": {}
+    },
+    {
+     "node_id": "n3",
+     "primitive_id": "photon_sensor",
+     "role": "sensor",
+     "params": {
+      "quantum_efficiency": 0.85,
+      "gain": 1.0
+     }
+    },
+    {
+     "node_id": "n4",
+     "primitive_id": "poisson_gaussian_sensor",
+     "role": "noise",
+     "params": {
+      "peak_photons": 10000.0,
+      "read_sigma": 0.01,
+      "seed": 0
+     }
+    }
+   ],
+   "edges": [
+    {
+     "source": "n0",
+     "target": "n1"
+    },
+    {
+     "source": "n1",
+     "target": "n2"
+    },
+    {
+     "source": "n2",
+     "target": "n3"
+    },
+    {
+     "source": "n3",
+     "target": "n4"
+    }
+   ],
+   "metadata": {
+    "x_shape": [
+     64,
+     64
+    ],
+    "modality": "nirs_brain",
+    "proposed": true
+   }
+  },
+  "stem_v3": {
+   "nodes": [
+    {
+     "node_id": "n0",
+     "primitive_id": "conv2d",
+     "role": "transport",
+     "params": {
+      "sigma": 0.8
+     }
+    },
+    {
+     "node_id": "n1",
+     "primitive_id": "scan_trajectory",
+     "role": "transport",
+     "params": {
+      "n_points": 4096
+     }
+    },
+    {
+     "node_id": "n2",
+     "primitive_id": "electron_detector_sensor",
+     "role": "sensor",
+     "params": {}
+    },
+    {
+     "node_id": "n3",
+     "primitive_id": "poisson_only_sensor",
+     "role": "noise",
+     "params": {
+      "peak_photons": 1000.0
+     }
+    }
+   ],
+   "edges": [
+    {
+     "source": "n0",
+     "target": "n1"
+    },
+    {
+     "source": "n1",
+     "target": "n2"
+    },
+    {
+     "source": "n2",
+     "target": "n3"
+    }
+   ],
+   "metadata": {
+    "x_shape": [
+     64,
+     64
+    ],
+    "modality": "stem",
+    "proposed": true
+   }
+  }
+ }
+}

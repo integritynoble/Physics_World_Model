@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "modalities": [
   {
    "id": "widefield",
@@ -182,12 +182,14 @@
    "templates": {
     "widefield_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "widefield_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -195,6 +197,7 @@
    },
    "genesis_principle": "L1-001",
    "genesis_title": "Widefield Fluorescence Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -370,12 +373,14 @@
    "templates": {
     "widefield_lowdose_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "widefield_lowdose_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -383,6 +388,7 @@
    },
    "genesis_principle": "L1-172",
    "genesis_title": "Low-Dose Widefield Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -565,12 +571,14 @@
    "templates": {
     "confocal_livecell_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "confocal_livecell_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -578,6 +586,7 @@
    },
    "genesis_principle": "L1-173",
    "genesis_title": "Confocal Live-Cell Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -759,12 +768,14 @@
    "templates": {
     "confocal_3d_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "confocal_3d_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -772,6 +783,7 @@
    },
    "genesis_principle": "L1-174",
    "genesis_title": "Confocal 3D Z-Stack",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -963,12 +975,14 @@
    "templates": {
     "sim_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> C",
      "aliases_applied": [],
      "nodes": 3
     },
     "sim_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> C -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -976,6 +990,7 @@
    },
    "genesis_principle": "L1-175",
    "genesis_title": "Structured Illumination Microscopy (SIM)",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -1154,12 +1169,14 @@
    "templates": {
     "lightsheet_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "lightsheet_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -1167,6 +1184,7 @@
    },
    "genesis_principle": "L1-176",
    "genesis_title": "Light-Sheet Fluorescence Microscopy (LSFM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -1389,12 +1407,14 @@
    "templates": {
     "cassi_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W -> Sigma",
      "aliases_applied": [],
      "nodes": 4
     },
     "cassi_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> M -> M -> W -> W -> M -> Sigma -> D",
      "aliases_applied": [],
      "nodes": 10
@@ -1402,6 +1422,7 @@
    },
    "genesis_principle": "L1-003",
    "genesis_title": "Coded Aperture Snapshot Spectral Imaging (CASSI)",
+   "link_source": "name_match",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -1601,12 +1622,14 @@
    "templates": {
     "spc_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "S",
      "aliases_applied": [],
      "nodes": 2
     },
     "spc_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> M -> Sigma -> D",
      "aliases_applied": [],
      "nodes": 7
@@ -1614,6 +1637,7 @@
    },
    "genesis_principle": "L1-002",
    "genesis_title": "Single-Pixel Camera",
+   "link_source": "name_match",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -1820,12 +1844,14 @@
    "templates": {
     "cacti_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "S",
      "aliases_applied": [],
      "nodes": 2
     },
     "cacti_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> S -> Sigma -> D",
      "aliases_applied": [],
      "nodes": 6
@@ -1833,6 +1859,7 @@
    },
    "genesis_principle": "L1-004",
    "genesis_title": "Coded Aperture Compressive Temporal Imaging (CACTI)",
+   "link_source": "name_match",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -1985,12 +2012,14 @@
    "templates": {
     "matrix_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "S",
      "aliases_applied": [],
      "nodes": 2
     },
     "matrix_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "S -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -1998,6 +2027,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -2036,7 +2066,7 @@
       0
      ]
     },
-    "object": "World state x for Industrial Computed Tomography",
+    "object": "2D attenuation map x \u2208 R^{N\u00d7N} (Hounsfield units)",
     "forward_model": {
      "equation": "y(theta, s) = integral x(r) dl,  Radon transform",
      "type": "linear_operator",
@@ -2128,7 +2158,20 @@
        }
       ]
      },
-     "calibration": []
+     "calibration": [
+      {
+       "parameter": "center_of_rotation_error_COR",
+       "tolerance": null
+      },
+      {
+       "parameter": "detector_offset",
+       "tolerance": null
+      },
+      {
+       "parameter": "gain_offset_calibration",
+       "tolerance": null
+      }
+     ]
     }
    },
    "default_solver": "fbp",
@@ -2166,23 +2209,32 @@
    "templates": {
     "ct_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [],
      "nodes": 2
     },
     "ct_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi -> Lambda -> D",
      "aliases_applied": [],
      "nodes": 5
     }
    },
-   "genesis_principle": "L1-272",
-   "genesis_title": "Industrial Computed Tomography",
+   "genesis_principle": "L1-005",
+   "genesis_title": "Computed Tomography (CT) Reconstruction",
+   "link_source": "curated",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
-   ]
+   ],
+   "template_fidelity": "unchanged (real_data level comes from the flagship paper, not from this link)",
+   "curation": {
+    "principle": "L1-005",
+    "reason": "CT reconstruction is the principle behind registry ct (real_data); it was linked to Industrial CT (L1-272).",
+    "previous_link": "L1-272"
+   }
   },
   {
    "id": "mri",
@@ -2198,7 +2250,7 @@
    "summary": "MRI acquires data in the spatial frequency domain (k-space) by applying gradient magnetic fields. Accelerated MRI undersamples k-space using variable-density or Cartesian masks. The forward model is y = M * F * x where F is the 2D Fourier transform and M is the undersampling mask. Multi-coil parallel imaging uses sensitivity maps S_c for each coil. SENSE, CS-MRI, VarNet, and MoDL are standard reco",
    "spec_md": {
     "modality": "mri",
-    "carrier": "acoustic",
+    "carrier": "spin",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -2215,7 +2267,7 @@
       0
      ]
     },
-    "object": "World state x for Sonar Imaging",
+    "object": "2D spin-density image x \u2208 C^{256\u00d7256}",
     "forward_model": {
      "equation": "y_c = M * F * S_c * x + n_c,  c = 1..N_coils",
      "type": "linear_operator",
@@ -2233,7 +2285,7 @@
     ],
     "target": {
      "metric": "PSNR_dB",
-     "secondary": "SSIM"
+     "secondary": "NRMSE"
     },
     "system_elements": {
      "source": [
@@ -2300,7 +2352,24 @@
        }
       ]
      },
-     "calibration": []
+     "calibration": [
+      {
+       "parameter": "coil_sensitivity_error_pct",
+       "tolerance": null
+      },
+      {
+       "parameter": "off_resonance_Hz",
+       "tolerance": null
+      },
+      {
+       "parameter": "motion_artifact",
+       "tolerance": null
+      },
+      {
+       "parameter": "sampling_pattern_mismatch",
+       "tolerance": null
+      }
+     ]
     }
    },
    "default_solver": "sense",
@@ -2338,23 +2407,32 @@
    "templates": {
     "mri_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "F",
      "aliases_applied": [],
      "nodes": 2
     },
     "mri_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "F -> D",
      "aliases_applied": [],
      "nodes": 4
     }
    },
-   "genesis_principle": "L1-262",
-   "genesis_title": "Sonar Imaging",
+   "genesis_principle": "L1-006",
+   "genesis_title": "Accelerated MRI Reconstruction",
+   "link_source": "curated",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
-   ]
+   ],
+   "template_fidelity": "unchanged (real_data level comes from the flagship paper, not from this link)",
+   "curation": {
+    "principle": "L1-006",
+    "reason": "Accelerated MRI reconstruction is the principle behind registry mri (real_data); it was linked to Sonar (L1-262).",
+    "previous_link": "L1-262"
+   }
   },
   {
    "id": "ptychography",
@@ -2558,12 +2636,14 @@
    "templates": {
     "ptychography_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> P -> D",
      "aliases_applied": [],
      "nodes": 4
     },
     "ptychography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> P -> D -> D",
      "aliases_applied": [],
      "nodes": 6
@@ -2571,6 +2651,7 @@
    },
    "genesis_principle": "L1-009",
    "genesis_title": "Electron Ptychographic Imaging",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -2748,12 +2829,14 @@
    "templates": {
     "holography_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D",
      "aliases_applied": [],
      "nodes": 3
     },
     "holography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -2761,6 +2844,7 @@
    },
    "genesis_principle": "L1-233",
    "genesis_title": "Digital Holographic Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -2954,12 +3038,14 @@
    "templates": {
     "nerf_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [],
      "nodes": 2
     },
     "nerf_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "D",
      "aliases_applied": [],
      "nodes": 4
@@ -2967,6 +3053,7 @@
    },
    "genesis_principle": "L1-243",
    "genesis_title": "Neural Radiance Fields (NeRF)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -3158,12 +3245,14 @@
    "templates": {
     "gaussian_splatting_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> C",
      "aliases_applied": [],
      "nodes": 3
     },
     "gaussian_splatting_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "D",
      "aliases_applied": [],
      "nodes": 4
@@ -3171,6 +3260,7 @@
    },
    "genesis_principle": "L1-244",
    "genesis_title": "3D Gaussian Splatting (3DGS)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -3346,12 +3436,14 @@
    "templates": {
     "lensless_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "lensless_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -3359,6 +3451,7 @@
    },
    "genesis_principle": "L1-010",
    "genesis_title": "Lensless (Diffuser Camera) Imaging",
+   "link_source": "name_match",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -3523,12 +3616,14 @@
    "templates": {
     "panorama_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> C",
      "aliases_applied": [],
      "nodes": 3
     },
     "panorama_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> Sigma -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -3536,6 +3631,7 @@
    },
    "genesis_principle": "L1-237",
    "genesis_title": "Panorama Multi-Focus Fusion",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -3722,12 +3818,14 @@
    "templates": {
     "light_field_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> C",
      "aliases_applied": [],
      "nodes": 3
     },
     "light_field_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -3735,6 +3833,7 @@
    },
    "genesis_principle": "L1-241",
    "genesis_title": "Light Field Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -3903,12 +4002,14 @@
    "templates": {
     "dot_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "dot_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -3916,6 +4017,7 @@
    },
    "genesis_principle": "L1-203",
    "genesis_title": "Diffuse Optical Tomography",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -4083,12 +4185,14 @@
    "templates": {
     "photoacoustic_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 3
     },
     "photoacoustic_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> P -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -4096,6 +4200,7 @@
    },
    "genesis_principle": "L1-313",
    "genesis_title": "Ghost Imaging",
+   "link_source": "fuzzy_unverified",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -4282,12 +4387,14 @@
    "templates": {
     "oct_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 3
     },
     "oct_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -4295,6 +4402,7 @@
    },
    "genesis_principle": "L1-205",
    "genesis_title": "Optical Coherence Tomography (OCT)",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -4489,12 +4597,14 @@
    "templates": {
     "flim_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "flim_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> S -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -4502,6 +4612,7 @@
    },
    "genesis_principle": "L1-177",
    "genesis_title": "Fluorescence Lifetime Imaging (FLIM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -4687,12 +4798,14 @@
    "templates": {
     "fpm_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> C -> D",
      "aliases_applied": [],
      "nodes": 4
     },
     "fpm_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -4700,6 +4813,7 @@
    },
    "genesis_principle": "L1-178",
    "genesis_title": "Fourier Ptychographic Microscopy (FPM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -4721,7 +4835,7 @@
    "summary": "Coherent Diffractive Imaging (CDI) recovers both amplitude and phase of a specimen from a single far-field diffraction intensity pattern. A coherent source (X-ray or laser) illuminates the sample, and the scattered wavefield propagates to a detector in the far field without any intervening lens. The measured quantity is y = |F{x}|^2 where F is the Fourier transform; the phase information is lost. ",
    "spec_md": {
     "modality": "phase_retrieval",
-    "carrier": "photon / xray",
+    "carrier": "photon",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -4738,7 +4852,7 @@
       700
      ]
     },
-    "object": "World state x for Coherent Diffractive Imaging (CDI) / Phase Retrieval",
+    "object": "World state x for Phase Retrieval",
     "forward_model": {
      "equation": "y = |F{x}|^2",
      "type": "nonlinear_operator",
@@ -4755,8 +4869,8 @@
      "shot_poisson"
     ],
     "target": {
-     "metric": "PSNR_dB",
-     "secondary": "SSIM"
+     "metric": "L2_relative_error",
+     "secondary": "max_error"
     },
     "system_elements": {
      "source": [
@@ -4878,23 +4992,35 @@
    "templates": {
     "phase_retrieval_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D",
      "aliases_applied": [],
      "nodes": 3
     },
     "phase_retrieval_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D -> D",
      "aliases_applied": [],
      "nodes": 5
     }
    },
-   "genesis_principle": "L1-234",
-   "genesis_title": "Coherent Diffractive Imaging (CDI) / Phase Retrieval",
+   "genesis_principle": "L1-406",
+   "genesis_title": "Phase Retrieval",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
-   ]
+   ],
+   "genesis_principles_secondary": [
+    "L1-234"
+   ],
+   "template_fidelity": "runs: angular spectrum -> |.|^2 -> Poisson; nominal, not validated",
+   "curation": {
+    "principle": "L1-406",
+    "reason": "Phase retrieval is a computational imaging problem; registry phase_retrieval was linked to CDI (L1-234).",
+    "previous_link": "L1-234"
+   }
   },
   {
    "id": "integral",
@@ -5072,12 +5198,14 @@
    "templates": {
     "integral_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> C",
      "aliases_applied": [],
      "nodes": 3
     },
     "integral_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -5085,6 +5213,7 @@
    },
    "genesis_principle": "L1-242",
    "genesis_title": "Integral Photography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -5214,6 +5343,7 @@
    "templates": {
     "xray_radiography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> R -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -5221,6 +5351,7 @@
    },
    "genesis_principle": "L1-196",
    "genesis_title": "X-ray Radiography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -5372,6 +5503,7 @@
    "templates": {
     "ultrasound_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> P -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -5379,6 +5511,7 @@
    },
    "genesis_principle": "L1-007",
    "genesis_title": "Ultrasound B-mode Imaging",
+   "link_source": "fuzzy_unverified",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -5517,6 +5650,7 @@
    "templates": {
     "pet_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi -> R -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -5524,6 +5658,7 @@
    },
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -5652,6 +5787,7 @@
    "templates": {
     "spect_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -5659,6 +5795,7 @@
    },
    "genesis_principle": "L1-272",
    "genesis_title": "Industrial Computed Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -5797,6 +5934,7 @@
    "templates": {
     "sem_graph_v2": {
      "runs": true,
+     "depends_on_object": false,
      "canonical_chain": "M -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -5804,8 +5942,10 @@
    },
    "genesis_principle": "L1-245",
    "genesis_title": "Scanning Electron Microscopy (SEM)",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
+    "every running template ignores the object (forward output does not depend on x)",
     "calibration tolerances not recorded"
    ]
   },
@@ -5961,6 +6101,7 @@
    "templates": {
     "tem_graph_v2": {
      "runs": true,
+     "depends_on_object": false,
      "canonical_chain": "M -> C -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -5968,8 +6109,10 @@
    },
    "genesis_principle": "L1-246",
    "genesis_title": "Transmission Electron Microscopy (TEM)",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
+    "every running template ignores the object (forward output does not depend on x)",
     "calibration tolerances not recorded"
    ]
   },
@@ -6106,6 +6249,7 @@
    "templates": {
     "electron_tomography_graph_v2": {
      "runs": true,
+     "depends_on_object": false,
      "canonical_chain": "M -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -6113,8 +6257,10 @@
    },
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
+    "every running template ignores the object (forward output does not depend on x)",
     "calibration tolerances not recorded"
    ]
   },
@@ -6146,7 +6292,7 @@
      },
      "wavelength_range_nm": null
     },
-    "object": "World state x for Transmission Electron Microscopy (TEM)",
+    "object": "World state x for Scanning TEM (STEM)",
     "forward_model": {
      "equation": "y = G * eta * (probe ** x) + n",
      "type": "linear_operator",
@@ -6253,17 +6399,104 @@
    "templates": {
     "stem_graph_v2": {
      "runs": true,
+     "depends_on_object": false,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
     }
    },
-   "genesis_principle": "L1-246",
-   "genesis_title": "Transmission Electron Microscopy (TEM)",
+   "genesis_principle": "L1-248",
+   "genesis_title": "Scanning TEM (STEM)",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "calibration tolerances not recorded"
-   ]
+    "every running template ignores the object (forward output does not depend on x)",
+    "calibration tolerances not recorded",
+    "registry template has no scan stage"
+   ],
+   "template_fidelity": "nominal: incoherent probe blur + raster subsample; no explicit source node (electron_beam_source returns a constant and discards the object); no coherent contrast, no aberrations",
+   "curation": {
+    "principle": "L1-248",
+    "reason": "Scanning TEM is imaging; registry stem was linked to plain TEM (L1-246).",
+    "previous_link": "L1-246"
+   },
+   "proposed_templates": {
+    "stem_v3": {
+     "runs": true,
+     "depends_on_object": true,
+     "canonical_chain": "C -> S -> D",
+     "aliases_applied": [],
+     "nodes": 4,
+     "level": "runs",
+     "fidelity": "nominal: incoherent probe blur + raster subsample; no explicit source node (electron_beam_source returns a constant and discards the object); no coherent contrast, no aberrations",
+     "design_check": {
+      "passed_structural": true,
+      "C1_dag": true,
+      "C3_bounds": true,
+      "C4_nonlinear": true,
+      "C5_adjoint": true,
+      "matches_validated": [],
+      "novel_composition": true,
+      "gates": "not run (no photon budget or calibration tolerances recorded)"
+     },
+     "template": {
+      "nodes": [
+       {
+        "node_id": "n0",
+        "primitive_id": "conv2d",
+        "role": "transport",
+        "params": {
+         "sigma": 0.8
+        }
+       },
+       {
+        "node_id": "n1",
+        "primitive_id": "scan_trajectory",
+        "role": "transport",
+        "params": {
+         "n_points": 4096
+        }
+       },
+       {
+        "node_id": "n2",
+        "primitive_id": "electron_detector_sensor",
+        "role": "sensor",
+        "params": {}
+       },
+       {
+        "node_id": "n3",
+        "primitive_id": "poisson_only_sensor",
+        "role": "noise",
+        "params": {
+         "peak_photons": 1000.0
+        }
+       }
+      ],
+      "edges": [
+       {
+        "source": "n0",
+        "target": "n1"
+       },
+       {
+        "source": "n1",
+        "target": "n2"
+       },
+       {
+        "source": "n2",
+        "target": "n3"
+       }
+      ],
+      "metadata": {
+       "x_shape": [
+        64,
+        64
+       ],
+       "modality": "stem",
+       "proposed": true
+      }
+     }
+    }
+   }
   },
   {
    "id": "fluoroscopy",
@@ -6392,6 +6625,7 @@
    "templates": {
     "fluoroscopy_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> Sigma -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -6399,6 +6633,7 @@
    },
    "genesis_principle": "L1-199",
    "genesis_title": "Fluoroscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -6526,6 +6761,7 @@
    "templates": {
     "mammography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -6533,6 +6769,7 @@
    },
    "genesis_principle": "L1-200",
    "genesis_title": "Mammography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -6553,7 +6790,7 @@
    "summary": "Dual-energy X-ray absorptiometry acquires projections at two X-ray energies to decompose tissue into bone mineral and soft tissue components. The dual-energy Beer-Lambert model separates the contributions of two material bases. DEXA is the clinical standard for bone mineral density measurement.",
    "spec_md": {
     "modality": "dexa",
-    "carrier": "xray photon",
+    "carrier": "xray",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -6567,7 +6804,7 @@
      },
      "wavelength_range_nm": null
     },
-    "object": "World state x for X-ray Absorption Spectroscopy (XAS/EXAFS)",
+    "object": "World state x for DEXA",
     "forward_model": {
      "equation": "y_E = I_0(E) * exp(-(mu_bone(E)*x_bone + mu_soft(E)*x_soft)) + n",
      "type": "nonlinear_operator",
@@ -6666,17 +6903,25 @@
    "templates": {
     "dexa_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> D",
      "aliases_applied": [],
      "nodes": 4
     }
    },
-   "genesis_principle": "L1-307",
-   "genesis_title": "X-ray Absorption Spectroscopy (XAS/EXAFS)",
+   "genesis_principle": "L1-201",
+   "genesis_title": "DEXA",
+   "link_source": "curated",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
-   ]
+   ],
+   "template_fidelity": "canonical chain in the validated registry (dual_energy_beer_lambert); not validated on hardware",
+   "curation": {
+    "principle": "L1-201",
+    "reason": "Dual-energy X-ray absorptiometry is imaging; registry dexa was linked to the wrong principle (L1-307).",
+    "previous_link": "L1-307"
+   }
   },
   {
    "id": "cbct",
@@ -6821,6 +7066,7 @@
    "templates": {
     "cbct_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi -> Lambda -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -6828,6 +7074,7 @@
    },
    "genesis_principle": "L1-008",
    "genesis_title": "Cone-Beam Computed Tomography (CBCT)",
+   "link_source": "name_match",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -6962,6 +7209,7 @@
    "templates": {
     "angiography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> Sigma -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -6969,6 +7217,7 @@
    },
    "genesis_principle": "L1-202",
    "genesis_title": "X-ray Angiography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -7104,6 +7353,7 @@
    "templates": {
     "doppler_ultrasound_graph_v2": {
      "runs": true,
+     "depends_on_object": false,
      "canonical_chain": "P -> D -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -7111,8 +7361,10 @@
    },
    "genesis_principle": "L1-209",
    "genesis_title": "Doppler Ultrasound",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
+    "every running template ignores the object (forward output does not depend on x)",
     "calibration tolerances not recorded"
    ]
   },
@@ -7244,6 +7496,7 @@
    "templates": {
     "elastography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> P -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -7251,6 +7504,7 @@
    },
    "genesis_principle": "L1-210",
    "genesis_title": "Shear-Wave Elastography",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -7385,6 +7639,7 @@
    "templates": {
     "fmri_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "F -> M -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -7392,6 +7647,7 @@
    },
    "genesis_principle": "L1-206",
    "genesis_title": "Functional MRI (BOLD fMRI)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -7531,6 +7787,7 @@
    "templates": {
     "mrs_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "F -> M -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -7538,6 +7795,7 @@
    },
    "genesis_principle": "L1-207",
    "genesis_title": "MR Spectroscopy (MRS)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -7678,6 +7936,7 @@
    "templates": {
     "diffusion_mri_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "F -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -7685,6 +7944,7 @@
    },
    "genesis_principle": "L1-208",
    "genesis_title": "Diffusion MRI (DTI/DWI)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -7831,6 +8091,7 @@
    "templates": {
     "two_photon_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> C -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -7838,6 +8099,7 @@
    },
    "genesis_principle": "L1-179",
    "genesis_title": "Two-Photon Microscopy",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -7999,6 +8261,7 @@
    "templates": {
     "sted_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> C -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -8006,6 +8269,7 @@
    },
    "genesis_principle": "L1-180",
    "genesis_title": "STED Microscopy",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -8168,6 +8432,7 @@
    "templates": {
     "palm_storm_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "D",
      "aliases_applied": [],
      "nodes": 4
@@ -8175,6 +8440,7 @@
    },
    "genesis_principle": "L1-181",
    "genesis_title": "PALM/STORM Localization Microscopy",
+   "link_source": "fuzzy_unverified",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -8325,6 +8591,7 @@
    "templates": {
     "tirf_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> C -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -8332,6 +8599,7 @@
    },
    "genesis_principle": "L1-182",
    "genesis_title": "TIRF Microscopy",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -8471,6 +8739,7 @@
    "templates": {
     "polarization_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -8478,6 +8747,7 @@
    },
    "genesis_principle": "L1-183",
    "genesis_title": "Polarization Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -8623,6 +8893,7 @@
    "templates": {
     "endoscopy_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "D -> R -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -8630,6 +8901,7 @@
    },
    "genesis_principle": "L1-211",
    "genesis_title": "Fiber Bundle Endoscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -8764,6 +9036,7 @@
    "templates": {
     "fundus_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -8771,6 +9044,7 @@
    },
    "genesis_principle": "L1-212",
    "genesis_title": "Fundus Camera",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -8910,6 +9184,7 @@
    "templates": {
     "octa_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -8917,6 +9192,7 @@
    },
    "genesis_principle": "L1-213",
    "genesis_title": "OCT Angiography (OCTA)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -9054,6 +9330,7 @@
    "templates": {
     "tof_camera_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "S -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -9061,6 +9338,7 @@
    },
    "genesis_principle": "L1-256",
    "genesis_title": "Time-of-Flight Depth Imaging",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -9099,12 +9377,7 @@
       1550
      ]
     },
-    "object": {
-     "x": [
-      256,
-      256
-     ]
-    },
+    "object": "World state x for LiDAR Point Cloud Imaging",
     "forward_model": {
      "equation": "y = Poisson(alpha * T(S(x))) + n",
      "type": "nonlinear_operator",
@@ -9121,7 +9394,7 @@
     ],
     "target": {
      "metric": "PSNR_dB",
-     "secondary": null
+     "secondary": "SSIM"
     },
     "system_elements": {
      "source": [
@@ -9201,18 +9474,25 @@
    "templates": {
     "lidar_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "S -> S -> D",
      "aliases_applied": [],
      "nodes": 5
     }
    },
-   "genesis_principle": null,
-   "genesis_title": null,
+   "genesis_principle": "L1-257",
+   "genesis_title": "LiDAR Point Cloud Imaging",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "no linked genesis principle",
     "calibration tolerances not recorded"
-   ]
+   ],
+   "template_fidelity": "runs: scan -> time-of-flight gate -> SPAD; sensor is qe scaling only (dead time not modelled)",
+   "curation": {
+    "principle": "L1-257",
+    "reason": "LiDAR point-cloud imaging; registry lidar had no link.",
+    "previous_link": null
+   }
   },
   {
    "id": "structured_light",
@@ -9338,6 +9618,7 @@
    "templates": {
     "structured_light_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> C -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -9345,6 +9626,7 @@
    },
    "genesis_principle": "L1-258",
    "genesis_title": "Structured Light Depth Imaging",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -9485,6 +9767,7 @@
    "templates": {
     "sar_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -9492,6 +9775,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -9611,6 +9895,7 @@
    "templates": {
     "sonar_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -9618,6 +9903,7 @@
    },
    "genesis_principle": "L1-262",
    "genesis_title": "Sonar Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -9637,7 +9923,7 @@
    "summary": "4D-STEM collects a 2D convergent beam electron diffraction (CBED) pattern at each probe position in a 2D raster scan, producing a 4D dataset. The forward model involves far-field diffraction: y = |F{t(r) * P(r)}|^2.",
    "spec_md": {
     "modality": "electron_diffraction",
-    "carrier": "photon",
+    "carrier": "electron",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -9654,7 +9940,7 @@
       0.004
      ]
     },
-    "object": "World state x for Fresnel Diffraction",
+    "object": "World state x for 4D-STEM",
     "forward_model": {
      "equation": "y = |FFT(t * P)|^2 + n  (far-field diffraction)",
      "type": "nonlinear_operator",
@@ -9669,8 +9955,8 @@
      "shot_poisson"
     ],
     "target": {
-     "metric": "L2_relative_error",
-     "secondary": "max_error"
+     "metric": "PSNR_dB",
+     "secondary": "SSIM"
     },
     "system_elements": {
      "source": [
@@ -9738,17 +10024,26 @@
    "templates": {
     "electron_diffraction_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> D",
      "aliases_applied": [],
      "nodes": 4
     }
    },
-   "genesis_principle": "L1-401",
-   "genesis_title": "Fresnel Diffraction",
+   "genesis_principle": "L1-249",
+   "genesis_title": "4D-STEM",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "registry template is a single-pattern diffraction camera: no scan dimension, so not 4D-STEM; a separate 4D-STEM registry entry is needed upstream"
+   ],
+   "template_fidelity": "single-pattern |FFT|^2 only; the 4D (scan x pattern) structure is not modelled",
+   "curation": {
+    "principle": "L1-249",
+    "reason": "4D-STEM records a diffraction pattern per probe position; the nearest registry modality is electron_diffraction, which was linked to Fresnel diffraction (L1-401).",
+    "previous_link": "L1-401"
+   }
   },
   {
    "id": "ebsd",
@@ -9866,6 +10161,7 @@
    "templates": {
     "ebsd_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "F -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -9873,6 +10169,7 @@
    },
    "genesis_principle": "L1-250",
    "genesis_title": "Electron Backscatter Diffraction (EBSD)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -9992,6 +10289,7 @@
    "templates": {
     "eels_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "D -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -9999,6 +10297,7 @@
    },
    "genesis_principle": "L1-251",
    "genesis_title": "Electron Energy-Loss Spectroscopy (EELS)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10121,6 +10420,7 @@
    "templates": {
     "electron_holography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -10128,6 +10428,7 @@
    },
    "genesis_principle": "L1-252",
    "genesis_title": "Electron Holography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10243,6 +10544,7 @@
    "templates": {
     "neutron_tomo_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -10250,6 +10552,7 @@
    },
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10363,6 +10666,7 @@
    "templates": {
     "proton_radiography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Lambda -> R -> D",
      "aliases_applied": [],
      "nodes": 5
@@ -10370,6 +10674,7 @@
    },
    "genesis_principle": "L1-196",
    "genesis_title": "X-ray Radiography",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10484,6 +10789,7 @@
    "templates": {
     "muon_tomo_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "R -> D",
      "aliases_applied": [],
      "nodes": 4
@@ -10491,6 +10797,7 @@
    },
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10524,7 +10831,7 @@
       0
      ]
     },
-    "object": "World state x for Acoustic Scattering (BEM)",
+    "object": "World state x for Acoustic Emission Source Localization",
     "forward_model": {
      "equation": "DAG: P --> S --> D",
      "type": "nonlinear_operator",
@@ -10581,17 +10888,26 @@
    "templates": {
     "acoustic_emission_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     }
    },
-   "genesis_principle": "L1-420",
-   "genesis_title": "Acoustic Scattering (BEM)",
+   "genesis_principle": "L1-426",
+   "genesis_title": "Acoustic Emission Source Localization",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "registry template is a generic stub"
+   ],
+   "template_fidelity": "generic stub",
+   "curation": {
+    "principle": "L1-426",
+    "reason": "Acoustic-emission source localization maps to registry acoustic_emission (array localization, a passive imaging modality).",
+    "previous_link": null
+   }
   },
   {
    "id": "acoustic_microscopy",
@@ -10678,6 +10994,7 @@
    "templates": {
     "acoustic_microscopy_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -10687,6 +11004,7 @@
    },
    "genesis_principle": "L1-281",
    "genesis_title": "Scanning Acoustic Microscopy (SAM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10777,6 +11095,7 @@
    "templates": {
     "active_thermography_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -10786,6 +11105,7 @@
    },
    "genesis_principle": "L1-276",
    "genesis_title": "Active Thermography (IR)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -10898,6 +11218,7 @@
    "templates": {
     "adaptive_optics_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -10905,6 +11226,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -10998,6 +11320,7 @@
    "templates": {
     "afm_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11005,6 +11328,7 @@
    },
    "genesis_principle": "L1-182",
    "genesis_title": "TIRF Microscopy",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11102,6 +11426,7 @@
    "templates": {
     "asl_mri_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11109,6 +11434,7 @@
    },
    "genesis_principle": "L1-220",
    "genesis_title": "Arterial Spin Labeling (ASL) MRI",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11202,6 +11528,7 @@
    "templates": {
     "atom_probe_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11209,6 +11536,7 @@
    },
    "genesis_principle": "L1-204",
    "genesis_title": "Photoacoustic Tomography (PAT)",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11300,6 +11628,7 @@
    "templates": {
     "bioluminescence_tomo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11307,6 +11636,7 @@
    },
    "genesis_principle": "L1-294",
    "genesis_title": "X-ray Fluorescence Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -11411,6 +11741,7 @@
    "templates": {
     "brachytherapy_img_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -11420,6 +11751,7 @@
    },
    "genesis_principle": "L1-215",
    "genesis_title": "Brachytherapy Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -11516,6 +11848,7 @@
    "templates": {
     "brillouin_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11523,6 +11856,7 @@
    },
    "genesis_principle": "L1-302",
    "genesis_title": "Brillouin Microscopy",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11620,6 +11954,7 @@
    "templates": {
     "cars_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11627,6 +11962,7 @@
    },
    "genesis_principle": "L1-298",
    "genesis_title": "Coherent Anti-Stokes Raman (CARS) Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11724,6 +12060,7 @@
    "templates": {
     "cathodoluminescence_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11731,6 +12068,7 @@
    },
    "genesis_principle": "L1-296",
    "genesis_title": "Cathodoluminescence (CL) Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11828,6 +12166,7 @@
    "templates": {
     "cest_mri_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11835,6 +12174,7 @@
    },
    "genesis_principle": "L1-219",
    "genesis_title": "CEST MRI",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -11926,6 +12266,7 @@
    "templates": {
     "ceus_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -11933,6 +12274,7 @@
    },
    "genesis_principle": "L1-225",
    "genesis_title": "Contrast-Enhanced Ultrasound",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12040,6 +12382,7 @@
    "templates": {
     "clem_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -12047,6 +12390,7 @@
    },
    "genesis_principle": "L1-321",
    "genesis_title": "Correlative Light-Electron Microscopy (CLEM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12154,6 +12498,7 @@
    "templates": {
     "coded_exposure_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -12161,6 +12506,7 @@
    },
    "genesis_principle": "L1-238",
    "genesis_title": "Coded Exposure / Flutter Shutter",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12268,6 +12614,7 @@
    "templates": {
     "confocal_endomicroscopy_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -12275,6 +12622,7 @@
    },
    "genesis_principle": "L1-227",
    "genesis_title": "Confocal Laser Endomicroscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12371,6 +12719,7 @@
    "templates": {
     "coronagraphy_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -12378,6 +12727,7 @@
    },
    "genesis_principle": "L1-326",
    "genesis_title": "Stellar Coronagraphy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -12504,12 +12854,14 @@
    "templates": {
     "cryo_em_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     },
     "cryo_em_graph_v2": {
      "runs": true,
+     "depends_on_object": false,
      "canonical_chain": "M -> C -> M -> D",
      "aliases_applied": [],
      "nodes": 6
@@ -12517,6 +12869,7 @@
    },
    "genesis_principle": "L1-011",
    "genesis_title": "Cryo-EM Single Particle Analysis",
+   "link_source": "name_match",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12621,6 +12974,7 @@
    "templates": {
     "cryo_et_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -12630,6 +12984,7 @@
    },
    "genesis_principle": "L1-253",
    "genesis_title": "Cryo-Electron Tomography (Cryo-ET)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12737,6 +13092,7 @@
    "templates": {
     "ct_fluorescence_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -12744,6 +13100,7 @@
    },
    "genesis_principle": "L1-320",
    "genesis_title": "CT + Fluorescence (FLIT)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -12840,6 +13197,7 @@
    "templates": {
     "cup_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -12847,6 +13205,7 @@
    },
    "genesis_principle": "L1-311",
    "genesis_title": "Compressed Ultrafast Photography (CUP)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -12955,6 +13314,7 @@
    "templates": {
     "dark_field_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -12962,6 +13322,7 @@
    },
    "genesis_principle": "L1-189",
    "genesis_title": "Dark-Field Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -13054,6 +13415,7 @@
    "templates": {
     "desi_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -13061,6 +13423,7 @@
    },
    "genesis_principle": "L1-300",
    "genesis_title": "FTIR Spectroscopic Imaging",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -13095,12 +13458,7 @@
       700
      ]
     },
-    "object": {
-     "x": [
-      64,
-      64
-     ]
-    },
+    "object": "World state x for DIC Microscopy",
     "forward_model": {
      "equation": "DAG: M --> C --> D",
      "type": "linear_operator",
@@ -13116,7 +13474,7 @@
     ],
     "target": {
      "metric": "PSNR_dB",
-     "secondary": null
+     "secondary": "SSIM"
     },
     "system_elements": {
      "source": [
@@ -13174,18 +13532,26 @@
    "templates": {
     "dic_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     }
    },
-   "genesis_principle": null,
-   "genesis_title": null,
+   "genesis_principle": "L1-188",
+   "genesis_title": "DIC Microscopy",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "no linked genesis principle",
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "no honest template: the primitive registry has no shear/differential-phase primitive (the existing conv2d -> poisson_gaussian is a generic stub, not DIC)"
+   ],
+   "template_fidelity": "generic stub (conv2d blur); not a DIC forward model",
+   "curation": {
+    "principle": "L1-188",
+    "reason": "Differential interference contrast microscopy is an imaging modality; the registry already has dic, which the title matcher missed.",
+    "previous_link": null
+   }
   },
   {
    "id": "digital_breast_tomo",
@@ -13286,6 +13652,7 @@
    "templates": {
     "digital_breast_tomo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -13295,6 +13662,7 @@
    },
    "genesis_principle": "L1-226",
    "genesis_title": "Digital Breast Tomosynthesis",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -13391,6 +13759,7 @@
    "templates": {
     "dna_paint_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M",
      "aliases_applied": [],
      "nodes": 2
@@ -13398,6 +13767,7 @@
    },
    "genesis_principle": "L1-194",
    "genesis_title": "DNA-PAINT Super-Resolution",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -13507,6 +13877,7 @@
    "templates": {
     "eddy_current_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -13514,6 +13885,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -13532,7 +13904,7 @@
    "summary": "STEM-EDX Elemental Mapping imaging modality with DAG: M --> R --> D.",
    "spec_md": {
     "modality": "edx_mapping",
-    "carrier": "xray",
+    "carrier": "electron",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -13549,12 +13921,7 @@
       0
      ]
     },
-    "object": {
-     "x": [
-      64,
-      64
-     ]
-    },
+    "object": "World state x for STEM-EDX (Energy-Dispersive X-ray in STEM)",
     "forward_model": {
      "equation": "DAG: M --> R --> D",
      "type": "nonlinear_operator",
@@ -13570,7 +13937,7 @@
     ],
     "target": {
      "metric": "PSNR_dB",
-     "secondary": null
+     "secondary": "SSIM"
     },
     "system_elements": {
      "source": [],
@@ -13617,19 +13984,27 @@
    "templates": {
     "edx_mapping_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     }
    },
-   "genesis_principle": null,
-   "genesis_title": null,
+   "genesis_principle": "L1-255",
+   "genesis_title": "STEM-EDX (Energy-Dispersive X-ray in STEM)",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
-    "no linked genesis principle",
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "no honest template: yield_model is a scalar and energy_resolving_detector ignores n_channels and energy range (returns x*qe), so there is no spectral axis"
+   ],
+   "template_fidelity": "generic stub",
+   "curation": {
+    "principle": "L1-255",
+    "reason": "STEM-EDX is imaging (elemental maps); registry edx_mapping had no link.",
+    "previous_link": null
+   }
   },
   {
    "id": "eht_imaging",
@@ -13737,6 +14112,7 @@
    },
    "genesis_principle": "L1-328",
    "genesis_title": "Event Horizon Telescope (EHT) Imaging",
+   "link_source": "name_match",
    "level": "registered",
    "gaps": [
     "no running template",
@@ -13835,6 +14211,7 @@
    "templates": {
     "entangled_photon_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -13842,6 +14219,7 @@
    },
    "genesis_principle": "L1-315",
    "genesis_title": "Entangled Photon Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -13939,6 +14317,7 @@
    "templates": {
     "event_camera_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M",
      "aliases_applied": [],
      "nodes": 2
@@ -13946,6 +14325,7 @@
    },
    "genesis_principle": "L1-239",
    "genesis_title": "Event Camera / Dynamic Vision Sensor (DVS)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -14054,6 +14434,7 @@
    "templates": {
     "expansion_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -14061,6 +14442,7 @@
    },
    "genesis_principle": "L1-184",
    "genesis_title": "Expansion Microscopy (ExM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -14168,6 +14550,7 @@
    "templates": {
     "fib_sem_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -14175,6 +14558,7 @@
    },
    "genesis_principle": "L1-254",
    "genesis_title": "Focused Ion Beam SEM (FIB-SEM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -14208,12 +14592,7 @@
       700
      ]
     },
-    "object": {
-     "x": [
-      64,
-      64
-     ]
-    },
+    "object": "World state x for Flash LiDAR (Single-Photon Avalanche Diode Array)",
     "forward_model": {
      "equation": "DAG: P --> D",
      "type": "nonlinear_operator",
@@ -14228,7 +14607,7 @@
     ],
     "target": {
      "metric": "PSNR_dB",
-     "secondary": null
+     "secondary": "SSIM"
     },
     "system_elements": {
      "source": [
@@ -14270,6 +14649,7 @@
    "templates": {
     "flash_lidar_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -14277,13 +14657,20 @@
      "nodes": 2
     }
    },
-   "genesis_principle": null,
-   "genesis_title": null,
+   "genesis_principle": "L1-260",
+   "genesis_title": "Flash LiDAR (Single-Photon Avalanche Diode Array)",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "no linked genesis principle",
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "no honest template: spad_tof_sensor returns x*qe and ignores dead_time_ns, so no chain with this sensor models a SPAD array"
+   ],
+   "template_fidelity": "generic stub (propagation_2d -> gaussian)",
+   "curation": {
+    "principle": "L1-260",
+    "reason": "Flash LiDAR with a SPAD array is imaging; registry flash_lidar had no link.",
+    "previous_link": null
+   }
   },
   {
    "id": "ftir_imaging",
@@ -14376,6 +14763,7 @@
    "templates": {
     "ftir_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -14383,6 +14771,7 @@
    },
    "genesis_principle": "L1-300",
    "genesis_title": "FTIR Spectroscopic Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -14479,6 +14868,7 @@
    "templates": {
     "fwi_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -14488,6 +14878,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -14585,6 +14976,7 @@
    "templates": {
     "ghost_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -14592,6 +14984,7 @@
    },
    "genesis_principle": "L1-313",
    "genesis_title": "Ghost Imaging",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "no source element (source design not expressible)",
@@ -14688,6 +15081,7 @@
    "templates": {
     "gpr_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -14697,6 +15091,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -14793,6 +15188,7 @@
    "templates": {
     "gravitational_wave_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -14800,6 +15196,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -14897,6 +15294,7 @@
    "templates": {
     "hdr_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -14904,6 +15302,7 @@
    },
    "genesis_principle": "L1-240",
    "genesis_title": "High Dynamic Range (HDR) Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -15001,6 +15400,7 @@
    "templates": {
     "hyperspectral_remote_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -15008,6 +15408,7 @@
    },
    "genesis_principle": "L1-263",
    "genesis_title": "Hyperspectral Remote Sensing",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -15105,6 +15506,7 @@
    "templates": {
     "impedance_tomo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M",
      "aliases_applied": [],
      "nodes": 2
@@ -15112,6 +15514,7 @@
    },
    "genesis_principle": "L1-205",
    "genesis_title": "Optical Coherence Tomography (OCT)",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -15217,6 +15620,7 @@
    "templates": {
     "industrial_ct_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -15226,6 +15630,7 @@
    },
    "genesis_principle": "L1-272",
    "genesis_title": "Industrial Computed Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -15342,6 +15747,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "registered",
    "gaps": [
     "no running template",
@@ -15452,6 +15858,7 @@
    "templates": {
     "ism_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -15459,6 +15866,7 @@
    },
    "genesis_principle": "L1-186",
    "genesis_title": "Image Scanning Microscopy (ISM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -15549,6 +15957,7 @@
    "templates": {
     "ivus_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -15558,6 +15967,7 @@
    },
    "genesis_principle": "L1-224",
    "genesis_title": "Intravascular Ultrasound",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -15665,6 +16075,7 @@
    "templates": {
     "lattice_lightsheet_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -15672,6 +16083,7 @@
    },
    "genesis_principle": "L1-190",
    "genesis_title": "Lattice Light-Sheet Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -15768,6 +16180,7 @@
    "templates": {
     "libs_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -15775,6 +16188,7 @@
    },
    "genesis_principle": "L1-301",
    "genesis_title": "Laser-Induced Breakdown Spectroscopy (LIBS) Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -15883,6 +16297,7 @@
    "templates": {
     "lucky_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -15890,6 +16305,7 @@
    },
    "genesis_principle": "L1-327",
    "genesis_title": "Lucky Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -15997,6 +16413,7 @@
    "templates": {
     "machine_vision_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16004,6 +16421,7 @@
    },
    "genesis_principle": "L1-278",
    "genesis_title": "Machine Vision / Automated Optical Inspection",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -16100,6 +16518,7 @@
    "templates": {
     "magnetic_particle_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16107,6 +16526,7 @@
    },
    "genesis_principle": "L1-216",
    "genesis_title": "Portal Imaging (EPID)",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16205,6 +16625,7 @@
    "templates": {
     "maldi_msi_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16212,6 +16633,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16310,6 +16732,7 @@
    "templates": {
     "mfm_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16317,6 +16740,7 @@
    },
    "genesis_principle": "L1-176",
    "genesis_title": "Light-Sheet Fluorescence Microscopy (LSFM)",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16425,6 +16849,7 @@
    "templates": {
     "minflux_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16432,6 +16857,7 @@
    },
    "genesis_principle": "L1-185",
    "genesis_title": "MINFLUX Nanoscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -16528,6 +16954,7 @@
    "templates": {
     "mr_elastography_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16535,6 +16962,7 @@
    },
    "genesis_principle": "L1-218",
    "genesis_title": "MR Elastography (MRE)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16632,6 +17060,7 @@
    "templates": {
     "mr_fingerprinting_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16639,6 +17068,7 @@
    },
    "genesis_principle": "L1-223",
    "genesis_title": "MR Fingerprinting (MRF)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16736,6 +17166,7 @@
    "templates": {
     "mra_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16743,6 +17174,7 @@
    },
    "genesis_principle": "L1-221",
    "genesis_title": "MR Angiography (MRA)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16840,6 +17272,7 @@
    "templates": {
     "multispectral_sat_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -16847,6 +17280,7 @@
    },
    "genesis_principle": "L1-264",
    "genesis_title": "Multispectral Remote Sensing",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16940,6 +17374,7 @@
    "templates": {
     "neutron_diffraction_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -16947,6 +17382,7 @@
    },
    "genesis_principle": "L1-401",
    "genesis_title": "Fresnel Diffraction",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -16964,7 +17400,7 @@
    "summary": "Functional Near-Infrared Spectroscopy (fNIRS) imaging modality with DAG: M --> R,P --> D.",
    "spec_md": {
     "modality": "nirs_brain",
-    "carrier": "electron",
+    "carrier": "photon",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -16981,7 +17417,7 @@
       700
      ]
     },
-    "object": "World state x for Electron Energy-Loss Spectroscopy (EELS)",
+    "object": "World state x for fNIRS",
     "forward_model": {
      "equation": "DAG: M --> R,P --> D",
      "type": "nonlinear_operator",
@@ -17044,18 +17480,115 @@
    "templates": {
     "nirs_brain_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
     }
    },
-   "genesis_principle": "L1-251",
-   "genesis_title": "Electron Energy-Loss Spectroscopy (EELS)",
+   "genesis_principle": "L1-228",
+   "genesis_title": "fNIRS",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "registry template is a generic stub with a 'Coded Mask' element, which fNIRS does not have"
+   ],
+   "template_fidelity": "nominal: gaussian-blur diffusion + Beer-Lambert; not a photon-diffusion solver",
+   "curation": {
+    "principle": "L1-228",
+    "reason": "fNIRS is diffuse optical imaging; registry nirs_brain was linked to EELS (L1-251, carrier electron).",
+    "previous_link": "L1-251"
+   },
+   "proposed_templates": {
+    "nirs_v2": {
+     "runs": true,
+     "depends_on_object": true,
+     "canonical_chain": "R -> Lambda -> D",
+     "aliases_applied": [],
+     "nodes": 5,
+     "level": "runs",
+     "fidelity": "nominal: gaussian-blur diffusion + Beer-Lambert; not a photon-diffusion solver",
+     "design_check": {
+      "passed_structural": true,
+      "C1_dag": true,
+      "C3_bounds": true,
+      "C4_nonlinear": true,
+      "C5_adjoint": true,
+      "matches_validated": [],
+      "novel_composition": true,
+      "gates": "not run (no photon budget or calibration tolerances recorded)"
+     },
+     "template": {
+      "nodes": [
+       {
+        "node_id": "n0",
+        "primitive_id": "photon_source",
+        "role": "source",
+        "params": {}
+       },
+       {
+        "node_id": "n1",
+        "primitive_id": "scatter_model",
+        "role": "transport",
+        "params": {}
+       },
+       {
+        "node_id": "n2",
+        "primitive_id": "beer_lambert",
+        "role": "transport",
+        "params": {}
+       },
+       {
+        "node_id": "n3",
+        "primitive_id": "photon_sensor",
+        "role": "sensor",
+        "params": {
+         "quantum_efficiency": 0.85,
+         "gain": 1.0
+        }
+       },
+       {
+        "node_id": "n4",
+        "primitive_id": "poisson_gaussian_sensor",
+        "role": "noise",
+        "params": {
+         "peak_photons": 10000.0,
+         "read_sigma": 0.01,
+         "seed": 0
+        }
+       }
+      ],
+      "edges": [
+       {
+        "source": "n0",
+        "target": "n1"
+       },
+       {
+        "source": "n1",
+        "target": "n2"
+       },
+       {
+        "source": "n2",
+        "target": "n3"
+       },
+       {
+        "source": "n3",
+        "target": "n4"
+       }
+      ],
+      "metadata": {
+       "x_shape": [
+        64,
+        64
+       ],
+       "modality": "nirs_brain",
+       "proposed": true
+      }
+     }
+    }
+   }
   },
   {
    "id": "nsom",
@@ -17159,6 +17692,7 @@
    "templates": {
     "nsom_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -17166,6 +17700,7 @@
    },
    "genesis_principle": "L1-324",
    "genesis_title": "Near-field Scanning Optical Microscopy (NSOM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -17256,6 +17791,7 @@
    "templates": {
     "ocean_acoustic_tomo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -17265,6 +17801,7 @@
    },
    "genesis_principle": "L1-204",
    "genesis_title": "Photoacoustic Tomography (PAT)",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -17361,6 +17898,7 @@
    "templates": {
     "ocean_color_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -17368,6 +17906,7 @@
    },
    "genesis_principle": "L1-271",
    "genesis_title": "Ocean Color Remote Sensing",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -17459,6 +17998,7 @@
    "templates": {
     "odt_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -17468,6 +18008,7 @@
    },
    "genesis_principle": "L1-235",
    "genesis_title": "Optical Diffraction Tomography (ODT)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -17565,6 +18106,7 @@
    "templates": {
     "particle_calorimetry_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -17572,6 +18114,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -17671,6 +18214,7 @@
    "templates": {
     "passive_microwave_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -17678,6 +18222,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -17787,6 +18332,7 @@
    "templates": {
     "pet_ct_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -17794,6 +18340,7 @@
    },
    "genesis_principle": "L1-316",
    "genesis_title": "PET/CT Fusion",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -17898,6 +18445,7 @@
    "templates": {
     "pet_mr_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -17905,6 +18453,7 @@
    },
    "genesis_principle": "L1-317",
    "genesis_title": "PET/MR Fusion",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -18012,6 +18561,7 @@
    "templates": {
     "phase_contrast_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -18019,6 +18569,7 @@
    },
    "genesis_principle": "L1-187",
    "genesis_title": "Phase Contrast Microscopy",
+   "link_source": "name_match",
    "level": "canonical",
    "gaps": [
     "calibration tolerances not recorded"
@@ -18126,6 +18677,7 @@
    "templates": {
     "photometric_stereo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -18133,6 +18685,7 @@
    },
    "genesis_principle": "L1-259",
    "genesis_title": "Photometric Stereo",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -18234,6 +18787,7 @@
    "templates": {
     "polsar_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -18241,6 +18795,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -18347,6 +18902,7 @@
    "templates": {
     "portal_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -18356,6 +18912,7 @@
    },
    "genesis_principle": "L1-216",
    "genesis_title": "Portal Imaging (EPID)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -18460,6 +19017,7 @@
    "templates": {
     "proton_therapy_img_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -18469,6 +19027,7 @@
    },
    "genesis_principle": "L1-214",
    "genesis_title": "Proton Therapy Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -18565,6 +19124,7 @@
    "templates": {
     "pump_probe_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -18572,6 +19132,7 @@
    },
    "genesis_principle": "L1-310",
    "genesis_title": "Pump-Probe Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -18669,6 +19230,7 @@
    "templates": {
     "quantum_illumination_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -18676,6 +19238,7 @@
    },
    "genesis_principle": "L1-314",
    "genesis_title": "Quantum Illumination",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -18793,6 +19356,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "registered",
    "gaps": [
     "no running template",
@@ -18912,6 +19476,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "registered",
    "gaps": [
     "no running template",
@@ -19011,6 +19576,7 @@
    "templates": {
     "raman_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19018,6 +19584,7 @@
    },
    "genesis_principle": "L1-297",
    "genesis_title": "Raman Imaging / Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -19126,6 +19693,7 @@
    "templates": {
     "saxs_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19133,6 +19701,7 @@
    },
    "genesis_principle": "L1-287",
    "genesis_title": "Small-Angle X-ray Scattering (SAXS)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -19223,6 +19792,7 @@
    "templates": {
     "seismic_tomo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -19232,6 +19802,7 @@
    },
    "genesis_principle": "L1-247",
    "genesis_title": "Electron Tomography",
+   "link_source": "fuzzy_unverified",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -19328,6 +19899,7 @@
    "templates": {
     "shearography_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19335,6 +19907,7 @@
    },
    "genesis_principle": "L1-280",
    "genesis_title": "Shearography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -19432,6 +20005,7 @@
    "templates": {
     "shg_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19439,6 +20013,7 @@
    },
    "genesis_principle": "L1-191",
    "genesis_title": "Second Harmonic Generation (SHG) Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -19537,6 +20112,7 @@
    "templates": {
     "sims_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19544,6 +20120,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -19642,6 +20219,7 @@
    "templates": {
     "solar_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19649,6 +20227,7 @@
    },
    "genesis_principle": "L1-329",
    "genesis_title": "Solar EUV/X-ray Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -19757,6 +20336,7 @@
    "templates": {
     "spect_ct_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19764,6 +20344,7 @@
    },
    "genesis_principle": "L1-318",
    "genesis_title": "SPECT/CT Fusion",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -19868,6 +20449,7 @@
    "templates": {
     "spectral_ct_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19875,6 +20457,7 @@
    },
    "genesis_principle": "L1-217",
    "genesis_title": "Photon-Counting Spectral CT",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -19982,6 +20565,7 @@
    "templates": {
     "spinning_disk_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -19989,6 +20573,7 @@
    },
    "genesis_principle": "L1-192",
    "genesis_title": "Spinning Disk Confocal Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -20085,6 +20670,7 @@
    "templates": {
     "srs_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -20092,6 +20678,7 @@
    },
    "genesis_principle": "L1-299",
    "genesis_title": "Stimulated Raman Scattering (SRS) Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -20185,6 +20772,7 @@
    "templates": {
     "stm_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -20192,6 +20780,7 @@
    },
    "genesis_principle": "L1-323",
    "genesis_title": "Scanning Tunneling Microscopy (STM)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -20289,6 +20878,7 @@
    "templates": {
     "streak_camera_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "M -> W",
      "aliases_applied": [],
      "nodes": 3
@@ -20296,6 +20886,7 @@
    },
    "genesis_principle": "L1-309",
    "genesis_title": "Streak Camera Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -20393,6 +20984,7 @@
    "templates": {
     "swi_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -20400,6 +20992,7 @@
    },
    "genesis_principle": "L1-222",
    "genesis_title": "Susceptibility-Weighted Imaging (SWI)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -20497,6 +21090,7 @@
    "templates": {
     "talbot_lau_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -20504,6 +21098,7 @@
    },
    "genesis_principle": "L1-236",
    "genesis_title": "Talbot-Lau X-ray Grating Interferometry",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -20595,6 +21190,7 @@
    "templates": {
     "terahertz_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -20604,6 +21200,7 @@
    },
    "genesis_principle": "L1-277",
    "genesis_title": "Terahertz Imaging (THz)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -20711,6 +21308,7 @@
    "templates": {
     "three_photon_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -20718,6 +21316,7 @@
    },
    "genesis_principle": "L1-193",
    "genesis_title": "Three-Photon Microscopy",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -20734,7 +21333,7 @@
    "summary": "Ultrasonic Phased Array (TFM/FMC) imaging modality with DAG: P --> D.",
    "spec_md": {
     "modality": "ultrasonic_phased_array",
-    "carrier": "xray",
+    "carrier": "acoustic",
     "geometry": {
      "signal_dims": {
       "x": [
@@ -20751,12 +21350,7 @@
       0
      ]
     },
-    "object": {
-     "x": [
-      64,
-      64
-     ]
-    },
+    "object": "World state x for Phased-Array Ultrasonic Testing (PAUT)",
     "forward_model": {
      "equation": "DAG: P --> D",
      "type": "linear_operator",
@@ -20771,7 +21365,7 @@
     ],
     "target": {
      "metric": "PSNR_dB",
-     "secondary": null
+     "secondary": "SSIM"
     },
     "system_elements": {
      "source": [
@@ -20813,6 +21407,7 @@
    "templates": {
     "ultrasonic_phased_array_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P",
      "aliases_applied": [
       "propagate: propagation_2d -> angular_spectrum"
@@ -20820,13 +21415,20 @@
      "nodes": 2
     }
    },
-   "genesis_principle": null,
-   "genesis_title": null,
+   "genesis_principle": "L1-274",
+   "genesis_title": "Phased-Array Ultrasonic Testing (PAUT)",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
-    "no linked genesis principle",
-    "calibration tolerances not recorded"
-   ]
+    "calibration tolerances not recorded",
+    "no honest template: beamform_delay averages over axis 0 with no delays, and the principle's full-matrix capture has no primitive"
+   ],
+   "template_fidelity": "generic stub (propagation_2d -> gaussian)",
+   "curation": {
+    "principle": "L1-274",
+    "reason": "PAUT is imaging; registry ultrasonic_phased_array had no link and its carrier was shown as xray.",
+    "previous_link": null
+   }
   },
   {
    "id": "us_mri",
@@ -20919,6 +21521,7 @@
    "templates": {
     "us_mri_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -20926,6 +21529,7 @@
    },
    "genesis_principle": "L1-319",
    "genesis_title": "US/MRI Fusion",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -21034,6 +21638,7 @@
    "templates": {
     "waxs_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -21041,6 +21646,7 @@
    },
    "genesis_principle": "L1-293",
    "genesis_title": "Wide-Angle X-ray Scattering (WAXS)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -21136,6 +21742,7 @@
    "templates": {
     "weather_radar_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -21143,6 +21750,7 @@
    },
    "genesis_principle": null,
    "genesis_title": null,
+   "link_source": null,
    "level": "runs",
    "gaps": [
     "no linked genesis principle",
@@ -21240,6 +21848,7 @@
    "templates": {
     "xfel_sfx_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -21247,6 +21856,7 @@
    },
    "genesis_principle": "L1-312",
    "genesis_title": "XFEL Serial Femtosecond Crystallography (SFX)",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -21359,6 +21969,7 @@
    },
    "genesis_principle": "L1-286",
    "genesis_title": "X-ray Crystallography",
+   "link_source": "name_match",
    "level": "registered",
    "gaps": [
     "no running template",
@@ -21394,7 +22005,7 @@
       0
      ]
     },
-    "object": "World state x for X-ray Radiography",
+    "object": "World state x for X-ray Radiographic NDT",
     "forward_model": {
      "equation": "DAG: Pi --> D",
      "type": "nonlinear_operator",
@@ -21465,6 +22076,7 @@
    "templates": {
     "xray_ndt_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "Pi",
      "aliases_applied": [
       "radon: radon_2d -> ct_radon"
@@ -21472,12 +22084,97 @@
      "nodes": 2
     }
    },
-   "genesis_principle": "L1-196",
-   "genesis_title": "X-ray Radiography",
+   "genesis_principle": "L1-273",
+   "genesis_title": "X-ray Radiographic NDT",
+   "link_source": "curated",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
-   ]
+   ],
+   "template_fidelity": "nominal: monoenergetic Beer-Lambert transmission; no scatter, beam hardening or focal-spot blur",
+   "curation": {
+    "principle": "L1-273",
+    "reason": "X-ray radiographic NDT is imaging; registry xray_ndt was linked to medical radiography (L1-196).",
+    "previous_link": "L1-196"
+   },
+   "proposed_templates": {
+    "xray_ndt_v2": {
+     "runs": true,
+     "depends_on_object": true,
+     "canonical_chain": "Lambda -> D",
+     "aliases_applied": [],
+     "nodes": 4,
+     "level": "runs",
+     "fidelity": "nominal: monoenergetic Beer-Lambert transmission; no scatter, beam hardening or focal-spot blur",
+     "design_check": {
+      "passed_structural": true,
+      "C1_dag": true,
+      "C3_bounds": true,
+      "C4_nonlinear": true,
+      "C5_adjoint": true,
+      "matches_validated": [],
+      "novel_composition": true,
+      "gates": "not run (no photon budget or calibration tolerances recorded)"
+     },
+     "template": {
+      "nodes": [
+       {
+        "node_id": "n0",
+        "primitive_id": "xray_source",
+        "role": "source",
+        "params": {}
+       },
+       {
+        "node_id": "n1",
+        "primitive_id": "beer_lambert",
+        "role": "transport",
+        "params": {}
+       },
+       {
+        "node_id": "n2",
+        "primitive_id": "photon_sensor",
+        "role": "sensor",
+        "params": {
+         "quantum_efficiency": 0.85,
+         "gain": 1.0
+        }
+       },
+       {
+        "node_id": "n3",
+        "primitive_id": "poisson_gaussian_sensor",
+        "role": "noise",
+        "params": {
+         "peak_photons": 25000.0,
+         "read_sigma": 0.008,
+         "seed": 0
+        }
+       }
+      ],
+      "edges": [
+       {
+        "source": "n0",
+        "target": "n1"
+       },
+       {
+        "source": "n1",
+        "target": "n2"
+       },
+       {
+        "source": "n2",
+        "target": "n3"
+       }
+      ],
+      "metadata": {
+       "x_shape": [
+        64,
+        64
+       ],
+       "modality": "xray_ndt",
+       "proposed": true
+      }
+     }
+    }
+   }
   },
   {
    "id": "xrf_imaging",
@@ -21570,6 +22267,7 @@
    "templates": {
     "xrf_imaging_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -21577,6 +22275,7 @@
    },
    "genesis_principle": "L1-279",
    "genesis_title": "X-ray Fluorescence (XRF) Imaging",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "no source element (source design not expressible)",
@@ -21682,6 +22381,7 @@
    "templates": {
     "xrf_tomo_graph_v1": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C",
      "aliases_applied": [],
      "nodes": 2
@@ -21689,6 +22389,7 @@
    },
    "genesis_principle": "L1-294",
    "genesis_title": "X-ray Fluorescence Tomography",
+   "link_source": "name_match",
    "level": "runs",
    "gaps": [
     "calibration tolerances not recorded"
@@ -21810,6 +22511,7 @@
    "templates": {
     "compressive_holography_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "P -> P -> D",
      "aliases_applied": [
       "noise: poisson_gaussian_sensor_noise -> poisson_gaussian_sensor"
@@ -21819,6 +22521,7 @@
    },
    "genesis_principle": "L1-012",
    "genesis_title": "Compressive Holographic Reconstruction",
+   "link_source": "fuzzy_unverified",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
@@ -21921,6 +22624,7 @@
    "templates": {
     "fluorescence_microscopy_graph_v2": {
      "runs": true,
+     "depends_on_object": true,
      "canonical_chain": "C -> M -> C -> D",
      "aliases_applied": [
       "noise: poisson_gaussian_sensor_noise -> poisson_gaussian_sensor"
@@ -21930,472 +22634,300 @@
    },
    "genesis_principle": "L1-176",
    "genesis_title": "Light-Sheet Fluorescence Microscopy (LSFM)",
+   "link_source": "fuzzy_unverified",
    "level": "real_data",
    "gaps": [
     "calibration tolerances not recorded"
    ]
   }
  ],
- "principle_only": [
-  {
-   "id": "L1-005",
-   "title": "Computed Tomography (CT) Reconstruction",
-   "carrier": "X-ray photon",
-   "dag": "Pi.radon_parallel \u2192 D.detector",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-006",
-   "title": "Accelerated MRI Reconstruction",
-   "carrier": "Nuclear spin (proton)",
-   "dag": "M.coil_sensitivity \u2192 F.fourier_kspace \u2192 S.kspace_sample \u2192 D.adc",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
+ "principle_only": [],
+ "out_of_scope": [
   {
    "id": "L1-032",
    "title": "Gamma-Ray Transport / Shielding",
-   "carrier": "photon",
-   "dag": "K.green \u2192 \u222b.path \u2192 N.reaction",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: radiation transport and shielding calculation, no image formed.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-058",
    "title": "Direction of Arrival Estimation: Four-Layer Walkthrough",
-   "carrier": "electromagnetic/acoustic",
-   "dag": "Decomposition G = (V, A)",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: direction-of-arrival estimation is array signal processing (a walkthrough, no image formation).",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-066",
    "title": "Adaptive Filtering (Echo Cancellation): Four-Layer Walkthrough",
-   "carrier": "acoustic/data",
-   "dag": "Decomposition G = (V, A)",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-188",
-   "title": "DIC Microscopy",
-   "carrier": "Photon",
-   "dag": "K.psf --> \u2202.finite --> N.pointwise.cos",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-201",
-   "title": "DEXA",
-   "carrier": "X-ray",
-   "dag": "[\u03a0.radon.parallel] --> [L.diag.spectral] --> [S.detector]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-228",
-   "title": "fNIRS",
-   "carrier": "Photon",
-   "dag": "[G.broadband] --> [K.scatter.diffuse] --> [S.boundary]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-248",
-   "title": "Scanning TEM (STEM)",
-   "carrier": "Electron",
-   "dag": "G.beam --> K.scatter.electron --> S.raster",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-249",
-   "title": "4D-STEM",
-   "carrier": "Electron",
-   "dag": "G.beam --> K.scatter.electron --> S.raster --> F.dft",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-255",
-   "title": "STEM-EDX (Energy-Dispersive X-ray in STEM)",
-   "carrier": "Electron \u2192 X-ray",
-   "dag": "G.beam --> K.scatter.electron --> S.spectral",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-257",
-   "title": "LiDAR Point Cloud Imaging",
-   "carrier": "Photon (NIR laser)",
-   "dag": "G.pulse.laser --> K.green --> integral.temporal",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-260",
-   "title": "Flash LiDAR (Single-Photon Avalanche Diode Array)",
-   "carrier": "Photon (NIR)",
-   "dag": "G.pulse.laser --> K.green --> integral.temporal",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-273",
-   "title": "X-ray Radiographic NDT",
-   "carrier": "X-ray",
-   "dag": "Pi.radon --> N.pointwise --> integral.spatial",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-274",
-   "title": "Phased-Array Ultrasonic Testing (PAUT)",
-   "carrier": "Acoustic",
-   "dag": "G.pulse.acoustic --> K.green.acoustic --> integral.fullmatrix",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: adaptive filtering for echo cancellation is signal processing.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-283",
    "title": "Guided Wave Testing",
-   "carrier": "Acoustic Wave (Lamb/Torsional)",
-   "dag": "G.pulse --> E.transcendental --> K.elastic --> integral.temporal",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: guided-wave testing is a 1D pulse-echo inspection; becomes imaging only as guided-wave tomography. Borderline.",
+   "borderline": true,
+   "freed_by_relink": false
   },
   {
    "id": "L1-284",
    "title": "Digital Image Correlation (DIC)",
-   "carrier": "Visible Photon",
-   "dag": "L.warp --> N.bilinear --> integral.spatial",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: digital image correlation is a measurement method applied to already-formed images (displacement from a speckle pattern); the camera is not modelled. Borderline.",
+   "borderline": true,
+   "freed_by_relink": false
   },
   {
    "id": "L1-305",
    "title": "UV-Vis Absorption Spectroscopy",
-   "carrier": "Photon (UV-Vis)",
-   "dag": "G.broadband --> L.diag.spectral --> N.pointwise",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: UV-Vis absorption is point spectroscopy.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-306",
    "title": "Nuclear Magnetic Resonance (NMR) Spectroscopy",
-   "carrier": "RF Photon",
-   "dag": "G.pulse.rf --> F.dft --> S.spectral",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: NMR spectroscopy is a spectrum, not an image (MRI is registry mri).",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-392",
    "title": "Maxwell Full-Wave Electromagnetic Simulation",
-   "carrier": "photon/EM-field",
-   "dag": "[\u2202.time] --> [\u2202.space.curl] --> [B.absorbing]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: Maxwell full-wave simulation is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-393",
    "title": "Helmholtz Electromagnetic Scattering",
-   "carrier": "photon/EM-field",
-   "dag": "[\u2202.space.laplacian] --> [L.sparse.fem] --> [B.absorbing]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: Helmholtz scattering is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-394",
    "title": "Finite-Difference Time-Domain",
-   "carrier": "photon/EM-field",
-   "dag": "[\u2202.time.explicit] --> [\u2202.space.staggered] --> [B.absorbing]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: FDTD is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-395",
    "title": "Method of Moments (MoM)",
-   "carrier": "photon/EM-field",
-   "dag": "[K.green.em] --> [L.dense] --> [B.surface]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: method of moments is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-396",
    "title": "Antenna Radiation Pattern & Impedance",
-   "carrier": "photon/EM-field",
-   "dag": "[K.green.em] --> [L.dense] --> [B.surface] --> [\u222b.spatial]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: antenna pattern and impedance is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-397",
    "title": "Radar Cross Section (RCS) Prediction",
-   "carrier": "photon/EM-field",
-   "dag": "[K.green.em] --> [L.dense] --> [B.surface] --> [\u222b.angular]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: radar cross-section prediction is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-399",
    "title": "Electromagnetic Waveguide Mode Analysis",
-   "carrier": "photon/EM-field",
-   "dag": "[\u2202.space.curl] --> [L.sparse.fem] --> [B.wall]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: waveguide mode analysis is an electromagnetic solver (forward simulation of fields), not a sensing modality.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-400",
    "title": "Fiber-Optic Mode Solver",
-   "carrier": "photon",
-   "dag": "[\u2202.space] --> [N.kerr] --> [F.dft]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: fiber mode solver (eigenproblem).",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-402",
    "title": "Geometric Optics / Eikonal Equation",
-   "carrier": "photon",
-   "dag": "[\u2202.space] --> [N.pointwise.snell] --> [B.surface]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: geometric-optics/eikonal ray solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-403",
    "title": "Mie Scattering Theory",
-   "carrier": "photon",
-   "dag": "[K.scatter.mie] --> [\u222b.angular]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: Mie scattering is a scattering-theory calculation.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-404",
    "title": "Rayleigh Scattering",
-   "carrier": "photon",
-   "dag": "[K.scatter.rayleigh] --> [\u222b.angular]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: Rayleigh scattering is a scattering-theory calculation.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-405",
    "title": "Thin-Film Multilayer Optics",
-   "carrier": "photon",
-   "dag": "[L.transfer] --> [\u222b.spectral]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-406",
-   "title": "Phase Retrieval",
-   "carrier": "photon",
-   "dag": "[F.dft] --> [N.pointwise.constraint] --> [O.iterative]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: thin-film multilayer optics is a reflectance calculation.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-407",
    "title": "Photonic Crystal / Inverse Design",
-   "carrier": "photon",
-   "dag": "[\u2202.time] --> [\u2202.space.curl] --> [O.adjoint]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: photonic-crystal inverse design is device design.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-408",
    "title": "Metamaterial Homogenization",
-   "carrier": "photon/EM-field",
-   "dag": "[\u2202.time] --> [\u2202.space.curl] --> [N.pointwise.drude] --> [O.adjoint]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-413",
-   "title": "X-ray Phase-Contrast Imaging",
-   "carrier": "photon (X-ray)",
-   "dag": "[K.green.fresnel] --> [\u2202.space] --> [\u222b.spatial] --> [F.dft]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-415",
-   "title": "Terahertz Time-Domain Spectroscopy",
-   "carrier": "photon (THz)",
-   "dag": "[G.pulse.thz] --> [F.dft] --> [N.pointwise.lorentz] --> [\u222b.spectral]",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: metamaterial homogenization is a materials calculation.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-421",
    "title": "Underwater Acoustic Propagation (Ray Tracing)",
-   "carrier": "Acoustic",
-   "dag": "G.point \u2192 K.green \u2192 \u222b.path",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: underwater acoustic propagation (ray tracing) is a propagation solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-422",
    "title": "Underwater Acoustics (Normal Modes)",
-   "carrier": "Acoustic",
-   "dag": "E.hermitian \u2192 L.hamiltonian \u2192 \u222b.modal",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: underwater acoustic normal-mode solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-423",
    "title": "Underwater Acoustics (Parabolic Equation)",
-   "carrier": "Acoustic",
-   "dag": "\u2202.space \u2192 \u2202.time \u2192 B.absorbing",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: underwater acoustic parabolic-equation solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-424",
    "title": "Acoustic Source Localization (Beamforming)",
-   "carrier": "Acoustic",
-   "dag": "S.array \u2192 \u222b.temporal \u2192 F.dft",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: acoustic beamforming localizes sources by array processing; the same operation is imaging in the passive-acoustic-camera sense. Borderline.",
+   "borderline": true,
+   "freed_by_relink": false
   },
   {
    "id": "L1-425",
    "title": "Structural Vibration (Forced Response)",
-   "carrier": "Acoustic",
-   "dag": "L.sparse \u2192 \u2202.time \u2192 E.hermitian",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
-  },
-  {
-   "id": "L1-426",
-   "title": "Acoustic Emission Source Localization",
-   "carrier": "Acoustic",
-   "dag": "S.array \u2192 \u222b.temporal \u2192 O.l2",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: structural vibration (forced response) is a structural dynamics solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-427",
    "title": "Vibroacoustics (Structure-Borne Sound)",
-   "carrier": "Acoustic",
-   "dag": "L.sparse \u2192 K.green.acoustic \u2192 L.dense",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: vibroacoustics is a structure-borne sound solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-428",
    "title": "Duct Acoustics",
-   "carrier": "Acoustic",
-   "dag": "E.hermitian \u2192 L.hamiltonian \u2192 \u222b.modal",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: duct acoustics is a modal solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-429",
    "title": "Aeroacoustics (Lighthill Analogy)",
-   "carrier": "Acoustic",
-   "dag": "N.lighthill \u2192 K.green.acoustic \u2192 \u222b.volume",
-   "level": "principle_only",
-   "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+   "reason": "Not an imaging modality: aeroacoustics (Lighthill analogy) is a noise-generation solver.",
+   "borderline": false,
+   "freed_by_relink": false
   },
   {
    "id": "L1-430",
    "title": "Outdoor Noise Propagation",
-   "carrier": "Acoustic",
-   "dag": "G.point \u2192 K.psf.gaussian \u2192 \u222b.path",
-   "level": "principle_only",
+   "reason": "Not an imaging modality: outdoor noise propagation is a propagation calculation.",
+   "borderline": false,
+   "freed_by_relink": false
+  },
+  {
+   "id": "L1-307",
+   "title": "X-ray Absorption Spectroscopy (XAS/EXAFS)",
+   "reason": "Not an imaging modality: X-ray absorption spectroscopy (XAS/EXAFS) is point spectroscopy; it was linked to registry dexa by the title matcher in error.",
+   "borderline": false,
+   "freed_by_relink": true
+  },
+  {
+   "id": "L1-420",
+   "title": "Acoustic Scattering (BEM)",
+   "reason": "Not an imaging modality: acoustic scattering by boundary elements is a propagation/scattering solver; it was linked to registry ultrasound-family entries only by the title matcher.",
+   "borderline": false,
+   "freed_by_relink": true
+  }
+ ],
+ "proposed_modalities": [
+  {
+   "id": "xray_phase_contrast",
+   "title": "X-ray Phase-Contrast Imaging",
+   "level": "registered",
+   "genesis_principle": "L1-413",
+   "reason": "X-ray phase-contrast imaging is imaging and has no registry entry (checked contrib/modalities.yaml: 170 ids, none is phase contrast).",
    "gaps": [
-    "not in the modality registry: curate (imaging or not?)"
-   ]
+    "no template: thin_object_phase is x*exp(-sigma|x|), an amplitude attenuation, not a phase shift, so a phase-contrast chain cannot be built honestly",
+    "needs a phase-object (projection-approximation) primitive and a propagation-based or grating detector"
+   ],
+   "spec_md": {
+    "modality": "xray_phase_contrast",
+    "carrier": "xray",
+    "geometry": {},
+    "object": "World state x for X-ray Phase-Contrast Imaging",
+    "forward_model": {
+     "dag": "[K.green.fresnel] --> [\u2202.space] --> [\u222b.spatial] --> [F.dft]",
+     "text": "Forward model for X-ray Phase-Contrast Imaging",
+     "graph_templates": []
+    },
+    "noise": [],
+    "target": {
+     "metric": "L2_relative_error",
+     "secondary": "max_error"
+    },
+    "system_elements": {
+     "calibration": []
+    }
+   }
+  },
+  {
+   "id": "thz_tds",
+   "title": "Terahertz Time-Domain Spectroscopy",
+   "level": "registered",
+   "genesis_principle": "L1-415",
+   "reason": "THz time-domain spectroscopy is listed as imaging by the owner (THz-TDS imaging); registry terahertz is linked to THz imaging L1-277, which is a different principle, so a separate entry is proposed.",
+   "gaps": [
+    "no template: no pulsed-source/delay-line primitive and no time axis; level stays 'registered'",
+    "borderline: single-point spectroscopy is not imaging unless raster-scanned; confirm with the owner"
+   ],
+   "spec_md": {
+    "modality": "thz_tds",
+    "carrier": "photon",
+    "geometry": {},
+    "object": "World state x for Terahertz Time-Domain Spectroscopy",
+    "forward_model": {
+     "dag": "[G.pulse.thz] --> [F.dft] --> [N.pointwise.lorentz] --> [\u222b.spectral]",
+     "text": "Forward model for Terahertz Time-Domain Spectroscopy",
+     "graph_templates": []
+    },
+    "noise": [],
+    "target": {
+     "metric": "L2_relative_error",
+     "secondary": "max_error"
+    },
+    "system_elements": {
+     "calibration": []
+    }
+   }
   }
  ],
  "summary": {
@@ -22403,8 +22935,16 @@
   "runs": 165,
   "canonical": 28,
   "real_data": 11,
+  "runs_but_ignore_object": 5,
   "with_source_element": 116,
-  "genesis_linked": 149,
-  "principle_only": 46
+  "genesis_linked": 154,
+  "principle_only": 0,
+  "curated_imaging_linked": 14,
+  "curated_imaging_new": 2,
+  "curated_out_of_scope": 30,
+  "curated_freed_by_relink": 3,
+  "links_name_match": 114,
+  "links_fuzzy_unverified": 26,
+  "links_curated": 14
  }
 }
