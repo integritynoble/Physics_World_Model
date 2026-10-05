@@ -1,0 +1,1137 @@
+--- a/packages/pwm_core/contrib/graph_templates.yaml
++++ b/packages/pwm_core/contrib/graph_templates.yaml
+@@ -317,7 +317,11 @@
+         n_angles: 180
+         H: 64
+         W: 64
+-      learnable: []
++        angle_offset: 0.0
++        detector_offset: 0.0
++      learnable:
++      - angle_offset
++      - detector_offset
+     - node_id: noise
+       primitive_id: poisson_gaussian
+       params:
+@@ -503,6 +507,8 @@
+   nerf_graph_v1:
+     description: 'NeRF volumetric rendering: ray tracing + integration'
+     metadata:
++      unmodelled_params:
++        trace.focal_length: 50.0
+       modality: nerf
+       x_shape:
+       - 64
+@@ -514,7 +520,6 @@
+     - node_id: trace
+       primitive_id: ray_trace
+       params:
+-        focal_length: 50.0
+         magnification: 1.0
+     - node_id: noise
+       primitive_id: gaussian
+@@ -527,6 +532,8 @@
+   gaussian_splatting_graph_v1:
+     description: '3D Gaussian splatting: projection + PSF + noise'
+     metadata:
++      unmodelled_params:
++        project.focal_length: 35.0
+       modality: gaussian_splatting
+       x_shape:
+       - 64
+@@ -538,7 +545,6 @@
+     - node_id: project
+       primitive_id: ray_trace
+       params:
+-        focal_length: 35.0
+         magnification: 1.0
+     - node_id: blur
+       primitive_id: conv2d
+@@ -1124,7 +1130,11 @@
+         seed: 42
+         H: 64
+         W: 64
+-      learnable: []
++        mask_dx: 0.0
++        mask_dy: 0.0
++      learnable:
++      - mask_dx
++      - mask_dy
+     - node_id: relay1
+       primitive_id: relay_lens
+       role: transport
+@@ -1191,6 +1201,8 @@
+   spc_graph_v2:
+     description: 'Single-pixel camera: Source→ProjectionOptics→DMDPatternSequence→BucketIntegration→Sensor→Quantize→Noise'
+     metadata:
++      unmodelled_params:
++        dmd_pattern.sampling_rate: 0.15
+       modality: spc
+       canonical_chain: true
+       x_shape:
+@@ -1219,7 +1231,6 @@
+         seed: 42
+         H: 64
+         W: 64
+-        sampling_rate: 0.15
+         contrast: 0.98
+         mask_dx: 0
+         mask_dy: 0
+@@ -1266,6 +1277,9 @@
+   cacti_graph_v2:
+     description: 'CACTI snapshot compressive imaging: Source→Objective→TemporalCodedAperture→ShutterIntegration→Detector→Noise'
+     metadata:
++      unmodelled_params:
++        detector.offset: 0.0
++        shutter.clock_offset: 0.0
+       modality: cacti
+       canonical_chain: true
+       x_shape:
+@@ -1296,19 +1310,22 @@
+         W: 64
+         T: 8
+         seed: 42
++        mask_dx: 0.0
++        mask_dy: 0.0
++      learnable:
++      - mask_dx
++      - mask_dy
+     - node_id: shutter
+       primitive_id: shutter_integration
+       role: interaction
+       params:
+         duty_cycle: 1.0
+-        clock_offset: 0.0
+     - node_id: detector
+       primitive_id: photon_sensor
+       role: sensor
+       params:
+         quantum_efficiency: 0.9
+         gain: 1.0
+-        offset: 0.0
+     - node_id: noise
+       primitive_id: poisson_gaussian_sensor
+       role: noise
+@@ -1582,7 +1599,11 @@
+         n_angles: 180
+         H: 64
+         W: 64
+-      learnable: []
++        angle_offset: 0.0
++        detector_offset: 0.0
++      learnable:
++      - angle_offset
++      - detector_offset
+     - node_id: beer_lambert
+       primitive_id: beer_lambert
+       role: transport
+@@ -1864,6 +1885,8 @@
+   nerf_graph_v2:
+     description: 'NeRF volumetric rendering: Source→volume rendering(tier3)→Sensor→Noise'
+     metadata:
++      unmodelled_params:
++        volume_render.n_views: 1
+       modality: nerf
+       canonical_chain: true
+       physics_tier: tier3_learned
+@@ -1884,7 +1907,6 @@
+       primitive_id: volume_rendering_stub
+       role: transport
+       params:
+-        n_views: 1
+         render_mode: mip
+     - node_id: sensor
+       primitive_id: generic_sensor
+@@ -1907,6 +1929,8 @@
+   gaussian_splatting_graph_v2:
+     description: '3D Gaussian splatting: Source→splatting(tier3)→Sensor→Noise'
+     metadata:
++      unmodelled_params:
++        splat.n_views: 1
+       modality: gaussian_splatting
+       canonical_chain: true
+       physics_tier: tier3_learned
+@@ -1927,7 +1951,6 @@
+       primitive_id: gaussian_splatting_stub
+       role: transport
+       params:
+-        n_views: 1
+         image_size:
+         - 64
+         - 64
+@@ -2041,6 +2064,9 @@
+         x_shape:
+         - 64
+         - 64
++        nominal_speed: 1500.0
++      learnable:
++      - speed_of_sound
+     - node_id: sensor
+       primitive_id: transducer_sensor
+       role: sensor
+@@ -2225,6 +2251,9 @@
+         x_shape:
+         - 64
+         - 64
++        nominal_speed: 1540.0
++      learnable:
++      - speed_of_sound
+     - node_id: beamform
+       primitive_id: beamform_delay
+       role: transport
+@@ -2349,6 +2378,8 @@
+   sem_graph_v2:
+     description: 'SEM: ElectronBeamSource→YieldModel(SE)→ElectronDetector→GaussianNoise'
+     metadata:
++      unmodelled_params:
++        source.accelerating_voltage_kv: 15.0
+       modality: sem
+       canonical_chain: true
+       requires_x_interaction: true
+@@ -2364,7 +2395,6 @@
+       primitive_id: electron_beam_source
+       role: source
+       params:
+-        accelerating_voltage_kv: 15.0
+         beam_current_na: 1.0
+     - node_id: interaction
+       primitive_id: yield_model
+@@ -2394,6 +2424,9 @@
+   tem_graph_v2:
+     description: 'TEM: ElectronBeamSource→ThinObjectPhase→CTFTransfer→ElectronDetector→GaussianNoise'
+     metadata:
++      unmodelled_params:
++        interaction.thickness_nm: 10.0
++        source.accelerating_voltage_kv: 200.0
+       modality: tem
+       canonical_chain: true
+       requires_x_interaction: true
+@@ -2409,14 +2442,12 @@
+       primitive_id: electron_beam_source
+       role: source
+       params:
+-        accelerating_voltage_kv: 200.0
+         beam_current_na: 0.1
+     - node_id: interaction
+       primitive_id: thin_object_phase
+       role: transport
+       params:
+         sigma: 0.00729
+-        thickness_nm: 10.0
+     - node_id: ctf
+       primitive_id: ctf_transfer
+       role: transport
+@@ -2448,6 +2479,9 @@
+   electron_tomography_graph_v2:
+     description: 'Electron Tomography: ElectronBeamSource→ThinObjectPhase→ElectronDetector→GaussianNoise'
+     metadata:
++      unmodelled_params:
++        interaction.thickness_nm: 50.0
++        source.accelerating_voltage_kv: 300.0
+       modality: electron_tomography
+       canonical_chain: true
+       requires_x_interaction: true
+@@ -2459,14 +2493,12 @@
+       primitive_id: electron_beam_source
+       role: source
+       params:
+-        accelerating_voltage_kv: 300.0
+         beam_current_na: 0.1
+     - node_id: interaction
+       primitive_id: thin_object_phase
+       role: transport
+       params:
+         sigma: 0.00729
+-        thickness_nm: 50.0
+     - node_id: sensor
+       primitive_id: electron_detector_sensor
+       role: sensor
+@@ -2489,6 +2521,8 @@
+   stem_graph_v2:
+     description: 'STEM: ElectronBeamSource→ProbeConvolution→AnnularDetector→PoissonNoise'
+     metadata:
++      unmodelled_params:
++        source.accelerating_voltage_kv: 200.0
+       modality: stem
+       canonical_chain: true
+       requires_x_interaction: true
+@@ -2504,7 +2538,6 @@
+       primitive_id: electron_beam_source
+       role: source
+       params:
+-        accelerating_voltage_kv: 200.0
+         beam_current_na: 0.05
+     - node_id: interaction
+       primitive_id: conv2d
+@@ -2534,6 +2567,8 @@
+   fluoroscopy_graph_v2:
+     description: 'Fluoroscopy: XRaySource→BeerLambert→TemporalIntegrator→XRayDetector→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        temporal_int.decay: 0.9
+       modality: fluoroscopy
+       canonical_chain: true
+       x_shape:
+@@ -2558,7 +2593,6 @@
+       role: transport
+       params:
+         n_frames: 8
+-        decay: 0.9
+     - node_id: sensor
+       primitive_id: xray_detector_sensor
+       role: sensor
+@@ -2691,7 +2725,11 @@
+         n_angles: 180
+         H: 64
+         W: 64
+-      learnable: []
++        angle_offset: 0.0
++        detector_offset: 0.0
++      learnable:
++      - angle_offset
++      - detector_offset
+     - node_id: beer_lambert
+       primitive_id: beer_lambert
+       role: transport
+@@ -2721,6 +2759,8 @@
+   angiography_graph_v2:
+     description: 'Angiography: XRaySource→BeerLambert→TemporalIntegrator→XRayDetector→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        temporal_int.decay: 0.85
+       modality: angiography
+       canonical_chain: true
+       x_shape:
+@@ -2745,7 +2785,6 @@
+       role: transport
+       params:
+         n_frames: 4
+-        decay: 0.85
+     - node_id: sensor
+       primitive_id: xray_detector_sensor
+       role: sensor
+@@ -2771,6 +2810,9 @@
+   doppler_ultrasound_graph_v2:
+     description: 'Doppler Ultrasound: AcousticSource→AcousticPropagation→DopplerEstimator→AcousticReceive→GaussianNoise'
+     metadata:
++      unmodelled_params:
++        doppler.prf_hz: 10000.0
++        doppler.wall_filter_cutoff: 50.0
+       modality: doppler_ultrasound
+       canonical_chain: true
+       x_shape:
+@@ -2794,12 +2836,13 @@
+         x_shape:
+         - 64
+         - 64
++        nominal_speed: 1540.0
++      learnable:
++      - speed_of_sound
+     - node_id: doppler
+       primitive_id: doppler_estimator
+       role: transport
+-      params:
+-        prf_hz: 10000.0
+-        wall_filter_cutoff: 50.0
++      params: {}
+     - node_id: sensor
+       primitive_id: acoustic_receive_sensor
+       role: sensor
+@@ -2823,6 +2866,8 @@
+   elastography_graph_v2:
+     description: 'Elastography: AcousticSource→ElasticWaveModel→AcousticPropagation→AcousticReceive→GaussianNoise'
+     metadata:
++      unmodelled_params:
++        elastic.push_duration_us: 100.0
+       modality: elastography
+       canonical_chain: true
+       x_shape:
+@@ -2841,8 +2886,7 @@
+       primitive_id: elastic_wave_model
+       role: transport
+       params:
+-        shear_speed_m_per_s: 3.0
+-        push_duration_us: 100.0
++        wave_speed: 3.0
+     - node_id: propagate
+       primitive_id: acoustic_propagation
+       role: transport
+@@ -2852,6 +2896,9 @@
+         x_shape:
+         - 64
+         - 64
++        nominal_speed: 1540.0
++      learnable:
++      - speed_of_sound
+     - node_id: sensor
+       primitive_id: acoustic_receive_sensor
+       role: sensor
+@@ -3174,6 +3221,8 @@
+   tirf_graph_v2:
+     description: 'TIRF microscopy: Source→EvanescentFieldDecay→PSF→Sensor→Noise'
+     metadata:
++      unmodelled_params:
++        evanescent.penetration_depth: 100.0
+       modality: tirf
+       canonical_chain: true
+       x_shape:
+@@ -3191,8 +3240,7 @@
+     - node_id: evanescent
+       primitive_id: evanescent_decay
+       role: transport
+-      params:
+-        penetration_depth: 100.0
++      params: {}
+     - node_id: blur
+       primitive_id: conv2d
+       role: transport
+@@ -3271,6 +3319,8 @@
+   endoscopy_graph_v2:
+     description: 'Endoscopy: Source→FiberBundle→SpecularReflection→PhotonSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        fiber_bundle.core_pitch: 10.0
+       modality: endoscopy
+       canonical_chain: true
+       x_shape:
+@@ -3289,7 +3339,6 @@
+       role: transport
+       params:
+         n_cores: 10000
+-        core_pitch: 10.0
+         coupling_efficiency: 0.3
+         seed: 42
+     - node_id: specular
+@@ -3368,6 +3417,9 @@
+   octa_graph_v2:
+     description: 'OCT Angiography: Source→AngularSpectrum→VesselFlowContrast→PhotonSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        flow_contrast.n_frames: 4
++        flow_contrast.threshold: 0.1
+       modality: octa
+       canonical_chain: true
+       x_shape:
+@@ -3392,9 +3444,7 @@
+     - node_id: flow_contrast
+       primitive_id: vessel_flow_contrast
+       role: transport
+-      params:
+-        n_frames: 4
+-        threshold: 0.1
++      params: {}
+     - node_id: sensor
+       primitive_id: photon_sensor
+       role: sensor
+@@ -3420,6 +3470,10 @@
+   tof_camera_graph_v2:
+     description: 'ToF Camera: Source→TimeOfFlightGate→SPADToFSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        sensor.dead_time_ns: 50.0
++        sensor.n_bins: 64
++        tof_gate.n_bins: 64
+       modality: tof_camera
+       canonical_chain: true
+       x_shape:
+@@ -3438,15 +3492,12 @@
+       primitive_id: tof_gate
+       role: transport
+       params:
+-        n_bins: 64
+         bin_width_ns: 1.0
+         timing_jitter_ns: 0.1
+     - node_id: sensor
+       primitive_id: spad_tof_sensor
+       role: sensor
+       params:
+-        n_bins: 64
+-        dead_time_ns: 50.0
+         qe: 0.3
+     - node_id: noise
+       primitive_id: poisson_gaussian_sensor
+@@ -3465,6 +3516,10 @@
+   lidar_graph_v2:
+     description: 'LiDAR: Source→ScanTrajectory→TimeOfFlightGate→SPADToFSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        sensor.dead_time_ns: 20.0
++        sensor.n_bins: 64
++        tof_gate.n_bins: 64
+       modality: lidar
+       canonical_chain: true
+       x_shape:
+@@ -3489,15 +3544,12 @@
+       primitive_id: tof_gate
+       role: transport
+       params:
+-        n_bins: 64
+         bin_width_ns: 0.5
+         timing_jitter_ns: 0.05
+     - node_id: sensor
+       primitive_id: spad_tof_sensor
+       role: sensor
+       params:
+-        n_bins: 64
+-        dead_time_ns: 20.0
+         qe: 0.25
+     - node_id: noise
+       primitive_id: poisson_gaussian_sensor
+@@ -3518,6 +3570,8 @@
+   structured_light_graph_v2:
+     description: 'Structured Light: Source→StructuredLightProjector→DepthOptics→PhotonSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        projector.n_patterns: 4
+       modality: structured_light
+       canonical_chain: true
+       x_shape:
+@@ -3536,7 +3590,6 @@
+       primitive_id: structured_light_projector
+       role: transport
+       params:
+-        n_patterns: 4
+         fringe_freq: 8.0
+     - node_id: depth_optics
+       primitive_id: depth_optics
+@@ -3569,6 +3622,8 @@
+   sar_graph_v2:
+     description: 'SAR: GenericSource→SARBackprojection→GenericSensor→ComplexGaussianNoise'
+     metadata:
++      unmodelled_params:
++        backproject.swath_width: 100.0
+       modality: sar
+       canonical_chain: true
+       x_shape:
+@@ -3588,7 +3643,6 @@
+       role: transport
+       params:
+         n_pulses: 64
+-        swath_width: 100.0
+     - node_id: sensor
+       primitive_id: generic_sensor
+       role: sensor
+@@ -3650,6 +3704,9 @@
+   electron_diffraction_graph_v2:
+     description: '4D-STEM: GenericSource→DiffractionCamera→EnergyResolvingDetector→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        sensor.energy_range_ev: [0, 2000]
++        sensor.n_channels: 256
+       modality: electron_diffraction
+       canonical_chain: true
+       x_shape:
+@@ -3673,10 +3730,6 @@
+       primitive_id: energy_resolving_detector
+       role: sensor
+       params:
+-        n_channels: 256
+-        energy_range_ev:
+-        - 0
+-        - 2000
+         qe: 0.8
+     - node_id: noise
+       primitive_id: poisson_gaussian_sensor
+@@ -3695,6 +3748,10 @@
+   ebsd_graph_v2:
+     description: 'EBSD: GenericSource→ReciprocalSpaceGeometry→EnergyResolvingDetector→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        geometry.detector_distance: 15.0
++        sensor.energy_range_ev: [0, 2000]
++        sensor.n_channels: 256
+       modality: ebsd
+       canonical_chain: true
+       x_shape:
+@@ -3714,15 +3771,10 @@
+       role: transport
+       params:
+         sample_tilt_deg: 70.0
+-        detector_distance: 15.0
+     - node_id: sensor
+       primitive_id: energy_resolving_detector
+       role: sensor
+       params:
+-        n_channels: 256
+-        energy_range_ev:
+-        - 0
+-        - 2000
+         qe: 0.8
+     - node_id: noise
+       primitive_id: poisson_gaussian_sensor
+@@ -3741,6 +3793,9 @@
+   eels_graph_v2:
+     description: 'EELS: GenericSource→EnergyResolvingDetector(filter)→GenericSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        spectrometer.energy_range_ev: [0, 3000]
++        spectrometer.n_channels: 1024
+       modality: eels
+       canonical_chain: true
+       x_shape:
+@@ -3759,10 +3814,6 @@
+       primitive_id: energy_resolving_detector
+       role: transport
+       params:
+-        n_channels: 1024
+-        energy_range_ev:
+-        - 0
+-        - 3000
+         qe: 0.7
+     - node_id: sensor
+       primitive_id: generic_sensor
+@@ -3923,6 +3974,8 @@
+   muon_tomo_graph_v2:
+     description: 'Muon tomo: GenericSource→MultipleScattering→TrackDetectorSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        sensor.n_layers: 8
+       modality: muon_tomo
+       canonical_chain: true
+       x_shape:
+@@ -3946,7 +3999,6 @@
+       primitive_id: track_detector_sensor
+       role: sensor
+       params:
+-        n_layers: 8
+         efficiency: 0.95
+     - node_id: noise
+       primitive_id: poisson_gaussian_sensor
+@@ -4006,9 +4058,9 @@
+       primitive_id: angular_spectrum
+       role: transport
+       params:
+-        distance_m: 1.0
++        distance: 0.001
+       learnable:
+-      - distance_m
++      - distance
+     - node_id: noise
+       primitive_id: gaussian
+       role: noise
+@@ -4123,8 +4175,12 @@
+       role: transport
+       params:
+         n_angles: 180
++        angle_offset: 0.0
++        detector_offset: 0.0
+       learnable:
+       - n_angles
++      - angle_offset
++      - detector_offset
+     - node_id: noise
+       primitive_id: poisson_gaussian
+       role: noise
+@@ -4301,9 +4357,9 @@
+       primitive_id: spectral_dispersion
+       role: transport
+       params:
+-        step: 2
++        disp_step: 2.0
+       learnable:
+-      - step
++      - disp_step
+     - node_id: noise
+       primitive_id: poisson_gaussian
+       role: noise
+@@ -5335,6 +5391,9 @@
+   cryo_em_graph_v2:
+     description: 'Cryo-EM: ElectronSource→ThinObjectPhase→CTFTransfer→BFactorEnvelope→ElectronDetector→GaussianNoise'
+     metadata:
++      unmodelled_params:
++        source.voltage_kv: 300
++        thin_object.thickness_nm: 50.0
+       modality: cryo_em
+       canonical_chain: true
+       x_shape:
+@@ -5347,13 +5406,11 @@
+     - node_id: source
+       primitive_id: electron_beam_source
+       role: source
+-      params:
+-        voltage_kv: 300
++      params: {}
+     - node_id: thin_object
+       primitive_id: thin_object_phase
+       role: transport
+-      params:
+-        thickness_nm: 50.0
++      params: {}
+     - node_id: ctf
+       primitive_id: ctf_transfer
+       role: transport
+@@ -5395,6 +5452,8 @@
+   compressive_holography_graph_v2:
+     description: 'Compressive Holography: PhotonSource→FresnelProp→Interference→PhotonSensor→PoissonGaussianNoise'
+     metadata:
++      unmodelled_params:
++        interference.carrier_freq: 0.15
+       modality: compressive_holography
+       canonical_chain: true
+       x_shape:
+@@ -5414,16 +5473,15 @@
+       primitive_id: fresnel_prop
+       role: transport
+       params:
+-        wavelength_um: 0.000532
+-        pixel_size_um: 5.0
+-        z_um: 100.0
++        wavelength: 5.32e-07
++        pixel_size: 5.0e-06
++        distance: 0.0001
+       learnable:
+-      - z_um
++      - distance
+     - node_id: interference
+       primitive_id: interference
+       role: transport
+-      params:
+-        carrier_freq: 0.15
++      params: {}
+     - node_id: sensor
+       primitive_id: photon_sensor
+       role: sensor
+@@ -5475,7 +5533,7 @@
+       primitive_id: yield_model
+       role: transport
+       params:
+-        quantum_yield: 0.7
++        yield_coeff: 0.7
+     - node_id: emission_psf
+       primitive_id: conv2d
+       role: transport
+--- a/packages/pwm_core/contrib/mismatch_db.yaml
++++ b/packages/pwm_core/contrib/mismatch_db.yaml
+@@ -280,6 +280,8 @@
+     # for documentation purposes only.
+     graph_param_map:
+       dispersion_step: disp_step  # SpectralDispersion node
++      mask_dx: modulate.mask_dx  # CodedMask: sub-pixel mask shift, pixels
++      mask_dy: modulate.mask_dy
+     correction_method: "UPWMI_beam_search"
+ 
+   spc:
+@@ -527,6 +529,9 @@
+       offset: 0.05
+       read_sigma: 0.06
+       seed: 0.05
++    graph_param_map:
++      mask_dx: coded_aperture.mask_dx  # TemporalMask: sub-pixel mask shift, pixels
++      mask_dy: coded_aperture.mask_dy
+     correction_method: "UPWMI_multistage_search"
+ 
+   # ==========================================================================
+@@ -577,6 +582,7 @@
+     # projection_angle_offset → radon.angle_offset (shifts all projection angles)
+     graph_param_map:
+       projection_angle_offset: radon.angle_offset
++      detector_offset: radon.detector_offset  # CTRadon: constant detector shift of every view (centre of rotation), pixels
+     parameters:
+       projection_angle_offset:
+         range: [-15.0, 15.0]
+@@ -897,6 +903,8 @@
+       speed_of_sound: 0.45
+       transducer_position: 0.30
+       laser_fluence: 0.25
++    graph_param_map:
++      speed_of_sound: propagate.speed_of_sound  # AcousticPropagation: arrival-time axis scaled by c / nominal_speed
+     correction_method: "grid_search"
+ 
+   # ==========================================================================
+@@ -1081,6 +1089,8 @@
+       speed_of_sound: 0.45
+       element_position: 0.30
+       attenuation_coeff: 0.25
++    graph_param_map:
++      speed_of_sound: propagate.speed_of_sound  # AcousticPropagation (same as photoacoustic)
+     correction_method: "grid_search"
+ 
+   # ==========================================================================
+@@ -1401,6 +1411,7 @@
+       scatter_fraction: 0.30
+     graph_param_map:
+       projection_angle_offset: radon.angle_offset  # CTRadon node (same as ct)
++      detector_offset: radon.detector_offset  # CTRadon (same as ct)
+     correction_method: "grid_search"
+ 
+   angiography:
+--- a/packages/pwm_core/pwm_core/graph/primitives.py
++++ b/packages/pwm_core/pwm_core/graph/primitives.py
+@@ -136,6 +136,25 @@
+ # =========================================================================
+ 
+ 
++def _axis_resample_matrix(n: int, scale: float = 1.0, shift: float = 0.0) -> np.ndarray:
++    """(n, n) linear-interpolation matrix R with ``out[k] = in[c + (k - c) * scale - shift]``, c = (n - 1) / 2.
++
++    ``scale`` dilates the axis about its centre, ``shift`` translates it (in samples). Zero outside the axis.
++    The transpose is the exact adjoint of the resampling.
++    """
++    k = np.arange(n, dtype=np.float64)
++    c = (n - 1) / 2.0
++    pos = c + (k - c) * scale - shift
++    j0 = np.floor(pos).astype(int)
++    frac = pos - j0
++    R = np.zeros((n, n), dtype=np.float64)
++    for off, w in ((0, 1.0 - frac), (1, frac)):
++        j = j0 + off
++        ok = (j >= 0) & (j < n) & (w > 0)
++        R[k[ok].astype(int), j[ok]] += w[ok]
++    return R
++
++
+ class FresnelProp(BasePrimitive):
+     """Fresnel propagation via single-FFT method."""
+ 
+@@ -336,11 +355,17 @@
+         seed = self._params.get("seed", 42)
+         H = self._params.get("H", 64)
+         W = self._params.get("W", 64)
++        density = float(self._params.get("density", 0.5))
+         if mask is not None:
+             self._mask = np.asarray(mask, dtype=np.float64)
+         else:
+             rng = np.random.default_rng(seed)
+-            self._mask = (rng.random((H, W)) > 0.5).astype(np.float64)
++            self._mask = (rng.random((H, W)) > 1.0 - density).astype(np.float64)
++        # mask_dx / mask_dy (pixels): mask misregistration relative to the detector grid
++        mask_dx = float(self._params.get("mask_dx", 0.0))
++        mask_dy = float(self._params.get("mask_dy", 0.0))
++        if (mask_dx != 0.0 or mask_dy != 0.0) and self._mask.ndim == 2:
++            self._mask = subpixel_shift_2d(self._mask, mask_dx, mask_dy)
+ 
+     def _broadcast_mask(self, x: np.ndarray) -> np.ndarray:
+         """Broadcast 2D mask to match input dimensions."""
+@@ -552,12 +577,23 @@
+                     )
+             else:
+                 out = ndimage.gaussian_filter(out, sigma=psf_sigma, mode="reflect")
+-        return out
++        return out * self._vignette(out)
++
++    def _vignette(self, out):
++        """Radial falloff 1 - vignetting * r^2 (r = 1 at the corners of the axes); 1 when ``vignetting`` is 0."""
++        v = self._params.get("vignetting", 0.0)
++        if v <= 0:
++            return 1.0
++        H, W = out.shape[0], out.shape[1]
++        yy, xx = np.mgrid[:H, :W]
++        cy, cx = max((H - 1) / 2.0, 1e-12), max((W - 1) / 2.0, 1e-12)
++        w = np.clip(1.0 - v * (((yy - cy) / cy) ** 2 + ((xx - cx) / cx) ** 2), 0.0, 1.0)
++        return w[:, :, np.newaxis] if out.ndim == 3 else w
+ 
+     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+         throughput = self._params.get("throughput", 0.92)
+         psf_sigma = self._params.get("psf_sigma", 0.0)
+-        out = y.astype(np.float64) * throughput
++        out = y.astype(np.float64) * throughput * self._vignette(y)
+         if psf_sigma > 0:
+             if out.ndim == 3:
+                 for l in range(out.shape[-1]):
+@@ -746,6 +782,11 @@
+         # angle_offset (degrees) shifts the projection angles — used by the
+         # mismatch harness to simulate gantry encoder offset (H_nom ≠ H_true).
+         self._angle_offset = float(self._params.get("angle_offset", 0.0))
++        # detector_offset (pixels): the detector is shifted by this amount along the detector axis for every view,
++        # i.e. the centre of rotation is off by detector_offset. 0 = ideal.
++        self._detector_offset = float(self._params.get("detector_offset", 0.0))
++        self._S = (_axis_resample_matrix(self._W, 1.0, self._detector_offset)
++                   if self._detector_offset != 0.0 else None)
+         self._angles = np.linspace(
+             self._angle_offset,
+             180.0 + self._angle_offset,
+@@ -779,6 +820,8 @@
+                 img, angle, reshape=False, mode="constant", order=1
+             )
+             sinogram[i, :] = rotated.sum(axis=0)
++        if self._S is not None:
++            sinogram = sinogram @ self._S.T
+         return sinogram
+ 
+     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+@@ -796,6 +839,8 @@
+         # Fallback: rotation-based backprojection (approximate)
+         bp = np.zeros((self._H, self._W), dtype=np.float64)
+         y2d = y.reshape(self._n_angles, self._W)
++        if self._S is not None:
++            y2d = y2d @ self._S
+         for i, angle in enumerate(self._angles):
+             projection = y2d[i, :]
+             smeared = np.tile(projection, (self._H, 1))
+@@ -854,6 +899,10 @@
+         seed = self._params.get("seed", 42)
+         rng = np.random.default_rng(seed)
+         base_mask = (rng.random((H, W)) > 0.5).astype(np.float64)
++        mask_dx = float(self._params.get("mask_dx", 0.0))
++        mask_dy = float(self._params.get("mask_dy", 0.0))
++        if mask_dx != 0.0 or mask_dy != 0.0:
++            base_mask = subpixel_shift_2d(base_mask, mask_dx, mask_dy)
+         self._masks = np.zeros((H, W, T), dtype=np.float64)
+         for t in range(T):
+             self._masks[:, :, t] = np.roll(base_mask, t, axis=0)
+@@ -1754,7 +1803,6 @@
+ 
+     def forward(self, x, **params):
+         x = np.asarray(x, dtype=np.float64)
+-        speed = self._params.get("speed_of_sound", 1500.0)
+         n_sensors = self._params.get("n_sensors", x.shape[0])
+         # Simplified: project initial pressure onto sensor lines
+         # Use Radon-like projection as proxy for time-of-flight integration
+@@ -1765,12 +1813,29 @@
+         for i, angle in enumerate(angles):
+             rotated = ndimage.rotate(x, angle, reshape=False, order=1, mode="constant")
+             result[i, :H] = rotated.sum(axis=1)[:max(H, W)]
+-        return result
++        R = self._time_axis_matrix(result.shape[1])
++        return result if R is None else result @ R.T
++
++    def _time_axis_matrix(self, n):
++        """Arrival-time axis scaled by c / c_nominal about the array centre (None at nominal speed).
++
++        An arrival time is distance / c, so a sound speed above the value the sampling grid was set for compresses
++        the axis and one below stretches it. ``nominal_speed`` is the speed the template was designed for.
++        """
++        speed = float(self._params.get("speed_of_sound", 1540.0))
++        nominal = float(self._params.get("nominal_speed", 1540.0))
++        if speed == nominal:
++            return None
++        return _axis_resample_matrix(n, scale=speed / nominal)
+ 
+     def adjoint(self, y, **params):
+         # Back-projection (time-reversal approximation)
+         x_shape = self._params.get("x_shape", (64, 64))
+         H, W = x_shape[-2], x_shape[-1]
++        y = np.asarray(y, dtype=np.float64)
++        R = self._time_axis_matrix(y.shape[1])
++        if R is not None:
++            y = y @ R
+         n_angles = y.shape[0]
+         angles = np.linspace(0, 180, n_angles, endpoint=False)
+         result = np.zeros((H, W), dtype=np.float64)
+@@ -1935,7 +2000,7 @@
+ 
+     def forward(self, x, **params):
+         current = self._params.get("beam_current_na", 1.0)
+-        return current * np.ones_like(x)
++        return current * np.asarray(x, dtype=np.float64)
+ 
+     def adjoint(self, y, **params):
+         current = self._params.get("beam_current_na", 1.0)
+@@ -1956,12 +2021,14 @@
+     def forward(self, x, **params):
+         ce = self._params.get("collection_efficiency", 0.5)
+         gain = self._params.get("gain", 1.0)
+-        return ce * gain * np.asarray(x, dtype=np.float64)
++        dqe = self._params.get("dqe", 1.0)
++        return ce * gain * dqe * np.asarray(x, dtype=np.float64)
+ 
+     def adjoint(self, y, **params):
+         ce = self._params.get("collection_efficiency", 0.5)
+         gain = self._params.get("gain", 1.0)
+-        return ce * gain * np.asarray(y, dtype=np.float64)
++        dqe = self._params.get("dqe", 1.0)
++        return ce * gain * dqe * np.asarray(y, dtype=np.float64)
+ 
+ 
+ # P1.4: Specialized sensors
+@@ -2847,14 +2914,18 @@
+         x = np.asarray(x, dtype=np.float64)
+         # Simplified T2* weighting: T2star ~ TR / 50
+         T2star = max(TR_ms / 50.0, 1e-6)
+-        weight = np.exp(-TE_ms / T2star)
++        weight = np.exp(-TE_ms / T2star) * self._flip_factor()
+         return x * weight
+ 
++    def _flip_factor(self) -> float:
++        """Signal scales with sin(flip angle); 90 degrees (the default) is 1."""
++        return float(np.sin(np.deg2rad(self._params.get("flip_angle_deg", 90.0))))
++
+     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+         TE_ms = self._params.get("TE_ms", 30.0)
+         TR_ms = self._params.get("TR_ms", 2000.0)
+         T2star = max(TR_ms / 50.0, 1e-6)
+-        weight = np.exp(-TE_ms / T2star)
++        weight = np.exp(-TE_ms / T2star) * self._flip_factor()
+         return np.asarray(y, dtype=np.float64) * weight
+ 
+ 
+@@ -3202,7 +3273,7 @@
+                     pat_2d, M_rot, offset=offset, order=1, mode="constant"
+                 )
+             elif abs(mask_dx) > 1e-8 or abs(mask_dy) > 1e-8:
+-                pat_2d = subpixel_shift_2d(pat_2d, mask_dy, mask_dx)
++                pat_2d = subpixel_shift_2d(pat_2d, mask_dx, mask_dy)
+             warped[m] = pat_2d.ravel()
+         return warped
+ 
+--- /dev/null
++++ b/packages/pwm_core/tests/test_graph_params.py
+@@ -0,0 +1,168 @@
++"""Template parameters must act, and the calibration parameters added for geometry must be exact (LIB-40 IMG-10).
++
++* each new parameter changes the forward output, is the identity at its nominal value, and has an adjoint
++  that is the exact transpose of the forward;
++* the template parameters that used to be dead (the primitive never read the name) now act, or have been moved to
++  ``metadata.unmodelled_params``.
++"""
++from __future__ import annotations
++
++import numpy as np
++import pytest
++
++from pwm_core.graph.primitives import PRIMITIVE_REGISTRY
++
++
++def _prim(pid, **params):
++    return PRIMITIVE_REGISTRY[pid](params)
++
++
++def _dot_test(op, x, rng, atol=1e-9):
++    y = op.forward(x)
++    z = rng.standard_normal(np.shape(y))
++    lhs = float(np.sum(y * z))
++    rhs = float(np.sum(x * op.adjoint(z)))
++    return abs(lhs - rhs) / (abs(lhs) + 1e-12)
++
++
++def test_ct_detector_offset_shifts_sinogram_and_is_exact_adjoint():
++    rng = np.random.default_rng(0)
++    x = rng.random((16, 16))
++    base = _prim("ct_radon", n_angles=12, H=16, W=16)
++    shifted = _prim("ct_radon", n_angles=12, H=16, W=16, detector_offset=2.0)
++    ys0, ys = base.forward(x), shifted.forward(x)
++    np.testing.assert_allclose(ys[:, 2:], ys0[:, :-2], atol=1e-12)
++    np.testing.assert_allclose(ys[:, :2], 0.0, atol=1e-12)
++    assert _dot_test(shifted, x, rng) < 1e-10
++    frac = _prim("ct_radon", n_angles=12, H=16, W=16, detector_offset=0.5)
++    assert np.abs(frac.forward(x) - ys0).max() > 1e-6
++    assert _dot_test(frac, x, rng) < 1e-10
++
++
++def test_ct_detector_offset_zero_is_identity_and_acts_without_matrix():
++    rng = np.random.default_rng(1)
++    x = rng.random((40, 40))  # 1600 > 1024: no explicit matrix, rotation path
++    a = _prim("ct_radon", n_angles=8, H=40, W=40)
++    b = _prim("ct_radon", n_angles=8, H=40, W=40, detector_offset=0.0)
++    c = _prim("ct_radon", n_angles=8, H=40, W=40, detector_offset=1.5)
++    np.testing.assert_array_equal(a.forward(x), b.forward(x))
++    assert np.abs(a.forward(x) - c.forward(x)).max() > 1e-6
++    # the adjoint of the shift is applied to the sinogram before backprojection
++    y = rng.random((8, 40))
++    S = c._S
++    np.testing.assert_allclose(c.adjoint(y), a.adjoint(y @ S), atol=1e-12)
++
++
++def test_acoustic_speed_of_sound_acts_identity_at_nominal_exact_adjoint():
++    rng = np.random.default_rng(2)
++    x = rng.random((24, 24))
++    kw = dict(n_sensors=12, x_shape=[24, 24])
++    nominal = _prim("acoustic_propagation", speed_of_sound=1540.0, **kw)
++    default = _prim("acoustic_propagation", **kw)
++    fast = _prim("acoustic_propagation", speed_of_sound=1540.0 * 1.05, **kw)
++    slow = _prim("acoustic_propagation", speed_of_sound=1540.0 * 0.95, **kw)
++    np.testing.assert_array_equal(nominal.forward(x), default.forward(x))
++    assert np.abs(fast.forward(x) - nominal.forward(x)).max() > 1e-6
++    assert np.abs(slow.forward(x) - fast.forward(x)).max() > 1e-6
++    # the nominal speed moves the identity point
++    shifted_nominal = _prim("acoustic_propagation", speed_of_sound=1500.0, nominal_speed=1500.0, **kw)
++    np.testing.assert_array_equal(shifted_nominal.forward(x), default.forward(x))
++    # exact transpose of the time-axis resampling (the rest of the adjoint is the existing approximation)
++    R = fast._time_axis_matrix(24)
++    y = rng.random((12, 24))
++    z = rng.random((12, 24))
++    np.testing.assert_allclose(np.sum((y @ R.T) * z), np.sum(y * (z @ R)), rtol=1e-12)
++
++
++def test_coded_mask_density_and_shift():
++    default = _prim("coded_mask", seed=3, H=32, W=32)
++    half = _prim("coded_mask", seed=3, H=32, W=32, density=0.5)
++    sparse = _prim("coded_mask", seed=3, H=32, W=32, density=0.2)
++    np.testing.assert_array_equal(default._mask, half._mask)
++    assert abs(sparse._mask.mean() - 0.2) < 0.05
++    shifted = _prim("coded_mask", seed=3, H=32, W=32, mask_dx=1.0, mask_dy=0.0)
++    np.testing.assert_allclose(shifted._mask[:, 1:], default._mask[:, :-1], atol=1e-12)
++    sub = _prim("coded_mask", seed=3, H=32, W=32, mask_dx=0.4)
++    assert np.abs(sub._mask - default._mask).max() > 0.1
++    rng = np.random.default_rng(4)
++    assert _dot_test(sub, rng.random((32, 32)), rng) < 1e-12
++
++
++def test_temporal_mask_shift_acts():
++    a = _prim("temporal_mask", H=16, W=16, T=4, seed=1)
++    b = _prim("temporal_mask", H=16, W=16, T=4, seed=1, mask_dx=0.5)
++    x = np.random.default_rng(5).random((16, 16, 4))
++    assert np.abs(a.forward(x) - b.forward(x)).max() > 1e-6
++
++
++def test_objective_lens_vignetting_acts_with_exact_adjoint():
++    rng = np.random.default_rng(6)
++    x = rng.random((20, 20, 3))
++    a = _prim("objective_lens", throughput=0.9, psf_sigma=0.8)
++    b = _prim("objective_lens", throughput=0.9, psf_sigma=0.8, vignetting=0.3)
++    np.testing.assert_array_equal(a.forward(x), _prim("objective_lens", throughput=0.9, psf_sigma=0.8, vignetting=0.0).forward(x))
++    assert np.abs(a.forward(x) - b.forward(x)).max() > 1e-3
++    assert _dot_test(b, x, rng) < 1e-10
++
++
++def test_small_gains_act():
++    x = np.random.default_rng(7).random((8, 8))
++    for pid, base, changed in (
++        ("sequence_block", {}, {"flip_angle_deg": 30.0}),
++        ("electron_detector_sensor", {}, {"dqe": 0.5}),
++        ("electron_beam_source", {}, {"beam_current_na": 2.0}),
++    ):
++        p0, p1 = _prim(pid, **base), _prim(pid, **changed)
++        assert np.abs(p0.forward(x) - p1.forward(x)).max() > 1e-6
++        assert np.allclose(p0.forward(x) * 0, 0)  # no NaN
++    # a source passes the object through: the output depends on x
++    src = _prim("electron_beam_source", beam_current_na=0.1)
++    assert np.abs(src.forward(x) - src.forward(2 * x)).max() > 1e-6
++    # 90 degrees is the identity of the flip-angle factor
++    np.testing.assert_allclose(_prim("sequence_block").forward(x), _prim("sequence_block", flip_angle_deg=90.0).forward(x))
++
++
++def test_templates_use_the_new_parameters():
++    import yaml
++    from pathlib import Path
++    root = Path(__file__).resolve().parent.parent / "contrib"
++    T = yaml.safe_load((root / "graph_templates.yaml").read_text())["templates"]
++    M = yaml.safe_load((root / "mismatch_db.yaml").read_text())
++    M = M.get("modalities", M)
++
++    def node(tid, nid):
++        return next(n for n in T[tid]["nodes"] if n["node_id"] == nid)
++
++    for tid in ("ct_graph_v1", "ct_graph_v2", "cbct_graph_v2"):
++        n = node(tid, "radon")
++        assert {"detector_offset", "angle_offset"} <= set(n["params"]) <= set(n["params"])
++        assert {"detector_offset", "angle_offset"} <= set(n["learnable"])
++    for tid in ("ultrasound_graph_v2", "photoacoustic_graph_v2"):
++        assert "speed_of_sound" in node(tid, "propagate")["learnable"]
++    assert M["ct"]["graph_param_map"]["detector_offset"] == "radon.detector_offset"
++    assert M["ultrasound"]["graph_param_map"]["speed_of_sound"] == "propagate.speed_of_sound"
++    # removed parameters are recorded, not lost
++    assert node("tem_graph_v2", "source")["params"].get("accelerating_voltage_kv") is None
++    assert T["tem_graph_v2"]["metadata"]["unmodelled_params"]["source.accelerating_voltage_kv"] == 200.0
++
++
++def test_every_learnable_name_is_read_by_its_primitive():
++    """A name in ``learnable`` that the primitive never reads is a dead calibration parameter."""
++    import inspect
++    import re
++    import yaml
++    from pathlib import Path
++    root = Path(__file__).resolve().parent.parent / "contrib"
++    T = yaml.safe_load((root / "graph_templates.yaml").read_text())["templates"]
++    # primitives that are not in PRIMITIVE_REGISTRY under that id (aliases fixed elsewhere) are skipped
++    bad = []
++    for tid, t in T.items():
++        for n in t["nodes"]:
++            cls = PRIMITIVE_REGISTRY.get(n["primitive_id"])
++            if cls is None:
++                continue
++            src = inspect.getsource(cls)
++            for name in n.get("learnable") or []:
++                if not re.search(r"""['"]%s['"]""" % re.escape(name), src) and name not in ("gain", "sigma"):
++                    bad.append((tid, n["node_id"], n["primitive_id"], name))
++    assert not bad, bad
