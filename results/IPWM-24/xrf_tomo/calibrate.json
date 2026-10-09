@@ -1,0 +1,10 @@
+{
+  "data_sources": [],
+  "development_units": null,
+  "domain_expert_review": "QUEUED, not done",
+  "held_out_units": null,
+  "next_action": "Obtain an accessible public dataset with licence and hashes, then construct and independently review a versioned judge.",
+  "reason": "NOT POSSIBLE in this attempt: no source-backed, modality-specific evaluation set and independently constructed hidden key were established for this task. A scientifically meaningful pass criterion and development-selected fixed-setting comparator cannot be claimed without those inputs. The source task specification referred to tasks/IPWM-24/{TASK,goal,status,log}.md, but those files are absent from this checkout. This is an explicit limitation record; no solver performance or judge validity is claimed.",
+  "status": "NOT POSSIBLE",
+  "task": "xrf_tomo/calibrate"
+}
