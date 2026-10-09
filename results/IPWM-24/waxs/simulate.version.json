@@ -1,0 +1,20 @@
+{
+  "task": "waxs/simulate",
+  "judge_status": "NOT BUILT",
+  "criterion_version": null,
+  "criterion": null,
+  "judge_type": null,
+  "held_out_units": 1,
+  "development_units": 1,
+  "unit_kind": "measured WAXS detector frame",
+  "pass_rate_best_trivial_answer": null,
+  "best_trivial_answer": null,
+  "pass_rate_all_trivials": null,
+  "pass_rate_public_baseline_pwm_core": null,
+  "pass_rate_best_fixed_setting_chosen_on_dev": null,
+  "best_fixed_setting": null,
+  "pass_rate_adaptive_reference_solver": null,
+  "reason_not_possible": "Two accessible reference frames do not support a valid train/test comparison. The larger CC BY 4.0 data source is inaccessible because its file-list and archive API endpoints returned HTTP 401.",
+  "domain_expert_review": "QUEUED, not done",
+  "date": "2026-10-09"
+}

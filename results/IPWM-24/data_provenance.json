@@ -88,5 +88,31 @@
     },
     "subset": "beam_0_00046.edf through beam_0_00065.edf; 20 one-second SiO2 nanoparticle droplet frames",
     "url": "https://archive.researchdata.leeds.ac.uk/1010/"
+  },
+  "waxs": {
+    "available_small_sample": {
+      "dataset": "Serial Small- and Wide-Angle X-ray Scattering with Laboratory Sources",
+      "doi": "10.5518/1170",
+      "url": "https://archive.researchdata.leeds.ac.uk/1010/",
+      "license": "CC BY 4.0",
+      "retained_files": {
+        "beam_1_00116.edf": {
+          "bytes": 381396,
+          "sha256": "024ce188b32d0d36c46011d286c060630ea25f9b1c7c4fa33636d97e4dea7a36"
+        },
+        "beam_1_00117.edf": {
+          "bytes": 381396,
+          "sha256": "f2c1506b97b4a1e1dd9b1721c25a29397c009dcc30555a63bcb06db5ca23aa3a"
+        }
+      },
+      "note": "Only two measured WAXS frames are supplied; insufficient for a held-out judge with a 12-unit evaluation split. Raw downloads removed after hashing."
+    },
+    "larger_alternative": {
+      "dataset": "A 22,266-image grazing-incidence wide-angle X-ray scattering benchmark dataset for organic photovoltaic and perovskite materials characterization",
+      "doi": "10.17632/kx8nt3zpk8.1",
+      "url": "https://data.mendeley.com/datasets/kx8nt3zpk8/1",
+      "license": "CC BY 4.0",
+      "retrieval_status": "UNUSABLE from this environment on 2026-10-09; Mendeley Data API dataset metadata, file listing, and archive endpoints returned HTTP 401 requiring Bearer authentication. The public landing page has no direct file URLs."
+    }
   }
 }

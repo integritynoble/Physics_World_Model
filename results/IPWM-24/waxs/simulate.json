@@ -1,0 +1,23 @@
+{
+  "task": "waxs/simulate",
+  "status": "NOT POSSIBLE: insufficient retrievable reference data",
+  "reason": "The licensed Leeds dataset exposes only two measured WAXS frames (one development unit and one possible held-out unit), which cannot support a reliable development-selected fixed-setting comparison or the 12-unit holdout. A second CC BY 4.0 GIWAXS dataset advertises 22,266 patterns, but its Mendeley API file-list and archive endpoints returned HTTP 401 requiring Bearer authentication; no files or file hashes could be obtained without credentials.",
+  "data_sources": [
+    {
+      "doi": "10.5518/1170",
+      "license": "CC BY 4.0",
+      "usable_frames": 2,
+      "retained_frame_sha256": [
+        "024ce188b32d0d36c46011d286c060630ea25f9b1c7c4fa33636d97e4dea7a36",
+        "f2c1506b97b4a1e1dd9b1721c25a29397c009dcc30555a63bcb06db5ca23aa3a"
+      ]
+    },
+    {
+      "doi": "10.17632/kx8nt3zpk8.1",
+      "license": "CC BY 4.0",
+      "advertised_patterns": 22266,
+      "retrieval": "HTTP 401 from API metadata and archive endpoints"
+    }
+  ],
+  "next_action": "Retry when a public direct-download path or data-access dependency is available. No solver or judge score is claimed."
+}
