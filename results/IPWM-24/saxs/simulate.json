@@ -1,0 +1,1036 @@
+{
+  "best_fixed_setting": {
+    "scale": 1.0
+  },
+  "development": {
+    "n": 8,
+    "unit_kind": "detector frame (one-second SiO2 droplet exposure)"
+  },
+  "held_out": {
+    "n": 12,
+    "unit_kind": "detector frame (one-second SiO2 droplet exposure)"
+  },
+  "limits": [
+    "Reference curves are radial means from the 1 s SiO2 droplet frames; adjacent frames are repeated measurements, not independent specimens.",
+    "Curve coordinate is detector radius in pixels. Absolute q is not scored because the source README says 1.786 m while EDF headers report 1.4 m.",
+    "A secret per-frame gain/offset perturbation in the hidden key prevents exact recovery from public metadata or copied development curves."
+  ],
+  "methods": {
+    "adaptive_reference_solver": {
+      "n": 12,
+      "pass_rate": 1.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.022327867125578323
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.011631701071325619
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.018323470807885586
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.011881230609466276
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.07430780948629531
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.010573745051864723
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.021247301826490688
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.011558504362250638
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.014897705002202123
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.028652829726016057
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.009204349234143505
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.059105670128643026
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "baseline_pwm_core": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "curve has wrong shape or non-finite values"
+          ],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "best_fixed(setting chosen on dev)": {
+      "n": 12,
+      "pass_rate": 1.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.022327867125578323
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.011631701071325619
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.018323470807885586
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.011881230609466276
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.07430780948629531
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.010573745051864723
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.021247301826490688
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.011558504362250638
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.014897705002202123
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.028652829726016057
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.009204349234143505
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.059105670128643026
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "trivial:blur": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2758736373518804
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27587 exceeds 0.10000"
+          ],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.27482573654199294
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27483 exceeds 0.10000"
+          ],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2762531587719174
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27625 exceeds 0.10000"
+          ],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2701087402257164
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27011 exceeds 0.10000"
+          ],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2987089130493377
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.29871 exceeds 0.10000"
+          ],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.27009958636166936
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27010 exceeds 0.10000"
+          ],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.26881630579211474
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.26882 exceeds 0.10000"
+          ],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2707002598925873
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27070 exceeds 0.10000"
+          ],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2721336705254621
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.27213 exceeds 0.10000"
+          ],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2810610774799358
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.28106 exceeds 0.10000"
+          ],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2686782220563658
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.26868 exceeds 0.10000"
+          ],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.2593732834900195
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.25937 exceeds 0.10000"
+          ],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "trivial:constant": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6632313729600563
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.66323 exceeds 0.10000"
+          ],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6619649160838569
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.66196 exceeds 0.10000"
+          ],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.663050794557659
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.66305 exceeds 0.10000"
+          ],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6562682078747625
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65627 exceeds 0.10000"
+          ],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6926600497317079
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.69266 exceeds 0.10000"
+          ],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6568969731120002
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65690 exceeds 0.10000"
+          ],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6475339169968874
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.64753 exceeds 0.10000"
+          ],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6555168194020246
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65552 exceeds 0.10000"
+          ],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6613374282452609
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.66134 exceeds 0.10000"
+          ],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6707905371772838
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.67079 exceeds 0.10000"
+          ],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.6534075493084947
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65341 exceeds 0.10000"
+          ],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 0.62715712253585
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.62716 exceeds 0.10000"
+          ],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "trivial:copy_public": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development curve"
+          ],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "trivial:input_unchanged": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain curve"
+          ],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    },
+    "trivial:zeros": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "94766010b39f4c18"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "05f66cfc32aa4a06"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "0baac4e6cf382ac6"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "0f499e1977399712"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "94575483510ad656"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "174493190d65ab58"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "d0f23b47b00df7ae"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "74d70ad5967a913f"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "b493964b547423f2"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "4d5a84fc7adee4b4"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "41a9436fd9d1b771"
+        },
+        {
+          "metrics": {
+            "copied_public_curve": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "91351e8387e9af8b"
+        }
+      ]
+    }
+  },
+  "setting_scores_dev": [
+    {
+      "dev_pass_rate": 1.0,
+      "setting": {
+        "scale": 0.96
+      }
+    },
+    {
+      "dev_pass_rate": 1.0,
+      "setting": {
+        "scale": 0.98
+      }
+    },
+    {
+      "dev_pass_rate": 1.0,
+      "setting": {
+        "scale": 1.0
+      }
+    },
+    {
+      "dev_pass_rate": 1.0,
+      "setting": {
+        "scale": 1.02
+      }
+    },
+    {
+      "dev_pass_rate": 1.0,
+      "setting": {
+        "scale": 1.04
+      }
+    }
+  ]
+}

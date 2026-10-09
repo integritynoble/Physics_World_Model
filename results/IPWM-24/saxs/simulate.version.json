@@ -1,0 +1,123 @@
+{
+  "best_fixed_setting": {
+    "scale": 1.0
+  },
+  "best_trivial_answer": "trivial:input_unchanged",
+  "criterion": {
+    "relative_l2_max": 0.1
+  },
+  "criterion_version": "1.0.0",
+  "data": {
+    "dataset": "Serial Small- and Wide-Angle X-ray Scattering with Laboratory Sources",
+    "doi": "10.5518/1170",
+    "license": "CC BY 4.0",
+    "processed_unit": "radial mean intensity from radii 60..350 detector pixels, 29 bins; EDF Dummy pixels excluded",
+    "retained_files": {
+      "beam_0_00046.edf": {
+        "bytes": 4094268,
+        "sha256": "62b4875f8343c4a584f99f29a35634106bb70be7e46c54e4c06e702c50c818d1"
+      },
+      "beam_0_00047.edf": {
+        "bytes": 4094268,
+        "sha256": "36f92146a0ef2355b521f5538740eef1ef8dd4fca05d749474f8906dad2c676f"
+      },
+      "beam_0_00048.edf": {
+        "bytes": 4094268,
+        "sha256": "58f97c2b2f284d7bf07cd270e60f677f911bab8e9142b53363b6565da9184d36"
+      },
+      "beam_0_00049.edf": {
+        "bytes": 4094268,
+        "sha256": "dacfff4a053d12d6894d7f032859d19f96f2935e67c970f18ca6453a293ac8eb"
+      },
+      "beam_0_00050.edf": {
+        "bytes": 4094268,
+        "sha256": "004bc8a599182e45e8cc4bdf561a75cfabdfab191b11945a5d7ea94f217f0fb6"
+      },
+      "beam_0_00051.edf": {
+        "bytes": 4094268,
+        "sha256": "59f7fc97d902ecbf4b87c44d98d2e8ef04093987ecc460038d2db76c335850b3"
+      },
+      "beam_0_00052.edf": {
+        "bytes": 4094268,
+        "sha256": "3914251ab8851a1c21d837c0cf12ad21c73836fa5d9f0439f6a2f688d591c84d"
+      },
+      "beam_0_00053.edf": {
+        "bytes": 4094268,
+        "sha256": "3798329cd022d4350e9c86064571038f5ba2c6cf135d7dfd65e1699223a22e37"
+      },
+      "beam_0_00054.edf": {
+        "bytes": 4094268,
+        "sha256": "2a17c0bd0d8f2a888fd79760b4d7149d34fbd5b6c25361a4ea304a572791c367"
+      },
+      "beam_0_00055.edf": {
+        "bytes": 4094268,
+        "sha256": "1db3a3aa4e9e07c6098b355f605b1868bf749b47c10ff7636b5fc2760942b953"
+      },
+      "beam_0_00056.edf": {
+        "bytes": 4094268,
+        "sha256": "11739e35d8e82eed24759bdf7df97dab9b1132154654d8a30b00585e43624713"
+      },
+      "beam_0_00057.edf": {
+        "bytes": 4094268,
+        "sha256": "33cc716f0f5a1aba08b11272984729dc24e3c47ac344dba18b9da5009ed74196"
+      },
+      "beam_0_00058.edf": {
+        "bytes": 4094268,
+        "sha256": "bc96f512a2065ae98a30a60b6b6e7cdc121c012f612dc267d4f0dbdbb01f4c8a"
+      },
+      "beam_0_00059.edf": {
+        "bytes": 4094268,
+        "sha256": "8f3305c4d9f144b26db6f59a0b9f31cd40f5a83c36761e20620cbefa32cea4fe"
+      },
+      "beam_0_00060.edf": {
+        "bytes": 4094268,
+        "sha256": "fe0f8ce89739c45af868eec63c0511a3bf12d9686f5af1445deaf981b9dc8755"
+      },
+      "beam_0_00061.edf": {
+        "bytes": 4094268,
+        "sha256": "fc8edb75d65a1280c714ead250308c84abf1c53119599c25bd33c22a81d73542"
+      },
+      "beam_0_00062.edf": {
+        "bytes": 4094268,
+        "sha256": "95cc176ad7d432240b813eca7dd02d9a9a77071c69a39e2953c5113060bc26b2"
+      },
+      "beam_0_00063.edf": {
+        "bytes": 4094268,
+        "sha256": "edcb0f853c77954a333e232e01911eb810543c255f2a87f4fe0bc4efb0db1246"
+      },
+      "beam_0_00064.edf": {
+        "bytes": 4094268,
+        "sha256": "39670fce6048f729adbf43ffe3e86b90724db9c03fb8b7441adef9a04fbccfb6"
+      },
+      "beam_0_00065.edf": {
+        "bytes": 4094268,
+        "sha256": "772230850fa53a422b52f2381ff9952bbeb8ce87a68e1bbbb98bf76795912686"
+      }
+    },
+    "subset": "beam_0_00046.edf through beam_0_00065.edf; 20 one-second SiO2 nanoparticle droplet frames",
+    "url": "https://archive.researchdata.leeds.ac.uk/1010/"
+  },
+  "date": "2026-10-09",
+  "development_units": 8,
+  "domain_expert_review": "QUEUED, not done",
+  "held_out_units": 12,
+  "hidden_key_manifest_sha256": "f28127628151b541f3051b8ab1fa8ee0089fb779c19aee66ae2866741fdd954e",
+  "judge_file_sha256": "63c1ea827d6228dcdf18484c052faf2d487b680204c74a02d725634d489c4acc",
+  "judge_type": "saxs_simulation_curve",
+  "key_storage": "/tmp/ipwm24-keys/saxs/simulate",
+  "pass_rate_adaptive_reference_solver": 1.0,
+  "pass_rate_all_trivials": {
+    "blur": 0.0,
+    "constant": 0.0,
+    "copy_public": 0.0,
+    "input_unchanged": 0.0,
+    "zeros": 0.0
+  },
+  "pass_rate_best_fixed_setting_chosen_on_dev": 1.0,
+  "pass_rate_best_trivial_answer": 0.0,
+  "pass_rate_public_baseline_pwm_core": 0.0,
+  "reference_curve_tolerance": "relative L2 <= 0.10 over the 29 measured radial bins",
+  "salt_commitment_sha256": "ee46683328da82a2214d9da190c4e7cba98cf98eddc23e3a696ec55dab68a56c",
+  "task": "saxs/simulate",
+  "unit_kind": "detector frame (one-second SiO2 droplet exposure)"
+}
