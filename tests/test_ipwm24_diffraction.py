@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from pwm_mode.imaging.diffraction.judges import judge_saxs_simulate
+from pwm_mode.imaging.diffraction.judges import judge_atom_probe_simulate, judge_saxs_simulate
 
 
 def _curve_hash(curve):
@@ -43,3 +43,21 @@ def test_saxs_simulation_judge_traps():
     assert not judge_saxs_simulate({"curve": public}, key, criterion)["pass"]
     assert not judge_saxs_simulate({"curve": np.ones((8, 8))}, key, criterion)["pass"]
 
+
+def test_atom_probe_simulation_judge_traps():
+    axis = np.arange(0.0, 70.0, 0.025)
+    reference = 4000 * np.exp(-0.5 * ((axis - 26.98) / 0.05) ** 2)
+    reference += 3000 * np.exp(-0.5 * ((axis - 27.97) / 0.05) ** 2)
+    reference += 2000 * np.exp(-0.5 * ((axis - 55.93) / 0.05) ** 2)
+    public_copy = reference * 1.02
+    key = {"reference_spectrum": reference,
+           "forbidden_public_spectrum_sha256": [_curve_hash(public_copy)]}
+    criterion = {"relative_l2_max": 0.10}
+
+    assert judge_atom_probe_simulate({"spectrum": reference}, key, criterion)["pass"]
+    assert not judge_atom_probe_simulate({"sample": "APT", "detector_mode": "nominal"}, key, criterion)["pass"]
+    assert not judge_atom_probe_simulate({"spectrum": np.zeros_like(reference)}, key, criterion)["pass"]
+    assert not judge_atom_probe_simulate({"spectrum": np.full_like(reference, reference.mean())}, key, criterion)["pass"]
+    assert not judge_atom_probe_simulate({"spectrum": np.convolve(reference, np.ones(15) / 15, mode="same")}, key, criterion)["pass"]
+    assert not judge_atom_probe_simulate({"spectrum": public_copy}, key, criterion)["pass"]
+    assert not judge_atom_probe_simulate({"spectrum": np.ones((64, 64))}, key, criterion)["pass"]

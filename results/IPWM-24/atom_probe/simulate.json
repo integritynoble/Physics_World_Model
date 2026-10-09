@@ -1,0 +1,1052 @@
+{
+  "best_fixed_setting": {
+    "sigma_da": 0.05
+  },
+  "development": {
+    "n": 8,
+    "unit_kind": "synthetic alloy spectrum"
+  },
+  "held_out": {
+    "n": 12,
+    "unit_kind": "synthetic alloy spectrum"
+  },
+  "limits": [
+    "Synthetic monoatomic-ion spectra only; no molecular ions, preferential evaporation, detector pile-up, or local magnification.",
+    "The reference is a physics-derived synthetic spectrum, not a measured APT detector event stream.",
+    "Isotope overlaps are represented by NIST masses and natural abundances; alloy-specific isotope fractionation is not modeled."
+  ],
+  "methods": {
+    "adaptive_reference_solver": {
+      "n": 12,
+      "pass_rate": 1.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.029060346422311707
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.0735457375087202
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.038730036216292715
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.0244082886819831
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.052388368001250296
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.033318655767212005
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.038761235309956
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.01199219335701907
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.023247562125737704
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.03262645133660541
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.06163363549664656
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.028194642964312684
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "baseline_pwm_core": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "spectrum has wrong shape, negative counts, or non-finite values"
+          ],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "best_fixed(setting chosen on dev)": {
+      "n": 12,
+      "pass_rate": 0.3333333333333333,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.5825022544633432
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.58250 exceeds 0.10000"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.498390575619733
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.49839 exceeds 0.10000"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.038730036216292715
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.5848565023943181
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.58486 exceeds 0.10000"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.4804882552076393
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.48049 exceeds 0.10000"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.033318655767212005
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.5575704853054195
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.55757 exceeds 0.10000"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.48697357417645404
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.48697 exceeds 0.10000"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.023247562125737704
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.5636049165561728
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.56360 exceeds 0.10000"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.4858795870264501
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.48588 exceeds 0.10000"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.028194642964312684
+          },
+          "pass": true,
+          "reasons": [],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "trivial:blur": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.5189810274400076
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.51898 exceeds 0.10000"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.6530371925292259
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65304 exceeds 0.10000"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.28788519067906
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.28789 exceeds 0.10000"
+          ],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.3940552742527966
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.39406 exceeds 0.10000"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.6302307843789897
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.63023 exceeds 0.10000"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.42300630767862635
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.42301 exceeds 0.10000"
+          ],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.6026161848312259
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.60262 exceeds 0.10000"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.6588998147198941
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65890 exceeds 0.10000"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.47419853168989323
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.47420 exceeds 0.10000"
+          ],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.41626585781481856
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.41627 exceeds 0.10000"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.6566235821158088
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.65662 exceeds 0.10000"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.41490805284198534
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.41491 exceeds 0.10000"
+          ],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "trivial:constant": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9900389019847082
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99004 exceeds 0.10000"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9980010446279562
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99800 exceeds 0.10000"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9943917020911932
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99439 exceeds 0.10000"
+          ],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9914428830253836
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99144 exceeds 0.10000"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9970826672128121
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99708 exceeds 0.10000"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9955900249960831
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99559 exceeds 0.10000"
+          ],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9896453699519179
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.98965 exceeds 0.10000"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9975103755970558
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99751 exceeds 0.10000"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9960017783942818
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99600 exceeds 0.10000"
+          ],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9907923944021434
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99079 exceeds 0.10000"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9974569808173406
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99746 exceeds 0.10000"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 0.9952834084860406
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 0.99528 exceeds 0.10000"
+          ],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "trivial:copy_public": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": true,
+            "rel_l2": 0.0
+          },
+          "pass": false,
+          "reasons": [
+            "exact copy of a public development spectrum"
+          ],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "trivial:input_unchanged": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {},
+          "pass": false,
+          "reasons": [
+            "submission must contain spectrum"
+          ],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    },
+    "trivial:zeros": {
+      "n": 12,
+      "pass_rate": 0.0,
+      "verdicts": [
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "43d993ab173e617b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "965900ff842e2219"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "4df933faa247141e"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "c92c345d3ec86cdd"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "f71c59ca96735e5f"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "b5fc00ff7d6dc645"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "a90c3c4cf8c922ce"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "353d81b0b3d8c263"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "2ad5edbd8a564f30"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "84524786f3cd067b"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "93dd21bb946380a8"
+        },
+        {
+          "metrics": {
+            "copied_public_spectrum": false,
+            "rel_l2": 1.0
+          },
+          "pass": false,
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.10000"
+          ],
+          "unit": "235a3c5e89828733"
+        }
+      ]
+    }
+  },
+  "setting_scores_dev": [
+    {
+      "dev_pass_rate": 0.375,
+      "setting": {
+        "sigma_da": 0.025
+      }
+    },
+    {
+      "dev_pass_rate": 0.0,
+      "setting": {
+        "sigma_da": 0.035
+      }
+    },
+    {
+      "dev_pass_rate": 0.375,
+      "setting": {
+        "sigma_da": 0.05
+      }
+    },
+    {
+      "dev_pass_rate": 0.0,
+      "setting": {
+        "sigma_da": 0.07
+      }
+    },
+    {
+      "dev_pass_rate": 0.25,
+      "setting": {
+        "sigma_da": 0.09
+      }
+    }
+  ]
+}

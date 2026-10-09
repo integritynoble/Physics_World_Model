@@ -1,4 +1,25 @@
 {
+  "atom_probe": {
+    "license": "U.S. federal government reference data; public domain",
+    "reference_data": "NIST Atomic Weights and Isotopic Compositions (N, Al, Ti, V, Cr, Fe, Ni)",
+    "reference_generation": "independent Gaussian convolution of NIST isotope lines with Poisson shot noise; random hidden mass-axis/gain residuals are keyed by secret salt",
+    "retained_table": {
+      "path": "pwm_mode/imaging/diffraction/nist_isotopes.json",
+      "sha256": "66b0ebc0367db31bdbb7a91a6b054af5506f71646a729182bd1f772256f3f542"
+    },
+    "unit_kind": "synthetic alloy spectrum",
+    "url": "https://pml.nist.gov/cgi-bin/Compositions/stand_alone.pl?ascii=ascii",
+    "additional_public_example_for_later_apt_tasks": {
+      "dataset": "NFDI/FAIRmat example atom-probe microscopy data",
+      "doi": "10.5281/zenodo.7986279",
+      "license": "CC BY 4.0",
+      "file": "APM.LEAP.Datasets.1.zip",
+      "bytes": 133789647,
+      "sha256": "efc1bddfdf36a8fe77935b5bee9f1f07b874cb0258f9245b6d6212743ac4b18c",
+      "location": "/tmp/ipwm24-data/atom_probe/APM.LEAP.Datasets.1.zip",
+      "note": "Retained as a bounded public APT example for later reconstruction/calibration work; not used as the SIMULATE reference because it contains reconstructed .APT/.POS records rather than a matched raw detector event stream."
+    }
+  },
   "saxs": {
     "dataset": "Serial Small- and Wide-Angle X-ray Scattering with Laboratory Sources",
     "doi": "10.5518/1170",
@@ -93,8 +114,8 @@
     "available_small_sample": {
       "dataset": "Serial Small- and Wide-Angle X-ray Scattering with Laboratory Sources",
       "doi": "10.5518/1170",
-      "url": "https://archive.researchdata.leeds.ac.uk/1010/",
       "license": "CC BY 4.0",
+      "note": "Only two measured WAXS frames are supplied; insufficient for a held-out judge with a 12-unit evaluation split. Raw downloads removed after hashing.",
       "retained_files": {
         "beam_1_00116.edf": {
           "bytes": 381396,
@@ -105,14 +126,14 @@
           "sha256": "f2c1506b97b4a1e1dd9b1721c25a29397c009dcc30555a63bcb06db5ca23aa3a"
         }
       },
-      "note": "Only two measured WAXS frames are supplied; insufficient for a held-out judge with a 12-unit evaluation split. Raw downloads removed after hashing."
+      "url": "https://archive.researchdata.leeds.ac.uk/1010/"
     },
     "larger_alternative": {
       "dataset": "A 22,266-image grazing-incidence wide-angle X-ray scattering benchmark dataset for organic photovoltaic and perovskite materials characterization",
       "doi": "10.17632/kx8nt3zpk8.1",
-      "url": "https://data.mendeley.com/datasets/kx8nt3zpk8/1",
       "license": "CC BY 4.0",
-      "retrieval_status": "UNUSABLE from this environment on 2026-10-09; Mendeley Data API dataset metadata, file listing, and archive endpoints returned HTTP 401 requiring Bearer authentication. The public landing page has no direct file URLs."
+      "retrieval_status": "UNUSABLE from this environment on 2026-10-09; Mendeley Data API dataset metadata, file listing, and archive endpoints returned HTTP 401 requiring Bearer authentication. The public landing page has no direct file URLs.",
+      "url": "https://data.mendeley.com/datasets/kx8nt3zpk8/1"
     }
   }
 }

@@ -1,0 +1,44 @@
+{
+  "best_fixed_setting": {
+    "sigma_da": 0.05
+  },
+  "best_trivial_answer": "trivial:input_unchanged",
+  "criterion": {
+    "relative_l2_max": 0.1
+  },
+  "criterion_version": "1.0.0",
+  "data": {
+    "license": "U.S. federal government reference data; public domain",
+    "reference_data": "NIST Atomic Weights and Isotopic Compositions (N, Al, Ti, V, Cr, Fe, Ni)",
+    "reference_generation": "independent Gaussian convolution of NIST isotope lines with Poisson shot noise; random hidden mass-axis/gain residuals are keyed by secret salt",
+    "retained_table": {
+      "path": "pwm_mode/imaging/diffraction/nist_isotopes.json",
+      "sha256": "66b0ebc0367db31bdbb7a91a6b054af5506f71646a729182bd1f772256f3f542"
+    },
+    "unit_kind": "synthetic alloy spectrum",
+    "url": "https://pml.nist.gov/cgi-bin/Compositions/stand_alone.pl?ascii=ascii"
+  },
+  "date": "2026-10-09",
+  "development_units": 8,
+  "domain_expert_review": "QUEUED, not done",
+  "held_out_units": 12,
+  "hidden_key_manifest_sha256": "0322f32dc391dff6935e9f076281066f64afe6b5b400415b587bb70bf68229e7",
+  "judge_file_sha256": "ddbd032ee66a93fa0e31c1b995bf6979026fc70e328b6d165e35c9fb9805163f",
+  "judge_type": "atom_probe_mass_spectrum",
+  "key_storage": "/tmp/ipwm24-keys/atom_probe/simulate",
+  "pass_rate_adaptive_reference_solver": 1.0,
+  "pass_rate_all_trivials": {
+    "blur": 0.0,
+    "constant": 0.0,
+    "copy_public": 0.0,
+    "input_unchanged": 0.0,
+    "zeros": 0.0
+  },
+  "pass_rate_best_fixed_setting_chosen_on_dev": 0.3333333333333333,
+  "pass_rate_best_trivial_answer": 0.0,
+  "pass_rate_public_baseline_pwm_core": 0.0,
+  "reference_curve_tolerance": "relative L2 <= 0.10 over 2800 mass-to-charge bins",
+  "salt_commitment_sha256": "ee46683328da82a2214d9da190c4e7cba98cf98eddc23e3a696ec55dab68a56c",
+  "task": "atom_probe/simulate",
+  "unit_kind": "synthetic alloy spectrum"
+}
