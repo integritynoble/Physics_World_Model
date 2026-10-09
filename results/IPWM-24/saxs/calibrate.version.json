@@ -1,0 +1,20 @@
+{
+  "best_fixed_setting": null,
+  "best_trivial_answer": null,
+  "criterion": null,
+  "criterion_version": null,
+  "date": "2026-10-09",
+  "development_units": null,
+  "domain_expert_review": "QUEUED, not done",
+  "held_out_units": null,
+  "judge_status": "NOT BUILT",
+  "judge_type": null,
+  "pass_rate_adaptive_reference_solver": null,
+  "pass_rate_all_trivials": null,
+  "pass_rate_best_fixed_setting_chosen_on_dev": null,
+  "pass_rate_best_trivial_answer": null,
+  "pass_rate_public_baseline_pwm_core": null,
+  "reason_not_possible": "NOT POSSIBLE in this attempt: no source-backed, modality-specific evaluation set and independently constructed hidden key were established for this task. A scientifically meaningful pass criterion and development-selected fixed-setting comparator cannot be claimed without those inputs. The source task specification referred to tasks/IPWM-24/{TASK,goal,status,log}.md, but those files are absent from this checkout. This is an explicit limitation record; no solver performance or judge validity is claimed.",
+  "task": "saxs/calibrate",
+  "unit_kind": null
+}
