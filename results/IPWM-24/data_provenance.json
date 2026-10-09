@@ -135,5 +135,50 @@
       "retrieval_status": "UNUSABLE from this environment on 2026-10-09; Mendeley Data API dataset metadata, file listing, and archive endpoints returned HTTP 401 requiring Bearer authentication. The public landing page has no direct file URLs.",
       "url": "https://data.mendeley.com/datasets/kx8nt3zpk8/1"
     }
+  },
+  "cathodoluminescence": {
+    "dataset": "Data to Cathodoluminescence excitation spectroscopy: nanoscale imaging of excitation pathways",
+    "doi": "10.5281/zenodo.6803239",
+    "url": "https://zenodo.org/records/6803239",
+    "license": "CC BY 4.0",
+    "archive": "Figures_Data.zip",
+    "archive_bytes": 98248350,
+    "archive_sha256": "2059938398fc7670aa1ce391a25eae44a4047c2d4ce3b18c8c64b3d341003a64",
+    "selected_reference_files": {
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelD/Data_Sphere7_2021_12_16/07_AuSphere_08/spec.txt": {
+        "sha256": "8d98d98a9e752f3cc434678541efbdf18bacb54756be4d489cc13916c02cb7ab"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelD/Data_Sphere7_2021_12_16/07_AuSphere_09/spec.txt": {
+        "sha256": "c007848b58227ad6664042e8232974c6ac4549458c7d97d92259c924b8f4d121"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelD/Data_Sphere7_2021_12_16/07_AuSphere_10/spec.txt": {
+        "sha256": "83a0a68c6e41e65282860ad6650c8281f89832ab8e4892b9fbe764e71b5a37ba"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelC/Time_ticks/spec.txt": {
+        "sha256": "1739f7c07b053d1d6bad25fe145e4bc9c950f8782e4010fa50da449177896caf"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_hBN/PanelC-D/10_25ns/spec.txt": {
+        "sha256": "24f030a163a8865e34a0d8b0aae34ffa833cda1fcd85c44e65d3fd24b2a414f1"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_hBN/PanelB/08_25ns/spec.txt": {
+        "sha256": "4967852c11c03a40fe6189e7911516e80d95ab21ef6608549cbc349f58e9470d"
+      },
+      "Figures_CleanToZenodo/Figure_Spim_hBN/Panels5A-D/50gb_25ns/spec.txt": {
+        "sha256": "c515d13444e1f5c6948da65c7fdfbf79fda0d866eaa7a028ff5f0d94e71e14f1"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_hBN_FilterInAndOut/spec.txt": {
+        "sha256": "445fe1a1187ceeae20189d96f3c185ced4ce8b58bb5bf16e2d8109460f3f09f1"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_CLE_nanosphere_aloof_impact/2022_02_11_02_Sphere-Mes08/spec.txt": {
+        "sha256": "c9f46c46b923612a12eb493c3d566371437a3729bbaad90ac945d06454c5eddc"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_CLE_nanosphere_aloof_impact/2022_02_11_02_Sphere-Mes10/spec.txt": {
+        "sha256": "9102675ce40c12dd9545c7b50bc96b94ff372407ac6f7e0cab61e81e5e149edd"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_CLE_core-loss_h-BN/13_25ns/spec.txt": {
+        "sha256": "a74115f759ad5c40599ef18bdc9c29260a2ec06d4006637bcc798ca9063c4527"
+      }
+    },
+    "reference_kind": "measured processed spectra in spec.txt"
   }
 }

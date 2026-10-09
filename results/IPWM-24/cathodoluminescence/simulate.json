@@ -1,0 +1,242 @@
+{
+  "methods": {
+    "trivial:input_unchanged": {
+      "pass_rate": 0.0,
+      "n": 3,
+      "verdicts": [
+        {
+          "unit": "03105b4a89ee75f3",
+          "pass": false,
+          "metrics": {},
+          "reasons": [
+            "submission must contain curve"
+          ]
+        },
+        {
+          "unit": "eae0311db96f8aab",
+          "pass": false,
+          "metrics": {},
+          "reasons": [
+            "submission must contain curve"
+          ]
+        },
+        {
+          "unit": "8de68cfec4cbbea1",
+          "pass": false,
+          "metrics": {},
+          "reasons": [
+            "submission must contain curve"
+          ]
+        }
+      ]
+    },
+    "trivial:constant": {
+      "pass_rate": 0.0,
+      "n": 3,
+      "verdicts": [
+        {
+          "unit": "03105b4a89ee75f3",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9906626569248098,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.99066 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "eae0311db96f8aab",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9807372389023082,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.98074 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "8de68cfec4cbbea1",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9587954877970702,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.95880 exceeds 0.05000"
+          ]
+        }
+      ]
+    },
+    "trivial:zero": {
+      "pass_rate": 0.0,
+      "n": 3,
+      "verdicts": [
+        {
+          "unit": "03105b4a89ee75f3",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 1.0,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "eae0311db96f8aab",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 1.0,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "8de68cfec4cbbea1",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 1.0,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 1.00000 exceeds 0.05000"
+          ]
+        }
+      ]
+    },
+    "trivial:blur": {
+      "pass_rate": 0.0,
+      "n": 3,
+      "verdicts": [
+        {
+          "unit": "03105b4a89ee75f3",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.8827188136019837,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.88272 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "eae0311db96f8aab",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9483856600192309,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.94839 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "8de68cfec4cbbea1",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9721645715153461,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.97216 exceeds 0.05000"
+          ]
+        }
+      ]
+    },
+    "trivial:copy_public": {
+      "pass_rate": 0.0,
+      "n": 3,
+      "verdicts": [
+        {
+          "unit": "03105b4a89ee75f3",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.0,
+            "copied_public_curve": true
+          },
+          "reasons": [
+            "exact copy of a public development curve"
+          ]
+        },
+        {
+          "unit": "eae0311db96f8aab",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.0,
+            "copied_public_curve": true
+          },
+          "reasons": [
+            "exact copy of a public development curve"
+          ]
+        },
+        {
+          "unit": "8de68cfec4cbbea1",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.0,
+            "copied_public_curve": true
+          },
+          "reasons": [
+            "exact copy of a public development curve"
+          ]
+        }
+      ]
+    },
+    "best_fixed(setting chosen on dev)": {
+      "pass_rate": 0.0,
+      "n": 3,
+      "verdicts": [
+        {
+          "unit": "03105b4a89ee75f3",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.8822451703727346,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.88225 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "eae0311db96f8aab",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9625700707522589,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.96257 exceeds 0.05000"
+          ]
+        },
+        {
+          "unit": "8de68cfec4cbbea1",
+          "pass": false,
+          "metrics": {
+            "rel_l2": 0.9782479113273557,
+            "copied_public_curve": false
+          },
+          "reasons": [
+            "relative L2 0.97825 exceeds 0.05000"
+          ]
+        }
+      ]
+    }
+  },
+  "development": {
+    "n": 8,
+    "unit_kind": "unique processed measured CL spectrum"
+  },
+  "held_out": {
+    "n": 3,
+    "unit_kind": "unique processed measured CL spectrum"
+  },
+  "limits": [
+    "Only 11 unique 1024-channel measured spec.txt curves were present in the bounded processed archive; duplicate copies were deduplicated, leaving 8 development and 3 held-out units.",
+    "The archive contains processed curves rather than raw detector acquisition; criterion is a curve-shape/count comparison, not an end-to-end instrument validation.",
+    "Hidden reference gains are independently keyed by a secret salt; measured spectra are public but hidden held-out per-unit gains are not exposed in public inputs."
+  ]
+}

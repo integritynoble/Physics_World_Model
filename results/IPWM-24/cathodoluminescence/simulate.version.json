@@ -1,0 +1,75 @@
+{
+  "task": "cathodoluminescence/simulate",
+  "criterion_version": "1.0.0",
+  "criterion": {
+    "relative_l2_max": 0.05
+  },
+  "judge_type": "cathodoluminescence_measured_curve",
+  "judge_file_sha256": "33a5530f9389c47286b0e72e6199bb88de77b0a0490ea556c8cf71f003eb7711",
+  "salt_commitment_sha256": "d0d9299da935f081ad09ef9add01f9a99aafd7458eb6f4d881e6817d8fb19ece",
+  "held_out_units": 3,
+  "development_units": 8,
+  "unit_kind": "unique processed measured CL spectrum",
+  "pass_rate_best_trivial_answer": 0.0,
+  "best_trivial_answer": "trivial:input_unchanged",
+  "pass_rate_all_trivials": {
+    "input_unchanged": 0.0,
+    "constant": 0.0,
+    "zero": 0.0,
+    "blur": 0.0,
+    "copy_public": 0.0
+  },
+  "pass_rate_public_baseline_pwm_core": null,
+  "pass_rate_best_fixed_setting_chosen_on_dev": 0.0,
+  "best_fixed_setting": "arithmetic mean of 8 public development curves",
+  "reference_curve_tolerance": "relative L2 <= 0.05 over 1024 channels",
+  "data": {
+    "dataset": "Data to Cathodoluminescence excitation spectroscopy: nanoscale imaging of excitation pathways",
+    "doi": "10.5281/zenodo.6803239",
+    "url": "https://zenodo.org/records/6803239",
+    "license": "CC BY 4.0",
+    "archive": "Figures_Data.zip",
+    "archive_bytes": 98248350,
+    "archive_sha256": "2059938398fc7670aa1ce391a25eae44a4047c2d4ce3b18c8c64b3d341003a64",
+    "selected_reference_files": {
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelD/Data_Sphere7_2021_12_16/07_AuSphere_08/spec.txt": {
+        "sha256": "8d98d98a9e752f3cc434678541efbdf18bacb54756be4d489cc13916c02cb7ab"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelD/Data_Sphere7_2021_12_16/07_AuSphere_09/spec.txt": {
+        "sha256": "c007848b58227ad6664042e8232974c6ac4549458c7d97d92259c924b8f4d121"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelD/Data_Sphere7_2021_12_16/07_AuSphere_10/spec.txt": {
+        "sha256": "83a0a68c6e41e65282860ad6650c8281f89832ab8e4892b9fbe764e71b5a37ba"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_Plasmons/PanelC/Time_ticks/spec.txt": {
+        "sha256": "1739f7c07b053d1d6bad25fe145e4bc9c950f8782e4010fa50da449177896caf"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_hBN/PanelC-D/10_25ns/spec.txt": {
+        "sha256": "24f030a163a8865e34a0d8b0aae34ffa833cda1fcd85c44e65d3fd24b2a414f1"
+      },
+      "Figures_CleanToZenodo/Figure_CLE_hBN/PanelB/08_25ns/spec.txt": {
+        "sha256": "4967852c11c03a40fe6189e7911516e80d95ab21ef6608549cbc349f58e9470d"
+      },
+      "Figures_CleanToZenodo/Figure_Spim_hBN/Panels5A-D/50gb_25ns/spec.txt": {
+        "sha256": "c515d13444e1f5c6948da65c7fdfbf79fda0d866eaa7a028ff5f0d94e71e14f1"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_hBN_FilterInAndOut/spec.txt": {
+        "sha256": "445fe1a1187ceeae20189d96f3c185ced4ce8b58bb5bf16e2d8109460f3f09f1"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_CLE_nanosphere_aloof_impact/2022_02_11_02_Sphere-Mes08/spec.txt": {
+        "sha256": "c9f46c46b923612a12eb493c3d566371437a3729bbaad90ac945d06454c5eddc"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_CLE_nanosphere_aloof_impact/2022_02_11_02_Sphere-Mes10/spec.txt": {
+        "sha256": "9102675ce40c12dd9545c7b50bc96b94ff372407ac6f7e0cab61e81e5e149edd"
+      },
+      "Figures_CleanToZenodo/SI/FigureSI_CLE_core-loss_h-BN/13_25ns/spec.txt": {
+        "sha256": "a74115f759ad5c40599ef18bdc9c29260a2ec06d4006637bcc798ca9063c4527"
+      }
+    },
+    "reference_kind": "measured processed spectra in spec.txt"
+  },
+  "hidden_key_manifest_sha256": "4b5e0b9d4428e41d96dd0e80c09d2b9149329c832c47a35bb90796f03fb07a00",
+  "key_storage": "/tmp/ipwm24-keys/cathodoluminescence/simulate",
+  "domain_expert_review": "QUEUED, not done",
+  "date": "2026-10-09"
+}

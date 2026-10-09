@@ -7,7 +7,11 @@ from pathlib import Path
 
 import numpy as np
 
-from pwm_mode.imaging.diffraction.judges import judge_atom_probe_simulate, judge_saxs_simulate
+from pwm_mode.imaging.diffraction.judges import (
+    judge_atom_probe_simulate,
+    judge_cathodoluminescence_simulate,
+    judge_saxs_simulate,
+)
 
 
 def _curve_hash(curve):
@@ -61,3 +65,21 @@ def test_atom_probe_simulation_judge_traps():
     assert not judge_atom_probe_simulate({"spectrum": np.convolve(reference, np.ones(15) / 15, mode="same")}, key, criterion)["pass"]
     assert not judge_atom_probe_simulate({"spectrum": public_copy}, key, criterion)["pass"]
     assert not judge_atom_probe_simulate({"spectrum": np.ones((64, 64))}, key, criterion)["pass"]
+
+
+def test_cathodoluminescence_simulation_judge_traps():
+    axis = np.arange(1024, dtype=np.float64)
+    reference = 2000 * np.exp(-0.5 * ((axis - 325) / 28) ** 2)
+    reference += 700 * np.exp(-0.5 * ((axis - 690) / 55) ** 2)
+    public_copy = reference * 1.2
+    key = {"reference_curve": reference,
+           "forbidden_public_curve_sha256": [_curve_hash(public_copy)]}
+    criterion = {"relative_l2_max": 0.05}
+
+    assert judge_cathodoluminescence_simulate({"curve": reference}, key, criterion)["pass"]
+    assert not judge_cathodoluminescence_simulate({"input": {"modality": "cathodoluminescence"}}, key, criterion)["pass"]
+    assert not judge_cathodoluminescence_simulate({"curve": np.zeros_like(reference)}, key, criterion)["pass"]
+    assert not judge_cathodoluminescence_simulate({"curve": np.full_like(reference, reference.mean())}, key, criterion)["pass"]
+    assert not judge_cathodoluminescence_simulate({"curve": np.convolve(reference, np.ones(81) / 81, mode="same")}, key, criterion)["pass"]
+    assert not judge_cathodoluminescence_simulate({"curve": public_copy}, key, criterion)["pass"]
+    assert not judge_cathodoluminescence_simulate({"curve": np.ones((32, 32))}, key, criterion)["pass"]
